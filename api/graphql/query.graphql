@@ -1,0 +1,4 @@
+extend type Query {
+    """获取全局ID,开发用途"""
+    globalID(type: String!, id: ID!): GID
+}

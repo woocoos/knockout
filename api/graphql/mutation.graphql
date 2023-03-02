@@ -1,0 +1,94 @@
+type Mutation {
+    """启用目录管理,返回根节点组织信息"""
+    enableDirectory(input: EnableDirectoryInput!):Organization
+    """创建组织目录"""
+    createOrganization(input: CreateOrganizationInput!): Organization
+    """更新组织目录"""
+    updateOrganization(orgID:ID!,input: UpdateOrganizationInput!): Organization
+    """删除组织目录"""
+    deleteOrganization(orgID:ID!): Boolean!
+    """组织树位置调整，action: child, up, down"""
+    changeOrganizationTree(sourceId:ID!,targetId:ID!,action:String): Boolean
+    """创建组织成员(管理账户)"""
+    createOrganizationAccount(input: CreateOrganizationAccountInput!): User
+    """创建组织用户"""
+    createOrganizationUser(orgID:ID!,input: CreateUserInput!): User
+    """组织添加用户"""
+    addOrganizationUser(orgID:ID!,userId:ID!,displayName:String): User
+    """从组织移除用户"""
+    deleteUserFormOrganization(id:ID!): Boolean
+    """删除用户(真删除，需无组织关联)"""
+    deleteUser(id:ID!): Boolean
+    """更新用户"""
+    updateUser(userID:ID!,input: UpdateUserInput!): User
+    """绑定用户凭证(管理端使用)"""
+    bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
+    """删除用户凭证"""
+    deleteUserIdentity(id:ID!): Boolean
+    """用户修改自己的登录密码"""
+    changePassword(oldPwd:String!,newPwd:String!): Boolean
+    """重置用户密码并发送邮件"""
+    resetUserPasswordByEmail(userId:ID!): Boolean
+    """创建MFA"""
+    createUserMFA(userID:ID!): Boolean
+    """是否启用MFA"""
+    enableUserMFA(userID:ID!,enable:Boolean): Boolean
+    """删除MFA"""
+    deleteUserMFA(userID:ID!): Boolean
+    """邮件发送MFA"""
+    sendUserMFAByEmail(userID:ID!): Boolean
+    """创建应用"""
+    createApp(input: CreateAppInput!): App
+    """更新应用"""
+    updateApp(appID:ID!,input: UpdateAppInput!): App
+    """删除应用"""
+    deleteApp(appID:ID!): Boolean!
+    """创建应用操作"""
+    createAppActions(input: [CreateAppActionInput!]): Boolean!
+    """创建应用菜单"""
+    createAppMenus(input: [CreateAppMenuInput!]): Boolean!
+    """创建应用策略模板"""
+    createAppPolicies(input: [CreateAppPolicyInput!]): Boolean!
+    """更新应用菜单"""
+    updateAppMenu(input: UpdateAppMenuInput!): AppMenu
+    """应用菜单位置调整，targetLocation: child, up, down"""
+    changeAppMenuTree(sourceId:ID!,targetId:ID!,targetLocation:String): Boolean
+    """创建应用角色"""
+    createAppRole(input: CreateAppRoleInput!): AppRole
+    """更新应用角色"""
+    updateAppRole(input: UpdateAppRoleInput!): AppRole
+    """分配应用,将自动分配应用下的所有资源"""
+    assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
+    """取消分配应用"""
+    revokeOrganizationApp(orgID:ID!,appID:ID!): Boolean!
+    """分配应用策略到组织"""
+    assignOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    """取消分配到组织应用策略"""
+    revokeOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    """授权"""
+    grant(input: CreatePermissionInput!): Permission
+}
+
+input EnableDirectoryInput {
+    """域名"""
+    domain: String!
+    name: String!
+}
+
+input CreateOrganizationAccountInput {
+    """账号名称,组织内不可重复"""
+    displayName: String!
+    """账号登录名(含默认域名)"""
+    principalName: String!
+    """邮箱"""
+    email: String!
+    """所属组织ID"""
+    orgId: ID!
+}
+
+extend input CreateUserInput {
+    id: ID
+    loginProfile: CreateUserLoginProfileInput
+    """如指定密码则填入,否则由系统自动生成密码"""
+    password: CreateUserPasswordInput
+}
