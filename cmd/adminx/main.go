@@ -8,9 +8,12 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/XSAM/otelsql"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
@@ -25,20 +28,24 @@ import (
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/ent"
+	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/graph"
 	"github.com/woocoos/knockout/service/resource"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 	"time"
+)
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/woocoos/knockout/ent/runtime"
+type entCacheLevel int
+
+const (
+	entCacheLevelContext entCacheLevel = 1
+	entCacheLevelDB      entCacheLevel = 2
 )
 
 var (
-	portalClient  *ent.Client
-	entCacheLevel = 0
-	entCacheTTL   = time.Minute
+	portalClient *ent.Client
+	cacheLevel   entCacheLevel
 )
 
 func main() {
@@ -56,7 +63,7 @@ func main() {
 
 	buildCashbin(app.AppConfiguration())
 
-	webSrv := newWebServer(app.AppConfiguration())
+	webSrv := buildWebServer(app.AppConfiguration())
 	app.RegisterServer(webSrv)
 
 	defer func() {
@@ -67,11 +74,7 @@ func main() {
 	}
 }
 
-func newWebServer(cnf *conf.AppConfiguration) *web.Server {
-	entCacheLevel = cnf.Int("entcache.level")
-	if cnf.Duration("entcache.ttl") > 0 {
-		entCacheTTL = cnf.Duration("entcache.ttl")
-	}
+func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
 		web.RegisterMiddleware(gql.New()),
@@ -83,26 +86,34 @@ func newWebServer(cnf *conf.AppConfiguration) *web.Server {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// 如果需要设置gqlserver的中间件,可以使用第一个返回值
-	gqlSrv, err := gql.RegisterSchema(webSrv,
-		graph.NewSchema(
-			graph.RegisterEntClient(client),
-			graph.RegistryService(&resource.Service{Client: client}),
-		))
-	if err != nil {
+
+	gqlSrv := handler.New(graph.NewSchema(
+		graph.RegisterEntClient(client),
+		graph.RegistryService(&resource.Service{Client: client}),
+	))
+	gqlSrv.AddTransport(transport.Websocket{
+		KeepAlivePingInterval: 10 * time.Second,
+	})
+	gqlSrv.AddTransport(transport.Options{})
+	gqlSrv.AddTransport(transport.GET{})
+	gqlSrv.AddTransport(transport.POST{})
+	gqlSrv.AddTransport(transport.MultipartForm{})
+	gqlSrv.SetQueryCache(lru.New(1000))
+
+	gqlSrv.Use(extension.Introspection{})
+	gqlSrv.Use(extension.AutomaticPersistedQuery{
+		Cache: lru.New(100),
+	})
+	if err = gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
 		log.Fatal(err)
 	}
 	// gqlserver的中间件处理
-	for _, srv := range gqlSrv {
-		if entCacheLevel == 1 {
-			// 启用针对http request的缓存
-			useContextCache(srv)
-		}
-		// mutation事务
-		srv.Use(entgql.Transactioner{TxOpener: client})
-		// 订阅支持
-		srv.AddTransport(&transport.Websocket{})
+	if cacheLevel == entCacheLevelContext {
+		// 启用针对http request的缓存
+		useContextCache(gqlSrv)
 	}
+	// mutation事务
+	gqlSrv.Use(entgql.Transactioner{TxOpener: client})
 	// 订阅支持,如果握手阶段开发模式可以允许.
 	if jwt, ok := webSrv.HandlerManager().Get("jwt"); ok {
 		if h, ok := jwt.(*webhander.JWTMiddleware); ok {
@@ -144,15 +155,21 @@ func buildEntDriver(cnf *conf.AppConfiguration, storekey string) dialect.Driver 
 	db := sqlx.NewSqlDB(storeCfg)
 	drvori := entsql.OpenDB(driverName, db)
 	// 如果需要设置缓存级别,可以使用entcache.ContextLevel()设置
-	switch entCacheLevel {
-	case 1:
+	cacheLevel = entCacheLevel(cnf.Int("entcache.level"))
+	var cacheOpts []entcache.Option
+	switch cacheLevel {
+	case entCacheLevelContext:
 		// 使用Context缓存,但是不使用缓存的ttl
-		return entcache.NewDriver(drvori, entcache.ContextLevel())
-	case 2:
-		// 使用db缓存
-		return entcache.NewDriver(drvori, entcache.TTL(entCacheTTL))
+		cacheOpts = append(cacheOpts, entcache.ContextLevel())
+	case entCacheLevelDB:
+		// 使用db缓存,如不设置TTL.
+		if entCacheTTL := cnf.Duration("entcache.ttl"); entCacheTTL > 0 {
+			cacheOpts = append(cacheOpts, entcache.TTL(entCacheTTL))
+		}
+	default:
+		return drvori // no cache
 	}
-	return drvori
+	return entcache.NewDriver(drvori, cacheOpts...)
 }
 
 func open(cnf *conf.AppConfiguration, storekey string) (*ent.Client, error) {
