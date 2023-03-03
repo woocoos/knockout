@@ -1220,7 +1220,7 @@ func HasPolicies() predicate.Organization {
 }
 
 // HasPoliciesWith applies the HasEdge predicate on the "policies" edge with a given conditions (other predicates).
-func HasPoliciesWith(preds ...predicate.PermissionPolicy) predicate.Organization {
+func HasPoliciesWith(preds ...predicate.OrganizationPolicy) predicate.Organization {
 	return predicate.Organization(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

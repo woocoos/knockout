@@ -310,6 +310,33 @@ func (f TraverseOrganizationApp) Traverse(ctx context.Context, q ent.Query) erro
 	return fmt.Errorf("unexpected query type %T. expect *ent.OrganizationAppQuery", q)
 }
 
+// The OrganizationPolicyFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OrganizationPolicyFunc func(context.Context, *ent.OrganizationPolicyQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f OrganizationPolicyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OrganizationPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OrganizationPolicyQuery", q)
+}
+
+// The TraverseOrganizationPolicy type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOrganizationPolicy func(context.Context, *ent.OrganizationPolicyQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseOrganizationPolicy) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseOrganizationPolicy) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OrganizationPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.OrganizationPolicyQuery", q)
+}
+
 // The OrganizationRoleFunc type is an adapter to allow the use of ordinary function as a Querier.
 type OrganizationRoleFunc func(context.Context, *ent.OrganizationRoleQuery) (ent.Value, error)
 
@@ -389,33 +416,6 @@ func (f TraversePermission) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.PermissionQuery", q)
-}
-
-// The PermissionPolicyFunc type is an adapter to allow the use of ordinary function as a Querier.
-type PermissionPolicyFunc func(context.Context, *ent.PermissionPolicyQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f PermissionPolicyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.PermissionPolicyQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.PermissionPolicyQuery", q)
-}
-
-// The TraversePermissionPolicy type is an adapter to allow the use of ordinary function as Traverser.
-type TraversePermissionPolicy func(context.Context, *ent.PermissionPolicyQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraversePermissionPolicy) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraversePermissionPolicy) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.PermissionPolicyQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.PermissionPolicyQuery", q)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -574,14 +574,14 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.OrganizationQuery, predicate.Organization]{typ: ent.TypeOrganization, tq: q}, nil
 	case *ent.OrganizationAppQuery:
 		return &query[*ent.OrganizationAppQuery, predicate.OrganizationApp]{typ: ent.TypeOrganizationApp, tq: q}, nil
+	case *ent.OrganizationPolicyQuery:
+		return &query[*ent.OrganizationPolicyQuery, predicate.OrganizationPolicy]{typ: ent.TypeOrganizationPolicy, tq: q}, nil
 	case *ent.OrganizationRoleQuery:
 		return &query[*ent.OrganizationRoleQuery, predicate.OrganizationRole]{typ: ent.TypeOrganizationRole, tq: q}, nil
 	case *ent.OrganizationUserQuery:
 		return &query[*ent.OrganizationUserQuery, predicate.OrganizationUser]{typ: ent.TypeOrganizationUser, tq: q}, nil
 	case *ent.PermissionQuery:
 		return &query[*ent.PermissionQuery, predicate.Permission]{typ: ent.TypePermission, tq: q}, nil
-	case *ent.PermissionPolicyQuery:
-		return &query[*ent.PermissionPolicyQuery, predicate.PermissionPolicy]{typ: ent.TypePermissionPolicy, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User]{typ: ent.TypeUser, tq: q}, nil
 	case *ent.UserDeviceQuery:

@@ -21,10 +21,10 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/organization"
 	"github.com/woocoos/knockout/ent/organizationapp"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/organizationrole"
 	"github.com/woocoos/knockout/ent/organizationuser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -43,24 +43,24 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeApp              = "App"
-	TypeAppAction        = "AppAction"
-	TypeAppMenu          = "AppMenu"
-	TypeAppPolicy        = "AppPolicy"
-	TypeAppRes           = "AppRes"
-	TypeAppRole          = "AppRole"
-	TypeAppRolePolicy    = "AppRolePolicy"
-	TypeOrganization     = "Organization"
-	TypeOrganizationApp  = "OrganizationApp"
-	TypeOrganizationRole = "OrganizationRole"
-	TypeOrganizationUser = "OrganizationUser"
-	TypePermission       = "Permission"
-	TypePermissionPolicy = "PermissionPolicy"
-	TypeUser             = "User"
-	TypeUserDevice       = "UserDevice"
-	TypeUserIdentity     = "UserIdentity"
-	TypeUserLoginProfile = "UserLoginProfile"
-	TypeUserPassword     = "UserPassword"
+	TypeApp                = "App"
+	TypeAppAction          = "AppAction"
+	TypeAppMenu            = "AppMenu"
+	TypeAppPolicy          = "AppPolicy"
+	TypeAppRes             = "AppRes"
+	TypeAppRole            = "AppRole"
+	TypeAppRolePolicy      = "AppRolePolicy"
+	TypeOrganization       = "Organization"
+	TypeOrganizationApp    = "OrganizationApp"
+	TypeOrganizationPolicy = "OrganizationPolicy"
+	TypeOrganizationRole   = "OrganizationRole"
+	TypeOrganizationUser   = "OrganizationUser"
+	TypePermission         = "Permission"
+	TypeUser               = "User"
+	TypeUserDevice         = "UserDevice"
+	TypeUserIdentity       = "UserIdentity"
+	TypeUserLoginProfile   = "UserLoginProfile"
+	TypeUserPassword       = "UserPassword"
 )
 
 // AppMutation represents an operation that mutates the App nodes in the graph.
@@ -9362,7 +9362,7 @@ func (m *OrganizationMutation) ResetPermissions() {
 	m.removedpermissions = nil
 }
 
-// AddPolicyIDs adds the "policies" edge to the PermissionPolicy entity by ids.
+// AddPolicyIDs adds the "policies" edge to the OrganizationPolicy entity by ids.
 func (m *OrganizationMutation) AddPolicyIDs(ids ...int) {
 	if m.policies == nil {
 		m.policies = make(map[int]struct{})
@@ -9372,17 +9372,17 @@ func (m *OrganizationMutation) AddPolicyIDs(ids ...int) {
 	}
 }
 
-// ClearPolicies clears the "policies" edge to the PermissionPolicy entity.
+// ClearPolicies clears the "policies" edge to the OrganizationPolicy entity.
 func (m *OrganizationMutation) ClearPolicies() {
 	m.clearedpolicies = true
 }
 
-// PoliciesCleared reports if the "policies" edge to the PermissionPolicy entity was cleared.
+// PoliciesCleared reports if the "policies" edge to the OrganizationPolicy entity was cleared.
 func (m *OrganizationMutation) PoliciesCleared() bool {
 	return m.clearedpolicies
 }
 
-// RemovePolicyIDs removes the "policies" edge to the PermissionPolicy entity by IDs.
+// RemovePolicyIDs removes the "policies" edge to the OrganizationPolicy entity by IDs.
 func (m *OrganizationMutation) RemovePolicyIDs(ids ...int) {
 	if m.removedpolicies == nil {
 		m.removedpolicies = make(map[int]struct{})
@@ -9393,7 +9393,7 @@ func (m *OrganizationMutation) RemovePolicyIDs(ids ...int) {
 	}
 }
 
-// RemovedPolicies returns the removed IDs of the "policies" edge to the PermissionPolicy entity.
+// RemovedPolicies returns the removed IDs of the "policies" edge to the OrganizationPolicy entity.
 func (m *OrganizationMutation) RemovedPoliciesIDs() (ids []int) {
 	for id := range m.removedpolicies {
 		ids = append(ids, id)
@@ -10962,6 +10962,1123 @@ func (m *OrganizationAppMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown OrganizationApp edge %s", name)
+}
+
+// OrganizationPolicyMutation represents an operation that mutates the OrganizationPolicy nodes in the graph.
+type OrganizationPolicyMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int
+	created_by          *int
+	addcreated_by       *int
+	created_at          *time.Time
+	updated_by          *int
+	addupdated_by       *int
+	updated_at          *time.Time
+	app_id              *int
+	addapp_id           *int
+	app_policy_id       *int
+	addapp_policy_id    *int
+	name                *string
+	comments            *string
+	rules               *[]types.PolicyRule
+	appendrules         []types.PolicyRule
+	clearedFields       map[string]struct{}
+	organization        *int
+	clearedorganization bool
+	done                bool
+	oldValue            func(context.Context) (*OrganizationPolicy, error)
+	predicates          []predicate.OrganizationPolicy
+}
+
+var _ ent.Mutation = (*OrganizationPolicyMutation)(nil)
+
+// organizationpolicyOption allows management of the mutation configuration using functional options.
+type organizationpolicyOption func(*OrganizationPolicyMutation)
+
+// newOrganizationPolicyMutation creates new mutation for the OrganizationPolicy entity.
+func newOrganizationPolicyMutation(c config, op Op, opts ...organizationpolicyOption) *OrganizationPolicyMutation {
+	m := &OrganizationPolicyMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeOrganizationPolicy,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withOrganizationPolicyID sets the ID field of the mutation.
+func withOrganizationPolicyID(id int) organizationpolicyOption {
+	return func(m *OrganizationPolicyMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *OrganizationPolicy
+		)
+		m.oldValue = func(ctx context.Context) (*OrganizationPolicy, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().OrganizationPolicy.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withOrganizationPolicy sets the old OrganizationPolicy of the mutation.
+func withOrganizationPolicy(node *OrganizationPolicy) organizationpolicyOption {
+	return func(m *OrganizationPolicyMutation) {
+		m.oldValue = func(context.Context) (*OrganizationPolicy, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m OrganizationPolicyMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m OrganizationPolicyMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of OrganizationPolicy entities.
+func (m *OrganizationPolicyMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *OrganizationPolicyMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *OrganizationPolicyMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().OrganizationPolicy.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *OrganizationPolicyMutation) SetCreatedBy(i int) {
+	m.created_by = &i
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *OrganizationPolicyMutation) CreatedBy() (r int, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldCreatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds i to the "created_by" field.
+func (m *OrganizationPolicyMutation) AddCreatedBy(i int) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += i
+	} else {
+		m.addcreated_by = &i
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *OrganizationPolicyMutation) AddedCreatedBy() (r int, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *OrganizationPolicyMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *OrganizationPolicyMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *OrganizationPolicyMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *OrganizationPolicyMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *OrganizationPolicyMutation) SetUpdatedBy(i int) {
+	m.updated_by = &i
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *OrganizationPolicyMutation) UpdatedBy() (r int, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldUpdatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds i to the "updated_by" field.
+func (m *OrganizationPolicyMutation) AddUpdatedBy(i int) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += i
+	} else {
+		m.addupdated_by = &i
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *OrganizationPolicyMutation) AddedUpdatedBy() (r int, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *OrganizationPolicyMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[organizationpolicy.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *OrganizationPolicyMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[organizationpolicy.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *OrganizationPolicyMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, organizationpolicy.FieldUpdatedBy)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *OrganizationPolicyMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *OrganizationPolicyMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *OrganizationPolicyMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[organizationpolicy.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *OrganizationPolicyMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[organizationpolicy.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *OrganizationPolicyMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	delete(m.clearedFields, organizationpolicy.FieldUpdatedAt)
+}
+
+// SetOrgID sets the "org_id" field.
+func (m *OrganizationPolicyMutation) SetOrgID(i int) {
+	m.organization = &i
+}
+
+// OrgID returns the value of the "org_id" field in the mutation.
+func (m *OrganizationPolicyMutation) OrgID() (r int, exists bool) {
+	v := m.organization
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrgID returns the old "org_id" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldOrgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
+	}
+	return oldValue.OrgID, nil
+}
+
+// ResetOrgID resets all changes to the "org_id" field.
+func (m *OrganizationPolicyMutation) ResetOrgID() {
+	m.organization = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *OrganizationPolicyMutation) SetAppID(i int) {
+	m.app_id = &i
+	m.addapp_id = nil
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *OrganizationPolicyMutation) AppID() (r int, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldAppID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// AddAppID adds i to the "app_id" field.
+func (m *OrganizationPolicyMutation) AddAppID(i int) {
+	if m.addapp_id != nil {
+		*m.addapp_id += i
+	} else {
+		m.addapp_id = &i
+	}
+}
+
+// AddedAppID returns the value that was added to the "app_id" field in this mutation.
+func (m *OrganizationPolicyMutation) AddedAppID() (r int, exists bool) {
+	v := m.addapp_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *OrganizationPolicyMutation) ClearAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	m.clearedFields[organizationpolicy.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *OrganizationPolicyMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[organizationpolicy.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *OrganizationPolicyMutation) ResetAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	delete(m.clearedFields, organizationpolicy.FieldAppID)
+}
+
+// SetAppPolicyID sets the "app_policy_id" field.
+func (m *OrganizationPolicyMutation) SetAppPolicyID(i int) {
+	m.app_policy_id = &i
+	m.addapp_policy_id = nil
+}
+
+// AppPolicyID returns the value of the "app_policy_id" field in the mutation.
+func (m *OrganizationPolicyMutation) AppPolicyID() (r int, exists bool) {
+	v := m.app_policy_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppPolicyID returns the old "app_policy_id" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldAppPolicyID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppPolicyID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppPolicyID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppPolicyID: %w", err)
+	}
+	return oldValue.AppPolicyID, nil
+}
+
+// AddAppPolicyID adds i to the "app_policy_id" field.
+func (m *OrganizationPolicyMutation) AddAppPolicyID(i int) {
+	if m.addapp_policy_id != nil {
+		*m.addapp_policy_id += i
+	} else {
+		m.addapp_policy_id = &i
+	}
+}
+
+// AddedAppPolicyID returns the value that was added to the "app_policy_id" field in this mutation.
+func (m *OrganizationPolicyMutation) AddedAppPolicyID() (r int, exists bool) {
+	v := m.addapp_policy_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAppPolicyID clears the value of the "app_policy_id" field.
+func (m *OrganizationPolicyMutation) ClearAppPolicyID() {
+	m.app_policy_id = nil
+	m.addapp_policy_id = nil
+	m.clearedFields[organizationpolicy.FieldAppPolicyID] = struct{}{}
+}
+
+// AppPolicyIDCleared returns if the "app_policy_id" field was cleared in this mutation.
+func (m *OrganizationPolicyMutation) AppPolicyIDCleared() bool {
+	_, ok := m.clearedFields[organizationpolicy.FieldAppPolicyID]
+	return ok
+}
+
+// ResetAppPolicyID resets all changes to the "app_policy_id" field.
+func (m *OrganizationPolicyMutation) ResetAppPolicyID() {
+	m.app_policy_id = nil
+	m.addapp_policy_id = nil
+	delete(m.clearedFields, organizationpolicy.FieldAppPolicyID)
+}
+
+// SetName sets the "name" field.
+func (m *OrganizationPolicyMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *OrganizationPolicyMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *OrganizationPolicyMutation) ResetName() {
+	m.name = nil
+}
+
+// SetComments sets the "comments" field.
+func (m *OrganizationPolicyMutation) SetComments(s string) {
+	m.comments = &s
+}
+
+// Comments returns the value of the "comments" field in the mutation.
+func (m *OrganizationPolicyMutation) Comments() (r string, exists bool) {
+	v := m.comments
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldComments returns the old "comments" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldComments(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldComments is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldComments requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldComments: %w", err)
+	}
+	return oldValue.Comments, nil
+}
+
+// ResetComments resets all changes to the "comments" field.
+func (m *OrganizationPolicyMutation) ResetComments() {
+	m.comments = nil
+}
+
+// SetRules sets the "rules" field.
+func (m *OrganizationPolicyMutation) SetRules(tr []types.PolicyRule) {
+	m.rules = &tr
+	m.appendrules = nil
+}
+
+// Rules returns the value of the "rules" field in the mutation.
+func (m *OrganizationPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
+	v := m.rules
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRules returns the old "rules" field's value of the OrganizationPolicy entity.
+// If the OrganizationPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrganizationPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRules is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRules requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRules: %w", err)
+	}
+	return oldValue.Rules, nil
+}
+
+// AppendRules adds tr to the "rules" field.
+func (m *OrganizationPolicyMutation) AppendRules(tr []types.PolicyRule) {
+	m.appendrules = append(m.appendrules, tr...)
+}
+
+// AppendedRules returns the list of values that were appended to the "rules" field in this mutation.
+func (m *OrganizationPolicyMutation) AppendedRules() ([]types.PolicyRule, bool) {
+	if len(m.appendrules) == 0 {
+		return nil, false
+	}
+	return m.appendrules, true
+}
+
+// ResetRules resets all changes to the "rules" field.
+func (m *OrganizationPolicyMutation) ResetRules() {
+	m.rules = nil
+	m.appendrules = nil
+}
+
+// SetOrganizationID sets the "organization" edge to the Organization entity by id.
+func (m *OrganizationPolicyMutation) SetOrganizationID(id int) {
+	m.organization = &id
+}
+
+// ClearOrganization clears the "organization" edge to the Organization entity.
+func (m *OrganizationPolicyMutation) ClearOrganization() {
+	m.clearedorganization = true
+}
+
+// OrganizationCleared reports if the "organization" edge to the Organization entity was cleared.
+func (m *OrganizationPolicyMutation) OrganizationCleared() bool {
+	return m.clearedorganization
+}
+
+// OrganizationID returns the "organization" edge ID in the mutation.
+func (m *OrganizationPolicyMutation) OrganizationID() (id int, exists bool) {
+	if m.organization != nil {
+		return *m.organization, true
+	}
+	return
+}
+
+// OrganizationIDs returns the "organization" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrganizationID instead. It exists only for internal usage by the builders.
+func (m *OrganizationPolicyMutation) OrganizationIDs() (ids []int) {
+	if id := m.organization; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrganization resets all changes to the "organization" edge.
+func (m *OrganizationPolicyMutation) ResetOrganization() {
+	m.organization = nil
+	m.clearedorganization = false
+}
+
+// Where appends a list predicates to the OrganizationPolicyMutation builder.
+func (m *OrganizationPolicyMutation) Where(ps ...predicate.OrganizationPolicy) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the OrganizationPolicyMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *OrganizationPolicyMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.OrganizationPolicy, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *OrganizationPolicyMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *OrganizationPolicyMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (OrganizationPolicy).
+func (m *OrganizationPolicyMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *OrganizationPolicyMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.created_by != nil {
+		fields = append(fields, organizationpolicy.FieldCreatedBy)
+	}
+	if m.created_at != nil {
+		fields = append(fields, organizationpolicy.FieldCreatedAt)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, organizationpolicy.FieldUpdatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, organizationpolicy.FieldUpdatedAt)
+	}
+	if m.organization != nil {
+		fields = append(fields, organizationpolicy.FieldOrgID)
+	}
+	if m.app_id != nil {
+		fields = append(fields, organizationpolicy.FieldAppID)
+	}
+	if m.app_policy_id != nil {
+		fields = append(fields, organizationpolicy.FieldAppPolicyID)
+	}
+	if m.name != nil {
+		fields = append(fields, organizationpolicy.FieldName)
+	}
+	if m.comments != nil {
+		fields = append(fields, organizationpolicy.FieldComments)
+	}
+	if m.rules != nil {
+		fields = append(fields, organizationpolicy.FieldRules)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *OrganizationPolicyMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		return m.CreatedBy()
+	case organizationpolicy.FieldCreatedAt:
+		return m.CreatedAt()
+	case organizationpolicy.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case organizationpolicy.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case organizationpolicy.FieldOrgID:
+		return m.OrgID()
+	case organizationpolicy.FieldAppID:
+		return m.AppID()
+	case organizationpolicy.FieldAppPolicyID:
+		return m.AppPolicyID()
+	case organizationpolicy.FieldName:
+		return m.Name()
+	case organizationpolicy.FieldComments:
+		return m.Comments()
+	case organizationpolicy.FieldRules:
+		return m.Rules()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *OrganizationPolicyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case organizationpolicy.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case organizationpolicy.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case organizationpolicy.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case organizationpolicy.FieldOrgID:
+		return m.OldOrgID(ctx)
+	case organizationpolicy.FieldAppID:
+		return m.OldAppID(ctx)
+	case organizationpolicy.FieldAppPolicyID:
+		return m.OldAppPolicyID(ctx)
+	case organizationpolicy.FieldName:
+		return m.OldName(ctx)
+	case organizationpolicy.FieldComments:
+		return m.OldComments(ctx)
+	case organizationpolicy.FieldRules:
+		return m.OldRules(ctx)
+	}
+	return nil, fmt.Errorf("unknown OrganizationPolicy field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OrganizationPolicyMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case organizationpolicy.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case organizationpolicy.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case organizationpolicy.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case organizationpolicy.FieldOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrgID(v)
+		return nil
+	case organizationpolicy.FieldAppID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case organizationpolicy.FieldAppPolicyID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppPolicyID(v)
+		return nil
+	case organizationpolicy.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case organizationpolicy.FieldComments:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetComments(v)
+		return nil
+	case organizationpolicy.FieldRules:
+		v, ok := value.([]types.PolicyRule)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRules(v)
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *OrganizationPolicyMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_by != nil {
+		fields = append(fields, organizationpolicy.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, organizationpolicy.FieldUpdatedBy)
+	}
+	if m.addapp_id != nil {
+		fields = append(fields, organizationpolicy.FieldAppID)
+	}
+	if m.addapp_policy_id != nil {
+		fields = append(fields, organizationpolicy.FieldAppPolicyID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *OrganizationPolicyMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case organizationpolicy.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case organizationpolicy.FieldAppID:
+		return m.AddedAppID()
+	case organizationpolicy.FieldAppPolicyID:
+		return m.AddedAppPolicyID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *OrganizationPolicyMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case organizationpolicy.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case organizationpolicy.FieldAppID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppID(v)
+		return nil
+	case organizationpolicy.FieldAppPolicyID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppPolicyID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *OrganizationPolicyMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(organizationpolicy.FieldUpdatedBy) {
+		fields = append(fields, organizationpolicy.FieldUpdatedBy)
+	}
+	if m.FieldCleared(organizationpolicy.FieldUpdatedAt) {
+		fields = append(fields, organizationpolicy.FieldUpdatedAt)
+	}
+	if m.FieldCleared(organizationpolicy.FieldAppID) {
+		fields = append(fields, organizationpolicy.FieldAppID)
+	}
+	if m.FieldCleared(organizationpolicy.FieldAppPolicyID) {
+		fields = append(fields, organizationpolicy.FieldAppPolicyID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *OrganizationPolicyMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *OrganizationPolicyMutation) ClearField(name string) error {
+	switch name {
+	case organizationpolicy.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case organizationpolicy.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case organizationpolicy.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case organizationpolicy.FieldAppPolicyID:
+		m.ClearAppPolicyID()
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *OrganizationPolicyMutation) ResetField(name string) error {
+	switch name {
+	case organizationpolicy.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case organizationpolicy.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case organizationpolicy.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case organizationpolicy.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case organizationpolicy.FieldOrgID:
+		m.ResetOrgID()
+		return nil
+	case organizationpolicy.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case organizationpolicy.FieldAppPolicyID:
+		m.ResetAppPolicyID()
+		return nil
+	case organizationpolicy.FieldName:
+		m.ResetName()
+		return nil
+	case organizationpolicy.FieldComments:
+		m.ResetComments()
+		return nil
+	case organizationpolicy.FieldRules:
+		m.ResetRules()
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *OrganizationPolicyMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.organization != nil {
+		edges = append(edges, organizationpolicy.EdgeOrganization)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *OrganizationPolicyMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case organizationpolicy.EdgeOrganization:
+		if id := m.organization; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *OrganizationPolicyMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *OrganizationPolicyMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *OrganizationPolicyMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedorganization {
+		edges = append(edges, organizationpolicy.EdgeOrganization)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *OrganizationPolicyMutation) EdgeCleared(name string) bool {
+	switch name {
+	case organizationpolicy.EdgeOrganization:
+		return m.clearedorganization
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *OrganizationPolicyMutation) ClearEdge(name string) error {
+	switch name {
+	case organizationpolicy.EdgeOrganization:
+		m.ClearOrganization()
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *OrganizationPolicyMutation) ResetEdge(name string) error {
+	switch name {
+	case organizationpolicy.EdgeOrganization:
+		m.ResetOrganization()
+		return nil
+	}
+	return fmt.Errorf("unknown OrganizationPolicy edge %s", name)
 }
 
 // OrganizationRoleMutation represents an operation that mutates the OrganizationRole nodes in the graph.
@@ -14157,1123 +15274,6 @@ func (m *PermissionMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Permission edge %s", name)
-}
-
-// PermissionPolicyMutation represents an operation that mutates the PermissionPolicy nodes in the graph.
-type PermissionPolicyMutation struct {
-	config
-	op                  Op
-	typ                 string
-	id                  *int
-	created_by          *int
-	addcreated_by       *int
-	created_at          *time.Time
-	updated_by          *int
-	addupdated_by       *int
-	updated_at          *time.Time
-	app_id              *int
-	addapp_id           *int
-	app_policy_id       *int
-	addapp_policy_id    *int
-	name                *string
-	comments            *string
-	rules               *[]types.PolicyRule
-	appendrules         []types.PolicyRule
-	clearedFields       map[string]struct{}
-	organization        *int
-	clearedorganization bool
-	done                bool
-	oldValue            func(context.Context) (*PermissionPolicy, error)
-	predicates          []predicate.PermissionPolicy
-}
-
-var _ ent.Mutation = (*PermissionPolicyMutation)(nil)
-
-// permissionpolicyOption allows management of the mutation configuration using functional options.
-type permissionpolicyOption func(*PermissionPolicyMutation)
-
-// newPermissionPolicyMutation creates new mutation for the PermissionPolicy entity.
-func newPermissionPolicyMutation(c config, op Op, opts ...permissionpolicyOption) *PermissionPolicyMutation {
-	m := &PermissionPolicyMutation{
-		config:        c,
-		op:            op,
-		typ:           TypePermissionPolicy,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withPermissionPolicyID sets the ID field of the mutation.
-func withPermissionPolicyID(id int) permissionpolicyOption {
-	return func(m *PermissionPolicyMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *PermissionPolicy
-		)
-		m.oldValue = func(ctx context.Context) (*PermissionPolicy, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().PermissionPolicy.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withPermissionPolicy sets the old PermissionPolicy of the mutation.
-func withPermissionPolicy(node *PermissionPolicy) permissionpolicyOption {
-	return func(m *PermissionPolicyMutation) {
-		m.oldValue = func(context.Context) (*PermissionPolicy, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PermissionPolicyMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m PermissionPolicyMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of PermissionPolicy entities.
-func (m *PermissionPolicyMutation) SetID(id int) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *PermissionPolicyMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *PermissionPolicyMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().PermissionPolicy.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreatedBy sets the "created_by" field.
-func (m *PermissionPolicyMutation) SetCreatedBy(i int) {
-	m.created_by = &i
-	m.addcreated_by = nil
-}
-
-// CreatedBy returns the value of the "created_by" field in the mutation.
-func (m *PermissionPolicyMutation) CreatedBy() (r int, exists bool) {
-	v := m.created_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedBy returns the old "created_by" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldCreatedBy(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
-	}
-	return oldValue.CreatedBy, nil
-}
-
-// AddCreatedBy adds i to the "created_by" field.
-func (m *PermissionPolicyMutation) AddCreatedBy(i int) {
-	if m.addcreated_by != nil {
-		*m.addcreated_by += i
-	} else {
-		m.addcreated_by = &i
-	}
-}
-
-// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
-func (m *PermissionPolicyMutation) AddedCreatedBy() (r int, exists bool) {
-	v := m.addcreated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetCreatedBy resets all changes to the "created_by" field.
-func (m *PermissionPolicyMutation) ResetCreatedBy() {
-	m.created_by = nil
-	m.addcreated_by = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *PermissionPolicyMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *PermissionPolicyMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *PermissionPolicyMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedBy sets the "updated_by" field.
-func (m *PermissionPolicyMutation) SetUpdatedBy(i int) {
-	m.updated_by = &i
-	m.addupdated_by = nil
-}
-
-// UpdatedBy returns the value of the "updated_by" field in the mutation.
-func (m *PermissionPolicyMutation) UpdatedBy() (r int, exists bool) {
-	v := m.updated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedBy returns the old "updated_by" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldUpdatedBy(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
-	}
-	return oldValue.UpdatedBy, nil
-}
-
-// AddUpdatedBy adds i to the "updated_by" field.
-func (m *PermissionPolicyMutation) AddUpdatedBy(i int) {
-	if m.addupdated_by != nil {
-		*m.addupdated_by += i
-	} else {
-		m.addupdated_by = &i
-	}
-}
-
-// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
-func (m *PermissionPolicyMutation) AddedUpdatedBy() (r int, exists bool) {
-	v := m.addupdated_by
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearUpdatedBy clears the value of the "updated_by" field.
-func (m *PermissionPolicyMutation) ClearUpdatedBy() {
-	m.updated_by = nil
-	m.addupdated_by = nil
-	m.clearedFields[permissionpolicy.FieldUpdatedBy] = struct{}{}
-}
-
-// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
-func (m *PermissionPolicyMutation) UpdatedByCleared() bool {
-	_, ok := m.clearedFields[permissionpolicy.FieldUpdatedBy]
-	return ok
-}
-
-// ResetUpdatedBy resets all changes to the "updated_by" field.
-func (m *PermissionPolicyMutation) ResetUpdatedBy() {
-	m.updated_by = nil
-	m.addupdated_by = nil
-	delete(m.clearedFields, permissionpolicy.FieldUpdatedBy)
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *PermissionPolicyMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *PermissionPolicyMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ClearUpdatedAt clears the value of the "updated_at" field.
-func (m *PermissionPolicyMutation) ClearUpdatedAt() {
-	m.updated_at = nil
-	m.clearedFields[permissionpolicy.FieldUpdatedAt] = struct{}{}
-}
-
-// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
-func (m *PermissionPolicyMutation) UpdatedAtCleared() bool {
-	_, ok := m.clearedFields[permissionpolicy.FieldUpdatedAt]
-	return ok
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *PermissionPolicyMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-	delete(m.clearedFields, permissionpolicy.FieldUpdatedAt)
-}
-
-// SetOrgID sets the "org_id" field.
-func (m *PermissionPolicyMutation) SetOrgID(i int) {
-	m.organization = &i
-}
-
-// OrgID returns the value of the "org_id" field in the mutation.
-func (m *PermissionPolicyMutation) OrgID() (r int, exists bool) {
-	v := m.organization
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOrgID returns the old "org_id" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldOrgID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrgID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
-	}
-	return oldValue.OrgID, nil
-}
-
-// ResetOrgID resets all changes to the "org_id" field.
-func (m *PermissionPolicyMutation) ResetOrgID() {
-	m.organization = nil
-}
-
-// SetAppID sets the "app_id" field.
-func (m *PermissionPolicyMutation) SetAppID(i int) {
-	m.app_id = &i
-	m.addapp_id = nil
-}
-
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *PermissionPolicyMutation) AppID() (r int, exists bool) {
-	v := m.app_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAppID returns the old "app_id" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldAppID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
-	}
-	return oldValue.AppID, nil
-}
-
-// AddAppID adds i to the "app_id" field.
-func (m *PermissionPolicyMutation) AddAppID(i int) {
-	if m.addapp_id != nil {
-		*m.addapp_id += i
-	} else {
-		m.addapp_id = &i
-	}
-}
-
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *PermissionPolicyMutation) AddedAppID() (r int, exists bool) {
-	v := m.addapp_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (m *PermissionPolicyMutation) ClearAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	m.clearedFields[permissionpolicy.FieldAppID] = struct{}{}
-}
-
-// AppIDCleared returns if the "app_id" field was cleared in this mutation.
-func (m *PermissionPolicyMutation) AppIDCleared() bool {
-	_, ok := m.clearedFields[permissionpolicy.FieldAppID]
-	return ok
-}
-
-// ResetAppID resets all changes to the "app_id" field.
-func (m *PermissionPolicyMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	delete(m.clearedFields, permissionpolicy.FieldAppID)
-}
-
-// SetAppPolicyID sets the "app_policy_id" field.
-func (m *PermissionPolicyMutation) SetAppPolicyID(i int) {
-	m.app_policy_id = &i
-	m.addapp_policy_id = nil
-}
-
-// AppPolicyID returns the value of the "app_policy_id" field in the mutation.
-func (m *PermissionPolicyMutation) AppPolicyID() (r int, exists bool) {
-	v := m.app_policy_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAppPolicyID returns the old "app_policy_id" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldAppPolicyID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppPolicyID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppPolicyID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppPolicyID: %w", err)
-	}
-	return oldValue.AppPolicyID, nil
-}
-
-// AddAppPolicyID adds i to the "app_policy_id" field.
-func (m *PermissionPolicyMutation) AddAppPolicyID(i int) {
-	if m.addapp_policy_id != nil {
-		*m.addapp_policy_id += i
-	} else {
-		m.addapp_policy_id = &i
-	}
-}
-
-// AddedAppPolicyID returns the value that was added to the "app_policy_id" field in this mutation.
-func (m *PermissionPolicyMutation) AddedAppPolicyID() (r int, exists bool) {
-	v := m.addapp_policy_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearAppPolicyID clears the value of the "app_policy_id" field.
-func (m *PermissionPolicyMutation) ClearAppPolicyID() {
-	m.app_policy_id = nil
-	m.addapp_policy_id = nil
-	m.clearedFields[permissionpolicy.FieldAppPolicyID] = struct{}{}
-}
-
-// AppPolicyIDCleared returns if the "app_policy_id" field was cleared in this mutation.
-func (m *PermissionPolicyMutation) AppPolicyIDCleared() bool {
-	_, ok := m.clearedFields[permissionpolicy.FieldAppPolicyID]
-	return ok
-}
-
-// ResetAppPolicyID resets all changes to the "app_policy_id" field.
-func (m *PermissionPolicyMutation) ResetAppPolicyID() {
-	m.app_policy_id = nil
-	m.addapp_policy_id = nil
-	delete(m.clearedFields, permissionpolicy.FieldAppPolicyID)
-}
-
-// SetName sets the "name" field.
-func (m *PermissionPolicyMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *PermissionPolicyMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *PermissionPolicyMutation) ResetName() {
-	m.name = nil
-}
-
-// SetComments sets the "comments" field.
-func (m *PermissionPolicyMutation) SetComments(s string) {
-	m.comments = &s
-}
-
-// Comments returns the value of the "comments" field in the mutation.
-func (m *PermissionPolicyMutation) Comments() (r string, exists bool) {
-	v := m.comments
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldComments returns the old "comments" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldComments(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldComments is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldComments requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldComments: %w", err)
-	}
-	return oldValue.Comments, nil
-}
-
-// ResetComments resets all changes to the "comments" field.
-func (m *PermissionPolicyMutation) ResetComments() {
-	m.comments = nil
-}
-
-// SetRules sets the "rules" field.
-func (m *PermissionPolicyMutation) SetRules(tr []types.PolicyRule) {
-	m.rules = &tr
-	m.appendrules = nil
-}
-
-// Rules returns the value of the "rules" field in the mutation.
-func (m *PermissionPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
-	v := m.rules
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRules returns the old "rules" field's value of the PermissionPolicy entity.
-// If the PermissionPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRules is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRules requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRules: %w", err)
-	}
-	return oldValue.Rules, nil
-}
-
-// AppendRules adds tr to the "rules" field.
-func (m *PermissionPolicyMutation) AppendRules(tr []types.PolicyRule) {
-	m.appendrules = append(m.appendrules, tr...)
-}
-
-// AppendedRules returns the list of values that were appended to the "rules" field in this mutation.
-func (m *PermissionPolicyMutation) AppendedRules() ([]types.PolicyRule, bool) {
-	if len(m.appendrules) == 0 {
-		return nil, false
-	}
-	return m.appendrules, true
-}
-
-// ResetRules resets all changes to the "rules" field.
-func (m *PermissionPolicyMutation) ResetRules() {
-	m.rules = nil
-	m.appendrules = nil
-}
-
-// SetOrganizationID sets the "organization" edge to the Organization entity by id.
-func (m *PermissionPolicyMutation) SetOrganizationID(id int) {
-	m.organization = &id
-}
-
-// ClearOrganization clears the "organization" edge to the Organization entity.
-func (m *PermissionPolicyMutation) ClearOrganization() {
-	m.clearedorganization = true
-}
-
-// OrganizationCleared reports if the "organization" edge to the Organization entity was cleared.
-func (m *PermissionPolicyMutation) OrganizationCleared() bool {
-	return m.clearedorganization
-}
-
-// OrganizationID returns the "organization" edge ID in the mutation.
-func (m *PermissionPolicyMutation) OrganizationID() (id int, exists bool) {
-	if m.organization != nil {
-		return *m.organization, true
-	}
-	return
-}
-
-// OrganizationIDs returns the "organization" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OrganizationID instead. It exists only for internal usage by the builders.
-func (m *PermissionPolicyMutation) OrganizationIDs() (ids []int) {
-	if id := m.organization; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOrganization resets all changes to the "organization" edge.
-func (m *PermissionPolicyMutation) ResetOrganization() {
-	m.organization = nil
-	m.clearedorganization = false
-}
-
-// Where appends a list predicates to the PermissionPolicyMutation builder.
-func (m *PermissionPolicyMutation) Where(ps ...predicate.PermissionPolicy) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the PermissionPolicyMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *PermissionPolicyMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.PermissionPolicy, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *PermissionPolicyMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *PermissionPolicyMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (PermissionPolicy).
-func (m *PermissionPolicyMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *PermissionPolicyMutation) Fields() []string {
-	fields := make([]string, 0, 10)
-	if m.created_by != nil {
-		fields = append(fields, permissionpolicy.FieldCreatedBy)
-	}
-	if m.created_at != nil {
-		fields = append(fields, permissionpolicy.FieldCreatedAt)
-	}
-	if m.updated_by != nil {
-		fields = append(fields, permissionpolicy.FieldUpdatedBy)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, permissionpolicy.FieldUpdatedAt)
-	}
-	if m.organization != nil {
-		fields = append(fields, permissionpolicy.FieldOrgID)
-	}
-	if m.app_id != nil {
-		fields = append(fields, permissionpolicy.FieldAppID)
-	}
-	if m.app_policy_id != nil {
-		fields = append(fields, permissionpolicy.FieldAppPolicyID)
-	}
-	if m.name != nil {
-		fields = append(fields, permissionpolicy.FieldName)
-	}
-	if m.comments != nil {
-		fields = append(fields, permissionpolicy.FieldComments)
-	}
-	if m.rules != nil {
-		fields = append(fields, permissionpolicy.FieldRules)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *PermissionPolicyMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		return m.CreatedBy()
-	case permissionpolicy.FieldCreatedAt:
-		return m.CreatedAt()
-	case permissionpolicy.FieldUpdatedBy:
-		return m.UpdatedBy()
-	case permissionpolicy.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case permissionpolicy.FieldOrgID:
-		return m.OrgID()
-	case permissionpolicy.FieldAppID:
-		return m.AppID()
-	case permissionpolicy.FieldAppPolicyID:
-		return m.AppPolicyID()
-	case permissionpolicy.FieldName:
-		return m.Name()
-	case permissionpolicy.FieldComments:
-		return m.Comments()
-	case permissionpolicy.FieldRules:
-		return m.Rules()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *PermissionPolicyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		return m.OldCreatedBy(ctx)
-	case permissionpolicy.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case permissionpolicy.FieldUpdatedBy:
-		return m.OldUpdatedBy(ctx)
-	case permissionpolicy.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case permissionpolicy.FieldOrgID:
-		return m.OldOrgID(ctx)
-	case permissionpolicy.FieldAppID:
-		return m.OldAppID(ctx)
-	case permissionpolicy.FieldAppPolicyID:
-		return m.OldAppPolicyID(ctx)
-	case permissionpolicy.FieldName:
-		return m.OldName(ctx)
-	case permissionpolicy.FieldComments:
-		return m.OldComments(ctx)
-	case permissionpolicy.FieldRules:
-		return m.OldRules(ctx)
-	}
-	return nil, fmt.Errorf("unknown PermissionPolicy field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PermissionPolicyMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedBy(v)
-		return nil
-	case permissionpolicy.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case permissionpolicy.FieldUpdatedBy:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedBy(v)
-		return nil
-	case permissionpolicy.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case permissionpolicy.FieldOrgID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOrgID(v)
-		return nil
-	case permissionpolicy.FieldAppID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAppID(v)
-		return nil
-	case permissionpolicy.FieldAppPolicyID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAppPolicyID(v)
-		return nil
-	case permissionpolicy.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case permissionpolicy.FieldComments:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetComments(v)
-		return nil
-	case permissionpolicy.FieldRules:
-		v, ok := value.([]types.PolicyRule)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRules(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *PermissionPolicyMutation) AddedFields() []string {
-	var fields []string
-	if m.addcreated_by != nil {
-		fields = append(fields, permissionpolicy.FieldCreatedBy)
-	}
-	if m.addupdated_by != nil {
-		fields = append(fields, permissionpolicy.FieldUpdatedBy)
-	}
-	if m.addapp_id != nil {
-		fields = append(fields, permissionpolicy.FieldAppID)
-	}
-	if m.addapp_policy_id != nil {
-		fields = append(fields, permissionpolicy.FieldAppPolicyID)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *PermissionPolicyMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		return m.AddedCreatedBy()
-	case permissionpolicy.FieldUpdatedBy:
-		return m.AddedUpdatedBy()
-	case permissionpolicy.FieldAppID:
-		return m.AddedAppID()
-	case permissionpolicy.FieldAppPolicyID:
-		return m.AddedAppPolicyID()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PermissionPolicyMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCreatedBy(v)
-		return nil
-	case permissionpolicy.FieldUpdatedBy:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUpdatedBy(v)
-		return nil
-	case permissionpolicy.FieldAppID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAppID(v)
-		return nil
-	case permissionpolicy.FieldAppPolicyID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAppPolicyID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *PermissionPolicyMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(permissionpolicy.FieldUpdatedBy) {
-		fields = append(fields, permissionpolicy.FieldUpdatedBy)
-	}
-	if m.FieldCleared(permissionpolicy.FieldUpdatedAt) {
-		fields = append(fields, permissionpolicy.FieldUpdatedAt)
-	}
-	if m.FieldCleared(permissionpolicy.FieldAppID) {
-		fields = append(fields, permissionpolicy.FieldAppID)
-	}
-	if m.FieldCleared(permissionpolicy.FieldAppPolicyID) {
-		fields = append(fields, permissionpolicy.FieldAppPolicyID)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *PermissionPolicyMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *PermissionPolicyMutation) ClearField(name string) error {
-	switch name {
-	case permissionpolicy.FieldUpdatedBy:
-		m.ClearUpdatedBy()
-		return nil
-	case permissionpolicy.FieldUpdatedAt:
-		m.ClearUpdatedAt()
-		return nil
-	case permissionpolicy.FieldAppID:
-		m.ClearAppID()
-		return nil
-	case permissionpolicy.FieldAppPolicyID:
-		m.ClearAppPolicyID()
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *PermissionPolicyMutation) ResetField(name string) error {
-	switch name {
-	case permissionpolicy.FieldCreatedBy:
-		m.ResetCreatedBy()
-		return nil
-	case permissionpolicy.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case permissionpolicy.FieldUpdatedBy:
-		m.ResetUpdatedBy()
-		return nil
-	case permissionpolicy.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case permissionpolicy.FieldOrgID:
-		m.ResetOrgID()
-		return nil
-	case permissionpolicy.FieldAppID:
-		m.ResetAppID()
-		return nil
-	case permissionpolicy.FieldAppPolicyID:
-		m.ResetAppPolicyID()
-		return nil
-	case permissionpolicy.FieldName:
-		m.ResetName()
-		return nil
-	case permissionpolicy.FieldComments:
-		m.ResetComments()
-		return nil
-	case permissionpolicy.FieldRules:
-		m.ResetRules()
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *PermissionPolicyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.organization != nil {
-		edges = append(edges, permissionpolicy.EdgeOrganization)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *PermissionPolicyMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case permissionpolicy.EdgeOrganization:
-		if id := m.organization; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *PermissionPolicyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *PermissionPolicyMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *PermissionPolicyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedorganization {
-		edges = append(edges, permissionpolicy.EdgeOrganization)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *PermissionPolicyMutation) EdgeCleared(name string) bool {
-	switch name {
-	case permissionpolicy.EdgeOrganization:
-		return m.clearedorganization
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *PermissionPolicyMutation) ClearEdge(name string) error {
-	switch name {
-	case permissionpolicy.EdgeOrganization:
-		m.ClearOrganization()
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *PermissionPolicyMutation) ResetEdge(name string) error {
-	switch name {
-	case permissionpolicy.EdgeOrganization:
-		m.ResetOrganization()
-		return nil
-	}
-	return fmt.Errorf("unknown PermissionPolicy edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.

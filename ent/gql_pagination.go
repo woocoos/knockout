@@ -21,8 +21,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -2056,6 +2056,284 @@ func (o *Organization) ToEdge(order *OrganizationOrder) *OrganizationEdge {
 	}
 }
 
+// OrganizationPolicyEdge is the edge representation of OrganizationPolicy.
+type OrganizationPolicyEdge struct {
+	Node   *OrganizationPolicy `json:"node"`
+	Cursor Cursor              `json:"cursor"`
+}
+
+// OrganizationPolicyConnection is the connection containing edges to OrganizationPolicy.
+type OrganizationPolicyConnection struct {
+	Edges      []*OrganizationPolicyEdge `json:"edges"`
+	PageInfo   PageInfo                  `json:"pageInfo"`
+	TotalCount int                       `json:"totalCount"`
+}
+
+func (c *OrganizationPolicyConnection) build(nodes []*OrganizationPolicy, pager *organizationpolicyPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *OrganizationPolicy
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *OrganizationPolicy {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *OrganizationPolicy {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*OrganizationPolicyEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &OrganizationPolicyEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// OrganizationPolicyPaginateOption enables pagination customization.
+type OrganizationPolicyPaginateOption func(*organizationpolicyPager) error
+
+// WithOrganizationPolicyOrder configures pagination ordering.
+func WithOrganizationPolicyOrder(order *OrganizationPolicyOrder) OrganizationPolicyPaginateOption {
+	if order == nil {
+		order = DefaultOrganizationPolicyOrder
+	}
+	o := *order
+	return func(pager *organizationpolicyPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultOrganizationPolicyOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithOrganizationPolicyFilter configures pagination filter.
+func WithOrganizationPolicyFilter(filter func(*OrganizationPolicyQuery) (*OrganizationPolicyQuery, error)) OrganizationPolicyPaginateOption {
+	return func(pager *organizationpolicyPager) error {
+		if filter == nil {
+			return errors.New("OrganizationPolicyQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type organizationpolicyPager struct {
+	reverse bool
+	order   *OrganizationPolicyOrder
+	filter  func(*OrganizationPolicyQuery) (*OrganizationPolicyQuery, error)
+}
+
+func newOrganizationPolicyPager(opts []OrganizationPolicyPaginateOption, reverse bool) (*organizationpolicyPager, error) {
+	pager := &organizationpolicyPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultOrganizationPolicyOrder
+	}
+	return pager, nil
+}
+
+func (p *organizationpolicyPager) applyFilter(query *OrganizationPolicyQuery) (*OrganizationPolicyQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *organizationpolicyPager) toCursor(op *OrganizationPolicy) Cursor {
+	return p.order.Field.toCursor(op)
+}
+
+func (p *organizationpolicyPager) applyCursors(query *OrganizationPolicyQuery, after, before *Cursor) (*OrganizationPolicyQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrganizationPolicyOrder.Field.field, p.order.Field.field, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *organizationpolicyPager) applyOrder(query *OrganizationPolicyQuery) *OrganizationPolicyQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(orderFunc(direction, p.order.Field.field))
+	if p.order.Field != DefaultOrganizationPolicyOrder.Field {
+		query = query.Order(orderFunc(direction, DefaultOrganizationPolicyOrder.Field.field))
+	}
+	return query
+}
+
+func (p *organizationpolicyPager) orderExpr() sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultOrganizationPolicyOrder.Field {
+			b.Comma().Ident(DefaultOrganizationPolicyOrder.Field.field).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to OrganizationPolicy.
+func (op *OrganizationPolicyQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...OrganizationPolicyPaginateOption,
+) (*OrganizationPolicyConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newOrganizationPolicyPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if op, err = pager.applyFilter(op); err != nil {
+		return nil, err
+	}
+	conn := &OrganizationPolicyConnection{Edges: []*OrganizationPolicyEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = op.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+
+	if op, err = pager.applyCursors(op, after, before); err != nil {
+		return nil, err
+	}
+	op = pager.applyOrder(op)
+	if limit := paginateLimit(first, last); limit != 0 {
+		op.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := op.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+
+	nodes, err := op.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// OrganizationPolicyOrderFieldCreatedAt orders OrganizationPolicy by created_at.
+	OrganizationPolicyOrderFieldCreatedAt = &OrganizationPolicyOrderField{
+		field: organizationpolicy.FieldCreatedAt,
+		toCursor: func(op *OrganizationPolicy) Cursor {
+			return Cursor{
+				ID:    op.ID,
+				Value: op.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f OrganizationPolicyOrderField) String() string {
+	var str string
+	switch f.field {
+	case organizationpolicy.FieldCreatedAt:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f OrganizationPolicyOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *OrganizationPolicyOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("OrganizationPolicyOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *OrganizationPolicyOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid OrganizationPolicyOrderField", str)
+	}
+	return nil
+}
+
+// OrganizationPolicyOrderField defines the ordering field of OrganizationPolicy.
+type OrganizationPolicyOrderField struct {
+	field    string
+	toCursor func(*OrganizationPolicy) Cursor
+}
+
+// OrganizationPolicyOrder defines the ordering of OrganizationPolicy.
+type OrganizationPolicyOrder struct {
+	Direction OrderDirection                `json:"direction"`
+	Field     *OrganizationPolicyOrderField `json:"field"`
+}
+
+// DefaultOrganizationPolicyOrder is the default ordering of OrganizationPolicy.
+var DefaultOrganizationPolicyOrder = &OrganizationPolicyOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &OrganizationPolicyOrderField{
+		field: organizationpolicy.FieldID,
+		toCursor: func(op *OrganizationPolicy) Cursor {
+			return Cursor{ID: op.ID}
+		},
+	},
+}
+
+// ToEdge converts OrganizationPolicy into OrganizationPolicyEdge.
+func (op *OrganizationPolicy) ToEdge(order *OrganizationPolicyOrder) *OrganizationPolicyEdge {
+	if order == nil {
+		order = DefaultOrganizationPolicyOrder
+	}
+	return &OrganizationPolicyEdge{
+		Node:   op,
+		Cursor: order.Field.toCursor(op),
+	}
+}
+
 // PermissionEdge is the edge representation of Permission.
 type PermissionEdge struct {
 	Node   *Permission `json:"node"`
@@ -2331,284 +2609,6 @@ func (pe *Permission) ToEdge(order *PermissionOrder) *PermissionEdge {
 	return &PermissionEdge{
 		Node:   pe,
 		Cursor: order.Field.toCursor(pe),
-	}
-}
-
-// PermissionPolicyEdge is the edge representation of PermissionPolicy.
-type PermissionPolicyEdge struct {
-	Node   *PermissionPolicy `json:"node"`
-	Cursor Cursor            `json:"cursor"`
-}
-
-// PermissionPolicyConnection is the connection containing edges to PermissionPolicy.
-type PermissionPolicyConnection struct {
-	Edges      []*PermissionPolicyEdge `json:"edges"`
-	PageInfo   PageInfo                `json:"pageInfo"`
-	TotalCount int                     `json:"totalCount"`
-}
-
-func (c *PermissionPolicyConnection) build(nodes []*PermissionPolicy, pager *permissionpolicyPager, after *Cursor, first *int, before *Cursor, last *int) {
-	c.PageInfo.HasNextPage = before != nil
-	c.PageInfo.HasPreviousPage = after != nil
-	if first != nil && *first+1 == len(nodes) {
-		c.PageInfo.HasNextPage = true
-		nodes = nodes[:len(nodes)-1]
-	} else if last != nil && *last+1 == len(nodes) {
-		c.PageInfo.HasPreviousPage = true
-		nodes = nodes[:len(nodes)-1]
-	}
-	var nodeAt func(int) *PermissionPolicy
-	if last != nil {
-		n := len(nodes) - 1
-		nodeAt = func(i int) *PermissionPolicy {
-			return nodes[n-i]
-		}
-	} else {
-		nodeAt = func(i int) *PermissionPolicy {
-			return nodes[i]
-		}
-	}
-	c.Edges = make([]*PermissionPolicyEdge, len(nodes))
-	for i := range nodes {
-		node := nodeAt(i)
-		c.Edges[i] = &PermissionPolicyEdge{
-			Node:   node,
-			Cursor: pager.toCursor(node),
-		}
-	}
-	if l := len(c.Edges); l > 0 {
-		c.PageInfo.StartCursor = &c.Edges[0].Cursor
-		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
-	}
-	if c.TotalCount == 0 {
-		c.TotalCount = len(nodes)
-	}
-}
-
-// PermissionPolicyPaginateOption enables pagination customization.
-type PermissionPolicyPaginateOption func(*permissionpolicyPager) error
-
-// WithPermissionPolicyOrder configures pagination ordering.
-func WithPermissionPolicyOrder(order *PermissionPolicyOrder) PermissionPolicyPaginateOption {
-	if order == nil {
-		order = DefaultPermissionPolicyOrder
-	}
-	o := *order
-	return func(pager *permissionpolicyPager) error {
-		if err := o.Direction.Validate(); err != nil {
-			return err
-		}
-		if o.Field == nil {
-			o.Field = DefaultPermissionPolicyOrder.Field
-		}
-		pager.order = &o
-		return nil
-	}
-}
-
-// WithPermissionPolicyFilter configures pagination filter.
-func WithPermissionPolicyFilter(filter func(*PermissionPolicyQuery) (*PermissionPolicyQuery, error)) PermissionPolicyPaginateOption {
-	return func(pager *permissionpolicyPager) error {
-		if filter == nil {
-			return errors.New("PermissionPolicyQuery filter cannot be nil")
-		}
-		pager.filter = filter
-		return nil
-	}
-}
-
-type permissionpolicyPager struct {
-	reverse bool
-	order   *PermissionPolicyOrder
-	filter  func(*PermissionPolicyQuery) (*PermissionPolicyQuery, error)
-}
-
-func newPermissionPolicyPager(opts []PermissionPolicyPaginateOption, reverse bool) (*permissionpolicyPager, error) {
-	pager := &permissionpolicyPager{reverse: reverse}
-	for _, opt := range opts {
-		if err := opt(pager); err != nil {
-			return nil, err
-		}
-	}
-	if pager.order == nil {
-		pager.order = DefaultPermissionPolicyOrder
-	}
-	return pager, nil
-}
-
-func (p *permissionpolicyPager) applyFilter(query *PermissionPolicyQuery) (*PermissionPolicyQuery, error) {
-	if p.filter != nil {
-		return p.filter(query)
-	}
-	return query, nil
-}
-
-func (p *permissionpolicyPager) toCursor(pp *PermissionPolicy) Cursor {
-	return p.order.Field.toCursor(pp)
-}
-
-func (p *permissionpolicyPager) applyCursors(query *PermissionPolicyQuery, after, before *Cursor) (*PermissionPolicyQuery, error) {
-	direction := p.order.Direction
-	if p.reverse {
-		direction = direction.Reverse()
-	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultPermissionPolicyOrder.Field.field, p.order.Field.field, direction) {
-		query = query.Where(predicate)
-	}
-	return query, nil
-}
-
-func (p *permissionpolicyPager) applyOrder(query *PermissionPolicyQuery) *PermissionPolicyQuery {
-	direction := p.order.Direction
-	if p.reverse {
-		direction = direction.Reverse()
-	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
-	if p.order.Field != DefaultPermissionPolicyOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultPermissionPolicyOrder.Field.field))
-	}
-	return query
-}
-
-func (p *permissionpolicyPager) orderExpr() sql.Querier {
-	direction := p.order.Direction
-	if p.reverse {
-		direction = direction.Reverse()
-	}
-	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
-		if p.order.Field != DefaultPermissionPolicyOrder.Field {
-			b.Comma().Ident(DefaultPermissionPolicyOrder.Field.field).Pad().WriteString(string(direction))
-		}
-	})
-}
-
-// Paginate executes the query and returns a relay based cursor connection to PermissionPolicy.
-func (pp *PermissionPolicyQuery) Paginate(
-	ctx context.Context, after *Cursor, first *int,
-	before *Cursor, last *int, opts ...PermissionPolicyPaginateOption,
-) (*PermissionPolicyConnection, error) {
-	if err := validateFirstLast(first, last); err != nil {
-		return nil, err
-	}
-	pager, err := newPermissionPolicyPager(opts, last != nil)
-	if err != nil {
-		return nil, err
-	}
-	if pp, err = pager.applyFilter(pp); err != nil {
-		return nil, err
-	}
-	conn := &PermissionPolicyConnection{Edges: []*PermissionPolicyEdge{}}
-	ignoredEdges := !hasCollectedField(ctx, edgesField)
-	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
-		hasPagination := after != nil || first != nil || before != nil || last != nil
-		if hasPagination || ignoredEdges {
-			if conn.TotalCount, err = pp.Clone().Count(ctx); err != nil {
-				return nil, err
-			}
-			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
-			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
-		}
-	}
-	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
-		return conn, nil
-	}
-
-	if pp, err = pager.applyCursors(pp, after, before); err != nil {
-		return nil, err
-	}
-	pp = pager.applyOrder(pp)
-	if limit := paginateLimit(first, last); limit != 0 {
-		pp.Limit(limit)
-	}
-	if field := collectedField(ctx, edgesField, nodeField); field != nil {
-		if err := pp.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
-			return nil, err
-		}
-	}
-
-	nodes, err := pp.All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	conn.build(nodes, pager, after, first, before, last)
-	return conn, nil
-}
-
-var (
-	// PermissionPolicyOrderFieldCreatedAt orders PermissionPolicy by created_at.
-	PermissionPolicyOrderFieldCreatedAt = &PermissionPolicyOrderField{
-		field: permissionpolicy.FieldCreatedAt,
-		toCursor: func(pp *PermissionPolicy) Cursor {
-			return Cursor{
-				ID:    pp.ID,
-				Value: pp.CreatedAt,
-			}
-		},
-	}
-)
-
-// String implement fmt.Stringer interface.
-func (f PermissionPolicyOrderField) String() string {
-	var str string
-	switch f.field {
-	case permissionpolicy.FieldCreatedAt:
-		str = "createdAt"
-	}
-	return str
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (f PermissionPolicyOrderField) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(f.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (f *PermissionPolicyOrderField) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("PermissionPolicyOrderField %T must be a string", v)
-	}
-	switch str {
-	case "createdAt":
-		*f = *PermissionPolicyOrderFieldCreatedAt
-	default:
-		return fmt.Errorf("%s is not a valid PermissionPolicyOrderField", str)
-	}
-	return nil
-}
-
-// PermissionPolicyOrderField defines the ordering field of PermissionPolicy.
-type PermissionPolicyOrderField struct {
-	field    string
-	toCursor func(*PermissionPolicy) Cursor
-}
-
-// PermissionPolicyOrder defines the ordering of PermissionPolicy.
-type PermissionPolicyOrder struct {
-	Direction OrderDirection              `json:"direction"`
-	Field     *PermissionPolicyOrderField `json:"field"`
-}
-
-// DefaultPermissionPolicyOrder is the default ordering of PermissionPolicy.
-var DefaultPermissionPolicyOrder = &PermissionPolicyOrder{
-	Direction: entgql.OrderDirectionAsc,
-	Field: &PermissionPolicyOrderField{
-		field: permissionpolicy.FieldID,
-		toCursor: func(pp *PermissionPolicy) Cursor {
-			return Cursor{ID: pp.ID}
-		},
-	},
-}
-
-// ToEdge converts PermissionPolicy into PermissionPolicyEdge.
-func (pp *PermissionPolicy) ToEdge(order *PermissionPolicyOrder) *PermissionPolicyEdge {
-	if order == nil {
-		order = DefaultPermissionPolicyOrder
-	}
-	return &PermissionPolicyEdge{
-		Node:   pp,
-		Cursor: order.Field.toCursor(pp),
 	}
 }
 

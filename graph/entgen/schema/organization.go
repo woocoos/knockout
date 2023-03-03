@@ -81,7 +81,7 @@ func (Organization) Edges() []ent.Edge {
 			Annotations(entgql.Skip(entgql.SkipType)).Comment("组织下角色及用户组."),
 		edge.To("permissions", Permission.Type).Comment("组织授权信息").
 			Annotations(entgql.RelayConnection()),
-		edge.To("policies", PermissionPolicy.Type).Comment("组织下权限策略").
+		edge.To("policies", OrganizationPolicy.Type).Comment("组织下权限策略").
 			Annotations(entgql.RelayConnection()),
 		edge.To("apps", App.Type).Comment("组织下应用").Through("organization_app", OrganizationApp.Type).
 			Annotations(entgql.RelayConnection()),

@@ -72,7 +72,7 @@ type OrganizationEdges struct {
 	// 组织授权信息
 	Permissions []*Permission `json:"permissions,omitempty"`
 	// 组织下权限策略
-	Policies []*PermissionPolicy `json:"policies,omitempty"`
+	Policies []*OrganizationPolicy `json:"policies,omitempty"`
 	// 组织下应用
 	Apps []*App `json:"apps,omitempty"`
 	// OrganizationUser holds the value of the organization_user edge.
@@ -89,7 +89,7 @@ type OrganizationEdges struct {
 	namedUsers            map[string][]*User
 	namedRolesAndGroups   map[string][]*OrganizationRole
 	namedPermissions      map[string][]*Permission
-	namedPolicies         map[string][]*PermissionPolicy
+	namedPolicies         map[string][]*OrganizationPolicy
 	namedApps             map[string][]*App
 	namedOrganizationUser map[string][]*OrganizationUser
 	namedOrganizationApp  map[string][]*OrganizationApp
@@ -159,7 +159,7 @@ func (e OrganizationEdges) PermissionsOrErr() ([]*Permission, error) {
 
 // PoliciesOrErr returns the Policies value or an error if the edge
 // was not loaded in eager-loading.
-func (e OrganizationEdges) PoliciesOrErr() ([]*PermissionPolicy, error) {
+func (e OrganizationEdges) PoliciesOrErr() ([]*OrganizationPolicy, error) {
 	if e.loadedTypes[6] {
 		return e.Policies, nil
 	}
@@ -363,7 +363,7 @@ func (o *Organization) QueryPermissions() *PermissionQuery {
 }
 
 // QueryPolicies queries the "policies" edge of the Organization entity.
-func (o *Organization) QueryPolicies() *PermissionPolicyQuery {
+func (o *Organization) QueryPolicies() *OrganizationPolicyQuery {
 	return NewOrganizationClient(o.config).QueryPolicies(o)
 }
 
@@ -557,7 +557,7 @@ func (o *Organization) appendNamedPermissions(name string, edges ...*Permission)
 
 // NamedPolicies returns the Policies named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (o *Organization) NamedPolicies(name string) ([]*PermissionPolicy, error) {
+func (o *Organization) NamedPolicies(name string) ([]*OrganizationPolicy, error) {
 	if o.Edges.namedPolicies == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
@@ -568,12 +568,12 @@ func (o *Organization) NamedPolicies(name string) ([]*PermissionPolicy, error) {
 	return nodes, nil
 }
 
-func (o *Organization) appendNamedPolicies(name string, edges ...*PermissionPolicy) {
+func (o *Organization) appendNamedPolicies(name string, edges ...*OrganizationPolicy) {
 	if o.Edges.namedPolicies == nil {
-		o.Edges.namedPolicies = make(map[string][]*PermissionPolicy)
+		o.Edges.namedPolicies = make(map[string][]*OrganizationPolicy)
 	}
 	if len(edges) == 0 {
-		o.Edges.namedPolicies[name] = []*PermissionPolicy{}
+		o.Edges.namedPolicies[name] = []*OrganizationPolicy{}
 	} else {
 		o.Edges.namedPolicies[name] = append(o.Edges.namedPolicies[name], edges...)
 	}

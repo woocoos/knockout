@@ -14,10 +14,10 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/organization"
 	"github.com/woocoos/knockout/ent/organizationapp"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/organizationrole"
 	"github.com/woocoos/knockout/ent/organizationuser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -247,6 +247,23 @@ func init() {
 	organizationappDescCreatedAt := organizationappMixinFields0[1].Descriptor()
 	// organizationapp.DefaultCreatedAt holds the default value on creation for the created_at field.
 	organizationapp.DefaultCreatedAt = organizationappDescCreatedAt.Default.(func() time.Time)
+	organizationpolicyMixin := schema.OrganizationPolicy{}.Mixin()
+	organizationpolicyMixinHooks1 := organizationpolicyMixin[1].Hooks()
+	organizationpolicy.Hooks[0] = organizationpolicyMixinHooks1[0]
+	organizationpolicyMixinFields0 := organizationpolicyMixin[0].Fields()
+	_ = organizationpolicyMixinFields0
+	organizationpolicyMixinFields1 := organizationpolicyMixin[1].Fields()
+	_ = organizationpolicyMixinFields1
+	organizationpolicyFields := schema.OrganizationPolicy{}.Fields()
+	_ = organizationpolicyFields
+	// organizationpolicyDescCreatedAt is the schema descriptor for created_at field.
+	organizationpolicyDescCreatedAt := organizationpolicyMixinFields1[1].Descriptor()
+	// organizationpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
+	organizationpolicy.DefaultCreatedAt = organizationpolicyDescCreatedAt.Default.(func() time.Time)
+	// organizationpolicyDescID is the schema descriptor for id field.
+	organizationpolicyDescID := organizationpolicyMixinFields0[0].Descriptor()
+	// organizationpolicy.DefaultID holds the default value on creation for the id field.
+	organizationpolicy.DefaultID = organizationpolicyDescID.Default.(func() int)
 	organizationroleMixin := schema.OrganizationRole{}.Mixin()
 	organizationroleMixinHooks0 := organizationroleMixin[0].Hooks()
 	organizationrole.Hooks[0] = organizationroleMixinHooks0[0]
@@ -286,23 +303,6 @@ func init() {
 	permissionDescID := permissionMixinFields0[0].Descriptor()
 	// permission.DefaultID holds the default value on creation for the id field.
 	permission.DefaultID = permissionDescID.Default.(func() int)
-	permissionpolicyMixin := schema.PermissionPolicy{}.Mixin()
-	permissionpolicyMixinHooks1 := permissionpolicyMixin[1].Hooks()
-	permissionpolicy.Hooks[0] = permissionpolicyMixinHooks1[0]
-	permissionpolicyMixinFields0 := permissionpolicyMixin[0].Fields()
-	_ = permissionpolicyMixinFields0
-	permissionpolicyMixinFields1 := permissionpolicyMixin[1].Fields()
-	_ = permissionpolicyMixinFields1
-	permissionpolicyFields := schema.PermissionPolicy{}.Fields()
-	_ = permissionpolicyFields
-	// permissionpolicyDescCreatedAt is the schema descriptor for created_at field.
-	permissionpolicyDescCreatedAt := permissionpolicyMixinFields1[1].Descriptor()
-	// permissionpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
-	permissionpolicy.DefaultCreatedAt = permissionpolicyDescCreatedAt.Default.(func() time.Time)
-	// permissionpolicyDescID is the schema descriptor for id field.
-	permissionpolicyDescID := permissionpolicyMixinFields0[0].Descriptor()
-	// permissionpolicy.DefaultID holds the default value on creation for the id field.
-	permissionpolicy.DefaultID = permissionpolicyDescID.Default.(func() int)
 	userMixin := schema.User{}.Mixin()
 	userMixinHooks1 := userMixin[1].Hooks()
 	userMixinHooks2 := userMixin[2].Hooks()

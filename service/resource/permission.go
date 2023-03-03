@@ -11,9 +11,9 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/organizationrole"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/security"
 	"strconv"
 	"strings"
@@ -71,12 +71,12 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 		return false, err
 	}
 
-	pbk := make([]*ent.PermissionPolicyCreate, len(ps))
+	pbk := make([]*ent.OrganizationPolicyCreate, len(ps))
 	for i, p := range ps {
-		pbk[i] = c.PermissionPolicy.Create().SetOrgID(org.ID).SetAppID(ap.ID).SetAppPolicyID(p.ID).
+		pbk[i] = c.OrganizationPolicy.Create().SetOrgID(org.ID).SetAppID(ap.ID).SetAppPolicyID(p.ID).
 			SetComments(p.Comments).SetRules(p.Rules).SetComments(p.Comments).SetName(p.Name)
 	}
-	err = c.PermissionPolicy.CreateBulk(pbk...).Exec(ctx)
+	err = c.OrganizationPolicy.CreateBulk(pbk...).Exec(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -93,12 +93,12 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 }
 
 // assignOrganizationPolicy 分配应用权限策略到组织.
-func (s *Service) assignAppPolicyToOrganization(ctx context.Context, orgID int, policyID int) (*ent.PermissionPolicy, error) {
+func (s *Service) assignAppPolicyToOrganization(ctx context.Context, orgID int, policyID int) (*ent.OrganizationPolicy, error) {
 	c := ent.FromContext(ctx)
 	pm := c.AppPolicy.Query().Where(apppolicy.ID(policyID)).OnlyX(ctx)
 	// 如应用存在,确定应用是否分配入组织
 	// 对组织授权
-	return c.PermissionPolicy.Create().SetOrgID(orgID).SetAppID(pm.AppID).SetAppPolicyID(pm.ID).
+	return c.OrganizationPolicy.Create().SetOrgID(orgID).SetAppID(pm.AppID).SetAppPolicyID(pm.ID).
 		SetComments(pm.Comments).
 		Save(ctx)
 }
@@ -138,7 +138,7 @@ func (s *Service) Grant(ctx context.Context, input ent.CreatePermissionInput) (*
 	if err != nil {
 		return nil, err
 	}
-	policy := c.PermissionPolicy.Query().Where(permissionpolicy.ID(input.OrgPolicyID)).Select(permissionpolicy.FieldRules).OnlyX(ctx)
+	policy := c.OrganizationPolicy.Query().Where(organizationpolicy.ID(input.OrgPolicyID)).Select(organizationpolicy.FieldRules).OnlyX(ctx)
 	err = security.GrantPolicy(policy.Rules, strconv.Itoa(pid), input.PrincipalKind.String(), domain)
 	if err != nil {
 		log.Errorf("grant policy failed,policy is inactive: %w", err)

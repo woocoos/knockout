@@ -285,6 +285,34 @@ var (
 			},
 		},
 	}
+	// OrganizationPolicyColumns holds the columns for the "organization_policy" table.
+	OrganizationPolicyColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true},
+		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "comments", Type: field.TypeString},
+		{Name: "rules", Type: field.TypeJSON},
+		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// OrganizationPolicyTable holds the schema information for the "organization_policy" table.
+	OrganizationPolicyTable = &schema.Table{
+		Name:       "organization_policy",
+		Columns:    OrganizationPolicyColumns,
+		PrimaryKey: []*schema.Column{OrganizationPolicyColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "organization_policy_organization_policies",
+				Columns:    []*schema.Column{OrganizationPolicyColumns[10]},
+				RefColumns: []*schema.Column{OrganizationColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// OrganizationRoleColumns holds the columns for the "organization_role" table.
 	OrganizationRoleColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -383,34 +411,6 @@ var (
 				Columns:    []*schema.Column{PermissionColumns[12]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,
-			},
-		},
-	}
-	// OrganizationPolicyColumns holds the columns for the "organization_policy" table.
-	OrganizationPolicyColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
-		{Name: "created_by", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
-		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "app_id", Type: field.TypeInt, Nullable: true},
-		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "comments", Type: field.TypeString},
-		{Name: "rules", Type: field.TypeJSON},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
-	}
-	// OrganizationPolicyTable holds the schema information for the "organization_policy" table.
-	OrganizationPolicyTable = &schema.Table{
-		Name:       "organization_policy",
-		Columns:    OrganizationPolicyColumns,
-		PrimaryKey: []*schema.Column{OrganizationPolicyColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "organization_policy_organization_policies",
-				Columns:    []*schema.Column{OrganizationPolicyColumns[10]},
-				RefColumns: []*schema.Column{OrganizationColumns[0]},
-				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -567,10 +567,10 @@ var (
 		AppRolePolicyTable,
 		OrganizationTable,
 		OrganizationAppTable,
+		OrganizationPolicyTable,
 		OrganizationRoleTable,
 		OrganizationUserTable,
 		PermissionTable,
-		OrganizationPolicyTable,
 		UserTable,
 		UserDeviceTable,
 		UserIdentityTable,
@@ -620,6 +620,10 @@ func init() {
 	OrganizationAppTable.Annotation = &entsql.Annotation{
 		Table: "organization_app",
 	}
+	OrganizationPolicyTable.ForeignKeys[0].RefTable = OrganizationTable
+	OrganizationPolicyTable.Annotation = &entsql.Annotation{
+		Table: "organization_policy",
+	}
 	OrganizationRoleTable.ForeignKeys[0].RefTable = OrganizationTable
 	OrganizationRoleTable.Annotation = &entsql.Annotation{
 		Table: "organization_role",
@@ -633,10 +637,6 @@ func init() {
 	PermissionTable.ForeignKeys[1].RefTable = UserTable
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
-	}
-	OrganizationPolicyTable.ForeignKeys[0].RefTable = OrganizationTable
-	OrganizationPolicyTable.Annotation = &entsql.Annotation{
-		Table: "organization_policy",
 	}
 	UserTable.Annotation = &entsql.Annotation{
 		Table: "user",

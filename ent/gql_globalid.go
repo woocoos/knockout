@@ -19,8 +19,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -70,15 +70,15 @@ func (o *Organization) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
-// GlobalID returns the global identifier for the given Permission node.
-func (pe *Permission) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", permission.Table, pe.ID)
+// GlobalID returns the global identifier for the given OrganizationPolicy node.
+func (op *OrganizationPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", organizationpolicy.Table, op.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
-// GlobalID returns the global identifier for the given PermissionPolicy node.
-func (pp *PermissionPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", permissionpolicy.Table, pp.ID)
+// GlobalID returns the global identifier for the given Permission node.
+func (pe *Permission) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", permission.Table, pe.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -143,9 +143,9 @@ func GlobalID(tp, id string) (string, error) {
 		break
 	case organization.Table:
 		break
-	case permission.Table:
+	case organizationpolicy.Table:
 		break
-	case permissionpolicy.Table:
+	case permission.Table:
 		break
 	case user.Table:
 		break

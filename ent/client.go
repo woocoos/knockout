@@ -23,10 +23,10 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/organization"
 	"github.com/woocoos/knockout/ent/organizationapp"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/organizationrole"
 	"github.com/woocoos/knockout/ent/organizationuser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -57,14 +57,14 @@ type Client struct {
 	Organization *OrganizationClient
 	// OrganizationApp is the client for interacting with the OrganizationApp builders.
 	OrganizationApp *OrganizationAppClient
+	// OrganizationPolicy is the client for interacting with the OrganizationPolicy builders.
+	OrganizationPolicy *OrganizationPolicyClient
 	// OrganizationRole is the client for interacting with the OrganizationRole builders.
 	OrganizationRole *OrganizationRoleClient
 	// OrganizationUser is the client for interacting with the OrganizationUser builders.
 	OrganizationUser *OrganizationUserClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
-	// PermissionPolicy is the client for interacting with the PermissionPolicy builders.
-	PermissionPolicy *PermissionPolicyClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserDevice is the client for interacting with the UserDevice builders.
@@ -99,10 +99,10 @@ func (c *Client) init() {
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
 	c.Organization = NewOrganizationClient(c.config)
 	c.OrganizationApp = NewOrganizationAppClient(c.config)
+	c.OrganizationPolicy = NewOrganizationPolicyClient(c.config)
 	c.OrganizationRole = NewOrganizationRoleClient(c.config)
 	c.OrganizationUser = NewOrganizationUserClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
-	c.PermissionPolicy = NewPermissionPolicyClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
 	c.UserIdentity = NewUserIdentityClient(c.config)
@@ -188,26 +188,26 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		Organization:     NewOrganizationClient(cfg),
-		OrganizationApp:  NewOrganizationAppClient(cfg),
-		OrganizationRole: NewOrganizationRoleClient(cfg),
-		OrganizationUser: NewOrganizationUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		PermissionPolicy: NewPermissionPolicyClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Organization:       NewOrganizationClient(cfg),
+		OrganizationApp:    NewOrganizationAppClient(cfg),
+		OrganizationPolicy: NewOrganizationPolicyClient(cfg),
+		OrganizationRole:   NewOrganizationRoleClient(cfg),
+		OrganizationUser:   NewOrganizationUserClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -225,26 +225,26 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		Organization:     NewOrganizationClient(cfg),
-		OrganizationApp:  NewOrganizationAppClient(cfg),
-		OrganizationRole: NewOrganizationRoleClient(cfg),
-		OrganizationUser: NewOrganizationUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		PermissionPolicy: NewPermissionPolicyClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Organization:       NewOrganizationClient(cfg),
+		OrganizationApp:    NewOrganizationAppClient(cfg),
+		OrganizationPolicy: NewOrganizationPolicyClient(cfg),
+		OrganizationRole:   NewOrganizationRoleClient(cfg),
+		OrganizationUser:   NewOrganizationUserClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -275,8 +275,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationRole,
-		c.OrganizationUser, c.Permission, c.PermissionPolicy, c.User, c.UserDevice,
+		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationPolicy,
+		c.OrganizationRole, c.OrganizationUser, c.Permission, c.User, c.UserDevice,
 		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
@@ -288,8 +288,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationRole,
-		c.OrganizationUser, c.Permission, c.PermissionPolicy, c.User, c.UserDevice,
+		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationPolicy,
+		c.OrganizationRole, c.OrganizationUser, c.Permission, c.User, c.UserDevice,
 		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
@@ -317,14 +317,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Organization.mutate(ctx, m)
 	case *OrganizationAppMutation:
 		return c.OrganizationApp.mutate(ctx, m)
+	case *OrganizationPolicyMutation:
+		return c.OrganizationPolicy.mutate(ctx, m)
 	case *OrganizationRoleMutation:
 		return c.OrganizationRole.mutate(ctx, m)
 	case *OrganizationUserMutation:
 		return c.OrganizationUser.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
-	case *PermissionPolicyMutation:
-		return c.PermissionPolicy.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	case *UserDeviceMutation:
@@ -1650,13 +1650,13 @@ func (c *OrganizationClient) QueryPermissions(o *Organization) *PermissionQuery 
 }
 
 // QueryPolicies queries the policies edge of a Organization.
-func (c *OrganizationClient) QueryPolicies(o *Organization) *PermissionPolicyQuery {
-	query := (&PermissionPolicyClient{config: c.config}).Query()
+func (c *OrganizationClient) QueryPolicies(o *Organization) *OrganizationPolicyQuery {
+	query := (&OrganizationPolicyClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(permissionpolicy.Table, permissionpolicy.FieldID),
+			sqlgraph.To(organizationpolicy.Table, organizationpolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, organization.PoliciesTable, organization.PoliciesColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
@@ -1839,6 +1839,141 @@ func (c *OrganizationAppClient) mutate(ctx context.Context, m *OrganizationAppMu
 		return (&OrganizationAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown OrganizationApp mutation op: %q", m.Op())
+	}
+}
+
+// OrganizationPolicyClient is a client for the OrganizationPolicy schema.
+type OrganizationPolicyClient struct {
+	config
+}
+
+// NewOrganizationPolicyClient returns a client for the OrganizationPolicy from the given config.
+func NewOrganizationPolicyClient(c config) *OrganizationPolicyClient {
+	return &OrganizationPolicyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `organizationpolicy.Hooks(f(g(h())))`.
+func (c *OrganizationPolicyClient) Use(hooks ...Hook) {
+	c.hooks.OrganizationPolicy = append(c.hooks.OrganizationPolicy, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `organizationpolicy.Intercept(f(g(h())))`.
+func (c *OrganizationPolicyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrganizationPolicy = append(c.inters.OrganizationPolicy, interceptors...)
+}
+
+// Create returns a builder for creating a OrganizationPolicy entity.
+func (c *OrganizationPolicyClient) Create() *OrganizationPolicyCreate {
+	mutation := newOrganizationPolicyMutation(c.config, OpCreate)
+	return &OrganizationPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrganizationPolicy entities.
+func (c *OrganizationPolicyClient) CreateBulk(builders ...*OrganizationPolicyCreate) *OrganizationPolicyCreateBulk {
+	return &OrganizationPolicyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrganizationPolicy.
+func (c *OrganizationPolicyClient) Update() *OrganizationPolicyUpdate {
+	mutation := newOrganizationPolicyMutation(c.config, OpUpdate)
+	return &OrganizationPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrganizationPolicyClient) UpdateOne(op *OrganizationPolicy) *OrganizationPolicyUpdateOne {
+	mutation := newOrganizationPolicyMutation(c.config, OpUpdateOne, withOrganizationPolicy(op))
+	return &OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrganizationPolicyClient) UpdateOneID(id int) *OrganizationPolicyUpdateOne {
+	mutation := newOrganizationPolicyMutation(c.config, OpUpdateOne, withOrganizationPolicyID(id))
+	return &OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrganizationPolicy.
+func (c *OrganizationPolicyClient) Delete() *OrganizationPolicyDelete {
+	mutation := newOrganizationPolicyMutation(c.config, OpDelete)
+	return &OrganizationPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrganizationPolicyClient) DeleteOne(op *OrganizationPolicy) *OrganizationPolicyDeleteOne {
+	return c.DeleteOneID(op.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrganizationPolicyClient) DeleteOneID(id int) *OrganizationPolicyDeleteOne {
+	builder := c.Delete().Where(organizationpolicy.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrganizationPolicyDeleteOne{builder}
+}
+
+// Query returns a query builder for OrganizationPolicy.
+func (c *OrganizationPolicyClient) Query() *OrganizationPolicyQuery {
+	return &OrganizationPolicyQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOrganizationPolicy},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OrganizationPolicy entity by its id.
+func (c *OrganizationPolicyClient) Get(ctx context.Context, id int) (*OrganizationPolicy, error) {
+	return c.Query().Where(organizationpolicy.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrganizationPolicyClient) GetX(ctx context.Context, id int) *OrganizationPolicy {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOrganization queries the organization edge of a OrganizationPolicy.
+func (c *OrganizationPolicyClient) QueryOrganization(op *OrganizationPolicy) *OrganizationQuery {
+	query := (&OrganizationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(organizationpolicy.Table, organizationpolicy.FieldID, id),
+			sqlgraph.To(organization.Table, organization.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, organizationpolicy.OrganizationTable, organizationpolicy.OrganizationColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrganizationPolicyClient) Hooks() []Hook {
+	hooks := c.hooks.OrganizationPolicy
+	return append(hooks[:len(hooks):len(hooks)], organizationpolicy.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *OrganizationPolicyClient) Interceptors() []Interceptor {
+	return c.inters.OrganizationPolicy
+}
+
+func (c *OrganizationPolicyClient) mutate(ctx context.Context, m *OrganizationPolicyMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrganizationPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrganizationPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrganizationPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OrganizationPolicy mutation op: %q", m.Op())
 	}
 }
 
@@ -2276,141 +2411,6 @@ func (c *PermissionClient) mutate(ctx context.Context, m *PermissionMutation) (V
 		return (&PermissionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Permission mutation op: %q", m.Op())
-	}
-}
-
-// PermissionPolicyClient is a client for the PermissionPolicy schema.
-type PermissionPolicyClient struct {
-	config
-}
-
-// NewPermissionPolicyClient returns a client for the PermissionPolicy from the given config.
-func NewPermissionPolicyClient(c config) *PermissionPolicyClient {
-	return &PermissionPolicyClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `permissionpolicy.Hooks(f(g(h())))`.
-func (c *PermissionPolicyClient) Use(hooks ...Hook) {
-	c.hooks.PermissionPolicy = append(c.hooks.PermissionPolicy, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `permissionpolicy.Intercept(f(g(h())))`.
-func (c *PermissionPolicyClient) Intercept(interceptors ...Interceptor) {
-	c.inters.PermissionPolicy = append(c.inters.PermissionPolicy, interceptors...)
-}
-
-// Create returns a builder for creating a PermissionPolicy entity.
-func (c *PermissionPolicyClient) Create() *PermissionPolicyCreate {
-	mutation := newPermissionPolicyMutation(c.config, OpCreate)
-	return &PermissionPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of PermissionPolicy entities.
-func (c *PermissionPolicyClient) CreateBulk(builders ...*PermissionPolicyCreate) *PermissionPolicyCreateBulk {
-	return &PermissionPolicyCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for PermissionPolicy.
-func (c *PermissionPolicyClient) Update() *PermissionPolicyUpdate {
-	mutation := newPermissionPolicyMutation(c.config, OpUpdate)
-	return &PermissionPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PermissionPolicyClient) UpdateOne(pp *PermissionPolicy) *PermissionPolicyUpdateOne {
-	mutation := newPermissionPolicyMutation(c.config, OpUpdateOne, withPermissionPolicy(pp))
-	return &PermissionPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PermissionPolicyClient) UpdateOneID(id int) *PermissionPolicyUpdateOne {
-	mutation := newPermissionPolicyMutation(c.config, OpUpdateOne, withPermissionPolicyID(id))
-	return &PermissionPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for PermissionPolicy.
-func (c *PermissionPolicyClient) Delete() *PermissionPolicyDelete {
-	mutation := newPermissionPolicyMutation(c.config, OpDelete)
-	return &PermissionPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *PermissionPolicyClient) DeleteOne(pp *PermissionPolicy) *PermissionPolicyDeleteOne {
-	return c.DeleteOneID(pp.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *PermissionPolicyClient) DeleteOneID(id int) *PermissionPolicyDeleteOne {
-	builder := c.Delete().Where(permissionpolicy.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PermissionPolicyDeleteOne{builder}
-}
-
-// Query returns a query builder for PermissionPolicy.
-func (c *PermissionPolicyClient) Query() *PermissionPolicyQuery {
-	return &PermissionPolicyQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypePermissionPolicy},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a PermissionPolicy entity by its id.
-func (c *PermissionPolicyClient) Get(ctx context.Context, id int) (*PermissionPolicy, error) {
-	return c.Query().Where(permissionpolicy.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PermissionPolicyClient) GetX(ctx context.Context, id int) *PermissionPolicy {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryOrganization queries the organization edge of a PermissionPolicy.
-func (c *PermissionPolicyClient) QueryOrganization(pp *PermissionPolicy) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := pp.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(permissionpolicy.Table, permissionpolicy.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, permissionpolicy.OrganizationTable, permissionpolicy.OrganizationColumn),
-		)
-		fromV = sqlgraph.Neighbors(pp.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *PermissionPolicyClient) Hooks() []Hook {
-	hooks := c.hooks.PermissionPolicy
-	return append(hooks[:len(hooks):len(hooks)], permissionpolicy.Hooks[:]...)
-}
-
-// Interceptors returns the client interceptors.
-func (c *PermissionPolicyClient) Interceptors() []Interceptor {
-	return c.inters.PermissionPolicy
-}
-
-func (c *PermissionPolicyClient) mutate(ctx context.Context, m *PermissionPolicyMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&PermissionPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&PermissionPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&PermissionPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&PermissionPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown PermissionPolicy mutation op: %q", m.Op())
 	}
 }
 
@@ -3190,14 +3190,14 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 type (
 	hooks struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy,
-		Organization, OrganizationApp, OrganizationRole, OrganizationUser, Permission,
-		PermissionPolicy, User, UserDevice, UserIdentity, UserLoginProfile,
+		Organization, OrganizationApp, OrganizationPolicy, OrganizationRole,
+		OrganizationUser, Permission, User, UserDevice, UserIdentity, UserLoginProfile,
 		UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy,
-		Organization, OrganizationApp, OrganizationRole, OrganizationUser, Permission,
-		PermissionPolicy, User, UserDevice, UserIdentity, UserLoginProfile,
+		Organization, OrganizationApp, OrganizationPolicy, OrganizationRole,
+		OrganizationUser, Permission, User, UserDevice, UserIdentity, UserLoginProfile,
 		UserPassword []ent.Interceptor
 	}
 )

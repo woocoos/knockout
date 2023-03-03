@@ -30,14 +30,14 @@ type Tx struct {
 	Organization *OrganizationClient
 	// OrganizationApp is the client for interacting with the OrganizationApp builders.
 	OrganizationApp *OrganizationAppClient
+	// OrganizationPolicy is the client for interacting with the OrganizationPolicy builders.
+	OrganizationPolicy *OrganizationPolicyClient
 	// OrganizationRole is the client for interacting with the OrganizationRole builders.
 	OrganizationRole *OrganizationRoleClient
 	// OrganizationUser is the client for interacting with the OrganizationUser builders.
 	OrganizationUser *OrganizationUserClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
-	// PermissionPolicy is the client for interacting with the PermissionPolicy builders.
-	PermissionPolicy *PermissionPolicyClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserDevice is the client for interacting with the UserDevice builders.
@@ -188,10 +188,10 @@ func (tx *Tx) init() {
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)
 	tx.Organization = NewOrganizationClient(tx.config)
 	tx.OrganizationApp = NewOrganizationAppClient(tx.config)
+	tx.OrganizationPolicy = NewOrganizationPolicyClient(tx.config)
 	tx.OrganizationRole = NewOrganizationRoleClient(tx.config)
 	tx.OrganizationUser = NewOrganizationUserClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
-	tx.PermissionPolicy = NewPermissionPolicyClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)
 	tx.UserIdentity = NewUserIdentityClient(tx.config)

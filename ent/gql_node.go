@@ -21,8 +21,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -58,10 +58,10 @@ func (n *AppRole) IsNode() {}
 func (n *Organization) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Permission) IsNode() {}
+func (n *OrganizationPolicy) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *PermissionPolicy) IsNode() {}
+func (n *Permission) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *User) IsNode() {}
@@ -220,10 +220,10 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case permission.Table:
-		query := c.Permission.Query().
-			Where(permission.ID(id))
-		query, err := query.CollectFields(ctx, "Permission")
+	case organizationpolicy.Table:
+		query := c.OrganizationPolicy.Query().
+			Where(organizationpolicy.ID(id))
+		query, err := query.CollectFields(ctx, "OrganizationPolicy")
 		if err != nil {
 			return nil, err
 		}
@@ -232,10 +232,10 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case permissionpolicy.Table:
-		query := c.PermissionPolicy.Query().
-			Where(permissionpolicy.ID(id))
-		query, err := query.CollectFields(ctx, "PermissionPolicy")
+	case permission.Table:
+		query := c.Permission.Query().
+			Where(permission.ID(id))
+		query, err := query.CollectFields(ctx, "Permission")
 		if err != nil {
 			return nil, err
 		}
@@ -489,10 +489,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case permission.Table:
-		query := c.Permission.Query().
-			Where(permission.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Permission")
+	case organizationpolicy.Table:
+		query := c.OrganizationPolicy.Query().
+			Where(organizationpolicy.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "OrganizationPolicy")
 		if err != nil {
 			return nil, err
 		}
@@ -505,10 +505,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case permissionpolicy.Table:
-		query := c.PermissionPolicy.Query().
-			Where(permissionpolicy.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "PermissionPolicy")
+	case permission.Table:
+		query := c.Permission.Query().
+			Where(permission.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Permission")
 		if err != nil {
 			return nil, err
 		}

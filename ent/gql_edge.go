@@ -275,20 +275,20 @@ func (o *Organization) Permissions(
 }
 
 func (o *Organization) Policies(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *PermissionPolicyOrder, where *PermissionPolicyWhereInput,
-) (*PermissionPolicyConnection, error) {
-	opts := []PermissionPolicyPaginateOption{
-		WithPermissionPolicyOrder(orderBy),
-		WithPermissionPolicyFilter(where.Filter),
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrganizationPolicyOrder, where *OrganizationPolicyWhereInput,
+) (*OrganizationPolicyConnection, error) {
+	opts := []OrganizationPolicyPaginateOption{
+		WithOrganizationPolicyOrder(orderBy),
+		WithOrganizationPolicyFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := o.Edges.totalCount[4][alias]
 	if nodes, err := o.NamedPolicies(alias); err == nil || hasTotalCount {
-		pager, err := newPermissionPolicyPager(opts, last != nil)
+		pager, err := newOrganizationPolicyPager(opts, last != nil)
 		if err != nil {
 			return nil, err
 		}
-		conn := &PermissionPolicyConnection{Edges: []*PermissionPolicyEdge{}, TotalCount: totalCount}
+		conn := &OrganizationPolicyConnection{Edges: []*OrganizationPolicyEdge{}, TotalCount: totalCount}
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
@@ -316,6 +316,14 @@ func (o *Organization) Apps(
 	return o.QueryApps().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (op *OrganizationPolicy) Organization(ctx context.Context) (*Organization, error) {
+	result, err := op.Edges.OrganizationOrErr()
+	if IsNotLoaded(err) {
+		result, err = op.QueryOrganization().Only(ctx)
+	}
+	return result, err
+}
+
 func (pe *Permission) Organization(ctx context.Context) (*Organization, error) {
 	result, err := pe.Edges.OrganizationOrErr()
 	if IsNotLoaded(err) {
@@ -330,14 +338,6 @@ func (pe *Permission) User(ctx context.Context) (*User, error) {
 		result, err = pe.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
-}
-
-func (pp *PermissionPolicy) Organization(ctx context.Context) (*Organization, error) {
-	result, err := pp.Edges.OrganizationOrErr()
-	if IsNotLoaded(err) {
-		result, err = pp.QueryOrganization().Only(ctx)
-	}
-	return result, err
 }
 
 func (u *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {

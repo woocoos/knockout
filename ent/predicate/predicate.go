@@ -33,6 +33,9 @@ type Organization func(*sql.Selector)
 // OrganizationApp is the predicate function for organizationapp builders.
 type OrganizationApp func(*sql.Selector)
 
+// OrganizationPolicy is the predicate function for organizationpolicy builders.
+type OrganizationPolicy func(*sql.Selector)
+
 // OrganizationRole is the predicate function for organizationrole builders.
 type OrganizationRole func(*sql.Selector)
 
@@ -41,9 +44,6 @@ type OrganizationUser func(*sql.Selector)
 
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)
-
-// PermissionPolicy is the predicate function for permissionpolicy builders.
-type PermissionPolicy func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

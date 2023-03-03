@@ -13,10 +13,10 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/organizationpolicy"
 	"github.com/woocoos/knockout/ent/organizationrole"
 	"github.com/woocoos/knockout/ent/organizationuser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/permissionpolicy"
 	"github.com/woocoos/knockout/ent/user"
 )
 
@@ -333,17 +333,17 @@ func (oc *OrganizationCreate) AddPermissions(p ...*Permission) *OrganizationCrea
 	return oc.AddPermissionIDs(ids...)
 }
 
-// AddPolicyIDs adds the "policies" edge to the PermissionPolicy entity by IDs.
+// AddPolicyIDs adds the "policies" edge to the OrganizationPolicy entity by IDs.
 func (oc *OrganizationCreate) AddPolicyIDs(ids ...int) *OrganizationCreate {
 	oc.mutation.AddPolicyIDs(ids...)
 	return oc
 }
 
-// AddPolicies adds the "policies" edges to the PermissionPolicy entity.
-func (oc *OrganizationCreate) AddPolicies(p ...*PermissionPolicy) *OrganizationCreate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+// AddPolicies adds the "policies" edges to the OrganizationPolicy entity.
+func (oc *OrganizationCreate) AddPolicies(o ...*OrganizationPolicy) *OrganizationCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
 	}
 	return oc.AddPolicyIDs(ids...)
 }
@@ -710,7 +710,7 @@ func (oc *OrganizationCreate) createSpec() (*Organization, *sqlgraph.CreateSpec)
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permissionpolicy.FieldID,
+					Column: organizationpolicy.FieldID,
 				},
 			},
 		}

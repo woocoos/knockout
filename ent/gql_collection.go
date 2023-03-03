@@ -1139,13 +1139,13 @@ func (o *OrganizationQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&PermissionPolicyClient{config: o.config}).Query()
+				query = (&OrganizationPolicyClient{config: o.config}).Query()
 			)
-			args := newPermissionPolicyPaginateArgs(fieldArgs(ctx, new(PermissionPolicyWhereInput), path...))
+			args := newOrganizationPolicyPaginateArgs(fieldArgs(ctx, new(OrganizationPolicyWhereInput), path...))
 			if err := validateFirstLast(args.first, args.last); err != nil {
 				return fmt.Errorf("validate first and last in path %q: %w", path, err)
 			}
-			pager, err := newPermissionPolicyPager(args.opts, args.last != nil)
+			pager, err := newOrganizationPolicyPager(args.opts, args.last != nil)
 			if err != nil {
 				return fmt.Errorf("create new pager in path %q: %w", path, err)
 			}
@@ -1217,7 +1217,7 @@ func (o *OrganizationQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 					return err
 				}
 			}
-			o.WithNamedPolicies(alias, func(wq *PermissionPolicyQuery) {
+			o.WithNamedPolicies(alias, func(wq *OrganizationPolicyQuery) {
 				*wq = *query
 			})
 		case "apps":
@@ -1366,6 +1366,88 @@ func newOrganizationPaginateArgs(rv map[string]interface{}) *organizationPaginat
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (op *OrganizationPolicyQuery) CollectFields(ctx context.Context, satisfies ...string) (*OrganizationPolicyQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return op, nil
+	}
+	if err := op.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return op, nil
+}
+
+func (op *OrganizationPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+		switch field.Name {
+		case "organization":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrganizationClient{config: op.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			op.withOrganization = query
+		}
+	}
+	return nil
+}
+
+type organizationpolicyPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []OrganizationPolicyPaginateOption
+}
+
+func newOrganizationPolicyPaginateArgs(rv map[string]interface{}) *organizationpolicyPaginateArgs {
+	args := &organizationpolicyPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]interface{}:
+			var (
+				err1, err2 error
+				order      = &OrganizationPolicyOrder{Field: &OrganizationPolicyOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithOrganizationPolicyOrder(order))
+			}
+		case *OrganizationPolicyOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithOrganizationPolicyOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*OrganizationPolicyWhereInput); ok {
+		args.opts = append(args.opts, WithOrganizationPolicyFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (pe *PermissionQuery) CollectFields(ctx context.Context, satisfies ...string) (*PermissionQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -1453,88 +1535,6 @@ func newPermissionPaginateArgs(rv map[string]interface{}) *permissionPaginateArg
 	}
 	if v, ok := rv[whereField].(*PermissionWhereInput); ok {
 		args.opts = append(args.opts, WithPermissionFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (pp *PermissionPolicyQuery) CollectFields(ctx context.Context, satisfies ...string) (*PermissionPolicyQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return pp, nil
-	}
-	if err := pp.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return pp, nil
-}
-
-func (pp *PermissionPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
-		switch field.Name {
-		case "organization":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&OrganizationClient{config: pp.config}).Query()
-			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
-				return err
-			}
-			pp.withOrganization = query
-		}
-	}
-	return nil
-}
-
-type permissionpolicyPaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []PermissionPolicyPaginateOption
-}
-
-func newPermissionPolicyPaginateArgs(rv map[string]interface{}) *permissionpolicyPaginateArgs {
-	args := &permissionpolicyPaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]interface{}:
-			var (
-				err1, err2 error
-				order      = &PermissionPolicyOrder{Field: &PermissionPolicyOrderField{}, Direction: entgql.OrderDirectionAsc}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithPermissionPolicyOrder(order))
-			}
-		case *PermissionPolicyOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithPermissionPolicyOrder(v))
-			}
-		}
-	}
-	if v, ok := rv[whereField].(*PermissionPolicyWhereInput); ok {
-		args.opts = append(args.opts, WithPermissionPolicyFilter(v.Filter))
 	}
 	return args
 }

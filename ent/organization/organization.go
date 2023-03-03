@@ -110,8 +110,8 @@ const (
 	PermissionsColumn = "org_id"
 	// PoliciesTable is the table that holds the policies relation/edge.
 	PoliciesTable = "organization_policy"
-	// PoliciesInverseTable is the table name for the PermissionPolicy entity.
-	// It exists in this package in order to avoid circular dependency with the "permissionpolicy" package.
+	// PoliciesInverseTable is the table name for the OrganizationPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "organizationpolicy" package.
 	PoliciesInverseTable = "organization_policy"
 	// PoliciesColumn is the table column denoting the policies relation/edge.
 	PoliciesColumn = "org_id"
