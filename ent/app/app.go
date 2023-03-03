@@ -50,6 +50,8 @@ const (
 	FieldComments = "comments"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldCreatedOrgID holds the string denoting the created_org_id field in the database.
+	FieldCreatedOrgID = "created_org_id"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
 	// EdgeActions holds the string denoting the actions edge name in mutations.
@@ -134,6 +136,7 @@ var Columns = []string{
 	FieldLogo,
 	FieldComments,
 	FieldStatus,
+	FieldCreatedOrgID,
 }
 
 var (

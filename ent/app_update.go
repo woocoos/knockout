@@ -294,6 +294,33 @@ func (au *AppUpdate) ClearStatus() *AppUpdate {
 	return au
 }
 
+// SetCreatedOrgID sets the "created_org_id" field.
+func (au *AppUpdate) SetCreatedOrgID(i int) *AppUpdate {
+	au.mutation.ResetCreatedOrgID()
+	au.mutation.SetCreatedOrgID(i)
+	return au
+}
+
+// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableCreatedOrgID(i *int) *AppUpdate {
+	if i != nil {
+		au.SetCreatedOrgID(*i)
+	}
+	return au
+}
+
+// AddCreatedOrgID adds i to the "created_org_id" field.
+func (au *AppUpdate) AddCreatedOrgID(i int) *AppUpdate {
+	au.mutation.AddCreatedOrgID(i)
+	return au
+}
+
+// ClearCreatedOrgID clears the value of the "created_org_id" field.
+func (au *AppUpdate) ClearCreatedOrgID() *AppUpdate {
+	au.mutation.ClearCreatedOrgID()
+	return au
+}
+
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
 func (au *AppUpdate) AddMenuIDs(ids ...int) *AppUpdate {
 	au.mutation.AddMenuIDs(ids...)
@@ -677,6 +704,15 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
+	}
+	if value, ok := au.mutation.CreatedOrgID(); ok {
+		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
+	}
+	if value, ok := au.mutation.AddedCreatedOrgID(); ok {
+		_spec.AddField(app.FieldCreatedOrgID, field.TypeInt, value)
+	}
+	if au.mutation.CreatedOrgIDCleared() {
+		_spec.ClearField(app.FieldCreatedOrgID, field.TypeInt)
 	}
 	if au.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1293,6 +1329,33 @@ func (auo *AppUpdateOne) ClearStatus() *AppUpdateOne {
 	return auo
 }
 
+// SetCreatedOrgID sets the "created_org_id" field.
+func (auo *AppUpdateOne) SetCreatedOrgID(i int) *AppUpdateOne {
+	auo.mutation.ResetCreatedOrgID()
+	auo.mutation.SetCreatedOrgID(i)
+	return auo
+}
+
+// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableCreatedOrgID(i *int) *AppUpdateOne {
+	if i != nil {
+		auo.SetCreatedOrgID(*i)
+	}
+	return auo
+}
+
+// AddCreatedOrgID adds i to the "created_org_id" field.
+func (auo *AppUpdateOne) AddCreatedOrgID(i int) *AppUpdateOne {
+	auo.mutation.AddCreatedOrgID(i)
+	return auo
+}
+
+// ClearCreatedOrgID clears the value of the "created_org_id" field.
+func (auo *AppUpdateOne) ClearCreatedOrgID() *AppUpdateOne {
+	auo.mutation.ClearCreatedOrgID()
+	return auo
+}
+
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
 func (auo *AppUpdateOne) AddMenuIDs(ids ...int) *AppUpdateOne {
 	auo.mutation.AddMenuIDs(ids...)
@@ -1706,6 +1769,15 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if auo.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
+	}
+	if value, ok := auo.mutation.CreatedOrgID(); ok {
+		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
+	}
+	if value, ok := auo.mutation.AddedCreatedOrgID(); ok {
+		_spec.AddField(app.FieldCreatedOrgID, field.TypeInt, value)
+	}
+	if auo.mutation.CreatedOrgIDCleared() {
+		_spec.ClearField(app.FieldCreatedOrgID, field.TypeInt)
 	}
 	if auo.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{

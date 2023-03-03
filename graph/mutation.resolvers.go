@@ -16,22 +16,22 @@ import (
 
 // EnableDirectory is the resolver for the enableDirectory field.
 func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Organization, error) {
-	return r.resource.EnableOrganization(ctx, input)
+	return r.Resource.EnableOrganization(ctx, input)
 }
 
 // CreateOrganization is the resolver for the createOrganization field.
 func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.CreateOrganizationInput) (*ent.Organization, error) {
-	return r.resource.CreateOrganization(ctx, input)
+	return r.Resource.CreateOrganization(ctx, input)
 }
 
 // UpdateOrganization is the resolver for the updateOrganization field.
 func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrganizationInput) (*ent.Organization, error) {
-	return r.resource.UpdateOrganization(ctx, orgID, input)
+	return r.Resource.UpdateOrganization(ctx, orgID, input)
 }
 
 // DeleteOrganization is the resolver for the deleteOrganization field.
 func (r *mutationResolver) DeleteOrganization(ctx context.Context, orgID int) (bool, error) {
-	err := r.resource.DeleteOrganization(ctx, orgID)
+	err := r.Resource.DeleteOrganization(ctx, orgID)
 	if err != nil {
 		return false, err
 	}
@@ -52,7 +52,7 @@ func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, input 
 func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, orgID int, input ent.CreateUserInput) (*ent.User, error) {
 	uid := user.DefaultID()
 	input.ID = &uid
-	return r.resource.CreateOrganizationUser(ctx, orgID, input)
+	return r.Resource.CreateOrganizationUser(ctx, orgID, input)
 }
 
 // AddOrganizationUser is the resolver for the addOrganizationUser field.
@@ -117,7 +117,7 @@ func (r *mutationResolver) SendUserMFAByEmail(ctx context.Context, userID int) (
 
 // CreateApp is the resolver for the createApp field.
 func (r *mutationResolver) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
-	return r.client.App.Create().SetInput(input).Save(ctx)
+	return r.Client.App.Create().SetInput(input).Save(ctx)
 }
 
 // UpdateApp is the resolver for the updateApp field.
@@ -161,7 +161,7 @@ func (r *mutationResolver) CreateAppMenus(ctx context.Context, input []*ent.Crea
 
 // CreateAppPolicies is the resolver for the createAppPolicies field.
 func (r *mutationResolver) CreateAppPolicies(ctx context.Context, input []*ent.CreateAppPolicyInput) (bool, error) {
-	err := r.resource.CreateAppPolicies(ctx, input)
+	err := r.Resource.CreateAppPolicies(ctx, input)
 	if err != nil {
 		return false, err
 	}
@@ -210,7 +210,7 @@ func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgI
 
 // Grant is the resolver for the grant field.
 func (r *mutationResolver) Grant(ctx context.Context, input ent.CreatePermissionInput) (*ent.Permission, error) {
-	return r.resource.Grant(ctx, input)
+	return r.Resource.Grant(ctx, input)
 }
 
 // LoginProfile is the resolver for the loginProfile field.
@@ -230,7 +230,7 @@ func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.Cre
 func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserPasswordInput) error {
 	if data != nil {
 		data.UserID = obj.ID
-		_, err := r.resource.CreateUserPassword(ctx, data)
+		_, err := r.Resource.CreateUserPassword(ctx, data)
 		if err != nil {
 			return err
 		}

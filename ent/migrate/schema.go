@@ -28,6 +28,7 @@ var (
 		{Name: "logo", Type: field.TypeString, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "created_org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// AppTable holds the schema information for the "app" table.
 	AppTable = &schema.Table{

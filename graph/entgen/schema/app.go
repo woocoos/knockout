@@ -54,6 +54,7 @@ func (App) Fields() []ent.Field {
 		field.String("logo").Optional().Comment("图标"),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
+		field.Int("created_org_id").Optional().Comment("创建租户").Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }
 

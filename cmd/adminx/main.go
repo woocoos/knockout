@@ -30,6 +30,7 @@ import (
 	"github.com/woocoos/knockout/ent"
 	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/graph"
+	"github.com/woocoos/knockout/graph/generated"
 	"github.com/woocoos/knockout/service/resource"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
@@ -57,7 +58,14 @@ func main() {
 		)
 		defer otelcfg.Shutdown()
 	}
-	if err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake")); err != nil {
+
+	err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	portalClient, err = open(conf.Global(), "store.portal")
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -82,15 +90,13 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		web.RegisterMiddleware(authz.New()),
 	)
 	webSrv.Router().NoRoute()
-	client, err := open(conf.Global(), "store.portal")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	gqlSrv := handler.New(graph.NewSchema(
-		graph.RegisterEntClient(client),
-		graph.RegistryService(&resource.Service{Client: client}),
-	))
+	gqlSrv := handler.New(generated.NewExecutableSchema(generated.Config{
+		Resolvers: &graph.Resolver{
+			Client:   portalClient,
+			Resource: &resource.Service{Client: portalClient},
+		},
+	}))
 	gqlSrv.AddTransport(transport.Websocket{
 		KeepAlivePingInterval: 10 * time.Second,
 	})
@@ -104,7 +110,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	gqlSrv.Use(extension.AutomaticPersistedQuery{
 		Cache: lru.New(100),
 	})
-	if err = gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
+	if err := gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
 		log.Fatal(err)
 	}
 	// gqlserver的中间件处理
@@ -113,7 +119,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		useContextCache(gqlSrv)
 	}
 	// mutation事务
-	gqlSrv.Use(entgql.Transactioner{TxOpener: client})
+	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
 	// 订阅支持,如果握手阶段开发模式可以允许.
 	if jwt, ok := webSrv.HandlerManager().Get("jwt"); ok {
 		if h, ok := jwt.(*webhander.JWTMiddleware); ok {

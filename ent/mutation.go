@@ -89,6 +89,8 @@ type AppMutation struct {
 	logo                      *string
 	comments                  *string
 	status                    *typex.SimpleStatus
+	created_org_id            *int
+	addcreated_org_id         *int
 	clearedFields             map[string]struct{}
 	menus                     map[int]struct{}
 	removedmenus              map[int]struct{}
@@ -1019,6 +1021,76 @@ func (m *AppMutation) ResetStatus() {
 	delete(m.clearedFields, app.FieldStatus)
 }
 
+// SetCreatedOrgID sets the "created_org_id" field.
+func (m *AppMutation) SetCreatedOrgID(i int) {
+	m.created_org_id = &i
+	m.addcreated_org_id = nil
+}
+
+// CreatedOrgID returns the value of the "created_org_id" field in the mutation.
+func (m *AppMutation) CreatedOrgID() (r int, exists bool) {
+	v := m.created_org_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedOrgID returns the old "created_org_id" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldCreatedOrgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedOrgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedOrgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedOrgID: %w", err)
+	}
+	return oldValue.CreatedOrgID, nil
+}
+
+// AddCreatedOrgID adds i to the "created_org_id" field.
+func (m *AppMutation) AddCreatedOrgID(i int) {
+	if m.addcreated_org_id != nil {
+		*m.addcreated_org_id += i
+	} else {
+		m.addcreated_org_id = &i
+	}
+}
+
+// AddedCreatedOrgID returns the value that was added to the "created_org_id" field in this mutation.
+func (m *AppMutation) AddedCreatedOrgID() (r int, exists bool) {
+	v := m.addcreated_org_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCreatedOrgID clears the value of the "created_org_id" field.
+func (m *AppMutation) ClearCreatedOrgID() {
+	m.created_org_id = nil
+	m.addcreated_org_id = nil
+	m.clearedFields[app.FieldCreatedOrgID] = struct{}{}
+}
+
+// CreatedOrgIDCleared returns if the "created_org_id" field was cleared in this mutation.
+func (m *AppMutation) CreatedOrgIDCleared() bool {
+	_, ok := m.clearedFields[app.FieldCreatedOrgID]
+	return ok
+}
+
+// ResetCreatedOrgID resets all changes to the "created_org_id" field.
+func (m *AppMutation) ResetCreatedOrgID() {
+	m.created_org_id = nil
+	m.addcreated_org_id = nil
+	delete(m.clearedFields, app.FieldCreatedOrgID)
+}
+
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by ids.
 func (m *AppMutation) AddMenuIDs(ids ...int) {
 	if m.menus == nil {
@@ -1377,7 +1449,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.created_by != nil {
 		fields = append(fields, app.FieldCreatedBy)
 	}
@@ -1426,6 +1498,9 @@ func (m *AppMutation) Fields() []string {
 	if m.status != nil {
 		fields = append(fields, app.FieldStatus)
 	}
+	if m.created_org_id != nil {
+		fields = append(fields, app.FieldCreatedOrgID)
+	}
 	return fields
 }
 
@@ -1466,6 +1541,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Comments()
 	case app.FieldStatus:
 		return m.Status()
+	case app.FieldCreatedOrgID:
+		return m.CreatedOrgID()
 	}
 	return nil, false
 }
@@ -1507,6 +1584,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldComments(ctx)
 	case app.FieldStatus:
 		return m.OldStatus(ctx)
+	case app.FieldCreatedOrgID:
+		return m.OldCreatedOrgID(ctx)
 	}
 	return nil, fmt.Errorf("unknown App field %s", name)
 }
@@ -1628,6 +1707,13 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
+	case app.FieldCreatedOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedOrgID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown App field %s", name)
 }
@@ -1648,6 +1734,9 @@ func (m *AppMutation) AddedFields() []string {
 	if m.addrefresh_token_validity != nil {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
+	if m.addcreated_org_id != nil {
+		fields = append(fields, app.FieldCreatedOrgID)
+	}
 	return fields
 }
 
@@ -1664,6 +1753,8 @@ func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTokenValidity()
 	case app.FieldRefreshTokenValidity:
 		return m.AddedRefreshTokenValidity()
+	case app.FieldCreatedOrgID:
+		return m.AddedCreatedOrgID()
 	}
 	return nil, false
 }
@@ -1700,6 +1791,13 @@ func (m *AppMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRefreshTokenValidity(v)
+		return nil
+	case app.FieldCreatedOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedOrgID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown App numeric field %s", name)
@@ -1741,6 +1839,9 @@ func (m *AppMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(app.FieldStatus) {
 		fields = append(fields, app.FieldStatus)
+	}
+	if m.FieldCleared(app.FieldCreatedOrgID) {
+		fields = append(fields, app.FieldCreatedOrgID)
 	}
 	return fields
 }
@@ -1788,6 +1889,9 @@ func (m *AppMutation) ClearField(name string) error {
 		return nil
 	case app.FieldStatus:
 		m.ClearStatus()
+		return nil
+	case app.FieldCreatedOrgID:
+		m.ClearCreatedOrgID()
 		return nil
 	}
 	return fmt.Errorf("unknown App nullable field %s", name)
@@ -1844,6 +1948,9 @@ func (m *AppMutation) ResetField(name string) error {
 		return nil
 	case app.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case app.FieldCreatedOrgID:
+		m.ResetCreatedOrgID()
 		return nil
 	}
 	return fmt.Errorf("unknown App field %s", name)

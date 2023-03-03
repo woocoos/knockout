@@ -219,6 +219,20 @@ func (ac *AppCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppCreate {
 	return ac
 }
 
+// SetCreatedOrgID sets the "created_org_id" field.
+func (ac *AppCreate) SetCreatedOrgID(i int) *AppCreate {
+	ac.mutation.SetCreatedOrgID(i)
+	return ac
+}
+
+// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
+func (ac *AppCreate) SetNillableCreatedOrgID(i *int) *AppCreate {
+	if i != nil {
+		ac.SetCreatedOrgID(*i)
+	}
+	return ac
+}
+
 // SetID sets the "id" field.
 func (ac *AppCreate) SetID(i int) *AppCreate {
 	ac.mutation.SetID(i)
@@ -528,6 +542,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Status(); ok {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
+	}
+	if value, ok := ac.mutation.CreatedOrgID(); ok {
+		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
+		_node.CreatedOrgID = value
 	}
 	if nodes := ac.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

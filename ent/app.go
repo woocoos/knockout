@@ -49,6 +49,8 @@ type App struct {
 	Comments string `json:"comments,omitempty"`
 	// 状态
 	Status typex.SimpleStatus `json:"status,omitempty"`
+	// 创建租户
+	CreatedOrgID int `json:"created_org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.
 	Edges AppEdges `json:"edges"`
@@ -153,7 +155,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity:
+		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldCreatedOrgID:
 			values[i] = new(sql.NullInt64)
 		case app.FieldName, app.FieldCode, app.FieldKind, app.FieldRedirectURI, app.FieldAppKey, app.FieldAppSecret, app.FieldScopes, app.FieldLogo, app.FieldComments, app.FieldStatus:
 			values[i] = new(sql.NullString)
@@ -276,6 +278,12 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Status = typex.SimpleStatus(value.String)
 			}
+		case app.FieldCreatedOrgID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field created_org_id", values[i])
+			} else if value.Valid {
+				a.CreatedOrgID = int(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -386,6 +394,9 @@ func (a *App) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", a.Status))
+	builder.WriteString(", ")
+	builder.WriteString("created_org_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.CreatedOrgID))
 	builder.WriteByte(')')
 	return builder.String()
 }
