@@ -58,5 +58,5 @@ snowflake:
   # 序列号位数
   stepBits: 8
 entcache:
-  level: 2
+  level: db
   ttl: 5m
