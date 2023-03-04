@@ -1,7 +1,10 @@
+//go:build ignore
+
 package main
 
 import (
 	"entgo.io/contrib/entgql"
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
 	"github.com/woocoos/entco/genx"
@@ -30,6 +33,7 @@ func main() {
 		Package:  "github.com/woocoos/knockout/ent",
 		Features: []gen.Feature{gen.FeatureVersionedMigration, gen.FeatureIntercept},
 		Target:   "./ent",
+		Hooks:    []gen.Hook{entproto.Hook()},
 	}, opts...)
 	if err != nil {
 		log.Fatalf("running ent codegen: %v", err)

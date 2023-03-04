@@ -26,8 +26,10 @@ test-db:
 	GOWORK=off go run -mod=mod test/initdb.go
 
 .PHONY: gen genent gengql
-gen: genent gengql
+gen: genent gengql genproto
 genent:
 	go run graph/entgen/entc.go
 gengql:
 	go run graph/gqlgen/gqlgen.go
+genproto:
+	go run graph/entgen/entproto.go
