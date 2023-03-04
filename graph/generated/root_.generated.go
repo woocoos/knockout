@@ -55,7 +55,7 @@ type ComplexityRoot struct {
 		Logo                 func(childComplexity int) int
 		Menus                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppMenuOrder, where *ent.AppMenuWhereInput) int
 		Name                 func(childComplexity int) int
-		Organizations        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrganizationOrder, where *ent.OrganizationWhereInput) int
+		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		Policies             func(childComplexity int) int
 		RedirectURI          func(childComplexity int) int
 		RefreshTokenValidity func(childComplexity int) int
@@ -222,7 +222,7 @@ type ComplexityRoot struct {
 		CreateAppMenus              func(childComplexity int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicies           func(childComplexity int, input []*ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, input ent.CreateAppRoleInput) int
-		CreateOrganization          func(childComplexity int, input ent.CreateOrganizationInput) int
+		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, input model.CreateOrganizationAccountInput) int
 		CreateOrganizationUser      func(childComplexity int, orgID int, input ent.CreateUserInput) int
 		CreateUserMfa               func(childComplexity int, userID int) int
@@ -242,11 +242,11 @@ type ComplexityRoot struct {
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppMenu               func(childComplexity int, input ent.UpdateAppMenuInput) int
 		UpdateAppRole               func(childComplexity int, input ent.UpdateAppRoleInput) int
-		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrganizationInput) int
+		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
 	}
 
-	Organization struct {
+	Org struct {
 		Apps        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		Children    func(childComplexity int) int
 		Code        func(childComplexity int) int
@@ -263,7 +263,7 @@ type ComplexityRoot struct {
 		ParentID    func(childComplexity int) int
 		Path        func(childComplexity int) int
 		Permissions func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		Policies    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrganizationPolicyOrder, where *ent.OrganizationPolicyWhereInput) int
+		Policies    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgPolicyOrder, where *ent.OrgPolicyWhereInput) int
 		Profile     func(childComplexity int) int
 		Status      func(childComplexity int) int
 		Timezone    func(childComplexity int) int
@@ -272,38 +272,38 @@ type ComplexityRoot struct {
 		Users       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
-	OrganizationConnection struct {
+	OrgConnection struct {
 		Edges      func(childComplexity int) int
 		PageInfo   func(childComplexity int) int
 		TotalCount func(childComplexity int) int
 	}
 
-	OrganizationEdge struct {
+	OrgEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
 	}
 
-	OrganizationPolicy struct {
-		AppPolicyID  func(childComplexity int) int
-		Comments     func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		CreatedBy    func(childComplexity int) int
-		ID           func(childComplexity int) int
-		Name         func(childComplexity int) int
-		OrgID        func(childComplexity int) int
-		Organization func(childComplexity int) int
-		Rules        func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		UpdatedBy    func(childComplexity int) int
+	OrgPolicy struct {
+		AppPolicyID func(childComplexity int) int
+		Comments    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Org         func(childComplexity int) int
+		OrgID       func(childComplexity int) int
+		Rules       func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
-	OrganizationPolicyConnection struct {
+	OrgPolicyConnection struct {
 		Edges      func(childComplexity int) int
 		PageInfo   func(childComplexity int) int
 		TotalCount func(childComplexity int) int
 	}
 
-	OrganizationPolicyEdge struct {
+	OrgPolicyEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
 	}
@@ -320,9 +320,9 @@ type ComplexityRoot struct {
 		CreatedBy     func(childComplexity int) int
 		EndAt         func(childComplexity int) int
 		ID            func(childComplexity int) int
+		Org           func(childComplexity int) int
 		OrgID         func(childComplexity int) int
 		OrgPolicyID   func(childComplexity int) int
-		Organization  func(childComplexity int) int
 		PrincipalKind func(childComplexity int) int
 		RoleID        func(childComplexity int) int
 		StartAt       func(childComplexity int) int
@@ -352,12 +352,12 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Apps          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		GlobalID      func(childComplexity int, typeArg string, id int) int
-		Node          func(childComplexity int, id string) int
-		Nodes         func(childComplexity int, ids []string) int
-		Organizations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrganizationOrder, where *ent.OrganizationWhereInput) int
-		Users         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Apps     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		GlobalID func(childComplexity int, typeArg string, id int) int
+		Node     func(childComplexity int, id string) int
+		Nodes    func(childComplexity int, ids []string) int
+		Orgs     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		Users    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	Subscription struct {
@@ -571,17 +571,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.App.Name(childComplexity), true
 
-	case "App.organizations":
-		if e.complexity.App.Organizations == nil {
+	case "App.orgs":
+		if e.complexity.App.Orgs == nil {
 			break
 		}
 
-		args, err := ec.field_App_organizations_args(context.TODO(), rawArgs)
+		args, err := ec.field_App_orgs_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.App.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrganizationOrder), args["where"].(*ent.OrganizationWhereInput)), true
+		return e.complexity.App.Orgs(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
 	case "App.policies":
 		if e.complexity.App.Policies == nil {
@@ -1463,7 +1463,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateOrganization(childComplexity, args["input"].(ent.CreateOrganizationInput)), true
+		return e.complexity.Mutation.CreateOrganization(childComplexity, args["input"].(ent.CreateOrgInput)), true
 
 	case "Mutation.createOrganizationAccount":
 		if e.complexity.Mutation.CreateOrganizationAccount == nil {
@@ -1703,7 +1703,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateOrganization(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateOrganizationInput)), true
+		return e.complexity.Mutation.UpdateOrganization(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateOrgInput)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -1717,333 +1717,333 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput)), true
 
-	case "Organization.apps":
-		if e.complexity.Organization.Apps == nil {
+	case "Org.apps":
+		if e.complexity.Org.Apps == nil {
 			break
 		}
 
-		args, err := ec.field_Organization_apps_args(context.TODO(), rawArgs)
+		args, err := ec.field_Org_apps_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Organization.Apps(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppOrder), args["where"].(*ent.AppWhereInput)), true
+		return e.complexity.Org.Apps(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppOrder), args["where"].(*ent.AppWhereInput)), true
 
-	case "Organization.children":
-		if e.complexity.Organization.Children == nil {
+	case "Org.children":
+		if e.complexity.Org.Children == nil {
 			break
 		}
 
-		return e.complexity.Organization.Children(childComplexity), true
+		return e.complexity.Org.Children(childComplexity), true
 
-	case "Organization.code":
-		if e.complexity.Organization.Code == nil {
+	case "Org.code":
+		if e.complexity.Org.Code == nil {
 			break
 		}
 
-		return e.complexity.Organization.Code(childComplexity), true
+		return e.complexity.Org.Code(childComplexity), true
 
-	case "Organization.countryCode":
-		if e.complexity.Organization.CountryCode == nil {
+	case "Org.countryCode":
+		if e.complexity.Org.CountryCode == nil {
 			break
 		}
 
-		return e.complexity.Organization.CountryCode(childComplexity), true
+		return e.complexity.Org.CountryCode(childComplexity), true
 
-	case "Organization.createdAt":
-		if e.complexity.Organization.CreatedAt == nil {
+	case "Org.createdAt":
+		if e.complexity.Org.CreatedAt == nil {
 			break
 		}
 
-		return e.complexity.Organization.CreatedAt(childComplexity), true
+		return e.complexity.Org.CreatedAt(childComplexity), true
 
-	case "Organization.createdBy":
-		if e.complexity.Organization.CreatedBy == nil {
+	case "Org.createdBy":
+		if e.complexity.Org.CreatedBy == nil {
 			break
 		}
 
-		return e.complexity.Organization.CreatedBy(childComplexity), true
+		return e.complexity.Org.CreatedBy(childComplexity), true
 
-	case "Organization.deletedAt":
-		if e.complexity.Organization.DeletedAt == nil {
+	case "Org.deletedAt":
+		if e.complexity.Org.DeletedAt == nil {
 			break
 		}
 
-		return e.complexity.Organization.DeletedAt(childComplexity), true
+		return e.complexity.Org.DeletedAt(childComplexity), true
 
-	case "Organization.displaySort":
-		if e.complexity.Organization.DisplaySort == nil {
+	case "Org.displaySort":
+		if e.complexity.Org.DisplaySort == nil {
 			break
 		}
 
-		return e.complexity.Organization.DisplaySort(childComplexity), true
+		return e.complexity.Org.DisplaySort(childComplexity), true
 
-	case "Organization.domain":
-		if e.complexity.Organization.Domain == nil {
+	case "Org.domain":
+		if e.complexity.Org.Domain == nil {
 			break
 		}
 
-		return e.complexity.Organization.Domain(childComplexity), true
+		return e.complexity.Org.Domain(childComplexity), true
 
-	case "Organization.id":
-		if e.complexity.Organization.ID == nil {
+	case "Org.id":
+		if e.complexity.Org.ID == nil {
 			break
 		}
 
-		return e.complexity.Organization.ID(childComplexity), true
+		return e.complexity.Org.ID(childComplexity), true
 
-	case "Organization.name":
-		if e.complexity.Organization.Name == nil {
+	case "Org.name":
+		if e.complexity.Org.Name == nil {
 			break
 		}
 
-		return e.complexity.Organization.Name(childComplexity), true
+		return e.complexity.Org.Name(childComplexity), true
 
-	case "Organization.ownerID":
-		if e.complexity.Organization.OwnerID == nil {
+	case "Org.ownerID":
+		if e.complexity.Org.OwnerID == nil {
 			break
 		}
 
-		return e.complexity.Organization.OwnerID(childComplexity), true
+		return e.complexity.Org.OwnerID(childComplexity), true
 
-	case "Organization.parent":
-		if e.complexity.Organization.Parent == nil {
+	case "Org.parent":
+		if e.complexity.Org.Parent == nil {
 			break
 		}
 
-		return e.complexity.Organization.Parent(childComplexity), true
+		return e.complexity.Org.Parent(childComplexity), true
 
-	case "Organization.parentID":
-		if e.complexity.Organization.ParentID == nil {
+	case "Org.parentID":
+		if e.complexity.Org.ParentID == nil {
 			break
 		}
 
-		return e.complexity.Organization.ParentID(childComplexity), true
+		return e.complexity.Org.ParentID(childComplexity), true
 
-	case "Organization.path":
-		if e.complexity.Organization.Path == nil {
+	case "Org.path":
+		if e.complexity.Org.Path == nil {
 			break
 		}
 
-		return e.complexity.Organization.Path(childComplexity), true
+		return e.complexity.Org.Path(childComplexity), true
 
-	case "Organization.permissions":
-		if e.complexity.Organization.Permissions == nil {
+	case "Org.permissions":
+		if e.complexity.Org.Permissions == nil {
 			break
 		}
 
-		args, err := ec.field_Organization_permissions_args(context.TODO(), rawArgs)
+		args, err := ec.field_Org_permissions_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Organization.Permissions(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+		return e.complexity.Org.Permissions(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
-	case "Organization.policies":
-		if e.complexity.Organization.Policies == nil {
+	case "Org.policies":
+		if e.complexity.Org.Policies == nil {
 			break
 		}
 
-		args, err := ec.field_Organization_policies_args(context.TODO(), rawArgs)
+		args, err := ec.field_Org_policies_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Organization.Policies(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrganizationPolicyOrder), args["where"].(*ent.OrganizationPolicyWhereInput)), true
+		return e.complexity.Org.Policies(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgPolicyOrder), args["where"].(*ent.OrgPolicyWhereInput)), true
 
-	case "Organization.profile":
-		if e.complexity.Organization.Profile == nil {
+	case "Org.profile":
+		if e.complexity.Org.Profile == nil {
 			break
 		}
 
-		return e.complexity.Organization.Profile(childComplexity), true
+		return e.complexity.Org.Profile(childComplexity), true
 
-	case "Organization.status":
-		if e.complexity.Organization.Status == nil {
+	case "Org.status":
+		if e.complexity.Org.Status == nil {
 			break
 		}
 
-		return e.complexity.Organization.Status(childComplexity), true
+		return e.complexity.Org.Status(childComplexity), true
 
-	case "Organization.timezone":
-		if e.complexity.Organization.Timezone == nil {
+	case "Org.timezone":
+		if e.complexity.Org.Timezone == nil {
 			break
 		}
 
-		return e.complexity.Organization.Timezone(childComplexity), true
+		return e.complexity.Org.Timezone(childComplexity), true
 
-	case "Organization.updatedAt":
-		if e.complexity.Organization.UpdatedAt == nil {
+	case "Org.updatedAt":
+		if e.complexity.Org.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Organization.UpdatedAt(childComplexity), true
+		return e.complexity.Org.UpdatedAt(childComplexity), true
 
-	case "Organization.updatedBy":
-		if e.complexity.Organization.UpdatedBy == nil {
+	case "Org.updatedBy":
+		if e.complexity.Org.UpdatedBy == nil {
 			break
 		}
 
-		return e.complexity.Organization.UpdatedBy(childComplexity), true
+		return e.complexity.Org.UpdatedBy(childComplexity), true
 
-	case "Organization.users":
-		if e.complexity.Organization.Users == nil {
+	case "Org.users":
+		if e.complexity.Org.Users == nil {
 			break
 		}
 
-		args, err := ec.field_Organization_users_args(context.TODO(), rawArgs)
+		args, err := ec.field_Org_users_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Organization.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+		return e.complexity.Org.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
-	case "OrganizationConnection.edges":
-		if e.complexity.OrganizationConnection.Edges == nil {
+	case "OrgConnection.edges":
+		if e.complexity.OrgConnection.Edges == nil {
 			break
 		}
 
-		return e.complexity.OrganizationConnection.Edges(childComplexity), true
+		return e.complexity.OrgConnection.Edges(childComplexity), true
 
-	case "OrganizationConnection.pageInfo":
-		if e.complexity.OrganizationConnection.PageInfo == nil {
+	case "OrgConnection.pageInfo":
+		if e.complexity.OrgConnection.PageInfo == nil {
 			break
 		}
 
-		return e.complexity.OrganizationConnection.PageInfo(childComplexity), true
+		return e.complexity.OrgConnection.PageInfo(childComplexity), true
 
-	case "OrganizationConnection.totalCount":
-		if e.complexity.OrganizationConnection.TotalCount == nil {
+	case "OrgConnection.totalCount":
+		if e.complexity.OrgConnection.TotalCount == nil {
 			break
 		}
 
-		return e.complexity.OrganizationConnection.TotalCount(childComplexity), true
+		return e.complexity.OrgConnection.TotalCount(childComplexity), true
 
-	case "OrganizationEdge.cursor":
-		if e.complexity.OrganizationEdge.Cursor == nil {
+	case "OrgEdge.cursor":
+		if e.complexity.OrgEdge.Cursor == nil {
 			break
 		}
 
-		return e.complexity.OrganizationEdge.Cursor(childComplexity), true
+		return e.complexity.OrgEdge.Cursor(childComplexity), true
 
-	case "OrganizationEdge.node":
-		if e.complexity.OrganizationEdge.Node == nil {
+	case "OrgEdge.node":
+		if e.complexity.OrgEdge.Node == nil {
 			break
 		}
 
-		return e.complexity.OrganizationEdge.Node(childComplexity), true
+		return e.complexity.OrgEdge.Node(childComplexity), true
 
-	case "OrganizationPolicy.appPolicyID":
-		if e.complexity.OrganizationPolicy.AppPolicyID == nil {
+	case "OrgPolicy.appPolicyID":
+		if e.complexity.OrgPolicy.AppPolicyID == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.AppPolicyID(childComplexity), true
+		return e.complexity.OrgPolicy.AppPolicyID(childComplexity), true
 
-	case "OrganizationPolicy.comments":
-		if e.complexity.OrganizationPolicy.Comments == nil {
+	case "OrgPolicy.comments":
+		if e.complexity.OrgPolicy.Comments == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.Comments(childComplexity), true
+		return e.complexity.OrgPolicy.Comments(childComplexity), true
 
-	case "OrganizationPolicy.createdAt":
-		if e.complexity.OrganizationPolicy.CreatedAt == nil {
+	case "OrgPolicy.createdAt":
+		if e.complexity.OrgPolicy.CreatedAt == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.CreatedAt(childComplexity), true
+		return e.complexity.OrgPolicy.CreatedAt(childComplexity), true
 
-	case "OrganizationPolicy.createdBy":
-		if e.complexity.OrganizationPolicy.CreatedBy == nil {
+	case "OrgPolicy.createdBy":
+		if e.complexity.OrgPolicy.CreatedBy == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.CreatedBy(childComplexity), true
+		return e.complexity.OrgPolicy.CreatedBy(childComplexity), true
 
-	case "OrganizationPolicy.id":
-		if e.complexity.OrganizationPolicy.ID == nil {
+	case "OrgPolicy.id":
+		if e.complexity.OrgPolicy.ID == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.ID(childComplexity), true
+		return e.complexity.OrgPolicy.ID(childComplexity), true
 
-	case "OrganizationPolicy.name":
-		if e.complexity.OrganizationPolicy.Name == nil {
+	case "OrgPolicy.name":
+		if e.complexity.OrgPolicy.Name == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.Name(childComplexity), true
+		return e.complexity.OrgPolicy.Name(childComplexity), true
 
-	case "OrganizationPolicy.orgID":
-		if e.complexity.OrganizationPolicy.OrgID == nil {
+	case "OrgPolicy.org":
+		if e.complexity.OrgPolicy.Org == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.OrgID(childComplexity), true
+		return e.complexity.OrgPolicy.Org(childComplexity), true
 
-	case "OrganizationPolicy.organization":
-		if e.complexity.OrganizationPolicy.Organization == nil {
+	case "OrgPolicy.orgID":
+		if e.complexity.OrgPolicy.OrgID == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.Organization(childComplexity), true
+		return e.complexity.OrgPolicy.OrgID(childComplexity), true
 
-	case "OrganizationPolicy.rules":
-		if e.complexity.OrganizationPolicy.Rules == nil {
+	case "OrgPolicy.rules":
+		if e.complexity.OrgPolicy.Rules == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.Rules(childComplexity), true
+		return e.complexity.OrgPolicy.Rules(childComplexity), true
 
-	case "OrganizationPolicy.updatedAt":
-		if e.complexity.OrganizationPolicy.UpdatedAt == nil {
+	case "OrgPolicy.updatedAt":
+		if e.complexity.OrgPolicy.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.UpdatedAt(childComplexity), true
+		return e.complexity.OrgPolicy.UpdatedAt(childComplexity), true
 
-	case "OrganizationPolicy.updatedBy":
-		if e.complexity.OrganizationPolicy.UpdatedBy == nil {
+	case "OrgPolicy.updatedBy":
+		if e.complexity.OrgPolicy.UpdatedBy == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicy.UpdatedBy(childComplexity), true
+		return e.complexity.OrgPolicy.UpdatedBy(childComplexity), true
 
-	case "OrganizationPolicyConnection.edges":
-		if e.complexity.OrganizationPolicyConnection.Edges == nil {
+	case "OrgPolicyConnection.edges":
+		if e.complexity.OrgPolicyConnection.Edges == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicyConnection.Edges(childComplexity), true
+		return e.complexity.OrgPolicyConnection.Edges(childComplexity), true
 
-	case "OrganizationPolicyConnection.pageInfo":
-		if e.complexity.OrganizationPolicyConnection.PageInfo == nil {
+	case "OrgPolicyConnection.pageInfo":
+		if e.complexity.OrgPolicyConnection.PageInfo == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicyConnection.PageInfo(childComplexity), true
+		return e.complexity.OrgPolicyConnection.PageInfo(childComplexity), true
 
-	case "OrganizationPolicyConnection.totalCount":
-		if e.complexity.OrganizationPolicyConnection.TotalCount == nil {
+	case "OrgPolicyConnection.totalCount":
+		if e.complexity.OrgPolicyConnection.TotalCount == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicyConnection.TotalCount(childComplexity), true
+		return e.complexity.OrgPolicyConnection.TotalCount(childComplexity), true
 
-	case "OrganizationPolicyEdge.cursor":
-		if e.complexity.OrganizationPolicyEdge.Cursor == nil {
+	case "OrgPolicyEdge.cursor":
+		if e.complexity.OrgPolicyEdge.Cursor == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicyEdge.Cursor(childComplexity), true
+		return e.complexity.OrgPolicyEdge.Cursor(childComplexity), true
 
-	case "OrganizationPolicyEdge.node":
-		if e.complexity.OrganizationPolicyEdge.Node == nil {
+	case "OrgPolicyEdge.node":
+		if e.complexity.OrgPolicyEdge.Node == nil {
 			break
 		}
 
-		return e.complexity.OrganizationPolicyEdge.Node(childComplexity), true
+		return e.complexity.OrgPolicyEdge.Node(childComplexity), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -2101,6 +2101,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Permission.ID(childComplexity), true
 
+	case "Permission.org":
+		if e.complexity.Permission.Org == nil {
+			break
+		}
+
+		return e.complexity.Permission.Org(childComplexity), true
+
 	case "Permission.orgID":
 		if e.complexity.Permission.OrgID == nil {
 			break
@@ -2114,13 +2121,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Permission.OrgPolicyID(childComplexity), true
-
-	case "Permission.organization":
-		if e.complexity.Permission.Organization == nil {
-			break
-		}
-
-		return e.complexity.Permission.Organization(childComplexity), true
 
 	case "Permission.principalKind":
 		if e.complexity.Permission.PrincipalKind == nil {
@@ -2289,17 +2289,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]string)), true
 
-	case "Query.organizations":
-		if e.complexity.Query.Organizations == nil {
+	case "Query.orgs":
+		if e.complexity.Query.Orgs == nil {
 			break
 		}
 
-		args, err := ec.field_Query_organizations_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_orgs_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrganizationOrder), args["where"].(*ent.OrganizationWhereInput)), true
+		return e.complexity.Query.Orgs(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -2883,9 +2883,9 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppPolicyInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
+		ec.unmarshalInputCreateOrgInput,
+		ec.unmarshalInputCreateOrgPolicyInput,
 		ec.unmarshalInputCreateOrganizationAccountInput,
-		ec.unmarshalInputCreateOrganizationInput,
-		ec.unmarshalInputCreateOrganizationPolicyInput,
 		ec.unmarshalInputCreatePermissionInput,
 		ec.unmarshalInputCreateUserIdentityInput,
 		ec.unmarshalInputCreateUserInput,
@@ -2893,14 +2893,14 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserPasswordInput,
 		ec.unmarshalInputEnableDirectoryInput,
 		ec.unmarshalInputGrantInput,
-		ec.unmarshalInputOrganizationOrder,
-		ec.unmarshalInputOrganizationPolicyOrder,
-		ec.unmarshalInputOrganizationPolicyWhereInput,
-		ec.unmarshalInputOrganizationRoleOrder,
-		ec.unmarshalInputOrganizationRoleWhereInput,
-		ec.unmarshalInputOrganizationUserOrder,
-		ec.unmarshalInputOrganizationUserWhereInput,
-		ec.unmarshalInputOrganizationWhereInput,
+		ec.unmarshalInputOrgOrder,
+		ec.unmarshalInputOrgPolicyOrder,
+		ec.unmarshalInputOrgPolicyWhereInput,
+		ec.unmarshalInputOrgRoleOrder,
+		ec.unmarshalInputOrgRoleWhereInput,
+		ec.unmarshalInputOrgUserOrder,
+		ec.unmarshalInputOrgUserWhereInput,
+		ec.unmarshalInputOrgWhereInput,
 		ec.unmarshalInputPermissionOrder,
 		ec.unmarshalInputPermissionWhereInput,
 		ec.unmarshalInputPolicyRuleInput,
@@ -2910,8 +2910,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppPolicyInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
-		ec.unmarshalInputUpdateOrganizationInput,
-		ec.unmarshalInputUpdateOrganizationPolicyInput,
+		ec.unmarshalInputUpdateOrgInput,
+		ec.unmarshalInputUpdateOrgPolicyInput,
 		ec.unmarshalInputUpdatePermissionInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
 		ec.unmarshalInputUpdateUserInput,
@@ -3095,7 +3095,7 @@ type App implements Node {
   ): AppResConnection!
   roles: [AppRole!]
   policies: [AppPolicy!]
-  organizations(
+  orgs(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
 
@@ -3108,12 +3108,12 @@ type App implements Node {
     """Returns the last _n_ elements from the list."""
     last: Int
 
-    """Ordering options for Organizations returned from the connection."""
-    orderBy: OrganizationOrder
+    """Ordering options for Orgs returned from the connection."""
+    orderBy: OrgOrder
 
-    """Filtering options for Organizations returned from the connection."""
-    where: OrganizationWhereInput
-  ): OrganizationConnection!
+    """Filtering options for Orgs returned from the connection."""
+    where: OrgWhereInput
+  ): OrgConnection!
 }
 type AppAction implements Node {
   id: ID!
@@ -4146,9 +4146,9 @@ input AppWhereInput {
   """policies edge predicates"""
   hasPolicies: Boolean
   hasPoliciesWith: [AppPolicyWhereInput!]
-  """organizations edge predicates"""
-  hasOrganizations: Boolean
-  hasOrganizationsWith: [OrganizationWhereInput!]
+  """orgs edge predicates"""
+  hasOrgs: Boolean
+  hasOrgsWith: [OrgWhereInput!]
 }
 """
 CreateAppActionInput is used for create AppAction object.
@@ -4201,7 +4201,7 @@ input CreateAppInput {
   resourceIDs: [ID!]
   roleIDs: [ID!]
   policyIDs: [ID!]
-  organizationIDs: [ID!]
+  orgIDs: [ID!]
 }
 """
 CreateAppMenuInput is used for create AppMenu object.
@@ -4269,10 +4269,10 @@ input CreateAppRoleInput {
   policyIDs: [ID!]
 }
 """
-CreateOrganizationInput is used for create Organization object.
+CreateOrgInput is used for create Org object.
 Input was generated by ent.
 """
-input CreateOrganizationInput {
+input CreateOrgInput {
   """默认域名"""
   domain: String
   """组织名称"""
@@ -4280,7 +4280,7 @@ input CreateOrganizationInput {
   """简介"""
   profile: String
   """状态"""
-  status: OrganizationSimpleStatus
+  status: OrgSimpleStatus
   """国家或地区2字码"""
   countryCode: String
   """时区"""
@@ -4289,16 +4289,16 @@ input CreateOrganizationInput {
   childIDs: [ID!]
   ownerID: ID
   userIDs: [ID!]
-  rolesandgroupIDs: [ID!]
+  rolesAndGroupIDs: [ID!]
   permissionIDs: [ID!]
   policyIDs: [ID!]
   appIDs: [ID!]
 }
 """
-CreateOrganizationPolicyInput is used for create OrganizationPolicy object.
+CreateOrgPolicyInput is used for create OrgPolicy object.
 Input was generated by ent.
 """
-input CreateOrganizationPolicyInput {
+input CreateOrgPolicyInput {
   """所属应用策略,如果是自定义应用策略,则为空"""
   appPolicyID: Int
   """策略名称"""
@@ -4307,7 +4307,7 @@ input CreateOrganizationPolicyInput {
   comments: String!
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRuleInput!]!
-  organizationID: ID!
+  orgID: ID!
 }
 """
 CreatePermissionInput is used for create Permission object.
@@ -4324,7 +4324,7 @@ input CreatePermissionInput {
   startAt: Time
   """生效结束时间"""
   endAt: Time
-  organizationID: ID!
+  orgID: ID!
   userID: ID
 }
 """
@@ -4419,7 +4419,7 @@ enum OrderDirection {
   """Specifies a descending order for a given ` + "`" + `orderBy` + "`" + ` argument."""
   DESC
 }
-type Organization implements Node {
+type Org implements Node {
   id: ID!
   createdBy: Int!
   createdAt: Time!
@@ -4439,7 +4439,7 @@ type Organization implements Node {
   """简介"""
   profile: String
   """状态"""
-  status: OrganizationSimpleStatus
+  status: OrgSimpleStatus
   """路径编码"""
   path: String
   displaySort: Int
@@ -4447,8 +4447,8 @@ type Organization implements Node {
   countryCode: String
   """时区"""
   timezone: String
-  parent: Organization!
-  children: [Organization!]
+  parent: Org!
+  children: [Org!]
   users(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
@@ -4500,12 +4500,12 @@ type Organization implements Node {
     """Returns the last _n_ elements from the list."""
     last: Int
 
-    """Ordering options for OrganizationPolicies returned from the connection."""
-    orderBy: OrganizationPolicyOrder
+    """Ordering options for OrgPolicies returned from the connection."""
+    orderBy: OrgPolicyOrder
 
-    """Filtering options for OrganizationPolicies returned from the connection."""
-    where: OrganizationPolicyWhereInput
-  ): OrganizationPolicyConnection!
+    """Filtering options for OrgPolicies returned from the connection."""
+    where: OrgPolicyWhereInput
+  ): OrgPolicyConnection!
   apps(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
@@ -4527,33 +4527,33 @@ type Organization implements Node {
   ): AppConnection!
 }
 """A connection to a list of items."""
-type OrganizationConnection {
+type OrgConnection {
   """A list of edges."""
-  edges: [OrganizationEdge]
+  edges: [OrgEdge]
   """Information to aid in pagination."""
   pageInfo: PageInfo!
   """Identifies the total count of items in the connection."""
   totalCount: Int!
 }
 """An edge in a connection."""
-type OrganizationEdge {
+type OrgEdge {
   """The item at the end of the edge."""
-  node: Organization
+  node: Org
   """A cursor for use in pagination."""
   cursor: Cursor!
 }
-"""Ordering options for Organization connections"""
-input OrganizationOrder {
+"""Ordering options for Org connections"""
+input OrgOrder {
   """The ordering direction."""
   direction: OrderDirection! = ASC
-  """The field by which to order Organizations."""
-  field: OrganizationOrderField!
+  """The field by which to order Orgs."""
+  field: OrgOrderField!
 }
-"""Properties by which Organization connections can be ordered."""
-enum OrganizationOrderField {
+"""Properties by which Org connections can be ordered."""
+enum OrgOrderField {
   createdAt
 }
-type OrganizationPolicy implements Node {
+type OrgPolicy implements Node {
   id: ID!
   createdBy: Int!
   createdAt: Time!
@@ -4569,43 +4569,43 @@ type OrganizationPolicy implements Node {
   comments: String!
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRule!]!
-  organization: Organization!
+  org: Org!
 }
 """A connection to a list of items."""
-type OrganizationPolicyConnection {
+type OrgPolicyConnection {
   """A list of edges."""
-  edges: [OrganizationPolicyEdge]
+  edges: [OrgPolicyEdge]
   """Information to aid in pagination."""
   pageInfo: PageInfo!
   """Identifies the total count of items in the connection."""
   totalCount: Int!
 }
 """An edge in a connection."""
-type OrganizationPolicyEdge {
+type OrgPolicyEdge {
   """The item at the end of the edge."""
-  node: OrganizationPolicy
+  node: OrgPolicy
   """A cursor for use in pagination."""
   cursor: Cursor!
 }
-"""Ordering options for OrganizationPolicy connections"""
-input OrganizationPolicyOrder {
+"""Ordering options for OrgPolicy connections"""
+input OrgPolicyOrder {
   """The ordering direction."""
   direction: OrderDirection! = ASC
-  """The field by which to order OrganizationPolicies."""
-  field: OrganizationPolicyOrderField!
+  """The field by which to order OrgPolicies."""
+  field: OrgPolicyOrderField!
 }
-"""Properties by which OrganizationPolicy connections can be ordered."""
-enum OrganizationPolicyOrderField {
+"""Properties by which OrgPolicy connections can be ordered."""
+enum OrgPolicyOrderField {
   createdAt
 }
 """
-OrganizationPolicyWhereInput is used for filtering OrganizationPolicy objects.
+OrgPolicyWhereInput is used for filtering OrgPolicy objects.
 Input was generated by ent.
 """
-input OrganizationPolicyWhereInput {
-  not: OrganizationPolicyWhereInput
-  and: [OrganizationPolicyWhereInput!]
-  or: [OrganizationPolicyWhereInput!]
+input OrgPolicyWhereInput {
+  not: OrgPolicyWhereInput
+  and: [OrgPolicyWhereInput!]
+  or: [OrgPolicyWhereInput!]
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -4699,34 +4699,34 @@ input OrganizationPolicyWhereInput {
   commentsHasSuffix: String
   commentsEqualFold: String
   commentsContainsFold: String
-  """organization edge predicates"""
-  hasOrganization: Boolean
-  hasOrganizationWith: [OrganizationWhereInput!]
+  """org edge predicates"""
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
 }
-"""OrganizationRoleKind is enum for the field kind"""
-enum OrganizationRoleKind @goModel(model: "github.com/woocoos/knockout/ent/organizationrole.Kind") {
+"""OrgRoleKind is enum for the field kind"""
+enum OrgRoleKind @goModel(model: "github.com/woocoos/knockout/ent/orgrole.Kind") {
   group
   role
 }
-"""Ordering options for OrganizationRole connections"""
-input OrganizationRoleOrder {
+"""Ordering options for OrgRole connections"""
+input OrgRoleOrder {
   """The ordering direction."""
   direction: OrderDirection! = ASC
-  """The field by which to order OrganizationRoles."""
-  field: OrganizationRoleOrderField!
+  """The field by which to order OrgRoles."""
+  field: OrgRoleOrderField!
 }
-"""Properties by which OrganizationRole connections can be ordered."""
-enum OrganizationRoleOrderField {
+"""Properties by which OrgRole connections can be ordered."""
+enum OrgRoleOrderField {
   createdAt
 }
 """
-OrganizationRoleWhereInput is used for filtering OrganizationRole objects.
+OrgRoleWhereInput is used for filtering OrgRole objects.
 Input was generated by ent.
 """
-input OrganizationRoleWhereInput {
-  not: OrganizationRoleWhereInput
-  and: [OrganizationRoleWhereInput!]
-  or: [OrganizationRoleWhereInput!]
+input OrgRoleWhereInput {
+  not: OrgRoleWhereInput
+  and: [OrgRoleWhereInput!]
+  or: [OrgRoleWhereInput!]
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -4782,10 +4782,10 @@ input OrganizationRoleWhereInput {
   orgIDIn: [ID!]
   orgIDNotIn: [ID!]
   """kind field predicates"""
-  kind: OrganizationRoleKind
-  kindNEQ: OrganizationRoleKind
-  kindIn: [OrganizationRoleKind!]
-  kindNotIn: [OrganizationRoleKind!]
+  kind: OrgRoleKind
+  kindNEQ: OrgRoleKind
+  kindIn: [OrgRoleKind!]
+  kindNotIn: [OrgRoleKind!]
   """name field predicates"""
   name: String
   nameNEQ: String
@@ -4801,31 +4801,31 @@ input OrganizationRoleWhereInput {
   nameEqualFold: String
   nameContainsFold: String
 }
-"""OrganizationSimpleStatus is enum for the field status"""
-enum OrganizationSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+"""OrgSimpleStatus is enum for the field status"""
+enum OrgSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
 }
-"""Ordering options for OrganizationUser connections"""
-input OrganizationUserOrder {
+"""Ordering options for OrgUser connections"""
+input OrgUserOrder {
   """The ordering direction."""
   direction: OrderDirection! = ASC
-  """The field by which to order OrganizationUsers."""
-  field: OrganizationUserOrderField!
+  """The field by which to order OrgUsers."""
+  field: OrgUserOrderField!
 }
-"""Properties by which OrganizationUser connections can be ordered."""
-enum OrganizationUserOrderField {
+"""Properties by which OrgUser connections can be ordered."""
+enum OrgUserOrderField {
   createdAt
 }
 """
-OrganizationUserWhereInput is used for filtering OrganizationUser objects.
+OrgUserWhereInput is used for filtering OrgUser objects.
 Input was generated by ent.
 """
-input OrganizationUserWhereInput {
-  not: OrganizationUserWhereInput
-  and: [OrganizationUserWhereInput!]
-  or: [OrganizationUserWhereInput!]
+input OrgUserWhereInput {
+  not: OrgUserWhereInput
+  and: [OrgUserWhereInput!]
+  or: [OrgUserWhereInput!]
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -4891,13 +4891,13 @@ input OrganizationUserWhereInput {
   displayNameContainsFold: String
 }
 """
-OrganizationWhereInput is used for filtering Organization objects.
+OrgWhereInput is used for filtering Org objects.
 Input was generated by ent.
 """
-input OrganizationWhereInput {
-  not: OrganizationWhereInput
-  and: [OrganizationWhereInput!]
-  or: [OrganizationWhereInput!]
+input OrgWhereInput {
+  not: OrgWhereInput
+  and: [OrgWhereInput!]
+  or: [OrgWhereInput!]
   """id field predicates"""
   id: ID
   idNEQ: ID
@@ -5017,10 +5017,10 @@ input OrganizationWhereInput {
   nameEqualFold: String
   nameContainsFold: String
   """status field predicates"""
-  status: OrganizationSimpleStatus
-  statusNEQ: OrganizationSimpleStatus
-  statusIn: [OrganizationSimpleStatus!]
-  statusNotIn: [OrganizationSimpleStatus!]
+  status: OrgSimpleStatus
+  statusNEQ: OrgSimpleStatus
+  statusIn: [OrgSimpleStatus!]
+  statusNotIn: [OrgSimpleStatus!]
   statusIsNil: Boolean
   statusNotNil: Boolean
   """path field predicates"""
@@ -5073,31 +5073,31 @@ input OrganizationWhereInput {
   timezoneContainsFold: String
   """parent edge predicates"""
   hasParent: Boolean
-  hasParentWith: [OrganizationWhereInput!]
+  hasParentWith: [OrgWhereInput!]
   """children edge predicates"""
   hasChildren: Boolean
-  hasChildrenWith: [OrganizationWhereInput!]
+  hasChildrenWith: [OrgWhereInput!]
   """owner edge predicates"""
   hasOwner: Boolean
   hasOwnerWith: [UserWhereInput!]
   """users edge predicates"""
   hasUsers: Boolean
   hasUsersWith: [UserWhereInput!]
-  """rolesAndGroups edge predicates"""
+  """roles_and_groups edge predicates"""
   hasRolesAndGroups: Boolean
-  hasRolesAndGroupsWith: [OrganizationRoleWhereInput!]
+  hasRolesAndGroupsWith: [OrgRoleWhereInput!]
   """permissions edge predicates"""
   hasPermissions: Boolean
   hasPermissionsWith: [PermissionWhereInput!]
   """policies edge predicates"""
   hasPolicies: Boolean
-  hasPoliciesWith: [OrganizationPolicyWhereInput!]
+  hasPoliciesWith: [OrgPolicyWhereInput!]
   """apps edge predicates"""
   hasApps: Boolean
   hasAppsWith: [AppWhereInput!]
-  """organization_user edge predicates"""
-  hasOrganizationUser: Boolean
-  hasOrganizationUserWith: [OrganizationUserWhereInput!]
+  """org_user edge predicates"""
+  hasOrgUser: Boolean
+  hasOrgUserWith: [OrgUserWhereInput!]
 }
 """
 Information about pagination in a connection.
@@ -5135,7 +5135,7 @@ type Permission implements Node {
   endAt: Time
   """状态"""
   status: PermissionSimpleStatus
-  organization: Organization!
+  org: Org!
   user: User
 }
 """A connection to a list of items."""
@@ -5299,9 +5299,9 @@ input PermissionWhereInput {
   statusNotIn: [PermissionSimpleStatus!]
   statusIsNil: Boolean
   statusNotNil: Boolean
-  """organization edge predicates"""
-  hasOrganization: Boolean
-  hasOrganizationWith: [OrganizationWhereInput!]
+  """org edge predicates"""
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
   """user edge predicates"""
   hasUser: Boolean
   hasUserWith: [UserWhereInput!]
@@ -5336,7 +5336,7 @@ type Query {
     """Filtering options for Apps returned from the connection."""
     where: AppWhereInput
   ): AppConnection!
-  organizations(
+  orgs(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
 
@@ -5349,12 +5349,12 @@ type Query {
     """Returns the last _n_ elements from the list."""
     last: Int
 
-    """Ordering options for Organizations returned from the connection."""
-    orderBy: OrganizationOrder
+    """Ordering options for Orgs returned from the connection."""
+    orderBy: OrgOrder
 
-    """Filtering options for Organizations returned from the connection."""
-    where: OrganizationWhereInput
-  ): OrganizationConnection!
+    """Filtering options for Orgs returned from the connection."""
+    where: OrgWhereInput
+  ): OrgConnection!
   users(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
@@ -5453,9 +5453,9 @@ input UpdateAppInput {
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
-  addOrganizationIDs: [ID!]
-  removeOrganizationIDs: [ID!]
-  clearOrganizations: Boolean
+  addOrgIDs: [ID!]
+  removeOrgIDs: [ID!]
+  clearOrgs: Boolean
 }
 """
 UpdateAppMenuInput is used for update AppMenu object.
@@ -5537,10 +5537,10 @@ input UpdateAppRoleInput {
   clearPolicies: Boolean
 }
 """
-UpdateOrganizationInput is used for update Organization object.
+UpdateOrgInput is used for update Org object.
 Input was generated by ent.
 """
-input UpdateOrganizationInput {
+input UpdateOrgInput {
   """默认域名"""
   domain: String
   clearDomain: Boolean
@@ -5550,7 +5550,7 @@ input UpdateOrganizationInput {
   profile: String
   clearProfile: Boolean
   """状态"""
-  status: OrganizationSimpleStatus
+  status: OrgSimpleStatus
   clearStatus: Boolean
   """国家或地区2字码"""
   countryCode: String
@@ -5582,10 +5582,10 @@ input UpdateOrganizationInput {
   clearApps: Boolean
 }
 """
-UpdateOrganizationPolicyInput is used for update OrganizationPolicy object.
+UpdateOrgPolicyInput is used for update OrgPolicy object.
 Input was generated by ent.
 """
-input UpdateOrganizationPolicyInput {
+input UpdateOrgPolicyInput {
   """所属应用策略,如果是自定义应用策略,则为空"""
   appPolicyID: Int
   clearAppPolicyID: Boolean
@@ -5596,8 +5596,8 @@ input UpdateOrganizationPolicyInput {
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRuleInput!]
   appendRules: [PolicyRuleInput!]
-  organizationID: ID
-  clearOrganization: Boolean
+  orgID: ID
+  clearOrg: Boolean
 }
 """
 UpdatePermissionInput is used for update Permission object.
@@ -5620,8 +5620,8 @@ input UpdatePermissionInput {
   """状态"""
   status: PermissionSimpleStatus
   clearStatus: Boolean
-  organizationID: ID
-  clearOrganization: Boolean
+  orgID: ID
+  clearOrg: Boolean
   userID: ID
   clearUser: Boolean
 }
@@ -6632,11 +6632,11 @@ input GrantInput {
 }`, BuiltIn: false},
 	{Name: "../../api/graphql/mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
-    enableDirectory(input: EnableDirectoryInput!):Organization
+    enableDirectory(input: EnableDirectoryInput!):Org
     """创建组织目录"""
-    createOrganization(input: CreateOrganizationInput!): Organization
+    createOrganization(input: CreateOrgInput!): Org
     """更新组织目录"""
-    updateOrganization(orgID:ID!,input: UpdateOrganizationInput!): Organization
+    updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
     """删除组织目录"""
     deleteOrganization(orgID:ID!): Boolean!
     """组织树位置调整，action: child, up, down"""

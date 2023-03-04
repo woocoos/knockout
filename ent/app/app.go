@@ -62,10 +62,10 @@ const (
 	EdgeRoles = "roles"
 	// EdgePolicies holds the string denoting the policies edge name in mutations.
 	EdgePolicies = "policies"
-	// EdgeOrganizations holds the string denoting the organizations edge name in mutations.
-	EdgeOrganizations = "organizations"
-	// EdgeOrganizationApp holds the string denoting the organization_app edge name in mutations.
-	EdgeOrganizationApp = "organization_app"
+	// EdgeOrgs holds the string denoting the orgs edge name in mutations.
+	EdgeOrgs = "orgs"
+	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
+	EdgeOrgApp = "org_app"
 	// Table holds the table name of the app in the database.
 	Table = "app"
 	// MenusTable is the table that holds the menus relation/edge.
@@ -103,18 +103,18 @@ const (
 	PoliciesInverseTable = "app_policy"
 	// PoliciesColumn is the table column denoting the policies relation/edge.
 	PoliciesColumn = "app_id"
-	// OrganizationsTable is the table that holds the organizations relation/edge. The primary key declared below.
-	OrganizationsTable = "organization_app"
-	// OrganizationsInverseTable is the table name for the Organization entity.
-	// It exists in this package in order to avoid circular dependency with the "organization" package.
-	OrganizationsInverseTable = "organization"
-	// OrganizationAppTable is the table that holds the organization_app relation/edge.
-	OrganizationAppTable = "organization_app"
-	// OrganizationAppInverseTable is the table name for the OrganizationApp entity.
-	// It exists in this package in order to avoid circular dependency with the "organizationapp" package.
-	OrganizationAppInverseTable = "organization_app"
-	// OrganizationAppColumn is the table column denoting the organization_app relation/edge.
-	OrganizationAppColumn = "app_id"
+	// OrgsTable is the table that holds the orgs relation/edge. The primary key declared below.
+	OrgsTable = "org_app"
+	// OrgsInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgsInverseTable = "org"
+	// OrgAppTable is the table that holds the org_app relation/edge.
+	OrgAppTable = "org_app"
+	// OrgAppInverseTable is the table name for the OrgApp entity.
+	// It exists in this package in order to avoid circular dependency with the "orgapp" package.
+	OrgAppInverseTable = "org_app"
+	// OrgAppColumn is the table column denoting the org_app relation/edge.
+	OrgAppColumn = "app_id"
 )
 
 // Columns holds all SQL columns for app fields.
@@ -140,9 +140,9 @@ var Columns = []string{
 }
 
 var (
-	// OrganizationsPrimaryKey and OrganizationsColumn2 are the table columns denoting the
-	// primary key for the organizations relation (M2M).
-	OrganizationsPrimaryKey = []string{"org_id", "app_id"}
+	// OrgsPrimaryKey and OrgsColumn2 are the table columns denoting the
+	// primary key for the orgs relation (M2M).
+	OrgsPrimaryKey = []string{"org_id", "app_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

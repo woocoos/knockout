@@ -62,23 +62,23 @@ type UserEdges struct {
 	// 用户设备
 	Devices []*UserDevice `json:"devices,omitempty"`
 	// 用户所属组织
-	Organizations []*Organization `json:"organizations,omitempty"`
+	Orgs []*Org `json:"orgs,omitempty"`
 	// 用户权限
 	Permissions []*Permission `json:"permissions,omitempty"`
-	// OrganizationUser holds the value of the organization_user edge.
-	OrganizationUser []*OrganizationUser `json:"organization_user,omitempty"`
+	// OrgUser holds the value of the org_user edge.
+	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [7]bool
 	// totalCount holds the count of the edges above.
 	totalCount [5]map[string]int
 
-	namedIdentities       map[string][]*UserIdentity
-	namedPasswords        map[string][]*UserPassword
-	namedDevices          map[string][]*UserDevice
-	namedOrganizations    map[string][]*Organization
-	namedPermissions      map[string][]*Permission
-	namedOrganizationUser map[string][]*OrganizationUser
+	namedIdentities  map[string][]*UserIdentity
+	namedPasswords   map[string][]*UserPassword
+	namedDevices     map[string][]*UserDevice
+	namedOrgs        map[string][]*Org
+	namedPermissions map[string][]*Permission
+	namedOrgUser     map[string][]*OrgUser
 }
 
 // IdentitiesOrErr returns the Identities value or an error if the edge
@@ -121,13 +121,13 @@ func (e UserEdges) DevicesOrErr() ([]*UserDevice, error) {
 	return nil, &NotLoadedError{edge: "devices"}
 }
 
-// OrganizationsOrErr returns the Organizations value or an error if the edge
+// OrgsOrErr returns the Orgs value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) OrganizationsOrErr() ([]*Organization, error) {
+func (e UserEdges) OrgsOrErr() ([]*Org, error) {
 	if e.loadedTypes[4] {
-		return e.Organizations, nil
+		return e.Orgs, nil
 	}
-	return nil, &NotLoadedError{edge: "organizations"}
+	return nil, &NotLoadedError{edge: "orgs"}
 }
 
 // PermissionsOrErr returns the Permissions value or an error if the edge
@@ -139,13 +139,13 @@ func (e UserEdges) PermissionsOrErr() ([]*Permission, error) {
 	return nil, &NotLoadedError{edge: "permissions"}
 }
 
-// OrganizationUserOrErr returns the OrganizationUser value or an error if the edge
+// OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) OrganizationUserOrErr() ([]*OrganizationUser, error) {
+func (e UserEdges) OrgUserOrErr() ([]*OrgUser, error) {
 	if e.loadedTypes[6] {
-		return e.OrganizationUser, nil
+		return e.OrgUser, nil
 	}
-	return nil, &NotLoadedError{edge: "organization_user"}
+	return nil, &NotLoadedError{edge: "org_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -290,9 +290,9 @@ func (u *User) QueryDevices() *UserDeviceQuery {
 	return NewUserClient(u.config).QueryDevices(u)
 }
 
-// QueryOrganizations queries the "organizations" edge of the User entity.
-func (u *User) QueryOrganizations() *OrganizationQuery {
-	return NewUserClient(u.config).QueryOrganizations(u)
+// QueryOrgs queries the "orgs" edge of the User entity.
+func (u *User) QueryOrgs() *OrgQuery {
+	return NewUserClient(u.config).QueryOrgs(u)
 }
 
 // QueryPermissions queries the "permissions" edge of the User entity.
@@ -300,9 +300,9 @@ func (u *User) QueryPermissions() *PermissionQuery {
 	return NewUserClient(u.config).QueryPermissions(u)
 }
 
-// QueryOrganizationUser queries the "organization_user" edge of the User entity.
-func (u *User) QueryOrganizationUser() *OrganizationUserQuery {
-	return NewUserClient(u.config).QueryOrganizationUser(u)
+// QueryOrgUser queries the "org_user" edge of the User entity.
+func (u *User) QueryOrgUser() *OrgUserQuery {
+	return NewUserClient(u.config).QueryOrgUser(u)
 }
 
 // Update returns a builder for updating this User.
@@ -447,27 +447,27 @@ func (u *User) appendNamedDevices(name string, edges ...*UserDevice) {
 	}
 }
 
-// NamedOrganizations returns the Organizations named value or an error if the edge was not
+// NamedOrgs returns the Orgs named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedOrganizations(name string) ([]*Organization, error) {
-	if u.Edges.namedOrganizations == nil {
+func (u *User) NamedOrgs(name string) ([]*Org, error) {
+	if u.Edges.namedOrgs == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedOrganizations[name]
+	nodes, ok := u.Edges.namedOrgs[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedOrganizations(name string, edges ...*Organization) {
-	if u.Edges.namedOrganizations == nil {
-		u.Edges.namedOrganizations = make(map[string][]*Organization)
+func (u *User) appendNamedOrgs(name string, edges ...*Org) {
+	if u.Edges.namedOrgs == nil {
+		u.Edges.namedOrgs = make(map[string][]*Org)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedOrganizations[name] = []*Organization{}
+		u.Edges.namedOrgs[name] = []*Org{}
 	} else {
-		u.Edges.namedOrganizations[name] = append(u.Edges.namedOrganizations[name], edges...)
+		u.Edges.namedOrgs[name] = append(u.Edges.namedOrgs[name], edges...)
 	}
 }
 
@@ -495,27 +495,27 @@ func (u *User) appendNamedPermissions(name string, edges ...*Permission) {
 	}
 }
 
-// NamedOrganizationUser returns the OrganizationUser named value or an error if the edge was not
+// NamedOrgUser returns the OrgUser named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedOrganizationUser(name string) ([]*OrganizationUser, error) {
-	if u.Edges.namedOrganizationUser == nil {
+func (u *User) NamedOrgUser(name string) ([]*OrgUser, error) {
+	if u.Edges.namedOrgUser == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedOrganizationUser[name]
+	nodes, ok := u.Edges.namedOrgUser[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedOrganizationUser(name string, edges ...*OrganizationUser) {
-	if u.Edges.namedOrganizationUser == nil {
-		u.Edges.namedOrganizationUser = make(map[string][]*OrganizationUser)
+func (u *User) appendNamedOrgUser(name string, edges ...*OrgUser) {
+	if u.Edges.namedOrgUser == nil {
+		u.Edges.namedOrgUser = make(map[string][]*OrgUser)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedOrganizationUser[name] = []*OrganizationUser{}
+		u.Edges.namedOrgUser[name] = []*OrgUser{}
 	} else {
-		u.Edges.namedOrganizationUser[name] = append(u.Edges.namedOrganizationUser[name], edges...)
+		u.Edges.namedOrgUser[name] = append(u.Edges.namedOrgUser[name], edges...)
 	}
 }
 

@@ -26,16 +26,16 @@ type Tx struct {
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
-	// Organization is the client for interacting with the Organization builders.
-	Organization *OrganizationClient
-	// OrganizationApp is the client for interacting with the OrganizationApp builders.
-	OrganizationApp *OrganizationAppClient
-	// OrganizationPolicy is the client for interacting with the OrganizationPolicy builders.
-	OrganizationPolicy *OrganizationPolicyClient
-	// OrganizationRole is the client for interacting with the OrganizationRole builders.
-	OrganizationRole *OrganizationRoleClient
-	// OrganizationUser is the client for interacting with the OrganizationUser builders.
-	OrganizationUser *OrganizationUserClient
+	// Org is the client for interacting with the Org builders.
+	Org *OrgClient
+	// OrgApp is the client for interacting with the OrgApp builders.
+	OrgApp *OrgAppClient
+	// OrgPolicy is the client for interacting with the OrgPolicy builders.
+	OrgPolicy *OrgPolicyClient
+	// OrgRole is the client for interacting with the OrgRole builders.
+	OrgRole *OrgRoleClient
+	// OrgUser is the client for interacting with the OrgUser builders.
+	OrgUser *OrgUserClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -186,11 +186,11 @@ func (tx *Tx) init() {
 	tx.AppRes = NewAppResClient(tx.config)
 	tx.AppRole = NewAppRoleClient(tx.config)
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)
-	tx.Organization = NewOrganizationClient(tx.config)
-	tx.OrganizationApp = NewOrganizationAppClient(tx.config)
-	tx.OrganizationPolicy = NewOrganizationPolicyClient(tx.config)
-	tx.OrganizationRole = NewOrganizationRoleClient(tx.config)
-	tx.OrganizationUser = NewOrganizationUserClient(tx.config)
+	tx.Org = NewOrgClient(tx.config)
+	tx.OrgApp = NewOrgAppClient(tx.config)
+	tx.OrgPolicy = NewOrgPolicyClient(tx.config)
+	tx.OrgRole = NewOrgRoleClient(tx.config)
+	tx.OrgUser = NewOrgUserClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)

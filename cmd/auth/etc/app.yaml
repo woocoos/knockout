@@ -1,0 +1,43 @@
+namespace: default
+appName: auth
+version: 0.0.1
+development: true
+# use open telemetry
+#otel:
+#  traceExporter: otlp
+#  otlp:
+#    endpoint: "127.0.0.1:4317"
+#    client:
+#      dialOption:
+#        - timeout: 5s
+authz:
+  watcherOptions:
+    options:
+      addr: "127.0.0.1:6379"
+      channel: "/casbin"
+  model: "etc/rbac_model.conf"
+
+grpc:
+  server:
+    addr: 127.0.0.1:10080
+    version: "1.0.0"
+    engine:
+      - unaryInterceptors:
+          - accessLog:
+          - recovery:
+  #  registry:
+  #    scheme: polaris
+  #    ttl: 10s
+  #    polaris:
+  #      global:
+  #        serverConnector:
+  #          addresses:
+  #            - 127.0.0.1:8091
+
+store:
+  portal:
+    driverName: mysql
+    dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+entcache:
+  level: db
+  ttl: 5m

@@ -66,8 +66,8 @@ func (App) Edges() []ent.Edge {
 		edge.To("resources", AppRes.Type).Comment("资源").Annotations(entgql.RelayConnection()),
 		edge.To("roles", AppRole.Type).Comment("角色"),
 		edge.To("policies", AppPolicy.Type).Comment("策略"),
-		edge.From("organizations", Organization.Type).Ref("apps").Comment("使用该应用的组织").
-			Through("organization_app", OrganizationApp.Type).
+		edge.From("orgs", Org.Type).Ref("apps").Comment("使用该应用的组织").
+			Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection()),
 	}
 }

@@ -11,12 +11,12 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.3-0.20230225134930-b53f613067d1
+	github.com/tsingsun/woocoo v0.2.3-0.20230304150923-0d7dfecb4de5
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230302043227-e03658a26330
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230303085217-301607bb1b6e
+	github.com/woocoos/entco v0.0.0-20230304150639-252d29c10e8d
 	go.opentelemetry.io/contrib/propagators/b3 v1.14.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.1.0

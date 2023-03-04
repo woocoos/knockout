@@ -17,34 +17,34 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/organization"
-	"github.com/woocoos/knockout/ent/organizationapp"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
 // AppQuery is the builder for querying App entities.
 type AppQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []OrderFunc
-	inters                   []Interceptor
-	predicates               []predicate.App
-	withMenus                *AppMenuQuery
-	withActions              *AppActionQuery
-	withResources            *AppResQuery
-	withRoles                *AppRoleQuery
-	withPolicies             *AppPolicyQuery
-	withOrganizations        *OrganizationQuery
-	withOrganizationApp      *OrganizationAppQuery
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*App) error
-	withNamedMenus           map[string]*AppMenuQuery
-	withNamedActions         map[string]*AppActionQuery
-	withNamedResources       map[string]*AppResQuery
-	withNamedRoles           map[string]*AppRoleQuery
-	withNamedPolicies        map[string]*AppPolicyQuery
-	withNamedOrganizations   map[string]*OrganizationQuery
-	withNamedOrganizationApp map[string]*OrganizationAppQuery
+	ctx                *QueryContext
+	order              []OrderFunc
+	inters             []Interceptor
+	predicates         []predicate.App
+	withMenus          *AppMenuQuery
+	withActions        *AppActionQuery
+	withResources      *AppResQuery
+	withRoles          *AppRoleQuery
+	withPolicies       *AppPolicyQuery
+	withOrgs           *OrgQuery
+	withOrgApp         *OrgAppQuery
+	modifiers          []func(*sql.Selector)
+	loadTotal          []func(context.Context, []*App) error
+	withNamedMenus     map[string]*AppMenuQuery
+	withNamedActions   map[string]*AppActionQuery
+	withNamedResources map[string]*AppResQuery
+	withNamedRoles     map[string]*AppRoleQuery
+	withNamedPolicies  map[string]*AppPolicyQuery
+	withNamedOrgs      map[string]*OrgQuery
+	withNamedOrgApp    map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -191,9 +191,9 @@ func (aq *AppQuery) QueryPolicies() *AppPolicyQuery {
 	return query
 }
 
-// QueryOrganizations chains the current query on the "organizations" edge.
-func (aq *AppQuery) QueryOrganizations() *OrganizationQuery {
-	query := (&OrganizationClient{config: aq.config}).Query()
+// QueryOrgs chains the current query on the "orgs" edge.
+func (aq *AppQuery) QueryOrgs() *OrgQuery {
+	query := (&OrgClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -204,8 +204,8 @@ func (aq *AppQuery) QueryOrganizations() *OrganizationQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, app.OrganizationsTable, app.OrganizationsPrimaryKey...),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.OrgsTable, app.OrgsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -213,9 +213,9 @@ func (aq *AppQuery) QueryOrganizations() *OrganizationQuery {
 	return query
 }
 
-// QueryOrganizationApp chains the current query on the "organization_app" edge.
-func (aq *AppQuery) QueryOrganizationApp() *OrganizationAppQuery {
-	query := (&OrganizationAppClient{config: aq.config}).Query()
+// QueryOrgApp chains the current query on the "org_app" edge.
+func (aq *AppQuery) QueryOrgApp() *OrgAppQuery {
+	query := (&OrgAppClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -226,8 +226,8 @@ func (aq *AppQuery) QueryOrganizationApp() *OrganizationAppQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
-			sqlgraph.To(organizationapp.Table, organizationapp.AppColumn),
-			sqlgraph.Edge(sqlgraph.O2M, true, app.OrganizationAppTable, app.OrganizationAppColumn),
+			sqlgraph.To(orgapp.Table, orgapp.AppColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, app.OrgAppTable, app.OrgAppColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -422,18 +422,18 @@ func (aq *AppQuery) Clone() *AppQuery {
 		return nil
 	}
 	return &AppQuery{
-		config:              aq.config,
-		ctx:                 aq.ctx.Clone(),
-		order:               append([]OrderFunc{}, aq.order...),
-		inters:              append([]Interceptor{}, aq.inters...),
-		predicates:          append([]predicate.App{}, aq.predicates...),
-		withMenus:           aq.withMenus.Clone(),
-		withActions:         aq.withActions.Clone(),
-		withResources:       aq.withResources.Clone(),
-		withRoles:           aq.withRoles.Clone(),
-		withPolicies:        aq.withPolicies.Clone(),
-		withOrganizations:   aq.withOrganizations.Clone(),
-		withOrganizationApp: aq.withOrganizationApp.Clone(),
+		config:        aq.config,
+		ctx:           aq.ctx.Clone(),
+		order:         append([]OrderFunc{}, aq.order...),
+		inters:        append([]Interceptor{}, aq.inters...),
+		predicates:    append([]predicate.App{}, aq.predicates...),
+		withMenus:     aq.withMenus.Clone(),
+		withActions:   aq.withActions.Clone(),
+		withResources: aq.withResources.Clone(),
+		withRoles:     aq.withRoles.Clone(),
+		withPolicies:  aq.withPolicies.Clone(),
+		withOrgs:      aq.withOrgs.Clone(),
+		withOrgApp:    aq.withOrgApp.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
@@ -495,25 +495,25 @@ func (aq *AppQuery) WithPolicies(opts ...func(*AppPolicyQuery)) *AppQuery {
 	return aq
 }
 
-// WithOrganizations tells the query-builder to eager-load the nodes that are connected to
-// the "organizations" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithOrganizations(opts ...func(*OrganizationQuery)) *AppQuery {
-	query := (&OrganizationClient{config: aq.config}).Query()
+// WithOrgs tells the query-builder to eager-load the nodes that are connected to
+// the "orgs" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithOrgs(opts ...func(*OrgQuery)) *AppQuery {
+	query := (&OrgClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withOrganizations = query
+	aq.withOrgs = query
 	return aq
 }
 
-// WithOrganizationApp tells the query-builder to eager-load the nodes that are connected to
-// the "organization_app" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithOrganizationApp(opts ...func(*OrganizationAppQuery)) *AppQuery {
-	query := (&OrganizationAppClient{config: aq.config}).Query()
+// WithOrgApp tells the query-builder to eager-load the nodes that are connected to
+// the "org_app" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithOrgApp(opts ...func(*OrgAppQuery)) *AppQuery {
+	query := (&OrgAppClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withOrganizationApp = query
+	aq.withOrgApp = query
 	return aq
 }
 
@@ -601,8 +601,8 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 			aq.withResources != nil,
 			aq.withRoles != nil,
 			aq.withPolicies != nil,
-			aq.withOrganizations != nil,
-			aq.withOrganizationApp != nil,
+			aq.withOrgs != nil,
+			aq.withOrgApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -661,17 +661,17 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 			return nil, err
 		}
 	}
-	if query := aq.withOrganizations; query != nil {
-		if err := aq.loadOrganizations(ctx, query, nodes,
-			func(n *App) { n.Edges.Organizations = []*Organization{} },
-			func(n *App, e *Organization) { n.Edges.Organizations = append(n.Edges.Organizations, e) }); err != nil {
+	if query := aq.withOrgs; query != nil {
+		if err := aq.loadOrgs(ctx, query, nodes,
+			func(n *App) { n.Edges.Orgs = []*Org{} },
+			func(n *App, e *Org) { n.Edges.Orgs = append(n.Edges.Orgs, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withOrganizationApp; query != nil {
-		if err := aq.loadOrganizationApp(ctx, query, nodes,
-			func(n *App) { n.Edges.OrganizationApp = []*OrganizationApp{} },
-			func(n *App, e *OrganizationApp) { n.Edges.OrganizationApp = append(n.Edges.OrganizationApp, e) }); err != nil {
+	if query := aq.withOrgApp; query != nil {
+		if err := aq.loadOrgApp(ctx, query, nodes,
+			func(n *App) { n.Edges.OrgApp = []*OrgApp{} },
+			func(n *App, e *OrgApp) { n.Edges.OrgApp = append(n.Edges.OrgApp, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -710,17 +710,17 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedOrganizations {
-		if err := aq.loadOrganizations(ctx, query, nodes,
-			func(n *App) { n.appendNamedOrganizations(name) },
-			func(n *App, e *Organization) { n.appendNamedOrganizations(name, e) }); err != nil {
+	for name, query := range aq.withNamedOrgs {
+		if err := aq.loadOrgs(ctx, query, nodes,
+			func(n *App) { n.appendNamedOrgs(name) },
+			func(n *App, e *Org) { n.appendNamedOrgs(name, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range aq.withNamedOrganizationApp {
-		if err := aq.loadOrganizationApp(ctx, query, nodes,
-			func(n *App) { n.appendNamedOrganizationApp(name) },
-			func(n *App, e *OrganizationApp) { n.appendNamedOrganizationApp(name, e) }); err != nil {
+	for name, query := range aq.withNamedOrgApp {
+		if err := aq.loadOrgApp(ctx, query, nodes,
+			func(n *App) { n.appendNamedOrgApp(name) },
+			func(n *App, e *OrgApp) { n.appendNamedOrgApp(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -868,7 +868,7 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 	}
 	return nil
 }
-func (aq *AppQuery) loadOrganizations(ctx context.Context, query *OrganizationQuery, nodes []*App, init func(*App), assign func(*App, *Organization)) error {
+func (aq *AppQuery) loadOrgs(ctx context.Context, query *OrgQuery, nodes []*App, init func(*App), assign func(*App, *Org)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int]*App)
 	nids := make(map[int]map[*App]struct{})
@@ -880,11 +880,11 @@ func (aq *AppQuery) loadOrganizations(ctx context.Context, query *OrganizationQu
 		}
 	}
 	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(app.OrganizationsTable)
-		s.Join(joinT).On(s.C(organization.FieldID), joinT.C(app.OrganizationsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(app.OrganizationsPrimaryKey[1]), edgeIDs...))
+		joinT := sql.Table(app.OrgsTable)
+		s.Join(joinT).On(s.C(org.FieldID), joinT.C(app.OrgsPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(app.OrgsPrimaryKey[1]), edgeIDs...))
 		columns := s.SelectedColumns()
-		s.Select(joinT.C(app.OrganizationsPrimaryKey[1]))
+		s.Select(joinT.C(app.OrgsPrimaryKey[1]))
 		s.AppendSelect(columns...)
 		s.SetDistinct(false)
 	})
@@ -914,14 +914,14 @@ func (aq *AppQuery) loadOrganizations(ctx context.Context, query *OrganizationQu
 			}
 		})
 	})
-	neighbors, err := withInterceptors[[]*Organization](ctx, query, qr, query.inters)
+	neighbors, err := withInterceptors[[]*Org](ctx, query, qr, query.inters)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
 		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "organizations" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected "orgs" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)
@@ -929,7 +929,7 @@ func (aq *AppQuery) loadOrganizations(ctx context.Context, query *OrganizationQu
 	}
 	return nil
 }
-func (aq *AppQuery) loadOrganizationApp(ctx context.Context, query *OrganizationAppQuery, nodes []*App, init func(*App), assign func(*App, *OrganizationApp)) error {
+func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []*App, init func(*App), assign func(*App, *OrgApp)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
 	for i := range nodes {
@@ -939,8 +939,8 @@ func (aq *AppQuery) loadOrganizationApp(ctx context.Context, query *Organization
 			init(nodes[i])
 		}
 	}
-	query.Where(predicate.OrganizationApp(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.OrganizationAppColumn, fks...))
+	query.Where(predicate.OrgApp(func(s *sql.Selector) {
+		s.Where(sql.InValues(app.OrgAppColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1111,31 +1111,31 @@ func (aq *AppQuery) WithNamedPolicies(name string, opts ...func(*AppPolicyQuery)
 	return aq
 }
 
-// WithNamedOrganizations tells the query-builder to eager-load the nodes that are connected to the "organizations"
+// WithNamedOrgs tells the query-builder to eager-load the nodes that are connected to the "orgs"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedOrganizations(name string, opts ...func(*OrganizationQuery)) *AppQuery {
-	query := (&OrganizationClient{config: aq.config}).Query()
+func (aq *AppQuery) WithNamedOrgs(name string, opts ...func(*OrgQuery)) *AppQuery {
+	query := (&OrgClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedOrganizations == nil {
-		aq.withNamedOrganizations = make(map[string]*OrganizationQuery)
+	if aq.withNamedOrgs == nil {
+		aq.withNamedOrgs = make(map[string]*OrgQuery)
 	}
-	aq.withNamedOrganizations[name] = query
+	aq.withNamedOrgs[name] = query
 	return aq
 }
 
-// WithNamedOrganizationApp tells the query-builder to eager-load the nodes that are connected to the "organization_app"
+// WithNamedOrgApp tells the query-builder to eager-load the nodes that are connected to the "org_app"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithNamedOrganizationApp(name string, opts ...func(*OrganizationAppQuery)) *AppQuery {
-	query := (&OrganizationAppClient{config: aq.config}).Query()
+func (aq *AppQuery) WithNamedOrgApp(name string, opts ...func(*OrgAppQuery)) *AppQuery {
+	query := (&OrgAppClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if aq.withNamedOrganizationApp == nil {
-		aq.withNamedOrganizationApp = make(map[string]*OrganizationAppQuery)
+	if aq.withNamedOrgApp == nil {
+		aq.withNamedOrgApp = make(map[string]*OrgAppQuery)
 	}
-	aq.withNamedOrganizationApp[name] = query
+	aq.withNamedOrgApp[name] = query
 	return aq
 }
 

@@ -18,7 +18,7 @@ type AppRolePolicy struct {
 func (AppRolePolicy) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app_role_policy"},
-		field.ID("role_id", "policy_id"),
+		field.ID("app_role_id", "app_policy_id"),
 		entgql.Skip(entgql.SkipType),
 	}
 }
@@ -32,15 +32,15 @@ func (AppRolePolicy) Mixin() []ent.Mixin {
 // Fields of the AppRolePolicy.
 func (AppRolePolicy) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("role_id").Comment("应用角色ID"),
-		field.Int("policy_id").Comment("策略ID"),
+		field.Int("app_role_id").Comment("应用角色ID"),
+		field.Int("app_policy_id").Comment("策略ID"),
 	}
 }
 
 // Edges of the AppRolePolicy.
 func (AppRolePolicy) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("role", AppRole.Type).Unique().Required().Field("role_id"),
-		edge.To("policy", AppPolicy.Type).Unique().Required().Field("policy_id"),
+		edge.To("role", AppRole.Type).Unique().Required().Field("app_role_id"),
+		edge.To("policy", AppPolicy.Type).Unique().Required().Field("app_policy_id"),
 	}
 }

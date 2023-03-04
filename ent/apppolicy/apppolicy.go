@@ -64,7 +64,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "approlepolicy" package.
 	AppRolePolicyInverseTable = "app_role_policy"
 	// AppRolePolicyColumn is the table column denoting the app_role_policy relation/edge.
-	AppRolePolicyColumn = "policy_id"
+	AppRolePolicyColumn = "app_policy_id"
 )
 
 // Columns holds all SQL columns for apppolicy fields.
@@ -86,7 +86,7 @@ var Columns = []string{
 var (
 	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
 	// primary key for the roles relation (M2M).
-	RolesPrimaryKey = []string{"role_id", "policy_id"}
+	RolesPrimaryKey = []string{"app_role_id", "app_policy_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

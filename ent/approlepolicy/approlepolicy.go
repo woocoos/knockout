@@ -19,10 +19,10 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldRoleID holds the string denoting the role_id field in the database.
-	FieldRoleID = "role_id"
-	// FieldPolicyID holds the string denoting the policy_id field in the database.
-	FieldPolicyID = "policy_id"
+	// FieldAppRoleID holds the string denoting the app_role_id field in the database.
+	FieldAppRoleID = "app_role_id"
+	// FieldAppPolicyID holds the string denoting the app_policy_id field in the database.
+	FieldAppPolicyID = "app_policy_id"
 	// EdgeRole holds the string denoting the role edge name in mutations.
 	EdgeRole = "role"
 	// EdgePolicy holds the string denoting the policy edge name in mutations.
@@ -39,14 +39,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "approle" package.
 	RoleInverseTable = "app_role"
 	// RoleColumn is the table column denoting the role relation/edge.
-	RoleColumn = "role_id"
+	RoleColumn = "app_role_id"
 	// PolicyTable is the table that holds the policy relation/edge.
 	PolicyTable = "app_role_policy"
 	// PolicyInverseTable is the table name for the AppPolicy entity.
 	// It exists in this package in order to avoid circular dependency with the "apppolicy" package.
 	PolicyInverseTable = "app_policy"
 	// PolicyColumn is the table column denoting the policy relation/edge.
-	PolicyColumn = "policy_id"
+	PolicyColumn = "app_policy_id"
 )
 
 // Columns holds all SQL columns for approlepolicy fields.
@@ -55,8 +55,8 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
-	FieldRoleID,
-	FieldPolicyID,
+	FieldAppRoleID,
+	FieldAppPolicyID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

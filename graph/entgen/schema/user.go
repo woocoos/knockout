@@ -27,6 +27,9 @@ func (User) Annotations() []schema.Annotation {
 			entgql.MutationUpdate(),
 		),
 		entproto.Message(),
+		entproto.Service(
+			entproto.Methods(entproto.MethodGet),
+		),
 	}
 }
 
@@ -88,10 +91,9 @@ func (User) Edges() []ent.Edge {
 		edge.To("login_profile", UserLoginProfile.Type).Unique().Annotations(entproto.Skip()).Comment("登陆设置"),
 		edge.To("passwords", UserPassword.Type).Annotations(entproto.Skip()).Comment("用户密码"),
 		edge.To("devices", UserDevice.Type).Annotations(entproto.Skip()).Comment("用户设备"),
-		edge.From("organizations", Organization.Type).Ref("users").Comment("用户所属组织").
-			Through("organization_user", OrganizationUser.Type).
+		edge.From("orgs", Org.Type).Ref("users").Comment("用户所属组织").
+			Through("org_user", OrgUser.Type).
 			Annotations(entgql.Skip(entgql.SkipAll), entproto.Skip()),
-		//edge.From("directory", Organization.Type).Ref("owner").Unique().Comment("目录"),
 		edge.From("permissions", Permission.Type).Ref("user").Comment("用户权限").
 			Annotations(entgql.RelayConnection(), entproto.Skip()),
 	}

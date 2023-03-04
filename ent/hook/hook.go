@@ -93,64 +93,64 @@ func (f AppRolePolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppRolePolicyMutation", m)
 }
 
-// The OrganizationFunc type is an adapter to allow the use of ordinary
-// function as Organization mutator.
-type OrganizationFunc func(context.Context, *ent.OrganizationMutation) (ent.Value, error)
+// The OrgFunc type is an adapter to allow the use of ordinary
+// function as Org mutator.
+type OrgFunc func(context.Context, *ent.OrgMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OrganizationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OrganizationMutation); ok {
+func (f OrgFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrganizationMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgMutation", m)
 }
 
-// The OrganizationAppFunc type is an adapter to allow the use of ordinary
-// function as OrganizationApp mutator.
-type OrganizationAppFunc func(context.Context, *ent.OrganizationAppMutation) (ent.Value, error)
+// The OrgAppFunc type is an adapter to allow the use of ordinary
+// function as OrgApp mutator.
+type OrgAppFunc func(context.Context, *ent.OrgAppMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OrganizationAppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OrganizationAppMutation); ok {
+func (f OrgAppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgAppMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrganizationAppMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgAppMutation", m)
 }
 
-// The OrganizationPolicyFunc type is an adapter to allow the use of ordinary
-// function as OrganizationPolicy mutator.
-type OrganizationPolicyFunc func(context.Context, *ent.OrganizationPolicyMutation) (ent.Value, error)
+// The OrgPolicyFunc type is an adapter to allow the use of ordinary
+// function as OrgPolicy mutator.
+type OrgPolicyFunc func(context.Context, *ent.OrgPolicyMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OrganizationPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OrganizationPolicyMutation); ok {
+func (f OrgPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgPolicyMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrganizationPolicyMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgPolicyMutation", m)
 }
 
-// The OrganizationRoleFunc type is an adapter to allow the use of ordinary
-// function as OrganizationRole mutator.
-type OrganizationRoleFunc func(context.Context, *ent.OrganizationRoleMutation) (ent.Value, error)
+// The OrgRoleFunc type is an adapter to allow the use of ordinary
+// function as OrgRole mutator.
+type OrgRoleFunc func(context.Context, *ent.OrgRoleMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OrganizationRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OrganizationRoleMutation); ok {
+func (f OrgRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgRoleMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrganizationRoleMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgRoleMutation", m)
 }
 
-// The OrganizationUserFunc type is an adapter to allow the use of ordinary
-// function as OrganizationUser mutator.
-type OrganizationUserFunc func(context.Context, *ent.OrganizationUserMutation) (ent.Value, error)
+// The OrgUserFunc type is an adapter to allow the use of ordinary
+// function as OrgUser mutator.
+type OrgUserFunc func(context.Context, *ent.OrgUserMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f OrganizationUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.OrganizationUserMutation); ok {
+func (f OrgUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgUserMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrganizationUserMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgUserMutation", m)
 }
 
 // The PermissionFunc type is an adapter to allow the use of ordinary

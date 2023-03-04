@@ -11,7 +11,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
@@ -27,12 +26,14 @@ import (
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/ent"
-	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/graph"
 	"github.com/woocoos/knockout/graph/generated"
 	"github.com/woocoos/knockout/service/resource"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 var (

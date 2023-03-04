@@ -50,7 +50,7 @@ func (Permission) Fields() []ent.Field {
 // Edges of the Permission.
 func (Permission) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("organization", Organization.Type).Ref("permissions").
+		edge.From("org", Org.Type).Ref("permissions").
 			Unique().Required().Field("org_id"),
 		edge.To("user", User.Type).Unique().Field("user_id"),
 	}

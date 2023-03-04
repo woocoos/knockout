@@ -1,10 +1,10 @@
 type Mutation {
     """启用目录管理,返回根节点组织信息"""
-    enableDirectory(input: EnableDirectoryInput!):Organization
+    enableDirectory(input: EnableDirectoryInput!):Org
     """创建组织目录"""
-    createOrganization(input: CreateOrganizationInput!): Organization
+    createOrganization(input: CreateOrgInput!): Org
     """更新组织目录"""
-    updateOrganization(orgID:ID!,input: UpdateOrganizationInput!): Organization
+    updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
     """删除组织目录"""
     deleteOrganization(orgID:ID!): Boolean!
     """组织树位置调整，action: child, up, down"""

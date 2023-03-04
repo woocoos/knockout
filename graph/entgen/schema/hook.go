@@ -5,13 +5,13 @@ import (
 	"entgo.io/ent"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // InitDisplaySortHook 初始化displaySort字段, 表需要有parent_id字段.
 func InitDisplaySortHook(table string) ent.Hook {
-	parentField := organization.FieldParentID
-	displayField := organization.FieldDisplaySort
+	parentField := org.FieldParentID
+	displayField := org.FieldDisplaySort
 	return hook.On(
 		func(next ent.Mutator) ent.Mutator {
 			return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
@@ -22,8 +22,8 @@ func InitDisplaySortHook(table string) ent.Hook {
 				}); ok {
 					var old int
 					switch table {
-					case organization.Table:
-						old, _ = mx.Client().Organization.Query().Where(organization.ParentID(pid.(int))).
+					case org.Table:
+						old, _ = mx.Client().Org.Query().Where(org.ParentID(pid.(int))).
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					}
 					mx.SetDisplaySort(int32(old + 1))

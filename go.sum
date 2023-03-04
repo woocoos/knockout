@@ -469,6 +469,8 @@ github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/tsingsun/woocoo v0.2.3-0.20230225134930-b53f613067d1 h1:2yS1Id1w1m68QtzxpDK8lGuxNbD/kKyuJ7NeSvIVrVw=
 github.com/tsingsun/woocoo v0.2.3-0.20230225134930-b53f613067d1/go.mod h1:Ks8hn+8qscy1V8uvc5lomTegtYCabm9QAYs658ILwQw=
+github.com/tsingsun/woocoo v0.2.3-0.20230304150923-0d7dfecb4de5 h1:pd/SIXEbvJf+1FYrkHUz9DdQ5ZnzfW+hwtbvkfYwq7k=
+github.com/tsingsun/woocoo v0.2.3-0.20230304150923-0d7dfecb4de5/go.mod h1:Ks8hn+8qscy1V8uvc5lomTegtYCabm9QAYs658ILwQw=
 github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330 h1:X/xkxi1IfNP9a8zQsKalOxEfTUiBend7WzvNppXV7Yw=
 github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330/go.mod h1:crb3+yMVQZignb4/uAcjeXBDfARbhbqVWLeSY+BcC98=
 github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230302043227-e03658a26330 h1:XH2JfbyTM/5eudvlarX3fkk2x+58oLtowtCFAV+S5fo=
@@ -493,6 +495,8 @@ github.com/woocoos/entco v0.0.0-20230302152515-91819f5c5069 h1:Ukikg/zOHErCUgBZU
 github.com/woocoos/entco v0.0.0-20230302152515-91819f5c5069/go.mod h1:sodIa7zcz9M5c4HRekEHP4F4tgNaqksFRBw6FazUiE4=
 github.com/woocoos/entco v0.0.0-20230303085217-301607bb1b6e h1:p9UAOQkPwg8wc5BFMcJ6NXSEMxEoHsHQJ2Ze5qlUk1Y=
 github.com/woocoos/entco v0.0.0-20230303085217-301607bb1b6e/go.mod h1:5LG6sK2uIadaDy9ySd/Kdy+nEwu79TuUgrOywMZSZr0=
+github.com/woocoos/entco v0.0.0-20230304150639-252d29c10e8d h1:VLdYJZrPMn95+fnG0UWy+epUASFsLRayGbjIFHRBCnM=
+github.com/woocoos/entco v0.0.0-20230304150639-252d29c10e8d/go.mod h1:5LG6sK2uIadaDy9ySd/Kdy+nEwu79TuUgrOywMZSZr0=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673/go.mod h1:N3UwUGtsrSj3ccvlPHLoLsHnpR27oXr4ZE984MbSER8=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

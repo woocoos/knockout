@@ -47,98 +47,98 @@ type Message struct {
 	SentAt time.Time `json:"sentAt"`
 }
 
-// Ordering options for OrganizationRole connections
-type OrganizationRoleOrder struct {
+// Ordering options for OrgRole connections
+type OrgRoleOrder struct {
 	// The ordering direction.
 	Direction entgql.OrderDirection `json:"direction"`
-	// The field by which to order OrganizationRoles.
-	Field OrganizationRoleOrderField `json:"field"`
+	// The field by which to order OrgRoles.
+	Field OrgRoleOrderField `json:"field"`
 }
 
-// Ordering options for OrganizationUser connections
-type OrganizationUserOrder struct {
+// Ordering options for OrgUser connections
+type OrgUserOrder struct {
 	// The ordering direction.
 	Direction entgql.OrderDirection `json:"direction"`
-	// The field by which to order OrganizationUsers.
-	Field OrganizationUserOrderField `json:"field"`
+	// The field by which to order OrgUsers.
+	Field OrgUserOrderField `json:"field"`
 }
 
-// Properties by which OrganizationRole connections can be ordered.
-type OrganizationRoleOrderField string
+// Properties by which OrgRole connections can be ordered.
+type OrgRoleOrderField string
 
 const (
-	OrganizationRoleOrderFieldCreatedAt OrganizationRoleOrderField = "createdAt"
+	OrgRoleOrderFieldCreatedAt OrgRoleOrderField = "createdAt"
 )
 
-var AllOrganizationRoleOrderField = []OrganizationRoleOrderField{
-	OrganizationRoleOrderFieldCreatedAt,
+var AllOrgRoleOrderField = []OrgRoleOrderField{
+	OrgRoleOrderFieldCreatedAt,
 }
 
-func (e OrganizationRoleOrderField) IsValid() bool {
+func (e OrgRoleOrderField) IsValid() bool {
 	switch e {
-	case OrganizationRoleOrderFieldCreatedAt:
+	case OrgRoleOrderFieldCreatedAt:
 		return true
 	}
 	return false
 }
 
-func (e OrganizationRoleOrderField) String() string {
+func (e OrgRoleOrderField) String() string {
 	return string(e)
 }
 
-func (e *OrganizationRoleOrderField) UnmarshalGQL(v interface{}) error {
+func (e *OrgRoleOrderField) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = OrganizationRoleOrderField(str)
+	*e = OrgRoleOrderField(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid OrganizationRoleOrderField", str)
+		return fmt.Errorf("%s is not a valid OrgRoleOrderField", str)
 	}
 	return nil
 }
 
-func (e OrganizationRoleOrderField) MarshalGQL(w io.Writer) {
+func (e OrgRoleOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
-// Properties by which OrganizationUser connections can be ordered.
-type OrganizationUserOrderField string
+// Properties by which OrgUser connections can be ordered.
+type OrgUserOrderField string
 
 const (
-	OrganizationUserOrderFieldCreatedAt OrganizationUserOrderField = "createdAt"
+	OrgUserOrderFieldCreatedAt OrgUserOrderField = "createdAt"
 )
 
-var AllOrganizationUserOrderField = []OrganizationUserOrderField{
-	OrganizationUserOrderFieldCreatedAt,
+var AllOrgUserOrderField = []OrgUserOrderField{
+	OrgUserOrderFieldCreatedAt,
 }
 
-func (e OrganizationUserOrderField) IsValid() bool {
+func (e OrgUserOrderField) IsValid() bool {
 	switch e {
-	case OrganizationUserOrderFieldCreatedAt:
+	case OrgUserOrderFieldCreatedAt:
 		return true
 	}
 	return false
 }
 
-func (e OrganizationUserOrderField) String() string {
+func (e OrgUserOrderField) String() string {
 	return string(e)
 }
 
-func (e *OrganizationUserOrderField) UnmarshalGQL(v interface{}) error {
+func (e *OrgUserOrderField) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = OrganizationUserOrderField(str)
+	*e = OrgUserOrderField(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid OrganizationUserOrderField", str)
+		return fmt.Errorf("%s is not a valid OrgUserOrderField", str)
 	}
 	return nil
 }
 
-func (e OrganizationUserOrderField) MarshalGQL(w io.Writer) {
+func (e OrgUserOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

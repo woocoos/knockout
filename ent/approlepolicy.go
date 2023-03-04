@@ -25,9 +25,9 @@ type AppRolePolicy struct {
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 应用角色ID
-	RoleID int `json:"role_id,omitempty"`
+	AppRoleID int `json:"app_role_id,omitempty"`
 	// 策略ID
-	PolicyID int `json:"policy_id,omitempty"`
+	AppPolicyID int `json:"app_policy_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppRolePolicyQuery when eager-loading is set.
 	Edges AppRolePolicyEdges `json:"edges"`
@@ -77,7 +77,7 @@ func (*AppRolePolicy) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case approlepolicy.FieldCreatedBy, approlepolicy.FieldUpdatedBy, approlepolicy.FieldRoleID, approlepolicy.FieldPolicyID:
+		case approlepolicy.FieldCreatedBy, approlepolicy.FieldUpdatedBy, approlepolicy.FieldAppRoleID, approlepolicy.FieldAppPolicyID:
 			values[i] = new(sql.NullInt64)
 		case approlepolicy.FieldCreatedAt, approlepolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -120,17 +120,17 @@ func (arp *AppRolePolicy) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				arp.UpdatedAt = value.Time
 			}
-		case approlepolicy.FieldRoleID:
+		case approlepolicy.FieldAppRoleID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field role_id", values[i])
+				return fmt.Errorf("unexpected type %T for field app_role_id", values[i])
 			} else if value.Valid {
-				arp.RoleID = int(value.Int64)
+				arp.AppRoleID = int(value.Int64)
 			}
-		case approlepolicy.FieldPolicyID:
+		case approlepolicy.FieldAppPolicyID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field policy_id", values[i])
+				return fmt.Errorf("unexpected type %T for field app_policy_id", values[i])
 			} else if value.Valid {
-				arp.PolicyID = int(value.Int64)
+				arp.AppPolicyID = int(value.Int64)
 			}
 		}
 	}
@@ -181,11 +181,11 @@ func (arp *AppRolePolicy) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(arp.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("role_id=")
-	builder.WriteString(fmt.Sprintf("%v", arp.RoleID))
+	builder.WriteString("app_role_id=")
+	builder.WriteString(fmt.Sprintf("%v", arp.AppRoleID))
 	builder.WriteString(", ")
-	builder.WriteString("policy_id=")
-	builder.WriteString(fmt.Sprintf("%v", arp.PolicyID))
+	builder.WriteString("app_policy_id=")
+	builder.WriteString(fmt.Sprintf("%v", arp.AppPolicyID))
 	builder.WriteByte(')')
 	return builder.String()
 }

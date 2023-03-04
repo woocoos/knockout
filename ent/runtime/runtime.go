@@ -12,11 +12,11 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/organization"
-	"github.com/woocoos/knockout/ent/organizationapp"
-	"github.com/woocoos/knockout/ent/organizationpolicy"
-	"github.com/woocoos/knockout/ent/organizationrole"
-	"github.com/woocoos/knockout/ent/organizationuser"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -187,105 +187,105 @@ func init() {
 	approlepolicyDescCreatedAt := approlepolicyMixinFields0[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
-	organizationMixin := schema.Organization{}.Mixin()
-	organizationMixinHooks1 := organizationMixin[1].Hooks()
-	organizationMixinHooks2 := organizationMixin[2].Hooks()
-	organizationHooks := schema.Organization{}.Hooks()
-	organization.Hooks[0] = organizationMixinHooks1[0]
-	organization.Hooks[1] = organizationMixinHooks2[0]
-	organization.Hooks[2] = organizationHooks[0]
-	organization.Hooks[3] = organizationHooks[1]
-	organization.Hooks[4] = organizationHooks[2]
-	organizationMixinInters2 := organizationMixin[2].Interceptors()
-	organization.Interceptors[0] = organizationMixinInters2[0]
-	organizationMixinFields0 := organizationMixin[0].Fields()
-	_ = organizationMixinFields0
-	organizationMixinFields1 := organizationMixin[1].Fields()
-	_ = organizationMixinFields1
-	organizationFields := schema.Organization{}.Fields()
-	_ = organizationFields
-	// organizationDescCreatedAt is the schema descriptor for created_at field.
-	organizationDescCreatedAt := organizationMixinFields1[1].Descriptor()
-	// organization.DefaultCreatedAt holds the default value on creation for the created_at field.
-	organization.DefaultCreatedAt = organizationDescCreatedAt.Default.(func() time.Time)
-	// organizationDescParentID is the schema descriptor for parent_id field.
-	organizationDescParentID := organizationFields[2].Descriptor()
-	// organization.DefaultParentID holds the default value on creation for the parent_id field.
-	organization.DefaultParentID = organizationDescParentID.Default.(int)
-	// organizationDescDomain is the schema descriptor for domain field.
-	organizationDescDomain := organizationFields[3].Descriptor()
-	// organization.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
-	organization.DomainValidator = organizationDescDomain.Validators[0].(func(string) error)
-	// organizationDescCode is the schema descriptor for code field.
-	organizationDescCode := organizationFields[4].Descriptor()
-	// organization.CodeValidator is a validator for the "code" field. It is called by the builders before save.
-	organization.CodeValidator = organizationDescCode.Validators[0].(func(string) error)
-	// organizationDescName is the schema descriptor for name field.
-	organizationDescName := organizationFields[5].Descriptor()
-	// organization.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	organization.NameValidator = organizationDescName.Validators[0].(func(string) error)
-	// organizationDescCountryCode is the schema descriptor for country_code field.
-	organizationDescCountryCode := organizationFields[10].Descriptor()
-	// organization.CountryCodeValidator is a validator for the "country_code" field. It is called by the builders before save.
-	organization.CountryCodeValidator = organizationDescCountryCode.Validators[0].(func(string) error)
-	// organizationDescTimezone is the schema descriptor for timezone field.
-	organizationDescTimezone := organizationFields[11].Descriptor()
-	// organization.TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
-	organization.TimezoneValidator = organizationDescTimezone.Validators[0].(func(string) error)
-	// organizationDescID is the schema descriptor for id field.
-	organizationDescID := organizationMixinFields0[0].Descriptor()
-	// organization.DefaultID holds the default value on creation for the id field.
-	organization.DefaultID = organizationDescID.Default.(func() int)
-	organizationappMixin := schema.OrganizationApp{}.Mixin()
-	organizationappMixinHooks0 := organizationappMixin[0].Hooks()
-	organizationapp.Hooks[0] = organizationappMixinHooks0[0]
-	organizationappMixinFields0 := organizationappMixin[0].Fields()
-	_ = organizationappMixinFields0
-	organizationappFields := schema.OrganizationApp{}.Fields()
-	_ = organizationappFields
-	// organizationappDescCreatedAt is the schema descriptor for created_at field.
-	organizationappDescCreatedAt := organizationappMixinFields0[1].Descriptor()
-	// organizationapp.DefaultCreatedAt holds the default value on creation for the created_at field.
-	organizationapp.DefaultCreatedAt = organizationappDescCreatedAt.Default.(func() time.Time)
-	organizationpolicyMixin := schema.OrganizationPolicy{}.Mixin()
-	organizationpolicyMixinHooks1 := organizationpolicyMixin[1].Hooks()
-	organizationpolicy.Hooks[0] = organizationpolicyMixinHooks1[0]
-	organizationpolicyMixinFields0 := organizationpolicyMixin[0].Fields()
-	_ = organizationpolicyMixinFields0
-	organizationpolicyMixinFields1 := organizationpolicyMixin[1].Fields()
-	_ = organizationpolicyMixinFields1
-	organizationpolicyFields := schema.OrganizationPolicy{}.Fields()
-	_ = organizationpolicyFields
-	// organizationpolicyDescCreatedAt is the schema descriptor for created_at field.
-	organizationpolicyDescCreatedAt := organizationpolicyMixinFields1[1].Descriptor()
-	// organizationpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
-	organizationpolicy.DefaultCreatedAt = organizationpolicyDescCreatedAt.Default.(func() time.Time)
-	// organizationpolicyDescID is the schema descriptor for id field.
-	organizationpolicyDescID := organizationpolicyMixinFields0[0].Descriptor()
-	// organizationpolicy.DefaultID holds the default value on creation for the id field.
-	organizationpolicy.DefaultID = organizationpolicyDescID.Default.(func() int)
-	organizationroleMixin := schema.OrganizationRole{}.Mixin()
-	organizationroleMixinHooks0 := organizationroleMixin[0].Hooks()
-	organizationrole.Hooks[0] = organizationroleMixinHooks0[0]
-	organizationroleMixinFields0 := organizationroleMixin[0].Fields()
-	_ = organizationroleMixinFields0
-	organizationroleFields := schema.OrganizationRole{}.Fields()
-	_ = organizationroleFields
-	// organizationroleDescCreatedAt is the schema descriptor for created_at field.
-	organizationroleDescCreatedAt := organizationroleMixinFields0[1].Descriptor()
-	// organizationrole.DefaultCreatedAt holds the default value on creation for the created_at field.
-	organizationrole.DefaultCreatedAt = organizationroleDescCreatedAt.Default.(func() time.Time)
-	organizationuserMixin := schema.OrganizationUser{}.Mixin()
-	organizationuserMixinHooks1 := organizationuserMixin[1].Hooks()
-	organizationuser.Hooks[0] = organizationuserMixinHooks1[0]
-	organizationuserMixinFields1 := organizationuserMixin[1].Fields()
-	_ = organizationuserMixinFields1
-	organizationuserFields := schema.OrganizationUser{}.Fields()
-	_ = organizationuserFields
-	// organizationuserDescCreatedAt is the schema descriptor for created_at field.
-	organizationuserDescCreatedAt := organizationuserMixinFields1[1].Descriptor()
-	// organizationuser.DefaultCreatedAt holds the default value on creation for the created_at field.
-	organizationuser.DefaultCreatedAt = organizationuserDescCreatedAt.Default.(func() time.Time)
+	orgMixin := schema.Org{}.Mixin()
+	orgMixinHooks1 := orgMixin[1].Hooks()
+	orgMixinHooks2 := orgMixin[2].Hooks()
+	orgHooks := schema.Org{}.Hooks()
+	org.Hooks[0] = orgMixinHooks1[0]
+	org.Hooks[1] = orgMixinHooks2[0]
+	org.Hooks[2] = orgHooks[0]
+	org.Hooks[3] = orgHooks[1]
+	org.Hooks[4] = orgHooks[2]
+	orgMixinInters2 := orgMixin[2].Interceptors()
+	org.Interceptors[0] = orgMixinInters2[0]
+	orgMixinFields0 := orgMixin[0].Fields()
+	_ = orgMixinFields0
+	orgMixinFields1 := orgMixin[1].Fields()
+	_ = orgMixinFields1
+	orgFields := schema.Org{}.Fields()
+	_ = orgFields
+	// orgDescCreatedAt is the schema descriptor for created_at field.
+	orgDescCreatedAt := orgMixinFields1[1].Descriptor()
+	// org.DefaultCreatedAt holds the default value on creation for the created_at field.
+	org.DefaultCreatedAt = orgDescCreatedAt.Default.(func() time.Time)
+	// orgDescParentID is the schema descriptor for parent_id field.
+	orgDescParentID := orgFields[2].Descriptor()
+	// org.DefaultParentID holds the default value on creation for the parent_id field.
+	org.DefaultParentID = orgDescParentID.Default.(int)
+	// orgDescDomain is the schema descriptor for domain field.
+	orgDescDomain := orgFields[3].Descriptor()
+	// org.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
+	org.DomainValidator = orgDescDomain.Validators[0].(func(string) error)
+	// orgDescCode is the schema descriptor for code field.
+	orgDescCode := orgFields[4].Descriptor()
+	// org.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	org.CodeValidator = orgDescCode.Validators[0].(func(string) error)
+	// orgDescName is the schema descriptor for name field.
+	orgDescName := orgFields[5].Descriptor()
+	// org.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	org.NameValidator = orgDescName.Validators[0].(func(string) error)
+	// orgDescCountryCode is the schema descriptor for country_code field.
+	orgDescCountryCode := orgFields[10].Descriptor()
+	// org.CountryCodeValidator is a validator for the "country_code" field. It is called by the builders before save.
+	org.CountryCodeValidator = orgDescCountryCode.Validators[0].(func(string) error)
+	// orgDescTimezone is the schema descriptor for timezone field.
+	orgDescTimezone := orgFields[11].Descriptor()
+	// org.TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
+	org.TimezoneValidator = orgDescTimezone.Validators[0].(func(string) error)
+	// orgDescID is the schema descriptor for id field.
+	orgDescID := orgMixinFields0[0].Descriptor()
+	// org.DefaultID holds the default value on creation for the id field.
+	org.DefaultID = orgDescID.Default.(func() int)
+	orgappMixin := schema.OrgApp{}.Mixin()
+	orgappMixinHooks0 := orgappMixin[0].Hooks()
+	orgapp.Hooks[0] = orgappMixinHooks0[0]
+	orgappMixinFields0 := orgappMixin[0].Fields()
+	_ = orgappMixinFields0
+	orgappFields := schema.OrgApp{}.Fields()
+	_ = orgappFields
+	// orgappDescCreatedAt is the schema descriptor for created_at field.
+	orgappDescCreatedAt := orgappMixinFields0[1].Descriptor()
+	// orgapp.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orgapp.DefaultCreatedAt = orgappDescCreatedAt.Default.(func() time.Time)
+	orgpolicyMixin := schema.OrgPolicy{}.Mixin()
+	orgpolicyMixinHooks1 := orgpolicyMixin[1].Hooks()
+	orgpolicy.Hooks[0] = orgpolicyMixinHooks1[0]
+	orgpolicyMixinFields0 := orgpolicyMixin[0].Fields()
+	_ = orgpolicyMixinFields0
+	orgpolicyMixinFields1 := orgpolicyMixin[1].Fields()
+	_ = orgpolicyMixinFields1
+	orgpolicyFields := schema.OrgPolicy{}.Fields()
+	_ = orgpolicyFields
+	// orgpolicyDescCreatedAt is the schema descriptor for created_at field.
+	orgpolicyDescCreatedAt := orgpolicyMixinFields1[1].Descriptor()
+	// orgpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orgpolicy.DefaultCreatedAt = orgpolicyDescCreatedAt.Default.(func() time.Time)
+	// orgpolicyDescID is the schema descriptor for id field.
+	orgpolicyDescID := orgpolicyMixinFields0[0].Descriptor()
+	// orgpolicy.DefaultID holds the default value on creation for the id field.
+	orgpolicy.DefaultID = orgpolicyDescID.Default.(func() int)
+	orgroleMixin := schema.OrgRole{}.Mixin()
+	orgroleMixinHooks0 := orgroleMixin[0].Hooks()
+	orgrole.Hooks[0] = orgroleMixinHooks0[0]
+	orgroleMixinFields0 := orgroleMixin[0].Fields()
+	_ = orgroleMixinFields0
+	orgroleFields := schema.OrgRole{}.Fields()
+	_ = orgroleFields
+	// orgroleDescCreatedAt is the schema descriptor for created_at field.
+	orgroleDescCreatedAt := orgroleMixinFields0[1].Descriptor()
+	// orgrole.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orgrole.DefaultCreatedAt = orgroleDescCreatedAt.Default.(func() time.Time)
+	orguserMixin := schema.OrgUser{}.Mixin()
+	orguserMixinHooks1 := orguserMixin[1].Hooks()
+	orguser.Hooks[0] = orguserMixinHooks1[0]
+	orguserMixinFields1 := orguserMixin[1].Fields()
+	_ = orguserMixinFields1
+	orguserFields := schema.OrgUser{}.Fields()
+	_ = orguserFields
+	// orguserDescCreatedAt is the schema descriptor for created_at field.
+	orguserDescCreatedAt := orguserMixinFields1[1].Descriptor()
+	// orguser.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orguser.DefaultCreatedAt = orguserDescCreatedAt.Default.(func() time.Time)
 	permissionMixin := schema.Permission{}.Mixin()
 	permissionMixinHooks1 := permissionMixin[1].Hooks()
 	permission.Hooks[0] = permissionMixinHooks1[0]

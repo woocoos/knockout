@@ -18,7 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -396,19 +396,19 @@ func (au *AppUpdate) AddPolicies(a ...*AppPolicy) *AppUpdate {
 	return au.AddPolicyIDs(ids...)
 }
 
-// AddOrganizationIDs adds the "organizations" edge to the Organization entity by IDs.
-func (au *AppUpdate) AddOrganizationIDs(ids ...int) *AppUpdate {
-	au.mutation.AddOrganizationIDs(ids...)
+// AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
+func (au *AppUpdate) AddOrgIDs(ids ...int) *AppUpdate {
+	au.mutation.AddOrgIDs(ids...)
 	return au
 }
 
-// AddOrganizations adds the "organizations" edges to the Organization entity.
-func (au *AppUpdate) AddOrganizations(o ...*Organization) *AppUpdate {
+// AddOrgs adds the "orgs" edges to the Org entity.
+func (au *AppUpdate) AddOrgs(o ...*Org) *AppUpdate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return au.AddOrganizationIDs(ids...)
+	return au.AddOrgIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -521,25 +521,25 @@ func (au *AppUpdate) RemovePolicies(a ...*AppPolicy) *AppUpdate {
 	return au.RemovePolicyIDs(ids...)
 }
 
-// ClearOrganizations clears all "organizations" edges to the Organization entity.
-func (au *AppUpdate) ClearOrganizations() *AppUpdate {
-	au.mutation.ClearOrganizations()
+// ClearOrgs clears all "orgs" edges to the Org entity.
+func (au *AppUpdate) ClearOrgs() *AppUpdate {
+	au.mutation.ClearOrgs()
 	return au
 }
 
-// RemoveOrganizationIDs removes the "organizations" edge to Organization entities by IDs.
-func (au *AppUpdate) RemoveOrganizationIDs(ids ...int) *AppUpdate {
-	au.mutation.RemoveOrganizationIDs(ids...)
+// RemoveOrgIDs removes the "orgs" edge to Org entities by IDs.
+func (au *AppUpdate) RemoveOrgIDs(ids ...int) *AppUpdate {
+	au.mutation.RemoveOrgIDs(ids...)
 	return au
 }
 
-// RemoveOrganizations removes "organizations" edges to Organization entities.
-func (au *AppUpdate) RemoveOrganizations(o ...*Organization) *AppUpdate {
+// RemoveOrgs removes "orgs" edges to Org entities.
+func (au *AppUpdate) RemoveOrgs(o ...*Org) *AppUpdate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return au.RemoveOrganizationIDs(ids...)
+	return au.RemoveOrgIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -984,67 +984,67 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if au.mutation.OrganizationsCleared() {
+	if au.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
-		createE := &OrganizationAppCreate{config: au.config, mutation: newOrganizationAppMutation(au.config, OpCreate)}
+		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedOrganizationsIDs(); len(nodes) > 0 && !au.mutation.OrganizationsCleared() {
+	if nodes := au.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !au.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationAppCreate{config: au.config, mutation: newOrganizationAppMutation(au.config, OpCreate)}
+		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.OrganizationsIDs(); len(nodes) > 0 {
+	if nodes := au.mutation.OrgsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationAppCreate{config: au.config, mutation: newOrganizationAppMutation(au.config, OpCreate)}
+		createE := &OrgAppCreate{config: au.config, mutation: newOrgAppMutation(au.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
@@ -1431,19 +1431,19 @@ func (auo *AppUpdateOne) AddPolicies(a ...*AppPolicy) *AppUpdateOne {
 	return auo.AddPolicyIDs(ids...)
 }
 
-// AddOrganizationIDs adds the "organizations" edge to the Organization entity by IDs.
-func (auo *AppUpdateOne) AddOrganizationIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.AddOrganizationIDs(ids...)
+// AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
+func (auo *AppUpdateOne) AddOrgIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.AddOrgIDs(ids...)
 	return auo
 }
 
-// AddOrganizations adds the "organizations" edges to the Organization entity.
-func (auo *AppUpdateOne) AddOrganizations(o ...*Organization) *AppUpdateOne {
+// AddOrgs adds the "orgs" edges to the Org entity.
+func (auo *AppUpdateOne) AddOrgs(o ...*Org) *AppUpdateOne {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return auo.AddOrganizationIDs(ids...)
+	return auo.AddOrgIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -1556,25 +1556,25 @@ func (auo *AppUpdateOne) RemovePolicies(a ...*AppPolicy) *AppUpdateOne {
 	return auo.RemovePolicyIDs(ids...)
 }
 
-// ClearOrganizations clears all "organizations" edges to the Organization entity.
-func (auo *AppUpdateOne) ClearOrganizations() *AppUpdateOne {
-	auo.mutation.ClearOrganizations()
+// ClearOrgs clears all "orgs" edges to the Org entity.
+func (auo *AppUpdateOne) ClearOrgs() *AppUpdateOne {
+	auo.mutation.ClearOrgs()
 	return auo
 }
 
-// RemoveOrganizationIDs removes the "organizations" edge to Organization entities by IDs.
-func (auo *AppUpdateOne) RemoveOrganizationIDs(ids ...int) *AppUpdateOne {
-	auo.mutation.RemoveOrganizationIDs(ids...)
+// RemoveOrgIDs removes the "orgs" edge to Org entities by IDs.
+func (auo *AppUpdateOne) RemoveOrgIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.RemoveOrgIDs(ids...)
 	return auo
 }
 
-// RemoveOrganizations removes "organizations" edges to Organization entities.
-func (auo *AppUpdateOne) RemoveOrganizations(o ...*Organization) *AppUpdateOne {
+// RemoveOrgs removes "orgs" edges to Org entities.
+func (auo *AppUpdateOne) RemoveOrgs(o ...*Org) *AppUpdateOne {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return auo.RemoveOrganizationIDs(ids...)
+	return auo.RemoveOrgIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
@@ -2049,67 +2049,67 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if auo.mutation.OrganizationsCleared() {
+	if auo.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
-		createE := &OrganizationAppCreate{config: auo.config, mutation: newOrganizationAppMutation(auo.config, OpCreate)}
+		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedOrganizationsIDs(); len(nodes) > 0 && !auo.mutation.OrganizationsCleared() {
+	if nodes := auo.mutation.RemovedOrgsIDs(); len(nodes) > 0 && !auo.mutation.OrgsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationAppCreate{config: auo.config, mutation: newOrganizationAppMutation(auo.config, OpCreate)}
+		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.OrganizationsIDs(); len(nodes) > 0 {
+	if nodes := auo.mutation.OrgsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationAppCreate{config: auo.config, mutation: newOrganizationAppMutation(auo.config, OpCreate)}
+		createE := &OrgAppCreate{config: auo.config, mutation: newOrgAppMutation(auo.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields

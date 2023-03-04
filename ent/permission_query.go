@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -19,14 +19,14 @@ import (
 // PermissionQuery is the builder for querying Permission entities.
 type PermissionQuery struct {
 	config
-	ctx              *QueryContext
-	order            []OrderFunc
-	inters           []Interceptor
-	predicates       []predicate.Permission
-	withOrganization *OrganizationQuery
-	withUser         *UserQuery
-	modifiers        []func(*sql.Selector)
-	loadTotal        []func(context.Context, []*Permission) error
+	ctx        *QueryContext
+	order      []OrderFunc
+	inters     []Interceptor
+	predicates []predicate.Permission
+	withOrg    *OrgQuery
+	withUser   *UserQuery
+	modifiers  []func(*sql.Selector)
+	loadTotal  []func(context.Context, []*Permission) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +63,9 @@ func (pq *PermissionQuery) Order(o ...OrderFunc) *PermissionQuery {
 	return pq
 }
 
-// QueryOrganization chains the current query on the "organization" edge.
-func (pq *PermissionQuery) QueryOrganization() *OrganizationQuery {
-	query := (&OrganizationClient{config: pq.config}).Query()
+// QueryOrg chains the current query on the "org" edge.
+func (pq *PermissionQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: pq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := pq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +76,8 @@ func (pq *PermissionQuery) QueryOrganization() *OrganizationQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(permission.Table, permission.FieldID, selector),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrganizationTable, permission.OrganizationColumn),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrgTable, permission.OrgColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -294,27 +294,27 @@ func (pq *PermissionQuery) Clone() *PermissionQuery {
 		return nil
 	}
 	return &PermissionQuery{
-		config:           pq.config,
-		ctx:              pq.ctx.Clone(),
-		order:            append([]OrderFunc{}, pq.order...),
-		inters:           append([]Interceptor{}, pq.inters...),
-		predicates:       append([]predicate.Permission{}, pq.predicates...),
-		withOrganization: pq.withOrganization.Clone(),
-		withUser:         pq.withUser.Clone(),
+		config:     pq.config,
+		ctx:        pq.ctx.Clone(),
+		order:      append([]OrderFunc{}, pq.order...),
+		inters:     append([]Interceptor{}, pq.inters...),
+		predicates: append([]predicate.Permission{}, pq.predicates...),
+		withOrg:    pq.withOrg.Clone(),
+		withUser:   pq.withUser.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
 	}
 }
 
-// WithOrganization tells the query-builder to eager-load the nodes that are connected to
-// the "organization" edge. The optional arguments are used to configure the query builder of the edge.
-func (pq *PermissionQuery) WithOrganization(opts ...func(*OrganizationQuery)) *PermissionQuery {
-	query := (&OrganizationClient{config: pq.config}).Query()
+// WithOrg tells the query-builder to eager-load the nodes that are connected to
+// the "org" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PermissionQuery) WithOrg(opts ...func(*OrgQuery)) *PermissionQuery {
+	query := (&OrgClient{config: pq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	pq.withOrganization = query
+	pq.withOrg = query
 	return pq
 }
 
@@ -408,7 +408,7 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 		nodes       = []*Permission{}
 		_spec       = pq.querySpec()
 		loadedTypes = [2]bool{
-			pq.withOrganization != nil,
+			pq.withOrg != nil,
 			pq.withUser != nil,
 		}
 	)
@@ -433,9 +433,9 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := pq.withOrganization; query != nil {
-		if err := pq.loadOrganization(ctx, query, nodes, nil,
-			func(n *Permission, e *Organization) { n.Edges.Organization = e }); err != nil {
+	if query := pq.withOrg; query != nil {
+		if err := pq.loadOrg(ctx, query, nodes, nil,
+			func(n *Permission, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -453,7 +453,7 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 	return nodes, nil
 }
 
-func (pq *PermissionQuery) loadOrganization(ctx context.Context, query *OrganizationQuery, nodes []*Permission, init func(*Permission), assign func(*Permission, *Organization)) error {
+func (pq *PermissionQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*Permission, init func(*Permission), assign func(*Permission, *Org)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Permission)
 	for i := range nodes {
@@ -466,7 +466,7 @@ func (pq *PermissionQuery) loadOrganization(ctx context.Context, query *Organiza
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(organization.IDIn(ids...))
+	query.Where(org.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

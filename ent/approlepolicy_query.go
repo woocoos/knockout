@@ -384,7 +384,7 @@ func (arpq *AppRolePolicyQuery) loadRole(ctx context.Context, query *AppRoleQuer
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppRolePolicy)
 	for i := range nodes {
-		fk := nodes[i].RoleID
+		fk := nodes[i].AppRoleID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -401,7 +401,7 @@ func (arpq *AppRolePolicyQuery) loadRole(ctx context.Context, query *AppRoleQuer
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "role_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "app_role_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -413,7 +413,7 @@ func (arpq *AppRolePolicyQuery) loadPolicy(ctx context.Context, query *AppPolicy
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppRolePolicy)
 	for i := range nodes {
-		fk := nodes[i].PolicyID
+		fk := nodes[i].AppPolicyID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -430,7 +430,7 @@ func (arpq *AppRolePolicyQuery) loadPolicy(ctx context.Context, query *AppPolicy
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "policy_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "app_policy_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

@@ -54,12 +54,12 @@ const (
 	EdgePasswords = "passwords"
 	// EdgeDevices holds the string denoting the devices edge name in mutations.
 	EdgeDevices = "devices"
-	// EdgeOrganizations holds the string denoting the organizations edge name in mutations.
-	EdgeOrganizations = "organizations"
+	// EdgeOrgs holds the string denoting the orgs edge name in mutations.
+	EdgeOrgs = "orgs"
 	// EdgePermissions holds the string denoting the permissions edge name in mutations.
 	EdgePermissions = "permissions"
-	// EdgeOrganizationUser holds the string denoting the organization_user edge name in mutations.
-	EdgeOrganizationUser = "organization_user"
+	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
+	EdgeOrgUser = "org_user"
 	// Table holds the table name of the user in the database.
 	Table = "user"
 	// IdentitiesTable is the table that holds the identities relation/edge.
@@ -90,11 +90,11 @@ const (
 	DevicesInverseTable = "user_device"
 	// DevicesColumn is the table column denoting the devices relation/edge.
 	DevicesColumn = "user_id"
-	// OrganizationsTable is the table that holds the organizations relation/edge. The primary key declared below.
-	OrganizationsTable = "organization_user"
-	// OrganizationsInverseTable is the table name for the Organization entity.
-	// It exists in this package in order to avoid circular dependency with the "organization" package.
-	OrganizationsInverseTable = "organization"
+	// OrgsTable is the table that holds the orgs relation/edge. The primary key declared below.
+	OrgsTable = "org_user"
+	// OrgsInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgsInverseTable = "org"
 	// PermissionsTable is the table that holds the permissions relation/edge.
 	PermissionsTable = "permission"
 	// PermissionsInverseTable is the table name for the Permission entity.
@@ -102,13 +102,13 @@ const (
 	PermissionsInverseTable = "permission"
 	// PermissionsColumn is the table column denoting the permissions relation/edge.
 	PermissionsColumn = "user_id"
-	// OrganizationUserTable is the table that holds the organization_user relation/edge.
-	OrganizationUserTable = "organization_user"
-	// OrganizationUserInverseTable is the table name for the OrganizationUser entity.
-	// It exists in this package in order to avoid circular dependency with the "organizationuser" package.
-	OrganizationUserInverseTable = "organization_user"
-	// OrganizationUserColumn is the table column denoting the organization_user relation/edge.
-	OrganizationUserColumn = "user_id"
+	// OrgUserTable is the table that holds the org_user relation/edge.
+	OrgUserTable = "org_user"
+	// OrgUserInverseTable is the table name for the OrgUser entity.
+	// It exists in this package in order to avoid circular dependency with the "orguser" package.
+	OrgUserInverseTable = "org_user"
+	// OrgUserColumn is the table column denoting the org_user relation/edge.
+	OrgUserColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -131,9 +131,9 @@ var Columns = []string{
 }
 
 var (
-	// OrganizationsPrimaryKey and OrganizationsColumn2 are the table columns denoting the
-	// primary key for the organizations relation (M2M).
-	OrganizationsPrimaryKey = []string{"org_id", "user_id"}
+	// OrgsPrimaryKey and OrgsColumn2 are the table columns denoting the
+	// primary key for the orgs relation (M2M).
+	OrgsPrimaryKey = []string{"org_id", "user_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

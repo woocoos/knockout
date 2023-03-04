@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
-	"github.com/woocoos/knockout/ent/organization"
-	"github.com/woocoos/knockout/ent/organizationuser"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -254,19 +254,19 @@ func (uc *UserCreate) AddDevices(u ...*UserDevice) *UserCreate {
 	return uc.AddDeviceIDs(ids...)
 }
 
-// AddOrganizationIDs adds the "organizations" edge to the Organization entity by IDs.
-func (uc *UserCreate) AddOrganizationIDs(ids ...int) *UserCreate {
-	uc.mutation.AddOrganizationIDs(ids...)
+// AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
+func (uc *UserCreate) AddOrgIDs(ids ...int) *UserCreate {
+	uc.mutation.AddOrgIDs(ids...)
 	return uc
 }
 
-// AddOrganizations adds the "organizations" edges to the Organization entity.
-func (uc *UserCreate) AddOrganizations(o ...*Organization) *UserCreate {
+// AddOrgs adds the "orgs" edges to the Org entity.
+func (uc *UserCreate) AddOrgs(o ...*Org) *UserCreate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return uc.AddOrganizationIDs(ids...)
+	return uc.AddOrgIDs(ids...)
 }
 
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
@@ -284,19 +284,19 @@ func (uc *UserCreate) AddPermissions(p ...*Permission) *UserCreate {
 	return uc.AddPermissionIDs(ids...)
 }
 
-// AddOrganizationUserIDs adds the "organization_user" edge to the OrganizationUser entity by IDs.
-func (uc *UserCreate) AddOrganizationUserIDs(ids ...int) *UserCreate {
-	uc.mutation.AddOrganizationUserIDs(ids...)
+// AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
+func (uc *UserCreate) AddOrgUserIDs(ids ...int) *UserCreate {
+	uc.mutation.AddOrgUserIDs(ids...)
 	return uc
 }
 
-// AddOrganizationUser adds the "organization_user" edges to the OrganizationUser entity.
-func (uc *UserCreate) AddOrganizationUser(o ...*OrganizationUser) *UserCreate {
+// AddOrgUser adds the "org_user" edges to the OrgUser entity.
+func (uc *UserCreate) AddOrgUser(o ...*OrgUser) *UserCreate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return uc.AddOrganizationUserIDs(ids...)
+	return uc.AddOrgUserIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -570,24 +570,24 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.OrganizationsIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.OrgsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   user.OrganizationsTable,
-			Columns: user.OrganizationsPrimaryKey,
+			Table:   user.OrgsTable,
+			Columns: user.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationUserCreate{config: uc.config, mutation: newOrganizationUserMutation(uc.config, OpCreate)}
+		createE := &OrgUserCreate{config: uc.config, mutation: newOrgUserMutation(uc.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
@@ -612,17 +612,17 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.OrganizationUserIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.OrgUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: true,
-			Table:   user.OrganizationUserTable,
-			Columns: []string{user.OrganizationUserColumn},
+			Table:   user.OrgUserTable,
+			Columns: []string{user.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organizationuser.FieldID,
+					Column: orguser.FieldID,
 				},
 			},
 		}

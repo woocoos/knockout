@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/graph/model"
@@ -20,45 +20,45 @@ type Service struct {
 }
 
 // EnableOrganization 开启组织目录
-func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Organization, error) {
+func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	uid := security.UserIDFromContext(ctx)
 
-	exist, err := s.Client.Organization.Query().Where(organization.OwnerID(uid)).Exist(entcache.Evict(ctx))
+	exist, err := s.Client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Evict(ctx))
 	if err != nil {
 		return nil, err
 	}
 	if exist {
 		return nil, fmt.Errorf("directory service has enable")
 	}
-	bulk := make([]*ent.OrganizationCreate, 1)
-	bulk[0] = s.Client.Organization.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
-		SetKind(organization.KindRoot).SetStatus(typex.SimpleStatusActive)
-	os, err := s.Client.Organization.CreateBulk(bulk...).Save(ctx)
+	bulk := make([]*ent.OrgCreate, 1)
+	bulk[0] = s.Client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
+		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive)
+	os, err := s.Client.Org.CreateBulk(bulk...).Save(ctx)
 	return os[0], err
 }
 
 // CreateOrganization 创建组织目录
-func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrganizationInput) (*ent.Organization, error) {
-	return s.Client.Organization.Create().SetInput(input).Save(ctx)
+func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
+	return s.Client.Org.Create().SetInput(input).Save(ctx)
 }
 
 // UpdateOrganization 更新组织目录
 //
 // - 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
-func (s *Service) UpdateOrganization(ctx context.Context, id int, input ent.UpdateOrganizationInput) (*ent.Organization, error) {
+func (s *Service) UpdateOrganization(ctx context.Context, id int, input ent.UpdateOrgInput) (*ent.Org, error) {
 	if input.OwnerID != nil {
 		u := s.Client.User.Query().Where(user.ID(*input.OwnerID)).Select(user.FieldUserType).FirstX(ctx)
 		if u.UserType != user.UserTypeAccount {
 			return nil, fmt.Errorf("owner must be account")
 		}
 	}
-	return s.Client.Organization.UpdateOneID(id).SetInput(input).Save(ctx)
+	return s.Client.Org.UpdateOneID(id).SetInput(input).Save(ctx)
 }
 
 // DeleteOrganization 删除组织目录
 func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
-	count, err := s.Client.Organization.Query().Where(
-		organization.ParentID(id),
+	count, err := s.Client.Org.Query().Where(
+		org.ParentID(id),
 	).Count(ctx)
 	if err != nil {
 		return err
@@ -66,14 +66,14 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 	if count > 0 {
 		return fmt.Errorf("organization has children")
 	}
-	count, err = s.Client.Organization.Query().Where(organization.ID(id), organization.HasUsers()).Count(ctx)
+	count, err = s.Client.Org.Query().Where(org.ID(id), org.HasUsers()).Count(ctx)
 	if err != nil {
 		return err
 	}
 	if count > 0 {
 		return fmt.Errorf("organization has users")
 	}
-	return s.Client.Organization.DeleteOneID(id).Exec(ctx)
+	return s.Client.Org.DeleteOneID(id).Exec(ctx)
 }
 
 // CreateOrganizationAccount 创建组织目录账户,进入账户激活流程
@@ -81,13 +81,13 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 // - 管理员账户才能创建下级组织目录的账户
 func (s *Service) CreateOrganizationAccount(ctx context.Context, input model.CreateOrganizationAccountInput) (*ent.User, error) {
 	uid := security.UserIDFromContext(ctx)
-	morg := s.Client.Organization.Query().Where(organization.OwnerID(uid)).FirstX(ctx)
-	porg := s.Client.Organization.Query().Where(organization.ID(input.OrgID)).FirstX(ctx)
+	morg := s.Client.Org.Query().Where(org.OwnerID(uid)).FirstX(ctx)
+	porg := s.Client.Org.Query().Where(org.ID(input.OrgID)).FirstX(ctx)
 	if strings.HasPrefix(porg.Path, morg.Path) {
 		return nil, fmt.Errorf("organization not found")
 	}
 
-	err := s.Client.OrganizationUser.Create().SetOrganizationID(input.OrgID).SetUserID(uid).Exec(ctx)
+	err := s.Client.OrgUser.Create().SetOrgID(input.OrgID).SetUserID(uid).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (s *Service) CreateOrganizationAccount(ctx context.Context, input model.Cre
 //
 // TODO 新用户需要激活,如在国内,用户往往需要绑定手机或邮箱,然后通过邮件或短信激活.
 func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input ent.CreateUserInput) (*ent.User, error) {
-	_, err := s.Client.Organization.Query().Where(organization.ID(orgId), organization.StatusEQ(typex.SimpleStatusActive)).Only(ctx)
+	_, err := s.Client.Org.Query().Where(org.ID(orgId), org.StatusEQ(typex.SimpleStatusActive)).Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
@@ -121,7 +121,7 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 		return nil, err
 	}
 
-	_, err = client.OrganizationUser.Create().SetOrganizationID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+	_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
 	if err != nil {
 		return nil, err
 	}

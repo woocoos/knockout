@@ -77,21 +77,33 @@ func (arpu *AppRolePolicyUpdate) ClearUpdatedAt() *AppRolePolicyUpdate {
 	return arpu
 }
 
-// SetRoleID sets the "role_id" field.
-func (arpu *AppRolePolicyUpdate) SetRoleID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.SetRoleID(i)
+// SetAppRoleID sets the "app_role_id" field.
+func (arpu *AppRolePolicyUpdate) SetAppRoleID(i int) *AppRolePolicyUpdate {
+	arpu.mutation.SetAppRoleID(i)
 	return arpu
 }
 
-// SetPolicyID sets the "policy_id" field.
-func (arpu *AppRolePolicyUpdate) SetPolicyID(i int) *AppRolePolicyUpdate {
-	arpu.mutation.SetPolicyID(i)
+// SetAppPolicyID sets the "app_policy_id" field.
+func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
+	arpu.mutation.SetAppPolicyID(i)
+	return arpu
+}
+
+// SetRoleID sets the "role" edge to the AppRole entity by ID.
+func (arpu *AppRolePolicyUpdate) SetRoleID(id int) *AppRolePolicyUpdate {
+	arpu.mutation.SetRoleID(id)
 	return arpu
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
 func (arpu *AppRolePolicyUpdate) SetRole(a *AppRole) *AppRolePolicyUpdate {
 	return arpu.SetRoleID(a.ID)
+}
+
+// SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
+func (arpu *AppRolePolicyUpdate) SetPolicyID(id int) *AppRolePolicyUpdate {
+	arpu.mutation.SetPolicyID(id)
+	return arpu
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
@@ -158,7 +170,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if err := arpu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldRoleID, field.TypeInt), sqlgraph.NewFieldSpec(approlepolicy.FieldPolicyID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldAppRoleID, field.TypeInt), sqlgraph.NewFieldSpec(approlepolicy.FieldAppPolicyID, field.TypeInt))
 	if ps := arpu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -318,21 +330,33 @@ func (arpuo *AppRolePolicyUpdateOne) ClearUpdatedAt() *AppRolePolicyUpdateOne {
 	return arpuo
 }
 
-// SetRoleID sets the "role_id" field.
-func (arpuo *AppRolePolicyUpdateOne) SetRoleID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetRoleID(i)
+// SetAppRoleID sets the "app_role_id" field.
+func (arpuo *AppRolePolicyUpdateOne) SetAppRoleID(i int) *AppRolePolicyUpdateOne {
+	arpuo.mutation.SetAppRoleID(i)
 	return arpuo
 }
 
-// SetPolicyID sets the "policy_id" field.
-func (arpuo *AppRolePolicyUpdateOne) SetPolicyID(i int) *AppRolePolicyUpdateOne {
-	arpuo.mutation.SetPolicyID(i)
+// SetAppPolicyID sets the "app_policy_id" field.
+func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateOne {
+	arpuo.mutation.SetAppPolicyID(i)
+	return arpuo
+}
+
+// SetRoleID sets the "role" edge to the AppRole entity by ID.
+func (arpuo *AppRolePolicyUpdateOne) SetRoleID(id int) *AppRolePolicyUpdateOne {
+	arpuo.mutation.SetRoleID(id)
 	return arpuo
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
 func (arpuo *AppRolePolicyUpdateOne) SetRole(a *AppRole) *AppRolePolicyUpdateOne {
 	return arpuo.SetRoleID(a.ID)
+}
+
+// SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
+func (arpuo *AppRolePolicyUpdateOne) SetPolicyID(id int) *AppRolePolicyUpdateOne {
+	arpuo.mutation.SetPolicyID(id)
+	return arpuo
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
@@ -412,14 +436,14 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 	if err := arpuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldRoleID, field.TypeInt), sqlgraph.NewFieldSpec(approlepolicy.FieldPolicyID, field.TypeInt))
-	if id, ok := arpuo.mutation.RoleID(); !ok {
-		return nil, &ValidationError{Name: "role_id", err: errors.New(`ent: missing "AppRolePolicy.role_id" for update`)}
+	_spec := sqlgraph.NewUpdateSpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldAppRoleID, field.TypeInt), sqlgraph.NewFieldSpec(approlepolicy.FieldAppPolicyID, field.TypeInt))
+	if id, ok := arpuo.mutation.AppRoleID(); !ok {
+		return nil, &ValidationError{Name: "app_role_id", err: errors.New(`ent: missing "AppRolePolicy.app_role_id" for update`)}
 	} else {
 		_spec.Node.CompositeID[0].Value = id
 	}
-	if id, ok := arpuo.mutation.PolicyID(); !ok {
-		return nil, &ValidationError{Name: "policy_id", err: errors.New(`ent: missing "AppRolePolicy.policy_id" for update`)}
+	if id, ok := arpuo.mutation.AppPolicyID(); !ok {
+		return nil, &ValidationError{Name: "app_policy_id", err: errors.New(`ent: missing "AppRolePolicy.app_policy_id" for update`)}
 	} else {
 		_spec.Node.CompositeID[1].Value = id
 	}

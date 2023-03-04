@@ -15,17 +15,17 @@ import (
 )
 
 // EnableDirectory is the resolver for the enableDirectory field.
-func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Organization, error) {
+func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	return r.Resource.EnableOrganization(ctx, input)
 }
 
 // CreateOrganization is the resolver for the createOrganization field.
-func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.CreateOrganizationInput) (*ent.Organization, error) {
+func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	return r.Resource.CreateOrganization(ctx, input)
 }
 
 // UpdateOrganization is the resolver for the updateOrganization field.
-func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrganizationInput) (*ent.Organization, error) {
+func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error) {
 	return r.Resource.UpdateOrganization(ctx, orgID, input)
 }
 

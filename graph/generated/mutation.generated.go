@@ -17,9 +17,9 @@ import (
 // region    ************************** generated!.gotpl **************************
 
 type MutationResolver interface {
-	EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Organization, error)
-	CreateOrganization(ctx context.Context, input ent.CreateOrganizationInput) (*ent.Organization, error)
-	UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrganizationInput) (*ent.Organization, error)
+	EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error)
+	CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error)
+	UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error)
 	DeleteOrganization(ctx context.Context, orgID int) (bool, error)
 	ChangeOrganizationTree(ctx context.Context, sourceID int, targetID int, action *string) (*bool, error)
 	CreateOrganizationAccount(ctx context.Context, input model.CreateOrganizationAccountInput) (*ent.User, error)
@@ -360,10 +360,10 @@ func (ec *executionContext) field_Mutation_createOrganizationUser_args(ctx conte
 func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrganizationInput
+	var arg0 ent.CreateOrgInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrganizationInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrganizationInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -675,10 +675,10 @@ func (ec *executionContext) field_Mutation_updateOrganization_args(ctx context.C
 		}
 	}
 	args["orgID"] = arg0
-	var arg1 ent.UpdateOrganizationInput
+	var arg1 ent.UpdateOrgInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateOrganizationInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrganizationInput(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -741,9 +741,9 @@ func (ec *executionContext) _Mutation_enableDirectory(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ent.Organization)
+	res := resTmp.(*ent.Org)
 	fc.Result = res
-	return ec.marshalOOrganization2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrganization(ctx, field.Selections, res)
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -755,53 +755,53 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Organization_id(ctx, field)
+				return ec.fieldContext_Org_id(ctx, field)
 			case "createdBy":
-				return ec.fieldContext_Organization_createdBy(ctx, field)
+				return ec.fieldContext_Org_createdBy(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Organization_createdAt(ctx, field)
+				return ec.fieldContext_Org_createdAt(ctx, field)
 			case "updatedBy":
-				return ec.fieldContext_Organization_updatedBy(ctx, field)
+				return ec.fieldContext_Org_updatedBy(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Organization_updatedAt(ctx, field)
+				return ec.fieldContext_Org_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Organization_deletedAt(ctx, field)
+				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
-				return ec.fieldContext_Organization_ownerID(ctx, field)
+				return ec.fieldContext_Org_ownerID(ctx, field)
 			case "parentID":
-				return ec.fieldContext_Organization_parentID(ctx, field)
+				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
-				return ec.fieldContext_Organization_domain(ctx, field)
+				return ec.fieldContext_Org_domain(ctx, field)
 			case "code":
-				return ec.fieldContext_Organization_code(ctx, field)
+				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
-				return ec.fieldContext_Organization_name(ctx, field)
+				return ec.fieldContext_Org_name(ctx, field)
 			case "profile":
-				return ec.fieldContext_Organization_profile(ctx, field)
+				return ec.fieldContext_Org_profile(ctx, field)
 			case "status":
-				return ec.fieldContext_Organization_status(ctx, field)
+				return ec.fieldContext_Org_status(ctx, field)
 			case "path":
-				return ec.fieldContext_Organization_path(ctx, field)
+				return ec.fieldContext_Org_path(ctx, field)
 			case "displaySort":
-				return ec.fieldContext_Organization_displaySort(ctx, field)
+				return ec.fieldContext_Org_displaySort(ctx, field)
 			case "countryCode":
-				return ec.fieldContext_Organization_countryCode(ctx, field)
+				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
-				return ec.fieldContext_Organization_timezone(ctx, field)
+				return ec.fieldContext_Org_timezone(ctx, field)
 			case "parent":
-				return ec.fieldContext_Organization_parent(ctx, field)
+				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
-				return ec.fieldContext_Organization_children(ctx, field)
+				return ec.fieldContext_Org_children(ctx, field)
 			case "users":
-				return ec.fieldContext_Organization_users(ctx, field)
+				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
-				return ec.fieldContext_Organization_permissions(ctx, field)
+				return ec.fieldContext_Org_permissions(ctx, field)
 			case "policies":
-				return ec.fieldContext_Organization_policies(ctx, field)
+				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
-				return ec.fieldContext_Organization_apps(ctx, field)
+				return ec.fieldContext_Org_apps(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Organization", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
 	}
 	defer func() {
@@ -832,7 +832,7 @@ func (ec *executionContext) _Mutation_createOrganization(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateOrganization(rctx, fc.Args["input"].(ent.CreateOrganizationInput))
+		return ec.resolvers.Mutation().CreateOrganization(rctx, fc.Args["input"].(ent.CreateOrgInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -840,9 +840,9 @@ func (ec *executionContext) _Mutation_createOrganization(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ent.Organization)
+	res := resTmp.(*ent.Org)
 	fc.Result = res
-	return ec.marshalOOrganization2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrganization(ctx, field.Selections, res)
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -854,53 +854,53 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Organization_id(ctx, field)
+				return ec.fieldContext_Org_id(ctx, field)
 			case "createdBy":
-				return ec.fieldContext_Organization_createdBy(ctx, field)
+				return ec.fieldContext_Org_createdBy(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Organization_createdAt(ctx, field)
+				return ec.fieldContext_Org_createdAt(ctx, field)
 			case "updatedBy":
-				return ec.fieldContext_Organization_updatedBy(ctx, field)
+				return ec.fieldContext_Org_updatedBy(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Organization_updatedAt(ctx, field)
+				return ec.fieldContext_Org_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Organization_deletedAt(ctx, field)
+				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
-				return ec.fieldContext_Organization_ownerID(ctx, field)
+				return ec.fieldContext_Org_ownerID(ctx, field)
 			case "parentID":
-				return ec.fieldContext_Organization_parentID(ctx, field)
+				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
-				return ec.fieldContext_Organization_domain(ctx, field)
+				return ec.fieldContext_Org_domain(ctx, field)
 			case "code":
-				return ec.fieldContext_Organization_code(ctx, field)
+				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
-				return ec.fieldContext_Organization_name(ctx, field)
+				return ec.fieldContext_Org_name(ctx, field)
 			case "profile":
-				return ec.fieldContext_Organization_profile(ctx, field)
+				return ec.fieldContext_Org_profile(ctx, field)
 			case "status":
-				return ec.fieldContext_Organization_status(ctx, field)
+				return ec.fieldContext_Org_status(ctx, field)
 			case "path":
-				return ec.fieldContext_Organization_path(ctx, field)
+				return ec.fieldContext_Org_path(ctx, field)
 			case "displaySort":
-				return ec.fieldContext_Organization_displaySort(ctx, field)
+				return ec.fieldContext_Org_displaySort(ctx, field)
 			case "countryCode":
-				return ec.fieldContext_Organization_countryCode(ctx, field)
+				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
-				return ec.fieldContext_Organization_timezone(ctx, field)
+				return ec.fieldContext_Org_timezone(ctx, field)
 			case "parent":
-				return ec.fieldContext_Organization_parent(ctx, field)
+				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
-				return ec.fieldContext_Organization_children(ctx, field)
+				return ec.fieldContext_Org_children(ctx, field)
 			case "users":
-				return ec.fieldContext_Organization_users(ctx, field)
+				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
-				return ec.fieldContext_Organization_permissions(ctx, field)
+				return ec.fieldContext_Org_permissions(ctx, field)
 			case "policies":
-				return ec.fieldContext_Organization_policies(ctx, field)
+				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
-				return ec.fieldContext_Organization_apps(ctx, field)
+				return ec.fieldContext_Org_apps(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Organization", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
 	}
 	defer func() {
@@ -931,7 +931,7 @@ func (ec *executionContext) _Mutation_updateOrganization(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateOrganization(rctx, fc.Args["orgID"].(int), fc.Args["input"].(ent.UpdateOrganizationInput))
+		return ec.resolvers.Mutation().UpdateOrganization(rctx, fc.Args["orgID"].(int), fc.Args["input"].(ent.UpdateOrgInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -939,9 +939,9 @@ func (ec *executionContext) _Mutation_updateOrganization(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ent.Organization)
+	res := resTmp.(*ent.Org)
 	fc.Result = res
-	return ec.marshalOOrganization2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrganization(ctx, field.Selections, res)
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -953,53 +953,53 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Organization_id(ctx, field)
+				return ec.fieldContext_Org_id(ctx, field)
 			case "createdBy":
-				return ec.fieldContext_Organization_createdBy(ctx, field)
+				return ec.fieldContext_Org_createdBy(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Organization_createdAt(ctx, field)
+				return ec.fieldContext_Org_createdAt(ctx, field)
 			case "updatedBy":
-				return ec.fieldContext_Organization_updatedBy(ctx, field)
+				return ec.fieldContext_Org_updatedBy(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Organization_updatedAt(ctx, field)
+				return ec.fieldContext_Org_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Organization_deletedAt(ctx, field)
+				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
-				return ec.fieldContext_Organization_ownerID(ctx, field)
+				return ec.fieldContext_Org_ownerID(ctx, field)
 			case "parentID":
-				return ec.fieldContext_Organization_parentID(ctx, field)
+				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
-				return ec.fieldContext_Organization_domain(ctx, field)
+				return ec.fieldContext_Org_domain(ctx, field)
 			case "code":
-				return ec.fieldContext_Organization_code(ctx, field)
+				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
-				return ec.fieldContext_Organization_name(ctx, field)
+				return ec.fieldContext_Org_name(ctx, field)
 			case "profile":
-				return ec.fieldContext_Organization_profile(ctx, field)
+				return ec.fieldContext_Org_profile(ctx, field)
 			case "status":
-				return ec.fieldContext_Organization_status(ctx, field)
+				return ec.fieldContext_Org_status(ctx, field)
 			case "path":
-				return ec.fieldContext_Organization_path(ctx, field)
+				return ec.fieldContext_Org_path(ctx, field)
 			case "displaySort":
-				return ec.fieldContext_Organization_displaySort(ctx, field)
+				return ec.fieldContext_Org_displaySort(ctx, field)
 			case "countryCode":
-				return ec.fieldContext_Organization_countryCode(ctx, field)
+				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
-				return ec.fieldContext_Organization_timezone(ctx, field)
+				return ec.fieldContext_Org_timezone(ctx, field)
 			case "parent":
-				return ec.fieldContext_Organization_parent(ctx, field)
+				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
-				return ec.fieldContext_Organization_children(ctx, field)
+				return ec.fieldContext_Org_children(ctx, field)
 			case "users":
-				return ec.fieldContext_Organization_users(ctx, field)
+				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
-				return ec.fieldContext_Organization_permissions(ctx, field)
+				return ec.fieldContext_Org_permissions(ctx, field)
 			case "policies":
-				return ec.fieldContext_Organization_policies(ctx, field)
+				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
-				return ec.fieldContext_Organization_apps(ctx, field)
+				return ec.fieldContext_Org_apps(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Organization", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
 	}
 	defer func() {
@@ -2106,8 +2106,8 @@ func (ec *executionContext) fieldContext_Mutation_createApp(ctx context.Context,
 				return ec.fieldContext_App_roles(ctx, field)
 			case "policies":
 				return ec.fieldContext_App_policies(ctx, field)
-			case "organizations":
-				return ec.fieldContext_App_organizations(ctx, field)
+			case "orgs":
+				return ec.fieldContext_App_orgs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
@@ -2205,8 +2205,8 @@ func (ec *executionContext) fieldContext_Mutation_updateApp(ctx context.Context,
 				return ec.fieldContext_App_roles(ctx, field)
 			case "policies":
 				return ec.fieldContext_App_policies(ctx, field)
-			case "organizations":
-				return ec.fieldContext_App_organizations(ctx, field)
+			case "orgs":
+				return ec.fieldContext_App_orgs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
@@ -3004,8 +3004,8 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 				return ec.fieldContext_Permission_endAt(ctx, field)
 			case "status":
 				return ec.fieldContext_Permission_status(ctx, field)
-			case "organization":
-				return ec.fieldContext_Permission_organization(ctx, field)
+			case "org":
+				return ec.fieldContext_Permission_org(ctx, field)
 			case "user":
 				return ec.fieldContext_Permission_user(ctx, field)
 			}

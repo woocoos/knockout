@@ -95,25 +95,25 @@ func (a *App) Policies(ctx context.Context) (result []*AppPolicy, err error) {
 	return result, err
 }
 
-func (a *App) Organizations(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrganizationOrder, where *OrganizationWhereInput,
-) (*OrganizationConnection, error) {
-	opts := []OrganizationPaginateOption{
-		WithOrganizationOrder(orderBy),
-		WithOrganizationFilter(where.Filter),
+func (a *App) Orgs(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgOrder, where *OrgWhereInput,
+) (*OrgConnection, error) {
+	opts := []OrgPaginateOption{
+		WithOrgOrder(orderBy),
+		WithOrgFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := a.Edges.totalCount[5][alias]
-	if nodes, err := a.NamedOrganizations(alias); err == nil || hasTotalCount {
-		pager, err := newOrganizationPager(opts, last != nil)
+	if nodes, err := a.NamedOrgs(alias); err == nil || hasTotalCount {
+		pager, err := newOrgPager(opts, last != nil)
 		if err != nil {
 			return nil, err
 		}
-		conn := &OrganizationConnection{Edges: []*OrganizationEdge{}, TotalCount: totalCount}
+		conn := &OrgConnection{Edges: []*OrgEdge{}, TotalCount: totalCount}
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
-	return a.QueryOrganizations().Paginate(ctx, after, first, before, last, opts...)
+	return a.QueryOrgs().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (aa *AppAction) App(ctx context.Context) (*App, error) {
@@ -212,7 +212,7 @@ func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error
 	return result, err
 }
 
-func (o *Organization) Parent(ctx context.Context) (*Organization, error) {
+func (o *Org) Parent(ctx context.Context) (*Org, error) {
 	result, err := o.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
 		result, err = o.QueryParent().Only(ctx)
@@ -220,7 +220,7 @@ func (o *Organization) Parent(ctx context.Context) (*Organization, error) {
 	return result, err
 }
 
-func (o *Organization) Children(ctx context.Context) (result []*Organization, err error) {
+func (o *Org) Children(ctx context.Context) (result []*Org, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = o.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
@@ -232,7 +232,7 @@ func (o *Organization) Children(ctx context.Context) (result []*Organization, er
 	return result, err
 }
 
-func (o *Organization) Users(
+func (o *Org) Users(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserOrder, where *UserWhereInput,
 ) (*UserConnection, error) {
 	opts := []UserPaginateOption{
@@ -253,7 +253,7 @@ func (o *Organization) Users(
 	return o.QueryUsers().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Organization) Permissions(
+func (o *Org) Permissions(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *PermissionOrder, where *PermissionWhereInput,
 ) (*PermissionConnection, error) {
 	opts := []PermissionPaginateOption{
@@ -274,28 +274,28 @@ func (o *Organization) Permissions(
 	return o.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Organization) Policies(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrganizationPolicyOrder, where *OrganizationPolicyWhereInput,
-) (*OrganizationPolicyConnection, error) {
-	opts := []OrganizationPolicyPaginateOption{
-		WithOrganizationPolicyOrder(orderBy),
-		WithOrganizationPolicyFilter(where.Filter),
+func (o *Org) Policies(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgPolicyOrder, where *OrgPolicyWhereInput,
+) (*OrgPolicyConnection, error) {
+	opts := []OrgPolicyPaginateOption{
+		WithOrgPolicyOrder(orderBy),
+		WithOrgPolicyFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
 	totalCount, hasTotalCount := o.Edges.totalCount[4][alias]
 	if nodes, err := o.NamedPolicies(alias); err == nil || hasTotalCount {
-		pager, err := newOrganizationPolicyPager(opts, last != nil)
+		pager, err := newOrgPolicyPager(opts, last != nil)
 		if err != nil {
 			return nil, err
 		}
-		conn := &OrganizationPolicyConnection{Edges: []*OrganizationPolicyEdge{}, TotalCount: totalCount}
+		conn := &OrgPolicyConnection{Edges: []*OrgPolicyEdge{}, TotalCount: totalCount}
 		conn.build(nodes, pager, after, first, before, last)
 		return conn, nil
 	}
 	return o.QueryPolicies().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (o *Organization) Apps(
+func (o *Org) Apps(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppOrder, where *AppWhereInput,
 ) (*AppConnection, error) {
 	opts := []AppPaginateOption{
@@ -316,18 +316,18 @@ func (o *Organization) Apps(
 	return o.QueryApps().Paginate(ctx, after, first, before, last, opts...)
 }
 
-func (op *OrganizationPolicy) Organization(ctx context.Context) (*Organization, error) {
-	result, err := op.Edges.OrganizationOrErr()
+func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := op.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = op.QueryOrganization().Only(ctx)
+		result, err = op.QueryOrg().Only(ctx)
 	}
 	return result, err
 }
 
-func (pe *Permission) Organization(ctx context.Context) (*Organization, error) {
-	result, err := pe.Edges.OrganizationOrErr()
+func (pe *Permission) Org(ctx context.Context) (*Org, error) {
+	result, err := pe.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
-		result, err = pe.QueryOrganization().Only(ctx)
+		result, err = pe.QueryOrg().Only(ctx)
 	}
 	return result, err
 }

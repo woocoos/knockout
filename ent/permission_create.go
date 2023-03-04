@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -173,15 +173,9 @@ func (pc *PermissionCreate) SetNillableID(i *int) *PermissionCreate {
 	return pc
 }
 
-// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (pc *PermissionCreate) SetOrganizationID(id int) *PermissionCreate {
-	pc.mutation.SetOrganizationID(id)
-	return pc
-}
-
-// SetOrganization sets the "organization" edge to the Organization entity.
-func (pc *PermissionCreate) SetOrganization(o *Organization) *PermissionCreate {
-	return pc.SetOrganizationID(o.ID)
+// SetOrg sets the "org" edge to the Org entity.
+func (pc *PermissionCreate) SetOrg(o *Org) *PermissionCreate {
+	return pc.SetOrgID(o.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -270,8 +264,8 @@ func (pc *PermissionCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := pc.mutation.OrganizationID(); !ok {
-		return &ValidationError{Name: "organization", err: errors.New(`ent: missing required edge "Permission.organization"`)}
+	if _, ok := pc.mutation.OrgID(); !ok {
+		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "Permission.org"`)}
 	}
 	return nil
 }
@@ -345,17 +339,17 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 		_spec.SetField(permission.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if nodes := pc.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := pc.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   permission.OrganizationTable,
-			Columns: []string{permission.OrganizationColumn},
+			Table:   permission.OrgTable,
+			Columns: []string{permission.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}

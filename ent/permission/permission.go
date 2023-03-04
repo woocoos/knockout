@@ -42,19 +42,19 @@ const (
 	FieldEndAt = "end_at"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// EdgeOrganization holds the string denoting the organization edge name in mutations.
-	EdgeOrganization = "organization"
+	// EdgeOrg holds the string denoting the org edge name in mutations.
+	EdgeOrg = "org"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// Table holds the table name of the permission in the database.
 	Table = "permission"
-	// OrganizationTable is the table that holds the organization relation/edge.
-	OrganizationTable = "permission"
-	// OrganizationInverseTable is the table name for the Organization entity.
-	// It exists in this package in order to avoid circular dependency with the "organization" package.
-	OrganizationInverseTable = "organization"
-	// OrganizationColumn is the table column denoting the organization relation/edge.
-	OrganizationColumn = "org_id"
+	// OrgTable is the table that holds the org relation/edge.
+	OrgTable = "permission"
+	// OrgInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgInverseTable = "org"
+	// OrgColumn is the table column denoting the org relation/edge.
+	OrgColumn = "org_id"
 	// UserTable is the table that holds the user relation/edge.
 	UserTable = "permission"
 	// UserInverseTable is the table name for the User entity.

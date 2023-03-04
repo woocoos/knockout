@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -210,15 +210,9 @@ func (pu *PermissionUpdate) ClearStatus() *PermissionUpdate {
 	return pu
 }
 
-// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (pu *PermissionUpdate) SetOrganizationID(id int) *PermissionUpdate {
-	pu.mutation.SetOrganizationID(id)
-	return pu
-}
-
-// SetOrganization sets the "organization" edge to the Organization entity.
-func (pu *PermissionUpdate) SetOrganization(o *Organization) *PermissionUpdate {
-	return pu.SetOrganizationID(o.ID)
+// SetOrg sets the "org" edge to the Org entity.
+func (pu *PermissionUpdate) SetOrg(o *Org) *PermissionUpdate {
+	return pu.SetOrgID(o.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -231,9 +225,9 @@ func (pu *PermissionUpdate) Mutation() *PermissionMutation {
 	return pu.mutation
 }
 
-// ClearOrganization clears the "organization" edge to the Organization entity.
-func (pu *PermissionUpdate) ClearOrganization() *PermissionUpdate {
-	pu.mutation.ClearOrganization()
+// ClearOrg clears the "org" edge to the Org entity.
+func (pu *PermissionUpdate) ClearOrg() *PermissionUpdate {
+	pu.mutation.ClearOrg()
 	return pu
 }
 
@@ -282,8 +276,8 @@ func (pu *PermissionUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := pu.mutation.OrganizationID(); pu.mutation.OrganizationCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Permission.organization"`)
+	if _, ok := pu.mutation.OrgID(); pu.mutation.OrgCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
 	}
 	return nil
 }
@@ -351,33 +345,33 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.StatusCleared() {
 		_spec.ClearField(permission.FieldStatus, field.TypeEnum)
 	}
-	if pu.mutation.OrganizationCleared() {
+	if pu.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   permission.OrganizationTable,
-			Columns: []string{permission.OrganizationColumn},
+			Table:   permission.OrgTable,
+			Columns: []string{permission.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pu.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := pu.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   permission.OrganizationTable,
-			Columns: []string{permission.OrganizationColumn},
+			Table:   permission.OrgTable,
+			Columns: []string{permission.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
@@ -620,15 +614,9 @@ func (puo *PermissionUpdateOne) ClearStatus() *PermissionUpdateOne {
 	return puo
 }
 
-// SetOrganizationID sets the "organization" edge to the Organization entity by ID.
-func (puo *PermissionUpdateOne) SetOrganizationID(id int) *PermissionUpdateOne {
-	puo.mutation.SetOrganizationID(id)
-	return puo
-}
-
-// SetOrganization sets the "organization" edge to the Organization entity.
-func (puo *PermissionUpdateOne) SetOrganization(o *Organization) *PermissionUpdateOne {
-	return puo.SetOrganizationID(o.ID)
+// SetOrg sets the "org" edge to the Org entity.
+func (puo *PermissionUpdateOne) SetOrg(o *Org) *PermissionUpdateOne {
+	return puo.SetOrgID(o.ID)
 }
 
 // SetUser sets the "user" edge to the User entity.
@@ -641,9 +629,9 @@ func (puo *PermissionUpdateOne) Mutation() *PermissionMutation {
 	return puo.mutation
 }
 
-// ClearOrganization clears the "organization" edge to the Organization entity.
-func (puo *PermissionUpdateOne) ClearOrganization() *PermissionUpdateOne {
-	puo.mutation.ClearOrganization()
+// ClearOrg clears the "org" edge to the Org entity.
+func (puo *PermissionUpdateOne) ClearOrg() *PermissionUpdateOne {
+	puo.mutation.ClearOrg()
 	return puo
 }
 
@@ -705,8 +693,8 @@ func (puo *PermissionUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := puo.mutation.OrganizationID(); puo.mutation.OrganizationCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "Permission.organization"`)
+	if _, ok := puo.mutation.OrgID(); puo.mutation.OrgCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
 	}
 	return nil
 }
@@ -791,33 +779,33 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	if puo.mutation.StatusCleared() {
 		_spec.ClearField(permission.FieldStatus, field.TypeEnum)
 	}
-	if puo.mutation.OrganizationCleared() {
+	if puo.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   permission.OrganizationTable,
-			Columns: []string{permission.OrganizationColumn},
+			Table:   permission.OrgTable,
+			Columns: []string{permission.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := puo.mutation.OrganizationIDs(); len(nodes) > 0 {
+	if nodes := puo.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   permission.OrganizationTable,
-			Columns: []string{permission.OrganizationColumn},
+			Table:   permission.OrgTable,
+			Columns: []string{permission.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}

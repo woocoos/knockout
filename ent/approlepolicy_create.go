@@ -70,21 +70,33 @@ func (arpc *AppRolePolicyCreate) SetNillableUpdatedAt(t *time.Time) *AppRolePoli
 	return arpc
 }
 
-// SetRoleID sets the "role_id" field.
-func (arpc *AppRolePolicyCreate) SetRoleID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetRoleID(i)
+// SetAppRoleID sets the "app_role_id" field.
+func (arpc *AppRolePolicyCreate) SetAppRoleID(i int) *AppRolePolicyCreate {
+	arpc.mutation.SetAppRoleID(i)
 	return arpc
 }
 
-// SetPolicyID sets the "policy_id" field.
-func (arpc *AppRolePolicyCreate) SetPolicyID(i int) *AppRolePolicyCreate {
-	arpc.mutation.SetPolicyID(i)
+// SetAppPolicyID sets the "app_policy_id" field.
+func (arpc *AppRolePolicyCreate) SetAppPolicyID(i int) *AppRolePolicyCreate {
+	arpc.mutation.SetAppPolicyID(i)
+	return arpc
+}
+
+// SetRoleID sets the "role" edge to the AppRole entity by ID.
+func (arpc *AppRolePolicyCreate) SetRoleID(id int) *AppRolePolicyCreate {
+	arpc.mutation.SetRoleID(id)
 	return arpc
 }
 
 // SetRole sets the "role" edge to the AppRole entity.
 func (arpc *AppRolePolicyCreate) SetRole(a *AppRole) *AppRolePolicyCreate {
 	return arpc.SetRoleID(a.ID)
+}
+
+// SetPolicyID sets the "policy" edge to the AppPolicy entity by ID.
+func (arpc *AppRolePolicyCreate) SetPolicyID(id int) *AppRolePolicyCreate {
+	arpc.mutation.SetPolicyID(id)
+	return arpc
 }
 
 // SetPolicy sets the "policy" edge to the AppPolicy entity.
@@ -147,11 +159,11 @@ func (arpc *AppRolePolicyCreate) check() error {
 	if _, ok := arpc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRolePolicy.created_at"`)}
 	}
-	if _, ok := arpc.mutation.RoleID(); !ok {
-		return &ValidationError{Name: "role_id", err: errors.New(`ent: missing required field "AppRolePolicy.role_id"`)}
+	if _, ok := arpc.mutation.AppRoleID(); !ok {
+		return &ValidationError{Name: "app_role_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_role_id"`)}
 	}
-	if _, ok := arpc.mutation.PolicyID(); !ok {
-		return &ValidationError{Name: "policy_id", err: errors.New(`ent: missing required field "AppRolePolicy.policy_id"`)}
+	if _, ok := arpc.mutation.AppPolicyID(); !ok {
+		return &ValidationError{Name: "app_policy_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_policy_id"`)}
 	}
 	if _, ok := arpc.mutation.RoleID(); !ok {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required edge "AppRolePolicy.role"`)}
@@ -214,7 +226,7 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.RoleID = nodes[0]
+		_node.AppRoleID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := arpc.mutation.PolicyIDs(); len(nodes) > 0 {
@@ -234,7 +246,7 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.PolicyID = nodes[0]
+		_node.AppPolicyID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

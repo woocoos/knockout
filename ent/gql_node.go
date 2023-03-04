@@ -20,8 +20,8 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/organization"
-	"github.com/woocoos/knockout/ent/organizationpolicy"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -55,10 +55,10 @@ func (n *AppRes) IsNode() {}
 func (n *AppRole) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Organization) IsNode() {}
+func (n *Org) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *OrganizationPolicy) IsNode() {}
+func (n *OrgPolicy) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Permission) IsNode() {}
@@ -208,10 +208,10 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case organization.Table:
-		query := c.Organization.Query().
-			Where(organization.ID(id))
-		query, err := query.CollectFields(ctx, "Organization")
+	case org.Table:
+		query := c.Org.Query().
+			Where(org.ID(id))
+		query, err := query.CollectFields(ctx, "Org")
 		if err != nil {
 			return nil, err
 		}
@@ -220,10 +220,10 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		return n, nil
-	case organizationpolicy.Table:
-		query := c.OrganizationPolicy.Query().
-			Where(organizationpolicy.ID(id))
-		query, err := query.CollectFields(ctx, "OrganizationPolicy")
+	case orgpolicy.Table:
+		query := c.OrgPolicy.Query().
+			Where(orgpolicy.ID(id))
+		query, err := query.CollectFields(ctx, "OrgPolicy")
 		if err != nil {
 			return nil, err
 		}
@@ -473,10 +473,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case organization.Table:
-		query := c.Organization.Query().
-			Where(organization.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Organization")
+	case org.Table:
+		query := c.Org.Query().
+			Where(org.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Org")
 		if err != nil {
 			return nil, err
 		}
@@ -489,10 +489,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case organizationpolicy.Table:
-		query := c.OrganizationPolicy.Query().
-			Where(organizationpolicy.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "OrganizationPolicy")
+	case orgpolicy.Table:
+		query := c.OrgPolicy.Query().
+			Where(orgpolicy.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "OrgPolicy")
 		if err != nil {
 			return nil, err
 		}

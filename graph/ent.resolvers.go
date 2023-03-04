@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"entgo.io/contrib/entgql"
 	"github.com/woocoos/knockout/ent"
@@ -30,11 +31,9 @@ func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], fir
 		ent.WithAppFilter(where.Filter))
 }
 
-// Organizations is the resolver for the organizations field.
-func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrganizationOrder, where *ent.OrganizationWhereInput) (*ent.OrganizationConnection, error) {
-	return r.Client.Organization.Query().Paginate(ctx, after, first, before, last,
-		ent.WithOrganizationOrder(orderBy),
-		ent.WithOrganizationFilter(where.Filter))
+// Orgs is the resolver for the orgs field.
+func (r *queryResolver) Orgs(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
+	panic(fmt.Errorf("not implemented: Orgs - orgs"))
 }
 
 // Users is the resolver for the users field.
@@ -53,3 +52,15 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 
 type queryResolver struct{ *Resolver }
 type createUserInputResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
+	return r.Client.Org.Query().Paginate(ctx, after, first, before, last,
+		ent.WithOrgOrder(orderBy),
+		ent.WithOrgFilter(where.Filter))
+}

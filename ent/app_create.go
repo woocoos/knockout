@@ -17,7 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/organization"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // AppCreate is the builder for creating a App entity.
@@ -322,19 +322,19 @@ func (ac *AppCreate) AddPolicies(a ...*AppPolicy) *AppCreate {
 	return ac.AddPolicyIDs(ids...)
 }
 
-// AddOrganizationIDs adds the "organizations" edge to the Organization entity by IDs.
-func (ac *AppCreate) AddOrganizationIDs(ids ...int) *AppCreate {
-	ac.mutation.AddOrganizationIDs(ids...)
+// AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
+func (ac *AppCreate) AddOrgIDs(ids ...int) *AppCreate {
+	ac.mutation.AddOrgIDs(ids...)
 	return ac
 }
 
-// AddOrganizations adds the "organizations" edges to the Organization entity.
-func (ac *AppCreate) AddOrganizations(o ...*Organization) *AppCreate {
+// AddOrgs adds the "orgs" edges to the Org entity.
+func (ac *AppCreate) AddOrgs(o ...*Org) *AppCreate {
 	ids := make([]int, len(o))
 	for i := range o {
 		ids[i] = o[i].ID
 	}
-	return ac.AddOrganizationIDs(ids...)
+	return ac.AddOrgIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -642,24 +642,24 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.OrganizationsIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.OrgsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.OrganizationsTable,
-			Columns: app.OrganizationsPrimaryKey,
+			Table:   app.OrgsTable,
+			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: organization.FieldID,
+					Column: org.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		createE := &OrganizationAppCreate{config: ac.config, mutation: newOrganizationAppMutation(ac.config, OpCreate)}
+		createE := &OrgAppCreate{config: ac.config, mutation: newOrgAppMutation(ac.config, OpCreate)}
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields

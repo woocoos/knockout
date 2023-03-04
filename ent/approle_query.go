@@ -623,10 +623,10 @@ func (arq *AppRoleQuery) loadAppRolePolicy(ctx context.Context, query *AppRolePo
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.RoleID
+		fk := n.AppRoleID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "role_id" returned %v for node %v`, fk, n)
+			return fmt.Errorf(`unexpected foreign-key "app_role_id" returned %v for node %v`, fk, n)
 		}
 		assign(node, n)
 	}

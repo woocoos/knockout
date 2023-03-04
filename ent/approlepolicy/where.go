@@ -30,14 +30,14 @@ func UpdatedAt(v time.Time) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// RoleID applies equality check predicate on the "role_id" field. It's identical to RoleIDEQ.
-func RoleID(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldEQ(FieldRoleID, v))
+// AppRoleID applies equality check predicate on the "app_role_id" field. It's identical to AppRoleIDEQ.
+func AppRoleID(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppRoleID, v))
 }
 
-// PolicyID applies equality check predicate on the "policy_id" field. It's identical to PolicyIDEQ.
-func PolicyID(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldEQ(FieldPolicyID, v))
+// AppPolicyID applies equality check predicate on the "app_policy_id" field. It's identical to AppPolicyIDEQ.
+func AppPolicyID(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppPolicyID, v))
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
@@ -220,44 +220,44 @@ func UpdatedAtNotNil() predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(sql.FieldNotNull(FieldUpdatedAt))
 }
 
-// RoleIDEQ applies the EQ predicate on the "role_id" field.
-func RoleIDEQ(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldEQ(FieldRoleID, v))
+// AppRoleIDEQ applies the EQ predicate on the "app_role_id" field.
+func AppRoleIDEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppRoleID, v))
 }
 
-// RoleIDNEQ applies the NEQ predicate on the "role_id" field.
-func RoleIDNEQ(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldNEQ(FieldRoleID, v))
+// AppRoleIDNEQ applies the NEQ predicate on the "app_role_id" field.
+func AppRoleIDNEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNEQ(FieldAppRoleID, v))
 }
 
-// RoleIDIn applies the In predicate on the "role_id" field.
-func RoleIDIn(vs ...int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldIn(FieldRoleID, vs...))
+// AppRoleIDIn applies the In predicate on the "app_role_id" field.
+func AppRoleIDIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldIn(FieldAppRoleID, vs...))
 }
 
-// RoleIDNotIn applies the NotIn predicate on the "role_id" field.
-func RoleIDNotIn(vs ...int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldNotIn(FieldRoleID, vs...))
+// AppRoleIDNotIn applies the NotIn predicate on the "app_role_id" field.
+func AppRoleIDNotIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNotIn(FieldAppRoleID, vs...))
 }
 
-// PolicyIDEQ applies the EQ predicate on the "policy_id" field.
-func PolicyIDEQ(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldEQ(FieldPolicyID, v))
+// AppPolicyIDEQ applies the EQ predicate on the "app_policy_id" field.
+func AppPolicyIDEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppPolicyID, v))
 }
 
-// PolicyIDNEQ applies the NEQ predicate on the "policy_id" field.
-func PolicyIDNEQ(v int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldNEQ(FieldPolicyID, v))
+// AppPolicyIDNEQ applies the NEQ predicate on the "app_policy_id" field.
+func AppPolicyIDNEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNEQ(FieldAppPolicyID, v))
 }
 
-// PolicyIDIn applies the In predicate on the "policy_id" field.
-func PolicyIDIn(vs ...int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldIn(FieldPolicyID, vs...))
+// AppPolicyIDIn applies the In predicate on the "app_policy_id" field.
+func AppPolicyIDIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldIn(FieldAppPolicyID, vs...))
 }
 
-// PolicyIDNotIn applies the NotIn predicate on the "policy_id" field.
-func PolicyIDNotIn(vs ...int) predicate.AppRolePolicy {
-	return predicate.AppRolePolicy(sql.FieldNotIn(FieldPolicyID, vs...))
+// AppPolicyIDNotIn applies the NotIn predicate on the "app_policy_id" field.
+func AppPolicyIDNotIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNotIn(FieldAppPolicyID, vs...))
 }
 
 // HasRole applies the HasEdge predicate on the "role" edge.

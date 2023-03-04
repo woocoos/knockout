@@ -21,11 +21,11 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/organization"
-	"github.com/woocoos/knockout/ent/organizationapp"
-	"github.com/woocoos/knockout/ent/organizationpolicy"
-	"github.com/woocoos/knockout/ent/organizationrole"
-	"github.com/woocoos/knockout/ent/organizationuser"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -53,16 +53,16 @@ type Client struct {
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
-	// Organization is the client for interacting with the Organization builders.
-	Organization *OrganizationClient
-	// OrganizationApp is the client for interacting with the OrganizationApp builders.
-	OrganizationApp *OrganizationAppClient
-	// OrganizationPolicy is the client for interacting with the OrganizationPolicy builders.
-	OrganizationPolicy *OrganizationPolicyClient
-	// OrganizationRole is the client for interacting with the OrganizationRole builders.
-	OrganizationRole *OrganizationRoleClient
-	// OrganizationUser is the client for interacting with the OrganizationUser builders.
-	OrganizationUser *OrganizationUserClient
+	// Org is the client for interacting with the Org builders.
+	Org *OrgClient
+	// OrgApp is the client for interacting with the OrgApp builders.
+	OrgApp *OrgAppClient
+	// OrgPolicy is the client for interacting with the OrgPolicy builders.
+	OrgPolicy *OrgPolicyClient
+	// OrgRole is the client for interacting with the OrgRole builders.
+	OrgRole *OrgRoleClient
+	// OrgUser is the client for interacting with the OrgUser builders.
+	OrgUser *OrgUserClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -97,11 +97,11 @@ func (c *Client) init() {
 	c.AppRes = NewAppResClient(c.config)
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
-	c.Organization = NewOrganizationClient(c.config)
-	c.OrganizationApp = NewOrganizationAppClient(c.config)
-	c.OrganizationPolicy = NewOrganizationPolicyClient(c.config)
-	c.OrganizationRole = NewOrganizationRoleClient(c.config)
-	c.OrganizationUser = NewOrganizationUserClient(c.config)
+	c.Org = NewOrgClient(c.config)
+	c.OrgApp = NewOrgAppClient(c.config)
+	c.OrgPolicy = NewOrgPolicyClient(c.config)
+	c.OrgRole = NewOrgRoleClient(c.config)
+	c.OrgUser = NewOrgUserClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
@@ -188,26 +188,26 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		App:                NewAppClient(cfg),
-		AppAction:          NewAppActionClient(cfg),
-		AppMenu:            NewAppMenuClient(cfg),
-		AppPolicy:          NewAppPolicyClient(cfg),
-		AppRes:             NewAppResClient(cfg),
-		AppRole:            NewAppRoleClient(cfg),
-		AppRolePolicy:      NewAppRolePolicyClient(cfg),
-		Organization:       NewOrganizationClient(cfg),
-		OrganizationApp:    NewOrganizationAppClient(cfg),
-		OrganizationPolicy: NewOrganizationPolicyClient(cfg),
-		OrganizationRole:   NewOrganizationRoleClient(cfg),
-		OrganizationUser:   NewOrganizationUserClient(cfg),
-		Permission:         NewPermissionClient(cfg),
-		User:               NewUserClient(cfg),
-		UserDevice:         NewUserDeviceClient(cfg),
-		UserIdentity:       NewUserIdentityClient(cfg),
-		UserLoginProfile:   NewUserLoginProfileClient(cfg),
-		UserPassword:       NewUserPasswordClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		App:              NewAppClient(cfg),
+		AppAction:        NewAppActionClient(cfg),
+		AppMenu:          NewAppMenuClient(cfg),
+		AppPolicy:        NewAppPolicyClient(cfg),
+		AppRes:           NewAppResClient(cfg),
+		AppRole:          NewAppRoleClient(cfg),
+		AppRolePolicy:    NewAppRolePolicyClient(cfg),
+		Org:              NewOrgClient(cfg),
+		OrgApp:           NewOrgAppClient(cfg),
+		OrgPolicy:        NewOrgPolicyClient(cfg),
+		OrgRole:          NewOrgRoleClient(cfg),
+		OrgUser:          NewOrgUserClient(cfg),
+		Permission:       NewPermissionClient(cfg),
+		User:             NewUserClient(cfg),
+		UserDevice:       NewUserDeviceClient(cfg),
+		UserIdentity:     NewUserIdentityClient(cfg),
+		UserLoginProfile: NewUserLoginProfileClient(cfg),
+		UserPassword:     NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -225,26 +225,26 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		App:                NewAppClient(cfg),
-		AppAction:          NewAppActionClient(cfg),
-		AppMenu:            NewAppMenuClient(cfg),
-		AppPolicy:          NewAppPolicyClient(cfg),
-		AppRes:             NewAppResClient(cfg),
-		AppRole:            NewAppRoleClient(cfg),
-		AppRolePolicy:      NewAppRolePolicyClient(cfg),
-		Organization:       NewOrganizationClient(cfg),
-		OrganizationApp:    NewOrganizationAppClient(cfg),
-		OrganizationPolicy: NewOrganizationPolicyClient(cfg),
-		OrganizationRole:   NewOrganizationRoleClient(cfg),
-		OrganizationUser:   NewOrganizationUserClient(cfg),
-		Permission:         NewPermissionClient(cfg),
-		User:               NewUserClient(cfg),
-		UserDevice:         NewUserDeviceClient(cfg),
-		UserIdentity:       NewUserIdentityClient(cfg),
-		UserLoginProfile:   NewUserLoginProfileClient(cfg),
-		UserPassword:       NewUserPasswordClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		App:              NewAppClient(cfg),
+		AppAction:        NewAppActionClient(cfg),
+		AppMenu:          NewAppMenuClient(cfg),
+		AppPolicy:        NewAppPolicyClient(cfg),
+		AppRes:           NewAppResClient(cfg),
+		AppRole:          NewAppRoleClient(cfg),
+		AppRolePolicy:    NewAppRolePolicyClient(cfg),
+		Org:              NewOrgClient(cfg),
+		OrgApp:           NewOrgAppClient(cfg),
+		OrgPolicy:        NewOrgPolicyClient(cfg),
+		OrgRole:          NewOrgRoleClient(cfg),
+		OrgUser:          NewOrgUserClient(cfg),
+		Permission:       NewPermissionClient(cfg),
+		User:             NewUserClient(cfg),
+		UserDevice:       NewUserDeviceClient(cfg),
+		UserIdentity:     NewUserIdentityClient(cfg),
+		UserLoginProfile: NewUserLoginProfileClient(cfg),
+		UserPassword:     NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -275,9 +275,9 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationPolicy,
-		c.OrganizationRole, c.OrganizationUser, c.Permission, c.User, c.UserDevice,
-		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgUser,
+		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
+		c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -288,9 +288,9 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Organization, c.OrganizationApp, c.OrganizationPolicy,
-		c.OrganizationRole, c.OrganizationUser, c.Permission, c.User, c.UserDevice,
-		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgUser,
+		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
+		c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -313,16 +313,16 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppRole.mutate(ctx, m)
 	case *AppRolePolicyMutation:
 		return c.AppRolePolicy.mutate(ctx, m)
-	case *OrganizationMutation:
-		return c.Organization.mutate(ctx, m)
-	case *OrganizationAppMutation:
-		return c.OrganizationApp.mutate(ctx, m)
-	case *OrganizationPolicyMutation:
-		return c.OrganizationPolicy.mutate(ctx, m)
-	case *OrganizationRoleMutation:
-		return c.OrganizationRole.mutate(ctx, m)
-	case *OrganizationUserMutation:
-		return c.OrganizationUser.mutate(ctx, m)
+	case *OrgMutation:
+		return c.Org.mutate(ctx, m)
+	case *OrgAppMutation:
+		return c.OrgApp.mutate(ctx, m)
+	case *OrgPolicyMutation:
+		return c.OrgPolicy.mutate(ctx, m)
+	case *OrgRoleMutation:
+		return c.OrgRole.mutate(ctx, m)
+	case *OrgUserMutation:
+		return c.OrgUser.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
 	case *UserMutation:
@@ -513,15 +513,15 @@ func (c *AppClient) QueryPolicies(a *App) *AppPolicyQuery {
 	return query
 }
 
-// QueryOrganizations queries the organizations edge of a App.
-func (c *AppClient) QueryOrganizations(a *App) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrgs queries the orgs edge of a App.
+func (c *AppClient) QueryOrgs(a *App) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, app.OrganizationsTable, app.OrganizationsPrimaryKey...),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.OrgsTable, app.OrgsPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -529,15 +529,15 @@ func (c *AppClient) QueryOrganizations(a *App) *OrganizationQuery {
 	return query
 }
 
-// QueryOrganizationApp queries the organization_app edge of a App.
-func (c *AppClient) QueryOrganizationApp(a *App) *OrganizationAppQuery {
-	query := (&OrganizationAppClient{config: c.config}).Query()
+// QueryOrgApp queries the org_app edge of a App.
+func (c *AppClient) QueryOrgApp(a *App) *OrgAppQuery {
+	query := (&OrgAppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
-			sqlgraph.To(organizationapp.Table, organizationapp.AppColumn),
-			sqlgraph.Edge(sqlgraph.O2M, true, app.OrganizationAppTable, app.OrganizationAppColumn),
+			sqlgraph.To(orgapp.Table, orgapp.AppColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, app.OrgAppTable, app.OrgAppColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -1400,8 +1400,8 @@ func (c *AppRolePolicyClient) Update() *AppRolePolicyUpdate {
 // UpdateOne returns an update builder for the given entity.
 func (c *AppRolePolicyClient) UpdateOne(arp *AppRolePolicy) *AppRolePolicyUpdateOne {
 	mutation := newAppRolePolicyMutation(c.config, OpUpdateOne)
-	mutation.role = &arp.RoleID
-	mutation.policy = &arp.PolicyID
+	mutation.role = &arp.AppRoleID
+	mutation.policy = &arp.AppPolicyID
 	return &AppRolePolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1423,14 +1423,14 @@ func (c *AppRolePolicyClient) Query() *AppRolePolicyQuery {
 // QueryRole queries the role edge of a AppRolePolicy.
 func (c *AppRolePolicyClient) QueryRole(arp *AppRolePolicy) *AppRoleQuery {
 	return c.Query().
-		Where(approlepolicy.RoleID(arp.RoleID), approlepolicy.PolicyID(arp.PolicyID)).
+		Where(approlepolicy.AppRoleID(arp.AppRoleID), approlepolicy.AppPolicyID(arp.AppPolicyID)).
 		QueryRole()
 }
 
 // QueryPolicy queries the policy edge of a AppRolePolicy.
 func (c *AppRolePolicyClient) QueryPolicy(arp *AppRolePolicy) *AppPolicyQuery {
 	return c.Query().
-		Where(approlepolicy.RoleID(arp.RoleID), approlepolicy.PolicyID(arp.PolicyID)).
+		Where(approlepolicy.AppRoleID(arp.AppRoleID), approlepolicy.AppPolicyID(arp.AppPolicyID)).
 		QueryPolicy()
 }
 
@@ -1460,92 +1460,92 @@ func (c *AppRolePolicyClient) mutate(ctx context.Context, m *AppRolePolicyMutati
 	}
 }
 
-// OrganizationClient is a client for the Organization schema.
-type OrganizationClient struct {
+// OrgClient is a client for the Org schema.
+type OrgClient struct {
 	config
 }
 
-// NewOrganizationClient returns a client for the Organization from the given config.
-func NewOrganizationClient(c config) *OrganizationClient {
-	return &OrganizationClient{config: c}
+// NewOrgClient returns a client for the Org from the given config.
+func NewOrgClient(c config) *OrgClient {
+	return &OrgClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `organization.Hooks(f(g(h())))`.
-func (c *OrganizationClient) Use(hooks ...Hook) {
-	c.hooks.Organization = append(c.hooks.Organization, hooks...)
+// A call to `Use(f, g, h)` equals to `org.Hooks(f(g(h())))`.
+func (c *OrgClient) Use(hooks ...Hook) {
+	c.hooks.Org = append(c.hooks.Org, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `organization.Intercept(f(g(h())))`.
-func (c *OrganizationClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Organization = append(c.inters.Organization, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `org.Intercept(f(g(h())))`.
+func (c *OrgClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Org = append(c.inters.Org, interceptors...)
 }
 
-// Create returns a builder for creating a Organization entity.
-func (c *OrganizationClient) Create() *OrganizationCreate {
-	mutation := newOrganizationMutation(c.config, OpCreate)
-	return &OrganizationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Org entity.
+func (c *OrgClient) Create() *OrgCreate {
+	mutation := newOrgMutation(c.config, OpCreate)
+	return &OrgCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Organization entities.
-func (c *OrganizationClient) CreateBulk(builders ...*OrganizationCreate) *OrganizationCreateBulk {
-	return &OrganizationCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Org entities.
+func (c *OrgClient) CreateBulk(builders ...*OrgCreate) *OrgCreateBulk {
+	return &OrgCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Organization.
-func (c *OrganizationClient) Update() *OrganizationUpdate {
-	mutation := newOrganizationMutation(c.config, OpUpdate)
-	return &OrganizationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Org.
+func (c *OrgClient) Update() *OrgUpdate {
+	mutation := newOrgMutation(c.config, OpUpdate)
+	return &OrgUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationClient) UpdateOne(o *Organization) *OrganizationUpdateOne {
-	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganization(o))
-	return &OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgClient) UpdateOne(o *Org) *OrgUpdateOne {
+	mutation := newOrgMutation(c.config, OpUpdateOne, withOrg(o))
+	return &OrgUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OrganizationClient) UpdateOneID(id int) *OrganizationUpdateOne {
-	mutation := newOrganizationMutation(c.config, OpUpdateOne, withOrganizationID(id))
-	return &OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgClient) UpdateOneID(id int) *OrgUpdateOne {
+	mutation := newOrgMutation(c.config, OpUpdateOne, withOrgID(id))
+	return &OrgUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Organization.
-func (c *OrganizationClient) Delete() *OrganizationDelete {
-	mutation := newOrganizationMutation(c.config, OpDelete)
-	return &OrganizationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Org.
+func (c *OrgClient) Delete() *OrgDelete {
+	mutation := newOrgMutation(c.config, OpDelete)
+	return &OrgDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OrganizationClient) DeleteOne(o *Organization) *OrganizationDeleteOne {
+func (c *OrgClient) DeleteOne(o *Org) *OrgDeleteOne {
 	return c.DeleteOneID(o.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OrganizationClient) DeleteOneID(id int) *OrganizationDeleteOne {
-	builder := c.Delete().Where(organization.ID(id))
+func (c *OrgClient) DeleteOneID(id int) *OrgDeleteOne {
+	builder := c.Delete().Where(org.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OrganizationDeleteOne{builder}
+	return &OrgDeleteOne{builder}
 }
 
-// Query returns a query builder for Organization.
-func (c *OrganizationClient) Query() *OrganizationQuery {
-	return &OrganizationQuery{
+// Query returns a query builder for Org.
+func (c *OrgClient) Query() *OrgQuery {
+	return &OrgQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOrganization},
+		ctx:    &QueryContext{Type: TypeOrg},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Organization entity by its id.
-func (c *OrganizationClient) Get(ctx context.Context, id int) (*Organization, error) {
-	return c.Query().Where(organization.ID(id)).Only(ctx)
+// Get returns a Org entity by its id.
+func (c *OrgClient) Get(ctx context.Context, id int) (*Org, error) {
+	return c.Query().Where(org.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OrganizationClient) GetX(ctx context.Context, id int) *Organization {
+func (c *OrgClient) GetX(ctx context.Context, id int) *Org {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1553,15 +1553,15 @@ func (c *OrganizationClient) GetX(ctx context.Context, id int) *Organization {
 	return obj
 }
 
-// QueryParent queries the parent edge of a Organization.
-func (c *OrganizationClient) QueryParent(o *Organization) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryParent queries the parent edge of a Org.
+func (c *OrgClient) QueryParent(o *Org) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, organization.ParentTable, organization.ParentColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, org.ParentTable, org.ParentColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1569,15 +1569,15 @@ func (c *OrganizationClient) QueryParent(o *Organization) *OrganizationQuery {
 	return query
 }
 
-// QueryChildren queries the children edge of a Organization.
-func (c *OrganizationClient) QueryChildren(o *Organization) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryChildren queries the children edge of a Org.
+func (c *OrgClient) QueryChildren(o *Org) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, organization.ChildrenTable, organization.ChildrenColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.ChildrenTable, org.ChildrenColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1585,15 +1585,15 @@ func (c *OrganizationClient) QueryChildren(o *Organization) *OrganizationQuery {
 	return query
 }
 
-// QueryOwner queries the owner edge of a Organization.
-func (c *OrganizationClient) QueryOwner(o *Organization) *UserQuery {
+// QueryOwner queries the owner edge of a Org.
+func (c *OrgClient) QueryOwner(o *Org) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
+			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, organization.OwnerTable, organization.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, org.OwnerTable, org.OwnerColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1601,15 +1601,15 @@ func (c *OrganizationClient) QueryOwner(o *Organization) *UserQuery {
 	return query
 }
 
-// QueryUsers queries the users edge of a Organization.
-func (c *OrganizationClient) QueryUsers(o *Organization) *UserQuery {
+// QueryUsers queries the users edge of a Org.
+func (c *OrgClient) QueryUsers(o *Org) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
+			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, organization.UsersTable, organization.UsersPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, false, org.UsersTable, org.UsersPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1617,15 +1617,15 @@ func (c *OrganizationClient) QueryUsers(o *Organization) *UserQuery {
 	return query
 }
 
-// QueryRolesAndGroups queries the rolesAndGroups edge of a Organization.
-func (c *OrganizationClient) QueryRolesAndGroups(o *Organization) *OrganizationRoleQuery {
-	query := (&OrganizationRoleClient{config: c.config}).Query()
+// QueryRolesAndGroups queries the roles_and_groups edge of a Org.
+func (c *OrgClient) QueryRolesAndGroups(o *Org) *OrgRoleQuery {
+	query := (&OrgRoleClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organizationrole.Table, organizationrole.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, organization.RolesAndGroupsTable, organization.RolesAndGroupsColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(orgrole.Table, orgrole.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.RolesAndGroupsTable, org.RolesAndGroupsColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1633,15 +1633,15 @@ func (c *OrganizationClient) QueryRolesAndGroups(o *Organization) *OrganizationR
 	return query
 }
 
-// QueryPermissions queries the permissions edge of a Organization.
-func (c *OrganizationClient) QueryPermissions(o *Organization) *PermissionQuery {
+// QueryPermissions queries the permissions edge of a Org.
+func (c *OrgClient) QueryPermissions(o *Org) *PermissionQuery {
 	query := (&PermissionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
+			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(permission.Table, permission.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, organization.PermissionsTable, organization.PermissionsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.PermissionsTable, org.PermissionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1649,15 +1649,15 @@ func (c *OrganizationClient) QueryPermissions(o *Organization) *PermissionQuery 
 	return query
 }
 
-// QueryPolicies queries the policies edge of a Organization.
-func (c *OrganizationClient) QueryPolicies(o *Organization) *OrganizationPolicyQuery {
-	query := (&OrganizationPolicyClient{config: c.config}).Query()
+// QueryPolicies queries the policies edge of a Org.
+func (c *OrgClient) QueryPolicies(o *Org) *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organizationpolicy.Table, organizationpolicy.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, organization.PoliciesTable, organization.PoliciesColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.PoliciesTable, org.PoliciesColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1665,15 +1665,15 @@ func (c *OrganizationClient) QueryPolicies(o *Organization) *OrganizationPolicyQ
 	return query
 }
 
-// QueryApps queries the apps edge of a Organization.
-func (c *OrganizationClient) QueryApps(o *Organization) *AppQuery {
+// QueryApps queries the apps edge of a Org.
+func (c *OrgClient) QueryApps(o *Org) *AppQuery {
 	query := (&AppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
+			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(app.Table, app.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, organization.AppsTable, organization.AppsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, false, org.AppsTable, org.AppsPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1681,15 +1681,15 @@ func (c *OrganizationClient) QueryApps(o *Organization) *AppQuery {
 	return query
 }
 
-// QueryOrganizationUser queries the organization_user edge of a Organization.
-func (c *OrganizationClient) QueryOrganizationUser(o *Organization) *OrganizationUserQuery {
-	query := (&OrganizationUserClient{config: c.config}).Query()
+// QueryOrgUser queries the org_user edge of a Org.
+func (c *OrgClient) QueryOrgUser(o *Org) *OrgUserQuery {
+	query := (&OrgUserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organizationuser.Table, organizationuser.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, organization.OrganizationUserTable, organization.OrganizationUserColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(orguser.Table, orguser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, org.OrgUserTable, org.OrgUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1697,15 +1697,15 @@ func (c *OrganizationClient) QueryOrganizationUser(o *Organization) *Organizatio
 	return query
 }
 
-// QueryOrganizationApp queries the organization_app edge of a Organization.
-func (c *OrganizationClient) QueryOrganizationApp(o *Organization) *OrganizationAppQuery {
-	query := (&OrganizationAppClient{config: c.config}).Query()
+// QueryOrgApp queries the org_app edge of a Org.
+func (c *OrgClient) QueryOrgApp(o *Org) *OrgAppQuery {
+	query := (&OrgAppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := o.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organization.Table, organization.FieldID, id),
-			sqlgraph.To(organizationapp.Table, organizationapp.OrganizationColumn),
-			sqlgraph.Edge(sqlgraph.O2M, true, organization.OrganizationAppTable, organization.OrganizationAppColumn),
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(orgapp.Table, orgapp.OrgColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, org.OrgAppTable, org.OrgAppColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -1714,220 +1714,220 @@ func (c *OrganizationClient) QueryOrganizationApp(o *Organization) *Organization
 }
 
 // Hooks returns the client hooks.
-func (c *OrganizationClient) Hooks() []Hook {
-	hooks := c.hooks.Organization
-	return append(hooks[:len(hooks):len(hooks)], organization.Hooks[:]...)
+func (c *OrgClient) Hooks() []Hook {
+	hooks := c.hooks.Org
+	return append(hooks[:len(hooks):len(hooks)], org.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *OrganizationClient) Interceptors() []Interceptor {
-	inters := c.inters.Organization
-	return append(inters[:len(inters):len(inters)], organization.Interceptors[:]...)
+func (c *OrgClient) Interceptors() []Interceptor {
+	inters := c.inters.Org
+	return append(inters[:len(inters):len(inters)], org.Interceptors[:]...)
 }
 
-func (c *OrganizationClient) mutate(ctx context.Context, m *OrganizationMutation) (Value, error) {
+func (c *OrgClient) mutate(ctx context.Context, m *OrgMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OrganizationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OrganizationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OrganizationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OrganizationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&OrgDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Organization mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Org mutation op: %q", m.Op())
 	}
 }
 
-// OrganizationAppClient is a client for the OrganizationApp schema.
-type OrganizationAppClient struct {
+// OrgAppClient is a client for the OrgApp schema.
+type OrgAppClient struct {
 	config
 }
 
-// NewOrganizationAppClient returns a client for the OrganizationApp from the given config.
-func NewOrganizationAppClient(c config) *OrganizationAppClient {
-	return &OrganizationAppClient{config: c}
+// NewOrgAppClient returns a client for the OrgApp from the given config.
+func NewOrgAppClient(c config) *OrgAppClient {
+	return &OrgAppClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `organizationapp.Hooks(f(g(h())))`.
-func (c *OrganizationAppClient) Use(hooks ...Hook) {
-	c.hooks.OrganizationApp = append(c.hooks.OrganizationApp, hooks...)
+// A call to `Use(f, g, h)` equals to `orgapp.Hooks(f(g(h())))`.
+func (c *OrgAppClient) Use(hooks ...Hook) {
+	c.hooks.OrgApp = append(c.hooks.OrgApp, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `organizationapp.Intercept(f(g(h())))`.
-func (c *OrganizationAppClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OrganizationApp = append(c.inters.OrganizationApp, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `orgapp.Intercept(f(g(h())))`.
+func (c *OrgAppClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgApp = append(c.inters.OrgApp, interceptors...)
 }
 
-// Create returns a builder for creating a OrganizationApp entity.
-func (c *OrganizationAppClient) Create() *OrganizationAppCreate {
-	mutation := newOrganizationAppMutation(c.config, OpCreate)
-	return &OrganizationAppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a OrgApp entity.
+func (c *OrgAppClient) Create() *OrgAppCreate {
+	mutation := newOrgAppMutation(c.config, OpCreate)
+	return &OrgAppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OrganizationApp entities.
-func (c *OrganizationAppClient) CreateBulk(builders ...*OrganizationAppCreate) *OrganizationAppCreateBulk {
-	return &OrganizationAppCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of OrgApp entities.
+func (c *OrgAppClient) CreateBulk(builders ...*OrgAppCreate) *OrgAppCreateBulk {
+	return &OrgAppCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OrganizationApp.
-func (c *OrganizationAppClient) Update() *OrganizationAppUpdate {
-	mutation := newOrganizationAppMutation(c.config, OpUpdate)
-	return &OrganizationAppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for OrgApp.
+func (c *OrgAppClient) Update() *OrgAppUpdate {
+	mutation := newOrgAppMutation(c.config, OpUpdate)
+	return &OrgAppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationAppClient) UpdateOne(oa *OrganizationApp) *OrganizationAppUpdateOne {
-	mutation := newOrganizationAppMutation(c.config, OpUpdateOne)
-	mutation.organization = &oa.OrgID
+func (c *OrgAppClient) UpdateOne(oa *OrgApp) *OrgAppUpdateOne {
+	mutation := newOrgAppMutation(c.config, OpUpdateOne)
+	mutation.org = &oa.OrgID
 	mutation.app = &oa.AppID
-	return &OrganizationAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+	return &OrgAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OrganizationApp.
-func (c *OrganizationAppClient) Delete() *OrganizationAppDelete {
-	mutation := newOrganizationAppMutation(c.config, OpDelete)
-	return &OrganizationAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for OrgApp.
+func (c *OrgAppClient) Delete() *OrgAppDelete {
+	mutation := newOrgAppMutation(c.config, OpDelete)
+	return &OrgAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Query returns a query builder for OrganizationApp.
-func (c *OrganizationAppClient) Query() *OrganizationAppQuery {
-	return &OrganizationAppQuery{
+// Query returns a query builder for OrgApp.
+func (c *OrgAppClient) Query() *OrgAppQuery {
+	return &OrgAppQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOrganizationApp},
+		ctx:    &QueryContext{Type: TypeOrgApp},
 		inters: c.Interceptors(),
 	}
 }
 
-// QueryApp queries the app edge of a OrganizationApp.
-func (c *OrganizationAppClient) QueryApp(oa *OrganizationApp) *AppQuery {
+// QueryApp queries the app edge of a OrgApp.
+func (c *OrgAppClient) QueryApp(oa *OrgApp) *AppQuery {
 	return c.Query().
-		Where(organizationapp.OrgID(oa.OrgID), organizationapp.AppID(oa.AppID)).
+		Where(orgapp.OrgID(oa.OrgID), orgapp.AppID(oa.AppID)).
 		QueryApp()
 }
 
-// QueryOrganization queries the organization edge of a OrganizationApp.
-func (c *OrganizationAppClient) QueryOrganization(oa *OrganizationApp) *OrganizationQuery {
+// QueryOrg queries the org edge of a OrgApp.
+func (c *OrgAppClient) QueryOrg(oa *OrgApp) *OrgQuery {
 	return c.Query().
-		Where(organizationapp.OrgID(oa.OrgID), organizationapp.AppID(oa.AppID)).
-		QueryOrganization()
+		Where(orgapp.OrgID(oa.OrgID), orgapp.AppID(oa.AppID)).
+		QueryOrg()
 }
 
 // Hooks returns the client hooks.
-func (c *OrganizationAppClient) Hooks() []Hook {
-	hooks := c.hooks.OrganizationApp
-	return append(hooks[:len(hooks):len(hooks)], organizationapp.Hooks[:]...)
+func (c *OrgAppClient) Hooks() []Hook {
+	hooks := c.hooks.OrgApp
+	return append(hooks[:len(hooks):len(hooks)], orgapp.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *OrganizationAppClient) Interceptors() []Interceptor {
-	return c.inters.OrganizationApp
+func (c *OrgAppClient) Interceptors() []Interceptor {
+	return c.inters.OrgApp
 }
 
-func (c *OrganizationAppClient) mutate(ctx context.Context, m *OrganizationAppMutation) (Value, error) {
+func (c *OrgAppClient) mutate(ctx context.Context, m *OrgAppMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OrganizationAppCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgAppCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OrganizationAppUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgAppUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OrganizationAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OrganizationAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&OrgAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OrganizationApp mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown OrgApp mutation op: %q", m.Op())
 	}
 }
 
-// OrganizationPolicyClient is a client for the OrganizationPolicy schema.
-type OrganizationPolicyClient struct {
+// OrgPolicyClient is a client for the OrgPolicy schema.
+type OrgPolicyClient struct {
 	config
 }
 
-// NewOrganizationPolicyClient returns a client for the OrganizationPolicy from the given config.
-func NewOrganizationPolicyClient(c config) *OrganizationPolicyClient {
-	return &OrganizationPolicyClient{config: c}
+// NewOrgPolicyClient returns a client for the OrgPolicy from the given config.
+func NewOrgPolicyClient(c config) *OrgPolicyClient {
+	return &OrgPolicyClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `organizationpolicy.Hooks(f(g(h())))`.
-func (c *OrganizationPolicyClient) Use(hooks ...Hook) {
-	c.hooks.OrganizationPolicy = append(c.hooks.OrganizationPolicy, hooks...)
+// A call to `Use(f, g, h)` equals to `orgpolicy.Hooks(f(g(h())))`.
+func (c *OrgPolicyClient) Use(hooks ...Hook) {
+	c.hooks.OrgPolicy = append(c.hooks.OrgPolicy, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `organizationpolicy.Intercept(f(g(h())))`.
-func (c *OrganizationPolicyClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OrganizationPolicy = append(c.inters.OrganizationPolicy, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `orgpolicy.Intercept(f(g(h())))`.
+func (c *OrgPolicyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgPolicy = append(c.inters.OrgPolicy, interceptors...)
 }
 
-// Create returns a builder for creating a OrganizationPolicy entity.
-func (c *OrganizationPolicyClient) Create() *OrganizationPolicyCreate {
-	mutation := newOrganizationPolicyMutation(c.config, OpCreate)
-	return &OrganizationPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a OrgPolicy entity.
+func (c *OrgPolicyClient) Create() *OrgPolicyCreate {
+	mutation := newOrgPolicyMutation(c.config, OpCreate)
+	return &OrgPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OrganizationPolicy entities.
-func (c *OrganizationPolicyClient) CreateBulk(builders ...*OrganizationPolicyCreate) *OrganizationPolicyCreateBulk {
-	return &OrganizationPolicyCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of OrgPolicy entities.
+func (c *OrgPolicyClient) CreateBulk(builders ...*OrgPolicyCreate) *OrgPolicyCreateBulk {
+	return &OrgPolicyCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OrganizationPolicy.
-func (c *OrganizationPolicyClient) Update() *OrganizationPolicyUpdate {
-	mutation := newOrganizationPolicyMutation(c.config, OpUpdate)
-	return &OrganizationPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for OrgPolicy.
+func (c *OrgPolicyClient) Update() *OrgPolicyUpdate {
+	mutation := newOrgPolicyMutation(c.config, OpUpdate)
+	return &OrgPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationPolicyClient) UpdateOne(op *OrganizationPolicy) *OrganizationPolicyUpdateOne {
-	mutation := newOrganizationPolicyMutation(c.config, OpUpdateOne, withOrganizationPolicy(op))
-	return &OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgPolicyClient) UpdateOne(op *OrgPolicy) *OrgPolicyUpdateOne {
+	mutation := newOrgPolicyMutation(c.config, OpUpdateOne, withOrgPolicy(op))
+	return &OrgPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OrganizationPolicyClient) UpdateOneID(id int) *OrganizationPolicyUpdateOne {
-	mutation := newOrganizationPolicyMutation(c.config, OpUpdateOne, withOrganizationPolicyID(id))
-	return &OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgPolicyClient) UpdateOneID(id int) *OrgPolicyUpdateOne {
+	mutation := newOrgPolicyMutation(c.config, OpUpdateOne, withOrgPolicyID(id))
+	return &OrgPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OrganizationPolicy.
-func (c *OrganizationPolicyClient) Delete() *OrganizationPolicyDelete {
-	mutation := newOrganizationPolicyMutation(c.config, OpDelete)
-	return &OrganizationPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for OrgPolicy.
+func (c *OrgPolicyClient) Delete() *OrgPolicyDelete {
+	mutation := newOrgPolicyMutation(c.config, OpDelete)
+	return &OrgPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OrganizationPolicyClient) DeleteOne(op *OrganizationPolicy) *OrganizationPolicyDeleteOne {
+func (c *OrgPolicyClient) DeleteOne(op *OrgPolicy) *OrgPolicyDeleteOne {
 	return c.DeleteOneID(op.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OrganizationPolicyClient) DeleteOneID(id int) *OrganizationPolicyDeleteOne {
-	builder := c.Delete().Where(organizationpolicy.ID(id))
+func (c *OrgPolicyClient) DeleteOneID(id int) *OrgPolicyDeleteOne {
+	builder := c.Delete().Where(orgpolicy.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OrganizationPolicyDeleteOne{builder}
+	return &OrgPolicyDeleteOne{builder}
 }
 
-// Query returns a query builder for OrganizationPolicy.
-func (c *OrganizationPolicyClient) Query() *OrganizationPolicyQuery {
-	return &OrganizationPolicyQuery{
+// Query returns a query builder for OrgPolicy.
+func (c *OrgPolicyClient) Query() *OrgPolicyQuery {
+	return &OrgPolicyQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOrganizationPolicy},
+		ctx:    &QueryContext{Type: TypeOrgPolicy},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a OrganizationPolicy entity by its id.
-func (c *OrganizationPolicyClient) Get(ctx context.Context, id int) (*OrganizationPolicy, error) {
-	return c.Query().Where(organizationpolicy.ID(id)).Only(ctx)
+// Get returns a OrgPolicy entity by its id.
+func (c *OrgPolicyClient) Get(ctx context.Context, id int) (*OrgPolicy, error) {
+	return c.Query().Where(orgpolicy.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OrganizationPolicyClient) GetX(ctx context.Context, id int) *OrganizationPolicy {
+func (c *OrgPolicyClient) GetX(ctx context.Context, id int) *OrgPolicy {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1935,15 +1935,15 @@ func (c *OrganizationPolicyClient) GetX(ctx context.Context, id int) *Organizati
 	return obj
 }
 
-// QueryOrganization queries the organization edge of a OrganizationPolicy.
-func (c *OrganizationPolicyClient) QueryOrganization(op *OrganizationPolicy) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrg queries the org edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryOrg(op *OrgPolicy) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := op.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organizationpolicy.Table, organizationpolicy.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, organizationpolicy.OrganizationTable, organizationpolicy.OrganizationColumn),
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.OrgTable, orgpolicy.OrgColumn),
 		)
 		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
 		return fromV, nil
@@ -1952,117 +1952,117 @@ func (c *OrganizationPolicyClient) QueryOrganization(op *OrganizationPolicy) *Or
 }
 
 // Hooks returns the client hooks.
-func (c *OrganizationPolicyClient) Hooks() []Hook {
-	hooks := c.hooks.OrganizationPolicy
-	return append(hooks[:len(hooks):len(hooks)], organizationpolicy.Hooks[:]...)
+func (c *OrgPolicyClient) Hooks() []Hook {
+	hooks := c.hooks.OrgPolicy
+	return append(hooks[:len(hooks):len(hooks)], orgpolicy.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *OrganizationPolicyClient) Interceptors() []Interceptor {
-	return c.inters.OrganizationPolicy
+func (c *OrgPolicyClient) Interceptors() []Interceptor {
+	return c.inters.OrgPolicy
 }
 
-func (c *OrganizationPolicyClient) mutate(ctx context.Context, m *OrganizationPolicyMutation) (Value, error) {
+func (c *OrgPolicyClient) mutate(ctx context.Context, m *OrgPolicyMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OrganizationPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OrganizationPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OrganizationPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OrganizationPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&OrgPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OrganizationPolicy mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown OrgPolicy mutation op: %q", m.Op())
 	}
 }
 
-// OrganizationRoleClient is a client for the OrganizationRole schema.
-type OrganizationRoleClient struct {
+// OrgRoleClient is a client for the OrgRole schema.
+type OrgRoleClient struct {
 	config
 }
 
-// NewOrganizationRoleClient returns a client for the OrganizationRole from the given config.
-func NewOrganizationRoleClient(c config) *OrganizationRoleClient {
-	return &OrganizationRoleClient{config: c}
+// NewOrgRoleClient returns a client for the OrgRole from the given config.
+func NewOrgRoleClient(c config) *OrgRoleClient {
+	return &OrgRoleClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `organizationrole.Hooks(f(g(h())))`.
-func (c *OrganizationRoleClient) Use(hooks ...Hook) {
-	c.hooks.OrganizationRole = append(c.hooks.OrganizationRole, hooks...)
+// A call to `Use(f, g, h)` equals to `orgrole.Hooks(f(g(h())))`.
+func (c *OrgRoleClient) Use(hooks ...Hook) {
+	c.hooks.OrgRole = append(c.hooks.OrgRole, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `organizationrole.Intercept(f(g(h())))`.
-func (c *OrganizationRoleClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OrganizationRole = append(c.inters.OrganizationRole, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `orgrole.Intercept(f(g(h())))`.
+func (c *OrgRoleClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgRole = append(c.inters.OrgRole, interceptors...)
 }
 
-// Create returns a builder for creating a OrganizationRole entity.
-func (c *OrganizationRoleClient) Create() *OrganizationRoleCreate {
-	mutation := newOrganizationRoleMutation(c.config, OpCreate)
-	return &OrganizationRoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a OrgRole entity.
+func (c *OrgRoleClient) Create() *OrgRoleCreate {
+	mutation := newOrgRoleMutation(c.config, OpCreate)
+	return &OrgRoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OrganizationRole entities.
-func (c *OrganizationRoleClient) CreateBulk(builders ...*OrganizationRoleCreate) *OrganizationRoleCreateBulk {
-	return &OrganizationRoleCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of OrgRole entities.
+func (c *OrgRoleClient) CreateBulk(builders ...*OrgRoleCreate) *OrgRoleCreateBulk {
+	return &OrgRoleCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OrganizationRole.
-func (c *OrganizationRoleClient) Update() *OrganizationRoleUpdate {
-	mutation := newOrganizationRoleMutation(c.config, OpUpdate)
-	return &OrganizationRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for OrgRole.
+func (c *OrgRoleClient) Update() *OrgRoleUpdate {
+	mutation := newOrgRoleMutation(c.config, OpUpdate)
+	return &OrgRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationRoleClient) UpdateOne(or *OrganizationRole) *OrganizationRoleUpdateOne {
-	mutation := newOrganizationRoleMutation(c.config, OpUpdateOne, withOrganizationRole(or))
-	return &OrganizationRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgRoleClient) UpdateOne(or *OrgRole) *OrgRoleUpdateOne {
+	mutation := newOrgRoleMutation(c.config, OpUpdateOne, withOrgRole(or))
+	return &OrgRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OrganizationRoleClient) UpdateOneID(id int) *OrganizationRoleUpdateOne {
-	mutation := newOrganizationRoleMutation(c.config, OpUpdateOne, withOrganizationRoleID(id))
-	return &OrganizationRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgRoleClient) UpdateOneID(id int) *OrgRoleUpdateOne {
+	mutation := newOrgRoleMutation(c.config, OpUpdateOne, withOrgRoleID(id))
+	return &OrgRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OrganizationRole.
-func (c *OrganizationRoleClient) Delete() *OrganizationRoleDelete {
-	mutation := newOrganizationRoleMutation(c.config, OpDelete)
-	return &OrganizationRoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for OrgRole.
+func (c *OrgRoleClient) Delete() *OrgRoleDelete {
+	mutation := newOrgRoleMutation(c.config, OpDelete)
+	return &OrgRoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OrganizationRoleClient) DeleteOne(or *OrganizationRole) *OrganizationRoleDeleteOne {
+func (c *OrgRoleClient) DeleteOne(or *OrgRole) *OrgRoleDeleteOne {
 	return c.DeleteOneID(or.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OrganizationRoleClient) DeleteOneID(id int) *OrganizationRoleDeleteOne {
-	builder := c.Delete().Where(organizationrole.ID(id))
+func (c *OrgRoleClient) DeleteOneID(id int) *OrgRoleDeleteOne {
+	builder := c.Delete().Where(orgrole.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OrganizationRoleDeleteOne{builder}
+	return &OrgRoleDeleteOne{builder}
 }
 
-// Query returns a query builder for OrganizationRole.
-func (c *OrganizationRoleClient) Query() *OrganizationRoleQuery {
-	return &OrganizationRoleQuery{
+// Query returns a query builder for OrgRole.
+func (c *OrgRoleClient) Query() *OrgRoleQuery {
+	return &OrgRoleQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOrganizationRole},
+		ctx:    &QueryContext{Type: TypeOrgRole},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a OrganizationRole entity by its id.
-func (c *OrganizationRoleClient) Get(ctx context.Context, id int) (*OrganizationRole, error) {
-	return c.Query().Where(organizationrole.ID(id)).Only(ctx)
+// Get returns a OrgRole entity by its id.
+func (c *OrgRoleClient) Get(ctx context.Context, id int) (*OrgRole, error) {
+	return c.Query().Where(orgrole.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OrganizationRoleClient) GetX(ctx context.Context, id int) *OrganizationRole {
+func (c *OrgRoleClient) GetX(ctx context.Context, id int) *OrgRole {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -2070,15 +2070,15 @@ func (c *OrganizationRoleClient) GetX(ctx context.Context, id int) *Organization
 	return obj
 }
 
-// QueryOrganization queries the organization edge of a OrganizationRole.
-func (c *OrganizationRoleClient) QueryOrganization(or *OrganizationRole) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrg queries the org edge of a OrgRole.
+func (c *OrgRoleClient) QueryOrg(or *OrgRole) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := or.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organizationrole.Table, organizationrole.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, organizationrole.OrganizationTable, organizationrole.OrganizationColumn),
+			sqlgraph.From(orgrole.Table, orgrole.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orgrole.OrgTable, orgrole.OrgColumn),
 		)
 		fromV = sqlgraph.Neighbors(or.driver.Dialect(), step)
 		return fromV, nil
@@ -2087,117 +2087,117 @@ func (c *OrganizationRoleClient) QueryOrganization(or *OrganizationRole) *Organi
 }
 
 // Hooks returns the client hooks.
-func (c *OrganizationRoleClient) Hooks() []Hook {
-	hooks := c.hooks.OrganizationRole
-	return append(hooks[:len(hooks):len(hooks)], organizationrole.Hooks[:]...)
+func (c *OrgRoleClient) Hooks() []Hook {
+	hooks := c.hooks.OrgRole
+	return append(hooks[:len(hooks):len(hooks)], orgrole.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *OrganizationRoleClient) Interceptors() []Interceptor {
-	return c.inters.OrganizationRole
+func (c *OrgRoleClient) Interceptors() []Interceptor {
+	return c.inters.OrgRole
 }
 
-func (c *OrganizationRoleClient) mutate(ctx context.Context, m *OrganizationRoleMutation) (Value, error) {
+func (c *OrgRoleClient) mutate(ctx context.Context, m *OrgRoleMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OrganizationRoleCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgRoleCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OrganizationRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OrganizationRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OrganizationRoleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&OrgRoleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OrganizationRole mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown OrgRole mutation op: %q", m.Op())
 	}
 }
 
-// OrganizationUserClient is a client for the OrganizationUser schema.
-type OrganizationUserClient struct {
+// OrgUserClient is a client for the OrgUser schema.
+type OrgUserClient struct {
 	config
 }
 
-// NewOrganizationUserClient returns a client for the OrganizationUser from the given config.
-func NewOrganizationUserClient(c config) *OrganizationUserClient {
-	return &OrganizationUserClient{config: c}
+// NewOrgUserClient returns a client for the OrgUser from the given config.
+func NewOrgUserClient(c config) *OrgUserClient {
+	return &OrgUserClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `organizationuser.Hooks(f(g(h())))`.
-func (c *OrganizationUserClient) Use(hooks ...Hook) {
-	c.hooks.OrganizationUser = append(c.hooks.OrganizationUser, hooks...)
+// A call to `Use(f, g, h)` equals to `orguser.Hooks(f(g(h())))`.
+func (c *OrgUserClient) Use(hooks ...Hook) {
+	c.hooks.OrgUser = append(c.hooks.OrgUser, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `organizationuser.Intercept(f(g(h())))`.
-func (c *OrganizationUserClient) Intercept(interceptors ...Interceptor) {
-	c.inters.OrganizationUser = append(c.inters.OrganizationUser, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `orguser.Intercept(f(g(h())))`.
+func (c *OrgUserClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgUser = append(c.inters.OrgUser, interceptors...)
 }
 
-// Create returns a builder for creating a OrganizationUser entity.
-func (c *OrganizationUserClient) Create() *OrganizationUserCreate {
-	mutation := newOrganizationUserMutation(c.config, OpCreate)
-	return &OrganizationUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a OrgUser entity.
+func (c *OrgUserClient) Create() *OrgUserCreate {
+	mutation := newOrgUserMutation(c.config, OpCreate)
+	return &OrgUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of OrganizationUser entities.
-func (c *OrganizationUserClient) CreateBulk(builders ...*OrganizationUserCreate) *OrganizationUserCreateBulk {
-	return &OrganizationUserCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of OrgUser entities.
+func (c *OrgUserClient) CreateBulk(builders ...*OrgUserCreate) *OrgUserCreateBulk {
+	return &OrgUserCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for OrganizationUser.
-func (c *OrganizationUserClient) Update() *OrganizationUserUpdate {
-	mutation := newOrganizationUserMutation(c.config, OpUpdate)
-	return &OrganizationUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for OrgUser.
+func (c *OrgUserClient) Update() *OrgUserUpdate {
+	mutation := newOrgUserMutation(c.config, OpUpdate)
+	return &OrgUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *OrganizationUserClient) UpdateOne(ou *OrganizationUser) *OrganizationUserUpdateOne {
-	mutation := newOrganizationUserMutation(c.config, OpUpdateOne, withOrganizationUser(ou))
-	return &OrganizationUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgUserClient) UpdateOne(ou *OrgUser) *OrgUserUpdateOne {
+	mutation := newOrgUserMutation(c.config, OpUpdateOne, withOrgUser(ou))
+	return &OrgUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *OrganizationUserClient) UpdateOneID(id int) *OrganizationUserUpdateOne {
-	mutation := newOrganizationUserMutation(c.config, OpUpdateOne, withOrganizationUserID(id))
-	return &OrganizationUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *OrgUserClient) UpdateOneID(id int) *OrgUserUpdateOne {
+	mutation := newOrgUserMutation(c.config, OpUpdateOne, withOrgUserID(id))
+	return &OrgUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for OrganizationUser.
-func (c *OrganizationUserClient) Delete() *OrganizationUserDelete {
-	mutation := newOrganizationUserMutation(c.config, OpDelete)
-	return &OrganizationUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for OrgUser.
+func (c *OrgUserClient) Delete() *OrgUserDelete {
+	mutation := newOrgUserMutation(c.config, OpDelete)
+	return &OrgUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *OrganizationUserClient) DeleteOne(ou *OrganizationUser) *OrganizationUserDeleteOne {
+func (c *OrgUserClient) DeleteOne(ou *OrgUser) *OrgUserDeleteOne {
 	return c.DeleteOneID(ou.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *OrganizationUserClient) DeleteOneID(id int) *OrganizationUserDeleteOne {
-	builder := c.Delete().Where(organizationuser.ID(id))
+func (c *OrgUserClient) DeleteOneID(id int) *OrgUserDeleteOne {
+	builder := c.Delete().Where(orguser.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &OrganizationUserDeleteOne{builder}
+	return &OrgUserDeleteOne{builder}
 }
 
-// Query returns a query builder for OrganizationUser.
-func (c *OrganizationUserClient) Query() *OrganizationUserQuery {
-	return &OrganizationUserQuery{
+// Query returns a query builder for OrgUser.
+func (c *OrgUserClient) Query() *OrgUserQuery {
+	return &OrgUserQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeOrganizationUser},
+		ctx:    &QueryContext{Type: TypeOrgUser},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a OrganizationUser entity by its id.
-func (c *OrganizationUserClient) Get(ctx context.Context, id int) (*OrganizationUser, error) {
-	return c.Query().Where(organizationuser.ID(id)).Only(ctx)
+// Get returns a OrgUser entity by its id.
+func (c *OrgUserClient) Get(ctx context.Context, id int) (*OrgUser, error) {
+	return c.Query().Where(orguser.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *OrganizationUserClient) GetX(ctx context.Context, id int) *OrganizationUser {
+func (c *OrgUserClient) GetX(ctx context.Context, id int) *OrgUser {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -2205,15 +2205,15 @@ func (c *OrganizationUserClient) GetX(ctx context.Context, id int) *Organization
 	return obj
 }
 
-// QueryOrganization queries the organization edge of a OrganizationUser.
-func (c *OrganizationUserClient) QueryOrganization(ou *OrganizationUser) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrg queries the org edge of a OrgUser.
+func (c *OrgUserClient) QueryOrg(ou *OrgUser) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ou.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organizationuser.Table, organizationuser.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, organizationuser.OrganizationTable, organizationuser.OrganizationColumn),
+			sqlgraph.From(orguser.Table, orguser.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguser.OrgTable, orguser.OrgColumn),
 		)
 		fromV = sqlgraph.Neighbors(ou.driver.Dialect(), step)
 		return fromV, nil
@@ -2221,15 +2221,15 @@ func (c *OrganizationUserClient) QueryOrganization(ou *OrganizationUser) *Organi
 	return query
 }
 
-// QueryUser queries the user edge of a OrganizationUser.
-func (c *OrganizationUserClient) QueryUser(ou *OrganizationUser) *UserQuery {
+// QueryUser queries the user edge of a OrgUser.
+func (c *OrgUserClient) QueryUser(ou *OrgUser) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ou.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(organizationuser.Table, organizationuser.FieldID, id),
+			sqlgraph.From(orguser.Table, orguser.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, organizationuser.UserTable, organizationuser.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguser.UserTable, orguser.UserColumn),
 		)
 		fromV = sqlgraph.Neighbors(ou.driver.Dialect(), step)
 		return fromV, nil
@@ -2238,28 +2238,28 @@ func (c *OrganizationUserClient) QueryUser(ou *OrganizationUser) *UserQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *OrganizationUserClient) Hooks() []Hook {
-	hooks := c.hooks.OrganizationUser
-	return append(hooks[:len(hooks):len(hooks)], organizationuser.Hooks[:]...)
+func (c *OrgUserClient) Hooks() []Hook {
+	hooks := c.hooks.OrgUser
+	return append(hooks[:len(hooks):len(hooks)], orguser.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
-func (c *OrganizationUserClient) Interceptors() []Interceptor {
-	return c.inters.OrganizationUser
+func (c *OrgUserClient) Interceptors() []Interceptor {
+	return c.inters.OrgUser
 }
 
-func (c *OrganizationUserClient) mutate(ctx context.Context, m *OrganizationUserMutation) (Value, error) {
+func (c *OrgUserClient) mutate(ctx context.Context, m *OrgUserMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&OrganizationUserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgUserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&OrganizationUserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgUserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&OrganizationUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&OrgUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&OrganizationUserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&OrgUserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown OrganizationUser mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown OrgUser mutation op: %q", m.Op())
 	}
 }
 
@@ -2356,15 +2356,15 @@ func (c *PermissionClient) GetX(ctx context.Context, id int) *Permission {
 	return obj
 }
 
-// QueryOrganization queries the organization edge of a Permission.
-func (c *PermissionClient) QueryOrganization(pe *Permission) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrg queries the org edge of a Permission.
+func (c *PermissionClient) QueryOrg(pe *Permission) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := pe.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(permission.Table, permission.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrganizationTable, permission.OrganizationColumn),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrgTable, permission.OrgColumn),
 		)
 		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
 		return fromV, nil
@@ -2571,15 +2571,15 @@ func (c *UserClient) QueryDevices(u *User) *UserDeviceQuery {
 	return query
 }
 
-// QueryOrganizations queries the organizations edge of a User.
-func (c *UserClient) QueryOrganizations(u *User) *OrganizationQuery {
-	query := (&OrganizationClient{config: c.config}).Query()
+// QueryOrgs queries the orgs edge of a User.
+func (c *UserClient) QueryOrgs(u *User) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(organization.Table, organization.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, user.OrganizationsTable, user.OrganizationsPrimaryKey...),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, user.OrgsTable, user.OrgsPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -2603,15 +2603,15 @@ func (c *UserClient) QueryPermissions(u *User) *PermissionQuery {
 	return query
 }
 
-// QueryOrganizationUser queries the organization_user edge of a User.
-func (c *UserClient) QueryOrganizationUser(u *User) *OrganizationUserQuery {
-	query := (&OrganizationUserClient{config: c.config}).Query()
+// QueryOrgUser queries the org_user edge of a User.
+func (c *UserClient) QueryOrgUser(u *User) *OrgUserQuery {
+	query := (&OrgUserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(organizationuser.Table, organizationuser.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, user.OrganizationUserTable, user.OrganizationUserColumn),
+			sqlgraph.To(orguser.Table, orguser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, user.OrgUserTable, user.OrgUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -3189,15 +3189,13 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy,
-		Organization, OrganizationApp, OrganizationPolicy, OrganizationRole,
-		OrganizationUser, Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Hook
+		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgUser, Permission, User, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy,
-		Organization, OrganizationApp, OrganizationPolicy, OrganizationRole,
-		OrganizationUser, Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Interceptor
+		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgUser, Permission, User, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )
