@@ -25,6 +25,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
@@ -61,6 +62,8 @@ type Client struct {
 	OrgPolicy *OrgPolicyClient
 	// OrgRole is the client for interacting with the OrgRole builders.
 	OrgRole *OrgRoleClient
+	// OrgRoleUser is the client for interacting with the OrgRoleUser builders.
+	OrgRoleUser *OrgRoleUserClient
 	// OrgUser is the client for interacting with the OrgUser builders.
 	OrgUser *OrgUserClient
 	// Permission is the client for interacting with the Permission builders.
@@ -101,6 +104,7 @@ func (c *Client) init() {
 	c.OrgApp = NewOrgAppClient(c.config)
 	c.OrgPolicy = NewOrgPolicyClient(c.config)
 	c.OrgRole = NewOrgRoleClient(c.config)
+	c.OrgRoleUser = NewOrgRoleUserClient(c.config)
 	c.OrgUser = NewOrgUserClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -201,6 +205,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
 		OrgRole:          NewOrgRoleClient(cfg),
+		OrgRoleUser:      NewOrgRoleUserClient(cfg),
 		OrgUser:          NewOrgUserClient(cfg),
 		Permission:       NewPermissionClient(cfg),
 		User:             NewUserClient(cfg),
@@ -238,6 +243,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
 		OrgRole:          NewOrgRoleClient(cfg),
+		OrgRoleUser:      NewOrgRoleUserClient(cfg),
 		OrgUser:          NewOrgUserClient(cfg),
 		Permission:       NewPermissionClient(cfg),
 		User:             NewUserClient(cfg),
@@ -275,9 +281,9 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgUser,
-		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
-		c.UserPassword,
+		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -288,9 +294,9 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgUser,
-		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
-		c.UserPassword,
+		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -321,6 +327,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgPolicy.mutate(ctx, m)
 	case *OrgRoleMutation:
 		return c.OrgRole.mutate(ctx, m)
+	case *OrgRoleUserMutation:
+		return c.OrgRoleUser.mutate(ctx, m)
 	case *OrgUserMutation:
 		return c.OrgUser.mutate(ctx, m)
 	case *PermissionMutation:
@@ -2086,6 +2094,38 @@ func (c *OrgRoleClient) QueryOrg(or *OrgRole) *OrgQuery {
 	return query
 }
 
+// QueryOrgUsers queries the org_users edge of a OrgRole.
+func (c *OrgRoleClient) QueryOrgUsers(or *OrgRole) *OrgUserQuery {
+	query := (&OrgUserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := or.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgrole.Table, orgrole.FieldID, id),
+			sqlgraph.To(orguser.Table, orguser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, orgrole.OrgUsersTable, orgrole.OrgUsersPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(or.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrgRoleUser queries the org_role_user edge of a OrgRole.
+func (c *OrgRoleClient) QueryOrgRoleUser(or *OrgRole) *OrgRoleUserQuery {
+	query := (&OrgRoleUserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := or.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgrole.Table, orgrole.FieldID, id),
+			sqlgraph.To(orgroleuser.Table, orgroleuser.OrgRoleColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, orgrole.OrgRoleUserTable, orgrole.OrgRoleUserColumn),
+		)
+		fromV = sqlgraph.Neighbors(or.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OrgRoleClient) Hooks() []Hook {
 	hooks := c.hooks.OrgRole
@@ -2109,6 +2149,108 @@ func (c *OrgRoleClient) mutate(ctx context.Context, m *OrgRoleMutation) (Value, 
 		return (&OrgRoleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown OrgRole mutation op: %q", m.Op())
+	}
+}
+
+// OrgRoleUserClient is a client for the OrgRoleUser schema.
+type OrgRoleUserClient struct {
+	config
+}
+
+// NewOrgRoleUserClient returns a client for the OrgRoleUser from the given config.
+func NewOrgRoleUserClient(c config) *OrgRoleUserClient {
+	return &OrgRoleUserClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `orgroleuser.Hooks(f(g(h())))`.
+func (c *OrgRoleUserClient) Use(hooks ...Hook) {
+	c.hooks.OrgRoleUser = append(c.hooks.OrgRoleUser, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `orgroleuser.Intercept(f(g(h())))`.
+func (c *OrgRoleUserClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgRoleUser = append(c.inters.OrgRoleUser, interceptors...)
+}
+
+// Create returns a builder for creating a OrgRoleUser entity.
+func (c *OrgRoleUserClient) Create() *OrgRoleUserCreate {
+	mutation := newOrgRoleUserMutation(c.config, OpCreate)
+	return &OrgRoleUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrgRoleUser entities.
+func (c *OrgRoleUserClient) CreateBulk(builders ...*OrgRoleUserCreate) *OrgRoleUserCreateBulk {
+	return &OrgRoleUserCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrgRoleUser.
+func (c *OrgRoleUserClient) Update() *OrgRoleUserUpdate {
+	mutation := newOrgRoleUserMutation(c.config, OpUpdate)
+	return &OrgRoleUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrgRoleUserClient) UpdateOne(oru *OrgRoleUser) *OrgRoleUserUpdateOne {
+	mutation := newOrgRoleUserMutation(c.config, OpUpdateOne)
+	mutation.org_role = &oru.OrgRoleID
+	mutation.org_user = &oru.OrgUserID
+	return &OrgRoleUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrgRoleUser.
+func (c *OrgRoleUserClient) Delete() *OrgRoleUserDelete {
+	mutation := newOrgRoleUserMutation(c.config, OpDelete)
+	return &OrgRoleUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Query returns a query builder for OrgRoleUser.
+func (c *OrgRoleUserClient) Query() *OrgRoleUserQuery {
+	return &OrgRoleUserQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOrgRoleUser},
+		inters: c.Interceptors(),
+	}
+}
+
+// QueryOrgRole queries the org_role edge of a OrgRoleUser.
+func (c *OrgRoleUserClient) QueryOrgRole(oru *OrgRoleUser) *OrgRoleQuery {
+	return c.Query().
+		Where(orgroleuser.OrgRoleID(oru.OrgRoleID), orgroleuser.OrgUserID(oru.OrgUserID)).
+		QueryOrgRole()
+}
+
+// QueryOrgUser queries the org_user edge of a OrgRoleUser.
+func (c *OrgRoleUserClient) QueryOrgUser(oru *OrgRoleUser) *OrgUserQuery {
+	return c.Query().
+		Where(orgroleuser.OrgRoleID(oru.OrgRoleID), orgroleuser.OrgUserID(oru.OrgUserID)).
+		QueryOrgUser()
+}
+
+// Hooks returns the client hooks.
+func (c *OrgRoleUserClient) Hooks() []Hook {
+	hooks := c.hooks.OrgRoleUser
+	return append(hooks[:len(hooks):len(hooks)], orgroleuser.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *OrgRoleUserClient) Interceptors() []Interceptor {
+	return c.inters.OrgRoleUser
+}
+
+func (c *OrgRoleUserClient) mutate(ctx context.Context, m *OrgRoleUserMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrgRoleUserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrgRoleUserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrgRoleUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrgRoleUserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OrgRoleUser mutation op: %q", m.Op())
 	}
 }
 
@@ -2230,6 +2372,22 @@ func (c *OrgUserClient) QueryUser(ou *OrgUser) *UserQuery {
 			sqlgraph.From(orguser.Table, orguser.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orguser.UserTable, orguser.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(ou.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrgRoles queries the org_roles edge of a OrgUser.
+func (c *OrgUserClient) QueryOrgRoles(ou *OrgUser) *OrgRoleQuery {
+	query := (&OrgRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ou.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguser.Table, orguser.FieldID, id),
+			sqlgraph.To(orgrole.Table, orgrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, orguser.OrgRolesTable, orguser.OrgRolesPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(ou.driver.Dialect(), step)
 		return fromV, nil
@@ -3190,12 +3348,12 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 type (
 	hooks struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
-		OrgPolicy, OrgRole, OrgUser, Permission, User, UserDevice, UserIdentity,
-		UserLoginProfile, UserPassword []ent.Hook
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission, User, UserDevice,
+		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
-		OrgPolicy, OrgRole, OrgUser, Permission, User, UserDevice, UserIdentity,
-		UserLoginProfile, UserPassword []ent.Interceptor
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission, User, UserDevice,
+		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )

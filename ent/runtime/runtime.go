@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
@@ -275,6 +276,17 @@ func init() {
 	orgroleDescCreatedAt := orgroleMixinFields0[1].Descriptor()
 	// orgrole.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgrole.DefaultCreatedAt = orgroleDescCreatedAt.Default.(func() time.Time)
+	orgroleuserMixin := schema.OrgRoleUser{}.Mixin()
+	orgroleuserMixinHooks0 := orgroleuserMixin[0].Hooks()
+	orgroleuser.Hooks[0] = orgroleuserMixinHooks0[0]
+	orgroleuserMixinFields0 := orgroleuserMixin[0].Fields()
+	_ = orgroleuserMixinFields0
+	orgroleuserFields := schema.OrgRoleUser{}.Fields()
+	_ = orgroleuserFields
+	// orgroleuserDescCreatedAt is the schema descriptor for created_at field.
+	orgroleuserDescCreatedAt := orgroleuserMixinFields0[1].Descriptor()
+	// orgroleuser.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orgroleuser.DefaultCreatedAt = orgroleuserDescCreatedAt.Default.(func() time.Time)
 	orguserMixin := schema.OrgUser{}.Mixin()
 	orguserMixinHooks1 := orguserMixin[1].Hooks()
 	orguser.Hooks[0] = orguserMixinHooks1[0]

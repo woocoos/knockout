@@ -43,9 +43,13 @@ type OrgUserEdges struct {
 	Org *Org `json:"org,omitempty"`
 	// User holds the value of the user edge.
 	User *User `json:"user,omitempty"`
+	// OrgRoles holds the value of the org_roles edge.
+	OrgRoles []*OrgRole `json:"org_roles,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
+
+	namedOrgRoles map[string][]*OrgRole
 }
 
 // OrgOrErr returns the Org value or an error if the edge
@@ -72,6 +76,15 @@ func (e OrgUserEdges) UserOrErr() (*User, error) {
 		return e.User, nil
 	}
 	return nil, &NotLoadedError{edge: "user"}
+}
+
+// OrgRolesOrErr returns the OrgRoles value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgUserEdges) OrgRolesOrErr() ([]*OrgRole, error) {
+	if e.loadedTypes[2] {
+		return e.OrgRoles, nil
+	}
+	return nil, &NotLoadedError{edge: "org_roles"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -163,6 +176,11 @@ func (ou *OrgUser) QueryUser() *UserQuery {
 	return NewOrgUserClient(ou.config).QueryUser(ou)
 }
 
+// QueryOrgRoles queries the "org_roles" edge of the OrgUser entity.
+func (ou *OrgUser) QueryOrgRoles() *OrgRoleQuery {
+	return NewOrgUserClient(ou.config).QueryOrgRoles(ou)
+}
+
 // Update returns a builder for updating this OrgUser.
 // Note that you need to call OrgUser.Unwrap() before calling this method if this OrgUser
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -208,6 +226,30 @@ func (ou *OrgUser) String() string {
 	builder.WriteString(ou.DisplayName)
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedOrgRoles returns the OrgRoles named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ou *OrgUser) NamedOrgRoles(name string) ([]*OrgRole, error) {
+	if ou.Edges.namedOrgRoles == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ou.Edges.namedOrgRoles[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ou *OrgUser) appendNamedOrgRoles(name string, edges ...*OrgRole) {
+	if ou.Edges.namedOrgRoles == nil {
+		ou.Edges.namedOrgRoles = make(map[string][]*OrgRole)
+	}
+	if len(edges) == 0 {
+		ou.Edges.namedOrgRoles[name] = []*OrgRole{}
+	} else {
+		ou.Edges.namedOrgRoles[name] = append(ou.Edges.namedOrgRoles[name], edges...)
+	}
 }
 
 // OrgUsers is a parsable slice of OrgUser.

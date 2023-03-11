@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,19 +13,25 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
 // OrgRoleQuery is the builder for querying OrgRole entities.
 type OrgRoleQuery struct {
 	config
-	ctx        *QueryContext
-	order      []OrderFunc
-	inters     []Interceptor
-	predicates []predicate.OrgRole
-	withOrg    *OrgQuery
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*OrgRole) error
+	ctx                  *QueryContext
+	order                []OrderFunc
+	inters               []Interceptor
+	predicates           []predicate.OrgRole
+	withOrg              *OrgQuery
+	withOrgUsers         *OrgUserQuery
+	withOrgRoleUser      *OrgRoleUserQuery
+	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*OrgRole) error
+	withNamedOrgUsers    map[string]*OrgUserQuery
+	withNamedOrgRoleUser map[string]*OrgRoleUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -76,6 +83,50 @@ func (orq *OrgRoleQuery) QueryOrg() *OrgQuery {
 			sqlgraph.From(orgrole.Table, orgrole.FieldID, selector),
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgrole.OrgTable, orgrole.OrgColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(orq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrgUsers chains the current query on the "org_users" edge.
+func (orq *OrgRoleQuery) QueryOrgUsers() *OrgUserQuery {
+	query := (&OrgUserClient{config: orq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := orq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := orq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgrole.Table, orgrole.FieldID, selector),
+			sqlgraph.To(orguser.Table, orguser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, orgrole.OrgUsersTable, orgrole.OrgUsersPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(orq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrgRoleUser chains the current query on the "org_role_user" edge.
+func (orq *OrgRoleQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
+	query := (&OrgRoleUserClient{config: orq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := orq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := orq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgrole.Table, orgrole.FieldID, selector),
+			sqlgraph.To(orgroleuser.Table, orgroleuser.OrgRoleColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, orgrole.OrgRoleUserTable, orgrole.OrgRoleUserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(orq.driver.Dialect(), step)
 		return fromU, nil
@@ -270,12 +321,14 @@ func (orq *OrgRoleQuery) Clone() *OrgRoleQuery {
 		return nil
 	}
 	return &OrgRoleQuery{
-		config:     orq.config,
-		ctx:        orq.ctx.Clone(),
-		order:      append([]OrderFunc{}, orq.order...),
-		inters:     append([]Interceptor{}, orq.inters...),
-		predicates: append([]predicate.OrgRole{}, orq.predicates...),
-		withOrg:    orq.withOrg.Clone(),
+		config:          orq.config,
+		ctx:             orq.ctx.Clone(),
+		order:           append([]OrderFunc{}, orq.order...),
+		inters:          append([]Interceptor{}, orq.inters...),
+		predicates:      append([]predicate.OrgRole{}, orq.predicates...),
+		withOrg:         orq.withOrg.Clone(),
+		withOrgUsers:    orq.withOrgUsers.Clone(),
+		withOrgRoleUser: orq.withOrgRoleUser.Clone(),
 		// clone intermediate query.
 		sql:  orq.sql.Clone(),
 		path: orq.path,
@@ -290,6 +343,28 @@ func (orq *OrgRoleQuery) WithOrg(opts ...func(*OrgQuery)) *OrgRoleQuery {
 		opt(query)
 	}
 	orq.withOrg = query
+	return orq
+}
+
+// WithOrgUsers tells the query-builder to eager-load the nodes that are connected to
+// the "org_users" edge. The optional arguments are used to configure the query builder of the edge.
+func (orq *OrgRoleQuery) WithOrgUsers(opts ...func(*OrgUserQuery)) *OrgRoleQuery {
+	query := (&OrgUserClient{config: orq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	orq.withOrgUsers = query
+	return orq
+}
+
+// WithOrgRoleUser tells the query-builder to eager-load the nodes that are connected to
+// the "org_role_user" edge. The optional arguments are used to configure the query builder of the edge.
+func (orq *OrgRoleQuery) WithOrgRoleUser(opts ...func(*OrgRoleUserQuery)) *OrgRoleQuery {
+	query := (&OrgRoleUserClient{config: orq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	orq.withOrgRoleUser = query
 	return orq
 }
 
@@ -371,8 +446,10 @@ func (orq *OrgRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org
 	var (
 		nodes       = []*OrgRole{}
 		_spec       = orq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [3]bool{
 			orq.withOrg != nil,
+			orq.withOrgUsers != nil,
+			orq.withOrgRoleUser != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -399,6 +476,34 @@ func (orq *OrgRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org
 	if query := orq.withOrg; query != nil {
 		if err := orq.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgRole, e *Org) { n.Edges.Org = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := orq.withOrgUsers; query != nil {
+		if err := orq.loadOrgUsers(ctx, query, nodes,
+			func(n *OrgRole) { n.Edges.OrgUsers = []*OrgUser{} },
+			func(n *OrgRole, e *OrgUser) { n.Edges.OrgUsers = append(n.Edges.OrgUsers, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := orq.withOrgRoleUser; query != nil {
+		if err := orq.loadOrgRoleUser(ctx, query, nodes,
+			func(n *OrgRole) { n.Edges.OrgRoleUser = []*OrgRoleUser{} },
+			func(n *OrgRole, e *OrgRoleUser) { n.Edges.OrgRoleUser = append(n.Edges.OrgRoleUser, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range orq.withNamedOrgUsers {
+		if err := orq.loadOrgUsers(ctx, query, nodes,
+			func(n *OrgRole) { n.appendNamedOrgUsers(name) },
+			func(n *OrgRole, e *OrgUser) { n.appendNamedOrgUsers(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range orq.withNamedOrgRoleUser {
+		if err := orq.loadOrgRoleUser(ctx, query, nodes,
+			func(n *OrgRole) { n.appendNamedOrgRoleUser(name) },
+			func(n *OrgRole, e *OrgRoleUser) { n.appendNamedOrgRoleUser(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -436,6 +541,94 @@ func (orq *OrgRoleQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (orq *OrgRoleQuery) loadOrgUsers(ctx context.Context, query *OrgUserQuery, nodes []*OrgRole, init func(*OrgRole), assign func(*OrgRole, *OrgUser)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[int]*OrgRole)
+	nids := make(map[int]map[*OrgRole]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(orgrole.OrgUsersTable)
+		s.Join(joinT).On(s.C(orguser.FieldID), joinT.C(orgrole.OrgUsersPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(orgrole.OrgUsersPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(orgrole.OrgUsersPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := int(values[0].(*sql.NullInt64).Int64)
+				inValue := int(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*OrgRole]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*OrgUser](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "org_users" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (orq *OrgRoleQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUserQuery, nodes []*OrgRole, init func(*OrgRole), assign func(*OrgRole, *OrgRoleUser)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*OrgRole)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.OrgRoleUser(func(s *sql.Selector) {
+		s.Where(sql.InValues(orgrole.OrgRoleUserColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.OrgRoleID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "org_role_id" returned %v for node %v`, fk, n)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -522,6 +715,34 @@ func (orq *OrgRoleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedOrgUsers tells the query-builder to eager-load the nodes that are connected to the "org_users"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (orq *OrgRoleQuery) WithNamedOrgUsers(name string, opts ...func(*OrgUserQuery)) *OrgRoleQuery {
+	query := (&OrgUserClient{config: orq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if orq.withNamedOrgUsers == nil {
+		orq.withNamedOrgUsers = make(map[string]*OrgUserQuery)
+	}
+	orq.withNamedOrgUsers[name] = query
+	return orq
+}
+
+// WithNamedOrgRoleUser tells the query-builder to eager-load the nodes that are connected to the "org_role_user"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (orq *OrgRoleQuery) WithNamedOrgRoleUser(name string, opts ...func(*OrgRoleUserQuery)) *OrgRoleQuery {
+	query := (&OrgRoleUserClient{config: orq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if orq.withNamedOrgRoleUser == nil {
+		orq.withNamedOrgRoleUser = make(map[string]*OrgRoleUserQuery)
+	}
+	orq.withNamedOrgRoleUser[name] = query
+	return orq
 }
 
 // OrgRoleGroupBy is the group-by builder for OrgRole entities.

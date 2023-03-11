@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -102,6 +103,21 @@ func (ouc *OrgUserCreate) SetOrg(o *Org) *OrgUserCreate {
 // SetUser sets the "user" edge to the User entity.
 func (ouc *OrgUserCreate) SetUser(u *User) *OrgUserCreate {
 	return ouc.SetUserID(u.ID)
+}
+
+// AddOrgRoleIDs adds the "org_roles" edge to the OrgRole entity by IDs.
+func (ouc *OrgUserCreate) AddOrgRoleIDs(ids ...int) *OrgUserCreate {
+	ouc.mutation.AddOrgRoleIDs(ids...)
+	return ouc
+}
+
+// AddOrgRoles adds the "org_roles" edges to the OrgRole entity.
+func (ouc *OrgUserCreate) AddOrgRoles(o ...*OrgRole) *OrgUserCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouc.AddOrgRoleIDs(ids...)
 }
 
 // Mutation returns the OrgUserMutation object of the builder.
@@ -264,6 +280,25 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.UserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ouc.mutation.OrgRolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   orguser.OrgRolesTable,
+			Columns: orguser.OrgRolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: orgrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

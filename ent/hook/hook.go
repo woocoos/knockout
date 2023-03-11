@@ -141,6 +141,18 @@ func (f OrgRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgRoleMutation", m)
 }
 
+// The OrgRoleUserFunc type is an adapter to allow the use of ordinary
+// function as OrgRoleUser mutator.
+type OrgRoleUserFunc func(context.Context, *ent.OrgRoleUserMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrgRoleUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgRoleUserMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgRoleUserMutation", m)
+}
+
 // The OrgUserFunc type is an adapter to allow the use of ordinary
 // function as OrgUser mutator.
 type OrgUserFunc func(context.Context, *ent.OrgUserMutation) (ent.Value, error)

@@ -532,6 +532,60 @@ func HasOrgWith(preds ...predicate.Org) predicate.OrgRole {
 	})
 }
 
+// HasOrgUsers applies the HasEdge predicate on the "org_users" edge.
+func HasOrgUsers() predicate.OrgRole {
+	return predicate.OrgRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, OrgUsersTable, OrgUsersPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgUsersWith applies the HasEdge predicate on the "org_users" edge with a given conditions (other predicates).
+func HasOrgUsersWith(preds ...predicate.OrgUser) predicate.OrgRole {
+	return predicate.OrgRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgUsersInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, OrgUsersTable, OrgUsersPrimaryKey...),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrgRoleUser applies the HasEdge predicate on the "org_role_user" edge.
+func HasOrgRoleUser() predicate.OrgRole {
+	return predicate.OrgRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgRoleUserWith applies the HasEdge predicate on the "org_role_user" edge with a given conditions (other predicates).
+func HasOrgRoleUserWith(preds ...predicate.OrgRoleUser) predicate.OrgRole {
+	return predicate.OrgRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgRoleUserInverseTable, OrgRoleUserColumn),
+			sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.OrgRole) predicate.OrgRole {
 	return predicate.OrgRole(func(s *sql.Selector) {

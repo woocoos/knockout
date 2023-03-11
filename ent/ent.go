@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
@@ -93,6 +94,7 @@ func columnChecker(table string) func(string) error {
 		orgapp.Table:           orgapp.ValidColumn,
 		orgpolicy.Table:        orgpolicy.ValidColumn,
 		orgrole.Table:          orgrole.ValidColumn,
+		orgroleuser.Table:      orgroleuser.ValidColumn,
 		orguser.Table:          orguser.ValidColumn,
 		permission.Table:       permission.ValidColumn,
 		user.Table:             user.ValidColumn,

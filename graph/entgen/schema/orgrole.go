@@ -44,5 +44,7 @@ func (OrgRole) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("org", Org.Type).Ref("roles_and_groups").Unique().Required().Field("org_id").
 			Annotations(entgql.Skip(entgql.SkipAll)),
+		edge.To("org_users", OrgUser.Type).Comment("组用户").
+			Through("org_role_user", OrgRoleUser.Type).Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }

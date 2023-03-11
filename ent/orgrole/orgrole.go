@@ -36,6 +36,10 @@ const (
 	FieldComments = "comments"
 	// EdgeOrg holds the string denoting the org edge name in mutations.
 	EdgeOrg = "org"
+	// EdgeOrgUsers holds the string denoting the org_users edge name in mutations.
+	EdgeOrgUsers = "org_users"
+	// EdgeOrgRoleUser holds the string denoting the org_role_user edge name in mutations.
+	EdgeOrgRoleUser = "org_role_user"
 	// Table holds the table name of the orgrole in the database.
 	Table = "org_role"
 	// OrgTable is the table that holds the org relation/edge.
@@ -45,6 +49,18 @@ const (
 	OrgInverseTable = "org"
 	// OrgColumn is the table column denoting the org relation/edge.
 	OrgColumn = "org_id"
+	// OrgUsersTable is the table that holds the org_users relation/edge. The primary key declared below.
+	OrgUsersTable = "org_role_user"
+	// OrgUsersInverseTable is the table name for the OrgUser entity.
+	// It exists in this package in order to avoid circular dependency with the "orguser" package.
+	OrgUsersInverseTable = "org_user"
+	// OrgRoleUserTable is the table that holds the org_role_user relation/edge.
+	OrgRoleUserTable = "org_role_user"
+	// OrgRoleUserInverseTable is the table name for the OrgRoleUser entity.
+	// It exists in this package in order to avoid circular dependency with the "orgroleuser" package.
+	OrgRoleUserInverseTable = "org_role_user"
+	// OrgRoleUserColumn is the table column denoting the org_role_user relation/edge.
+	OrgRoleUserColumn = "org_role_id"
 )
 
 // Columns holds all SQL columns for orgrole fields.
@@ -60,6 +76,12 @@ var Columns = []string{
 	FieldAppRoleID,
 	FieldComments,
 }
+
+var (
+	// OrgUsersPrimaryKey and OrgUsersColumn2 are the table columns denoting the
+	// primary key for the org_users relation (M2M).
+	OrgUsersPrimaryKey = []string{"org_role_id", "org_user_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

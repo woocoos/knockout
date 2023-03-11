@@ -341,6 +341,35 @@ var (
 			},
 		},
 	}
+	// OrgRoleUserColumns holds the columns for the "org_role_user" table.
+	OrgRoleUserColumns = []*schema.Column{
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "org_role_id", Type: field.TypeInt},
+		{Name: "org_user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+	}
+	// OrgRoleUserTable holds the schema information for the "org_role_user" table.
+	OrgRoleUserTable = &schema.Table{
+		Name:       "org_role_user",
+		Columns:    OrgRoleUserColumns,
+		PrimaryKey: []*schema.Column{OrgRoleUserColumns[4], OrgRoleUserColumns[5]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "org_role_user_org_role_org_role",
+				Columns:    []*schema.Column{OrgRoleUserColumns[4]},
+				RefColumns: []*schema.Column{OrgRoleColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "org_role_user_org_user_org_user",
+				Columns:    []*schema.Column{OrgRoleUserColumns[5]},
+				RefColumns: []*schema.Column{OrgUserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// OrgUserColumns holds the columns for the "org_user" table.
 	OrgUserColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
@@ -570,6 +599,7 @@ var (
 		OrgAppTable,
 		OrgPolicyTable,
 		OrgRoleTable,
+		OrgRoleUserTable,
 		OrgUserTable,
 		PermissionTable,
 		UserTable,
@@ -628,6 +658,11 @@ func init() {
 	OrgRoleTable.ForeignKeys[0].RefTable = OrgTable
 	OrgRoleTable.Annotation = &entsql.Annotation{
 		Table: "org_role",
+	}
+	OrgRoleUserTable.ForeignKeys[0].RefTable = OrgRoleTable
+	OrgRoleUserTable.ForeignKeys[1].RefTable = OrgUserTable
+	OrgRoleUserTable.Annotation = &entsql.Annotation{
+		Table: "org_role_user",
 	}
 	OrgUserTable.ForeignKeys[0].RefTable = OrgTable
 	OrgUserTable.ForeignKeys[1].RefTable = UserTable

@@ -45,5 +45,7 @@ func (OrgUser) Edges() []ent.Edge {
 			Annotations(entgql.Skip(entgql.SkipAll)),
 		edge.To("user", User.Type).Unique().Required().Field("user_id").
 			Annotations(entgql.Skip(entgql.SkipAll)),
+		edge.From("org_roles", OrgRole.Type).Ref("org_users").
+			Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }
