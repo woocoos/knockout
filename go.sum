@@ -494,6 +494,8 @@ github.com/woocoos/casbin-ent-adapter v0.0.0-20230221014425-ed342b431fd0 h1:grHB
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230221014425-ed342b431fd0/go.mod h1:D5/p9Io6IUTzZJggCJRq2hfAs+WmuYYGbkD8HKAkpYA=
 github.com/woocoos/entco v0.0.0-20230304150639-252d29c10e8d h1:VLdYJZrPMn95+fnG0UWy+epUASFsLRayGbjIFHRBCnM=
 github.com/woocoos/entco v0.0.0-20230304150639-252d29c10e8d/go.mod h1:5LG6sK2uIadaDy9ySd/Kdy+nEwu79TuUgrOywMZSZr0=
+github.com/woocoos/entco v0.0.0-20230313005344-e4bb1cffda31 h1:z6TBb8wPp1m5wF8Iga2nXqkhIGlodtpiiJFHQQo9q7A=
+github.com/woocoos/entco v0.0.0-20230313005344-e4bb1cffda31/go.mod h1:5LG6sK2uIadaDy9ySd/Kdy+nEwu79TuUgrOywMZSZr0=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673/go.mod h1:N3UwUGtsrSj3ccvlPHLoLsHnpR27oXr4ZE984MbSER8=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

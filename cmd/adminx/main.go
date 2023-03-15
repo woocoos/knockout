@@ -21,8 +21,8 @@ import (
 	webhander "github.com/tsingsun/woocoo/web/handler"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/woocoos/entco/initx"
-	"github.com/woocoos/entco/initx/oteldriver"
+	"github.com/woocoos/entco/ecx"
+	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/ent"
@@ -56,7 +56,7 @@ func main() {
 	}
 
 	pd := oteldriver.BuildOTELDriver(app.AppConfiguration(), "store.portal")
-	pd = initx.BuildEntCacheDriver(app.AppConfiguration(), pd)
+	pd = ecx.BuildEntCacheDriver(app.AppConfiguration(), pd)
 	if app.AppConfiguration().Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
 	} else {
