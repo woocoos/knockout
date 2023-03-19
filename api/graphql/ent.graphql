@@ -87,7 +87,9 @@ type App implements Node {
     """Filtering options for AppResSlice returned from the connection."""
     where: AppResWhereInput
   ): AppResConnection!
+  """角色"""
   roles: [AppRole!]
+  """策略"""
   policies: [AppPolicy!]
   orgs(
     """Returns the elements in the list that come after the specified cursor."""
@@ -126,7 +128,9 @@ type AppAction implements Node {
   """备注"""
   comments: String
   app: App!
+  """被引用的菜单项"""
   menus: [AppMenu!]
+  """引用的资源"""
   resources: [AppRes!]
 }
 """A connection to a list of items."""
@@ -306,6 +310,7 @@ type AppMenu implements Node {
   comments: String
   displaySort: Int
   app: App!
+  """需要权限控制时对应的权限"""
   action: AppAction
 }
 """A connection to a list of items."""
@@ -802,6 +807,7 @@ type AppRole implements Node {
   """授权后是否可编辑"""
   editable: Boolean!
   app: App!
+  """权限授权策略"""
   policies: [AppPolicy!]
 }
 """Ordering options for AppRole connections"""
@@ -2735,9 +2741,13 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """用户身份标识"""
   identities: [UserIdentity!]
+  """登陆设置"""
   loginProfile: UserLoginProfile
+  """用户密码"""
   passwords: [UserPassword!]
+  """用户设备"""
   devices: [UserDevice!]
   permissions(
     """Returns the elements in the list that come after the specified cursor."""

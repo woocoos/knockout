@@ -6,8 +6,8 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
-	"github.com/woocoos/entco/initx"
-	"github.com/woocoos/entco/initx/oteldriver"
+	"github.com/woocoos/entco/ecx"
+	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
@@ -27,7 +27,7 @@ func main() {
 		defer otelcfg.Shutdown()
 	}
 	pd := oteldriver.BuildOTELDriver(app.AppConfiguration(), "store.portal")
-	pd = initx.BuildEntCacheDriver(app.AppConfiguration(), pd)
+	pd = ecx.BuildEntCacheDriver(app.AppConfiguration(), pd)
 	var portalClient *ent.Client
 
 	if app.AppConfiguration().Development {

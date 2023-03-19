@@ -4,6 +4,7 @@ package main
 
 import (
 	"entgo.io/contrib/entgql"
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
 	"github.com/woocoos/entco/genx"
@@ -23,9 +24,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
+	protoExtension, err := entproto.NewExtension(
+		entproto.WithProtoDir("./api/proto"),
+	)
 	os.MkdirAll("./api/graphql", os.ModePerm)
 	opts := []entc.Option{
-		entc.Extensions(ex),
+		entc.Extensions(ex, protoExtension),
 		genx.GlobalID(),
 	}
 	err = entc.Generate("./graph/entgen/schema", &gen.Config{

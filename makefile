@@ -31,5 +31,3 @@ genent:
 	go run graph/entgen/entc.go
 gengql:
 	go run graph/gqlgen/gqlgen.go
-genproto:
-	go run graph/entgen/entproto.go
