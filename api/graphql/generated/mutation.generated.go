@@ -10,8 +10,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/graph/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -324,7 +324,7 @@ func (ec *executionContext) field_Mutation_createOrganizationAccount_args(ctx co
 	var arg0 model.CreateOrganizationAccountInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐCreateOrganizationAccountInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐCreateOrganizationAccountInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -483,7 +483,7 @@ func (ec *executionContext) field_Mutation_enableDirectory_args(ctx context.Cont
 	var arg0 model.EnableDirectoryInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐEnableDirectoryInput(ctx, tmp)
+		arg0, err = ec.unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3360,12 +3360,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐCreateOrganizationAccountInput(ctx context.Context, v interface{}) (model.CreateOrganizationAccountInput, error) {
+func (ec *executionContext) unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐCreateOrganizationAccountInput(ctx context.Context, v interface{}) (model.CreateOrganizationAccountInput, error) {
 	res, err := ec.unmarshalInputCreateOrganizationAccountInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
+func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }

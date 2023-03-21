@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
-	"github.com/woocoos/knockout/graph/entgen/types"
 )
 
 // AppPolicy is the model entity for the AppPolicy schema.

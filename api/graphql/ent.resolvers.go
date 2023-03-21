@@ -1,4 +1,4 @@
-package graph
+package graphql
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -6,12 +6,11 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/contrib/entgql"
+	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
-	"github.com/woocoos/knockout/graph/generated"
 )
 
 // Node is the resolver for the node field.
@@ -33,7 +32,9 @@ func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], fir
 
 // Orgs is the resolver for the orgs field.
 func (r *queryResolver) Orgs(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
-	panic(fmt.Errorf("not implemented: Orgs - orgs"))
+	return r.Client.Org.Query().Paginate(ctx, after, first, before, last,
+		ent.WithOrgOrder(orderBy),
+		ent.WithOrgFilter(where.Filter))
 }
 
 // Users is the resolver for the users field.
@@ -52,15 +53,3 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 
 type queryResolver struct{ *Resolver }
 type createUserInputResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
-	return r.Client.Org.Query().Paginate(ctx, after, first, before, last,
-		ent.WithOrgOrder(orderBy),
-		ent.WithOrgFilter(where.Filter))
-}

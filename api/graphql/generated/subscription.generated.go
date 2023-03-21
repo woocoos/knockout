@@ -12,7 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/woocoos/knockout/graph/model"
+	"github.com/woocoos/knockout/api/graphql/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -285,7 +285,7 @@ func (ec *executionContext) _Subscription_message(ctx context.Context, field gra
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalOMessage2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalOMessage2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐMessage(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -411,7 +411,7 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalOMessage2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
+func (ec *executionContext) marshalOMessage2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -16,6 +16,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -26,8 +28,6 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/graph/entgen/types"
-	"github.com/woocoos/knockout/graph/model"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -4450,7 +4450,7 @@ func (ec *executionContext) _AppPolicy_rules(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]types.PolicyRule)
 	fc.Result = res
-	return ec.marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AppPolicy_rules(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8190,7 +8190,7 @@ func (ec *executionContext) _OrgPolicy_rules(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]types.PolicyRule)
 	fc.Result = res
-	return ec.marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OrgPolicy_rules(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19546,7 +19546,7 @@ func (ec *executionContext) unmarshalInputCreateAppPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rules"))
-			it.Rules, err = ec.unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.Rules, err = ec.unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -19890,7 +19890,7 @@ func (ec *executionContext) unmarshalInputCreateOrgPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rules"))
-			it.Rules, err = ec.unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.Rules, err = ec.unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21168,7 +21168,7 @@ func (ec *executionContext) unmarshalInputOrgRoleOrder(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgRoleOrderField(ctx, v)
+			it.Field, err = ec.unmarshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgRoleOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21772,7 +21772,7 @@ func (ec *executionContext) unmarshalInputOrgUserOrder(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			it.Field, err = ec.unmarshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgUserOrderField(ctx, v)
+			it.Field, err = ec.unmarshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserOrderField(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25256,7 +25256,7 @@ func (ec *executionContext) unmarshalInputUpdateAppPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rules"))
-			it.Rules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.Rules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25264,7 +25264,7 @@ func (ec *executionContext) unmarshalInputUpdateAppPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appendRules"))
-			it.AppendRules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.AppendRules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25840,7 +25840,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rules"))
-			it.Rules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.Rules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25848,7 +25848,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appendRules"))
-			it.AppendRules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
+			it.AppendRules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34324,13 +34324,13 @@ func (ec *executionContext) marshalNOrgRoleKind2githubᚗcomᚋwoocoosᚋknockou
 	return v
 }
 
-func (ec *executionContext) unmarshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgRoleOrderField(ctx context.Context, v interface{}) (model.OrgRoleOrderField, error) {
+func (ec *executionContext) unmarshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgRoleOrderField(ctx context.Context, v interface{}) (model.OrgRoleOrderField, error) {
 	var res model.OrgRoleOrderField
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgRoleOrderField(ctx context.Context, sel ast.SelectionSet, v model.OrgRoleOrderField) graphql.Marshaler {
+func (ec *executionContext) marshalNOrgRoleOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgRoleOrderField(ctx context.Context, sel ast.SelectionSet, v model.OrgRoleOrderField) graphql.Marshaler {
 	return v
 }
 
@@ -34349,13 +34349,13 @@ func (ec *executionContext) marshalNOrgSimpleStatus2githubᚗcomᚋwoocoosᚋent
 	return v
 }
 
-func (ec *executionContext) unmarshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgUserOrderField(ctx context.Context, v interface{}) (model.OrgUserOrderField, error) {
+func (ec *executionContext) unmarshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserOrderField(ctx context.Context, v interface{}) (model.OrgUserOrderField, error) {
 	var res model.OrgUserOrderField
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋmodelᚐOrgUserOrderField(ctx context.Context, sel ast.SelectionSet, v model.OrgUserOrderField) graphql.Marshaler {
+func (ec *executionContext) marshalNOrgUserOrderField2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserOrderField(ctx context.Context, sel ast.SelectionSet, v model.OrgUserOrderField) graphql.Marshaler {
 	return v
 }
 

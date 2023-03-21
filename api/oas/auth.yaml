@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: 1.0.0
+  description: |
+    This API is used to authenticate users and get a JWT token.
+    The token is used to access other APIs.
+  contact:
+    name: API Support
+    email: 21997272@qq.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+paths:
+  /login/auth:
+    post:
+      summary: Use this API to Login
+      description: Use this API to Login
+      operationId: auth
+      requestBody:
+        description: Login with username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/vefityFactor:
+    post:
+      description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
+      operationId: vefityFactor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyFactorRequest'
+      responses:
+        '200':
+          description: complete the login flow. return token info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /logout:
+    post:
+      description: log out a user
+      operationId: logout
+      responses:
+        default:
+          description: successful operation
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+      security:
+        - bearerAuth: [ ]
+
+components:
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username or email
+        password:
+          type: string
+      required:
+        - username
+        - password
+    LoginResponse:
+      type: object
+      description: when complete login accessToken,expiresAt,refreshToken will be filled
+      properties:
+        accessToken:
+          type: string
+        expiresIn:
+          type: integer
+        refreshToken:
+          type: string
+        stateToken:
+          type: string
+          description: when need MFA or Change PWD. use the state token to request callback_url
+        callbackUrl:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        details:
+          type: string
+    VerifyFactorRequest:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: provide the MFA deviceId. the deviceId is register by MFA setting.
+        stateToken:
+          type: string
+        otpToken:
+          type: string
+      required:
+        - deviceId
+        - stateToken
+        - otpToken

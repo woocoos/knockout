@@ -10,8 +10,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/woocoos/knockout/graph/entgen/types"
-	"github.com/woocoos/knockout/graph/model"
+	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -56,7 +56,7 @@ func (ec *executionContext) _PolicyRule_effect(ctx context.Context, field graphq
 	}
 	res := resTmp.(types.PolicyEffect)
 	fc.Result = res
-	return ec.marshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyEffect(ctx, field.Selections, res)
+	return ec.marshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PolicyRule_effect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -261,7 +261,7 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("effect"))
-			it.Effect, err = ec.unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyEffect(ctx, v)
+			it.Effect, err = ec.unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -394,21 +394,21 @@ func (ec *executionContext) marshalNGID2ᚕstringᚄ(ctx context.Context, sel as
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, v interface{}) (types.PolicyEffect, error) {
+func (ec *executionContext) unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, v interface{}) (types.PolicyEffect, error) {
 	var res types.PolicyEffect
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, sel ast.SelectionSet, v types.PolicyEffect) graphql.Marshaler {
+func (ec *executionContext) marshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, sel ast.SelectionSet, v types.PolicyEffect) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v types.PolicyRule) graphql.Marshaler {
+func (ec *executionContext) marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v types.PolicyRule) graphql.Marshaler {
 	return ec._PolicyRule(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []types.PolicyRule) graphql.Marshaler {
+func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []types.PolicyRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -432,7 +432,7 @@ func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknock
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRule(ctx, sel, v[i])
+			ret[i] = ec.marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -452,12 +452,12 @@ func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknock
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) (types.PolicyRule, error) {
+func (ec *executionContext) unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) (types.PolicyRule, error) {
 	res, err := ec.unmarshalInputPolicyRuleInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
+func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
@@ -466,7 +466,7 @@ func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoos�
 	res := make([]types.PolicyRule, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -490,7 +490,7 @@ func (ec *executionContext) marshalOGID2ᚖstring(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
+func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -502,7 +502,7 @@ func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoos�
 	res := make([]types.PolicyRule, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋgraphᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}

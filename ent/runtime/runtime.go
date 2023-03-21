@@ -5,6 +5,7 @@ package runtime
 import (
 	"time"
 
+	"github.com/woocoos/knockout/codegen/entgen/schema"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -24,7 +25,6 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/graph/entgen/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

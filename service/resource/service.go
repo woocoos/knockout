@@ -5,11 +5,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
-	"github.com/woocoos/knockout/graph/model"
 	"github.com/woocoos/knockout/security"
 	"strings"
 )

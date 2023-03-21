@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
-	"github.com/woocoos/knockout/graph/entgen/types"
 )
 
 // OrgPolicyCreate is the builder for creating a OrgPolicy entity.

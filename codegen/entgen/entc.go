@@ -16,7 +16,7 @@ func main() {
 	ex, err := entgql.NewExtension(
 		entgql.WithSchemaGenerator(),
 		entgql.WithWhereInputs(true),
-		entgql.WithConfigPath("graph/gqlgen/gqlgen.yaml"),
+		entgql.WithConfigPath("codegen/gqlgen/gqlgen.yaml"),
 		entgql.WithSchemaPath("api/graphql/ent.graphql"),
 		entgql.WithSchemaHook(genx.ChangeRelayNodeType()),
 		genx.ReplaceGqlMutationInput(),
@@ -32,7 +32,7 @@ func main() {
 		entc.Extensions(ex, protoExtension),
 		genx.GlobalID(),
 	}
-	err = entc.Generate("./graph/entgen/schema", &gen.Config{
+	err = entc.Generate("./codegen/entgen/schema", &gen.Config{
 		Package:  "github.com/woocoos/knockout/ent",
 		Features: []gen.Feature{gen.FeatureVersionedMigration, gen.FeatureIntercept},
 		Target:   "./ent",

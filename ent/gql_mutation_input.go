@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -13,7 +14,6 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/graph/entgen/types"
 )
 
 // CreateAppInput represents a mutation input for creating apps.

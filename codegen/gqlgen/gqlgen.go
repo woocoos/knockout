@@ -1,3 +1,5 @@
+//go:build ignore
+
 package main
 
 import (
@@ -32,7 +34,7 @@ func constraintFieldHook(td *ast.Definition, fd *ast.FieldDefinition, f *modelge
 }
 
 func main() {
-	cfg, err := config.LoadConfig("./graph/gqlgen/gqlgen.yaml")
+	cfg, err := config.LoadConfig("./codegen/gqlgen/gqlgen.yaml")
 	if err != nil {
 		log.Print("failed to load config", err.Error())
 		os.Exit(2)

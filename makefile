@@ -28,6 +28,6 @@ test-db:
 .PHONY: gen genent gengql genproto
 gen: genent gengql
 genent:
-	go run graph/entgen/entc.go
+	go run codegen/entgen/entc.go
 gengql:
-	go run graph/gqlgen/gqlgen.go
+	go run codegen/gqlgen/gqlgen.go

@@ -9,7 +9,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax"
 	"github.com/woocoos/entco/schemax/typex"
-	"github.com/woocoos/knockout/graph/entgen/types"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 )
 
 // AppPolicy 应用定义的策略.

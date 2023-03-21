@@ -5,7 +5,7 @@ import (
 	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
-	"github.com/99designs/gqlgen/graphql"
+	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
@@ -25,9 +25,9 @@ import (
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/snowflake"
+	"github.com/woocoos/knockout/api/graphql"
+	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/graph"
-	"github.com/woocoos/knockout/graph/generated"
 	"github.com/woocoos/knockout/service/resource"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"time"
@@ -86,7 +86,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	webSrv.Router().NoRoute()
 
 	gqlSrv := handler.New(generated.NewExecutableSchema(generated.Config{
-		Resolvers: &graph.Resolver{
+		Resolvers: &graphql.Resolver{
 			Client:   portalClient,
 			Resource: &resource.Service{Client: portalClient},
 		},
@@ -137,8 +137,8 @@ func buildCashbin(cnf *conf.AppConfiguration, driver dialect.Driver) {
 }
 
 func useContextCache(server *handler.Server) {
-	server.AroundResponses(func(ctx context.Context, next graphql.ResponseHandler) *graphql.Response {
-		if op := graphql.GetOperationContext(ctx).Operation; op != nil && op.Operation == ast.Query {
+	server.AroundResponses(func(ctx context.Context, next gqlgen.ResponseHandler) *gqlgen.Response {
+		if op := gqlgen.GetOperationContext(ctx).Operation; op != nil && op.Operation == ast.Query {
 			ctx = entcache.NewContext(ctx)
 		}
 		return next(ctx)

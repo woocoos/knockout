@@ -3,7 +3,7 @@ package security
 import (
 	"errors"
 	"github.com/tsingsun/woocoo/pkg/authz"
-	"github.com/woocoos/knockout/graph/entgen/types"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 )
 
 // GrantPolicy 同步授权信息到cashbin.

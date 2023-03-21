@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/graph/entgen/types"
 )
 
 // AppPolicyCreate is the builder for creating a AppPolicy entity.

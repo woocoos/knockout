@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax"
-	"github.com/woocoos/knockout/graph/entgen/types"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 )
 
 // OrgPolicy 组织中的策略.基本包括来源于应用初始化的策略和组织自定义的策略.

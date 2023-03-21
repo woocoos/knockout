@@ -1,4 +1,4 @@
-package graph
+package graphql
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -8,14 +8,14 @@ import (
 	"context"
 	"fmt"
 
+	generated1 "github.com/woocoos/knockout/api/graphql/generated"
+	model1 "github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/graph/generated"
-	"github.com/woocoos/knockout/graph/model"
 )
 
 // EnableDirectory is the resolver for the enableDirectory field.
-func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
+func (r *mutationResolver) EnableDirectory(ctx context.Context, input model1.EnableDirectoryInput) (*ent.Org, error) {
 	return r.Resource.EnableOrganization(ctx, input)
 }
 
@@ -44,7 +44,7 @@ func (r *mutationResolver) ChangeOrganizationTree(ctx context.Context, sourceID 
 }
 
 // CreateOrganizationAccount is the resolver for the createOrganizationAccount field.
-func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, input model.CreateOrganizationAccountInput) (*ent.User, error) {
+func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, input model1.CreateOrganizationAccountInput) (*ent.User, error) {
 	panic(fmt.Errorf("not implemented: CreateOrganizationAccount - createOrganizationAccount"))
 }
 
@@ -239,7 +239,7 @@ func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateU
 	return nil
 }
 
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+// Mutation returns generated1.MutationResolver implementation.
+func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }

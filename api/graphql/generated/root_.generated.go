@@ -12,8 +12,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/graph/model"
 )
 
 // NewExecutableSchema creates an ExecutableSchema from the ResolverRoot interface.
@@ -3004,7 +3004,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../../api/graphql/ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+	{Name: "../ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 directive @goModel(model: String, models: [String!]) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 type App implements Node {
   id: ID!
@@ -3093,7 +3093,9 @@ type App implements Node {
     """Filtering options for AppResSlice returned from the connection."""
     where: AppResWhereInput
   ): AppResConnection!
+  """角色"""
   roles: [AppRole!]
+  """策略"""
   policies: [AppPolicy!]
   orgs(
     """Returns the elements in the list that come after the specified cursor."""
@@ -3132,7 +3134,9 @@ type AppAction implements Node {
   """备注"""
   comments: String
   app: App!
+  """被引用的菜单项"""
   menus: [AppMenu!]
+  """引用的资源"""
   resources: [AppRes!]
 }
 """A connection to a list of items."""
@@ -3312,6 +3316,7 @@ type AppMenu implements Node {
   comments: String
   displaySort: Int
   app: App!
+  """需要权限控制时对应的权限"""
   action: AppAction
 }
 """A connection to a list of items."""
@@ -3808,6 +3813,7 @@ type AppRole implements Node {
   """授权后是否可编辑"""
   editable: Boolean!
   app: App!
+  """权限授权策略"""
   policies: [AppPolicy!]
 }
 """Ordering options for AppRole connections"""
@@ -5741,9 +5747,13 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """用户身份标识"""
   identities: [UserIdentity!]
+  """登陆设置"""
   loginProfile: UserLoginProfile
+  """用户密码"""
   passwords: [UserPassword!]
+  """用户设备"""
   devices: [UserDevice!]
   permissions(
     """Returns the elements in the list that come after the specified cursor."""
@@ -6601,7 +6611,7 @@ input UserWhereInput {
   hasPermissionsWith: [PermissionWhereInput!]
 }
 `, BuiltIn: false},
-	{Name: "../../api/graphql/types.graphql", Input: `scalar GID
+	{Name: "../types.graphql", Input: `scalar GID
 
 enum PolicyEffect {
     allow
@@ -6626,11 +6636,11 @@ input GrantInput {
     orgScope: ID!
     policyID: ID!
 }`, BuiltIn: false},
-	{Name: "../../api/graphql/query.graphql", Input: `extend type Query {
+	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
 }`, BuiltIn: false},
-	{Name: "../../api/graphql/mutation.graphql", Input: `type Mutation {
+	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
     enableDirectory(input: EnableDirectoryInput!):Org
     """创建组织目录"""
@@ -6725,7 +6735,7 @@ extend input CreateUserInput {
     password: CreateUserPasswordInput
 }
 `, BuiltIn: false},
-	{Name: "../../api/graphql/subscription.graphql", Input: `type Subscription {
+	{Name: "../subscription.graphql", Input: `type Subscription {
     message: Message
 }
 

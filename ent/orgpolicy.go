@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
-	"github.com/woocoos/knockout/graph/entgen/types"
 )
 
 // OrgPolicy is the model entity for the OrgPolicy schema.
