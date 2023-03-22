@@ -322,10 +322,7 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 			Columns: []string{appaction.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -342,10 +339,7 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -361,10 +355,7 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

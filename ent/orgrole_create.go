@@ -274,10 +274,7 @@ func (orc *OrgRoleCreate) createSpec() (*OrgRole, *sqlgraph.CreateSpec) {
 			Columns: []string{orgrole.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -294,10 +291,7 @@ func (orc *OrgRoleCreate) createSpec() (*OrgRole, *sqlgraph.CreateSpec) {
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

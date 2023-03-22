@@ -565,7 +565,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "scene", Type: field.TypeEnum, Nullable: true, Enums: []string{"login"}},
+		{Name: "scene", Type: field.TypeEnum, Enums: []string{"login"}},
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "salt", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},

@@ -8641,12 +8641,10 @@ type UserPasswordWhereInput struct {
 	UserIDNotNil bool  `json:"userIDNotNil,omitempty"`
 
 	// "scene" field predicates.
-	Scene       *userpassword.Scene  `json:"scene,omitempty"`
-	SceneNEQ    *userpassword.Scene  `json:"sceneNEQ,omitempty"`
-	SceneIn     []userpassword.Scene `json:"sceneIn,omitempty"`
-	SceneNotIn  []userpassword.Scene `json:"sceneNotIn,omitempty"`
-	SceneIsNil  bool                 `json:"sceneIsNil,omitempty"`
-	SceneNotNil bool                 `json:"sceneNotNil,omitempty"`
+	Scene      *userpassword.Scene  `json:"scene,omitempty"`
+	SceneNEQ   *userpassword.Scene  `json:"sceneNEQ,omitempty"`
+	SceneIn    []userpassword.Scene `json:"sceneIn,omitempty"`
+	SceneNotIn []userpassword.Scene `json:"sceneNotIn,omitempty"`
 
 	// "password" field predicates.
 	Password             *string  `json:"password,omitempty"`
@@ -8910,12 +8908,6 @@ func (i *UserPasswordWhereInput) P() (predicate.UserPassword, error) {
 	}
 	if len(i.SceneNotIn) > 0 {
 		predicates = append(predicates, userpassword.SceneNotIn(i.SceneNotIn...))
-	}
-	if i.SceneIsNil {
-		predicates = append(predicates, userpassword.SceneIsNil())
-	}
-	if i.SceneNotNil {
-		predicates = append(predicates, userpassword.SceneNotNil())
 	}
 	if i.Password != nil {
 		predicates = append(predicates, userpassword.PasswordEQ(*i.Password))

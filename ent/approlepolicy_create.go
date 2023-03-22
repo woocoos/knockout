@@ -217,10 +217,7 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 			Columns: []string{approlepolicy.RoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -237,10 +234,7 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 			Columns: []string{approlepolicy.PolicyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

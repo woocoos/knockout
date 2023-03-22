@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Auth API
-  version: 1.0.0
+  version: 0.0.1
   description: |
     This API is used to authenticate users and get a JWT token.
     The token is used to access other APIs.
@@ -10,7 +10,7 @@ info:
     email: 21997272@qq.com
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:10070
     description: Local server
 paths:
   /login/auth:
@@ -24,7 +24,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: username or email
+                password:
+                  type: string
+              required:
+                - username
+                - password
       responses:
         '200':
           description: Login successful
@@ -40,7 +49,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /login/vefityFactor:
+  /login/verifyFactor:
     post:
       description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
       operationId: vefityFactor
@@ -48,7 +57,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VerifyFactorRequest'
+              type: object
+              properties:
+                deviceId:
+                  type: string
+                  description: provide the MFA deviceId. the deviceId is register by MFA setting.
+                stateToken:
+                  type: string
+                otpToken:
+                  type: string
+              required:
+                - deviceId
+                - stateToken
+                - otpToken
       responses:
         '200':
           description: complete the login flow. return token info
@@ -86,17 +107,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    LoginRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          description: username or email
-        password:
-          type: string
-      required:
-        - username
-        - password
     LoginResponse:
       type: object
       description: when complete login accessToken,expiresAt,refreshToken will be filled
@@ -128,17 +138,3 @@ components:
           type: string
         details:
           type: string
-    VerifyFactorRequest:
-      type: object
-      properties:
-        deviceId:
-          type: string
-          description: provide the MFA deviceId. the deviceId is register by MFA setting.
-        stateToken:
-          type: string
-        otpToken:
-          type: string
-      required:
-        - deviceId
-        - stateToken
-        - otpToken

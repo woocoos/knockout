@@ -294,10 +294,7 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 			Columns: []string{orgpolicy.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

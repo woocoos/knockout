@@ -22021,22 +22021,9 @@ func (m *UserPasswordMutation) OldScene(ctx context.Context) (v userpassword.Sce
 	return oldValue.Scene, nil
 }
 
-// ClearScene clears the value of the "scene" field.
-func (m *UserPasswordMutation) ClearScene() {
-	m.scene = nil
-	m.clearedFields[userpassword.FieldScene] = struct{}{}
-}
-
-// SceneCleared returns if the "scene" field was cleared in this mutation.
-func (m *UserPasswordMutation) SceneCleared() bool {
-	_, ok := m.clearedFields[userpassword.FieldScene]
-	return ok
-}
-
 // ResetScene resets all changes to the "scene" field.
 func (m *UserPasswordMutation) ResetScene() {
 	m.scene = nil
-	delete(m.clearedFields, userpassword.FieldScene)
 }
 
 // SetPassword sets the "password" field.
@@ -22515,9 +22502,6 @@ func (m *UserPasswordMutation) ClearedFields() []string {
 	if m.FieldCleared(userpassword.FieldUserID) {
 		fields = append(fields, userpassword.FieldUserID)
 	}
-	if m.FieldCleared(userpassword.FieldScene) {
-		fields = append(fields, userpassword.FieldScene)
-	}
 	if m.FieldCleared(userpassword.FieldPassword) {
 		fields = append(fields, userpassword.FieldPassword)
 	}
@@ -22549,9 +22533,6 @@ func (m *UserPasswordMutation) ClearField(name string) error {
 		return nil
 	case userpassword.FieldUserID:
 		m.ClearUserID()
-		return nil
-	case userpassword.FieldScene:
-		m.ClearScene()
 		return nil
 	case userpassword.FieldPassword:
 		m.ClearPassword()

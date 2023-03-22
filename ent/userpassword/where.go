@@ -326,16 +326,6 @@ func SceneNotIn(vs ...Scene) predicate.UserPassword {
 	return predicate.UserPassword(sql.FieldNotIn(FieldScene, vs...))
 }
 
-// SceneIsNil applies the IsNil predicate on the "scene" field.
-func SceneIsNil() predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldIsNull(FieldScene))
-}
-
-// SceneNotNil applies the NotNil predicate on the "scene" field.
-func SceneNotNil() predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldNotNull(FieldScene))
-}
-
 // PasswordEQ applies the EQ predicate on the "password" field.
 func PasswordEQ(v string) predicate.UserPassword {
 	return predicate.UserPassword(sql.FieldEQ(FieldPassword, v))

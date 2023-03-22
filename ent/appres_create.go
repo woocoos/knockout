@@ -257,10 +257,7 @@ func (arc *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
 			Columns: []string{appres.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

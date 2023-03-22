@@ -14,7 +14,7 @@ type Server interface {
 	Auth(c *gin.Context, req *AuthRequest) (*LoginResponse, error)
 	// (POST /logout)
 	Logout(c *gin.Context) error
-	// (POST /login/vefityFactor)
+	// (POST /login/verifyFactor)
 	VefityFactor(c *gin.Context, req *VefityFactorRequest) (*LoginResponse, error)
 }
 

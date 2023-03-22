@@ -205,10 +205,7 @@ func (oac *OrgAppCreate) createSpec() (*OrgApp, *sqlgraph.CreateSpec) {
 			Columns: []string{orgapp.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -225,10 +222,7 @@ func (oac *OrgAppCreate) createSpec() (*OrgApp, *sqlgraph.CreateSpec) {
 			Columns: []string{orgapp.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -13559,11 +13559,14 @@ func (ec *executionContext) _UserPassword_scene(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(userpassword.Scene)
 	fc.Result = res
-	return ec.marshalOUserPasswordScene2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx, field.Selections, res)
+	return ec.marshalNUserPasswordScene2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserPassword_scene(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20284,7 +20287,7 @@ func (ec *executionContext) unmarshalInputCreateUserPasswordInput(ctx context.Co
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("scene"))
-			it.Scene, err = ec.unmarshalOUserPasswordScene2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx, v)
+			it.Scene, err = ec.unmarshalNUserPasswordScene2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26401,7 +26404,7 @@ func (ec *executionContext) unmarshalInputUpdateUserPasswordInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"scene", "clearScene", "password", "clearPassword", "status", "clearStatus", "memo", "clearMemo"}
+	fieldsInOrder := [...]string{"scene", "password", "clearPassword", "status", "clearStatus", "memo", "clearMemo"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26413,14 +26416,6 @@ func (ec *executionContext) unmarshalInputUpdateUserPasswordInput(ctx context.Co
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("scene"))
 			it.Scene, err = ec.unmarshalOUserPasswordScene2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "clearScene":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearScene"))
-			it.ClearScene, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -29329,7 +29324,7 @@ func (ec *executionContext) unmarshalInputUserPasswordWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "scene", "sceneNEQ", "sceneIn", "sceneNotIn", "sceneIsNil", "sceneNotNil", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasUser", "hasUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "scene", "sceneNEQ", "sceneIn", "sceneNotIn", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasUser", "hasUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -29789,22 +29784,6 @@ func (ec *executionContext) unmarshalInputUserPasswordWhereInput(ctx context.Con
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sceneNotIn"))
 			it.SceneNotIn, err = ec.unmarshalOUserPasswordScene2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐSceneᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "sceneIsNil":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sceneIsNil"))
-			it.SceneIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "sceneNotNil":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sceneNotNil"))
-			it.SceneNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -33820,6 +33799,9 @@ func (ec *executionContext) _UserPassword(ctx context.Context, sel ast.Selection
 
 			out.Values[i] = ec._UserPassword_scene(ctx, field, obj)
 
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "status":
 
 			out.Values[i] = ec._UserPassword_status(ctx, field, obj)
@@ -37620,16 +37602,6 @@ func (ec *executionContext) marshalOUserPassword2ᚕᚖgithubᚗcomᚋwoocoosᚋ
 	}
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalOUserPasswordScene2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx context.Context, v interface{}) (userpassword.Scene, error) {
-	var res userpassword.Scene
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUserPasswordScene2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐScene(ctx context.Context, sel ast.SelectionSet, v userpassword.Scene) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) unmarshalOUserPasswordScene2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐSceneᚄ(ctx context.Context, v interface{}) ([]userpassword.Scene, error) {

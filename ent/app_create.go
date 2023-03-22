@@ -555,10 +555,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -574,10 +571,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.ActionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appaction.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -593,10 +587,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -612,10 +603,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -631,10 +619,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.PoliciesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -650,10 +635,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: app.OrgsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

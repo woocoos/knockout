@@ -25,9 +25,11 @@ migration-apply:
 test-db:
 	GOWORK=off go run -mod=mod test/initdb.go
 
-.PHONY: gen genent gengql genproto
+.PHONY: gen genent gengql genoas
 gen: genent gengql
 genent:
 	go run codegen/entgen/entc.go
 gengql:
 	go run codegen/gqlgen/gqlgen.go
+genoas:
+	go run codegen/oasgen/oasgen.go

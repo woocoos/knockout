@@ -303,10 +303,7 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{apppolicy.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -319,10 +316,7 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{apppolicy.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -338,10 +332,7 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		createE := &AppRolePolicyCreate{config: apu.config, mutation: newAppRolePolicyMutation(apu.config, OpCreate)}
@@ -358,10 +349,7 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -381,10 +369,7 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -716,10 +701,7 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 			Columns: []string{apppolicy.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -732,10 +714,7 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 			Columns: []string{apppolicy.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -751,10 +730,7 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		createE := &AppRolePolicyCreate{config: apuo.config, mutation: newAppRolePolicyMutation(apuo.config, OpCreate)}
@@ -771,10 +747,7 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -794,10 +767,7 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 			Columns: apppolicy.RolesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

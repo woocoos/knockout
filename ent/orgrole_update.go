@@ -290,10 +290,7 @@ func (oru *OrgRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgrole.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -306,10 +303,7 @@ func (oru *OrgRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgrole.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -325,10 +319,7 @@ func (oru *OrgRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		createE := &OrgRoleUserCreate{config: oru.config, mutation: newOrgRoleUserMutation(oru.config, OpCreate)}
@@ -345,10 +336,7 @@ func (oru *OrgRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -368,10 +356,7 @@ func (oru *OrgRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -693,10 +678,7 @@ func (oruo *OrgRoleUpdateOne) sqlSave(ctx context.Context) (_node *OrgRole, err 
 			Columns: []string{orgrole.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -709,10 +691,7 @@ func (oruo *OrgRoleUpdateOne) sqlSave(ctx context.Context) (_node *OrgRole, err 
 			Columns: []string{orgrole.OrgColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -728,10 +707,7 @@ func (oruo *OrgRoleUpdateOne) sqlSave(ctx context.Context) (_node *OrgRole, err 
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		createE := &OrgRoleUserCreate{config: oruo.config, mutation: newOrgRoleUserMutation(oruo.config, OpCreate)}
@@ -748,10 +724,7 @@ func (oruo *OrgRoleUpdateOne) sqlSave(ctx context.Context) (_node *OrgRole, err 
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -771,10 +744,7 @@ func (oruo *OrgRoleUpdateOne) sqlSave(ctx context.Context) (_node *OrgRole, err 
 			Columns: orgrole.OrgUsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

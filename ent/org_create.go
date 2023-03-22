@@ -588,10 +588,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.ParentColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -608,10 +605,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.ChildrenColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: org.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -627,10 +621,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -647,10 +638,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: org.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -670,10 +658,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.RolesAndGroupsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgrole.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -689,10 +674,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.PermissionsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: permission.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -708,10 +690,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.PoliciesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgpolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -727,10 +706,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: org.AppsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -750,10 +726,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Columns: []string{org.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

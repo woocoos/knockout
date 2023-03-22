@@ -90,14 +90,6 @@ func (upc *UserPasswordCreate) SetScene(u userpassword.Scene) *UserPasswordCreat
 	return upc
 }
 
-// SetNillableScene sets the "scene" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableScene(u *userpassword.Scene) *UserPasswordCreate {
-	if u != nil {
-		upc.SetScene(*u)
-	}
-	return upc
-}
-
 // SetPassword sets the "password" field.
 func (upc *UserPasswordCreate) SetPassword(s string) *UserPasswordCreate {
 	upc.mutation.SetPassword(s)
@@ -212,6 +204,9 @@ func (upc *UserPasswordCreate) check() error {
 	if _, ok := upc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserPassword.created_at"`)}
 	}
+	if _, ok := upc.mutation.Scene(); !ok {
+		return &ValidationError{Name: "scene", err: errors.New(`ent: missing required field "UserPassword.scene"`)}
+	}
 	if v, ok := upc.mutation.Scene(); ok {
 		if err := userpassword.SceneValidator(v); err != nil {
 			return &ValidationError{Name: "scene", err: fmt.Errorf(`ent: validator failed for field "UserPassword.scene": %w`, err)}
@@ -306,10 +301,7 @@ func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec
 			Columns: []string{userpassword.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

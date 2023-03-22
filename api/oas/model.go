@@ -12,21 +12,10 @@ type ErrorResponse struct {
 	Errors []*Error `json:"errors,omitempty"`
 }
 
-type LoginRequest struct {
-	Password string `binding:"required" json:"password"`
-	Username string `binding:"required" json:"username"`
-}
-
 type LoginResponse struct {
 	AccessToken  string `json:"accessToken,omitempty"`
 	CallbackUrl  string `json:"callbackUrl,omitempty"`
 	ExpiresIn    int    `json:"expiresIn,omitempty"`
 	RefreshToken string `json:"refreshToken,omitempty"`
 	StateToken   string `json:"stateToken,omitempty"`
-}
-
-type VerifyFactorRequest struct {
-	DeviceId   string `binding:"required" json:"deviceId"`
-	OtpToken   string `binding:"required" json:"otpToken"`
-	StateToken string `binding:"required" json:"stateToken"`
 }

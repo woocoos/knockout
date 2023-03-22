@@ -82,20 +82,6 @@ func (upu *UserPasswordUpdate) SetScene(u userpassword.Scene) *UserPasswordUpdat
 	return upu
 }
 
-// SetNillableScene sets the "scene" field if the given value is not nil.
-func (upu *UserPasswordUpdate) SetNillableScene(u *userpassword.Scene) *UserPasswordUpdate {
-	if u != nil {
-		upu.SetScene(*u)
-	}
-	return upu
-}
-
-// ClearScene clears the value of the "scene" field.
-func (upu *UserPasswordUpdate) ClearScene() *UserPasswordUpdate {
-	upu.mutation.ClearScene()
-	return upu
-}
-
 // SetPassword sets the "password" field.
 func (upu *UserPasswordUpdate) SetPassword(s string) *UserPasswordUpdate {
 	upu.mutation.SetPassword(s)
@@ -244,9 +230,6 @@ func (upu *UserPasswordUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := upu.mutation.Scene(); ok {
 		_spec.SetField(userpassword.FieldScene, field.TypeEnum, value)
 	}
-	if upu.mutation.SceneCleared() {
-		_spec.ClearField(userpassword.FieldScene, field.TypeEnum)
-	}
 	if value, ok := upu.mutation.Password(); ok {
 		_spec.SetField(userpassword.FieldPassword, field.TypeString, value)
 	}
@@ -338,20 +321,6 @@ func (upuo *UserPasswordUpdateOne) ClearUpdatedAt() *UserPasswordUpdateOne {
 // SetScene sets the "scene" field.
 func (upuo *UserPasswordUpdateOne) SetScene(u userpassword.Scene) *UserPasswordUpdateOne {
 	upuo.mutation.SetScene(u)
-	return upuo
-}
-
-// SetNillableScene sets the "scene" field if the given value is not nil.
-func (upuo *UserPasswordUpdateOne) SetNillableScene(u *userpassword.Scene) *UserPasswordUpdateOne {
-	if u != nil {
-		upuo.SetScene(*u)
-	}
-	return upuo
-}
-
-// ClearScene clears the value of the "scene" field.
-func (upuo *UserPasswordUpdateOne) ClearScene() *UserPasswordUpdateOne {
-	upuo.mutation.ClearScene()
 	return upuo
 }
 
@@ -532,9 +501,6 @@ func (upuo *UserPasswordUpdateOne) sqlSave(ctx context.Context) (_node *UserPass
 	}
 	if value, ok := upuo.mutation.Scene(); ok {
 		_spec.SetField(userpassword.FieldScene, field.TypeEnum, value)
-	}
-	if upuo.mutation.SceneCleared() {
-		_spec.ClearField(userpassword.FieldScene, field.TypeEnum)
 	}
 	if value, ok := upuo.mutation.Password(); ok {
 		_spec.SetField(userpassword.FieldPassword, field.TypeString, value)

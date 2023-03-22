@@ -4,12 +4,15 @@ package oas
 
 type AuthRequest struct {
 	Body struct {
-		LoginRequest LoginRequest `binding:"required" json:"loginRequest"`
+		Password string `binding:"required" json:"password"`
+		Username string `binding:"required" json:"username"`
 	}
 }
 
 type VefityFactorRequest struct {
 	Body struct {
-		VerifyFactorRequest *VerifyFactorRequest `json:"verifyFactorRequest,omitempty"`
+		DeviceId   string `binding:"required" json:"deviceId"`
+		OtpToken   string `binding:"required" json:"otpToken"`
+		StateToken string `binding:"required" json:"stateToken"`
 	}
 }

@@ -83,7 +83,6 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		web.RegisterMiddleware(otelweb.NewMiddleware()),
 		web.RegisterMiddleware(authz.New()),
 	)
-	webSrv.Router().NoRoute()
 
 	gqlSrv := handler.New(generated.NewExecutableSchema(generated.Config{
 		Resolvers: &graphql.Resolver{

@@ -201,10 +201,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{approlepolicy.RoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -217,10 +214,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{approlepolicy.RoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -236,10 +230,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{approlepolicy.PolicyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -252,10 +243,7 @@ func (arpu *AppRolePolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Columns: []string{approlepolicy.PolicyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -486,10 +474,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 			Columns: []string{approlepolicy.RoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -502,10 +487,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 			Columns: []string{approlepolicy.RoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: approle.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -521,10 +503,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 			Columns: []string{approlepolicy.PolicyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -537,10 +516,7 @@ func (arpuo *AppRolePolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppRol
 			Columns: []string{approlepolicy.PolicyColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: apppolicy.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

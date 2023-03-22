@@ -1513,7 +1513,7 @@ func (c *UserLoginProfileUpdateOne) SetInput(i UpdateUserLoginProfileInput) *Use
 // CreateUserPasswordInput represents a mutation input for creating userpasswords.
 type CreateUserPasswordInput struct {
 	ID       *int
-	Scene    *userpassword.Scene
+	Scene    userpassword.Scene
 	Password *string
 	Status   *typex.SimpleStatus
 	Memo     *string
@@ -1522,9 +1522,7 @@ type CreateUserPasswordInput struct {
 
 // Mutate applies the CreateUserPasswordInput on the UserPasswordMutation builder.
 func (i *CreateUserPasswordInput) Mutate(m *UserPasswordMutation) {
-	if v := i.Scene; v != nil {
-		m.SetScene(*v)
-	}
+	m.SetScene(i.Scene)
 	if v := i.Password; v != nil {
 		m.SetPassword(*v)
 	}
@@ -1547,7 +1545,6 @@ func (c *UserPasswordCreate) SetInput(i CreateUserPasswordInput) *UserPasswordCr
 
 // UpdateUserPasswordInput represents a mutation input for updating userpasswords.
 type UpdateUserPasswordInput struct {
-	ClearScene    bool
 	Scene         *userpassword.Scene
 	ClearPassword bool
 	Password      *string
@@ -1559,9 +1556,6 @@ type UpdateUserPasswordInput struct {
 
 // Mutate applies the UpdateUserPasswordInput on the UserPasswordMutation builder.
 func (i *UpdateUserPasswordInput) Mutate(m *UserPasswordMutation) {
-	if i.ClearScene {
-		m.ClearScene()
-	}
 	if v := i.Scene; v != nil {
 		m.SetScene(*v)
 	}

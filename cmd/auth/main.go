@@ -2,13 +2,18 @@ package main
 
 import (
 	"entgo.io/ent/dialect"
+	"github.com/gin-contrib/cors"
+	"github.com/go-redis/redis/v8"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
+	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
+	"github.com/tsingsun/woocoo/web"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
+	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
 	"go.opentelemetry.io/contrib/propagators/b3"
@@ -41,11 +46,32 @@ func main() {
 	us := entpb.NewUserService(portalClient)
 	srv := grpcx.New(grpcx.WithGracefulStop())
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
-	app.RegisterServer(srv)
+
+	webservice := &server.Service{
+		DB: portalClient,
+		Redis: redis.NewClient(&redis.Options{
+			Addr: app.AppConfiguration().String("store.redis.addr"),
+		}),
+	}
+	server.Cnf = app.AppConfiguration()
+	websrv := buildWebServer(app.AppConfiguration(), webservice)
+
+	app.RegisterServer(websrv, srv)
 
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func buildWebServer(cnf *conf.AppConfiguration, ws *server.Service) *web.Server {
+	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
+		web.WithGracefulStop(),
+		web.RegisterMiddleware(otelweb.NewMiddleware()),
+	)
+	router := webSrv.Router()
+	router.Use(cors.Default())
+	server.RegisterHandlers(&webSrv.Router().RouterGroup, ws)
+	return webSrv
 }
 
 func buildCashbin(cnf *conf.AppConfiguration, driver dialect.Driver) {

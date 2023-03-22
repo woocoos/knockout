@@ -14,7 +14,7 @@ import (
 func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
 	router.POST("/login/auth", wrapAuth(si))
 	router.POST("/logout", wrapLogout(si))
-	router.POST("/login/vefityFactor", wrapVefityFactor(si))
+	router.POST("/login/verifyFactor", wrapVefityFactor(si))
 }
 
 func wrapAuth(si oas.Server) func(c *gin.Context) {

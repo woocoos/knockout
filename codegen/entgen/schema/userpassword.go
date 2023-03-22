@@ -33,8 +33,8 @@ func (UserPassword) Mixin() []ent.Mixin {
 // Fields of the UserPassword.
 func (UserPassword) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("user_id").Optional().Immutable(),
-		field.Enum("scene").Values("login").Optional().Comment("场景: login 普通登陆"),
+		field.Int("user_id").Immutable().Optional(),
+		field.Enum("scene").Values("login").Comment("场景: login 普通登陆"),
 		field.String("password").Optional().Comment("密码").Sensitive(),
 		field.String("salt").MaxLen(45).Comment("盐").Sensitive().Annotations(entgql.Skip(entgql.SkipAll)),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Optional(),

@@ -189,10 +189,7 @@ func (oruu *OrgRoleUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgroleuser.OrgRoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgrole.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -205,10 +202,7 @@ func (oruu *OrgRoleUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgroleuser.OrgRoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgrole.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -224,10 +218,7 @@ func (oruu *OrgRoleUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgroleuser.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -240,10 +231,7 @@ func (oruu *OrgRoleUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{orgroleuser.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -462,10 +450,7 @@ func (oruuo *OrgRoleUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgRoleU
 			Columns: []string{orgroleuser.OrgRoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgrole.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -478,10 +463,7 @@ func (oruuo *OrgRoleUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgRoleU
 			Columns: []string{orgroleuser.OrgRoleColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orgrole.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -497,10 +479,7 @@ func (oruuo *OrgRoleUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgRoleU
 			Columns: []string{orgroleuser.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -513,10 +492,7 @@ func (oruuo *OrgRoleUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgRoleU
 			Columns: []string{orgroleuser.OrgUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: orguser.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -310,10 +310,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -326,10 +323,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -345,10 +339,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -361,10 +352,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -380,10 +368,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -399,10 +384,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -415,10 +397,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -434,10 +413,7 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -774,10 +750,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -790,10 +763,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.AppColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -809,10 +779,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -825,10 +792,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -844,10 +808,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.MenusColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appmenu.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -863,10 +824,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -879,10 +837,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -898,10 +853,7 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Columns: []string{appaction.ResourcesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: appres.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

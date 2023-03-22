@@ -1,0 +1,4 @@
+store:
+  portal:
+    driverName: mysql
+    dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
