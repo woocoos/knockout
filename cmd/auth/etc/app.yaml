@@ -38,8 +38,10 @@ web:
             - recovery:
             - errorHandle:
             - jwt:
+                tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
+                  - "/login/mfaqr.png"
                   - "/login/verifyFactor"
                 <<: *jwt
 
@@ -59,14 +61,24 @@ grpc:
   #          addresses:
   #            - 127.0.0.1:8091
 
+
 store:
   portal:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
-  redis:
+  redis: &redis
     type: standalone
     addr: 127.0.0.1:6379
-    db: 14
+    db: 1
+
+
+cache:
+  redis:
+    <<: *redis
+    local:
+      size: 1000
+      ttl: 100s
+
 entcache:
   level: db
   ttl: 5m

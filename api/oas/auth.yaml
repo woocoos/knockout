@@ -49,10 +49,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /login/verifyFactor:
+  /login/verify-factor:
     post:
       description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
-      operationId: vefityFactor
+      operationId: verifyFactor
       requestBody:
         content:
           application/json:
@@ -121,6 +121,15 @@ components:
           type: string
           description: when need MFA or Change PWD. use the state token to request callback_url
         callbackUrl:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        displayName:
           type: string
     ErrorResponse:
       type: object

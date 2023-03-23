@@ -3,35 +3,34 @@
 package oas
 
 import (
+	"context"
 	"fmt"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Server is the server API for  service.
 type Server interface {
 	// (POST /login/auth)
-	Auth(c *gin.Context, req *AuthRequest) (*LoginResponse, error)
+	Auth(context.Context, *AuthRequest) (*LoginResponse, error)
 	// (POST /logout)
-	Logout(c *gin.Context) error
-	// (POST /login/verifyFactor)
-	VefityFactor(c *gin.Context, req *VefityFactorRequest) (*LoginResponse, error)
+	Logout(context.Context) error
+	// (POST /login/verify-factor)
+	VerifyFactor(context.Context, *VerifyFactorRequest) (*LoginResponse, error)
 }
 
 type UnimplementedServer struct {
 }
 
-func (UnimplementedServer) Auth(c *gin.Context, req *AuthRequest) (_ *LoginResponse, err error) {
+func (UnimplementedServer) Auth(ctx context.Context, req *AuthRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method Auth not implemented")
 	return
 }
 
-func (UnimplementedServer) Logout(c *gin.Context) (err error) {
+func (UnimplementedServer) Logout(ctx context.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
 	return
 }
 
-func (UnimplementedServer) VefityFactor(c *gin.Context, req *VefityFactorRequest) (_ *LoginResponse, err error) {
-	err = fmt.Errorf("method VefityFactor not implemented")
+func (UnimplementedServer) VerifyFactor(ctx context.Context, req *VerifyFactorRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method VerifyFactor not implemented")
 	return
 }

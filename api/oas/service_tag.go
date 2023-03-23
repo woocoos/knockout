@@ -3,16 +3,18 @@
 package oas
 
 type AuthRequest struct {
-	Body struct {
-		Password string `binding:"required" json:"password"`
-		Username string `binding:"required" json:"username"`
-	}
+	Body AuthRequestBody
+}
+type AuthRequestBody struct {
+	Password string `binding:"required" json:"password"`
+	Username string `binding:"required" json:"username"`
 }
 
-type VefityFactorRequest struct {
-	Body struct {
-		DeviceId   string `binding:"required" json:"deviceId"`
-		OtpToken   string `binding:"required" json:"otpToken"`
-		StateToken string `binding:"required" json:"stateToken"`
-	}
+type VerifyFactorRequest struct {
+	Body VerifyFactorRequestBody
+}
+type VerifyFactorRequestBody struct {
+	DeviceId   string `binding:"required" json:"deviceId"`
+	OtpToken   string `binding:"required" json:"otpToken"`
+	StateToken string `binding:"required" json:"stateToken"`
 }

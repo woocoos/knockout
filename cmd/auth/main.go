@@ -3,13 +3,15 @@ package main
 import (
 	"entgo.io/ent/dialect"
 	"github.com/gin-contrib/cors"
-	"github.com/go-redis/redis/v8"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
+	"github.com/tsingsun/woocoo/pkg/cache"
+	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
+	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
@@ -20,6 +22,7 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 func main() {
@@ -47,11 +50,12 @@ func main() {
 	srv := grpcx.New(grpcx.WithGracefulStop())
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
 
+	if err := redisc.NewBuiltIn().Register(); err != nil {
+		log.Fatal(err)
+	}
 	webservice := &server.Service{
-		DB: portalClient,
-		Redis: redis.NewClient(&redis.Options{
-			Addr: app.AppConfiguration().String("store.redis.addr"),
-		}),
+		DB:    portalClient,
+		Cache: cache.GetCache("redis"),
 	}
 	server.Cnf = app.AppConfiguration()
 	websrv := buildWebServer(app.AppConfiguration(), webservice)
@@ -70,7 +74,11 @@ func buildWebServer(cnf *conf.AppConfiguration, ws *server.Service) *web.Server 
 	)
 	router := webSrv.Router()
 	router.Use(cors.Default())
+	if mdl, ok := webSrv.HandlerManager().Get("jwt"); ok {
+		ws.LogoutHandler = mdl.(*handler.JWTMiddleware).Config.LogoutHandler
+	}
 	server.RegisterHandlers(&webSrv.Router().RouterGroup, ws)
+	server.RegisterHandlersManual(webSrv.Router().Engine, ws)
 	return webSrv
 }
 

@@ -14,7 +14,7 @@ import (
 func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
 	router.POST("/login/auth", wrapAuth(si))
 	router.POST("/logout", wrapLogout(si))
-	router.POST("/login/verifyFactor", wrapVefityFactor(si))
+	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
 
 func wrapAuth(si oas.Server) func(c *gin.Context) {
@@ -46,15 +46,15 @@ func wrapLogout(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapVefityFactor(si oas.Server) func(c *gin.Context) {
+func wrapVerifyFactor(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var req oas.VefityFactorRequest
+		var req oas.VerifyFactorRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
 			c.Status(http.StatusBadRequest)
 			c.Error(err)
 			return
 		}
-		resp, err := si.VefityFactor(c, &req)
+		resp, err := si.VerifyFactor(c, &req)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 			c.Error(err)

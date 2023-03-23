@@ -18,4 +18,10 @@ type LoginResponse struct {
 	ExpiresIn    int    `json:"expiresIn,omitempty"`
 	RefreshToken string `json:"refreshToken,omitempty"`
 	StateToken   string `json:"stateToken,omitempty"`
+	User         *User  `json:"user,omitempty"`
+}
+
+type User struct {
+	DisplayName string `json:"displayName,omitempty"`
+	ID          int    `json:"id,omitempty"`
 }

@@ -132,12 +132,12 @@ func (s *Service) CreateUserPassword(ctx context.Context, input *ent.CreateUserP
 	if input == nil {
 		return
 	}
-	salt := RandomStrByLetterAndDigit(5)
+	salt := RandomStr(5)
 	var hashPwd string
 	if input.Password != nil || *input.Password != "" {
 		hashPwd = SHA256(*input.Password + salt)
 	} else {
-		hashPwd = RandomStrByLetterAndDigit(6)
+		hashPwd = RandomStr(6)
 		hashPwd = SHA256(hashPwd + salt)
 	}
 	pw, err = ent.FromContext(ctx).UserPassword.Create().

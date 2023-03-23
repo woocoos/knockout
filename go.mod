@@ -7,27 +7,30 @@ require (
 	entgo.io/contrib v0.3.6-0.20230318215747-ecbb9cd4a59c
 	entgo.io/ent v0.11.10
 	github.com/99designs/gqlgen v0.17.24
+	github.com/alicebob/miniredis/v2 v2.30.0
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/hashicorp/go-multierror v1.1.1
+	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.3-0.20230316004528-e4db0d86bd48
-	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230321081402-fc9113652e48
+	github.com/tsingsun/woocoo v0.2.3-0.20230323074015-c892d6ec0098
+	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230323074015-c892d6ec0098
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230302043227-e03658a26330
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entco v0.0.0-20230313005344-e4bb1cffda31
 	go.opentelemetry.io/contrib/propagators/b3 v1.14.0
-	go.uber.org/zap v1.24.0
 	golang.org/x/sync v0.1.0
 )
 
 require (
+	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/dgryski/dgoogauth v0.0.0-20190221195224-5a805980a5f3 // indirect
 	github.com/getkin/kin-openapi v0.115.0 // indirect
-	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
@@ -39,7 +42,9 @@ require (
 	github.com/perimeterx/marshmallow v1.1.4 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.25.0 // indirect
+	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	github.com/yuin/gopher-lua v0.0.0-20220504180219-658193537a64 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.39.0 // indirect
 	go.opentelemetry.io/otel v1.13.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.13.0 // indirect
@@ -54,8 +59,8 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v0.36.0 // indirect
 	go.opentelemetry.io/otel/trace v1.13.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
+	go.uber.org/zap v1.24.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	rsc.io/qr v0.2.0 // indirect
 )
 
 require (
@@ -82,13 +87,13 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/goccy/go-json v0.10.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect

@@ -1,4 +1,33 @@
+auth:
+  stateTokenTTL: 5m
+  stateTokenSecret: "secret"
+  jwt: &jwt
+    signingMethod: "HS256"
+    signingKey: "secret"
+    tokenTTL: 1h
+    refreshTokenTTL: 7d
+
+cache:
+  redis:
+    type: standalone
+    local:
+      size: 1000
+      ttl: 100s
+
 store:
   portal:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+  test:
+    driverName: sqlite3
+    dsn: "file:portal?mode=memory&cache=shared&_fk=1"
+
+web:
+  engine:
+    contextWithFallback: true
+    routerGroups:
+      - default:
+          middlewares:
+            - jwt:
+                tokenStoreKey: redis
+                <<: *jwt
