@@ -13,6 +13,8 @@ type Server interface {
 	Auth(context.Context, *AuthRequest) (*LoginResponse, error)
 	// (POST /logout)
 	Logout(context.Context) error
+	// (POST /login/reset-password)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*LoginResponse, error)
 	// (POST /login/verify-factor)
 	VerifyFactor(context.Context, *VerifyFactorRequest) (*LoginResponse, error)
 }
@@ -27,6 +29,11 @@ func (UnimplementedServer) Auth(ctx context.Context, req *AuthRequest) (_ *Login
 
 func (UnimplementedServer) Logout(ctx context.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
+	return
+}
+
+func (UnimplementedServer) ResetPassword(ctx context.Context, req *ResetPasswordRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method ResetPassword not implemented")
 	return
 }
 

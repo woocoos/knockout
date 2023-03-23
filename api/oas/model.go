@@ -23,5 +23,7 @@ type LoginResponse struct {
 
 type User struct {
 	DisplayName string `json:"displayName,omitempty"`
+	DomainId    int    `json:"domainId,omitempty"`
+	DomainName  string `json:"domainName,omitempty"`
 	ID          int    `json:"id,omitempty"`
 }

@@ -18,7 +18,7 @@ authz:
   model: "etc/rbac_model.conf"
 
 auth:
-  stateTokenTTL: 5m
+  stateTokenTTL: 20m
   stateTokenSecret: "secret"
   jwt: &jwt
     signingMethod: "HS256"
@@ -43,6 +43,7 @@ web:
                   - "/login/auth"
                   - "/login/mfaqr.png"
                   - "/login/verifyFactor"
+                  - "/login/reset-password"
                 <<: *jwt
 
 grpc:

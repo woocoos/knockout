@@ -14,6 +14,7 @@ import (
 func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
 	router.POST("/login/auth", wrapAuth(si))
 	router.POST("/logout", wrapLogout(si))
+	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
 
@@ -43,6 +44,24 @@ func wrapLogout(si oas.Server) func(c *gin.Context) {
 			c.Error(err)
 			return
 		}
+	}
+}
+
+func wrapResetPassword(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ResetPasswordRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.Status(http.StatusBadRequest)
+			c.Error(err)
+			return
+		}
+		resp, err := si.ResetPassword(c, &req)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
 	}
 }
 

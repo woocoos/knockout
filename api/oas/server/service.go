@@ -13,6 +13,7 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
@@ -32,6 +33,7 @@ var Cnf *conf.AppConfiguration
 var (
 	mfaCachePrefix   = "mfa:"
 	tokenCachePrefix = "token:"
+	resetCachePrefix = "reset:"
 
 	CallBackUrlResetPassword = "/login/reset-password"
 	CallBackUrlMFA           = "/login/verify-factor"
@@ -60,14 +62,12 @@ func (s Service) Auth(ctx context.Context, req *oas.AuthRequest) (res *oas.Login
 		return nil, errors.New("user not allowed to login")
 	}
 	if profile.PasswordReset {
-		res = &oas.LoginResponse{
-			CallbackUrl: CallBackUrlResetPassword,
-		}
-		return
+		return s.resetPasswordPrepare(ctx, profile)
 	}
 	if profile.MfaEnabled {
 		return s.mfaPrepare(ctx, profile)
 	}
+	_ = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, pwd.UserID)
 }
 
@@ -92,6 +92,8 @@ func (s Service) VerifyFactor(ctx context.Context, req *oas.VerifyFactorRequest)
 			return nil, errors.New("invalid code")
 		}
 	}
+	// no need use transaction
+	err = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, profile.UserID)
 }
 
@@ -100,49 +102,52 @@ func (s Service) Logout(ctx context.Context) error {
 	return nil
 }
 
-func (s Service) loginToken(ctx context.Context, uid int) (*oas.LoginResponse, error) {
-	usr := s.DB.User.GetX(ctx, uid)
-	tokenTTL := Cnf.Duration("auth.jwt.tokenTTL")
-	tid, tstr, err := createToken(strconv.Itoa(uid), tokenTTL)
+func (s Service) ResetPassword(ctx context.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
+	token := req.Body.StateToken
+	id, err := parseStateToken(token)
 	if err != nil {
 		return nil, err
 	}
-	refreshTokenTTL := Cnf.Duration("auth.jwt.refreshTokenTTL")
-	_, trstr, err := createToken(strconv.Itoa(uid), refreshTokenTTL)
-	if err != nil {
+
+	var uid int
+	cacheKey := resetCachePrefix + id
+	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
 	}
-	err = s.Cache.Set(ctx, tid, uid, tokenTTL)
-	if err != nil {
-		return nil, err
-	}
-	return &oas.LoginResponse{
-		AccessToken:  tstr,
-		ExpiresIn:    int(tokenTTL.Seconds()),
-		RefreshToken: trstr,
-		User: &oas.User{
-			ID:          usr.ID,
-			DisplayName: usr.DisplayName,
-		},
-	}, nil
+
+	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
+	npwd := salt(req.Body.NewPassword, pwd.Salt)
+
+	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
+		return s.DB.Tx(ctx)
+	}, func(itx ecx.Transactor) error {
+		tx := itx.(*ent.Tx)
+		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).Exec(ctx)
+		if err != nil {
+			return err
+		}
+		res, err = s.loginToken(ctx, uid)
+		if err != nil {
+			return err
+		}
+		err = updateLastLogin(ctx, tx.UserLoginProfile, uid)
+		if err != nil {
+			return err
+		}
+		s.Cache.Del(ctx, cacheKey) // lint:ignore
+		return nil
+	})
+	return
 }
 
-func (s Service) checkPwd(ctx context.Context, req *oas.AuthRequest) (*ent.UserPassword, error) {
-	pwd, err := s.DB.UserPassword.Query().Where(
-		userpassword.HasUserWith(user.PrincipalName(req.Body.Username)),
-		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
-	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(ctx)
-	if err != nil {
-		return nil, err
+func (s Service) resetPasswordPrepare(ctx context.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+	sid := uuid.New().String()
+	res = &oas.LoginResponse{
+		CallbackUrl: CallBackUrlResetPassword,
+		StateToken:  createStateToken(sid),
 	}
-	sha := sha256.New()
-	sha.Write([]byte(req.Body.Password))
-	sha.Write([]byte(pwd.Salt))
-	given := hex.EncodeToString(sha.Sum(nil))
-	if given != pwd.Password {
-		return nil, errors.New("password not match")
-	}
-	return pwd, nil
+	err = s.Cache.Set(ctx, resetCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
+	return
 }
 
 func (s Service) mfaPrepare(ctx context.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
@@ -159,6 +164,78 @@ func (s Service) mfaPrepare(ctx context.Context, profile *ent.UserLoginProfile) 
 	}
 	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
 	return
+}
+
+func updateLastLogin(ctx context.Context, pc *ent.UserLoginProfileClient, uid int) error {
+	cip := ""
+	if gctx := ctx.Value(gin.ContextKey); gctx != nil {
+		cip = gctx.(*gin.Context).ClientIP()
+	}
+	// no mater what, update last login time and ip
+	return pc.Update().Where(userloginprofile.UserID(uid)).
+		SetLastLoginIP(cip).SetUpdatedBy(uid).SetPasswordReset(false).
+		SetLastLoginAt(time.Now()).Exec(ctx)
+}
+
+func (s Service) loginToken(ctx context.Context, uid int) (*oas.LoginResponse, error) {
+	usr := s.DB.User.GetX(ctx, uid)
+
+	orgr, err := s.GetUserRootOrg(ctx, usr.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenTTL := Cnf.Duration("auth.jwt.tokenTTL")
+	tid, tstr, err := createToken(strconv.Itoa(uid), tokenTTL)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshTokenTTL := Cnf.Duration("auth.jwt.refreshTokenTTL")
+	_, trstr, err := createToken(strconv.Itoa(uid), refreshTokenTTL)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.Cache.Set(ctx, tid, uid, tokenTTL)
+	if err != nil {
+		return nil, err
+	}
+	return &oas.LoginResponse{
+		AccessToken:  tstr,
+		ExpiresIn:    int(tokenTTL.Seconds()),
+		RefreshToken: trstr,
+		User: &oas.User{
+			ID:          usr.ID,
+			DisplayName: usr.DisplayName,
+			DomainId:    orgr.ID,
+			DomainName:  orgr.Name,
+		},
+	}, nil
+}
+
+func (s Service) checkPwd(ctx context.Context, req *oas.AuthRequest) (*ent.UserPassword, error) {
+	pwd, err := s.DB.UserPassword.Query().Where(
+		userpassword.HasUserWith(user.PrincipalName(req.Body.Username)),
+		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
+	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	given := salt(req.Body.Password, pwd.Salt)
+	if given != pwd.Password {
+		return nil, errors.New("password not match")
+	}
+	return pwd, nil
+}
+
+func salt(ori, salt string) string {
+	sha := sha256.New()
+	sha.Write([]byte(ori))
+	sha.Write([]byte(salt))
+	given := hex.EncodeToString(sha.Sum(nil))
+	return given
 }
 
 func createToken(subject string, ttl time.Duration) (tokenID, tokenStr string, err error) {
@@ -205,10 +282,7 @@ func parseStateToken(token string) (id string, err error) {
 
 // MfaQRCode generate a QR code for MFA, the code is a png image
 func (s Service) MfaQRCode(ctx context.Context, userID int) ([]byte, error) {
-	uorg, err := s.DB.OrgUser.Query().Where(orguser.UserIDEQ(userID)).
-		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
-		Select(org.FieldID, org.FieldDomain).
-		First(ctx)
+	uorg, err := s.GetUserRootOrg(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -237,4 +311,14 @@ func (s Service) MfaQRCode(ctx context.Context, userID int) ([]byte, error) {
 	}
 	err = png.Encode(&buf, img)
 	return buf.Bytes(), err
+}
+
+func (s Service) GetUserRootOrg(ctx context.Context, uid int) (uorg *ent.Org, err error) {
+	uorg, err = s.DB.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
+		First(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return uorg, nil
 }

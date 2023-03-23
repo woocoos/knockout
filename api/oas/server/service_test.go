@@ -5,18 +5,21 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/alicebob/miniredis/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/migrate"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -64,11 +67,11 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 
 	RegisterHandlersManual(s.server.Router().Engine, s.Service)
 	RegisterHandlers(&s.server.Router().RouterGroup, s.Service)
-	jwt, ok := s.server.HandlerManager().Get("jwt")
+	jwtmdl, ok := s.server.HandlerManager().Get("jwtmdl")
 	if !ok {
 		t.Fail()
 	}
-	s.Service.LogoutHandler = jwt.(*handler.JWTMiddleware).Config.LogoutHandler
+	s.Service.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
 }
 
 type loginFlowSuite struct {
@@ -100,15 +103,24 @@ func (ts *loginFlowSuite) SetupSuite() {
 	).Save(context.Background())
 	ts.Require().NoError(err)
 
-	_, err = ts.Service.DB.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
+	err = ts.Service.DB.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
 		SetPassword("9b1063951d443cfac15cc879efb4054f4f4fd599e1b1a9aee67b0301e19e40fe").SetScene(userpassword.SceneLogin).
-		Save(context.Background())
+		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	_, err = ts.Service.DB.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
+	err = ts.Service.DB.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
 		SetMfaEnabled(true).SetMfaSecret("UWZLIIUMPX53NYXB").SetCanLogin(true).
 		SetMfaStatus(typex.SimpleStatusActive).SetVerifyDevice(true).
-		Save(context.Background())
+		Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = ts.Service.DB.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
+		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).SetParentID(0).
+		Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = ts.Service.DB.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
+		SetDisplayName("admin").Exec(context.Background())
 	ts.Require().NoError(err)
 }
 
@@ -171,6 +183,31 @@ func (ts *loginFlowSuite) Test_Logout() {
 	ts.server.Router().ServeHTTP(res, req)
 
 	ts.Equal(res.Code, 200)
+}
+
+func (ts *loginFlowSuite) Test_ResetPassword() {
+	ts.Require().NoError(ts.Service.Cache.Set(context.Background(),
+		resetCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1, 0))
+	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
+		"sub": "1",
+	}))
+	//gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	//gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil)
+	//ctx = context.WithValue(ctx, gin.ContextKey, gctx)
+	res, err := ts.Service.ResetPassword(ctx, &oas.ResetPasswordRequest{
+		Body: oas.ResetPasswordRequestBody{
+			NewPassword: "234567",
+			StateToken:  adminToken,
+		},
+	})
+	ts.Require().NoError(err)
+	ts.False(ts.redisServer.Exists(resetCachePrefix + "123456"))
+	pwd := ts.Service.DB.UserPassword.Query().Where(userpassword.UserID(1),
+		userpassword.SceneEQ(userpassword.SceneLogin),
+	).OnlyX(context.Background())
+
+	ts.Equal(pwd.Password, salt("234567", "123456"))
+	ts.Equal(res.User.ID, 1)
 }
 
 func TestPwd(t *testing.T) {

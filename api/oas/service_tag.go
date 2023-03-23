@@ -10,6 +10,14 @@ type AuthRequestBody struct {
 	Username string `binding:"required" json:"username"`
 }
 
+type ResetPasswordRequest struct {
+	Body ResetPasswordRequestBody
+}
+type ResetPasswordRequestBody struct {
+	NewPassword string `binding:"required" json:"newPassword"`
+	StateToken  string `binding:"required" json:"stateToken"`
+}
+
 type VerifyFactorRequest struct {
 	Body VerifyFactorRequestBody
 }

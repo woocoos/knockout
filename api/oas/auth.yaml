@@ -79,6 +79,32 @@ paths:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /login/reset-password:
+    post:
+      description: if login profile demand change password. use this API to reset password.
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - stateToken
+                - newPassword
+      responses:
+        '200':
+          description: complete the login flow. return token info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /logout:
     post:
       description: log out a user
@@ -130,6 +156,10 @@ components:
         id:
           type: integer
         displayName:
+          type: string
+        domainId:
+          type: integer
+        domainName:
           type: string
     ErrorResponse:
       type: object
