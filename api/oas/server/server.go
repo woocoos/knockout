@@ -12,21 +12,40 @@ import (
 
 // RegisterHandlers creates http.Handler with routing matching OpenAPI spec.
 func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
-	router.POST("/login/auth", wrapAuth(si))
+	router.GET("/captcha", wrapCaptcha(si))
+	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
 
-func wrapAuth(si oas.Server) func(c *gin.Context) {
+func wrapCaptcha(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var req oas.AuthRequest
+		var req oas.CaptchaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
 			c.Status(http.StatusBadRequest)
 			c.Error(err)
 			return
 		}
-		resp, err := si.Auth(c, &req)
+		resp, err := si.Captcha(c, &req)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			c.Error(err)
+			return
+		}
+		c.Data(http.StatusOK, "image/png", resp)
+	}
+}
+
+func wrapLogin(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.LoginRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.Status(http.StatusBadRequest)
+			c.Error(err)
+			return
+		}
+		resp, err := si.Login(c, &req)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 			c.Error(err)

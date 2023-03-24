@@ -58,6 +58,9 @@ func main() {
 		Cache: cache.GetCache("redis"),
 	}
 	server.Cnf = app.AppConfiguration()
+	if err := webservice.Apply(app.AppConfiguration()); err != nil {
+		log.Fatal(err)
+	}
 	websrv := buildWebServer(app.AppConfiguration(), webservice)
 
 	app.RegisterServer(websrv, srv)

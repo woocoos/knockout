@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/status"
 	"github.com/woocoos/knockout/test"
 	"net/http/httptest"
 	"os"
@@ -59,6 +60,10 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	s.server = web.New(web.WithConfiguration(cnf.Sub("web")))
 
 	s.Service = &Service{}
+	err = s.Service.Apply(app.AppConfiguration())
+	if err != nil {
+		t.Fatal(err)
+	}
 	s.Service.DB, err = ent.Open(app.AppConfiguration().String("store.test.driverName"), app.AppConfiguration().String("store.test.dsn"), ent.Debug())
 
 	s.redisServer = miniredis.RunT(t)
@@ -67,7 +72,7 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 
 	RegisterHandlersManual(s.server.Router().Engine, s.Service)
 	RegisterHandlers(&s.server.Router().RouterGroup, s.Service)
-	jwtmdl, ok := s.server.HandlerManager().Get("jwtmdl")
+	jwtmdl, ok := s.server.HandlerManager().Get("jwt")
 	if !ok {
 		t.Fail()
 	}
@@ -125,20 +130,48 @@ func (ts *loginFlowSuite) SetupSuite() {
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
-	res, err := ts.Service.Auth(context.Background(), &oas.AuthRequest{
-		Body: oas.AuthRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
+	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
 	ts.Require().NotNil(res)
 }
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
-	res, err := ts.Service.Auth(context.Background(), &oas.AuthRequest{
-		Body: oas.AuthRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
+	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
 	ts.Contains(res.CallbackUrl, "verifyFactor")
 	ts.NotEmptyf(res.StateToken, "state token should not be empty")
+}
+
+func (ts *loginFlowSuite) Test_AuthFail() {
+	for i := 0; i < ts.Service.CaptchaTimes-1; i++ {
+		res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+			Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+		})
+		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
+		ts.Nil(res)
+	}
+	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+	})
+	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
+	ts.Equal(res.CallbackUrl, "/captcha")
+	for i := ts.Service.CaptchaTimes; i < ts.Service.LoginFailTimes; i++ {
+		res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+			Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: ""},
+		})
+		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
+		ts.Nil(res)
+	}
+	res, err = ts.Service.Login(context.Background(), &oas.LoginRequest{
+		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+	})
+	// TODO 验证码准确性测试
+	ts.Require().ErrorIs(err, status.ErrLoginFailUpperLimit)
+	ts.Nil(res)
 }
 
 func (ts *loginFlowSuite) Test_VerifyFactor() {

@@ -9,8 +9,10 @@ import (
 
 // Server is the server API for  service.
 type Server interface {
+	// (GET /captcha)
+	Captcha(context.Context, *CaptchaRequest) ([]byte, error)
 	// (POST /login/auth)
-	Auth(context.Context, *AuthRequest) (*LoginResponse, error)
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	// (POST /logout)
 	Logout(context.Context) error
 	// (POST /login/reset-password)
@@ -22,8 +24,13 @@ type Server interface {
 type UnimplementedServer struct {
 }
 
-func (UnimplementedServer) Auth(ctx context.Context, req *AuthRequest) (_ *LoginResponse, err error) {
-	err = fmt.Errorf("method Auth not implemented")
+func (UnimplementedServer) Captcha(ctx context.Context, req *CaptchaRequest) (_ []byte, err error) {
+	err = fmt.Errorf("method Captcha not implemented")
+	return
+}
+
+func (UnimplementedServer) Login(ctx context.Context, req *LoginRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method Login not implemented")
 	return
 }
 

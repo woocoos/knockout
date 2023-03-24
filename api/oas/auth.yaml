@@ -17,7 +17,7 @@ paths:
     post:
       summary: Use this API to Login
       description: Use this API to Login
-      operationId: auth
+      operationId: login
       requestBody:
         description: Login with username and password
         required: true
@@ -31,6 +31,10 @@ paths:
                   description: username or email
                 password:
                   type: string
+                  description: hashed password
+                captcha:
+                  type: string
+                  description: captcha code,if login fail 3 times, the login profile will demand captcha.
               required:
                 - username
                 - password
@@ -116,6 +120,40 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
+  /captcha:
+    get:
+      summary: Use this API to get captcha
+      description: Use this API to get captcha
+      operationId: captcha
+      parameters:
+        - name: w
+          in: query
+          description: width of captcha
+          schema:
+              type: integer
+              default: 200
+        - name: h
+          in: query
+          description: height of captcha
+          schema:
+              type: integer
+              default: 100
+      responses:
+        '200':
+          description: get captcha successful
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   responses:

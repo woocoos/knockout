@@ -2,10 +2,19 @@
 
 package oas
 
-type AuthRequest struct {
-	Body AuthRequestBody
+type CaptchaRequest struct {
+	Body CaptchaRequestBody
 }
-type AuthRequestBody struct {
+type CaptchaRequestBody struct {
+	W int `form:"w"`
+	H int `form:"h"`
+}
+
+type LoginRequest struct {
+	Body LoginRequestBody
+}
+type LoginRequestBody struct {
+	Captcha  string `json:"captcha,omitempty"`
 	Password string `binding:"required" json:"password"`
 	Username string `binding:"required" json:"username"`
 }

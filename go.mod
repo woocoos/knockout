@@ -15,7 +15,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.3-0.20230323074015-c892d6ec0098
+	github.com/tsingsun/woocoo v0.2.3-0.20230324100837-1caee88d1552
 	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230323074015-c892d6ec0098
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230302043227-e03658a26330
@@ -27,10 +27,16 @@ require (
 )
 
 require (
+	github.com/ClickHouse/ch-go v0.52.1 // indirect
+	github.com/ClickHouse/clickhouse-go/v2 v2.7.0 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/dchest/captcha v1.0.0 // indirect
 	github.com/getkin/kin-openapi v0.115.0 // indirect
+	github.com/go-faster/city v1.0.1 // indirect
+	github.com/go-faster/errors v0.6.1 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
@@ -39,8 +45,13 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
+	github.com/paulmach/orb v0.9.0 // indirect
 	github.com/perimeterx/marshmallow v1.1.4 // indirect
+	github.com/pierrec/lz4/v4 v4.1.17 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/segmentio/asm v1.2.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/urfave/cli/v2 v2.25.0 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect

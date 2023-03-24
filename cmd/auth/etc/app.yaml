@@ -18,6 +18,10 @@ authz:
   model: "etc/rbac_model.conf"
 
 auth:
+  captchaTimes: 3 # if login fail times, captcha will force show
+  captchaTTL: 1m # captcha ttl
+  loginFailTimes: 10 # login fail times will lock account
+  loginFailLockTime: 10m # login fail lock time
   stateTokenTTL: 20m
   stateTokenSecret: "secret"
   jwt: &jwt
@@ -44,6 +48,7 @@ web:
                   - "/login/mfaqr.png"
                   - "/login/verifyFactor"
                   - "/login/reset-password"
+                  - "/captcha"
                 <<: *jwt
 
 grpc:
