@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/alicebob/miniredis/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
@@ -130,7 +131,8 @@ func (ts *loginFlowSuite) SetupSuite() {
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
-	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
@@ -138,7 +140,8 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 }
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
-	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
@@ -147,26 +150,27 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 }
 
 func (ts *loginFlowSuite) Test_AuthFail() {
+	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	for i := 0; i < ts.Service.CaptchaTimes-1; i++ {
-		res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+		res, err := ts.Service.Login(ctx, &oas.LoginRequest{
 			Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 		})
 		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 		ts.Nil(res)
 	}
-	res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 	})
 	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 	ts.Equal(res.CallbackUrl, "/captcha")
 	for i := ts.Service.CaptchaTimes; i < ts.Service.LoginFailTimes; i++ {
-		res, err := ts.Service.Login(context.Background(), &oas.LoginRequest{
+		res, err := ts.Service.Login(ctx, &oas.LoginRequest{
 			Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: ""},
 		})
 		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
-	res, err = ts.Service.Login(context.Background(), &oas.LoginRequest{
+	res, err = ts.Service.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 	})
 	// TODO 验证码准确性测试
@@ -175,13 +179,14 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 }
 
 func (ts *loginFlowSuite) Test_VerifyFactor() {
+	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
 	err := ts.Service.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1, 0)
 	ts.Require().NoError(err)
 
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
 	time.Sleep(1 * time.Second)
-	res, err := ts.Service.VerifyFactor(context.Background(), &oas.VerifyFactorRequest{
+	res, err := ts.Service.VerifyFactor(ctx, &oas.VerifyFactorRequest{
 		Body: oas.VerifyFactorRequestBody{
 			OtpToken:   pwd,
 			StateToken: adminToken,
@@ -224,10 +229,10 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
 	}))
-	//gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	//gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil)
+	gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil).WithContext(ctx)
 	//ctx = context.WithValue(ctx, gin.ContextKey, gctx)
-	res, err := ts.Service.ResetPassword(ctx, &oas.ResetPasswordRequest{
+	res, err := ts.Service.ResetPassword(gctx, &oas.ResetPasswordRequest{
 		Body: oas.ResetPasswordRequestBody{
 			NewPassword: "234567",
 			StateToken:  adminToken,

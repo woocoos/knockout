@@ -25,6 +25,7 @@ import (
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/status"
 	"image/png"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -87,7 +88,7 @@ func (s *Service) Apply(cnf *conf.AppConfiguration) error {
 	return nil
 }
 
-func (s *Service) Captcha(ctx context.Context, req *oas.CaptchaRequest) (res []byte, err error) {
+func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (res []byte, err error) {
 	captchaId := captcha.NewLen(s.CaptchaLength)
 	if req.Body.W == 0 {
 		req.Body.W = captchaWidth
@@ -101,18 +102,21 @@ func (s *Service) Captcha(ctx context.Context, req *oas.CaptchaRequest) (res []b
 }
 
 // Login login
-func (s *Service) Login(ctx context.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
+func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
 	failCount := 0
 	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
 	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.Captcha, req.Body.Captcha) {
+		ctx.Status(http.StatusBadRequest)
 		return nil, status.ErrCaptchaNotMatch
 	}
 	if failCount >= s.LoginFailTimes {
+		ctx.Status(http.StatusForbidden)
 		return nil, status.ErrLoginFailUpperLimit
 	}
 	pwd, err := s.checkPwd(ctx, req)
 	if err != nil {
 		if errors.Is(err, status.ErrMismatchPWD) {
+			ctx.Status(http.StatusBadRequest)
 			var errL error
 			failCount, errL = s.logFailHandler(ctx, req.Body.Username, false)
 			if errL != nil {
@@ -149,7 +153,7 @@ func (s *Service) Login(ctx context.Context, req *oas.LoginRequest) (res *oas.Lo
 	return s.loginToken(ctx, pwd.UserID)
 }
 
-func (s *Service) VerifyFactor(ctx context.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
+func (s *Service) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token)
 	if err != nil {
@@ -175,12 +179,12 @@ func (s *Service) VerifyFactor(ctx context.Context, req *oas.VerifyFactorRequest
 	return s.loginToken(ctx, profile.UserID)
 }
 
-func (s *Service) Logout(ctx context.Context) error {
-	s.LogoutHandler(ctx.Value(gin.ContextKey).(*gin.Context))
+func (s *Service) Logout(ctx *gin.Context) error {
+	s.LogoutHandler(ctx)
 	return nil
 }
 
-func (s *Service) ResetPassword(ctx context.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
+func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token)
 	if err != nil {
@@ -218,7 +222,7 @@ func (s *Service) ResetPassword(ctx context.Context, req *oas.ResetPasswordReque
 	return
 }
 
-func (s *Service) resetPasswordPrepare(ctx context.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *Service) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
 	sid := uuid.New().String()
 	res = &oas.LoginResponse{
 		CallbackUrl: CallBackUrlResetPassword,
@@ -228,7 +232,7 @@ func (s *Service) resetPasswordPrepare(ctx context.Context, profile *ent.UserLog
 	return
 }
 
-func (s *Service) mfaPrepare(ctx context.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *Service) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
 	if !profile.MfaEnabled {
 		return nil, nil
 	}
@@ -244,18 +248,15 @@ func (s *Service) mfaPrepare(ctx context.Context, profile *ent.UserLoginProfile)
 	return
 }
 
-func updateLastLogin(ctx context.Context, pc *ent.UserLoginProfileClient, uid int) error {
-	cip := ""
-	if gctx := ctx.Value(gin.ContextKey); gctx != nil {
-		cip = gctx.(*gin.Context).ClientIP()
-	}
+func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) error {
+	cip := ctx.ClientIP()
 	// no mater what, update last login time and ip
 	return pc.Update().Where(userloginprofile.UserID(uid)).
 		SetLastLoginIP(cip).SetUpdatedBy(uid).SetPasswordReset(false).
 		SetLastLoginAt(time.Now()).Exec(ctx)
 }
 
-func (s *Service) loginToken(ctx context.Context, uid int) (*oas.LoginResponse, error) {
+func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
 	usr := s.DB.User.GetX(ctx, uid)
 
 	orgr, err := s.GetUserRootOrg(ctx, usr.ID)
@@ -292,7 +293,7 @@ func (s *Service) loginToken(ctx context.Context, uid int) (*oas.LoginResponse, 
 	}, nil
 }
 
-func (s *Service) checkPwd(ctx context.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
+func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
 	pwd, err := s.DB.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.PrincipalName(req.Body.Username)),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
@@ -359,7 +360,7 @@ func parseStateToken(token string) (id string, err error) {
 }
 
 // MfaQRCode generate a QR code for MFA, the code is a png image
-func (s *Service) MfaQRCode(ctx context.Context, userID int) ([]byte, error) {
+func (s *Service) MfaQRCode(ctx *gin.Context, userID int) ([]byte, error) {
 	uorg, err := s.GetUserRootOrg(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -391,7 +392,7 @@ func (s *Service) MfaQRCode(ctx context.Context, userID int) ([]byte, error) {
 	return buf.Bytes(), err
 }
 
-func (s *Service) GetUserRootOrg(ctx context.Context, uid int) (uorg *ent.Org, err error) {
+func (s *Service) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
 	uorg, err = s.DB.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
 		First(ctx)
@@ -401,7 +402,7 @@ func (s *Service) GetUserRootOrg(ctx context.Context, uid int) (uorg *ent.Org, e
 	return uorg, nil
 }
 
-func (s *Service) logFailHandler(ctx context.Context, uid string, clear bool) (int, error) {
+func (s *Service) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
 	key := loginFailCachePrefix + uid
 	if clear {
 		return 0, s.Cache.Del(ctx, key)

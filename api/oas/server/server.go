@@ -23,13 +23,11 @@ func wrapCaptcha(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.CaptchaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.Status(http.StatusBadRequest)
-			c.Error(err)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.Captcha(c, &req)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			c.Error(err)
 			return
 		}
@@ -41,13 +39,11 @@ func wrapLogin(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.LoginRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.Status(http.StatusBadRequest)
-			c.Error(err)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.Login(c, &req)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			c.Error(err)
 			return
 		}
@@ -59,7 +55,6 @@ func wrapLogout(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		err := si.Logout(c)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			c.Error(err)
 			return
 		}
@@ -70,13 +65,11 @@ func wrapResetPassword(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ResetPasswordRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.Status(http.StatusBadRequest)
-			c.Error(err)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ResetPassword(c, &req)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			c.Error(err)
 			return
 		}
@@ -88,13 +81,11 @@ func wrapVerifyFactor(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.VerifyFactorRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.Status(http.StatusBadRequest)
-			c.Error(err)
+			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.VerifyFactor(c, &req)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
 			c.Error(err)
 			return
 		}
