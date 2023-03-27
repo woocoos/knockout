@@ -18,7 +18,6 @@ import (
 
 // CreateAppInput represents a mutation input for creating apps.
 type CreateAppInput struct {
-	ID                   *int
 	Name                 string
 	Code                 string
 	Kind                 app.Kind
@@ -275,7 +274,6 @@ func (c *AppUpdateOne) SetInput(i UpdateAppInput) *AppUpdateOne {
 
 // CreateAppActionInput represents a mutation input for creating appactions.
 type CreateAppActionInput struct {
-	ID          *int
 	Name        string
 	Kind        appaction.Kind
 	Method      appaction.Method
@@ -382,7 +380,6 @@ func (c *AppActionUpdateOne) SetInput(i UpdateAppActionInput) *AppActionUpdateOn
 
 // CreateAppMenuInput represents a mutation input for creating appmenus.
 type CreateAppMenuInput struct {
-	ID       *int
 	ParentID int
 	Kind     appmenu.Kind
 	Name     *string
@@ -475,7 +472,6 @@ func (c *AppMenuUpdateOne) SetInput(i UpdateAppMenuInput) *AppMenuUpdateOne {
 
 // CreateAppPolicyInput represents a mutation input for creating apppolicies.
 type CreateAppPolicyInput struct {
-	ID        *int
 	Name      string
 	Comments  string
 	Rules     []types.PolicyRule
@@ -586,7 +582,6 @@ func (c *AppPolicyUpdateOne) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdateOn
 
 // CreateAppResInput represents a mutation input for creating appresslice.
 type CreateAppResInput struct {
-	ID         *int
 	Name       string
 	TypeName   string
 	ArnPattern string
@@ -649,7 +644,6 @@ func (c *AppResUpdateOne) SetInput(i UpdateAppResInput) *AppResUpdateOne {
 
 // CreateAppRoleInput represents a mutation input for creating approles.
 type CreateAppRoleInput struct {
-	ID        *int
 	Name      string
 	Comments  *string
 	AutoGrant *bool
@@ -744,7 +738,6 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
-	ID               *int
 	Domain           *string
 	Name             string
 	Profile          *string
@@ -963,7 +956,6 @@ func (c *OrgUpdateOne) SetInput(i UpdateOrgInput) *OrgUpdateOne {
 
 // CreateOrgPolicyInput represents a mutation input for creating orgpolicies.
 type CreateOrgPolicyInput struct {
-	ID          *int
 	AppPolicyID *int
 	Name        string
 	Comments    string
@@ -1044,7 +1036,6 @@ func (c *OrgPolicyUpdateOne) SetInput(i UpdateOrgPolicyInput) *OrgPolicyUpdateOn
 
 // CreatePermissionInput represents a mutation input for creating permissions.
 type CreatePermissionInput struct {
-	ID            *int
 	PrincipalKind permission.PrincipalKind
 	RoleID        *int
 	OrgPolicyID   int
@@ -1157,7 +1148,6 @@ func (c *PermissionUpdateOne) SetInput(i UpdatePermissionInput) *PermissionUpdat
 
 // CreateUserInput represents a mutation input for creating users.
 type CreateUserInput struct {
-	ID             *int
 	PrincipalName  string
 	DisplayName    string
 	Email          *string
@@ -1320,7 +1310,6 @@ func (c *UserUpdateOne) SetInput(i UpdateUserInput) *UserUpdateOne {
 
 // CreateUserIdentityInput represents a mutation input for creating useridentities.
 type CreateUserIdentityInput struct {
-	ID         *int
 	Kind       useridentity.Kind
 	Code       *string
 	CodeExtend *string
@@ -1401,7 +1390,6 @@ func (c *UserIdentityUpdateOne) SetInput(i UpdateUserIdentityInput) *UserIdentit
 
 // CreateUserLoginProfileInput represents a mutation input for creating userloginprofiles.
 type CreateUserLoginProfileInput struct {
-	ID            *int
 	CanLogin      *bool
 	SetKind       userloginprofile.SetKind
 	PasswordReset *bool
@@ -1512,7 +1500,6 @@ func (c *UserLoginProfileUpdateOne) SetInput(i UpdateUserLoginProfileInput) *Use
 
 // CreateUserPasswordInput represents a mutation input for creating userpasswords.
 type CreateUserPasswordInput struct {
-	ID       *int
 	Scene    userpassword.Scene
 	Password *string
 	Status   *typex.SimpleStatus

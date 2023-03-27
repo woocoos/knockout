@@ -215,7 +215,6 @@ type ComplexityRoot struct {
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, policyID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangeAppMenuTree           func(childComplexity int, sourceID int, targetID int, targetLocation *string) int
-		ChangeOrganizationTree      func(childComplexity int, sourceID int, targetID int, action *string) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, input []*ent.CreateAppActionInput) int
@@ -223,18 +222,19 @@ type ComplexityRoot struct {
 		CreateAppPolicies           func(childComplexity int, input []*ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, input ent.CreateAppRoleInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
-		CreateOrganizationAccount   func(childComplexity int, input model.CreateOrganizationAccountInput) int
+		CreateOrganizationAccount   func(childComplexity int, orgID int, input ent.CreateUserInput) int
 		CreateOrganizationUser      func(childComplexity int, orgID int, input ent.CreateUserInput) int
 		CreateUserMfa               func(childComplexity int, userID int) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
-		DeleteUser                  func(childComplexity int, id int) int
-		DeleteUserFormOrganization  func(childComplexity int, id int) int
+		DeleteOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
 		DeleteUserMfa               func(childComplexity int, userID int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		EnableUserMfa               func(childComplexity int, userID int, enable *bool) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
+		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
 		RevokeOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, policyID int) int
@@ -1369,18 +1369,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ChangeAppMenuTree(childComplexity, args["sourceId"].(int), args["targetId"].(int), args["targetLocation"].(*string)), true
 
-	case "Mutation.changeOrganizationTree":
-		if e.complexity.Mutation.ChangeOrganizationTree == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_changeOrganizationTree_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ChangeOrganizationTree(childComplexity, args["sourceId"].(int), args["targetId"].(int), args["action"].(*string)), true
-
 	case "Mutation.changePassword":
 		if e.complexity.Mutation.ChangePassword == nil {
 			break
@@ -1475,7 +1463,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateOrganizationAccount(childComplexity, args["input"].(model.CreateOrganizationAccountInput)), true
+		return e.complexity.Mutation.CreateOrganizationAccount(childComplexity, args["orgID"].(int), args["input"].(ent.CreateUserInput)), true
 
 	case "Mutation.createOrganizationUser":
 		if e.complexity.Mutation.CreateOrganizationUser == nil {
@@ -1525,29 +1513,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteOrganization(childComplexity, args["orgID"].(int)), true
 
-	case "Mutation.deleteUser":
-		if e.complexity.Mutation.DeleteUser == nil {
+	case "Mutation.deleteOrganizationUser":
+		if e.complexity.Mutation.DeleteOrganizationUser == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_deleteOrganizationUser_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(int)), true
-
-	case "Mutation.deleteUserFormOrganization":
-		if e.complexity.Mutation.DeleteUserFormOrganization == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deleteUserFormOrganization_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DeleteUserFormOrganization(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeleteOrganizationUser(childComplexity, args["orgID"].(int), args["userId"].(int)), true
 
 	case "Mutation.deleteUserIdentity":
 		if e.complexity.Mutation.DeleteUserIdentity == nil {
@@ -1608,6 +1584,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Grant(childComplexity, args["input"].(ent.CreatePermissionInput)), true
+
+	case "Mutation.moveOrganization":
+		if e.complexity.Mutation.MoveOrganization == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveOrganization_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveOrganization(childComplexity, args["sourceId"].(int), args["targetId"].(int), args["action"].(model.TreeAction)), true
+
+	case "Mutation.removeOrganizationUser":
+		if e.complexity.Mutation.RemoveOrganizationUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeOrganizationUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveOrganizationUser(childComplexity, args["orgID"].(int), args["userId"].(int)), true
 
 	case "Mutation.resetUserPasswordByEmail":
 		if e.complexity.Mutation.ResetUserPasswordByEmail == nil {
@@ -2885,7 +2885,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateOrgInput,
 		ec.unmarshalInputCreateOrgPolicyInput,
-		ec.unmarshalInputCreateOrganizationAccountInput,
 		ec.unmarshalInputCreatePermissionInput,
 		ec.unmarshalInputCreateUserIdentityInput,
 		ec.unmarshalInputCreateUserInput,
@@ -4378,7 +4377,7 @@ Input was generated by ent.
 input CreateUserLoginProfileInput {
   """是否允许使用密码登陆控制台"""
   canLogin: Boolean
-  """设置密码方式"""
+  """设置密码:keep-保持不变,customer-客户自行设置,auto-自动生成"""
   setKind: UserLoginProfileSetKind!
   """下次登陆时需要重置密码"""
   passwordReset: Boolean
@@ -4386,7 +4385,7 @@ input CreateUserLoginProfileInput {
   verifyDevice: Boolean!
   """是否开启多因素验证"""
   mfaEnabled: Boolean
-  """多因素验证密钥"""
+  """多因素验证密钥BASE32"""
   mfaSecret: String
   """多因素验证状态"""
   mfaStatus: UserLoginProfileSimpleStatus
@@ -4432,7 +4431,7 @@ type Org implements Node {
   updatedBy: Int
   updatedAt: Time
   deletedAt: Time
-  """管理账户ID"""
+  """管理账户ID,如果设置则该组织将升级为根组织"""
   ownerID: ID
   """父级ID,0为根组织."""
   parentID: ID!
@@ -5689,7 +5688,7 @@ input UpdateUserLoginProfileInput {
   """是否允许使用密码登陆控制台"""
   canLogin: Boolean
   clearCanLogin: Boolean
-  """设置密码方式"""
+  """设置密码:keep-保持不变,customer-客户自行设置,auto-自动生成"""
   setKind: UserLoginProfileSetKind
   """下次登陆时需要重置密码"""
   passwordReset: Boolean
@@ -5699,7 +5698,7 @@ input UpdateUserLoginProfileInput {
   """是否开启多因素验证"""
   mfaEnabled: Boolean
   clearMfaEnabled: Boolean
-  """多因素验证密钥"""
+  """多因素验证密钥BASE32"""
   mfaSecret: String
   clearMfaSecret: Boolean
   """多因素验证状态"""
@@ -6168,7 +6167,7 @@ type UserLoginProfile implements Node {
   lastLoginAt: Time
   """是否允许使用密码登陆控制台"""
   canLogin: Boolean
-  """设置密码方式"""
+  """设置密码:keep-保持不变,customer-客户自行设置,auto-自动生成"""
   setKind: UserLoginProfileSetKind!
   """下次登陆时需要重置密码"""
   passwordReset: Boolean
@@ -6646,36 +6645,36 @@ input GrantInput {
     updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
     """删除组织目录"""
     deleteOrganization(orgID:ID!): Boolean!
-    """组织树位置调整，action: child, up, down"""
-    changeOrganizationTree(sourceId:ID!,targetId:ID!,action:String): Boolean
+    """组织位置调整，action: child, up, down"""
+    moveOrganization(sourceId:ID!,targetId:ID!,action:TreeAction!): Boolean!
     """创建组织成员(管理账户)"""
-    createOrganizationAccount(input: CreateOrganizationAccountInput!): User
+    createOrganizationAccount(orgID:ID!,input: CreateUserInput!): User
     """创建组织用户"""
     createOrganizationUser(orgID:ID!,input: CreateUserInput!): User
     """组织添加用户"""
     addOrganizationUser(orgID:ID!,userId:ID!,displayName:String): User
     """从组织移除用户"""
-    deleteUserFormOrganization(id:ID!): Boolean
-    """删除用户(真删除，需无组织关联)"""
-    deleteUser(id:ID!): Boolean
+    removeOrganizationUser(orgID:ID!,userId:ID!): Boolean!
+    """删除用户"""
+    deleteOrganizationUser(orgID:ID!,userId:ID!): Boolean!
     """更新用户"""
     updateUser(userID:ID!,input: UpdateUserInput!): User
     """绑定用户凭证(管理端使用)"""
     bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
     """删除用户凭证"""
-    deleteUserIdentity(id:ID!): Boolean
+    deleteUserIdentity(id:ID!): Boolean!
     """用户修改自己的登录密码"""
-    changePassword(oldPwd:String!,newPwd:String!): Boolean
+    changePassword(oldPwd:String!,newPwd:String!): Boolean!
     """重置用户密码并发送邮件"""
-    resetUserPasswordByEmail(userId:ID!): Boolean
+    resetUserPasswordByEmail(userId:ID!): Boolean!
     """创建MFA"""
-    createUserMFA(userID:ID!): Boolean
+    createUserMFA(userID:ID!): Boolean!
     """是否启用MFA"""
-    enableUserMFA(userID:ID!,enable:Boolean): Boolean
+    enableUserMFA(userID:ID!,enable:Boolean): Boolean!
     """删除MFA"""
-    deleteUserMFA(userID:ID!): Boolean
+    deleteUserMFA(userID:ID!): Boolean!
     """邮件发送MFA"""
-    sendUserMFAByEmail(userID:ID!): Boolean
+    sendUserMFAByEmail(userID:ID!): Boolean!
     """创建应用"""
     createApp(input: CreateAppInput!): App
     """更新应用"""
@@ -6714,24 +6713,21 @@ input EnableDirectoryInput {
     name: String!
 }
 
-input CreateOrganizationAccountInput {
-    """账号名称,组织内不可重复"""
-    displayName: String!
-    """账号登录名(含默认域名)"""
-    principalName: String!
-    """邮箱"""
-    email: String!
-    """所属组织ID"""
-    orgId: ID!
-}
-
 extend input CreateUserInput {
-    id: ID
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
 }
-`, BuiltIn: false},
+
+"""树操作类型"""
+enum TreeAction {
+    """作为子节点"""
+    child
+    """上移"""
+    up
+    """下移"""
+    down
+}`, BuiltIn: false},
 	{Name: "../subscription.graphql", Input: `type Subscription {
     message: Message
 }

@@ -37,8 +37,8 @@ func (UserPassword) Fields() []ent.Field {
 		field.Enum("scene").Values("login").Comment("场景: login 普通登陆"),
 		field.String("password").Optional().Comment("密码").Sensitive(),
 		field.String("salt").MaxLen(45).Comment("盐").Sensitive().Annotations(entgql.Skip(entgql.SkipAll)),
-		field.Enum("status").GoType(typex.SimpleStatus("")).Optional(),
-		field.String("memo").Optional().Annotations(entgql.Skip(entgql.SkipWhereInput)),
+		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().
+			Comment("生效状态,默认生效"),
 	}
 }
 

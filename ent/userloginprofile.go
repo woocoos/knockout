@@ -34,7 +34,7 @@ type UserLoginProfile struct {
 	LastLoginAt time.Time `json:"last_login_at,omitempty"`
 	// 是否允许使用密码登陆控制台
 	CanLogin bool `json:"can_login,omitempty"`
-	// 设置密码方式
+	// 设置密码:keep-保持不变,customer-客户自行设置,auto-自动生成
 	SetKind userloginprofile.SetKind `json:"set_kind,omitempty"`
 	// 下次登陆时需要重置密码
 	PasswordReset bool `json:"password_reset,omitempty"`
@@ -42,7 +42,7 @@ type UserLoginProfile struct {
 	VerifyDevice bool `json:"verify_device,omitempty"`
 	// 是否开启多因素验证
 	MfaEnabled bool `json:"mfa_enabled,omitempty"`
-	// 多因素验证密钥
+	// 多因素验证密钥BASE32
 	MfaSecret string `json:"-"`
 	// 多因素验证状态
 	MfaStatus typex.SimpleStatus `json:"mfa_status,omitempty"`

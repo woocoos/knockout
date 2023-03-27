@@ -20054,7 +20054,7 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"principalName", "displayName", "email", "mobile", "status", "comments", "identityIDs", "loginProfileID", "passwordIDs", "deviceIDs", "permissionIDs", "id", "loginProfile", "password"}
+	fieldsInOrder := [...]string{"principalName", "displayName", "email", "mobile", "status", "comments", "identityIDs", "loginProfileID", "passwordIDs", "deviceIDs", "permissionIDs", "loginProfile", "password"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20146,14 +20146,6 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionIDs"))
 			it.PermissionIDs, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}

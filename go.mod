@@ -16,13 +16,13 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.3-0.20230324162356-140b16547db7
+	github.com/tsingsun/woocoo v0.2.4-0.20230327064351-dfe8c14b3ab5
 	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230324130408-63ac4170d796
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230302043227-e03658a26330
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230302043227-e03658a26330
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230313005344-e4bb1cffda31
+	github.com/woocoos/entco v0.0.0-20230322102454-b3d956f5f48f
 	go.opentelemetry.io/contrib/propagators/b3 v1.14.0
 	golang.org/x/sync v0.1.0
 )
@@ -73,7 +73,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.8.0 // indirect
-	github.com/casbin/casbin/v2 v2.64.0 // indirect
+	github.com/casbin/casbin/v2 v2.66.0 // indirect
 	github.com/casbin/redis-watcher/v2 v2.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect

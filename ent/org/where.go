@@ -411,16 +411,6 @@ func KindNotIn(vs ...Kind) predicate.Org {
 	return predicate.Org(sql.FieldNotIn(FieldKind, vs...))
 }
 
-// KindIsNil applies the IsNil predicate on the "kind" field.
-func KindIsNil() predicate.Org {
-	return predicate.Org(sql.FieldIsNull(FieldKind))
-}
-
-// KindNotNil applies the NotNil predicate on the "kind" field.
-func KindNotNil() predicate.Org {
-	return predicate.Org(sql.FieldNotNull(FieldKind))
-}
-
 // ParentIDEQ applies the EQ predicate on the "parent_id" field.
 func ParentIDEQ(v int) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldParentID, v))

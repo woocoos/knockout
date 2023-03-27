@@ -136,12 +136,6 @@ func (ou *OrgUpdate) SetNillableKind(o *org.Kind) *OrgUpdate {
 	return ou
 }
 
-// ClearKind clears the value of the "kind" field.
-func (ou *OrgUpdate) ClearKind() *OrgUpdate {
-	ou.mutation.ClearKind()
-	return ou
-}
-
 // SetParentID sets the "parent_id" field.
 func (ou *OrgUpdate) SetParentID(i int) *OrgUpdate {
 	ou.mutation.SetParentID(i)
@@ -714,9 +708,6 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ou.mutation.Kind(); ok {
 		_spec.SetField(org.FieldKind, field.TypeEnum, value)
 	}
-	if ou.mutation.KindCleared() {
-		_spec.ClearField(org.FieldKind, field.TypeEnum)
-	}
 	if value, ok := ou.mutation.Domain(); ok {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 	}
@@ -1286,12 +1277,6 @@ func (ouo *OrgUpdateOne) SetNillableKind(o *org.Kind) *OrgUpdateOne {
 	if o != nil {
 		ouo.SetKind(*o)
 	}
-	return ouo
-}
-
-// ClearKind clears the value of the "kind" field.
-func (ouo *OrgUpdateOne) ClearKind() *OrgUpdateOne {
-	ouo.mutation.ClearKind()
 	return ouo
 }
 
@@ -1896,9 +1881,6 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	}
 	if value, ok := ouo.mutation.Kind(); ok {
 		_spec.SetField(org.FieldKind, field.TypeEnum, value)
-	}
-	if ouo.mutation.KindCleared() {
-		_spec.ClearField(org.FieldKind, field.TypeEnum)
 	}
 	if value, ok := ouo.mutation.Domain(); ok {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)

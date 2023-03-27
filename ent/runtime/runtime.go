@@ -197,6 +197,7 @@ func init() {
 	org.Hooks[2] = orgHooks[0]
 	org.Hooks[3] = orgHooks[1]
 	org.Hooks[4] = orgHooks[2]
+	org.Hooks[5] = orgHooks[3]
 	orgMixinInters2 := orgMixin[2].Interceptors()
 	org.Interceptors[0] = orgMixinInters2[0]
 	orgMixinFields0 := orgMixin[0].Fields()

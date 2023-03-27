@@ -7,36 +7,36 @@ type Mutation {
     updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
     """删除组织目录"""
     deleteOrganization(orgID:ID!): Boolean!
-    """组织树位置调整，action: child, up, down"""
-    changeOrganizationTree(sourceId:ID!,targetId:ID!,action:String): Boolean
+    """组织位置调整，action: child, up, down"""
+    moveOrganization(sourceId:ID!,targetId:ID!,action:TreeAction!): Boolean!
     """创建组织成员(管理账户)"""
-    createOrganizationAccount(input: CreateOrganizationAccountInput!): User
+    createOrganizationAccount(orgID:ID!,input: CreateUserInput!): User
     """创建组织用户"""
     createOrganizationUser(orgID:ID!,input: CreateUserInput!): User
     """组织添加用户"""
     addOrganizationUser(orgID:ID!,userId:ID!,displayName:String): User
     """从组织移除用户"""
-    deleteUserFormOrganization(id:ID!): Boolean
-    """删除用户(真删除，需无组织关联)"""
-    deleteUser(id:ID!): Boolean
+    removeOrganizationUser(orgID:ID!,userId:ID!): Boolean!
+    """删除用户"""
+    deleteOrganizationUser(orgID:ID!,userId:ID!): Boolean!
     """更新用户"""
     updateUser(userID:ID!,input: UpdateUserInput!): User
     """绑定用户凭证(管理端使用)"""
     bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
     """删除用户凭证"""
-    deleteUserIdentity(id:ID!): Boolean
+    deleteUserIdentity(id:ID!): Boolean!
     """用户修改自己的登录密码"""
-    changePassword(oldPwd:String!,newPwd:String!): Boolean
+    changePassword(oldPwd:String!,newPwd:String!): Boolean!
     """重置用户密码并发送邮件"""
-    resetUserPasswordByEmail(userId:ID!): Boolean
+    resetUserPasswordByEmail(userId:ID!): Boolean!
     """创建MFA"""
-    createUserMFA(userID:ID!): Boolean
+    createUserMFA(userID:ID!): Boolean!
     """是否启用MFA"""
-    enableUserMFA(userID:ID!,enable:Boolean): Boolean
+    enableUserMFA(userID:ID!,enable:Boolean): Boolean!
     """删除MFA"""
-    deleteUserMFA(userID:ID!): Boolean
+    deleteUserMFA(userID:ID!): Boolean!
     """邮件发送MFA"""
-    sendUserMFAByEmail(userID:ID!): Boolean
+    sendUserMFAByEmail(userID:ID!): Boolean!
     """创建应用"""
     createApp(input: CreateAppInput!): App
     """更新应用"""
@@ -75,20 +75,18 @@ input EnableDirectoryInput {
     name: String!
 }
 
-input CreateOrganizationAccountInput {
-    """账号名称,组织内不可重复"""
-    displayName: String!
-    """账号登录名(含默认域名)"""
-    principalName: String!
-    """邮箱"""
-    email: String!
-    """所属组织ID"""
-    orgId: ID!
-}
-
 extend input CreateUserInput {
-    id: ID
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
+}
+
+"""树操作类型"""
+enum TreeAction {
+    """作为子节点"""
+    child
+    """上移"""
+    up
+    """下移"""
+    down
 }

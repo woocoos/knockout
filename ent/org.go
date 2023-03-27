@@ -28,7 +28,7 @@ type Org struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
-	// 管理账户ID
+	// 管理账户ID,如果设置则该组织将升级为根组织
 	OwnerID int `json:"owner_id,omitempty"`
 	// 分类: 根节点,组织节点
 	Kind org.Kind `json:"kind,omitempty"`

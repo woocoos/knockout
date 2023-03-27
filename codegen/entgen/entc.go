@@ -19,7 +19,6 @@ func main() {
 		entgql.WithConfigPath("codegen/gqlgen/gqlgen.yaml"),
 		entgql.WithSchemaPath("api/graphql/ent.graphql"),
 		entgql.WithSchemaHook(genx.ChangeRelayNodeType()),
-		genx.ReplaceGqlMutationInput(),
 	)
 	if err != nil {
 		log.Fatalf("creating entgql extension: %v", err)

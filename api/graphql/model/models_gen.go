@@ -11,17 +11,6 @@ import (
 	"entgo.io/contrib/entgql"
 )
 
-type CreateOrganizationAccountInput struct {
-	// 账号名称,组织内不可重复
-	DisplayName string `json:"displayName"`
-	// 账号登录名(含默认域名)
-	PrincipalName string `json:"principalName"`
-	// 邮箱
-	Email string `json:"email"`
-	// 所属组织ID
-	OrgID int `json:"orgId"`
-}
-
 type EnableDirectoryInput struct {
 	// 域名
 	Domain string `json:"domain"`
@@ -140,5 +129,52 @@ func (e *OrgUserOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e OrgUserOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// 树操作类型
+type TreeAction string
+
+const (
+	// 作为子节点
+	TreeActionChild TreeAction = "child"
+	// 上移
+	TreeActionUp TreeAction = "up"
+	// 下移
+	TreeActionDown TreeAction = "down"
+)
+
+var AllTreeAction = []TreeAction{
+	TreeActionChild,
+	TreeActionUp,
+	TreeActionDown,
+}
+
+func (e TreeAction) IsValid() bool {
+	switch e {
+	case TreeActionChild, TreeActionUp, TreeActionDown:
+		return true
+	}
+	return false
+}
+
+func (e TreeAction) String() string {
+	return string(e)
+}
+
+func (e *TreeAction) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TreeAction(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TreeAction", str)
+	}
+	return nil
+}
+
+func (e TreeAction) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

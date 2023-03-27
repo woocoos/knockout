@@ -183,7 +183,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks        [5]ent.Hook
+	Hooks        [6]ent.Hook
 	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
@@ -206,6 +206,9 @@ var (
 // Kind defines the type for the "kind" enum field.
 type Kind string
 
+// KindOrganization is the default value of the Kind enum.
+const DefaultKind = KindOrganization
+
 // Kind values.
 const (
 	KindRoot         Kind = "root"
@@ -225,6 +228,8 @@ func KindValidator(k Kind) error {
 		return fmt.Errorf("org: invalid enum value for kind field: %q", k)
 	}
 }
+
+const DefaultStatus typex.SimpleStatus = "active"
 
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s typex.SimpleStatus) error {

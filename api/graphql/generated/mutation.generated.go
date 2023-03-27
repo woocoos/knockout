@@ -21,21 +21,21 @@ type MutationResolver interface {
 	CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error)
 	UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error)
 	DeleteOrganization(ctx context.Context, orgID int) (bool, error)
-	ChangeOrganizationTree(ctx context.Context, sourceID int, targetID int, action *string) (*bool, error)
-	CreateOrganizationAccount(ctx context.Context, input model.CreateOrganizationAccountInput) (*ent.User, error)
+	MoveOrganization(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
+	CreateOrganizationAccount(ctx context.Context, orgID int, input ent.CreateUserInput) (*ent.User, error)
 	CreateOrganizationUser(ctx context.Context, orgID int, input ent.CreateUserInput) (*ent.User, error)
 	AddOrganizationUser(ctx context.Context, orgID int, userID int, displayName *string) (*ent.User, error)
-	DeleteUserFormOrganization(ctx context.Context, id int) (*bool, error)
-	DeleteUser(ctx context.Context, id int) (*bool, error)
+	RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
+	DeleteOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
 	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error)
 	BindUserIdentity(ctx context.Context, input ent.CreateUserIdentityInput) (*ent.UserIdentity, error)
-	DeleteUserIdentity(ctx context.Context, id int) (*bool, error)
-	ChangePassword(ctx context.Context, oldPwd string, newPwd string) (*bool, error)
-	ResetUserPasswordByEmail(ctx context.Context, userID int) (*bool, error)
-	CreateUserMfa(ctx context.Context, userID int) (*bool, error)
-	EnableUserMfa(ctx context.Context, userID int, enable *bool) (*bool, error)
-	DeleteUserMfa(ctx context.Context, userID int) (*bool, error)
-	SendUserMFAByEmail(ctx context.Context, userID int) (*bool, error)
+	DeleteUserIdentity(ctx context.Context, id int) (bool, error)
+	ChangePassword(ctx context.Context, oldPwd string, newPwd string) (bool, error)
+	ResetUserPasswordByEmail(ctx context.Context, userID int) (bool, error)
+	CreateUserMfa(ctx context.Context, userID int) (bool, error)
+	EnableUserMfa(ctx context.Context, userID int, enable *bool) (bool, error)
+	DeleteUserMfa(ctx context.Context, userID int) (bool, error)
+	SendUserMFAByEmail(ctx context.Context, userID int) (bool, error)
 	CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error)
 	UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error)
 	DeleteApp(ctx context.Context, appID int) (bool, error)
@@ -186,39 +186,6 @@ func (ec *executionContext) field_Mutation_changeAppMenuTree_args(ctx context.Co
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_changeOrganizationTree_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceId"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sourceId"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["targetId"] = arg1
-	var arg2 *string
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["action"] = arg2
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -321,15 +288,24 @@ func (ec *executionContext) field_Mutation_createApp_args(ctx context.Context, r
 func (ec *executionContext) field_Mutation_createOrganizationAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.CreateOrganizationAccountInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐCreateOrganizationAccountInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["orgID"] = arg0
+	var arg1 ent.CreateUserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNCreateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -402,6 +378,30 @@ func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteOrganizationUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -414,21 +414,6 @@ func (ec *executionContext) field_Mutation_deleteOrganization_args(ctx context.C
 		}
 	}
 	args["orgID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_deleteUserFormOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -459,21 +444,6 @@ func (ec *executionContext) field_Mutation_deleteUserMFA_args(ctx context.Contex
 		}
 	}
 	args["userID"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -528,6 +498,63 @@ func (ec *executionContext) field_Mutation_grant_args(ctx context.Context, rawAr
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_moveOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["sourceId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceId"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sourceId"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["targetId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["targetId"] = arg1
+	var arg2 model.TreeAction
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeOrganizationUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg1
 	return args, nil
 }
 
@@ -1070,8 +1097,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteOrganization(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_changeOrganizationTree(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_changeOrganizationTree(ctx, field)
+func (ec *executionContext) _Mutation_moveOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_moveOrganization(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1084,20 +1111,23 @@ func (ec *executionContext) _Mutation_changeOrganizationTree(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ChangeOrganizationTree(rctx, fc.Args["sourceId"].(int), fc.Args["targetId"].(int), fc.Args["action"].(*string))
+		return ec.resolvers.Mutation().MoveOrganization(rctx, fc.Args["sourceId"].(int), fc.Args["targetId"].(int), fc.Args["action"].(model.TreeAction))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_changeOrganizationTree(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_moveOrganization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1114,7 +1144,7 @@ func (ec *executionContext) fieldContext_Mutation_changeOrganizationTree(ctx con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_changeOrganizationTree_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_moveOrganization_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -1135,7 +1165,7 @@ func (ec *executionContext) _Mutation_createOrganizationAccount(ctx context.Cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateOrganizationAccount(rctx, fc.Args["input"].(model.CreateOrganizationAccountInput))
+		return ec.resolvers.Mutation().CreateOrganizationAccount(rctx, fc.Args["orgID"].(int), fc.Args["input"].(ent.CreateUserInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1400,8 +1430,8 @@ func (ec *executionContext) fieldContext_Mutation_addOrganizationUser(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteUserFormOrganization(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteUserFormOrganization(ctx, field)
+func (ec *executionContext) _Mutation_removeOrganizationUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeOrganizationUser(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1414,20 +1444,23 @@ func (ec *executionContext) _Mutation_deleteUserFormOrganization(ctx context.Con
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteUserFormOrganization(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().RemoveOrganizationUser(rctx, fc.Args["orgID"].(int), fc.Args["userId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteUserFormOrganization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_removeOrganizationUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1444,15 +1477,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteUserFormOrganization(ctx
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteUserFormOrganization_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_removeOrganizationUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteUser(ctx, field)
+func (ec *executionContext) _Mutation_deleteOrganizationUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteOrganizationUser(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1465,20 +1498,23 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteUser(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Mutation().DeleteOrganizationUser(rctx, fc.Args["orgID"].(int), fc.Args["userId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteOrganizationUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1495,7 +1531,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteOrganizationUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -1690,11 +1726,14 @@ func (ec *executionContext) _Mutation_deleteUserIdentity(ctx context.Context, fi
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteUserIdentity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1741,11 +1780,14 @@ func (ec *executionContext) _Mutation_changePassword(ctx context.Context, field 
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_changePassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1792,11 +1834,14 @@ func (ec *executionContext) _Mutation_resetUserPasswordByEmail(ctx context.Conte
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_resetUserPasswordByEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1843,11 +1888,14 @@ func (ec *executionContext) _Mutation_createUserMFA(ctx context.Context, field g
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUserMFA(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1894,11 +1942,14 @@ func (ec *executionContext) _Mutation_enableUserMFA(ctx context.Context, field g
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_enableUserMFA(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1945,11 +1996,14 @@ func (ec *executionContext) _Mutation_deleteUserMFA(ctx context.Context, field g
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteUserMFA(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1996,11 +2050,14 @@ func (ec *executionContext) _Mutation_sendUserMFAByEmail(ctx context.Context, fi
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_sendUserMFAByEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3030,58 +3087,6 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputCreateOrganizationAccountInput(ctx context.Context, obj interface{}) (model.CreateOrganizationAccountInput, error) {
-	var it model.CreateOrganizationAccountInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"displayName", "principalName", "email", "orgId"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "displayName":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayName"))
-			it.DisplayName, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "principalName":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("principalName"))
-			it.PrincipalName, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "email":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-			it.Email, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "orgId":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgId"))
-			it.OrgID, err = ec.unmarshalNID2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj interface{}) (model.EnableDirectoryInput, error) {
 	var it model.EnableDirectoryInput
 	asMap := map[string]interface{}{}
@@ -3168,10 +3173,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_deleteOrganization(ctx, field)
 			})
 
-		case "changeOrganizationTree":
+		case "moveOrganization":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_changeOrganizationTree(ctx, field)
+				return ec._Mutation_moveOrganization(ctx, field)
 			})
 
 		case "createOrganizationAccount":
@@ -3192,16 +3197,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_addOrganizationUser(ctx, field)
 			})
 
-		case "deleteUserFormOrganization":
+		case "removeOrganizationUser":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteUserFormOrganization(ctx, field)
+				return ec._Mutation_removeOrganizationUser(ctx, field)
 			})
 
-		case "deleteUser":
+		case "deleteOrganizationUser":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteUser(ctx, field)
+				return ec._Mutation_deleteOrganizationUser(ctx, field)
 			})
 
 		case "updateUser":
@@ -3360,14 +3365,19 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNCreateOrganizationAccountInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐCreateOrganizationAccountInput(ctx context.Context, v interface{}) (model.CreateOrganizationAccountInput, error) {
-	res, err := ec.unmarshalInputCreateOrganizationAccountInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, v interface{}) (model.TreeAction, error) {
+	var res model.TreeAction
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, sel ast.SelectionSet, v model.TreeAction) graphql.Marshaler {
+	return v
 }
 
 // endregion ***************************** type.gotpl *****************************

@@ -9,13 +9,13 @@ import (
 	"fmt"
 
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
-	model1 "github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/user"
 )
 
 // EnableDirectory is the resolver for the enableDirectory field.
-func (r *mutationResolver) EnableDirectory(ctx context.Context, input model1.EnableDirectoryInput) (*ent.Org, error) {
+func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	return r.Resource.EnableOrganization(ctx, input)
 }
 
@@ -38,21 +38,20 @@ func (r *mutationResolver) DeleteOrganization(ctx context.Context, orgID int) (b
 	return true, nil
 }
 
-// ChangeOrganizationTree is the resolver for the changeOrganizationTree field.
-func (r *mutationResolver) ChangeOrganizationTree(ctx context.Context, sourceID int, targetID int, action *string) (*bool, error) {
-	panic(fmt.Errorf("not implemented: ChangeOrganizationTree - changeOrganizationTree"))
+// MoveOrganization is the resolver for the moveOrganization field.
+func (r *mutationResolver) MoveOrganization(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.Resource.MoveOrganization(ctx, sourceID, targetID, action)
+	return err == nil, err
 }
 
 // CreateOrganizationAccount is the resolver for the createOrganizationAccount field.
-func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, input model1.CreateOrganizationAccountInput) (*ent.User, error) {
-	panic(fmt.Errorf("not implemented: CreateOrganizationAccount - createOrganizationAccount"))
+func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, orgID int, input ent.CreateUserInput) (*ent.User, error) {
+	return r.Resource.CreateOrganizationAccount(ctx, orgID, input)
 }
 
 // CreateOrganizationUser is the resolver for the createOrganizationUser field.
 func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, orgID int, input ent.CreateUserInput) (*ent.User, error) {
-	uid := user.DefaultID()
-	input.ID = &uid
-	return r.Resource.CreateOrganizationUser(ctx, orgID, input)
+	return r.Resource.CreateOrganizationUser(ctx, orgID, input, user.UserTypeMember)
 }
 
 // AddOrganizationUser is the resolver for the addOrganizationUser field.
@@ -60,14 +59,14 @@ func (r *mutationResolver) AddOrganizationUser(ctx context.Context, orgID int, u
 	panic(fmt.Errorf("not implemented: AddOrganizationUser - addOrganizationUser"))
 }
 
-// DeleteUserFormOrganization is the resolver for the deleteUserFormOrganization field.
-func (r *mutationResolver) DeleteUserFormOrganization(ctx context.Context, id int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteUserFormOrganization - deleteUserFormOrganization"))
+// RemoveOrganizationUser is the resolver for the removeOrganizationUser field.
+func (r *mutationResolver) RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveOrganizationUser - removeOrganizationUser"))
 }
 
-// DeleteUser is the resolver for the deleteUser field.
-func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+// DeleteOrganizationUser is the resolver for the deleteOrganizationUser field.
+func (r *mutationResolver) DeleteOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error) {
+	panic(fmt.Errorf("not implemented: DeleteOrganizationUser - deleteOrganizationUser"))
 }
 
 // UpdateUser is the resolver for the updateUser field.
@@ -81,37 +80,37 @@ func (r *mutationResolver) BindUserIdentity(ctx context.Context, input ent.Creat
 }
 
 // DeleteUserIdentity is the resolver for the deleteUserIdentity field.
-func (r *mutationResolver) DeleteUserIdentity(ctx context.Context, id int) (*bool, error) {
+func (r *mutationResolver) DeleteUserIdentity(ctx context.Context, id int) (bool, error) {
 	panic(fmt.Errorf("not implemented: DeleteUserIdentity - deleteUserIdentity"))
 }
 
 // ChangePassword is the resolver for the changePassword field.
-func (r *mutationResolver) ChangePassword(ctx context.Context, oldPwd string, newPwd string) (*bool, error) {
+func (r *mutationResolver) ChangePassword(ctx context.Context, oldPwd string, newPwd string) (bool, error) {
 	panic(fmt.Errorf("not implemented: ChangePassword - changePassword"))
 }
 
 // ResetUserPasswordByEmail is the resolver for the resetUserPasswordByEmail field.
-func (r *mutationResolver) ResetUserPasswordByEmail(ctx context.Context, userID int) (*bool, error) {
+func (r *mutationResolver) ResetUserPasswordByEmail(ctx context.Context, userID int) (bool, error) {
 	panic(fmt.Errorf("not implemented: ResetUserPasswordByEmail - resetUserPasswordByEmail"))
 }
 
 // CreateUserMfa is the resolver for the createUserMFA field.
-func (r *mutationResolver) CreateUserMfa(ctx context.Context, userID int) (*bool, error) {
+func (r *mutationResolver) CreateUserMfa(ctx context.Context, userID int) (bool, error) {
 	panic(fmt.Errorf("not implemented: CreateUserMfa - createUserMFA"))
 }
 
 // EnableUserMfa is the resolver for the enableUserMFA field.
-func (r *mutationResolver) EnableUserMfa(ctx context.Context, userID int, enable *bool) (*bool, error) {
+func (r *mutationResolver) EnableUserMfa(ctx context.Context, userID int, enable *bool) (bool, error) {
 	panic(fmt.Errorf("not implemented: EnableUserMfa - enableUserMFA"))
 }
 
 // DeleteUserMfa is the resolver for the deleteUserMFA field.
-func (r *mutationResolver) DeleteUserMfa(ctx context.Context, userID int) (*bool, error) {
+func (r *mutationResolver) DeleteUserMfa(ctx context.Context, userID int) (bool, error) {
 	panic(fmt.Errorf("not implemented: DeleteUserMfa - deleteUserMFA"))
 }
 
 // SendUserMFAByEmail is the resolver for the sendUserMFAByEmail field.
-func (r *mutationResolver) SendUserMFAByEmail(ctx context.Context, userID int) (*bool, error) {
+func (r *mutationResolver) SendUserMFAByEmail(ctx context.Context, userID int) (bool, error) {
 	panic(fmt.Errorf("not implemented: SendUserMFAByEmail - sendUserMFAByEmail"))
 }
 
@@ -216,12 +215,11 @@ func (r *mutationResolver) Grant(ctx context.Context, input ent.CreatePermission
 // LoginProfile is the resolver for the loginProfile field.
 func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error {
 	if data != nil {
-		data.UserID = obj.ID
-		_, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).Save(ctx)
+		row, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).Save(ctx)
 		if err != nil {
 			return err
 		}
-		//obj.LoginProfileID = &dr.ID
+		obj.LoginProfileID = &row.ID
 	}
 	return nil
 }
@@ -229,13 +227,12 @@ func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.Cre
 // Password is the resolver for the password field.
 func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserPasswordInput) error {
 	if data != nil {
-		data.UserID = obj.ID
-		_, err := r.Resource.CreateUserPassword(ctx, data)
+		row, err := r.Resource.CreateUserPassword(ctx, data)
 		if err != nil {
 			return err
 		}
+		obj.PasswordIDs = append(obj.PasswordIDs, row.ID)
 	}
-	//obj.PasswordIDs = append(obj.PasswordIDs, up.ID)
 	return nil
 }
 

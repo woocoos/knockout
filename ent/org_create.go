@@ -422,9 +422,17 @@ func (oc *OrgCreate) defaults() error {
 		v := org.DefaultCreatedAt()
 		oc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := oc.mutation.Kind(); !ok {
+		v := org.DefaultKind
+		oc.mutation.SetKind(v)
+	}
 	if _, ok := oc.mutation.ParentID(); !ok {
 		v := org.DefaultParentID
 		oc.mutation.SetParentID(v)
+	}
+	if _, ok := oc.mutation.Status(); !ok {
+		v := org.DefaultStatus
+		oc.mutation.SetStatus(v)
 	}
 	if _, ok := oc.mutation.ID(); !ok {
 		if org.DefaultID == nil {
@@ -443,6 +451,9 @@ func (oc *OrgCreate) check() error {
 	}
 	if _, ok := oc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Org.created_at"`)}
+	}
+	if _, ok := oc.mutation.Kind(); !ok {
+		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "Org.kind"`)}
 	}
 	if v, ok := oc.mutation.Kind(); ok {
 		if err := org.KindValidator(v); err != nil {

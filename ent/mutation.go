@@ -8726,22 +8726,9 @@ func (m *OrgMutation) OldKind(ctx context.Context) (v org.Kind, err error) {
 	return oldValue.Kind, nil
 }
 
-// ClearKind clears the value of the "kind" field.
-func (m *OrgMutation) ClearKind() {
-	m.kind = nil
-	m.clearedFields[org.FieldKind] = struct{}{}
-}
-
-// KindCleared returns if the "kind" field was cleared in this mutation.
-func (m *OrgMutation) KindCleared() bool {
-	_, ok := m.clearedFields[org.FieldKind]
-	return ok
-}
-
 // ResetKind resets all changes to the "kind" field.
 func (m *OrgMutation) ResetKind() {
 	m.kind = nil
-	delete(m.clearedFields, org.FieldKind)
 }
 
 // SetParentID sets the "parent_id" field.
@@ -10039,9 +10026,6 @@ func (m *OrgMutation) ClearedFields() []string {
 	if m.FieldCleared(org.FieldOwnerID) {
 		fields = append(fields, org.FieldOwnerID)
 	}
-	if m.FieldCleared(org.FieldKind) {
-		fields = append(fields, org.FieldKind)
-	}
 	if m.FieldCleared(org.FieldDomain) {
 		fields = append(fields, org.FieldDomain)
 	}
@@ -10091,9 +10075,6 @@ func (m *OrgMutation) ClearField(name string) error {
 		return nil
 	case org.FieldOwnerID:
 		m.ClearOwnerID()
-		return nil
-	case org.FieldKind:
-		m.ClearKind()
 		return nil
 	case org.FieldDomain:
 		m.ClearDomain()

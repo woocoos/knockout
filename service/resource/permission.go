@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/security"
 	"strconv"
 	"strings"
@@ -156,4 +157,9 @@ func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
 		return "", fmt.Errorf("organization %d domain is empty", orgID)
 	}
 	return org.Domain, nil
+}
+
+func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
+	c := ent.FromContext(ctx)
+	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).Only(ctx)
 }

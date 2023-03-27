@@ -14,6 +14,7 @@ import (
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/user"
 	"regexp"
 	"strconv"
 )
@@ -46,19 +47,19 @@ func (Org) Mixin() []ent.Mixin {
 // Fields of the Org.
 func (Org) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("owner_id").Optional().Comment("管理账户ID"),
+		field.Int("owner_id").Optional().Comment("管理账户ID,如果设置则该组织将升级为根组织"),
 		field.Enum("kind").NamedValues(
 			"root", "root",
 			"organization", "org",
-		).Optional().Comment("分类: 根节点,组织节点").Annotations(entgql.Skip(entgql.SkipAll)),
+		).Default("org").Comment("分类: 根节点,组织节点").Annotations(entgql.Skip(entgql.SkipAll)),
 		field.Int("parent_id").Default(0).Comment("父级ID,0为根组织."),
 		field.String("domain").Optional().Unique().Comment("默认域名").
-			Match(regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$`)),
+			Match(regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)),
 		field.String("code").MaxLen(45).Optional().Comment("系统代码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("name").MaxLen(100).Comment("组织名称"),
 		field.String("profile").Comment("简介").Optional().Annotations(entgql.Skip(entgql.SkipWhereInput)),
-		field.Enum("status").GoType(typex.SimpleStatus("")).Optional().Comment("状态"),
+		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
 		field.Text("path").Optional().Comment("路径编码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Int32("display_sort").Optional().
@@ -93,6 +94,7 @@ func (Org) Hooks() []ent.Hook {
 		pathHook(),
 		InitDisplaySortHook(org.Table),
 		hook.On(checkDeleteHook(), ent.OpDeleteOne),
+		hook.On(ownerCheckHook(), ent.OpCreate|ent.OpUpdateOne|ent.OpUpdate),
 	}
 }
 
@@ -137,6 +139,24 @@ func checkDeleteHook() ent.Hook {
 						return nil, fmt.Errorf("organization has children")
 					}
 				}
+			}
+			return next.Mutate(ctx, mutation)
+		})
+	}
+}
+
+func ownerCheckHook() ent.Hook {
+	return func(next ent.Mutator) ent.Mutator {
+		return hook.OrgFunc(func(ctx context.Context, mutation *gen.OrgMutation) (gen.Value, error) {
+			if uid, ok := mutation.OwnerID(); ok {
+				usr, err := mutation.Client().User.Get(ctx, uid)
+				if err != nil {
+					return nil, err
+				}
+				if usr.UserType != user.UserTypeAccount {
+					return nil, fmt.Errorf("owner must be account: %s", usr.DisplayName)
+				}
+				mutation.SetKind(org.KindRoot)
 			}
 			return next.Mutate(ctx, mutation)
 		})

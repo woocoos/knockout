@@ -31,5 +31,7 @@ genent:
 	go run codegen/entgen/entc.go
 gengql:
 	go run codegen/gqlgen/gqlgen.go
+gengqlfile:
+	go run codegen/gqlgen/allinone.go
 genoas:
 	go run codegen/oasgen/oasgen.go
