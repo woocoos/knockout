@@ -87,14 +87,19 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("identities", UserIdentity.Type).Comment("用户身份标识").Annotations(entproto.Skip()),
-		edge.To("login_profile", UserLoginProfile.Type).Unique().Annotations(entproto.Skip()).Comment("登陆设置"),
-		edge.To("passwords", UserPassword.Type).Annotations(entproto.Skip()).Comment("用户密码"),
-		edge.To("devices", UserDevice.Type).Annotations(entproto.Skip()).Comment("用户设备"),
+		edge.To("identities", UserIdentity.Type).Comment("用户身份标识").
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
+		edge.To("login_profile", UserLoginProfile.Type).Unique().Comment("登陆设置").
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
+		edge.To("passwords", UserPassword.Type).Comment("用户密码").
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
+		edge.To("devices", UserDevice.Type).Comment("用户设备").
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 		edge.From("orgs", Org.Type).Ref("users").Comment("用户所属组织").
 			Through("org_user", OrgUser.Type).
 			Annotations(entgql.Skip(entgql.SkipAll), entproto.Skip()),
 		edge.From("permissions", Permission.Type).Ref("user").Comment("用户权限").
-			Annotations(entgql.RelayConnection(), entproto.Skip()),
+			Annotations(entgql.RelayConnection(), entproto.Skip(),
+				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 	}
 }

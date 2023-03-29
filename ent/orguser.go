@@ -30,6 +30,8 @@ type OrgUser struct {
 	OrgID int `json:"org_id,omitempty"`
 	// 用户ID
 	UserID int `json:"user_id,omitempty"`
+	// 加入时间
+	JoinedAt time.Time `json:"joined_at,omitempty"`
 	// 在组织内的显示名称
 	DisplayName string `json:"display_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -48,6 +50,8 @@ type OrgUserEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
+	// totalCount holds the count of the edges above.
+	totalCount [2]map[string]int
 
 	namedOrgRoles map[string][]*OrgRole
 }
@@ -96,7 +100,7 @@ func (*OrgUser) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case orguser.FieldDisplayName:
 			values[i] = new(sql.NullString)
-		case orguser.FieldCreatedAt, orguser.FieldUpdatedAt:
+		case orguser.FieldCreatedAt, orguser.FieldUpdatedAt, orguser.FieldJoinedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrgUser", columns[i])
@@ -154,6 +158,12 @@ func (ou *OrgUser) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
 				ou.UserID = int(value.Int64)
+			}
+		case orguser.FieldJoinedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field joined_at", values[i])
+			} else if value.Valid {
+				ou.JoinedAt = value.Time
 			}
 		case orguser.FieldDisplayName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -221,6 +231,9 @@ func (ou *OrgUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", ou.UserID))
+	builder.WriteString(", ")
+	builder.WriteString("joined_at=")
+	builder.WriteString(ou.JoinedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
 	builder.WriteString(ou.DisplayName)

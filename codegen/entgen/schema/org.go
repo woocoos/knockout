@@ -102,18 +102,27 @@ func pathHook() ent.Hook {
 	return hook.On(
 		func(next ent.Mutator) ent.Mutator {
 			return hook.OrgFunc(func(ctx context.Context, mutation *gen.OrgMutation) (gen.Value, error) {
+				if _, ok := mutation.Path(); ok {
+					return next.Mutate(ctx, mutation)
+				}
 				if pid, ok := mutation.ParentID(); ok {
 					id, _ := mutation.ID()
 					code := strconv.FormatInt(int64(id), 36)
 					if pid == 0 {
 						mutation.SetPath(code)
 					} else {
+						parentPath := ""
 						prow, err := mutation.Client().Org.Query().Where(org.ID(pid)).
-							Select(org.FieldPath).First(ctx)
-						if err != nil && !gen.IsNotFound(err) {
-							return nil, err
+							Select(org.FieldPath).Only(ctx)
+						if err != nil {
+							if !gen.IsNotFound(err) {
+								return nil, err
+							}
+							parentPath = ""
+						} else {
+							parentPath = prow.Path + "/"
 						}
-						mutation.SetPath(prow.Path + "/" + code)
+						mutation.SetPath(parentPath + code)
 					}
 					if c, _ := mutation.Code(); c == "" {
 						mutation.SetCode(code)
@@ -121,7 +130,7 @@ func pathHook() ent.Hook {
 				}
 				return next.Mutate(ctx, mutation)
 			})
-		}, ent.OpCreate|ent.OpUpdateOne)
+		}, ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne)
 }
 
 func checkDeleteHook() ent.Hook {

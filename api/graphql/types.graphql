@@ -1,5 +1,27 @@
 scalar GID
 
+input EnableDirectoryInput {
+    """域名"""
+    domain: String!
+    name: String!
+}
+
+extend input CreateUserInput {
+    loginProfile: CreateUserLoginProfileInput
+    """如指定密码则填入,否则由系统自动生成密码"""
+    password: CreateUserPasswordInput
+}
+
+"""树操作类型"""
+enum TreeAction {
+    """作为子节点"""
+    child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
 enum PolicyEffect {
     allow
     deny

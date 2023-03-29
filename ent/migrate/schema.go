@@ -377,6 +377,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "joined_at", Type: field.TypeTime},
 		{Name: "display_name", Type: field.TypeString},
 		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -389,13 +390,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_user_org_org",
-				Columns:    []*schema.Column{OrgUserColumns[6]},
+				Columns:    []*schema.Column{OrgUserColumns[7]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "org_user_user_user",
-				Columns:    []*schema.Column{OrgUserColumns[7]},
+				Columns:    []*schema.Column{OrgUserColumns[8]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -404,7 +405,7 @@ var (
 			{
 				Name:    "orguser_org_id_user_id",
 				Unique:  true,
-				Columns: []*schema.Column{OrgUserColumns[6], OrgUserColumns[7]},
+				Columns: []*schema.Column{OrgUserColumns[7], OrgUserColumns[8]},
 			},
 		},
 	}
@@ -507,7 +508,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"name", "email", "phone", "wechat", "qq"}},
-		{Name: "code", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "code", Type: field.TypeString, Nullable: true},
 		{Name: "code_extend", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -568,8 +569,7 @@ var (
 		{Name: "scene", Type: field.TypeEnum, Enums: []string{"login"}},
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "salt", Type: field.TypeString, Size: 45},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
-		{Name: "memo", Type: field.TypeString, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// UserPasswordTable holds the schema information for the "user_password" table.
@@ -580,7 +580,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_password_user_passwords",
-				Columns:    []*schema.Column{UserPasswordColumns[10]},
+				Columns:    []*schema.Column{UserPasswordColumns[9]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

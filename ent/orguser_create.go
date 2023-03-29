@@ -83,6 +83,20 @@ func (ouc *OrgUserCreate) SetUserID(i int) *OrgUserCreate {
 	return ouc
 }
 
+// SetJoinedAt sets the "joined_at" field.
+func (ouc *OrgUserCreate) SetJoinedAt(t time.Time) *OrgUserCreate {
+	ouc.mutation.SetJoinedAt(t)
+	return ouc
+}
+
+// SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
+func (ouc *OrgUserCreate) SetNillableJoinedAt(t *time.Time) *OrgUserCreate {
+	if t != nil {
+		ouc.SetJoinedAt(*t)
+	}
+	return ouc
+}
+
 // SetDisplayName sets the "display_name" field.
 func (ouc *OrgUserCreate) SetDisplayName(s string) *OrgUserCreate {
 	ouc.mutation.SetDisplayName(s)
@@ -164,6 +178,13 @@ func (ouc *OrgUserCreate) defaults() error {
 		v := orguser.DefaultCreatedAt()
 		ouc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := ouc.mutation.JoinedAt(); !ok {
+		if orguser.DefaultJoinedAt == nil {
+			return fmt.Errorf("ent: uninitialized orguser.DefaultJoinedAt (forgotten import ent/runtime?)")
+		}
+		v := orguser.DefaultJoinedAt()
+		ouc.mutation.SetJoinedAt(v)
+	}
 	return nil
 }
 
@@ -180,6 +201,9 @@ func (ouc *OrgUserCreate) check() error {
 	}
 	if _, ok := ouc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrgUser.user_id"`)}
+	}
+	if _, ok := ouc.mutation.JoinedAt(); !ok {
+		return &ValidationError{Name: "joined_at", err: errors.New(`ent: missing required field "OrgUser.joined_at"`)}
 	}
 	if _, ok := ouc.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "OrgUser.display_name"`)}
@@ -237,6 +261,10 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 	if value, ok := ouc.mutation.UpdatedAt(); ok {
 		_spec.SetField(orguser.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := ouc.mutation.JoinedAt(); ok {
+		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
+		_node.JoinedAt = value
 	}
 	if value, ok := ouc.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)

@@ -159,7 +159,9 @@ func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
 	return org.Domain, nil
 }
 
+// GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
 func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
 	c := ent.FromContext(ctx)
-	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).Only(ctx)
+	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
+		Order(ent.Asc(org.FieldPath)).First(ctx)
 }

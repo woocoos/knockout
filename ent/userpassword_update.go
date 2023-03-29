@@ -128,26 +128,6 @@ func (upu *UserPasswordUpdate) ClearStatus() *UserPasswordUpdate {
 	return upu
 }
 
-// SetMemo sets the "memo" field.
-func (upu *UserPasswordUpdate) SetMemo(s string) *UserPasswordUpdate {
-	upu.mutation.SetMemo(s)
-	return upu
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (upu *UserPasswordUpdate) SetNillableMemo(s *string) *UserPasswordUpdate {
-	if s != nil {
-		upu.SetMemo(*s)
-	}
-	return upu
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (upu *UserPasswordUpdate) ClearMemo() *UserPasswordUpdate {
-	upu.mutation.ClearMemo()
-	return upu
-}
-
 // Mutation returns the UserPasswordMutation object of the builder.
 func (upu *UserPasswordUpdate) Mutation() *UserPasswordMutation {
 	return upu.mutation
@@ -244,12 +224,6 @@ func (upu *UserPasswordUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if upu.mutation.StatusCleared() {
 		_spec.ClearField(userpassword.FieldStatus, field.TypeEnum)
-	}
-	if value, ok := upu.mutation.Memo(); ok {
-		_spec.SetField(userpassword.FieldMemo, field.TypeString, value)
-	}
-	if upu.mutation.MemoCleared() {
-		_spec.ClearField(userpassword.FieldMemo, field.TypeString)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, upu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -367,26 +341,6 @@ func (upuo *UserPasswordUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *Us
 // ClearStatus clears the value of the "status" field.
 func (upuo *UserPasswordUpdateOne) ClearStatus() *UserPasswordUpdateOne {
 	upuo.mutation.ClearStatus()
-	return upuo
-}
-
-// SetMemo sets the "memo" field.
-func (upuo *UserPasswordUpdateOne) SetMemo(s string) *UserPasswordUpdateOne {
-	upuo.mutation.SetMemo(s)
-	return upuo
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (upuo *UserPasswordUpdateOne) SetNillableMemo(s *string) *UserPasswordUpdateOne {
-	if s != nil {
-		upuo.SetMemo(*s)
-	}
-	return upuo
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (upuo *UserPasswordUpdateOne) ClearMemo() *UserPasswordUpdateOne {
-	upuo.mutation.ClearMemo()
 	return upuo
 }
 
@@ -516,12 +470,6 @@ func (upuo *UserPasswordUpdateOne) sqlSave(ctx context.Context) (_node *UserPass
 	}
 	if upuo.mutation.StatusCleared() {
 		_spec.ClearField(userpassword.FieldStatus, field.TypeEnum)
-	}
-	if value, ok := upuo.mutation.Memo(); ok {
-		_spec.SetField(userpassword.FieldMemo, field.TypeString, value)
-	}
-	if upuo.mutation.MemoCleared() {
-		_spec.ClearField(userpassword.FieldMemo, field.TypeString)
 	}
 	_node = &UserPassword{config: upuo.config}
 	_spec.Assign = _node.assignValues

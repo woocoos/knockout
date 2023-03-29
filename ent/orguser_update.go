@@ -90,6 +90,20 @@ func (ouu *OrgUserUpdate) SetUserID(i int) *OrgUserUpdate {
 	return ouu
 }
 
+// SetJoinedAt sets the "joined_at" field.
+func (ouu *OrgUserUpdate) SetJoinedAt(t time.Time) *OrgUserUpdate {
+	ouu.mutation.SetJoinedAt(t)
+	return ouu
+}
+
+// SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
+func (ouu *OrgUserUpdate) SetNillableJoinedAt(t *time.Time) *OrgUserUpdate {
+	if t != nil {
+		ouu.SetJoinedAt(*t)
+	}
+	return ouu
+}
+
 // SetDisplayName sets the "display_name" field.
 func (ouu *OrgUserUpdate) SetDisplayName(s string) *OrgUserUpdate {
 	ouu.mutation.SetDisplayName(s)
@@ -223,6 +237,9 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ouu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguser.FieldUpdatedAt, field.TypeTime)
+	}
+	if value, ok := ouu.mutation.JoinedAt(); ok {
+		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
 	}
 	if value, ok := ouu.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
@@ -409,6 +426,20 @@ func (ouuo *OrgUserUpdateOne) SetUserID(i int) *OrgUserUpdateOne {
 	return ouuo
 }
 
+// SetJoinedAt sets the "joined_at" field.
+func (ouuo *OrgUserUpdateOne) SetJoinedAt(t time.Time) *OrgUserUpdateOne {
+	ouuo.mutation.SetJoinedAt(t)
+	return ouuo
+}
+
+// SetNillableJoinedAt sets the "joined_at" field if the given value is not nil.
+func (ouuo *OrgUserUpdateOne) SetNillableJoinedAt(t *time.Time) *OrgUserUpdateOne {
+	if t != nil {
+		ouuo.SetJoinedAt(*t)
+	}
+	return ouuo
+}
+
 // SetDisplayName sets the "display_name" field.
 func (ouuo *OrgUserUpdateOne) SetDisplayName(s string) *OrgUserUpdateOne {
 	ouuo.mutation.SetDisplayName(s)
@@ -572,6 +603,9 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 	}
 	if ouuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(orguser.FieldUpdatedAt, field.TypeTime)
+	}
+	if value, ok := ouuo.mutation.JoinedAt(); ok {
+		_spec.SetField(orguser.FieldJoinedAt, field.TypeTime, value)
 	}
 	if value, ok := ouuo.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)

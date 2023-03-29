@@ -13890,6 +13890,7 @@ type OrgUserMutation struct {
 	updated_by       *int
 	addupdated_by    *int
 	updated_at       *time.Time
+	joined_at        *time.Time
 	display_name     *string
 	clearedFields    map[string]struct{}
 	org              *int
@@ -14291,6 +14292,42 @@ func (m *OrgUserMutation) ResetUserID() {
 	m.user = nil
 }
 
+// SetJoinedAt sets the "joined_at" field.
+func (m *OrgUserMutation) SetJoinedAt(t time.Time) {
+	m.joined_at = &t
+}
+
+// JoinedAt returns the value of the "joined_at" field in the mutation.
+func (m *OrgUserMutation) JoinedAt() (r time.Time, exists bool) {
+	v := m.joined_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldJoinedAt returns the old "joined_at" field's value of the OrgUser entity.
+// If the OrgUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgUserMutation) OldJoinedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldJoinedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldJoinedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldJoinedAt: %w", err)
+	}
+	return oldValue.JoinedAt, nil
+}
+
+// ResetJoinedAt resets all changes to the "joined_at" field.
+func (m *OrgUserMutation) ResetJoinedAt() {
+	m.joined_at = nil
+}
+
 // SetDisplayName sets the "display_name" field.
 func (m *OrgUserMutation) SetDisplayName(s string) {
 	m.display_name = &s
@@ -14467,7 +14504,7 @@ func (m *OrgUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgUserMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.created_by != nil {
 		fields = append(fields, orguser.FieldCreatedBy)
 	}
@@ -14485,6 +14522,9 @@ func (m *OrgUserMutation) Fields() []string {
 	}
 	if m.user != nil {
 		fields = append(fields, orguser.FieldUserID)
+	}
+	if m.joined_at != nil {
+		fields = append(fields, orguser.FieldJoinedAt)
 	}
 	if m.display_name != nil {
 		fields = append(fields, orguser.FieldDisplayName)
@@ -14509,6 +14549,8 @@ func (m *OrgUserMutation) Field(name string) (ent.Value, bool) {
 		return m.OrgID()
 	case orguser.FieldUserID:
 		return m.UserID()
+	case orguser.FieldJoinedAt:
+		return m.JoinedAt()
 	case orguser.FieldDisplayName:
 		return m.DisplayName()
 	}
@@ -14532,6 +14574,8 @@ func (m *OrgUserMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldOrgID(ctx)
 	case orguser.FieldUserID:
 		return m.OldUserID(ctx)
+	case orguser.FieldJoinedAt:
+		return m.OldJoinedAt(ctx)
 	case orguser.FieldDisplayName:
 		return m.OldDisplayName(ctx)
 	}
@@ -14584,6 +14628,13 @@ func (m *OrgUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserID(v)
+		return nil
+	case orguser.FieldJoinedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetJoinedAt(v)
 		return nil
 	case orguser.FieldDisplayName:
 		v, ok := value.(string)
@@ -14700,6 +14751,9 @@ func (m *OrgUserMutation) ResetField(name string) error {
 		return nil
 	case orguser.FieldUserID:
 		m.ResetUserID()
+		return nil
+	case orguser.FieldJoinedAt:
+		m.ResetJoinedAt()
 		return nil
 	case orguser.FieldDisplayName:
 		m.ResetDisplayName()
@@ -21598,7 +21652,6 @@ type UserPasswordMutation struct {
 	password      *string
 	salt          *string
 	status        *typex.SimpleStatus
-	memo          *string
 	clearedFields map[string]struct{}
 	user          *int
 	cleareduser   bool
@@ -22141,55 +22194,6 @@ func (m *UserPasswordMutation) ResetStatus() {
 	delete(m.clearedFields, userpassword.FieldStatus)
 }
 
-// SetMemo sets the "memo" field.
-func (m *UserPasswordMutation) SetMemo(s string) {
-	m.memo = &s
-}
-
-// Memo returns the value of the "memo" field in the mutation.
-func (m *UserPasswordMutation) Memo() (r string, exists bool) {
-	v := m.memo
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMemo returns the old "memo" field's value of the UserPassword entity.
-// If the UserPassword object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserPasswordMutation) OldMemo(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMemo is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMemo requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMemo: %w", err)
-	}
-	return oldValue.Memo, nil
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (m *UserPasswordMutation) ClearMemo() {
-	m.memo = nil
-	m.clearedFields[userpassword.FieldMemo] = struct{}{}
-}
-
-// MemoCleared returns if the "memo" field was cleared in this mutation.
-func (m *UserPasswordMutation) MemoCleared() bool {
-	_, ok := m.clearedFields[userpassword.FieldMemo]
-	return ok
-}
-
-// ResetMemo resets all changes to the "memo" field.
-func (m *UserPasswordMutation) ResetMemo() {
-	m.memo = nil
-	delete(m.clearedFields, userpassword.FieldMemo)
-}
-
 // ClearUser clears the "user" edge to the User entity.
 func (m *UserPasswordMutation) ClearUser() {
 	m.cleareduser = true
@@ -22250,7 +22254,7 @@ func (m *UserPasswordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserPasswordMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.created_by != nil {
 		fields = append(fields, userpassword.FieldCreatedBy)
 	}
@@ -22278,9 +22282,6 @@ func (m *UserPasswordMutation) Fields() []string {
 	if m.status != nil {
 		fields = append(fields, userpassword.FieldStatus)
 	}
-	if m.memo != nil {
-		fields = append(fields, userpassword.FieldMemo)
-	}
 	return fields
 }
 
@@ -22307,8 +22308,6 @@ func (m *UserPasswordMutation) Field(name string) (ent.Value, bool) {
 		return m.Salt()
 	case userpassword.FieldStatus:
 		return m.Status()
-	case userpassword.FieldMemo:
-		return m.Memo()
 	}
 	return nil, false
 }
@@ -22336,8 +22335,6 @@ func (m *UserPasswordMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldSalt(ctx)
 	case userpassword.FieldStatus:
 		return m.OldStatus(ctx)
-	case userpassword.FieldMemo:
-		return m.OldMemo(ctx)
 	}
 	return nil, fmt.Errorf("unknown UserPassword field %s", name)
 }
@@ -22409,13 +22406,6 @@ func (m *UserPasswordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
-		return nil
-	case userpassword.FieldMemo:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMemo(v)
 		return nil
 	}
 	return fmt.Errorf("unknown UserPassword field %s", name)
@@ -22489,9 +22479,6 @@ func (m *UserPasswordMutation) ClearedFields() []string {
 	if m.FieldCleared(userpassword.FieldStatus) {
 		fields = append(fields, userpassword.FieldStatus)
 	}
-	if m.FieldCleared(userpassword.FieldMemo) {
-		fields = append(fields, userpassword.FieldMemo)
-	}
 	return fields
 }
 
@@ -22520,9 +22507,6 @@ func (m *UserPasswordMutation) ClearField(name string) error {
 		return nil
 	case userpassword.FieldStatus:
 		m.ClearStatus()
-		return nil
-	case userpassword.FieldMemo:
-		m.ClearMemo()
 		return nil
 	}
 	return fmt.Errorf("unknown UserPassword nullable field %s", name)
@@ -22558,9 +22542,6 @@ func (m *UserPasswordMutation) ResetField(name string) error {
 		return nil
 	case userpassword.FieldStatus:
 		m.ResetStatus()
-		return nil
-	case userpassword.FieldMemo:
-		m.ResetMemo()
 		return nil
 	}
 	return fmt.Errorf("unknown UserPassword field %s", name)

@@ -25,6 +25,8 @@ const (
 	FieldOrgID = "org_id"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
+	// FieldJoinedAt holds the string denoting the joined_at field in the database.
+	FieldJoinedAt = "joined_at"
 	// FieldDisplayName holds the string denoting the display_name field in the database.
 	FieldDisplayName = "display_name"
 	// EdgeOrg holds the string denoting the org edge name in mutations.
@@ -65,6 +67,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldOrgID,
 	FieldUserID,
+	FieldJoinedAt,
 	FieldDisplayName,
 }
 
@@ -93,4 +96,6 @@ var (
 	Hooks [1]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultJoinedAt holds the default value on creation for the "joined_at" field.
+	DefaultJoinedAt func() time.Time
 )

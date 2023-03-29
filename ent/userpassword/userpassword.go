@@ -36,8 +36,6 @@ const (
 	FieldSalt = "salt"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// FieldMemo holds the string denoting the memo field in the database.
-	FieldMemo = "memo"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// Table holds the table name of the userpassword in the database.
@@ -63,7 +61,6 @@ var Columns = []string{
 	FieldPassword,
 	FieldSalt,
 	FieldStatus,
-	FieldMemo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -110,6 +107,8 @@ func SceneValidator(s Scene) error {
 		return fmt.Errorf("userpassword: invalid enum value for scene field: %q", s)
 	}
 }
+
+const DefaultStatus typex.SimpleStatus = "active"
 
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s typex.SimpleStatus) error {

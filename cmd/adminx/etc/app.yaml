@@ -51,11 +51,13 @@ web:
                 exclude:
                   - IntrospectionQuery
             - recovery:
+            - errorHandle:
             - jwt:
                 signingMethod: "HS256"
                 signingKey: "secret"
                 exclude:
                   - "/graphql" #doc page
+            - tenant:
             - graphql:
                 group: "/graphql"
                 withAuthorization: false

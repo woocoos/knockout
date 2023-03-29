@@ -124,20 +124,6 @@ func (upc *UserPasswordCreate) SetNillableStatus(ts *typex.SimpleStatus) *UserPa
 	return upc
 }
 
-// SetMemo sets the "memo" field.
-func (upc *UserPasswordCreate) SetMemo(s string) *UserPasswordCreate {
-	upc.mutation.SetMemo(s)
-	return upc
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (upc *UserPasswordCreate) SetNillableMemo(s *string) *UserPasswordCreate {
-	if s != nil {
-		upc.SetMemo(*s)
-	}
-	return upc
-}
-
 // SetID sets the "id" field.
 func (upc *UserPasswordCreate) SetID(i int) *UserPasswordCreate {
 	upc.mutation.SetID(i)
@@ -192,6 +178,10 @@ func (upc *UserPasswordCreate) defaults() error {
 		}
 		v := userpassword.DefaultCreatedAt()
 		upc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := upc.mutation.Status(); !ok {
+		v := userpassword.DefaultStatus
+		upc.mutation.SetStatus(v)
 	}
 	return nil
 }
@@ -288,10 +278,6 @@ func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec
 	if value, ok := upc.mutation.Status(); ok {
 		_spec.SetField(userpassword.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
-	}
-	if value, ok := upc.mutation.Memo(); ok {
-		_spec.SetField(userpassword.FieldMemo, field.TypeString, value)
-		_node.Memo = value
 	}
 	if nodes := upc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

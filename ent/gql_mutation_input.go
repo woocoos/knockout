@@ -1034,6 +1034,74 @@ func (c *OrgPolicyUpdateOne) SetInput(i UpdateOrgPolicyInput) *OrgPolicyUpdateOn
 	return c
 }
 
+// CreateOrgUserInput represents a mutation input for creating orgusers.
+type CreateOrgUserInput struct {
+	JoinedAt    *time.Time
+	DisplayName string
+	OrgID       int
+	UserID      int
+}
+
+// Mutate applies the CreateOrgUserInput on the OrgUserMutation builder.
+func (i *CreateOrgUserInput) Mutate(m *OrgUserMutation) {
+	if v := i.JoinedAt; v != nil {
+		m.SetJoinedAt(*v)
+	}
+	m.SetDisplayName(i.DisplayName)
+	m.SetOrgID(i.OrgID)
+	m.SetUserID(i.UserID)
+}
+
+// SetInput applies the change-set in the CreateOrgUserInput on the OrgUserCreate builder.
+func (c *OrgUserCreate) SetInput(i CreateOrgUserInput) *OrgUserCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateOrgUserInput represents a mutation input for updating orgusers.
+type UpdateOrgUserInput struct {
+	JoinedAt    *time.Time
+	DisplayName *string
+	ClearOrg    bool
+	OrgID       *int
+	ClearUser   bool
+	UserID      *int
+}
+
+// Mutate applies the UpdateOrgUserInput on the OrgUserMutation builder.
+func (i *UpdateOrgUserInput) Mutate(m *OrgUserMutation) {
+	if v := i.JoinedAt; v != nil {
+		m.SetJoinedAt(*v)
+	}
+	if v := i.DisplayName; v != nil {
+		m.SetDisplayName(*v)
+	}
+	if i.ClearOrg {
+		m.ClearOrg()
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
+	if i.ClearUser {
+		m.ClearUser()
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateOrgUserInput on the OrgUserUpdate builder.
+func (c *OrgUserUpdate) SetInput(i UpdateOrgUserInput) *OrgUserUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateOrgUserInput on the OrgUserUpdateOne builder.
+func (c *OrgUserUpdateOne) SetInput(i UpdateOrgUserInput) *OrgUserUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreatePermissionInput represents a mutation input for creating permissions.
 type CreatePermissionInput struct {
 	PrincipalKind permission.PrincipalKind
@@ -1158,7 +1226,6 @@ type CreateUserInput struct {
 	LoginProfileID *int
 	PasswordIDs    []int
 	DeviceIDs      []int
-	PermissionIDs  []int
 }
 
 // Mutate applies the CreateUserInput on the UserMutation builder.
@@ -1189,9 +1256,6 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.DeviceIDs; len(v) > 0 {
 		m.AddDeviceIDs(v...)
 	}
-	if v := i.PermissionIDs; len(v) > 0 {
-		m.AddPermissionIDs(v...)
-	}
 }
 
 // SetInput applies the change-set in the CreateUserInput on the UserCreate builder.
@@ -1202,28 +1266,14 @@ func (c *UserCreate) SetInput(i CreateUserInput) *UserCreate {
 
 // UpdateUserInput represents a mutation input for updating users.
 type UpdateUserInput struct {
-	PrincipalName       *string
-	DisplayName         *string
-	ClearEmail          bool
-	Email               *string
-	ClearMobile         bool
-	Mobile              *string
-	ClearComments       bool
-	Comments            *string
-	ClearIdentities     bool
-	AddIdentityIDs      []int
-	RemoveIdentityIDs   []int
-	ClearLoginProfile   bool
-	LoginProfileID      *int
-	ClearPasswords      bool
-	AddPasswordIDs      []int
-	RemovePasswordIDs   []int
-	ClearDevices        bool
-	AddDeviceIDs        []int
-	RemoveDeviceIDs     []int
-	ClearPermissions    bool
-	AddPermissionIDs    []int
-	RemovePermissionIDs []int
+	PrincipalName *string
+	DisplayName   *string
+	ClearEmail    bool
+	Email         *string
+	ClearMobile   bool
+	Mobile        *string
+	ClearComments bool
+	Comments      *string
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -1251,48 +1301,6 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
-	}
-	if i.ClearIdentities {
-		m.ClearIdentities()
-	}
-	if v := i.AddIdentityIDs; len(v) > 0 {
-		m.AddIdentityIDs(v...)
-	}
-	if v := i.RemoveIdentityIDs; len(v) > 0 {
-		m.RemoveIdentityIDs(v...)
-	}
-	if i.ClearLoginProfile {
-		m.ClearLoginProfile()
-	}
-	if v := i.LoginProfileID; v != nil {
-		m.SetLoginProfileID(*v)
-	}
-	if i.ClearPasswords {
-		m.ClearPasswords()
-	}
-	if v := i.AddPasswordIDs; len(v) > 0 {
-		m.AddPasswordIDs(v...)
-	}
-	if v := i.RemovePasswordIDs; len(v) > 0 {
-		m.RemovePasswordIDs(v...)
-	}
-	if i.ClearDevices {
-		m.ClearDevices()
-	}
-	if v := i.AddDeviceIDs; len(v) > 0 {
-		m.AddDeviceIDs(v...)
-	}
-	if v := i.RemoveDeviceIDs; len(v) > 0 {
-		m.RemoveDeviceIDs(v...)
-	}
-	if i.ClearPermissions {
-		m.ClearPermissions()
-	}
-	if v := i.AddPermissionIDs; len(v) > 0 {
-		m.AddPermissionIDs(v...)
-	}
-	if v := i.RemovePermissionIDs; len(v) > 0 {
-		m.RemovePermissionIDs(v...)
 	}
 }
 
@@ -1503,7 +1511,6 @@ type CreateUserPasswordInput struct {
 	Scene    userpassword.Scene
 	Password *string
 	Status   *typex.SimpleStatus
-	Memo     *string
 	UserID   *int
 }
 
@@ -1515,9 +1522,6 @@ func (i *CreateUserPasswordInput) Mutate(m *UserPasswordMutation) {
 	}
 	if v := i.Status; v != nil {
 		m.SetStatus(*v)
-	}
-	if v := i.Memo; v != nil {
-		m.SetMemo(*v)
 	}
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)
@@ -1537,8 +1541,6 @@ type UpdateUserPasswordInput struct {
 	Password      *string
 	ClearStatus   bool
 	Status        *typex.SimpleStatus
-	ClearMemo     bool
-	Memo          *string
 }
 
 // Mutate applies the UpdateUserPasswordInput on the UserPasswordMutation builder.
@@ -1557,12 +1559,6 @@ func (i *UpdateUserPasswordInput) Mutate(m *UserPasswordMutation) {
 	}
 	if v := i.Status; v != nil {
 		m.SetStatus(*v)
-	}
-	if i.ClearMemo {
-		m.ClearMemo()
-	}
-	if v := i.Memo; v != nil {
-		m.SetMemo(*v)
 	}
 }
 

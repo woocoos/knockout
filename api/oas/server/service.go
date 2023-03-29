@@ -3,8 +3,6 @@ package server
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
@@ -23,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/status"
 	"image/png"
 	"net/http"
@@ -198,7 +197,7 @@ func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest)
 	}
 
 	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
-	npwd := salt(req.Body.NewPassword, pwd.Salt)
+	npwd := resource.SaltSecret(req.Body.NewPassword, pwd.Salt)
 
 	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
 		return s.DB.Tx(ctx)
@@ -302,19 +301,11 @@ func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPa
 		return nil, err
 	}
 
-	given := salt(req.Body.Password, pwd.Salt)
+	given := resource.SaltSecret(req.Body.Password, pwd.Salt)
 	if given != pwd.Password {
 		return pwd, status.ErrMismatchPWD // return user id
 	}
 	return pwd, nil
-}
-
-func salt(ori, salt string) string {
-	sha := sha256.New()
-	sha.Write([]byte(ori))
-	sha.Write([]byte(salt))
-	given := hex.EncodeToString(sha.Sum(nil))
-	return given
 }
 
 func createToken(subject string, ttl time.Duration) (tokenID, tokenStr string, err error) {

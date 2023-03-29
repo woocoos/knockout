@@ -199,6 +199,42 @@ func (ec *executionContext) fieldContext_PolicyRule_conditions(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj interface{}) (model.EnableDirectoryInput, error) {
+	var it model.EnableDirectoryInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"domain", "name"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "domain":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("domain"))
+			it.Domain, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj interface{}) (model.GrantInput, error) {
 	var it model.GrantInput
 	asMap := map[string]interface{}{}
@@ -347,6 +383,11 @@ func (ec *executionContext) _PolicyRule(ctx context.Context, sel ast.SelectionSe
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
+	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNGID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -472,6 +513,16 @@ func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoos�
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, v interface{}) (model.TreeAction, error) {
+	var res model.TreeAction
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, sel ast.SelectionSet, v model.TreeAction) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalOGID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

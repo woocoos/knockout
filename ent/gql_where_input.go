@@ -5252,6 +5252,16 @@ type OrgUserWhereInput struct {
 	UserIDIn    []int `json:"userIDIn,omitempty"`
 	UserIDNotIn []int `json:"userIDNotIn,omitempty"`
 
+	// "joined_at" field predicates.
+	JoinedAt      *time.Time  `json:"joinedAt,omitempty"`
+	JoinedAtNEQ   *time.Time  `json:"joinedAtNEQ,omitempty"`
+	JoinedAtIn    []time.Time `json:"joinedAtIn,omitempty"`
+	JoinedAtNotIn []time.Time `json:"joinedAtNotIn,omitempty"`
+	JoinedAtGT    *time.Time  `json:"joinedAtGT,omitempty"`
+	JoinedAtGTE   *time.Time  `json:"joinedAtGTE,omitempty"`
+	JoinedAtLT    *time.Time  `json:"joinedAtLT,omitempty"`
+	JoinedAtLTE   *time.Time  `json:"joinedAtLTE,omitempty"`
+
 	// "display_name" field predicates.
 	DisplayName             *string  `json:"displayName,omitempty"`
 	DisplayNameNEQ          *string  `json:"displayNameNEQ,omitempty"`
@@ -5266,6 +5276,14 @@ type OrgUserWhereInput struct {
 	DisplayNameHasSuffix    *string  `json:"displayNameHasSuffix,omitempty"`
 	DisplayNameEqualFold    *string  `json:"displayNameEqualFold,omitempty"`
 	DisplayNameContainsFold *string  `json:"displayNameContainsFold,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
+
+	// "user" edge predicates.
+	HasUser     *bool             `json:"hasUser,omitempty"`
+	HasUserWith []*UserWhereInput `json:"hasUserWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5495,6 +5513,30 @@ func (i *OrgUserWhereInput) P() (predicate.OrgUser, error) {
 	if len(i.UserIDNotIn) > 0 {
 		predicates = append(predicates, orguser.UserIDNotIn(i.UserIDNotIn...))
 	}
+	if i.JoinedAt != nil {
+		predicates = append(predicates, orguser.JoinedAtEQ(*i.JoinedAt))
+	}
+	if i.JoinedAtNEQ != nil {
+		predicates = append(predicates, orguser.JoinedAtNEQ(*i.JoinedAtNEQ))
+	}
+	if len(i.JoinedAtIn) > 0 {
+		predicates = append(predicates, orguser.JoinedAtIn(i.JoinedAtIn...))
+	}
+	if len(i.JoinedAtNotIn) > 0 {
+		predicates = append(predicates, orguser.JoinedAtNotIn(i.JoinedAtNotIn...))
+	}
+	if i.JoinedAtGT != nil {
+		predicates = append(predicates, orguser.JoinedAtGT(*i.JoinedAtGT))
+	}
+	if i.JoinedAtGTE != nil {
+		predicates = append(predicates, orguser.JoinedAtGTE(*i.JoinedAtGTE))
+	}
+	if i.JoinedAtLT != nil {
+		predicates = append(predicates, orguser.JoinedAtLT(*i.JoinedAtLT))
+	}
+	if i.JoinedAtLTE != nil {
+		predicates = append(predicates, orguser.JoinedAtLTE(*i.JoinedAtLTE))
+	}
 	if i.DisplayName != nil {
 		predicates = append(predicates, orguser.DisplayNameEQ(*i.DisplayName))
 	}
@@ -5535,6 +5577,42 @@ func (i *OrgUserWhereInput) P() (predicate.OrgUser, error) {
 		predicates = append(predicates, orguser.DisplayNameContainsFold(*i.DisplayNameContainsFold))
 	}
 
+	if i.HasOrg != nil {
+		p := orguser.HasOrg()
+		if !*i.HasOrg {
+			p = orguser.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orguser.HasOrgWith(with...))
+	}
+	if i.HasUser != nil {
+		p := orguser.HasUser()
+		if !*i.HasUser {
+			p = orguser.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasUserWith) > 0 {
+		with := make([]predicate.User, 0, len(i.HasUserWith))
+		for _, w := range i.HasUserWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasUserWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orguser.HasUserWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyOrgUserWhereInput

@@ -24,6 +24,8 @@ migration-apply:
 	atlas migrate apply --dev-url="$(DSN)" --dir="file://ent/migrate/migrations" --latest=$(LATEST)
 test-db:
 	GOWORK=off go run -mod=mod test/initdb.go
+test-data:
+	GOWORK=off go run -mod=mod test/testdata/initdata.go
 
 .PHONY: gen genent gengql genoas
 gen: genent gengql

@@ -299,6 +299,10 @@ func init() {
 	orguserDescCreatedAt := orguserMixinFields1[1].Descriptor()
 	// orguser.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orguser.DefaultCreatedAt = orguserDescCreatedAt.Default.(func() time.Time)
+	// orguserDescJoinedAt is the schema descriptor for joined_at field.
+	orguserDescJoinedAt := orguserFields[2].Descriptor()
+	// orguser.DefaultJoinedAt holds the default value on creation for the joined_at field.
+	orguser.DefaultJoinedAt = orguserDescJoinedAt.Default.(func() time.Time)
 	permissionMixin := schema.Permission{}.Mixin()
 	permissionMixinHooks1 := permissionMixin[1].Hooks()
 	permission.Hooks[0] = permissionMixinHooks1[0]
@@ -386,7 +390,9 @@ func init() {
 	userdevice.DeviceModelValidator = userdeviceDescDeviceModel.Validators[0].(func(string) error)
 	useridentityMixin := schema.UserIdentity{}.Mixin()
 	useridentityMixinHooks1 := useridentityMixin[1].Hooks()
+	useridentityHooks := schema.UserIdentity{}.Hooks()
 	useridentity.Hooks[0] = useridentityMixinHooks1[0]
+	useridentity.Hooks[1] = useridentityHooks[0]
 	useridentityMixinFields1 := useridentityMixin[1].Fields()
 	_ = useridentityMixinFields1
 	useridentityFields := schema.UserIdentity{}.Fields()

@@ -26,6 +26,15 @@ func SHA256(s string) string {
 	return hex.EncodeToString(sha.Sum(nil))
 }
 
+// SaltSecret salt secret
+func SaltSecret(ori, salt string) string {
+	sha := sha256.New()
+	sha.Write([]byte(ori))
+	sha.Write([]byte(salt))
+	given := hex.EncodeToString(sha.Sum(nil))
+	return given
+}
+
 // GeneralMFASecret gen a secret for google authenticator
 func GeneralMFASecret() string {
 	randomBytes := make([]byte, 10)

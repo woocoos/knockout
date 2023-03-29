@@ -271,6 +271,7 @@ func (ec *executionContext) _Subscription_message(ctx context.Context, field gra
 	})
 	if err != nil {
 		ec.Error(ctx, err)
+		return nil
 	}
 	if resTmp == nil {
 		return nil

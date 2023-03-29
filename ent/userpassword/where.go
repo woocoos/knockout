@@ -91,11 +91,6 @@ func Salt(v string) predicate.UserPassword {
 	return predicate.UserPassword(sql.FieldEQ(FieldSalt, v))
 }
 
-// Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
-func Memo(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldEQ(FieldMemo, v))
-}
-
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.UserPassword {
 	return predicate.UserPassword(sql.FieldEQ(FieldCreatedBy, v))
@@ -504,81 +499,6 @@ func StatusIsNil() predicate.UserPassword {
 // StatusNotNil applies the NotNil predicate on the "status" field.
 func StatusNotNil() predicate.UserPassword {
 	return predicate.UserPassword(sql.FieldNotNull(FieldStatus))
-}
-
-// MemoEQ applies the EQ predicate on the "memo" field.
-func MemoEQ(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldEQ(FieldMemo, v))
-}
-
-// MemoNEQ applies the NEQ predicate on the "memo" field.
-func MemoNEQ(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldNEQ(FieldMemo, v))
-}
-
-// MemoIn applies the In predicate on the "memo" field.
-func MemoIn(vs ...string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldIn(FieldMemo, vs...))
-}
-
-// MemoNotIn applies the NotIn predicate on the "memo" field.
-func MemoNotIn(vs ...string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldNotIn(FieldMemo, vs...))
-}
-
-// MemoGT applies the GT predicate on the "memo" field.
-func MemoGT(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldGT(FieldMemo, v))
-}
-
-// MemoGTE applies the GTE predicate on the "memo" field.
-func MemoGTE(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldGTE(FieldMemo, v))
-}
-
-// MemoLT applies the LT predicate on the "memo" field.
-func MemoLT(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldLT(FieldMemo, v))
-}
-
-// MemoLTE applies the LTE predicate on the "memo" field.
-func MemoLTE(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldLTE(FieldMemo, v))
-}
-
-// MemoContains applies the Contains predicate on the "memo" field.
-func MemoContains(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldContains(FieldMemo, v))
-}
-
-// MemoHasPrefix applies the HasPrefix predicate on the "memo" field.
-func MemoHasPrefix(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldHasPrefix(FieldMemo, v))
-}
-
-// MemoHasSuffix applies the HasSuffix predicate on the "memo" field.
-func MemoHasSuffix(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldHasSuffix(FieldMemo, v))
-}
-
-// MemoIsNil applies the IsNil predicate on the "memo" field.
-func MemoIsNil() predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldIsNull(FieldMemo))
-}
-
-// MemoNotNil applies the NotNil predicate on the "memo" field.
-func MemoNotNil() predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldNotNull(FieldMemo))
-}
-
-// MemoEqualFold applies the EqualFold predicate on the "memo" field.
-func MemoEqualFold(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldEqualFold(FieldMemo, v))
-}
-
-// MemoContainsFold applies the ContainsFold predicate on the "memo" field.
-func MemoContainsFold(v string) predicate.UserPassword {
-	return predicate.UserPassword(sql.FieldContainsFold(FieldMemo, v))
 }
 
 // HasUser applies the HasEdge predicate on the "user" edge.

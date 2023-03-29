@@ -4,13 +4,19 @@ import (
 	"ariga.io/entcache"
 	"context"
 	"fmt"
+	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
-	"github.com/woocoos/knockout/security"
+	"github.com/woocoos/knockout/ent/userpassword"
+	"strconv"
+	"strings"
+	"time"
 )
 
 // Service 企业目录服务管理
@@ -21,7 +27,7 @@ type Service struct {
 // EnableOrganization 开启组织目录
 func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
-	uid := security.UserIDFromContext(ctx)
+	uid := identity.UserIDFromContext(ctx)
 
 	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Evict(ctx))
 	if err != nil {
@@ -190,15 +196,130 @@ func (s *Service) MoveOrganization(ctx context.Context, src, tar int, action mod
 	return builder.Exec(ctx)
 }
 
-// AddOrganizationUser 将用户加入组织目录
-func (s *Service) AddOrganizationUser(ctx context.Context, orgID int, userID int, displayName *string) error {
+// AllotOrganizationUser 将用户加入组织目录
+func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) error {
 	client := ent.FromContext(ctx)
-	usr := ent.FromContext(ctx).User.GetX(ctx, userID)
-	if usr.UserType == user.UserTypeAccount {
-		// 邀请用户
+	has, err := client.OrgUser.Query().Where(orguser.OrgID(input.OrgID), orguser.UserID(input.UserID)).Exist(ctx)
+	if err != nil {
+		return err
 	}
-	if displayName == nil {
-		displayName = &usr.DisplayName
+	if has {
+		return fmt.Errorf("user already in organization")
 	}
-	return client.OrgUser.Create().SetOrgID(orgID).SetUserID(userID).SetDisplayName(*displayName).Exec(ctx)
+	tid := identity.TenantIDFromContext[int](ctx)
+	orgs, err := client.Org.Query().Where(org.IDIn(tid, input.OrgID)).Order(ent.Asc(org.FieldPath)).All(ctx)
+	if err != nil {
+		return err
+	}
+	if len(orgs) != 2 {
+		return fmt.Errorf("invalid org id or root org id")
+	}
+	if !strings.HasPrefix(orgs[1].Path, orgs[0].Path) {
+		return fmt.Errorf("org not match")
+	}
+
+	usr := client.User.GetX(ctx, input.UserID)
+	if input.DisplayName == "" {
+		input.DisplayName = usr.DisplayName
+	}
+
+	return client.OrgUser.Create().SetInput(input).Exec(ctx)
+}
+
+// RemoveOrganizationUser 将用户从组织目录中移除.
+func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID int) error {
+	client := ent.FromContext(ctx)
+	tid := identity.TenantIDFromContext[int](ctx)
+	if orgID == tid {
+		return fmt.Errorf("can not remove from root org")
+	}
+	i, err := client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(orgID)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	if i == 0 {
+		return fmt.Errorf("user not in org")
+	}
+
+	return nil
+}
+
+// DeleteOrganizationUser 删除本域下的用户,在用户没有被引用时,允许删除
+func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error {
+	client := ent.FromContext(ctx)
+
+	tid := identity.TenantIDFromContext[int](ctx)
+	code := strconv.FormatInt(int64(tid), 36)
+
+	usr := client.User.GetX(ctx, userID)
+	// 是否组织引用
+	ins, err := client.OrgUser.Query().Where(orguser.UserID(userID),
+		orguser.HasOrgWith(org.PathHasPrefix(code)),
+	).Count(ctx)
+	if err != nil {
+		return err
+	}
+	if ins == 0 {
+		return fmt.Errorf("user not in org")
+	}
+	if ins > 1 {
+		return fmt.Errorf("user in more than one org")
+	}
+	// 根据授权判断是否被引用
+	has, err := client.Permission.Query().Where(permission.UserID(userID), permission.HasOrgWith(org.PathHasPrefix(code))).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("user has been referenced")
+	}
+
+	_, err = client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(tid)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	if usr.CreationType != user.CreationTypeManual {
+		// 非手动创建的用户,不允许删除,移除后返回
+		return nil
+	}
+	client.User.Update().Where(user.ID(userID)).ClearDevices().ClearIdentities().ClearLoginProfile().ClearPasswords().
+		SetDeletedAt(time.Now()).Exec(ctx)
+	return nil
+}
+
+// UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
+func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
+	if input.PrincipalName != nil {
+		return nil, fmt.Errorf("principal name can not update")
+	}
+	client := ent.FromContext(ctx)
+	return client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
+}
+
+func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) error {
+	if oldPwd == newPwd {
+		return fmt.Errorf("old password can not equal new password")
+	}
+	client := ent.FromContext(ctx)
+	uid := identity.UserIDFromContext(ctx)
+	usr := client.User.Query().Where(user.ID(uid)).
+		WithPasswords(func(query *ent.UserPasswordQuery) {
+			query.Where(userpassword.SceneEQ(userpassword.SceneLogin))
+		}).OnlyX(ctx)
+
+	o := SaltSecret(oldPwd, usr.Edges.Passwords[0].Salt)
+	n := SaltSecret(newPwd, usr.Edges.Passwords[0].Salt)
+	if o != usr.Edges.Passwords[0].Password {
+		return fmt.Errorf("old password not match")
+	}
+
+	_, err := client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
+		SetPassword(n).Save(ctx)
+	return err
+}
+
+func (s *Service) UpdateLoginProfile(ctx context.Context, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
+	client := ent.FromContext(ctx)
+	uid := identity.UserIDFromContext(ctx)
+	return client.UserLoginProfile.UpdateOneID(uid).SetInput(input).Save(ctx)
 }

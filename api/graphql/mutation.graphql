@@ -8,19 +8,36 @@ type Mutation {
     """删除组织目录"""
     deleteOrganization(orgID:ID!): Boolean!
     """组织位置调整，action: child, up, down"""
-    moveOrganization(sourceId:ID!,targetId:ID!,action:TreeAction!): Boolean!
+    moveOrganization(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:TreeAction!): Boolean!
     """创建组织成员(管理账户)"""
-    createOrganizationAccount(orgID:ID!,input: CreateUserInput!): User
+    createOrganizationAccount(
+        """根组织ID"""
+        rootOrgID:ID!,
+        input: CreateUserInput!): User
     """创建组织用户"""
-    createOrganizationUser(orgID:ID!,input: CreateUserInput!): User
-    """组织添加用户"""
-    addOrganizationUser(orgID:ID!,userId:ID!,displayName:String): User
-    """从组织移除用户"""
-    removeOrganizationUser(orgID:ID!,userId:ID!): Boolean!
-    """删除用户"""
-    deleteOrganizationUser(orgID:ID!,userId:ID!): Boolean!
+    createOrganizationUser(
+        """根组织ID"""
+        rootOrgID:ID!,
+        input: CreateUserInput!): User
+    """将用户分配到组织下"""
+    allotOrganizationUser(input: CreateOrgUserInput!): Boolean!
+    """从组织目录中移除用户"""
+    removeOrganizationUser(
+        """目标组织ID,可为根组织ID"""
+        orgID:ID!,
+        """用户ID"""
+        userID:ID!): Boolean!
     """更新用户"""
     updateUser(userID:ID!,input: UpdateUserInput!): User
+    """用户登陆配置"""
+    updateLoginProfile(input: UpdateUserLoginProfileInput!): UserLoginProfile
+    """删除用户"""
+    deleteUser(userID:ID!): Boolean!
     """绑定用户凭证(管理端使用)"""
     bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
     """删除用户凭证"""
@@ -29,14 +46,6 @@ type Mutation {
     changePassword(oldPwd:String!,newPwd:String!): Boolean!
     """重置用户密码并发送邮件"""
     resetUserPasswordByEmail(userId:ID!): Boolean!
-    """创建MFA"""
-    createUserMFA(userID:ID!): Boolean!
-    """是否启用MFA"""
-    enableUserMFA(userID:ID!,enable:Boolean): Boolean!
-    """删除MFA"""
-    deleteUserMFA(userID:ID!): Boolean!
-    """邮件发送MFA"""
-    sendUserMFAByEmail(userID:ID!): Boolean!
     """创建应用"""
     createApp(input: CreateAppInput!): App
     """更新应用"""
@@ -67,26 +76,4 @@ type Mutation {
     revokeOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
     """授权"""
     grant(input: CreatePermissionInput!): Permission
-}
-
-input EnableDirectoryInput {
-    """域名"""
-    domain: String!
-    name: String!
-}
-
-extend input CreateUserInput {
-    loginProfile: CreateUserLoginProfileInput
-    """如指定密码则填入,否则由系统自动生成密码"""
-    password: CreateUserPasswordInput
-}
-
-"""树操作类型"""
-enum TreeAction {
-    """作为子节点"""
-    child
-    """上移"""
-    up
-    """下移"""
-    down
 }

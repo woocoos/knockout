@@ -24,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/status"
 	"github.com/woocoos/knockout/test"
 	"net/http/httptest"
@@ -244,14 +245,14 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 		userpassword.SceneEQ(userpassword.SceneLogin),
 	).OnlyX(context.Background())
 
-	ts.Equal(pwd.Password, salt("234567", "123456"))
+	ts.Equal(pwd.Password, resource.SaltSecret("234567", "123456"))
 	ts.Equal(res.User.ID, 1)
 }
 
 func TestPwd(t *testing.T) {
 	// 随机字符串
 	req := sha256.New()
-	req.Write([]byte("123456"))
+	req.Write([]byte("234567"))
 	param := hex.EncodeToString(req.Sum(nil))
 	t.Log(param)
 	sha := sha256.New()

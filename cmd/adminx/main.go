@@ -24,6 +24,7 @@ import (
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
+	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/api/graphql/generated"
@@ -82,6 +83,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		web.RegisterMiddleware(gql.New()),
 		web.RegisterMiddleware(otelweb.NewMiddleware()),
 		web.RegisterMiddleware(authz.New()),
+		identity.RegistryTenantIDMiddleware(),
 	)
 
 	gqlSrv := handler.New(generated.NewExecutableSchema(generated.Config{
