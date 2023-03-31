@@ -520,6 +520,16 @@ func CommentsHasSuffix(v string) predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldHasSuffix(FieldComments, v))
 }
 
+// CommentsIsNil applies the IsNil predicate on the "comments" field.
+func CommentsIsNil() predicate.OrgPolicy {
+	return predicate.OrgPolicy(sql.FieldIsNull(FieldComments))
+}
+
+// CommentsNotNil applies the NotNil predicate on the "comments" field.
+func CommentsNotNil() predicate.OrgPolicy {
+	return predicate.OrgPolicy(sql.FieldNotNull(FieldComments))
+}
+
 // CommentsEqualFold applies the EqualFold predicate on the "comments" field.
 func CommentsEqualFold(v string) predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldEqualFold(FieldComments, v))
@@ -548,6 +558,33 @@ func HasOrgWith(preds ...predicate.Org) predicate.OrgPolicy {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(OrgInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPermissions applies the HasEdge predicate on the "permissions" edge.
+func HasPermissions() predicate.OrgPolicy {
+	return predicate.OrgPolicy(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PermissionsTable, PermissionsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPermissionsWith applies the HasEdge predicate on the "permissions" edge with a given conditions (other predicates).
+func HasPermissionsWith(preds ...predicate.Permission) predicate.OrgPolicy {
+	return predicate.OrgPolicy(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PermissionsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PermissionsTable, PermissionsColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

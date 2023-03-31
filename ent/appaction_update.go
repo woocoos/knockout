@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/appres"
@@ -78,12 +77,6 @@ func (aau *AppActionUpdate) ClearUpdatedAt() *AppActionUpdate {
 	return aau
 }
 
-// SetAppID sets the "app_id" field.
-func (aau *AppActionUpdate) SetAppID(i int) *AppActionUpdate {
-	aau.mutation.SetAppID(i)
-	return aau
-}
-
 // SetName sets the "name" field.
 func (aau *AppActionUpdate) SetName(s string) *AppActionUpdate {
 	aau.mutation.SetName(s)
@@ -122,11 +115,6 @@ func (aau *AppActionUpdate) ClearComments() *AppActionUpdate {
 	return aau
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aau *AppActionUpdate) SetApp(a *App) *AppActionUpdate {
-	return aau.SetAppID(a.ID)
-}
-
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
 func (aau *AppActionUpdate) AddMenuIDs(ids ...int) *AppActionUpdate {
 	aau.mutation.AddMenuIDs(ids...)
@@ -160,12 +148,6 @@ func (aau *AppActionUpdate) AddResources(a ...*AppRes) *AppActionUpdate {
 // Mutation returns the AppActionMutation object of the builder.
 func (aau *AppActionUpdate) Mutation() *AppActionMutation {
 	return aau.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aau *AppActionUpdate) ClearApp() *AppActionUpdate {
-	aau.mutation.ClearApp()
-	return aau
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
@@ -254,9 +236,6 @@ func (aau *AppActionUpdate) check() error {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
 	}
-	if _, ok := aau.mutation.AppID(); aau.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppAction.app"`)
-	}
 	return nil
 }
 
@@ -301,35 +280,6 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if aau.mutation.CommentsCleared() {
 		_spec.ClearField(appaction.FieldComments, field.TypeString)
-	}
-	if aau.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appaction.AppTable,
-			Columns: []string{appaction.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aau.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appaction.AppTable,
-			Columns: []string{appaction.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aau.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -488,12 +438,6 @@ func (aauo *AppActionUpdateOne) ClearUpdatedAt() *AppActionUpdateOne {
 	return aauo
 }
 
-// SetAppID sets the "app_id" field.
-func (aauo *AppActionUpdateOne) SetAppID(i int) *AppActionUpdateOne {
-	aauo.mutation.SetAppID(i)
-	return aauo
-}
-
 // SetName sets the "name" field.
 func (aauo *AppActionUpdateOne) SetName(s string) *AppActionUpdateOne {
 	aauo.mutation.SetName(s)
@@ -532,11 +476,6 @@ func (aauo *AppActionUpdateOne) ClearComments() *AppActionUpdateOne {
 	return aauo
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aauo *AppActionUpdateOne) SetApp(a *App) *AppActionUpdateOne {
-	return aauo.SetAppID(a.ID)
-}
-
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by IDs.
 func (aauo *AppActionUpdateOne) AddMenuIDs(ids ...int) *AppActionUpdateOne {
 	aauo.mutation.AddMenuIDs(ids...)
@@ -570,12 +509,6 @@ func (aauo *AppActionUpdateOne) AddResources(a ...*AppRes) *AppActionUpdateOne {
 // Mutation returns the AppActionMutation object of the builder.
 func (aauo *AppActionUpdateOne) Mutation() *AppActionMutation {
 	return aauo.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aauo *AppActionUpdateOne) ClearApp() *AppActionUpdateOne {
-	aauo.mutation.ClearApp()
-	return aauo
 }
 
 // ClearMenus clears all "menus" edges to the AppMenu entity.
@@ -677,9 +610,6 @@ func (aauo *AppActionUpdateOne) check() error {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
 	}
-	if _, ok := aauo.mutation.AppID(); aauo.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppAction.app"`)
-	}
 	return nil
 }
 
@@ -741,35 +671,6 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 	}
 	if aauo.mutation.CommentsCleared() {
 		_spec.ClearField(appaction.FieldComments, field.TypeString)
-	}
-	if aauo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appaction.AppTable,
-			Columns: []string{appaction.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aauo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appaction.AppTable,
-			Columns: []string{appaction.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aauo.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{

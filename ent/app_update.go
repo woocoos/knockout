@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -85,12 +86,6 @@ func (au *AppUpdate) ClearUpdatedAt() *AppUpdate {
 // SetName sets the "name" field.
 func (au *AppUpdate) SetName(s string) *AppUpdate {
 	au.mutation.SetName(s)
-	return au
-}
-
-// SetCode sets the "code" field.
-func (au *AppUpdate) SetCode(s string) *AppUpdate {
-	au.mutation.SetCode(s)
 	return au
 }
 
@@ -294,30 +289,50 @@ func (au *AppUpdate) ClearStatus() *AppUpdate {
 	return au
 }
 
-// SetCreatedOrgID sets the "created_org_id" field.
-func (au *AppUpdate) SetCreatedOrgID(i int) *AppUpdate {
-	au.mutation.ResetCreatedOrgID()
-	au.mutation.SetCreatedOrgID(i)
+// SetPrivate sets the "private" field.
+func (au *AppUpdate) SetPrivate(b bool) *AppUpdate {
+	au.mutation.SetPrivate(b)
 	return au
 }
 
-// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableCreatedOrgID(i *int) *AppUpdate {
-	if i != nil {
-		au.SetCreatedOrgID(*i)
+// SetNillablePrivate sets the "private" field if the given value is not nil.
+func (au *AppUpdate) SetNillablePrivate(b *bool) *AppUpdate {
+	if b != nil {
+		au.SetPrivate(*b)
 	}
 	return au
 }
 
-// AddCreatedOrgID adds i to the "created_org_id" field.
-func (au *AppUpdate) AddCreatedOrgID(i int) *AppUpdate {
-	au.mutation.AddCreatedOrgID(i)
+// ClearPrivate clears the value of the "private" field.
+func (au *AppUpdate) ClearPrivate() *AppUpdate {
+	au.mutation.ClearPrivate()
 	return au
 }
 
-// ClearCreatedOrgID clears the value of the "created_org_id" field.
-func (au *AppUpdate) ClearCreatedOrgID() *AppUpdate {
-	au.mutation.ClearCreatedOrgID()
+// SetOrgID sets the "org_id" field.
+func (au *AppUpdate) SetOrgID(i int) *AppUpdate {
+	au.mutation.ResetOrgID()
+	au.mutation.SetOrgID(i)
+	return au
+}
+
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableOrgID(i *int) *AppUpdate {
+	if i != nil {
+		au.SetOrgID(*i)
+	}
+	return au
+}
+
+// AddOrgID adds i to the "org_id" field.
+func (au *AppUpdate) AddOrgID(i int) *AppUpdate {
+	au.mutation.AddOrgID(i)
+	return au
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (au *AppUpdate) ClearOrgID() *AppUpdate {
+	au.mutation.ClearOrgID()
 	return au
 }
 
@@ -409,6 +424,21 @@ func (au *AppUpdate) AddOrgs(o ...*Org) *AppUpdate {
 		ids[i] = o[i].ID
 	}
 	return au.AddOrgIDs(ids...)
+}
+
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (au *AppUpdate) AddOrgAppIDs(ids ...int) *AppUpdate {
+	au.mutation.AddOrgAppIDs(ids...)
+	return au
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (au *AppUpdate) AddOrgApp(o ...*OrgApp) *AppUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return au.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -542,6 +572,27 @@ func (au *AppUpdate) RemoveOrgs(o ...*Org) *AppUpdate {
 	return au.RemoveOrgIDs(ids...)
 }
 
+// ClearOrgApp clears all "org_app" edges to the OrgApp entity.
+func (au *AppUpdate) ClearOrgApp() *AppUpdate {
+	au.mutation.ClearOrgApp()
+	return au
+}
+
+// RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
+func (au *AppUpdate) RemoveOrgAppIDs(ids ...int) *AppUpdate {
+	au.mutation.RemoveOrgAppIDs(ids...)
+	return au
+}
+
+// RemoveOrgApp removes "org_app" edges to OrgApp entities.
+func (au *AppUpdate) RemoveOrgApp(o ...*OrgApp) *AppUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return au.RemoveOrgAppIDs(ids...)
+}
+
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *AppUpdate) Save(ctx context.Context) (int, error) {
 	return withHooks[int, AppMutation](ctx, au.sqlSave, au.mutation, au.hooks)
@@ -574,11 +625,6 @@ func (au *AppUpdate) check() error {
 	if v, ok := au.mutation.Name(); ok {
 		if err := app.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "App.name": %w`, err)}
-		}
-	}
-	if v, ok := au.mutation.Code(); ok {
-		if err := app.CodeValidator(v); err != nil {
-			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "App.code": %w`, err)}
 		}
 	}
 	if v, ok := au.mutation.Kind(); ok {
@@ -638,9 +684,6 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
-	}
-	if value, ok := au.mutation.Code(); ok {
-		_spec.SetField(app.FieldCode, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Kind(); ok {
 		_spec.SetField(app.FieldKind, field.TypeEnum, value)
@@ -705,14 +748,20 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := au.mutation.CreatedOrgID(); ok {
-		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
+	if value, ok := au.mutation.Private(); ok {
+		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
 	}
-	if value, ok := au.mutation.AddedCreatedOrgID(); ok {
-		_spec.AddField(app.FieldCreatedOrgID, field.TypeInt, value)
+	if au.mutation.PrivateCleared() {
+		_spec.ClearField(app.FieldPrivate, field.TypeBool)
 	}
-	if au.mutation.CreatedOrgIDCleared() {
-		_spec.ClearField(app.FieldCreatedOrgID, field.TypeInt)
+	if value, ok := au.mutation.OrgID(); ok {
+		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
+	}
+	if value, ok := au.mutation.AddedOrgID(); ok {
+		_spec.AddField(app.FieldOrgID, field.TypeInt, value)
+	}
+	if au.mutation.OrgIDCleared() {
+		_spec.ClearField(app.FieldOrgID, field.TypeInt)
 	}
 	if au.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -996,6 +1045,51 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if au.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !au.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
@@ -1066,12 +1160,6 @@ func (auo *AppUpdateOne) ClearUpdatedAt() *AppUpdateOne {
 // SetName sets the "name" field.
 func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
 	auo.mutation.SetName(s)
-	return auo
-}
-
-// SetCode sets the "code" field.
-func (auo *AppUpdateOne) SetCode(s string) *AppUpdateOne {
-	auo.mutation.SetCode(s)
 	return auo
 }
 
@@ -1275,30 +1363,50 @@ func (auo *AppUpdateOne) ClearStatus() *AppUpdateOne {
 	return auo
 }
 
-// SetCreatedOrgID sets the "created_org_id" field.
-func (auo *AppUpdateOne) SetCreatedOrgID(i int) *AppUpdateOne {
-	auo.mutation.ResetCreatedOrgID()
-	auo.mutation.SetCreatedOrgID(i)
+// SetPrivate sets the "private" field.
+func (auo *AppUpdateOne) SetPrivate(b bool) *AppUpdateOne {
+	auo.mutation.SetPrivate(b)
 	return auo
 }
 
-// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableCreatedOrgID(i *int) *AppUpdateOne {
-	if i != nil {
-		auo.SetCreatedOrgID(*i)
+// SetNillablePrivate sets the "private" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillablePrivate(b *bool) *AppUpdateOne {
+	if b != nil {
+		auo.SetPrivate(*b)
 	}
 	return auo
 }
 
-// AddCreatedOrgID adds i to the "created_org_id" field.
-func (auo *AppUpdateOne) AddCreatedOrgID(i int) *AppUpdateOne {
-	auo.mutation.AddCreatedOrgID(i)
+// ClearPrivate clears the value of the "private" field.
+func (auo *AppUpdateOne) ClearPrivate() *AppUpdateOne {
+	auo.mutation.ClearPrivate()
 	return auo
 }
 
-// ClearCreatedOrgID clears the value of the "created_org_id" field.
-func (auo *AppUpdateOne) ClearCreatedOrgID() *AppUpdateOne {
-	auo.mutation.ClearCreatedOrgID()
+// SetOrgID sets the "org_id" field.
+func (auo *AppUpdateOne) SetOrgID(i int) *AppUpdateOne {
+	auo.mutation.ResetOrgID()
+	auo.mutation.SetOrgID(i)
+	return auo
+}
+
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableOrgID(i *int) *AppUpdateOne {
+	if i != nil {
+		auo.SetOrgID(*i)
+	}
+	return auo
+}
+
+// AddOrgID adds i to the "org_id" field.
+func (auo *AppUpdateOne) AddOrgID(i int) *AppUpdateOne {
+	auo.mutation.AddOrgID(i)
+	return auo
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (auo *AppUpdateOne) ClearOrgID() *AppUpdateOne {
+	auo.mutation.ClearOrgID()
 	return auo
 }
 
@@ -1390,6 +1498,21 @@ func (auo *AppUpdateOne) AddOrgs(o ...*Org) *AppUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return auo.AddOrgIDs(ids...)
+}
+
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (auo *AppUpdateOne) AddOrgAppIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.AddOrgAppIDs(ids...)
+	return auo
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (auo *AppUpdateOne) AddOrgApp(o ...*OrgApp) *AppUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return auo.AddOrgAppIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -1523,6 +1646,27 @@ func (auo *AppUpdateOne) RemoveOrgs(o ...*Org) *AppUpdateOne {
 	return auo.RemoveOrgIDs(ids...)
 }
 
+// ClearOrgApp clears all "org_app" edges to the OrgApp entity.
+func (auo *AppUpdateOne) ClearOrgApp() *AppUpdateOne {
+	auo.mutation.ClearOrgApp()
+	return auo
+}
+
+// RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
+func (auo *AppUpdateOne) RemoveOrgAppIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.RemoveOrgAppIDs(ids...)
+	return auo
+}
+
+// RemoveOrgApp removes "org_app" edges to OrgApp entities.
+func (auo *AppUpdateOne) RemoveOrgApp(o ...*OrgApp) *AppUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return auo.RemoveOrgAppIDs(ids...)
+}
+
 // Where appends a list predicates to the AppUpdate builder.
 func (auo *AppUpdateOne) Where(ps ...predicate.App) *AppUpdateOne {
 	auo.mutation.Where(ps...)
@@ -1568,11 +1712,6 @@ func (auo *AppUpdateOne) check() error {
 	if v, ok := auo.mutation.Name(); ok {
 		if err := app.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "App.name": %w`, err)}
-		}
-	}
-	if v, ok := auo.mutation.Code(); ok {
-		if err := app.CodeValidator(v); err != nil {
-			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "App.code": %w`, err)}
 		}
 	}
 	if v, ok := auo.mutation.Kind(); ok {
@@ -1650,9 +1789,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if value, ok := auo.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.Code(); ok {
-		_spec.SetField(app.FieldCode, field.TypeString, value)
-	}
 	if value, ok := auo.mutation.Kind(); ok {
 		_spec.SetField(app.FieldKind, field.TypeEnum, value)
 	}
@@ -1716,14 +1852,20 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := auo.mutation.CreatedOrgID(); ok {
-		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
+	if value, ok := auo.mutation.Private(); ok {
+		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
 	}
-	if value, ok := auo.mutation.AddedCreatedOrgID(); ok {
-		_spec.AddField(app.FieldCreatedOrgID, field.TypeInt, value)
+	if auo.mutation.PrivateCleared() {
+		_spec.ClearField(app.FieldPrivate, field.TypeBool)
 	}
-	if auo.mutation.CreatedOrgIDCleared() {
-		_spec.ClearField(app.FieldCreatedOrgID, field.TypeInt)
+	if value, ok := auo.mutation.OrgID(); ok {
+		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
+	}
+	if value, ok := auo.mutation.AddedOrgID(); ok {
+		_spec.AddField(app.FieldOrgID, field.TypeInt, value)
+	}
+	if auo.mutation.OrgIDCleared() {
+		_spec.ClearField(app.FieldOrgID, field.TypeInt)
 	}
 	if auo.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2005,6 +2147,51 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !auo.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &App{config: auo.config}

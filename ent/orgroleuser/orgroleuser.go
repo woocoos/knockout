@@ -11,6 +11,8 @@ import (
 const (
 	// Label holds the string label denoting the orgroleuser type in the database.
 	Label = "org_role_user"
+	// FieldID holds the string denoting the id field in the database.
+	FieldID = "id"
 	// FieldCreatedBy holds the string denoting the created_by field in the database.
 	FieldCreatedBy = "created_by"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -27,10 +29,6 @@ const (
 	EdgeOrgRole = "org_role"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
-	// OrgRoleFieldID holds the string denoting the ID field of the OrgRole.
-	OrgRoleFieldID = "id"
-	// OrgUserFieldID holds the string denoting the ID field of the OrgUser.
-	OrgUserFieldID = "id"
 	// Table holds the table name of the orgroleuser in the database.
 	Table = "org_role_user"
 	// OrgRoleTable is the table that holds the org_role relation/edge.
@@ -51,6 +49,7 @@ const (
 
 // Columns holds all SQL columns for orgroleuser fields.
 var Columns = []string{
+	FieldID,
 	FieldCreatedBy,
 	FieldCreatedAt,
 	FieldUpdatedBy,

@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
 )
 
 // AppCreate is the builder for creating a App entity.
@@ -219,16 +220,30 @@ func (ac *AppCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppCreate {
 	return ac
 }
 
-// SetCreatedOrgID sets the "created_org_id" field.
-func (ac *AppCreate) SetCreatedOrgID(i int) *AppCreate {
-	ac.mutation.SetCreatedOrgID(i)
+// SetPrivate sets the "private" field.
+func (ac *AppCreate) SetPrivate(b bool) *AppCreate {
+	ac.mutation.SetPrivate(b)
 	return ac
 }
 
-// SetNillableCreatedOrgID sets the "created_org_id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableCreatedOrgID(i *int) *AppCreate {
+// SetNillablePrivate sets the "private" field if the given value is not nil.
+func (ac *AppCreate) SetNillablePrivate(b *bool) *AppCreate {
+	if b != nil {
+		ac.SetPrivate(*b)
+	}
+	return ac
+}
+
+// SetOrgID sets the "org_id" field.
+func (ac *AppCreate) SetOrgID(i int) *AppCreate {
+	ac.mutation.SetOrgID(i)
+	return ac
+}
+
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (ac *AppCreate) SetNillableOrgID(i *int) *AppCreate {
 	if i != nil {
-		ac.SetCreatedOrgID(*i)
+		ac.SetOrgID(*i)
 	}
 	return ac
 }
@@ -337,6 +352,21 @@ func (ac *AppCreate) AddOrgs(o ...*Org) *AppCreate {
 	return ac.AddOrgIDs(ids...)
 }
 
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (ac *AppCreate) AddOrgAppIDs(ids ...int) *AppCreate {
+	ac.mutation.AddOrgAppIDs(ids...)
+	return ac
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (ac *AppCreate) AddOrgApp(o ...*OrgApp) *AppCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ac.AddOrgAppIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (ac *AppCreate) Mutation() *AppMutation {
 	return ac.mutation
@@ -384,6 +414,10 @@ func (ac *AppCreate) defaults() error {
 	if _, ok := ac.mutation.Status(); !ok {
 		v := app.DefaultStatus
 		ac.mutation.SetStatus(v)
+	}
+	if _, ok := ac.mutation.Private(); !ok {
+		v := app.DefaultPrivate
+		ac.mutation.SetPrivate(v)
 	}
 	if _, ok := ac.mutation.ID(); !ok {
 		if app.DefaultID == nil {
@@ -543,9 +577,13 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ac.mutation.CreatedOrgID(); ok {
-		_spec.SetField(app.FieldCreatedOrgID, field.TypeInt, value)
-		_node.CreatedOrgID = value
+	if value, ok := ac.mutation.Private(); ok {
+		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
+		_node.Private = value
+	}
+	if value, ok := ac.mutation.OrgID(); ok {
+		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
+		_node.OrgID = value
 	}
 	if nodes := ac.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -645,6 +683,22 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.OrgAppTable,
+			Columns: []string{app.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

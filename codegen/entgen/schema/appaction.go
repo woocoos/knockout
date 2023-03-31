@@ -39,7 +39,7 @@ func (AppAction) Mixin() []ent.Mixin {
 // Fields of the AppAction.
 func (AppAction) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("app_id").Comment("所属应用"),
+		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("名称").
 			Match(regexp.MustCompile("[a-z/]+$")),
 		field.Enum("kind").Values("restful", "graphql", "rpc").Comment("restful,graphql,rpc"),
@@ -52,7 +52,7 @@ func (AppAction) Fields() []ent.Field {
 // Edges of the AppAction.
 func (AppAction) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("app", App.Type).Ref("actions").Unique().Required().Field("app_id"),
+		edge.From("app", App.Type).Ref("actions").Unique().Immutable().Field("app_id"),
 		edge.To("menus", AppMenu.Type).Comment("被引用的菜单项"),
 		edge.To("resources", AppRes.Type).Comment("引用的资源"),
 	}

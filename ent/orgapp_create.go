@@ -82,6 +82,12 @@ func (oac *OrgAppCreate) SetAppID(i int) *OrgAppCreate {
 	return oac
 }
 
+// SetID sets the "id" field.
+func (oac *OrgAppCreate) SetID(i int) *OrgAppCreate {
+	oac.mutation.SetID(i)
+	return oac
+}
+
 // SetApp sets the "app" edge to the App entity.
 func (oac *OrgAppCreate) SetApp(a *App) *OrgAppCreate {
 	return oac.SetAppID(a.ID)
@@ -173,14 +179,24 @@ func (oac *OrgAppCreate) sqlSave(ctx context.Context) (*OrgApp, error) {
 		}
 		return nil, err
 	}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
+	}
+	oac.mutation.id = &_node.ID
+	oac.mutation.done = true
 	return _node, nil
 }
 
 func (oac *OrgAppCreate) createSpec() (*OrgApp, *sqlgraph.CreateSpec) {
 	var (
 		_node = &OrgApp{config: oac.config}
-		_spec = sqlgraph.NewCreateSpec(orgapp.Table, nil)
+		_spec = sqlgraph.NewCreateSpec(orgapp.Table, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
 	)
+	if id, ok := oac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := oac.mutation.CreatedBy(); ok {
 		_spec.SetField(orgapp.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
@@ -273,6 +289,11 @@ func (oacb *OrgAppCreateBulk) Save(ctx context.Context) ([]*OrgApp, error) {
 				}
 				if err != nil {
 					return nil, err
+				}
+				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

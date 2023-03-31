@@ -290,6 +290,16 @@ func AppIDNotIn(vs ...int) predicate.AppAction {
 	return predicate.AppAction(sql.FieldNotIn(FieldAppID, vs...))
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.AppAction {
+	return predicate.AppAction(sql.FieldIsNull(FieldAppID))
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.AppAction {
+	return predicate.AppAction(sql.FieldNotNull(FieldAppID))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.AppAction {
 	return predicate.AppAction(sql.FieldEQ(FieldName, v))

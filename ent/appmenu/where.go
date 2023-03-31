@@ -305,6 +305,16 @@ func AppIDNotIn(vs ...int) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldNotIn(FieldAppID, vs...))
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIsNull(FieldAppID))
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotNull(FieldAppID))
+}
+
 // ParentIDEQ applies the EQ predicate on the "parent_id" field.
 func ParentIDEQ(v int) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldEQ(FieldParentID, v))
@@ -418,16 +428,6 @@ func NameHasPrefix(v string) predicate.AppMenu {
 // NameHasSuffix applies the HasSuffix predicate on the "name" field.
 func NameHasSuffix(v string) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldHasSuffix(FieldName, v))
-}
-
-// NameIsNil applies the IsNil predicate on the "name" field.
-func NameIsNil() predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldIsNull(FieldName))
-}
-
-// NameNotNil applies the NotNil predicate on the "name" field.
-func NameNotNil() predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldNotNull(FieldName))
 }
 
 // NameEqualFold applies the EqualFold predicate on the "name" field.

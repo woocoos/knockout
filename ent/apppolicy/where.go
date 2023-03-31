@@ -301,6 +301,16 @@ func AppIDNotIn(vs ...int) predicate.AppPolicy {
 	return predicate.AppPolicy(sql.FieldNotIn(FieldAppID, vs...))
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldIsNull(FieldAppID))
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldNotNull(FieldAppID))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.AppPolicy {
 	return predicate.AppPolicy(sql.FieldEQ(FieldName, v))
@@ -419,6 +429,16 @@ func CommentsHasPrefix(v string) predicate.AppPolicy {
 // CommentsHasSuffix applies the HasSuffix predicate on the "comments" field.
 func CommentsHasSuffix(v string) predicate.AppPolicy {
 	return predicate.AppPolicy(sql.FieldHasSuffix(FieldComments, v))
+}
+
+// CommentsIsNil applies the IsNil predicate on the "comments" field.
+func CommentsIsNil() predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldIsNull(FieldComments))
+}
+
+// CommentsNotNil applies the NotNil predicate on the "comments" field.
+func CommentsNotNil() predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldNotNull(FieldComments))
 }
 
 // CommentsEqualFold applies the EqualFold predicate on the "comments" field.
@@ -616,7 +636,7 @@ func HasAppRolePolicyWith(preds ...predicate.AppRolePolicy) predicate.AppPolicy 
 	return predicate.AppPolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppRolePolicyInverseTable, AppRolePolicyColumn),
+			sqlgraph.To(AppRolePolicyInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, AppRolePolicyTable, AppRolePolicyColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

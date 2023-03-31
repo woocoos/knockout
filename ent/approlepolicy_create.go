@@ -82,6 +82,18 @@ func (arpc *AppRolePolicyCreate) SetAppPolicyID(i int) *AppRolePolicyCreate {
 	return arpc
 }
 
+// SetAppID sets the "app_id" field.
+func (arpc *AppRolePolicyCreate) SetAppID(i int) *AppRolePolicyCreate {
+	arpc.mutation.SetAppID(i)
+	return arpc
+}
+
+// SetID sets the "id" field.
+func (arpc *AppRolePolicyCreate) SetID(i int) *AppRolePolicyCreate {
+	arpc.mutation.SetID(i)
+	return arpc
+}
+
 // SetRoleID sets the "role" edge to the AppRole entity by ID.
 func (arpc *AppRolePolicyCreate) SetRoleID(id int) *AppRolePolicyCreate {
 	arpc.mutation.SetRoleID(id)
@@ -165,6 +177,9 @@ func (arpc *AppRolePolicyCreate) check() error {
 	if _, ok := arpc.mutation.AppPolicyID(); !ok {
 		return &ValidationError{Name: "app_policy_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_policy_id"`)}
 	}
+	if _, ok := arpc.mutation.AppID(); !ok {
+		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_id"`)}
+	}
 	if _, ok := arpc.mutation.RoleID(); !ok {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required edge "AppRolePolicy.role"`)}
 	}
@@ -185,14 +200,24 @@ func (arpc *AppRolePolicyCreate) sqlSave(ctx context.Context) (*AppRolePolicy, e
 		}
 		return nil, err
 	}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
+	}
+	arpc.mutation.id = &_node.ID
+	arpc.mutation.done = true
 	return _node, nil
 }
 
 func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AppRolePolicy{config: arpc.config}
-		_spec = sqlgraph.NewCreateSpec(approlepolicy.Table, nil)
+		_spec = sqlgraph.NewCreateSpec(approlepolicy.Table, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
 	)
+	if id, ok := arpc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := arpc.mutation.CreatedBy(); ok {
 		_spec.SetField(approlepolicy.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
@@ -208,6 +233,10 @@ func (arpc *AppRolePolicyCreate) createSpec() (*AppRolePolicy, *sqlgraph.CreateS
 	if value, ok := arpc.mutation.UpdatedAt(); ok {
 		_spec.SetField(approlepolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if value, ok := arpc.mutation.AppID(); ok {
+		_spec.SetField(approlepolicy.FieldAppID, field.TypeInt, value)
+		_node.AppID = value
 	}
 	if nodes := arpc.mutation.RoleIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -285,6 +314,11 @@ func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolic
 				}
 				if err != nil {
 					return nil, err
+				}
+				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

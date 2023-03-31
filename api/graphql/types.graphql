@@ -12,6 +12,16 @@ extend input CreateUserInput {
     password: CreateUserPasswordInput
 }
 
+input AssignRoleUserInput {
+    """授权类型为角色或用户组的ID"""
+    orgRoleID: ID!
+    userID: ID!
+    """生效开始时间"""
+    startAt: Time
+    """生效结束时间"""
+    endAt: Time
+}
+
 """树操作类型"""
 enum TreeAction {
     """作为子节点"""

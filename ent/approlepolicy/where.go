@@ -10,6 +10,51 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
+// ID filters vertices based on their ID field.
+func ID(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldID, id))
+}
+
+// IDEQ applies the EQ predicate on the ID field.
+func IDEQ(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldID, id))
+}
+
+// IDNEQ applies the NEQ predicate on the ID field.
+func IDNEQ(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNEQ(FieldID, id))
+}
+
+// IDIn applies the In predicate on the ID field.
+func IDIn(ids ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldIn(FieldID, ids...))
+}
+
+// IDNotIn applies the NotIn predicate on the ID field.
+func IDNotIn(ids ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNotIn(FieldID, ids...))
+}
+
+// IDGT applies the GT predicate on the ID field.
+func IDGT(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldGT(FieldID, id))
+}
+
+// IDGTE applies the GTE predicate on the ID field.
+func IDGTE(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldGTE(FieldID, id))
+}
+
+// IDLT applies the LT predicate on the ID field.
+func IDLT(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldLT(FieldID, id))
+}
+
+// IDLTE applies the LTE predicate on the ID field.
+func IDLTE(id int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldLTE(FieldID, id))
+}
+
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
 func CreatedBy(v int) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(sql.FieldEQ(FieldCreatedBy, v))
@@ -38,6 +83,11 @@ func AppRoleID(v int) predicate.AppRolePolicy {
 // AppPolicyID applies equality check predicate on the "app_policy_id" field. It's identical to AppPolicyIDEQ.
 func AppPolicyID(v int) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppPolicyID, v))
+}
+
+// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
+func AppID(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppID, v))
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
@@ -260,11 +310,51 @@ func AppPolicyIDNotIn(vs ...int) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(sql.FieldNotIn(FieldAppPolicyID, vs...))
 }
 
+// AppIDEQ applies the EQ predicate on the "app_id" field.
+func AppIDEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldEQ(FieldAppID, v))
+}
+
+// AppIDNEQ applies the NEQ predicate on the "app_id" field.
+func AppIDNEQ(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNEQ(FieldAppID, v))
+}
+
+// AppIDIn applies the In predicate on the "app_id" field.
+func AppIDIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldIn(FieldAppID, vs...))
+}
+
+// AppIDNotIn applies the NotIn predicate on the "app_id" field.
+func AppIDNotIn(vs ...int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldNotIn(FieldAppID, vs...))
+}
+
+// AppIDGT applies the GT predicate on the "app_id" field.
+func AppIDGT(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldGT(FieldAppID, v))
+}
+
+// AppIDGTE applies the GTE predicate on the "app_id" field.
+func AppIDGTE(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldGTE(FieldAppID, v))
+}
+
+// AppIDLT applies the LT predicate on the "app_id" field.
+func AppIDLT(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldLT(FieldAppID, v))
+}
+
+// AppIDLTE applies the LTE predicate on the "app_id" field.
+func AppIDLTE(v int) predicate.AppRolePolicy {
+	return predicate.AppRolePolicy(sql.FieldLTE(FieldAppID, v))
+}
+
 // HasRole applies the HasEdge predicate on the "role" edge.
 func HasRole() predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, RoleColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, RoleTable, RoleColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -275,8 +365,8 @@ func HasRole() predicate.AppRolePolicy {
 func HasRoleWith(preds ...predicate.AppRole) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, RoleColumn),
-			sqlgraph.To(RoleInverseTable, AppRoleFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RoleInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, RoleTable, RoleColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
@@ -291,7 +381,7 @@ func HasRoleWith(preds ...predicate.AppRole) predicate.AppRolePolicy {
 func HasPolicy() predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, PolicyColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, PolicyTable, PolicyColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -302,8 +392,8 @@ func HasPolicy() predicate.AppRolePolicy {
 func HasPolicyWith(preds ...predicate.AppPolicy) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, PolicyColumn),
-			sqlgraph.To(PolicyInverseTable, AppPolicyFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(PolicyInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, PolicyTable, PolicyColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

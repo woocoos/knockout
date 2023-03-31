@@ -37,20 +37,21 @@ func (AppPolicy) Mixin() []ent.Mixin {
 // Fields of the AppPolicy.
 func (AppPolicy) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("app_id").Comment("所属应用"),
+		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("策略名称"),
-		field.String("comments").Comment("描述"),
+		field.String("comments").Optional().Comment("描述"),
 		field.JSON("rules", []types.PolicyRule{}).Comment("策略规则"),
 		field.String("version").Comment("版本号"),
 		field.Bool("auto_grant").Default(false).Comment("标识是否自动授予到账户"),
-		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
+		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).
+			Optional().Comment("状态"),
 	}
 }
 
 // Edges of the AppPolicy.
 func (AppPolicy) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("app", App.Type).Ref("policies").Unique().Required().Field("app_id"),
+		edge.From("app", App.Type).Ref("policies").Unique().Immutable().Field("app_id"),
 		edge.From("roles", AppRole.Type).Ref("policies").Through("app_role_policy", AppRolePolicy.Type),
 	}
 }

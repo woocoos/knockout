@@ -121,7 +121,7 @@ func (aa *AppAction) App(ctx context.Context) (*App, error) {
 	if IsNotLoaded(err) {
 		result, err = aa.QueryApp().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (aa *AppAction) Menus(ctx context.Context) (result []*AppMenu, err error) {
@@ -153,7 +153,7 @@ func (am *AppMenu) App(ctx context.Context) (*App, error) {
 	if IsNotLoaded(err) {
 		result, err = am.QueryApp().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (am *AppMenu) Action(ctx context.Context) (*AppAction, error) {
@@ -169,7 +169,7 @@ func (ap *AppPolicy) App(ctx context.Context) (*App, error) {
 	if IsNotLoaded(err) {
 		result, err = ap.QueryApp().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (ap *AppPolicy) Roles(ctx context.Context) (result []*AppRole, err error) {
@@ -189,7 +189,7 @@ func (ar *AppRes) App(ctx context.Context) (*App, error) {
 	if IsNotLoaded(err) {
 		result, err = ar.QueryApp().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (ar *AppRole) App(ctx context.Context) (*App, error) {
@@ -197,7 +197,7 @@ func (ar *AppRole) App(ctx context.Context) (*App, error) {
 	if IsNotLoaded(err) {
 		result, err = ar.QueryApp().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error) {
@@ -324,6 +324,18 @@ func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
 	return result, err
 }
 
+func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = op.NamedPermissions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = op.Edges.PermissionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = op.QueryPermissions().All(ctx)
+	}
+	return result, err
+}
+
 func (pe *Permission) Org(ctx context.Context) (*Org, error) {
 	result, err := pe.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
@@ -338,6 +350,14 @@ func (pe *Permission) User(ctx context.Context) (*User, error) {
 		result, err = pe.QueryUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
+	result, err := pe.Edges.OrgPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = pe.QueryOrgPolicy().Only(ctx)
+	}
+	return result, err
 }
 
 func (u *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {

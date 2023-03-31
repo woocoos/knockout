@@ -10,6 +10,51 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
+// ID filters vertices based on their ID field.
+func ID(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldID, id))
+}
+
+// IDEQ applies the EQ predicate on the ID field.
+func IDEQ(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldID, id))
+}
+
+// IDNEQ applies the NEQ predicate on the ID field.
+func IDNEQ(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNEQ(FieldID, id))
+}
+
+// IDIn applies the In predicate on the ID field.
+func IDIn(ids ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldIn(FieldID, ids...))
+}
+
+// IDNotIn applies the NotIn predicate on the ID field.
+func IDNotIn(ids ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNotIn(FieldID, ids...))
+}
+
+// IDGT applies the GT predicate on the ID field.
+func IDGT(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldGT(FieldID, id))
+}
+
+// IDGTE applies the GTE predicate on the ID field.
+func IDGTE(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldGTE(FieldID, id))
+}
+
+// IDLT applies the LT predicate on the ID field.
+func IDLT(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldLT(FieldID, id))
+}
+
+// IDLTE applies the LTE predicate on the ID field.
+func IDLTE(id int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldLTE(FieldID, id))
+}
+
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
 func CreatedBy(v int) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(sql.FieldEQ(FieldCreatedBy, v))
@@ -264,7 +309,7 @@ func OrgUserIDNotIn(vs ...int) predicate.OrgRoleUser {
 func HasOrgRole() predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgRoleColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgRoleTable, OrgRoleColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -275,8 +320,8 @@ func HasOrgRole() predicate.OrgRoleUser {
 func HasOrgRoleWith(preds ...predicate.OrgRole) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgRoleColumn),
-			sqlgraph.To(OrgRoleInverseTable, OrgRoleFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgRoleInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgRoleTable, OrgRoleColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
@@ -291,7 +336,7 @@ func HasOrgRoleWith(preds ...predicate.OrgRole) predicate.OrgRoleUser {
 func HasOrgUser() predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgUserColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgUserTable, OrgUserColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -302,8 +347,8 @@ func HasOrgUser() predicate.OrgRoleUser {
 func HasOrgUserWith(preds ...predicate.OrgUser) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgUserColumn),
-			sqlgraph.To(OrgUserInverseTable, OrgUserFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgUserInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgUserTable, OrgUserColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

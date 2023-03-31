@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -378,6 +379,21 @@ func (oc *OrgCreate) AddOrgUser(o ...*OrgUser) *OrgCreate {
 	return oc.AddOrgUserIDs(ids...)
 }
 
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (oc *OrgCreate) AddOrgAppIDs(ids ...int) *OrgCreate {
+	oc.mutation.AddOrgAppIDs(ids...)
+	return oc
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (oc *OrgCreate) AddOrgApp(o ...*OrgApp) *OrgCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return oc.AddOrgAppIDs(ids...)
+}
+
 // Mutation returns the OrgMutation object of the builder.
 func (oc *OrgCreate) Mutation() *OrgMutation {
 	return oc.mutation
@@ -738,6 +754,22 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

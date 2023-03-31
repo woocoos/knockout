@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 )
 
 // AppPolicyCreate is the builder for creating a AppPolicy entity.
@@ -78,6 +79,14 @@ func (apc *AppPolicyCreate) SetAppID(i int) *AppPolicyCreate {
 	return apc
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (apc *AppPolicyCreate) SetNillableAppID(i *int) *AppPolicyCreate {
+	if i != nil {
+		apc.SetAppID(*i)
+	}
+	return apc
+}
+
 // SetName sets the "name" field.
 func (apc *AppPolicyCreate) SetName(s string) *AppPolicyCreate {
 	apc.mutation.SetName(s)
@@ -87,6 +96,14 @@ func (apc *AppPolicyCreate) SetName(s string) *AppPolicyCreate {
 // SetComments sets the "comments" field.
 func (apc *AppPolicyCreate) SetComments(s string) *AppPolicyCreate {
 	apc.mutation.SetComments(s)
+	return apc
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (apc *AppPolicyCreate) SetNillableComments(s *string) *AppPolicyCreate {
+	if s != nil {
+		apc.SetComments(*s)
+	}
 	return apc
 }
 
@@ -164,6 +181,21 @@ func (apc *AppPolicyCreate) AddRoles(a ...*AppRole) *AppPolicyCreate {
 	return apc.AddRoleIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (apc *AppPolicyCreate) AddAppRolePolicyIDs(ids ...int) *AppPolicyCreate {
+	apc.mutation.AddAppRolePolicyIDs(ids...)
+	return apc
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (apc *AppPolicyCreate) AddAppRolePolicy(a ...*AppRolePolicy) *AppPolicyCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apc.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppPolicyMutation object of the builder.
 func (apc *AppPolicyCreate) Mutation() *AppPolicyMutation {
 	return apc.mutation
@@ -234,14 +266,8 @@ func (apc *AppPolicyCreate) check() error {
 	if _, ok := apc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppPolicy.created_at"`)}
 	}
-	if _, ok := apc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppPolicy.app_id"`)}
-	}
 	if _, ok := apc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppPolicy.name"`)}
-	}
-	if _, ok := apc.mutation.Comments(); !ok {
-		return &ValidationError{Name: "comments", err: errors.New(`ent: missing required field "AppPolicy.comments"`)}
 	}
 	if _, ok := apc.mutation.Rules(); !ok {
 		return &ValidationError{Name: "rules", err: errors.New(`ent: missing required field "AppPolicy.rules"`)}
@@ -256,9 +282,6 @@ func (apc *AppPolicyCreate) check() error {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
 		}
-	}
-	if _, ok := apc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppPolicy.app"`)}
 	}
 	return nil
 }
@@ -367,6 +390,22 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apc.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

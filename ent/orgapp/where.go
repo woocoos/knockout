@@ -10,6 +10,51 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
+// ID filters vertices based on their ID field.
+func ID(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldEQ(FieldID, id))
+}
+
+// IDEQ applies the EQ predicate on the ID field.
+func IDEQ(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldEQ(FieldID, id))
+}
+
+// IDNEQ applies the NEQ predicate on the ID field.
+func IDNEQ(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldNEQ(FieldID, id))
+}
+
+// IDIn applies the In predicate on the ID field.
+func IDIn(ids ...int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldIn(FieldID, ids...))
+}
+
+// IDNotIn applies the NotIn predicate on the ID field.
+func IDNotIn(ids ...int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldNotIn(FieldID, ids...))
+}
+
+// IDGT applies the GT predicate on the ID field.
+func IDGT(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldGT(FieldID, id))
+}
+
+// IDGTE applies the GTE predicate on the ID field.
+func IDGTE(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldGTE(FieldID, id))
+}
+
+// IDLT applies the LT predicate on the ID field.
+func IDLT(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldLT(FieldID, id))
+}
+
+// IDLTE applies the LTE predicate on the ID field.
+func IDLTE(id int) predicate.OrgApp {
+	return predicate.OrgApp(sql.FieldLTE(FieldID, id))
+}
+
 // CreatedBy applies equality check predicate on the "created_by" field. It's identical to CreatedByEQ.
 func CreatedBy(v int) predicate.OrgApp {
 	return predicate.OrgApp(sql.FieldEQ(FieldCreatedBy, v))
@@ -264,7 +309,7 @@ func AppIDNotIn(vs ...int) predicate.OrgApp {
 func HasApp() predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, AppColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -275,8 +320,8 @@ func HasApp() predicate.OrgApp {
 func HasAppWith(preds ...predicate.App) predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, AppColumn),
-			sqlgraph.To(AppInverseTable, AppFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AppInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
@@ -291,7 +336,7 @@ func HasAppWith(preds ...predicate.App) predicate.OrgApp {
 func HasOrg() predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgColumn),
+			sqlgraph.From(Table, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
@@ -302,8 +347,8 @@ func HasOrg() predicate.OrgApp {
 func HasOrgWith(preds ...predicate.Org) predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, OrgColumn),
-			sqlgraph.To(OrgInverseTable, OrgFieldID),
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

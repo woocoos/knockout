@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -2331,6 +2332,284 @@ func (op *OrgPolicy) ToEdge(order *OrgPolicyOrder) *OrgPolicyEdge {
 	return &OrgPolicyEdge{
 		Node:   op,
 		Cursor: order.Field.toCursor(op),
+	}
+}
+
+// OrgRoleEdge is the edge representation of OrgRole.
+type OrgRoleEdge struct {
+	Node   *OrgRole `json:"node"`
+	Cursor Cursor   `json:"cursor"`
+}
+
+// OrgRoleConnection is the connection containing edges to OrgRole.
+type OrgRoleConnection struct {
+	Edges      []*OrgRoleEdge `json:"edges"`
+	PageInfo   PageInfo       `json:"pageInfo"`
+	TotalCount int            `json:"totalCount"`
+}
+
+func (c *OrgRoleConnection) build(nodes []*OrgRole, pager *orgrolePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *OrgRole
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *OrgRole {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *OrgRole {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*OrgRoleEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &OrgRoleEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// OrgRolePaginateOption enables pagination customization.
+type OrgRolePaginateOption func(*orgrolePager) error
+
+// WithOrgRoleOrder configures pagination ordering.
+func WithOrgRoleOrder(order *OrgRoleOrder) OrgRolePaginateOption {
+	if order == nil {
+		order = DefaultOrgRoleOrder
+	}
+	o := *order
+	return func(pager *orgrolePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultOrgRoleOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithOrgRoleFilter configures pagination filter.
+func WithOrgRoleFilter(filter func(*OrgRoleQuery) (*OrgRoleQuery, error)) OrgRolePaginateOption {
+	return func(pager *orgrolePager) error {
+		if filter == nil {
+			return errors.New("OrgRoleQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type orgrolePager struct {
+	reverse bool
+	order   *OrgRoleOrder
+	filter  func(*OrgRoleQuery) (*OrgRoleQuery, error)
+}
+
+func newOrgRolePager(opts []OrgRolePaginateOption, reverse bool) (*orgrolePager, error) {
+	pager := &orgrolePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultOrgRoleOrder
+	}
+	return pager, nil
+}
+
+func (p *orgrolePager) applyFilter(query *OrgRoleQuery) (*OrgRoleQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *orgrolePager) toCursor(or *OrgRole) Cursor {
+	return p.order.Field.toCursor(or)
+}
+
+func (p *orgrolePager) applyCursors(query *OrgRoleQuery, after, before *Cursor) (*OrgRoleQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgRoleOrder.Field.field, p.order.Field.field, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *orgrolePager) applyOrder(query *OrgRoleQuery) *OrgRoleQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(orderFunc(direction, p.order.Field.field))
+	if p.order.Field != DefaultOrgRoleOrder.Field {
+		query = query.Order(orderFunc(direction, DefaultOrgRoleOrder.Field.field))
+	}
+	return query
+}
+
+func (p *orgrolePager) orderExpr() sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultOrgRoleOrder.Field {
+			b.Comma().Ident(DefaultOrgRoleOrder.Field.field).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to OrgRole.
+func (or *OrgRoleQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...OrgRolePaginateOption,
+) (*OrgRoleConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newOrgRolePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if or, err = pager.applyFilter(or); err != nil {
+		return nil, err
+	}
+	conn := &OrgRoleConnection{Edges: []*OrgRoleEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = or.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+
+	if or, err = pager.applyCursors(or, after, before); err != nil {
+		return nil, err
+	}
+	or = pager.applyOrder(or)
+	if limit := paginateLimit(first, last); limit != 0 {
+		or.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := or.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+
+	nodes, err := or.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// OrgRoleOrderFieldCreatedAt orders OrgRole by created_at.
+	OrgRoleOrderFieldCreatedAt = &OrgRoleOrderField{
+		field: orgrole.FieldCreatedAt,
+		toCursor: func(or *OrgRole) Cursor {
+			return Cursor{
+				ID:    or.ID,
+				Value: or.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f OrgRoleOrderField) String() string {
+	var str string
+	switch f.field {
+	case orgrole.FieldCreatedAt:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f OrgRoleOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *OrgRoleOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("OrgRoleOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *OrgRoleOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid OrgRoleOrderField", str)
+	}
+	return nil
+}
+
+// OrgRoleOrderField defines the ordering field of OrgRole.
+type OrgRoleOrderField struct {
+	field    string
+	toCursor func(*OrgRole) Cursor
+}
+
+// OrgRoleOrder defines the ordering of OrgRole.
+type OrgRoleOrder struct {
+	Direction OrderDirection     `json:"direction"`
+	Field     *OrgRoleOrderField `json:"field"`
+}
+
+// DefaultOrgRoleOrder is the default ordering of OrgRole.
+var DefaultOrgRoleOrder = &OrgRoleOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &OrgRoleOrderField{
+		field: orgrole.FieldID,
+		toCursor: func(or *OrgRole) Cursor {
+			return Cursor{ID: or.ID}
+		},
+	},
+}
+
+// ToEdge converts OrgRole into OrgRoleEdge.
+func (or *OrgRole) ToEdge(order *OrgRoleOrder) *OrgRoleEdge {
+	if order == nil {
+		order = DefaultOrgRoleOrder
+	}
+	return &OrgRoleEdge{
+		Node:   or,
+		Cursor: order.Field.toCursor(or),
 	}
 }
 

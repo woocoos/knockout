@@ -17,7 +17,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 45},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 45},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 10},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"web", "native", "server"}},
 		{Name: "redirect_uri", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "app_key", Type: field.TypeString, Nullable: true},
@@ -28,7 +28,8 @@ var (
 		{Name: "logo", Type: field.TypeString, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
-		{Name: "created_org_id", Type: field.TypeInt, Nullable: true},
+		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// AppTable holds the schema information for the "app" table.
 	AppTable = &schema.Table{
@@ -47,7 +48,7 @@ var (
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc"}},
 		{Name: "method", Type: field.TypeEnum, Enums: []string{"read", "write", "list"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppActionTable holds the schema information for the "app_action" table.
 	AppActionTable = &schema.Table{
@@ -59,7 +60,7 @@ var (
 				Symbol:     "app_action_app_actions",
 				Columns:    []*schema.Column{AppActionColumns[9]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -72,10 +73,10 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "parent_id", Type: field.TypeInt},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"dir", "menu"}},
-		{Name: "name", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
-		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "action_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppMenuTable holds the schema information for the "app_menu" table.
@@ -88,7 +89,7 @@ var (
 				Symbol:     "app_menu_app_menus",
 				Columns:    []*schema.Column{AppMenuColumns[10]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "app_menu_app_action_menus",
@@ -106,12 +107,12 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "comments", Type: field.TypeString},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
 		{Name: "version", Type: field.TypeString},
 		{Name: "auto_grant", Type: field.TypeBool, Default: false},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
-		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppPolicyTable holds the schema information for the "app_policy" table.
 	AppPolicyTable = &schema.Table{
@@ -123,7 +124,7 @@ var (
 				Symbol:     "app_policy_app_policies",
 				Columns:    []*schema.Column{AppPolicyColumns[11]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -137,7 +138,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "type_name", Type: field.TypeString},
 		{Name: "arn_pattern", Type: field.TypeString},
-		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "app_action_resources", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppResTable holds the schema information for the "app_res" table.
@@ -150,7 +151,7 @@ var (
 				Symbol:     "app_res_app_resources",
 				Columns:    []*schema.Column{AppResColumns[8]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "app_res_app_action_resources",
@@ -171,7 +172,7 @@ var (
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "auto_grant", Type: field.TypeBool, Default: false},
 		{Name: "editable", Type: field.TypeBool, Default: false},
-		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppRoleTable holds the schema information for the "app_role" table.
 	AppRoleTable = &schema.Table{
@@ -183,16 +184,18 @@ var (
 				Symbol:     "app_role_app_roles",
 				Columns:    []*schema.Column{AppRoleColumns[9]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
 	// AppRolePolicyColumns holds the columns for the "app_role_policy" table.
 	AppRolePolicyColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt},
 		{Name: "app_role_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "app_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
@@ -200,19 +203,26 @@ var (
 	AppRolePolicyTable = &schema.Table{
 		Name:       "app_role_policy",
 		Columns:    AppRolePolicyColumns,
-		PrimaryKey: []*schema.Column{AppRolePolicyColumns[4], AppRolePolicyColumns[5]},
+		PrimaryKey: []*schema.Column{AppRolePolicyColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_role_policy_app_role_role",
-				Columns:    []*schema.Column{AppRolePolicyColumns[4]},
+				Columns:    []*schema.Column{AppRolePolicyColumns[6]},
 				RefColumns: []*schema.Column{AppRoleColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "app_role_policy_app_policy_policy",
-				Columns:    []*schema.Column{AppRolePolicyColumns[5]},
+				Columns:    []*schema.Column{AppRolePolicyColumns[7]},
 				RefColumns: []*schema.Column{AppPolicyColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "approlepolicy_app_role_id_app_policy_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppRolePolicyColumns[6], AppRolePolicyColumns[7]},
 			},
 		},
 	}
@@ -259,6 +269,7 @@ var (
 	}
 	// OrgAppColumns holds the columns for the "org_app" table.
 	OrgAppColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -270,19 +281,26 @@ var (
 	OrgAppTable = &schema.Table{
 		Name:       "org_app",
 		Columns:    OrgAppColumns,
-		PrimaryKey: []*schema.Column{OrgAppColumns[5], OrgAppColumns[4]},
+		PrimaryKey: []*schema.Column{OrgAppColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_app_app_app",
-				Columns:    []*schema.Column{OrgAppColumns[4]},
+				Columns:    []*schema.Column{OrgAppColumns[5]},
 				RefColumns: []*schema.Column{AppColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "org_app_org_org",
-				Columns:    []*schema.Column{OrgAppColumns[5]},
+				Columns:    []*schema.Column{OrgAppColumns[6]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "orgapp_org_id_app_id",
+				Unique:  true,
+				Columns: []*schema.Column{OrgAppColumns[6], OrgAppColumns[5]},
 			},
 		},
 	}
@@ -296,7 +314,7 @@ var (
 		{Name: "app_id", Type: field.TypeInt, Nullable: true},
 		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "comments", Type: field.TypeString},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
 		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
@@ -316,7 +334,7 @@ var (
 	}
 	// OrgRoleColumns holds the columns for the "org_role" table.
 	OrgRoleColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -325,7 +343,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "app_role_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// OrgRoleTable holds the schema information for the "org_role" table.
 	OrgRoleTable = &schema.Table{
@@ -337,36 +355,51 @@ var (
 				Symbol:     "org_role_org_roles_and_groups",
 				Columns:    []*schema.Column{OrgRoleColumns[9]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "orgrole_org_id_name",
+				Unique:  true,
+				Columns: []*schema.Column{OrgRoleColumns[9], OrgRoleColumns[6]},
 			},
 		},
 	}
 	// OrgRoleUserColumns holds the columns for the "org_role_user" table.
 	OrgRoleUserColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "org_role_id", Type: field.TypeInt},
+		{Name: "org_role_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "org_user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
 	}
 	// OrgRoleUserTable holds the schema information for the "org_role_user" table.
 	OrgRoleUserTable = &schema.Table{
 		Name:       "org_role_user",
 		Columns:    OrgRoleUserColumns,
-		PrimaryKey: []*schema.Column{OrgRoleUserColumns[4], OrgRoleUserColumns[5]},
+		PrimaryKey: []*schema.Column{OrgRoleUserColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_role_user_org_role_org_role",
-				Columns:    []*schema.Column{OrgRoleUserColumns[4]},
+				Columns:    []*schema.Column{OrgRoleUserColumns[5]},
 				RefColumns: []*schema.Column{OrgRoleColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "org_role_user_org_user_org_user",
-				Columns:    []*schema.Column{OrgRoleUserColumns[5]},
+				Columns:    []*schema.Column{OrgRoleUserColumns[6]},
 				RefColumns: []*schema.Column{OrgUserColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "orgroleuser_org_role_id_org_user_id",
+				Unique:  true,
+				Columns: []*schema.Column{OrgRoleUserColumns[5], OrgRoleUserColumns[6]},
 			},
 		},
 	}
@@ -418,11 +451,11 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "principal_kind", Type: field.TypeEnum, Enums: []string{"user", "role"}},
 		{Name: "role_id", Type: field.TypeInt, Nullable: true},
-		{Name: "org_policy_id", Type: field.TypeInt},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
 		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// PermissionTable holds the schema information for the "permission" table.
@@ -433,8 +466,14 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "permission_org_permissions",
-				Columns:    []*schema.Column{PermissionColumns[11]},
+				Columns:    []*schema.Column{PermissionColumns[10]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "permission_org_policy_permissions",
+				Columns:    []*schema.Column{PermissionColumns[11]},
+				RefColumns: []*schema.Column{OrgPolicyColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
@@ -670,7 +709,8 @@ func init() {
 		Table: "org_user",
 	}
 	PermissionTable.ForeignKeys[0].RefTable = OrgTable
-	PermissionTable.ForeignKeys[1].RefTable = UserTable
+	PermissionTable.ForeignKeys[1].RefTable = OrgPolicyTable
+	PermissionTable.ForeignKeys[2].RefTable = UserTable
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
 	}

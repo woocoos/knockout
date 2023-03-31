@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -150,6 +151,20 @@ func (opu *OrgPolicyUpdate) SetComments(s string) *OrgPolicyUpdate {
 	return opu
 }
 
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (opu *OrgPolicyUpdate) SetNillableComments(s *string) *OrgPolicyUpdate {
+	if s != nil {
+		opu.SetComments(*s)
+	}
+	return opu
+}
+
+// ClearComments clears the value of the "comments" field.
+func (opu *OrgPolicyUpdate) ClearComments() *OrgPolicyUpdate {
+	opu.mutation.ClearComments()
+	return opu
+}
+
 // SetRules sets the "rules" field.
 func (opu *OrgPolicyUpdate) SetRules(tr []types.PolicyRule) *OrgPolicyUpdate {
 	opu.mutation.SetRules(tr)
@@ -167,6 +182,21 @@ func (opu *OrgPolicyUpdate) SetOrg(o *Org) *OrgPolicyUpdate {
 	return opu.SetOrgID(o.ID)
 }
 
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
+func (opu *OrgPolicyUpdate) AddPermissionIDs(ids ...int) *OrgPolicyUpdate {
+	opu.mutation.AddPermissionIDs(ids...)
+	return opu
+}
+
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (opu *OrgPolicyUpdate) AddPermissions(p ...*Permission) *OrgPolicyUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return opu.AddPermissionIDs(ids...)
+}
+
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opu *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
 	return opu.mutation
@@ -176,6 +206,27 @@ func (opu *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
 func (opu *OrgPolicyUpdate) ClearOrg() *OrgPolicyUpdate {
 	opu.mutation.ClearOrg()
 	return opu
+}
+
+// ClearPermissions clears all "permissions" edges to the Permission entity.
+func (opu *OrgPolicyUpdate) ClearPermissions() *OrgPolicyUpdate {
+	opu.mutation.ClearPermissions()
+	return opu
+}
+
+// RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
+func (opu *OrgPolicyUpdate) RemovePermissionIDs(ids ...int) *OrgPolicyUpdate {
+	opu.mutation.RemovePermissionIDs(ids...)
+	return opu
+}
+
+// RemovePermissions removes "permissions" edges to Permission entities.
+func (opu *OrgPolicyUpdate) RemovePermissions(p ...*Permission) *OrgPolicyUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return opu.RemovePermissionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -264,6 +315,9 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := opu.mutation.Comments(); ok {
 		_spec.SetField(orgpolicy.FieldComments, field.TypeString, value)
 	}
+	if opu.mutation.CommentsCleared() {
+		_spec.ClearField(orgpolicy.FieldComments, field.TypeString)
+	}
 	if value, ok := opu.mutation.Rules(); ok {
 		_spec.SetField(orgpolicy.FieldRules, field.TypeJSON, value)
 	}
@@ -294,6 +348,51 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if opu.mutation.PermissionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opu.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !opu.mutation.PermissionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opu.mutation.PermissionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -440,6 +539,20 @@ func (opuo *OrgPolicyUpdateOne) SetComments(s string) *OrgPolicyUpdateOne {
 	return opuo
 }
 
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (opuo *OrgPolicyUpdateOne) SetNillableComments(s *string) *OrgPolicyUpdateOne {
+	if s != nil {
+		opuo.SetComments(*s)
+	}
+	return opuo
+}
+
+// ClearComments clears the value of the "comments" field.
+func (opuo *OrgPolicyUpdateOne) ClearComments() *OrgPolicyUpdateOne {
+	opuo.mutation.ClearComments()
+	return opuo
+}
+
 // SetRules sets the "rules" field.
 func (opuo *OrgPolicyUpdateOne) SetRules(tr []types.PolicyRule) *OrgPolicyUpdateOne {
 	opuo.mutation.SetRules(tr)
@@ -457,6 +570,21 @@ func (opuo *OrgPolicyUpdateOne) SetOrg(o *Org) *OrgPolicyUpdateOne {
 	return opuo.SetOrgID(o.ID)
 }
 
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
+func (opuo *OrgPolicyUpdateOne) AddPermissionIDs(ids ...int) *OrgPolicyUpdateOne {
+	opuo.mutation.AddPermissionIDs(ids...)
+	return opuo
+}
+
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (opuo *OrgPolicyUpdateOne) AddPermissions(p ...*Permission) *OrgPolicyUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return opuo.AddPermissionIDs(ids...)
+}
+
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opuo *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
 	return opuo.mutation
@@ -466,6 +594,27 @@ func (opuo *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
 func (opuo *OrgPolicyUpdateOne) ClearOrg() *OrgPolicyUpdateOne {
 	opuo.mutation.ClearOrg()
 	return opuo
+}
+
+// ClearPermissions clears all "permissions" edges to the Permission entity.
+func (opuo *OrgPolicyUpdateOne) ClearPermissions() *OrgPolicyUpdateOne {
+	opuo.mutation.ClearPermissions()
+	return opuo
+}
+
+// RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
+func (opuo *OrgPolicyUpdateOne) RemovePermissionIDs(ids ...int) *OrgPolicyUpdateOne {
+	opuo.mutation.RemovePermissionIDs(ids...)
+	return opuo
+}
+
+// RemovePermissions removes "permissions" edges to Permission entities.
+func (opuo *OrgPolicyUpdateOne) RemovePermissions(p ...*Permission) *OrgPolicyUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return opuo.RemovePermissionIDs(ids...)
 }
 
 // Where appends a list predicates to the OrgPolicyUpdate builder.
@@ -584,6 +733,9 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 	if value, ok := opuo.mutation.Comments(); ok {
 		_spec.SetField(orgpolicy.FieldComments, field.TypeString, value)
 	}
+	if opuo.mutation.CommentsCleared() {
+		_spec.ClearField(orgpolicy.FieldComments, field.TypeString)
+	}
 	if value, ok := opuo.mutation.Rules(); ok {
 		_spec.SetField(orgpolicy.FieldRules, field.TypeJSON, value)
 	}
@@ -614,6 +766,51 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if opuo.mutation.PermissionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opuo.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !opuo.mutation.PermissionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opuo.mutation.PermissionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

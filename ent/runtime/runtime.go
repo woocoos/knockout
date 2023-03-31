@@ -51,7 +51,21 @@ func init() {
 	// appDescCode is the schema descriptor for code field.
 	appDescCode := appFields[1].Descriptor()
 	// app.CodeValidator is a validator for the "code" field. It is called by the builders before save.
-	app.CodeValidator = appDescCode.Validators[0].(func(string) error)
+	app.CodeValidator = func() func(string) error {
+		validators := appDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// appDescRedirectURI is the schema descriptor for redirect_uri field.
 	appDescRedirectURI := appFields[3].Descriptor()
 	// app.RedirectURIValidator is a validator for the "redirect_uri" field. It is called by the builders before save.
@@ -64,6 +78,10 @@ func init() {
 	appDescScopes := appFields[6].Descriptor()
 	// app.ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
 	app.ScopesValidator = appDescScopes.Validators[0].(func(string) error)
+	// appDescPrivate is the schema descriptor for private field.
+	appDescPrivate := appFields[12].Descriptor()
+	// app.DefaultPrivate holds the default value on creation for the private field.
+	app.DefaultPrivate = appDescPrivate.Default.(bool)
 	// appDescID is the schema descriptor for id field.
 	appDescID := appMixinFields0[0].Descriptor()
 	// app.DefaultID holds the default value on creation for the id field.
@@ -106,10 +124,6 @@ func init() {
 	appmenuDescCreatedAt := appmenuMixinFields1[1].Descriptor()
 	// appmenu.DefaultCreatedAt holds the default value on creation for the created_at field.
 	appmenu.DefaultCreatedAt = appmenuDescCreatedAt.Default.(func() time.Time)
-	// appmenuDescName is the schema descriptor for name field.
-	appmenuDescName := appmenuFields[3].Descriptor()
-	// appmenu.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	appmenu.NameValidator = appmenuDescName.Validators[0].(func(string) error)
 	// appmenuDescID is the schema descriptor for id field.
 	appmenuDescID := appmenuMixinFields0[0].Descriptor()
 	// appmenu.DefaultID holds the default value on creation for the id field.
@@ -178,14 +192,14 @@ func init() {
 	// approle.DefaultID holds the default value on creation for the id field.
 	approle.DefaultID = approleDescID.Default.(func() int)
 	approlepolicyMixin := schema.AppRolePolicy{}.Mixin()
-	approlepolicyMixinHooks0 := approlepolicyMixin[0].Hooks()
-	approlepolicy.Hooks[0] = approlepolicyMixinHooks0[0]
-	approlepolicyMixinFields0 := approlepolicyMixin[0].Fields()
-	_ = approlepolicyMixinFields0
+	approlepolicyMixinHooks1 := approlepolicyMixin[1].Hooks()
+	approlepolicy.Hooks[0] = approlepolicyMixinHooks1[0]
+	approlepolicyMixinFields1 := approlepolicyMixin[1].Fields()
+	_ = approlepolicyMixinFields1
 	approlepolicyFields := schema.AppRolePolicy{}.Fields()
 	_ = approlepolicyFields
 	// approlepolicyDescCreatedAt is the schema descriptor for created_at field.
-	approlepolicyDescCreatedAt := approlepolicyMixinFields0[1].Descriptor()
+	approlepolicyDescCreatedAt := approlepolicyMixinFields1[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
 	orgMixin := schema.Org{}.Mixin()
@@ -239,14 +253,14 @@ func init() {
 	// org.DefaultID holds the default value on creation for the id field.
 	org.DefaultID = orgDescID.Default.(func() int)
 	orgappMixin := schema.OrgApp{}.Mixin()
-	orgappMixinHooks0 := orgappMixin[0].Hooks()
-	orgapp.Hooks[0] = orgappMixinHooks0[0]
-	orgappMixinFields0 := orgappMixin[0].Fields()
-	_ = orgappMixinFields0
+	orgappMixinHooks1 := orgappMixin[1].Hooks()
+	orgapp.Hooks[0] = orgappMixinHooks1[0]
+	orgappMixinFields1 := orgappMixin[1].Fields()
+	_ = orgappMixinFields1
 	orgappFields := schema.OrgApp{}.Fields()
 	_ = orgappFields
 	// orgappDescCreatedAt is the schema descriptor for created_at field.
-	orgappDescCreatedAt := orgappMixinFields0[1].Descriptor()
+	orgappDescCreatedAt := orgappMixinFields1[1].Descriptor()
 	// orgapp.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgapp.DefaultCreatedAt = orgappDescCreatedAt.Default.(func() time.Time)
 	orgpolicyMixin := schema.OrgPolicy{}.Mixin()
@@ -267,25 +281,25 @@ func init() {
 	// orgpolicy.DefaultID holds the default value on creation for the id field.
 	orgpolicy.DefaultID = orgpolicyDescID.Default.(func() int)
 	orgroleMixin := schema.OrgRole{}.Mixin()
-	orgroleMixinHooks0 := orgroleMixin[0].Hooks()
-	orgrole.Hooks[0] = orgroleMixinHooks0[0]
-	orgroleMixinFields0 := orgroleMixin[0].Fields()
-	_ = orgroleMixinFields0
+	orgroleMixinHooks1 := orgroleMixin[1].Hooks()
+	orgrole.Hooks[0] = orgroleMixinHooks1[0]
+	orgroleMixinFields1 := orgroleMixin[1].Fields()
+	_ = orgroleMixinFields1
 	orgroleFields := schema.OrgRole{}.Fields()
 	_ = orgroleFields
 	// orgroleDescCreatedAt is the schema descriptor for created_at field.
-	orgroleDescCreatedAt := orgroleMixinFields0[1].Descriptor()
+	orgroleDescCreatedAt := orgroleMixinFields1[1].Descriptor()
 	// orgrole.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgrole.DefaultCreatedAt = orgroleDescCreatedAt.Default.(func() time.Time)
 	orgroleuserMixin := schema.OrgRoleUser{}.Mixin()
-	orgroleuserMixinHooks0 := orgroleuserMixin[0].Hooks()
-	orgroleuser.Hooks[0] = orgroleuserMixinHooks0[0]
-	orgroleuserMixinFields0 := orgroleuserMixin[0].Fields()
-	_ = orgroleuserMixinFields0
+	orgroleuserMixinHooks1 := orgroleuserMixin[1].Hooks()
+	orgroleuser.Hooks[0] = orgroleuserMixinHooks1[0]
+	orgroleuserMixinFields1 := orgroleuserMixin[1].Fields()
+	_ = orgroleuserMixinFields1
 	orgroleuserFields := schema.OrgRoleUser{}.Fields()
 	_ = orgroleuserFields
 	// orgroleuserDescCreatedAt is the schema descriptor for created_at field.
-	orgroleuserDescCreatedAt := orgroleuserMixinFields0[1].Descriptor()
+	orgroleuserDescCreatedAt := orgroleuserMixinFields1[1].Descriptor()
 	// orgroleuser.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgroleuser.DefaultCreatedAt = orgroleuserDescCreatedAt.Default.(func() time.Time)
 	orguserMixin := schema.OrgUser{}.Mixin()

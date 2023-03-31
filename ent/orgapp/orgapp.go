@@ -11,6 +11,8 @@ import (
 const (
 	// Label holds the string label denoting the orgapp type in the database.
 	Label = "org_app"
+	// FieldID holds the string denoting the id field in the database.
+	FieldID = "id"
 	// FieldCreatedBy holds the string denoting the created_by field in the database.
 	FieldCreatedBy = "created_by"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -27,10 +29,6 @@ const (
 	EdgeApp = "app"
 	// EdgeOrg holds the string denoting the org edge name in mutations.
 	EdgeOrg = "org"
-	// AppFieldID holds the string denoting the ID field of the App.
-	AppFieldID = "id"
-	// OrgFieldID holds the string denoting the ID field of the Org.
-	OrgFieldID = "id"
 	// Table holds the table name of the orgapp in the database.
 	Table = "org_app"
 	// AppTable is the table that holds the app relation/edge.
@@ -51,6 +49,7 @@ const (
 
 // Columns holds all SQL columns for orgapp fields.
 var Columns = []string{
+	FieldID,
 	FieldCreatedBy,
 	FieldCreatedAt,
 	FieldUpdatedBy,

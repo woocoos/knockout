@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -74,7 +75,7 @@ func (oruq *OrgRoleUserQuery) QueryOrgRole() *OrgRoleQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(orgroleuser.Table, orgroleuser.OrgRoleColumn, selector),
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, selector),
 			sqlgraph.To(orgrole.Table, orgrole.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.OrgRoleTable, orgroleuser.OrgRoleColumn),
 		)
@@ -96,7 +97,7 @@ func (oruq *OrgRoleUserQuery) QueryOrgUser() *OrgUserQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(orgroleuser.Table, orgroleuser.OrgUserColumn, selector),
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, selector),
 			sqlgraph.To(orguser.Table, orguser.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.OrgUserTable, orgroleuser.OrgUserColumn),
 		)
@@ -128,6 +129,29 @@ func (oruq *OrgRoleUserQuery) FirstX(ctx context.Context) *OrgRoleUser {
 	return node
 }
 
+// FirstID returns the first OrgRoleUser ID from the query.
+// Returns a *NotFoundError when no OrgRoleUser ID was found.
+func (oruq *OrgRoleUserQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = oruq.Limit(1).IDs(setContextOp(ctx, oruq.ctx, "FirstID")); err != nil {
+		return
+	}
+	if len(ids) == 0 {
+		err = &NotFoundError{orgroleuser.Label}
+		return
+	}
+	return ids[0], nil
+}
+
+// FirstIDX is like FirstID, but panics if an error occurs.
+func (oruq *OrgRoleUserQuery) FirstIDX(ctx context.Context) int {
+	id, err := oruq.FirstID(ctx)
+	if err != nil && !IsNotFound(err) {
+		panic(err)
+	}
+	return id
+}
+
 // Only returns a single OrgRoleUser entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgRoleUser entity is found.
 // Returns a *NotFoundError when no OrgRoleUser entities are found.
@@ -155,6 +179,34 @@ func (oruq *OrgRoleUserQuery) OnlyX(ctx context.Context) *OrgRoleUser {
 	return node
 }
 
+// OnlyID is like Only, but returns the only OrgRoleUser ID in the query.
+// Returns a *NotSingularError when more than one OrgRoleUser ID is found.
+// Returns a *NotFoundError when no entities are found.
+func (oruq *OrgRoleUserQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = oruq.Limit(2).IDs(setContextOp(ctx, oruq.ctx, "OnlyID")); err != nil {
+		return
+	}
+	switch len(ids) {
+	case 1:
+		id = ids[0]
+	case 0:
+		err = &NotFoundError{orgroleuser.Label}
+	default:
+		err = &NotSingularError{orgroleuser.Label}
+	}
+	return
+}
+
+// OnlyIDX is like OnlyID, but panics if an error occurs.
+func (oruq *OrgRoleUserQuery) OnlyIDX(ctx context.Context) int {
+	id, err := oruq.OnlyID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // All executes the query and returns a list of OrgRoleUsers.
 func (oruq *OrgRoleUserQuery) All(ctx context.Context) ([]*OrgRoleUser, error) {
 	ctx = setContextOp(ctx, oruq.ctx, "All")
@@ -172,6 +224,27 @@ func (oruq *OrgRoleUserQuery) AllX(ctx context.Context) []*OrgRoleUser {
 		panic(err)
 	}
 	return nodes
+}
+
+// IDs executes the query and returns a list of OrgRoleUser IDs.
+func (oruq *OrgRoleUserQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if oruq.ctx.Unique == nil && oruq.path != nil {
+		oruq.Unique(true)
+	}
+	ctx = setContextOp(ctx, oruq.ctx, "IDs")
+	if err = oruq.Select(orgroleuser.FieldID).Scan(ctx, &ids); err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
+// IDsX is like IDs, but panics if an error occurs.
+func (oruq *OrgRoleUserQuery) IDsX(ctx context.Context) []int {
+	ids, err := oruq.IDs(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return ids
 }
 
 // Count returns the count of the given query.
@@ -195,7 +268,7 @@ func (oruq *OrgRoleUserQuery) CountX(ctx context.Context) int {
 // Exist returns true if the query has elements in the graph.
 func (oruq *OrgRoleUserQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, oruq.ctx, "Exist")
-	switch _, err := oruq.First(ctx); {
+	switch _, err := oruq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -444,13 +517,15 @@ func (oruq *OrgRoleUserQuery) sqlCount(ctx context.Context) (int, error) {
 	if len(oruq.modifiers) > 0 {
 		_spec.Modifiers = oruq.modifiers
 	}
-	_spec.Unique = false
-	_spec.Node.Columns = nil
+	_spec.Node.Columns = oruq.ctx.Fields
+	if len(oruq.ctx.Fields) > 0 {
+		_spec.Unique = oruq.ctx.Unique != nil && *oruq.ctx.Unique
+	}
 	return sqlgraph.CountNodes(ctx, oruq.driver, _spec)
 }
 
 func (oruq *OrgRoleUserQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(orgroleuser.Table, orgroleuser.Columns, nil)
+	_spec := sqlgraph.NewQuerySpec(orgroleuser.Table, orgroleuser.Columns, sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt))
 	_spec.From = oruq.sql
 	if unique := oruq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -459,8 +534,11 @@ func (oruq *OrgRoleUserQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := oruq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
+		_spec.Node.Columns = append(_spec.Node.Columns, orgroleuser.FieldID)
 		for i := range fields {
-			_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			if fields[i] != orgroleuser.FieldID {
+				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			}
 		}
 	}
 	if ps := oruq.predicates; len(ps) > 0 {

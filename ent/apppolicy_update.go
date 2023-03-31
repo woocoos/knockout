@@ -14,9 +14,9 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
-	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -80,12 +80,6 @@ func (apu *AppPolicyUpdate) ClearUpdatedAt() *AppPolicyUpdate {
 	return apu
 }
 
-// SetAppID sets the "app_id" field.
-func (apu *AppPolicyUpdate) SetAppID(i int) *AppPolicyUpdate {
-	apu.mutation.SetAppID(i)
-	return apu
-}
-
 // SetName sets the "name" field.
 func (apu *AppPolicyUpdate) SetName(s string) *AppPolicyUpdate {
 	apu.mutation.SetName(s)
@@ -95,6 +89,20 @@ func (apu *AppPolicyUpdate) SetName(s string) *AppPolicyUpdate {
 // SetComments sets the "comments" field.
 func (apu *AppPolicyUpdate) SetComments(s string) *AppPolicyUpdate {
 	apu.mutation.SetComments(s)
+	return apu
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (apu *AppPolicyUpdate) SetNillableComments(s *string) *AppPolicyUpdate {
+	if s != nil {
+		apu.SetComments(*s)
+	}
+	return apu
+}
+
+// ClearComments clears the value of the "comments" field.
+func (apu *AppPolicyUpdate) ClearComments() *AppPolicyUpdate {
+	apu.mutation.ClearComments()
 	return apu
 }
 
@@ -150,11 +158,6 @@ func (apu *AppPolicyUpdate) ClearStatus() *AppPolicyUpdate {
 	return apu
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (apu *AppPolicyUpdate) SetApp(a *App) *AppPolicyUpdate {
-	return apu.SetAppID(a.ID)
-}
-
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
 func (apu *AppPolicyUpdate) AddRoleIDs(ids ...int) *AppPolicyUpdate {
 	apu.mutation.AddRoleIDs(ids...)
@@ -170,15 +173,24 @@ func (apu *AppPolicyUpdate) AddRoles(a ...*AppRole) *AppPolicyUpdate {
 	return apu.AddRoleIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (apu *AppPolicyUpdate) AddAppRolePolicyIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.AddAppRolePolicyIDs(ids...)
+	return apu
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (apu *AppPolicyUpdate) AddAppRolePolicy(a ...*AppRolePolicy) *AppPolicyUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apu.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppPolicyMutation object of the builder.
 func (apu *AppPolicyUpdate) Mutation() *AppPolicyMutation {
 	return apu.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (apu *AppPolicyUpdate) ClearApp() *AppPolicyUpdate {
-	apu.mutation.ClearApp()
-	return apu
 }
 
 // ClearRoles clears all "roles" edges to the AppRole entity.
@@ -200,6 +212,27 @@ func (apu *AppPolicyUpdate) RemoveRoles(a ...*AppRole) *AppPolicyUpdate {
 		ids[i] = a[i].ID
 	}
 	return apu.RemoveRoleIDs(ids...)
+}
+
+// ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
+func (apu *AppPolicyUpdate) ClearAppRolePolicy() *AppPolicyUpdate {
+	apu.mutation.ClearAppRolePolicy()
+	return apu
+}
+
+// RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
+func (apu *AppPolicyUpdate) RemoveAppRolePolicyIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.RemoveAppRolePolicyIDs(ids...)
+	return apu
+}
+
+// RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
+func (apu *AppPolicyUpdate) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppPolicyUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apu.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -235,9 +268,6 @@ func (apu *AppPolicyUpdate) check() error {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
 		}
-	}
-	if _, ok := apu.mutation.AppID(); apu.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppPolicy.app"`)
 	}
 	return nil
 }
@@ -275,6 +305,9 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.Comments(); ok {
 		_spec.SetField(apppolicy.FieldComments, field.TypeString, value)
 	}
+	if apu.mutation.CommentsCleared() {
+		_spec.ClearField(apppolicy.FieldComments, field.TypeString)
+	}
 	if value, ok := apu.mutation.Rules(); ok {
 		_spec.SetField(apppolicy.FieldRules, field.TypeJSON, value)
 	}
@@ -294,35 +327,6 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if apu.mutation.StatusCleared() {
 		_spec.ClearField(apppolicy.FieldStatus, field.TypeEnum)
-	}
-	if apu.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   apppolicy.AppTable,
-			Columns: []string{apppolicy.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := apu.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   apppolicy.AppTable,
-			Columns: []string{apppolicy.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -379,6 +383,51 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apu.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !apu.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, apu.driver, _spec); err != nil {
@@ -448,12 +497,6 @@ func (apuo *AppPolicyUpdateOne) ClearUpdatedAt() *AppPolicyUpdateOne {
 	return apuo
 }
 
-// SetAppID sets the "app_id" field.
-func (apuo *AppPolicyUpdateOne) SetAppID(i int) *AppPolicyUpdateOne {
-	apuo.mutation.SetAppID(i)
-	return apuo
-}
-
 // SetName sets the "name" field.
 func (apuo *AppPolicyUpdateOne) SetName(s string) *AppPolicyUpdateOne {
 	apuo.mutation.SetName(s)
@@ -463,6 +506,20 @@ func (apuo *AppPolicyUpdateOne) SetName(s string) *AppPolicyUpdateOne {
 // SetComments sets the "comments" field.
 func (apuo *AppPolicyUpdateOne) SetComments(s string) *AppPolicyUpdateOne {
 	apuo.mutation.SetComments(s)
+	return apuo
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (apuo *AppPolicyUpdateOne) SetNillableComments(s *string) *AppPolicyUpdateOne {
+	if s != nil {
+		apuo.SetComments(*s)
+	}
+	return apuo
+}
+
+// ClearComments clears the value of the "comments" field.
+func (apuo *AppPolicyUpdateOne) ClearComments() *AppPolicyUpdateOne {
+	apuo.mutation.ClearComments()
 	return apuo
 }
 
@@ -518,11 +575,6 @@ func (apuo *AppPolicyUpdateOne) ClearStatus() *AppPolicyUpdateOne {
 	return apuo
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (apuo *AppPolicyUpdateOne) SetApp(a *App) *AppPolicyUpdateOne {
-	return apuo.SetAppID(a.ID)
-}
-
 // AddRoleIDs adds the "roles" edge to the AppRole entity by IDs.
 func (apuo *AppPolicyUpdateOne) AddRoleIDs(ids ...int) *AppPolicyUpdateOne {
 	apuo.mutation.AddRoleIDs(ids...)
@@ -538,15 +590,24 @@ func (apuo *AppPolicyUpdateOne) AddRoles(a ...*AppRole) *AppPolicyUpdateOne {
 	return apuo.AddRoleIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (apuo *AppPolicyUpdateOne) AddAppRolePolicyIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.AddAppRolePolicyIDs(ids...)
+	return apuo
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (apuo *AppPolicyUpdateOne) AddAppRolePolicy(a ...*AppRolePolicy) *AppPolicyUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apuo.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppPolicyMutation object of the builder.
 func (apuo *AppPolicyUpdateOne) Mutation() *AppPolicyMutation {
 	return apuo.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (apuo *AppPolicyUpdateOne) ClearApp() *AppPolicyUpdateOne {
-	apuo.mutation.ClearApp()
-	return apuo
 }
 
 // ClearRoles clears all "roles" edges to the AppRole entity.
@@ -568,6 +629,27 @@ func (apuo *AppPolicyUpdateOne) RemoveRoles(a ...*AppRole) *AppPolicyUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return apuo.RemoveRoleIDs(ids...)
+}
+
+// ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
+func (apuo *AppPolicyUpdateOne) ClearAppRolePolicy() *AppPolicyUpdateOne {
+	apuo.mutation.ClearAppRolePolicy()
+	return apuo
+}
+
+// RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
+func (apuo *AppPolicyUpdateOne) RemoveAppRolePolicyIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.RemoveAppRolePolicyIDs(ids...)
+	return apuo
+}
+
+// RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
+func (apuo *AppPolicyUpdateOne) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppPolicyUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apuo.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Where appends a list predicates to the AppPolicyUpdate builder.
@@ -616,9 +698,6 @@ func (apuo *AppPolicyUpdateOne) check() error {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
 		}
-	}
-	if _, ok := apuo.mutation.AppID(); apuo.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppPolicy.app"`)
 	}
 	return nil
 }
@@ -673,6 +752,9 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 	if value, ok := apuo.mutation.Comments(); ok {
 		_spec.SetField(apppolicy.FieldComments, field.TypeString, value)
 	}
+	if apuo.mutation.CommentsCleared() {
+		_spec.ClearField(apppolicy.FieldComments, field.TypeString)
+	}
 	if value, ok := apuo.mutation.Rules(); ok {
 		_spec.SetField(apppolicy.FieldRules, field.TypeJSON, value)
 	}
@@ -692,35 +774,6 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 	}
 	if apuo.mutation.StatusCleared() {
 		_spec.ClearField(apppolicy.FieldStatus, field.TypeEnum)
-	}
-	if apuo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   apppolicy.AppTable,
-			Columns: []string{apppolicy.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := apuo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   apppolicy.AppTable,
-			Columns: []string{apppolicy.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -777,6 +830,51 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apuo.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !apuo.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   apppolicy.AppRolePolicyTable,
+			Columns: []string{apppolicy.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &AppPolicy{config: apuo.config}

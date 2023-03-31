@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 )
 
@@ -76,6 +77,14 @@ func (orc *OrgRoleCreate) SetOrgID(i int) *OrgRoleCreate {
 	return orc
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (orc *OrgRoleCreate) SetNillableOrgID(i *int) *OrgRoleCreate {
+	if i != nil {
+		orc.SetOrgID(*i)
+	}
+	return orc
+}
+
 // SetKind sets the "kind" field.
 func (orc *OrgRoleCreate) SetKind(o orgrole.Kind) *OrgRoleCreate {
 	orc.mutation.SetKind(o)
@@ -116,6 +125,12 @@ func (orc *OrgRoleCreate) SetNillableComments(s *string) *OrgRoleCreate {
 	return orc
 }
 
+// SetID sets the "id" field.
+func (orc *OrgRoleCreate) SetID(i int) *OrgRoleCreate {
+	orc.mutation.SetID(i)
+	return orc
+}
+
 // SetOrg sets the "org" edge to the Org entity.
 func (orc *OrgRoleCreate) SetOrg(o *Org) *OrgRoleCreate {
 	return orc.SetOrgID(o.ID)
@@ -134,6 +149,21 @@ func (orc *OrgRoleCreate) AddOrgUsers(o ...*OrgUser) *OrgRoleCreate {
 		ids[i] = o[i].ID
 	}
 	return orc.AddOrgUserIDs(ids...)
+}
+
+// AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
+func (orc *OrgRoleCreate) AddOrgRoleUserIDs(ids ...int) *OrgRoleCreate {
+	orc.mutation.AddOrgRoleUserIDs(ids...)
+	return orc
+}
+
+// AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
+func (orc *OrgRoleCreate) AddOrgRoleUser(o ...*OrgRoleUser) *OrgRoleCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return orc.AddOrgRoleUserIDs(ids...)
 }
 
 // Mutation returns the OrgRoleMutation object of the builder.
@@ -191,9 +221,6 @@ func (orc *OrgRoleCreate) check() error {
 	if _, ok := orc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrgRole.created_at"`)}
 	}
-	if _, ok := orc.mutation.OrgID(); !ok {
-		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgRole.org_id"`)}
-	}
 	if _, ok := orc.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "OrgRole.kind"`)}
 	}
@@ -204,9 +231,6 @@ func (orc *OrgRoleCreate) check() error {
 	}
 	if _, ok := orc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrgRole.name"`)}
-	}
-	if _, ok := orc.mutation.OrgID(); !ok {
-		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgRole.org"`)}
 	}
 	return nil
 }
@@ -222,8 +246,10 @@ func (orc *OrgRoleCreate) sqlSave(ctx context.Context) (*OrgRole, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
+	}
 	orc.mutation.id = &_node.ID
 	orc.mutation.done = true
 	return _node, nil
@@ -234,6 +260,10 @@ func (orc *OrgRoleCreate) createSpec() (*OrgRole, *sqlgraph.CreateSpec) {
 		_node = &OrgRole{config: orc.config}
 		_spec = sqlgraph.NewCreateSpec(orgrole.Table, sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt))
 	)
+	if id, ok := orc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := orc.mutation.CreatedBy(); ok {
 		_spec.SetField(orgrole.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
@@ -303,6 +333,22 @@ func (orc *OrgRoleCreate) createSpec() (*OrgRole, *sqlgraph.CreateSpec) {
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := orc.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orgrole.OrgRoleUserTable,
+			Columns: []string{orgrole.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -347,7 +393,7 @@ func (orcb *OrgRoleCreateBulk) Save(ctx context.Context) ([]*OrgRole, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
 					nodes[i].ID = int(id)
 				}

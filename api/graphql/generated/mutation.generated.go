@@ -36,18 +36,29 @@ type MutationResolver interface {
 	CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error)
 	UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error)
 	DeleteApp(ctx context.Context, appID int) (bool, error)
-	CreateAppActions(ctx context.Context, input []*ent.CreateAppActionInput) (bool, error)
-	CreateAppMenus(ctx context.Context, input []*ent.CreateAppMenuInput) (bool, error)
-	CreateAppPolicies(ctx context.Context, input []*ent.CreateAppPolicyInput) (bool, error)
-	UpdateAppMenu(ctx context.Context, input ent.UpdateAppMenuInput) (*ent.AppMenu, error)
-	ChangeAppMenuTree(ctx context.Context, sourceID int, targetID int, targetLocation *string) (*bool, error)
-	CreateAppRole(ctx context.Context, input ent.CreateAppRoleInput) (*ent.AppRole, error)
-	UpdateAppRole(ctx context.Context, input ent.UpdateAppRoleInput) (*ent.AppRole, error)
+	CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) (bool, error)
+	CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) (bool, error)
+	UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error)
+	DeleteAppPolicy(ctx context.Context, policyID int) (bool, error)
+	CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) (bool, error)
+	UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error)
+	MoveAppMenu(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
+	DeleteAppMenu(ctx context.Context, menuID int) (bool, error)
+	CreateAppRole(ctx context.Context, appID int, input ent.CreateAppRoleInput) (*ent.AppRole, error)
+	UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error)
+	DeleteAppRole(ctx context.Context, roleID int) (bool, error)
 	AssignOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error)
 	RevokeOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error)
-	AssignOrganizationAppPolicy(ctx context.Context, orgID int, policyID int) (bool, error)
-	RevokeOrganizationAppPolicy(ctx context.Context, orgID int, policyID int) (bool, error)
+	AssignOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error)
+	RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error)
+	CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error)
+	UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error)
+	DeleteRole(ctx context.Context, roleID int) (bool, error)
+	AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) (bool, error)
+	RevokeRoleUser(ctx context.Context, roleID int, userID int) (bool, error)
 	Grant(ctx context.Context, input ent.CreatePermissionInput) (*ent.Permission, error)
+	UpdatePermission(ctx context.Context, permissionID int, input ent.UpdatePermissionInput) (*ent.Permission, error)
+	Revoke(ctx context.Context, orgID int, permissionID int) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -82,14 +93,14 @@ func (ec *executionContext) field_Mutation_assignOrganizationAppPolicy_args(ctx 
 	}
 	args["orgID"] = arg0
 	var arg1 int
-	if tmp, ok := rawArgs["policyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+	if tmp, ok := rawArgs["appPolicyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
 		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["policyID"] = arg1
+	args["appPolicyID"] = arg1
 	return args, nil
 }
 
@@ -117,6 +128,21 @@ func (ec *executionContext) field_Mutation_assignOrganizationApp_args(ctx contex
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_assignRoleUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.AssignRoleUserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_bindUserIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -129,39 +155,6 @@ func (ec *executionContext) field_Mutation_bindUserIdentity_args(ctx context.Con
 		}
 	}
 	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_changeAppMenuTree_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceId"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sourceId"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["targetId"] = arg1
-	var arg2 *string
-	if tmp, ok := rawArgs["targetLocation"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetLocation"))
-		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["targetLocation"] = arg2
 	return args, nil
 }
 
@@ -192,60 +185,96 @@ func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createAppActions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*ent.CreateAppActionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOCreateAppActionInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppActionInputᚄ(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["appID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["appID"] = arg0
+	var arg1 []*ent.CreateAppActionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalOCreateAppActionInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppActionInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppMenus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*ent.CreateAppMenuInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOCreateAppMenuInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppMenuInputᚄ(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["appID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["appID"] = arg0
+	var arg1 []*ent.CreateAppMenuInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalOCreateAppMenuInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppMenuInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppPolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*ent.CreateAppPolicyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOCreateAppPolicyInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInputᚄ(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["appID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["appID"] = arg0
+	var arg1 []*ent.CreateAppPolicyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalOCreateAppPolicyInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateAppRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppRoleInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["appID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["appID"] = arg0
+	var arg1 ent.CreateAppRoleInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppRoleInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -327,6 +356,66 @@ func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateOrgRoleInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgRoleInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["menuID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["menuID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["policyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["policyID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["roleID"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -354,6 +443,21 @@ func (ec *executionContext) field_Mutation_deleteOrganization_args(ctx context.C
 		}
 	}
 	args["orgID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["roleID"] = arg0
 	return args, nil
 }
 
@@ -414,6 +518,39 @@ func (ec *executionContext) field_Mutation_grant_args(ctx context.Context, rawAr
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sourceID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["targetID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["targetID"] = arg1
+	var arg2 model.TreeAction
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg2
 	return args, nil
 }
 
@@ -502,14 +639,14 @@ func (ec *executionContext) field_Mutation_revokeOrganizationAppPolicy_args(ctx 
 	}
 	args["orgID"] = arg0
 	var arg1 int
-	if tmp, ok := rawArgs["policyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+	if tmp, ok := rawArgs["appPolicyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
 		arg1, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["policyID"] = arg1
+	args["appPolicyID"] = arg1
 	return args, nil
 }
 
@@ -537,33 +674,123 @@ func (ec *executionContext) field_Mutation_revokeOrganizationApp_args(ctx contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_revokeRoleUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.UpdateAppMenuInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateAppMenuInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppMenuInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["roleID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_revoke_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["permissionID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["permissionID"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["menuID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["menuID"] = arg0
+	var arg1 ent.UpdateAppMenuInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateAppMenuInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppMenuInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["policyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["policyID"] = arg0
+	var arg1 ent.UpdateAppPolicyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppPolicyInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.UpdateAppRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppRoleInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["roleID"] = arg0
+	var arg1 ent.UpdateAppRoleInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppRoleInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -622,6 +849,54 @@ func (ec *executionContext) field_Mutation_updateOrganization_args(ctx context.C
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg1, err = ec.unmarshalNUpdateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updatePermission_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["permissionID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["permissionID"] = arg0
+	var arg1 ent.UpdatePermissionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdatePermissionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdatePermissionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["roleID"] = arg0
+	var arg1 ent.UpdateOrgRoleInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgRoleInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2113,7 +2388,7 @@ func (ec *executionContext) _Mutation_createAppActions(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAppActions(rctx, fc.Args["input"].([]*ent.CreateAppActionInput))
+		return ec.resolvers.Mutation().CreateAppActions(rctx, fc.Args["appID"].(int), fc.Args["input"].([]*ent.CreateAppActionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2154,61 +2429,6 @@ func (ec *executionContext) fieldContext_Mutation_createAppActions(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createAppMenus(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createAppMenus(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAppMenus(rctx, fc.Args["input"].([]*ent.CreateAppMenuInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createAppMenus_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createAppPolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createAppPolicies(ctx, field)
 	if err != nil {
@@ -2223,7 +2443,7 @@ func (ec *executionContext) _Mutation_createAppPolicies(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAppPolicies(rctx, fc.Args["input"].([]*ent.CreateAppPolicyInput))
+		return ec.resolvers.Mutation().CreateAppPolicies(rctx, fc.Args["appID"].(int), fc.Args["input"].([]*ent.CreateAppPolicyInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2264,6 +2484,198 @@ func (ec *executionContext) fieldContext_Mutation_createAppPolicies(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_updateAppPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateAppPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAppPolicy(rctx, fc.Args["policyID"].(int), fc.Args["input"].(ent.UpdateAppPolicyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppPolicy)
+	fc.Result = res
+	return ec.marshalOAppPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateAppPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicy_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicy_appID(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicy_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicy_comments(ctx, field)
+			case "rules":
+				return ec.fieldContext_AppPolicy_rules(ctx, field)
+			case "version":
+				return ec.fieldContext_AppPolicy_version(ctx, field)
+			case "autoGrant":
+				return ec.fieldContext_AppPolicy_autoGrant(ctx, field)
+			case "status":
+				return ec.fieldContext_AppPolicy_status(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicy_app(ctx, field)
+			case "roles":
+				return ec.fieldContext_AppPolicy_roles(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateAppPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteAppPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAppPolicy(rctx, fc.Args["policyID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteAppPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteAppPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createAppMenus(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAppMenus(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAppMenus(rctx, fc.Args["appID"].(int), fc.Args["input"].([]*ent.CreateAppMenuInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createAppMenus_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_updateAppMenu(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_updateAppMenu(ctx, field)
 	if err != nil {
@@ -2278,7 +2690,7 @@ func (ec *executionContext) _Mutation_updateAppMenu(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAppMenu(rctx, fc.Args["input"].(ent.UpdateAppMenuInput))
+		return ec.resolvers.Mutation().UpdateAppMenu(rctx, fc.Args["menuID"].(int), fc.Args["input"].(ent.UpdateAppMenuInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2346,8 +2758,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppMenu(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_changeAppMenuTree(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_changeAppMenuTree(ctx, field)
+func (ec *executionContext) _Mutation_moveAppMenu(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_moveAppMenu(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2360,21 +2772,24 @@ func (ec *executionContext) _Mutation_changeAppMenuTree(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ChangeAppMenuTree(rctx, fc.Args["sourceId"].(int), fc.Args["targetId"].(int), fc.Args["targetLocation"].(*string))
+		return ec.resolvers.Mutation().MoveAppMenu(rctx, fc.Args["sourceID"].(int), fc.Args["targetID"].(int), fc.Args["action"].(model.TreeAction))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_changeAppMenuTree(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_moveAppMenu(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -2391,7 +2806,62 @@ func (ec *executionContext) fieldContext_Mutation_changeAppMenuTree(ctx context.
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_changeAppMenuTree_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_moveAppMenu_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteAppMenu(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppMenu(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAppMenu(rctx, fc.Args["menuID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteAppMenu(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteAppMenu_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2412,7 +2882,7 @@ func (ec *executionContext) _Mutation_createAppRole(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAppRole(rctx, fc.Args["input"].(ent.CreateAppRoleInput))
+		return ec.resolvers.Mutation().CreateAppRole(rctx, fc.Args["appID"].(int), fc.Args["input"].(ent.CreateAppRoleInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2490,7 +2960,7 @@ func (ec *executionContext) _Mutation_updateAppRole(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAppRole(rctx, fc.Args["input"].(ent.UpdateAppRoleInput))
+		return ec.resolvers.Mutation().UpdateAppRole(rctx, fc.Args["roleID"].(int), fc.Args["input"].(ent.UpdateAppRoleInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2548,6 +3018,61 @@ func (ec *executionContext) fieldContext_Mutation_updateAppRole(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateAppRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteAppRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAppRole(rctx, fc.Args["roleID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteAppRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteAppRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2678,7 +3203,7 @@ func (ec *executionContext) _Mutation_assignOrganizationAppPolicy(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AssignOrganizationAppPolicy(rctx, fc.Args["orgID"].(int), fc.Args["policyID"].(int))
+		return ec.resolvers.Mutation().AssignOrganizationAppPolicy(rctx, fc.Args["orgID"].(int), fc.Args["appPolicyID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2733,7 +3258,7 @@ func (ec *executionContext) _Mutation_revokeOrganizationAppPolicy(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RevokeOrganizationAppPolicy(rctx, fc.Args["orgID"].(int), fc.Args["policyID"].(int))
+		return ec.resolvers.Mutation().RevokeOrganizationAppPolicy(rctx, fc.Args["orgID"].(int), fc.Args["appPolicyID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2768,6 +3293,315 @@ func (ec *executionContext) fieldContext_Mutation_revokeOrganizationAppPolicy(ct
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_revokeOrganizationAppPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateRole(rctx, fc.Args["input"].(ent.CreateOrgRoleInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRole)
+	fc.Result = res
+	return ec.marshalOOrgRole2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgRole_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgRole_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgRole_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgRole_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgRole_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgRole_orgID(ctx, field)
+			case "kind":
+				return ec.fieldContext_OrgRole_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgRole_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgRole_comments(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateRole(rctx, fc.Args["roleID"].(int), fc.Args["input"].(ent.UpdateOrgRoleInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRole)
+	fc.Result = res
+	return ec.marshalOOrgRole2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgRole_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgRole_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgRole_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgRole_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgRole_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgRole_orgID(ctx, field)
+			case "kind":
+				return ec.fieldContext_OrgRole_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgRole_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgRole_comments(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteRole(rctx, fc.Args["roleID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_assignRoleUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_assignRoleUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AssignRoleUser(rctx, fc.Args["input"].(model.AssignRoleUserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_assignRoleUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_assignRoleUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_revokeRoleUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_revokeRoleUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RevokeRoleUser(rctx, fc.Args["roleID"].(int), fc.Args["userID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_revokeRoleUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_revokeRoleUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2840,6 +3674,8 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 				return ec.fieldContext_Permission_org(ctx, field)
 			case "user":
 				return ec.fieldContext_Permission_user(ctx, field)
+			case "orgPolicy":
+				return ec.fieldContext_Permission_orgPolicy(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Permission", field.Name)
 		},
@@ -2852,6 +3688,147 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_grant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updatePermission(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updatePermission(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdatePermission(rctx, fc.Args["permissionID"].(int), fc.Args["input"].(ent.UpdatePermissionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Permission)
+	fc.Result = res
+	return ec.marshalOPermission2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermission(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updatePermission(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Permission_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Permission_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Permission_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Permission_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Permission_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_Permission_orgID(ctx, field)
+			case "principalKind":
+				return ec.fieldContext_Permission_principalKind(ctx, field)
+			case "userID":
+				return ec.fieldContext_Permission_userID(ctx, field)
+			case "roleID":
+				return ec.fieldContext_Permission_roleID(ctx, field)
+			case "orgPolicyID":
+				return ec.fieldContext_Permission_orgPolicyID(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Permission_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Permission_endAt(ctx, field)
+			case "status":
+				return ec.fieldContext_Permission_status(ctx, field)
+			case "org":
+				return ec.fieldContext_Permission_org(ctx, field)
+			case "user":
+				return ec.fieldContext_Permission_user(ctx, field)
+			case "orgPolicy":
+				return ec.fieldContext_Permission_orgPolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Permission", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updatePermission_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_revoke(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_revoke(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Revoke(rctx, fc.Args["orgID"].(int), fc.Args["permissionID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_revoke(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_revoke_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -3039,19 +4016,34 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createAppMenus":
+		case "createAppPolicies":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createAppMenus(ctx, field)
+				return ec._Mutation_createAppPolicies(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createAppPolicies":
+		case "updateAppPolicy":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createAppPolicies(ctx, field)
+				return ec._Mutation_updateAppPolicy(ctx, field)
+			})
+
+		case "deleteAppPolicy":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAppPolicy(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createAppMenus":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createAppMenus(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -3063,12 +4055,24 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateAppMenu(ctx, field)
 			})
 
-		case "changeAppMenuTree":
+		case "moveAppMenu":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_changeAppMenuTree(ctx, field)
+				return ec._Mutation_moveAppMenu(ctx, field)
 			})
 
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteAppMenu":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAppMenu(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "createAppRole":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -3081,6 +4085,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateAppRole(ctx, field)
 			})
 
+		case "deleteAppRole":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAppRole(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "assignOrganizationApp":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -3117,12 +4130,66 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createRole":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createRole(ctx, field)
+			})
+
+		case "updateRole":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateRole(ctx, field)
+			})
+
+		case "deleteRole":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteRole(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assignRoleUser":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_assignRoleUser(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "revokeRoleUser":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_revokeRoleUser(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "grant":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_grant(ctx, field)
 			})
 
+		case "updatePermission":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updatePermission(ctx, field)
+			})
+
+		case "revoke":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_revoke(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

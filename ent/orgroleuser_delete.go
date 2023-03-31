@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -39,7 +40,7 @@ func (orud *OrgRoleUserDelete) ExecX(ctx context.Context) int {
 }
 
 func (orud *OrgRoleUserDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(orgroleuser.Table, nil)
+	_spec := sqlgraph.NewDeleteSpec(orgroleuser.Table, sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt))
 	if ps := orud.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

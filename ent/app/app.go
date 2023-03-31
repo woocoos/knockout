@@ -50,8 +50,10 @@ const (
 	FieldComments = "comments"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// FieldCreatedOrgID holds the string denoting the created_org_id field in the database.
-	FieldCreatedOrgID = "created_org_id"
+	// FieldPrivate holds the string denoting the private field in the database.
+	FieldPrivate = "private"
+	// FieldOrgID holds the string denoting the org_id field in the database.
+	FieldOrgID = "org_id"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
 	// EdgeActions holds the string denoting the actions edge name in mutations.
@@ -136,7 +138,8 @@ var Columns = []string{
 	FieldLogo,
 	FieldComments,
 	FieldStatus,
-	FieldCreatedOrgID,
+	FieldPrivate,
+	FieldOrgID,
 }
 
 var (
@@ -174,6 +177,8 @@ var (
 	AppSecretValidator func(string) error
 	// ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
 	ScopesValidator func(string) error
+	// DefaultPrivate holds the default value on creation for the "private" field.
+	DefaultPrivate bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() int
 )

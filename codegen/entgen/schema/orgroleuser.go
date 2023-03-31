@@ -18,13 +18,13 @@ type OrgRoleUser struct {
 func (OrgRoleUser) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "org_role_user"},
-		field.ID("org_role_id", "org_user_id"),
 		entgql.Skip(entgql.SkipType),
 	}
 }
 
 func (OrgRoleUser) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		schemax.IntID{},
 		schemax.AuditMixin{},
 	}
 }

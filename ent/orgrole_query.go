@@ -125,7 +125,7 @@ func (orq *OrgRoleQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orgrole.Table, orgrole.FieldID, selector),
-			sqlgraph.To(orgroleuser.Table, orgroleuser.OrgRoleColumn),
+			sqlgraph.To(orgroleuser.Table, orgroleuser.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, orgrole.OrgRoleUserTable, orgrole.OrgRoleUserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(orq.driver.Dialect(), step)
@@ -626,7 +626,7 @@ func (orq *OrgRoleQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUser
 		fk := n.OrgRoleID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_role_id" returned %v for node %v`, fk, n)
+			return fmt.Errorf(`unexpected foreign-key "org_role_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

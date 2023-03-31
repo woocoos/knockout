@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 )
 
 // AppRoleCreate is the builder for creating a AppRole entity.
@@ -73,6 +74,14 @@ func (arc *AppRoleCreate) SetNillableUpdatedAt(t *time.Time) *AppRoleCreate {
 // SetAppID sets the "app_id" field.
 func (arc *AppRoleCreate) SetAppID(i int) *AppRoleCreate {
 	arc.mutation.SetAppID(i)
+	return arc
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arc *AppRoleCreate) SetNillableAppID(i *int) *AppRoleCreate {
+	if i != nil {
+		arc.SetAppID(*i)
+	}
 	return arc
 }
 
@@ -158,6 +167,21 @@ func (arc *AppRoleCreate) AddPolicies(a ...*AppPolicy) *AppRoleCreate {
 	return arc.AddPolicyIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (arc *AppRoleCreate) AddAppRolePolicyIDs(ids ...int) *AppRoleCreate {
+	arc.mutation.AddAppRolePolicyIDs(ids...)
+	return arc
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (arc *AppRoleCreate) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return arc.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppRoleMutation object of the builder.
 func (arc *AppRoleCreate) Mutation() *AppRoleMutation {
 	return arc.mutation
@@ -228,9 +252,6 @@ func (arc *AppRoleCreate) check() error {
 	if _, ok := arc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRole.created_at"`)}
 	}
-	if _, ok := arc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRole.app_id"`)}
-	}
 	if _, ok := arc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppRole.name"`)}
 	}
@@ -239,9 +260,6 @@ func (arc *AppRoleCreate) check() error {
 	}
 	if _, ok := arc.mutation.Editable(); !ok {
 		return &ValidationError{Name: "editable", err: errors.New(`ent: missing required field "AppRole.editable"`)}
-	}
-	if _, ok := arc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppRole.app"`)}
 	}
 	return nil
 }
@@ -342,6 +360,22 @@ func (arc *AppRoleCreate) createSpec() (*AppRole, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := arc.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

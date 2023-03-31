@@ -53,27 +53,53 @@ type Mutation {
     """删除应用"""
     deleteApp(appID:ID!): Boolean!
     """创建应用操作"""
-    createAppActions(input: [CreateAppActionInput!]): Boolean!
-    """创建应用菜单"""
-    createAppMenus(input: [CreateAppMenuInput!]): Boolean!
+    createAppActions(appID:ID!,input: [CreateAppActionInput!]): Boolean!
     """创建应用策略模板"""
-    createAppPolicies(input: [CreateAppPolicyInput!]): Boolean!
+    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): Boolean!
+    """更新应用策略模板"""
+    updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
+    """删除应用策略模板"""
+    deleteAppPolicy(policyID:ID!): Boolean!
+    """创建应用菜单"""
+    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): Boolean!
     """更新应用菜单"""
-    updateAppMenu(input: UpdateAppMenuInput!): AppMenu
+    updateAppMenu(menuID:ID!,input: UpdateAppMenuInput!): AppMenu
     """应用菜单位置调整，targetLocation: child, up, down"""
-    changeAppMenuTree(sourceId:ID!,targetId:ID!,targetLocation:String): Boolean
+    moveAppMenu(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
+    """删除应用菜单"""
+    deleteAppMenu(menuID:ID!): Boolean!
     """创建应用角色"""
-    createAppRole(input: CreateAppRoleInput!): AppRole
+    createAppRole(appID:ID!,input: CreateAppRoleInput!): AppRole
     """更新应用角色"""
-    updateAppRole(input: UpdateAppRoleInput!): AppRole
+    updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
+    """删除应用角色"""
+    deleteAppRole(roleID:ID!): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""
     revokeOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """分配应用策略到组织"""
-    assignOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
     """取消分配到组织应用策略"""
-    revokeOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """创建角色或组"""
+    createRole(input: CreateOrgRoleInput!): OrgRole
+    """更新角色或组"""
+    updateRole(roleID:ID!,input: UpdateOrgRoleInput!): OrgRole
+    """删除角色或组"""
+    deleteRole(roleID:ID!): Boolean!
+    """分配组用户"""
+    assignRoleUser(input:AssignRoleUserInput!): Boolean!
+    """取消分配组用户"""
+    revokeRoleUser(roleID:ID!,userID:ID!): Boolean!
     """授权"""
     grant(input: CreatePermissionInput!): Permission
+    """更新授权"""
+    updatePermission(permissionID:ID!,input: UpdatePermissionInput!): Permission
+    """取消授权"""
+    revoke(
+        orgID:ID!
+        """组织内的授权ID"""
+        permissionID:ID!
+    ): Boolean!
 }

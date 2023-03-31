@@ -82,6 +82,12 @@ func (oruc *OrgRoleUserCreate) SetOrgUserID(i int) *OrgRoleUserCreate {
 	return oruc
 }
 
+// SetID sets the "id" field.
+func (oruc *OrgRoleUserCreate) SetID(i int) *OrgRoleUserCreate {
+	oruc.mutation.SetID(i)
+	return oruc
+}
+
 // SetOrgRole sets the "org_role" edge to the OrgRole entity.
 func (oruc *OrgRoleUserCreate) SetOrgRole(o *OrgRole) *OrgRoleUserCreate {
 	return oruc.SetOrgRoleID(o.ID)
@@ -173,14 +179,24 @@ func (oruc *OrgRoleUserCreate) sqlSave(ctx context.Context) (*OrgRoleUser, error
 		}
 		return nil, err
 	}
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int(id)
+	}
+	oruc.mutation.id = &_node.ID
+	oruc.mutation.done = true
 	return _node, nil
 }
 
 func (oruc *OrgRoleUserCreate) createSpec() (*OrgRoleUser, *sqlgraph.CreateSpec) {
 	var (
 		_node = &OrgRoleUser{config: oruc.config}
-		_spec = sqlgraph.NewCreateSpec(orgroleuser.Table, nil)
+		_spec = sqlgraph.NewCreateSpec(orgroleuser.Table, sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt))
 	)
+	if id, ok := oruc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := oruc.mutation.CreatedBy(); ok {
 		_spec.SetField(orgroleuser.FieldCreatedBy, field.TypeInt, value)
 		_node.CreatedBy = value
@@ -273,6 +289,11 @@ func (orucb *OrgRoleUserCreateBulk) Save(ctx context.Context) ([]*OrgRoleUser, e
 				}
 				if err != nil {
 					return nil, err
+				}
+				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

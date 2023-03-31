@@ -1295,7 +1295,7 @@ func HasOrgAppWith(preds ...predicate.OrgApp) predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgAppInverseTable, OrgAppColumn),
+			sqlgraph.To(OrgAppInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, OrgAppTable, OrgAppColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

@@ -125,7 +125,7 @@ func (apq *AppPolicyQuery) QueryAppRolePolicy() *AppRolePolicyQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, selector),
-			sqlgraph.To(approlepolicy.Table, approlepolicy.PolicyColumn),
+			sqlgraph.To(approlepolicy.Table, approlepolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, apppolicy.AppRolePolicyTable, apppolicy.AppRolePolicyColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
@@ -626,7 +626,7 @@ func (apq *AppPolicyQuery) loadAppRolePolicy(ctx context.Context, query *AppRole
 		fk := n.AppPolicyID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_policy_id" returned %v for node %v`, fk, n)
+			return fmt.Errorf(`unexpected foreign-key "app_policy_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

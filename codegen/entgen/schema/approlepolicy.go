@@ -18,13 +18,13 @@ type AppRolePolicy struct {
 func (AppRolePolicy) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app_role_policy"},
-		field.ID("app_role_id", "app_policy_id"),
 		entgql.Skip(entgql.SkipType),
 	}
 }
 
 func (AppRolePolicy) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		schemax.IntID{},
 		schemax.AuditMixin{},
 	}
 }
@@ -34,6 +34,7 @@ func (AppRolePolicy) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("app_role_id").Comment("应用角色ID"),
 		field.Int("app_policy_id").Comment("策略ID"),
+		field.Int("app_id").Comment("应用ID"),
 	}
 }
 

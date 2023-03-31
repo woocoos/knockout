@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -39,7 +40,7 @@ func (arpd *AppRolePolicyDelete) ExecX(ctx context.Context) int {
 }
 
 func (arpd *AppRolePolicyDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(approlepolicy.Table, nil)
+	_spec := sqlgraph.NewDeleteSpec(approlepolicy.Table, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
 	if ps := arpd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

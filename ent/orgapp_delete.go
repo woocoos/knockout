@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -39,7 +40,7 @@ func (oad *OrgAppDelete) ExecX(ctx context.Context) int {
 }
 
 func (oad *OrgAppDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(orgapp.Table, nil)
+	_spec := sqlgraph.NewDeleteSpec(orgapp.Table, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
 	if ps := oad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

@@ -34,10 +34,10 @@ func (AppMenu) Mixin() []ent.Mixin {
 // Fields of the AppMenu.
 func (AppMenu) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("app_id").Comment("所属应用"),
+		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.Int("parent_id").Comment("父级ID"),
 		field.Enum("kind").Values("dir", "menu").Comment("目录,菜单项"),
-		field.String("name").MaxLen(100).Optional().Comment("菜单名称"),
+		field.String("name").Comment("菜单名称"),
 		field.Int("action_id").Optional().Nillable().Comment("操作ID"),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
@@ -49,7 +49,7 @@ func (AppMenu) Fields() []ent.Field {
 // Edges of the AppMenu.
 func (AppMenu) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("app", App.Type).Ref("menus").Unique().Required().Field("app_id"),
+		edge.From("app", App.Type).Ref("menus").Unique().Immutable().Field("app_id"),
 		edge.From("action", AppAction.Type).Ref("menus").Unique().Field("action_id").
 			Comment("需要权限控制时对应的权限"),
 	}

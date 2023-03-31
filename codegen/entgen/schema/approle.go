@@ -32,7 +32,7 @@ func (AppRole) Mixin() []ent.Mixin {
 // Fields of the AppRole.
 func (AppRole) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("app_id").Comment("所属应用"),
+		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Unique().Comment("角色名称"),
 		field.String("comments").Optional().Comment("备注").Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Bool("auto_grant").Default(false).Comment("标识是否自动授予到账户"),
@@ -43,7 +43,7 @@ func (AppRole) Fields() []ent.Field {
 // Edges of the AppRole.
 func (AppRole) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("app", App.Type).Ref("roles").Unique().Required().Field("app_id"),
+		edge.From("app", App.Type).Ref("roles").Unique().Immutable().Field("app_id"),
 		edge.To("policies", AppPolicy.Type).Comment("权限授权策略").
 			Through("app_role_policy", AppRolePolicy.Type),
 	}

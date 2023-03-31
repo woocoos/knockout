@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -438,6 +439,21 @@ func (ou *OrgUpdate) AddOrgUser(o ...*OrgUser) *OrgUpdate {
 	return ou.AddOrgUserIDs(ids...)
 }
 
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (ou *OrgUpdate) AddOrgAppIDs(ids ...int) *OrgUpdate {
+	ou.mutation.AddOrgAppIDs(ids...)
+	return ou
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (ou *OrgUpdate) AddOrgApp(o ...*OrgApp) *OrgUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ou.AddOrgAppIDs(ids...)
+}
+
 // Mutation returns the OrgMutation object of the builder.
 func (ou *OrgUpdate) Mutation() *OrgMutation {
 	return ou.mutation
@@ -600,6 +616,27 @@ func (ou *OrgUpdate) RemoveOrgUser(o ...*OrgUser) *OrgUpdate {
 		ids[i] = o[i].ID
 	}
 	return ou.RemoveOrgUserIDs(ids...)
+}
+
+// ClearOrgApp clears all "org_app" edges to the OrgApp entity.
+func (ou *OrgUpdate) ClearOrgApp() *OrgUpdate {
+	ou.mutation.ClearOrgApp()
+	return ou
+}
+
+// RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
+func (ou *OrgUpdate) RemoveOrgAppIDs(ids ...int) *OrgUpdate {
+	ou.mutation.RemoveOrgAppIDs(ids...)
+	return ou
+}
+
+// RemoveOrgApp removes "org_app" edges to OrgApp entities.
+func (ou *OrgUpdate) RemoveOrgApp(o ...*OrgApp) *OrgUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ou.RemoveOrgAppIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -1159,6 +1196,51 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !ou.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ou.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{org.Label}
@@ -1582,6 +1664,21 @@ func (ouo *OrgUpdateOne) AddOrgUser(o ...*OrgUser) *OrgUpdateOne {
 	return ouo.AddOrgUserIDs(ids...)
 }
 
+// AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
+func (ouo *OrgUpdateOne) AddOrgAppIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.AddOrgAppIDs(ids...)
+	return ouo
+}
+
+// AddOrgApp adds the "org_app" edges to the OrgApp entity.
+func (ouo *OrgUpdateOne) AddOrgApp(o ...*OrgApp) *OrgUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouo.AddOrgAppIDs(ids...)
+}
+
 // Mutation returns the OrgMutation object of the builder.
 func (ouo *OrgUpdateOne) Mutation() *OrgMutation {
 	return ouo.mutation
@@ -1744,6 +1841,27 @@ func (ouo *OrgUpdateOne) RemoveOrgUser(o ...*OrgUser) *OrgUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return ouo.RemoveOrgUserIDs(ids...)
+}
+
+// ClearOrgApp clears all "org_app" edges to the OrgApp entity.
+func (ouo *OrgUpdateOne) ClearOrgApp() *OrgUpdateOne {
+	ouo.mutation.ClearOrgApp()
+	return ouo
+}
+
+// RemoveOrgAppIDs removes the "org_app" edge to OrgApp entities by IDs.
+func (ouo *OrgUpdateOne) RemoveOrgAppIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.RemoveOrgAppIDs(ids...)
+	return ouo
+}
+
+// RemoveOrgApp removes "org_app" edges to OrgApp entities.
+func (ouo *OrgUpdateOne) RemoveOrgApp(o ...*OrgApp) *OrgUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouo.RemoveOrgAppIDs(ids...)
 }
 
 // Where appends a list predicates to the OrgUpdate builder.
@@ -2326,6 +2444,51 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(orguser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedOrgAppIDs(); len(nodes) > 0 && !ouo.mutation.OrgAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.OrgAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   org.OrgAppTable,
+			Columns: []string{org.OrgAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

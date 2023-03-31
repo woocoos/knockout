@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,19 +13,22 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
 // OrgPolicyQuery is the builder for querying OrgPolicy entities.
 type OrgPolicyQuery struct {
 	config
-	ctx        *QueryContext
-	order      []OrderFunc
-	inters     []Interceptor
-	predicates []predicate.OrgPolicy
-	withOrg    *OrgQuery
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*OrgPolicy) error
+	ctx                  *QueryContext
+	order                []OrderFunc
+	inters               []Interceptor
+	predicates           []predicate.OrgPolicy
+	withOrg              *OrgQuery
+	withPermissions      *PermissionQuery
+	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*OrgPolicy) error
+	withNamedPermissions map[string]*PermissionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -76,6 +80,28 @@ func (opq *OrgPolicyQuery) QueryOrg() *OrgQuery {
 			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, selector),
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.OrgTable, orgpolicy.OrgColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPermissions chains the current query on the "permissions" edge.
+func (opq *OrgPolicyQuery) QueryPermissions() *PermissionQuery {
+	query := (&PermissionClient{config: opq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := opq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := opq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, selector),
+			sqlgraph.To(permission.Table, permission.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, orgpolicy.PermissionsTable, orgpolicy.PermissionsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
 		return fromU, nil
@@ -270,12 +296,13 @@ func (opq *OrgPolicyQuery) Clone() *OrgPolicyQuery {
 		return nil
 	}
 	return &OrgPolicyQuery{
-		config:     opq.config,
-		ctx:        opq.ctx.Clone(),
-		order:      append([]OrderFunc{}, opq.order...),
-		inters:     append([]Interceptor{}, opq.inters...),
-		predicates: append([]predicate.OrgPolicy{}, opq.predicates...),
-		withOrg:    opq.withOrg.Clone(),
+		config:          opq.config,
+		ctx:             opq.ctx.Clone(),
+		order:           append([]OrderFunc{}, opq.order...),
+		inters:          append([]Interceptor{}, opq.inters...),
+		predicates:      append([]predicate.OrgPolicy{}, opq.predicates...),
+		withOrg:         opq.withOrg.Clone(),
+		withPermissions: opq.withPermissions.Clone(),
 		// clone intermediate query.
 		sql:  opq.sql.Clone(),
 		path: opq.path,
@@ -290,6 +317,17 @@ func (opq *OrgPolicyQuery) WithOrg(opts ...func(*OrgQuery)) *OrgPolicyQuery {
 		opt(query)
 	}
 	opq.withOrg = query
+	return opq
+}
+
+// WithPermissions tells the query-builder to eager-load the nodes that are connected to
+// the "permissions" edge. The optional arguments are used to configure the query builder of the edge.
+func (opq *OrgPolicyQuery) WithPermissions(opts ...func(*PermissionQuery)) *OrgPolicyQuery {
+	query := (&PermissionClient{config: opq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	opq.withPermissions = query
 	return opq
 }
 
@@ -371,8 +409,9 @@ func (opq *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 	var (
 		nodes       = []*OrgPolicy{}
 		_spec       = opq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			opq.withOrg != nil,
+			opq.withPermissions != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -399,6 +438,20 @@ func (opq *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 	if query := opq.withOrg; query != nil {
 		if err := opq.loadOrg(ctx, query, nodes, nil,
 			func(n *OrgPolicy, e *Org) { n.Edges.Org = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := opq.withPermissions; query != nil {
+		if err := opq.loadPermissions(ctx, query, nodes,
+			func(n *OrgPolicy) { n.Edges.Permissions = []*Permission{} },
+			func(n *OrgPolicy, e *Permission) { n.Edges.Permissions = append(n.Edges.Permissions, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range opq.withNamedPermissions {
+		if err := opq.loadPermissions(ctx, query, nodes,
+			func(n *OrgPolicy) { n.appendNamedPermissions(name) },
+			func(n *OrgPolicy, e *Permission) { n.appendNamedPermissions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -436,6 +489,33 @@ func (opq *OrgPolicyQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes [
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *PermissionQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *Permission)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*OrgPolicy)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.Permission(func(s *sql.Selector) {
+		s.Where(sql.InValues(orgpolicy.PermissionsColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.OrgPolicyID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "org_policy_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -522,6 +602,20 @@ func (opq *OrgPolicyQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedPermissions tells the query-builder to eager-load the nodes that are connected to the "permissions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (opq *OrgPolicyQuery) WithNamedPermissions(name string, opts ...func(*PermissionQuery)) *OrgPolicyQuery {
+	query := (&PermissionClient{config: opq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if opq.withNamedPermissions == nil {
+		opq.withNamedPermissions = make(map[string]*PermissionQuery)
+	}
+	opq.withNamedPermissions[name] = query
+	return opq
 }
 
 // OrgPolicyGroupBy is the group-by builder for OrgPolicy entities.

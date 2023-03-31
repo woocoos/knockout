@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -77,12 +76,6 @@ func (amu *AppMenuUpdate) ClearUpdatedAt() *AppMenuUpdate {
 	return amu
 }
 
-// SetAppID sets the "app_id" field.
-func (amu *AppMenuUpdate) SetAppID(i int) *AppMenuUpdate {
-	amu.mutation.SetAppID(i)
-	return amu
-}
-
 // SetParentID sets the "parent_id" field.
 func (amu *AppMenuUpdate) SetParentID(i int) *AppMenuUpdate {
 	amu.mutation.ResetParentID()
@@ -105,20 +98,6 @@ func (amu *AppMenuUpdate) SetKind(a appmenu.Kind) *AppMenuUpdate {
 // SetName sets the "name" field.
 func (amu *AppMenuUpdate) SetName(s string) *AppMenuUpdate {
 	amu.mutation.SetName(s)
-	return amu
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (amu *AppMenuUpdate) SetNillableName(s *string) *AppMenuUpdate {
-	if s != nil {
-		amu.SetName(*s)
-	}
-	return amu
-}
-
-// ClearName clears the value of the "name" field.
-func (amu *AppMenuUpdate) ClearName() *AppMenuUpdate {
-	amu.mutation.ClearName()
 	return amu
 }
 
@@ -189,11 +168,6 @@ func (amu *AppMenuUpdate) ClearDisplaySort() *AppMenuUpdate {
 	return amu
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (amu *AppMenuUpdate) SetApp(a *App) *AppMenuUpdate {
-	return amu.SetAppID(a.ID)
-}
-
 // SetAction sets the "action" edge to the AppAction entity.
 func (amu *AppMenuUpdate) SetAction(a *AppAction) *AppMenuUpdate {
 	return amu.SetActionID(a.ID)
@@ -202,12 +176,6 @@ func (amu *AppMenuUpdate) SetAction(a *AppAction) *AppMenuUpdate {
 // Mutation returns the AppMenuMutation object of the builder.
 func (amu *AppMenuUpdate) Mutation() *AppMenuMutation {
 	return amu.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (amu *AppMenuUpdate) ClearApp() *AppMenuUpdate {
-	amu.mutation.ClearApp()
-	return amu
 }
 
 // ClearAction clears the "action" edge to the AppAction entity.
@@ -249,14 +217,6 @@ func (amu *AppMenuUpdate) check() error {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
-	}
-	if v, ok := amu.mutation.Name(); ok {
-		if err := appmenu.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppMenu.name": %w`, err)}
-		}
-	}
-	if _, ok := amu.mutation.AppID(); amu.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppMenu.app"`)
 	}
 	return nil
 }
@@ -300,9 +260,6 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := amu.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 	}
-	if amu.mutation.NameCleared() {
-		_spec.ClearField(appmenu.FieldName, field.TypeString)
-	}
 	if value, ok := amu.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 	}
@@ -317,35 +274,6 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if amu.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
-	}
-	if amu.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appmenu.AppTable,
-			Columns: []string{appmenu.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appmenu.AppTable,
-			Columns: []string{appmenu.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if amu.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -443,12 +371,6 @@ func (amuo *AppMenuUpdateOne) ClearUpdatedAt() *AppMenuUpdateOne {
 	return amuo
 }
 
-// SetAppID sets the "app_id" field.
-func (amuo *AppMenuUpdateOne) SetAppID(i int) *AppMenuUpdateOne {
-	amuo.mutation.SetAppID(i)
-	return amuo
-}
-
 // SetParentID sets the "parent_id" field.
 func (amuo *AppMenuUpdateOne) SetParentID(i int) *AppMenuUpdateOne {
 	amuo.mutation.ResetParentID()
@@ -471,20 +393,6 @@ func (amuo *AppMenuUpdateOne) SetKind(a appmenu.Kind) *AppMenuUpdateOne {
 // SetName sets the "name" field.
 func (amuo *AppMenuUpdateOne) SetName(s string) *AppMenuUpdateOne {
 	amuo.mutation.SetName(s)
-	return amuo
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (amuo *AppMenuUpdateOne) SetNillableName(s *string) *AppMenuUpdateOne {
-	if s != nil {
-		amuo.SetName(*s)
-	}
-	return amuo
-}
-
-// ClearName clears the value of the "name" field.
-func (amuo *AppMenuUpdateOne) ClearName() *AppMenuUpdateOne {
-	amuo.mutation.ClearName()
 	return amuo
 }
 
@@ -555,11 +463,6 @@ func (amuo *AppMenuUpdateOne) ClearDisplaySort() *AppMenuUpdateOne {
 	return amuo
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (amuo *AppMenuUpdateOne) SetApp(a *App) *AppMenuUpdateOne {
-	return amuo.SetAppID(a.ID)
-}
-
 // SetAction sets the "action" edge to the AppAction entity.
 func (amuo *AppMenuUpdateOne) SetAction(a *AppAction) *AppMenuUpdateOne {
 	return amuo.SetActionID(a.ID)
@@ -568,12 +471,6 @@ func (amuo *AppMenuUpdateOne) SetAction(a *AppAction) *AppMenuUpdateOne {
 // Mutation returns the AppMenuMutation object of the builder.
 func (amuo *AppMenuUpdateOne) Mutation() *AppMenuMutation {
 	return amuo.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (amuo *AppMenuUpdateOne) ClearApp() *AppMenuUpdateOne {
-	amuo.mutation.ClearApp()
-	return amuo
 }
 
 // ClearAction clears the "action" edge to the AppAction entity.
@@ -628,14 +525,6 @@ func (amuo *AppMenuUpdateOne) check() error {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
-	}
-	if v, ok := amuo.mutation.Name(); ok {
-		if err := appmenu.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppMenu.name": %w`, err)}
-		}
-	}
-	if _, ok := amuo.mutation.AppID(); amuo.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppMenu.app"`)
 	}
 	return nil
 }
@@ -696,9 +585,6 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 	if value, ok := amuo.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 	}
-	if amuo.mutation.NameCleared() {
-		_spec.ClearField(appmenu.FieldName, field.TypeString)
-	}
 	if value, ok := amuo.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 	}
@@ -713,35 +599,6 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 	}
 	if amuo.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
-	}
-	if amuo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appmenu.AppTable,
-			Columns: []string{appmenu.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appmenu.AppTable,
-			Columns: []string{appmenu.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if amuo.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{

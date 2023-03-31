@@ -4,6 +4,7 @@ import (
 	"context"
 	"entgo.io/ent"
 	gen "github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/org"
 )
@@ -24,6 +25,9 @@ func InitDisplaySortHook(table string) ent.Hook {
 					switch table {
 					case org.Table:
 						old, _ = mx.Client().Org.Query().Where(org.ParentID(pid.(int))).
+							Aggregate(gen.Max(displayField)).Int(ctx)
+					case appmenu.Table:
+						old, _ = mx.Client().AppMenu.Query().Where(appmenu.ParentID(pid.(int))).
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					}
 					mx.SetDisplaySort(int32(old + 1))

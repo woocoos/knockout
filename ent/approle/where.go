@@ -300,6 +300,16 @@ func AppIDNotIn(vs ...int) predicate.AppRole {
 	return predicate.AppRole(sql.FieldNotIn(FieldAppID, vs...))
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.AppRole {
+	return predicate.AppRole(sql.FieldIsNull(FieldAppID))
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.AppRole {
+	return predicate.AppRole(sql.FieldNotNull(FieldAppID))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.AppRole {
 	return predicate.AppRole(sql.FieldEQ(FieldName, v))
@@ -530,7 +540,7 @@ func HasAppRolePolicyWith(preds ...predicate.AppRolePolicy) predicate.AppRole {
 	return predicate.AppRole(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppRolePolicyInverseTable, AppRolePolicyColumn),
+			sqlgraph.To(AppRolePolicyInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, AppRolePolicyTable, AppRolePolicyColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

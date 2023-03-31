@@ -18,13 +18,13 @@ type OrgApp struct {
 func (OrgApp) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "org_app"},
-		field.ID("org_id", "app_id"),
 		entgql.Skip(entgql.SkipAll),
 	}
 }
 
 func (OrgApp) Mixin() []ent.Mixin {
 	return []ent.Mixin{
+		schemax.IntID{},
 		schemax.AuditMixin{},
 	}
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -73,6 +74,12 @@ func (o *Org) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given OrgPolicy node.
 func (op *OrgPolicy) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("%s:%d", orgpolicy.Table, op.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given OrgRole node.
+func (or *OrgRole) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", orgrole.Table, or.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -144,6 +151,8 @@ func GlobalID(tp, id string) (string, error) {
 	case org.Table:
 		break
 	case orgpolicy.Table:
+		break
+	case orgrole.Table:
 		break
 	case permission.Table:
 		break

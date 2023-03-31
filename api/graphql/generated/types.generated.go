@@ -199,6 +199,58 @@ func (ec *executionContext) fieldContext_PolicyRule_conditions(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Context, obj interface{}) (model.AssignRoleUserInput, error) {
+	var it model.AssignRoleUserInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"orgRoleID", "userID", "startAt", "endAt"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "orgRoleID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
+			it.OrgRoleID, err = ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "userID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			it.UserID, err = ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "startAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startAt"))
+			it.StartAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "endAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endAt"))
+			it.EndAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj interface{}) (model.EnableDirectoryInput, error) {
 	var it model.EnableDirectoryInput
 	asMap := map[string]interface{}{}
@@ -382,6 +434,11 @@ func (ec *executionContext) _PolicyRule(ctx context.Context, sel ast.SelectionSe
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx context.Context, v interface{}) (model.AssignRoleUserInput, error) {
+	res, err := ec.unmarshalInputAssignRoleUserInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
 
 func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)

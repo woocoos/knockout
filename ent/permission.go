@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -27,7 +28,7 @@ type Permission struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 授权的域级组织
+	// 授权的域根组织
 	OrgID int `json:"org_id,omitempty"`
 	// 授权类型:角色,用户
 	PrincipalKind permission.PrincipalKind `json:"principal_kind,omitempty"`
@@ -54,11 +55,13 @@ type PermissionEdges struct {
 	Org *Org `json:"org,omitempty"`
 	// User holds the value of the user edge.
 	User *User `json:"user,omitempty"`
+	// OrgPolicy holds the value of the org_policy edge.
+	OrgPolicy *OrgPolicy `json:"org_policy,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 }
 
 // OrgOrErr returns the Org value or an error if the edge
@@ -85,6 +88,19 @@ func (e PermissionEdges) UserOrErr() (*User, error) {
 		return e.User, nil
 	}
 	return nil, &NotLoadedError{edge: "user"}
+}
+
+// OrgPolicyOrErr returns the OrgPolicy value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PermissionEdges) OrgPolicyOrErr() (*OrgPolicy, error) {
+	if e.loadedTypes[2] {
+		if e.OrgPolicy == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: orgpolicy.Label}
+		}
+		return e.OrgPolicy, nil
+	}
+	return nil, &NotLoadedError{edge: "org_policy"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -204,6 +220,11 @@ func (pe *Permission) QueryOrg() *OrgQuery {
 // QueryUser queries the "user" edge of the Permission entity.
 func (pe *Permission) QueryUser() *UserQuery {
 	return NewPermissionClient(pe.config).QueryUser(pe)
+}
+
+// QueryOrgPolicy queries the "org_policy" edge of the Permission entity.
+func (pe *Permission) QueryOrgPolicy() *OrgPolicyQuery {
+	return NewPermissionClient(pe.config).QueryOrgPolicy(pe)
 }
 
 // Update returns a builder for updating this Permission.

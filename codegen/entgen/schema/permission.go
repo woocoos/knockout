@@ -35,11 +35,11 @@ func (Permission) Mixin() []ent.Mixin {
 // Fields of the Permission.
 func (Permission) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Comment("授权的域级组织"),
-		field.Enum("principal_kind").Values("user", "role").Comment("授权类型:角色,用户"),
-		field.Int("user_id").Optional().Comment("授权类型为用户的ID"),
-		field.Int("role_id").Optional().Comment("授权类型为角色或用户组的ID"),
-		field.Int("org_policy_id").Comment("策略"),
+		field.Int("org_id").Immutable().Comment("授权的域根组织"),
+		field.Enum("principal_kind").Immutable().Values("user", "role").Comment("授权类型:角色,用户"),
+		field.Int("user_id").Optional().Immutable().Comment("授权类型为用户的ID"),
+		field.Int("role_id").Optional().Immutable().Comment("授权类型为角色或用户组的ID"),
+		field.Int("org_policy_id").Immutable().Comment("策略"),
 		field.Time("start_at").Optional().Comment("生效开始时间"),
 		field.Time("end_at").Optional().Comment("生效结束时间"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Optional().Comment("状态").
@@ -51,7 +51,8 @@ func (Permission) Fields() []ent.Field {
 func (Permission) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("org", Org.Type).Ref("permissions").
-			Unique().Required().Field("org_id"),
-		edge.To("user", User.Type).Unique().Field("user_id"),
+			Unique().Required().Immutable().Field("org_id"),
+		edge.To("user", User.Type).Unique().Immutable().Field("user_id"),
+		edge.From("org_policy", OrgPolicy.Type).Ref("permissions").Unique().Required().Immutable().Field("org_policy_id"),
 	}
 }

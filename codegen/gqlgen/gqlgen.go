@@ -27,9 +27,7 @@ func constraintFieldHook(td *ast.Definition, fd *ast.FieldDefinition, f *modelge
 		if formatConstraint != nil {
 			f.Tag += " validate:" + formatConstraint.Value.String()
 		}
-
 	}
-
 	return f, nil
 }
 

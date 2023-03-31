@@ -11,6 +11,8 @@ import (
 const (
 	// Label holds the string label denoting the approlepolicy type in the database.
 	Label = "app_role_policy"
+	// FieldID holds the string denoting the id field in the database.
+	FieldID = "id"
 	// FieldCreatedBy holds the string denoting the created_by field in the database.
 	FieldCreatedBy = "created_by"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -23,14 +25,12 @@ const (
 	FieldAppRoleID = "app_role_id"
 	// FieldAppPolicyID holds the string denoting the app_policy_id field in the database.
 	FieldAppPolicyID = "app_policy_id"
+	// FieldAppID holds the string denoting the app_id field in the database.
+	FieldAppID = "app_id"
 	// EdgeRole holds the string denoting the role edge name in mutations.
 	EdgeRole = "role"
 	// EdgePolicy holds the string denoting the policy edge name in mutations.
 	EdgePolicy = "policy"
-	// AppRoleFieldID holds the string denoting the ID field of the AppRole.
-	AppRoleFieldID = "id"
-	// AppPolicyFieldID holds the string denoting the ID field of the AppPolicy.
-	AppPolicyFieldID = "id"
 	// Table holds the table name of the approlepolicy in the database.
 	Table = "app_role_policy"
 	// RoleTable is the table that holds the role relation/edge.
@@ -51,12 +51,14 @@ const (
 
 // Columns holds all SQL columns for approlepolicy fields.
 var Columns = []string{
+	FieldID,
 	FieldCreatedBy,
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
 	FieldAppRoleID,
 	FieldAppPolicyID,
+	FieldAppID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

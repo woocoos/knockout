@@ -77,6 +77,14 @@ func (aac *AppActionCreate) SetAppID(i int) *AppActionCreate {
 	return aac
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (aac *AppActionCreate) SetNillableAppID(i *int) *AppActionCreate {
+	if i != nil {
+		aac.SetAppID(*i)
+	}
+	return aac
+}
+
 // SetName sets the "name" field.
 func (aac *AppActionCreate) SetName(s string) *AppActionCreate {
 	aac.mutation.SetName(s)
@@ -220,9 +228,6 @@ func (aac *AppActionCreate) check() error {
 	if _, ok := aac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppAction.created_at"`)}
 	}
-	if _, ok := aac.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppAction.app_id"`)}
-	}
 	if _, ok := aac.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppAction.name"`)}
 	}
@@ -246,9 +251,6 @@ func (aac *AppActionCreate) check() error {
 		if err := appaction.MethodValidator(v); err != nil {
 			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "AppAction.method": %w`, err)}
 		}
-	}
-	if _, ok := aac.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppAction.app"`)}
 	}
 	return nil
 }

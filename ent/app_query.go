@@ -226,7 +226,7 @@ func (aq *AppQuery) QueryOrgApp() *OrgAppQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
-			sqlgraph.To(orgapp.Table, orgapp.AppColumn),
+			sqlgraph.To(orgapp.Table, orgapp.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, app.OrgAppTable, app.OrgAppColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
@@ -950,7 +950,7 @@ func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n)
+			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

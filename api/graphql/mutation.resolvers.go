@@ -106,100 +106,148 @@ func (r *mutationResolver) ResetUserPasswordByEmail(ctx context.Context, userID 
 
 // CreateApp is the resolver for the createApp field.
 func (r *mutationResolver) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
-	return r.Client.App.Create().SetInput(input).Save(ctx)
+	return r.Resource.CreateApp(ctx, input)
 }
 
 // UpdateApp is the resolver for the updateApp field.
 func (r *mutationResolver) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error) {
-	c := ent.FromContext(ctx)
-	return c.App.UpdateOneID(appID).SetInput(input).Save(ctx)
+	return r.Resource.UpdateApp(ctx, appID, input)
 }
 
 // DeleteApp is the resolver for the deleteApp field.
 func (r *mutationResolver) DeleteApp(ctx context.Context, appID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteApp - deleteApp"))
+	err := r.Resource.DeleteApp(ctx, appID)
+	return err == nil, err
 }
 
 // CreateAppActions is the resolver for the createAppActions field.
-func (r *mutationResolver) CreateAppActions(ctx context.Context, input []*ent.CreateAppActionInput) (bool, error) {
-	c := ent.FromContext(ctx)
-	builders := make([]*ent.AppActionCreate, len(input))
-	for i := range input {
-		builders[i] = c.AppAction.Create().SetInput(*input[i])
-	}
-	err := c.AppAction.CreateBulk(builders...).Exec(ctx)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
-// CreateAppMenus is the resolver for the createAppMenus field.
-func (r *mutationResolver) CreateAppMenus(ctx context.Context, input []*ent.CreateAppMenuInput) (bool, error) {
-	c := ent.FromContext(ctx)
-	builders := make([]*ent.AppMenuCreate, len(input))
-	for i := range input {
-		builders[i] = c.AppMenu.Create().SetInput(*input[i])
-	}
-	err := c.AppMenu.CreateBulk(builders...).Exec(ctx)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+func (r *mutationResolver) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) (bool, error) {
+	err := r.Resource.CreateAppActions(ctx, appID, input)
+	return err == nil, err
 }
 
 // CreateAppPolicies is the resolver for the createAppPolicies field.
-func (r *mutationResolver) CreateAppPolicies(ctx context.Context, input []*ent.CreateAppPolicyInput) (bool, error) {
-	err := r.Resource.CreateAppPolicies(ctx, input)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
+func (r *mutationResolver) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) (bool, error) {
+	err := r.Resource.CreateAppPolicies(ctx, appID, input)
+	return err == nil, err
+}
+
+// UpdateAppPolicy is the resolver for the updateAppPolicy field.
+func (r *mutationResolver) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
+	return r.Resource.UpdateAppPolicy(ctx, policyID, input)
+}
+
+// DeleteAppPolicy is the resolver for the deleteAppPolicy field.
+func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (bool, error) {
+	err := r.Client.AppRolePolicy.DeleteOneID(policyID).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateAppMenus is the resolver for the createAppMenus field.
+func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) (bool, error) {
+	err := r.Resource.CreateAppMenus(ctx, appID, input)
+	return err == nil, err
 }
 
 // UpdateAppMenu is the resolver for the updateAppMenu field.
-func (r *mutationResolver) UpdateAppMenu(ctx context.Context, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
-	panic(fmt.Errorf("not implemented: UpdateAppMenu - updateAppMenu"))
+func (r *mutationResolver) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
+	return ent.FromContext(ctx).AppMenu.UpdateOneID(menuID).SetInput(input).Save(ctx)
 }
 
-// ChangeAppMenuTree is the resolver for the changeAppMenuTree field.
-func (r *mutationResolver) ChangeAppMenuTree(ctx context.Context, sourceID int, targetID int, targetLocation *string) (*bool, error) {
-	panic(fmt.Errorf("not implemented: ChangeAppMenuTree - changeAppMenuTree"))
+// MoveAppMenu is the resolver for the moveAppMenu field.
+func (r *mutationResolver) MoveAppMenu(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.Resource.MoveAppMenu(ctx, sourceID, targetID, action)
+	return err == nil, err
+}
+
+// DeleteAppMenu is the resolver for the deleteAppMenu field.
+func (r *mutationResolver) DeleteAppMenu(ctx context.Context, menuID int) (bool, error) {
+	err := ent.FromContext(ctx).AppMenu.DeleteOneID(menuID).Exec(ctx)
+	return err == nil, err
 }
 
 // CreateAppRole is the resolver for the createAppRole field.
-func (r *mutationResolver) CreateAppRole(ctx context.Context, input ent.CreateAppRoleInput) (*ent.AppRole, error) {
-	panic(fmt.Errorf("not implemented: CreateAppRole - createAppRole"))
+func (r *mutationResolver) CreateAppRole(ctx context.Context, appID int, input ent.CreateAppRoleInput) (*ent.AppRole, error) {
+	return ent.FromContext(ctx).AppRole.Create().SetInput(input).Save(ctx)
 }
 
 // UpdateAppRole is the resolver for the updateAppRole field.
-func (r *mutationResolver) UpdateAppRole(ctx context.Context, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {
-	panic(fmt.Errorf("not implemented: UpdateAppRole - updateAppRole"))
+func (r *mutationResolver) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {
+	return r.Resource.UpdateAppRole(ctx, roleID, input)
+}
+
+// DeleteAppRole is the resolver for the deleteAppRole field.
+func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool, error) {
+	err := r.Resource.DeleteAppRole(ctx, roleID)
+	return err == nil, err
 }
 
 // AssignOrganizationApp is the resolver for the assignOrganizationApp field.
 func (r *mutationResolver) AssignOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: AssignOrganizationApp - assignOrganizationApp"))
+	err := r.Resource.AssignOrganizationApp(ctx, orgID, appID)
+	return err == nil, err
 }
 
 // RevokeOrganizationApp is the resolver for the revokeOrganizationApp field.
 func (r *mutationResolver) RevokeOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: RevokeOrganizationApp - revokeOrganizationApp"))
+	err := r.Resource.RevokeOrganizationApp(ctx, orgID, appID)
+	return err == nil, err
 }
 
 // AssignOrganizationAppPolicy is the resolver for the assignOrganizationAppPolicy field.
-func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgID int, policyID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: AssignOrganizationAppPolicy - assignOrganizationAppPolicy"))
+func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	err := r.Resource.AssignOrganizationAppPolicy(ctx, orgID, appPolicyID)
+	return err == nil, err
 }
 
 // RevokeOrganizationAppPolicy is the resolver for the revokeOrganizationAppPolicy field.
-func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, policyID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: RevokeOrganizationAppPolicy - revokeOrganizationAppPolicy"))
+func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	err := r.Resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
+	return err == nil, err
+}
+
+// CreateRole is the resolver for the createRole field.
+func (r *mutationResolver) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
+	return r.Resource.CreateRole(ctx, input)
+}
+
+// UpdateRole is the resolver for the updateRole field.
+func (r *mutationResolver) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
+	return r.Resource.UpdateRole(ctx, roleID, input)
+}
+
+// DeleteRole is the resolver for the deleteRole field.
+func (r *mutationResolver) DeleteRole(ctx context.Context, roleID int) (bool, error) {
+	err := r.Resource.DeleteRole(ctx, roleID)
+	return err == nil, err
+}
+
+// AssignRoleUser is the resolver for the assignRoleUser field.
+func (r *mutationResolver) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) (bool, error) {
+	err := r.Resource.AssignRoleUser(ctx, input)
+	return err == nil, err
+}
+
+// RevokeRoleUser is the resolver for the revokeRoleUser field.
+func (r *mutationResolver) RevokeRoleUser(ctx context.Context, roleID int, userID int) (bool, error) {
+	err := r.Resource.RevokeRoleUser(ctx, roleID, userID)
+	return err == nil, err
 }
 
 // Grant is the resolver for the grant field.
 func (r *mutationResolver) Grant(ctx context.Context, input ent.CreatePermissionInput) (*ent.Permission, error) {
 	return r.Resource.Grant(ctx, input)
+}
+
+// UpdatePermission is the resolver for the updatePermission field.
+func (r *mutationResolver) UpdatePermission(ctx context.Context, permissionID int, input ent.UpdatePermissionInput) (*ent.Permission, error) {
+	return r.Resource.UpdatePermission(ctx, permissionID, input)
+}
+
+// Revoke is the resolver for the revoke field.
+func (r *mutationResolver) Revoke(ctx context.Context, orgID int, permissionID int) (bool, error) {
+	err := r.Resource.Revoke(ctx, orgID, permissionID)
+	return err == nil, err
 }
 
 // Mutation returns generated1.MutationResolver implementation.

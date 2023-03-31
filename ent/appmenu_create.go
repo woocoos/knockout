@@ -76,6 +76,14 @@ func (amc *AppMenuCreate) SetAppID(i int) *AppMenuCreate {
 	return amc
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (amc *AppMenuCreate) SetNillableAppID(i *int) *AppMenuCreate {
+	if i != nil {
+		amc.SetAppID(*i)
+	}
+	return amc
+}
+
 // SetParentID sets the "parent_id" field.
 func (amc *AppMenuCreate) SetParentID(i int) *AppMenuCreate {
 	amc.mutation.SetParentID(i)
@@ -91,14 +99,6 @@ func (amc *AppMenuCreate) SetKind(a appmenu.Kind) *AppMenuCreate {
 // SetName sets the "name" field.
 func (amc *AppMenuCreate) SetName(s string) *AppMenuCreate {
 	amc.mutation.SetName(s)
-	return amc
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (amc *AppMenuCreate) SetNillableName(s *string) *AppMenuCreate {
-	if s != nil {
-		amc.SetName(*s)
-	}
 	return amc
 }
 
@@ -230,9 +230,6 @@ func (amc *AppMenuCreate) check() error {
 	if _, ok := amc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppMenu.created_at"`)}
 	}
-	if _, ok := amc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppMenu.app_id"`)}
-	}
 	if _, ok := amc.mutation.ParentID(); !ok {
 		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "AppMenu.parent_id"`)}
 	}
@@ -244,13 +241,8 @@ func (amc *AppMenuCreate) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
 		}
 	}
-	if v, ok := amc.mutation.Name(); ok {
-		if err := appmenu.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppMenu.name": %w`, err)}
-		}
-	}
-	if _, ok := amc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppMenu.app"`)}
+	if _, ok := amc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppMenu.name"`)}
 	}
 	return nil
 }

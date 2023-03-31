@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/permission"
 )
 
 // OrgPolicyCreate is the builder for creating a OrgPolicy entity.
@@ -116,6 +117,14 @@ func (opc *OrgPolicyCreate) SetComments(s string) *OrgPolicyCreate {
 	return opc
 }
 
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (opc *OrgPolicyCreate) SetNillableComments(s *string) *OrgPolicyCreate {
+	if s != nil {
+		opc.SetComments(*s)
+	}
+	return opc
+}
+
 // SetRules sets the "rules" field.
 func (opc *OrgPolicyCreate) SetRules(tr []types.PolicyRule) *OrgPolicyCreate {
 	opc.mutation.SetRules(tr)
@@ -139,6 +148,21 @@ func (opc *OrgPolicyCreate) SetNillableID(i *int) *OrgPolicyCreate {
 // SetOrg sets the "org" edge to the Org entity.
 func (opc *OrgPolicyCreate) SetOrg(o *Org) *OrgPolicyCreate {
 	return opc.SetOrgID(o.ID)
+}
+
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
+func (opc *OrgPolicyCreate) AddPermissionIDs(ids ...int) *OrgPolicyCreate {
+	opc.mutation.AddPermissionIDs(ids...)
+	return opc
+}
+
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (opc *OrgPolicyCreate) AddPermissions(p ...*Permission) *OrgPolicyCreate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return opc.AddPermissionIDs(ids...)
 }
 
 // Mutation returns the OrgPolicyMutation object of the builder.
@@ -208,9 +232,6 @@ func (opc *OrgPolicyCreate) check() error {
 	}
 	if _, ok := opc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrgPolicy.name"`)}
-	}
-	if _, ok := opc.mutation.Comments(); !ok {
-		return &ValidationError{Name: "comments", err: errors.New(`ent: missing required field "OrgPolicy.comments"`)}
 	}
 	if _, ok := opc.mutation.Rules(); !ok {
 		return &ValidationError{Name: "rules", err: errors.New(`ent: missing required field "OrgPolicy.rules"`)}
@@ -301,6 +322,22 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.OrgID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := opc.mutation.PermissionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   orgpolicy.PermissionsTable,
+			Columns: []string{orgpolicy.PermissionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

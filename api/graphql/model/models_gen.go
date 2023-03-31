@@ -11,6 +11,24 @@ import (
 	"entgo.io/contrib/entgql"
 )
 
+// Ordering options for AppRolePolicy connections
+type AppRolePolicyOrder struct {
+	// The ordering direction.
+	Direction entgql.OrderDirection `json:"direction"`
+	// The field by which to order AppRolePolicies.
+	Field AppRolePolicyOrderField `json:"field"`
+}
+
+type AssignRoleUserInput struct {
+	// 授权类型为角色或用户组的ID
+	OrgRoleID int `json:"orgRoleID"`
+	UserID    int `json:"userID"`
+	// 生效开始时间
+	StartAt *time.Time `json:"startAt"`
+	// 生效结束时间
+	EndAt *time.Time `json:"endAt"`
+}
+
 type EnableDirectoryInput struct {
 	// 域名
 	Domain string `json:"domain"`
@@ -36,12 +54,12 @@ type Message struct {
 	SentAt time.Time `json:"sentAt"`
 }
 
-// Ordering options for OrgRole connections
-type OrgRoleOrder struct {
+// Ordering options for OrgRoleUser connections
+type OrgRoleUserOrder struct {
 	// The ordering direction.
 	Direction entgql.OrderDirection `json:"direction"`
-	// The field by which to order OrgRoles.
-	Field OrgRoleOrderField `json:"field"`
+	// The field by which to order OrgRoleUsers.
+	Field OrgRoleUserOrderField `json:"field"`
 }
 
 // Ordering options for OrgUser connections
@@ -52,43 +70,83 @@ type OrgUserOrder struct {
 	Field OrgUserOrderField `json:"field"`
 }
 
-// Properties by which OrgRole connections can be ordered.
-type OrgRoleOrderField string
+// Properties by which AppRolePolicy connections can be ordered.
+type AppRolePolicyOrderField string
 
 const (
-	OrgRoleOrderFieldCreatedAt OrgRoleOrderField = "createdAt"
+	AppRolePolicyOrderFieldCreatedAt AppRolePolicyOrderField = "createdAt"
 )
 
-var AllOrgRoleOrderField = []OrgRoleOrderField{
-	OrgRoleOrderFieldCreatedAt,
+var AllAppRolePolicyOrderField = []AppRolePolicyOrderField{
+	AppRolePolicyOrderFieldCreatedAt,
 }
 
-func (e OrgRoleOrderField) IsValid() bool {
+func (e AppRolePolicyOrderField) IsValid() bool {
 	switch e {
-	case OrgRoleOrderFieldCreatedAt:
+	case AppRolePolicyOrderFieldCreatedAt:
 		return true
 	}
 	return false
 }
 
-func (e OrgRoleOrderField) String() string {
+func (e AppRolePolicyOrderField) String() string {
 	return string(e)
 }
 
-func (e *OrgRoleOrderField) UnmarshalGQL(v interface{}) error {
+func (e *AppRolePolicyOrderField) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = OrgRoleOrderField(str)
+	*e = AppRolePolicyOrderField(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid OrgRoleOrderField", str)
+		return fmt.Errorf("%s is not a valid AppRolePolicyOrderField", str)
 	}
 	return nil
 }
 
-func (e OrgRoleOrderField) MarshalGQL(w io.Writer) {
+func (e AppRolePolicyOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// Properties by which OrgRoleUser connections can be ordered.
+type OrgRoleUserOrderField string
+
+const (
+	OrgRoleUserOrderFieldCreatedAt OrgRoleUserOrderField = "createdAt"
+)
+
+var AllOrgRoleUserOrderField = []OrgRoleUserOrderField{
+	OrgRoleUserOrderFieldCreatedAt,
+}
+
+func (e OrgRoleUserOrderField) IsValid() bool {
+	switch e {
+	case OrgRoleUserOrderFieldCreatedAt:
+		return true
+	}
+	return false
+}
+
+func (e OrgRoleUserOrderField) String() string {
+	return string(e)
+}
+
+func (e *OrgRoleUserOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = OrgRoleUserOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid OrgRoleUserOrderField", str)
+	}
+	return nil
+}
+
+func (e OrgRoleUserOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

@@ -16,6 +16,8 @@ import (
 // OrgRoleUser is the model entity for the OrgRoleUser schema.
 type OrgRoleUser struct {
 	config `json:"-"`
+	// ID of the ent.
+	ID int `json:"id,omitempty"`
 	// CreatedBy holds the value of the "created_by" field.
 	CreatedBy int `json:"created_by,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -42,6 +44,8 @@ type OrgRoleUserEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
 }
 
 // OrgRoleOrErr returns the OrgRole value or an error if the edge
@@ -75,7 +79,7 @@ func (*OrgRoleUser) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orgroleuser.FieldCreatedBy, orgroleuser.FieldUpdatedBy, orgroleuser.FieldOrgRoleID, orgroleuser.FieldOrgUserID:
+		case orgroleuser.FieldID, orgroleuser.FieldCreatedBy, orgroleuser.FieldUpdatedBy, orgroleuser.FieldOrgRoleID, orgroleuser.FieldOrgUserID:
 			values[i] = new(sql.NullInt64)
 		case orgroleuser.FieldCreatedAt, orgroleuser.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -94,6 +98,12 @@ func (oru *OrgRoleUser) assignValues(columns []string, values []any) error {
 	}
 	for i := range columns {
 		switch columns[i] {
+		case orgroleuser.FieldID:
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
+			}
+			oru.ID = int(value.Int64)
 		case orgroleuser.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
@@ -167,6 +177,7 @@ func (oru *OrgRoleUser) Unwrap() *OrgRoleUser {
 func (oru *OrgRoleUser) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgRoleUser(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", oru.ID))
 	builder.WriteString("created_by=")
 	builder.WriteString(fmt.Sprintf("%v", oru.CreatedBy))
 	builder.WriteString(", ")

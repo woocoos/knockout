@@ -125,7 +125,7 @@ func (arq *AppRoleQuery) QueryAppRolePolicy() *AppRolePolicyQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(approle.Table, approle.FieldID, selector),
-			sqlgraph.To(approlepolicy.Table, approlepolicy.RoleColumn),
+			sqlgraph.To(approlepolicy.Table, approlepolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, approle.AppRolePolicyTable, approle.AppRolePolicyColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(arq.driver.Dialect(), step)
@@ -626,7 +626,7 @@ func (arq *AppRoleQuery) loadAppRolePolicy(ctx context.Context, query *AppRolePo
 		fk := n.AppRoleID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_role_id" returned %v for node %v`, fk, n)
+			return fmt.Errorf(`unexpected foreign-key "app_role_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

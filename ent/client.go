@@ -544,7 +544,7 @@ func (c *AppClient) QueryOrgApp(a *App) *OrgAppQuery {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
-			sqlgraph.To(orgapp.Table, orgapp.AppColumn),
+			sqlgraph.To(orgapp.Table, orgapp.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, app.OrgAppTable, app.OrgAppColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
@@ -1029,7 +1029,7 @@ func (c *AppPolicyClient) QueryAppRolePolicy(ap *AppPolicy) *AppRolePolicyQuery 
 		id := ap.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, id),
-			sqlgraph.To(approlepolicy.Table, approlepolicy.PolicyColumn),
+			sqlgraph.To(approlepolicy.Table, approlepolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, apppolicy.AppRolePolicyTable, apppolicy.AppRolePolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
@@ -1331,7 +1331,7 @@ func (c *AppRoleClient) QueryAppRolePolicy(ar *AppRole) *AppRolePolicyQuery {
 		id := ar.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(approle.Table, approle.FieldID, id),
-			sqlgraph.To(approlepolicy.Table, approlepolicy.RoleColumn),
+			sqlgraph.To(approlepolicy.Table, approlepolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, approle.AppRolePolicyTable, approle.AppRolePolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(ar.driver.Dialect(), step)
@@ -1407,9 +1407,13 @@ func (c *AppRolePolicyClient) Update() *AppRolePolicyUpdate {
 
 // UpdateOne returns an update builder for the given entity.
 func (c *AppRolePolicyClient) UpdateOne(arp *AppRolePolicy) *AppRolePolicyUpdateOne {
-	mutation := newAppRolePolicyMutation(c.config, OpUpdateOne)
-	mutation.role = &arp.AppRoleID
-	mutation.policy = &arp.AppPolicyID
+	mutation := newAppRolePolicyMutation(c.config, OpUpdateOne, withAppRolePolicy(arp))
+	return &AppRolePolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppRolePolicyClient) UpdateOneID(id int) *AppRolePolicyUpdateOne {
+	mutation := newAppRolePolicyMutation(c.config, OpUpdateOne, withAppRolePolicyID(id))
 	return &AppRolePolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1417,6 +1421,19 @@ func (c *AppRolePolicyClient) UpdateOne(arp *AppRolePolicy) *AppRolePolicyUpdate
 func (c *AppRolePolicyClient) Delete() *AppRolePolicyDelete {
 	mutation := newAppRolePolicyMutation(c.config, OpDelete)
 	return &AppRolePolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppRolePolicyClient) DeleteOne(arp *AppRolePolicy) *AppRolePolicyDeleteOne {
+	return c.DeleteOneID(arp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppRolePolicyClient) DeleteOneID(id int) *AppRolePolicyDeleteOne {
+	builder := c.Delete().Where(approlepolicy.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppRolePolicyDeleteOne{builder}
 }
 
 // Query returns a query builder for AppRolePolicy.
@@ -1428,18 +1445,50 @@ func (c *AppRolePolicyClient) Query() *AppRolePolicyQuery {
 	}
 }
 
+// Get returns a AppRolePolicy entity by its id.
+func (c *AppRolePolicyClient) Get(ctx context.Context, id int) (*AppRolePolicy, error) {
+	return c.Query().Where(approlepolicy.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppRolePolicyClient) GetX(ctx context.Context, id int) *AppRolePolicy {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
 // QueryRole queries the role edge of a AppRolePolicy.
 func (c *AppRolePolicyClient) QueryRole(arp *AppRolePolicy) *AppRoleQuery {
-	return c.Query().
-		Where(approlepolicy.AppRoleID(arp.AppRoleID), approlepolicy.AppPolicyID(arp.AppPolicyID)).
-		QueryRole()
+	query := (&AppRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := arp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(approlepolicy.Table, approlepolicy.FieldID, id),
+			sqlgraph.To(approle.Table, approle.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.RoleTable, approlepolicy.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(arp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryPolicy queries the policy edge of a AppRolePolicy.
 func (c *AppRolePolicyClient) QueryPolicy(arp *AppRolePolicy) *AppPolicyQuery {
-	return c.Query().
-		Where(approlepolicy.AppRoleID(arp.AppRoleID), approlepolicy.AppPolicyID(arp.AppPolicyID)).
-		QueryPolicy()
+	query := (&AppPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := arp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(approlepolicy.Table, approlepolicy.FieldID, id),
+			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.PolicyTable, approlepolicy.PolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(arp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -1712,7 +1761,7 @@ func (c *OrgClient) QueryOrgApp(o *Org) *OrgAppQuery {
 		id := o.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(org.Table, org.FieldID, id),
-			sqlgraph.To(orgapp.Table, orgapp.OrgColumn),
+			sqlgraph.To(orgapp.Table, orgapp.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, org.OrgAppTable, org.OrgAppColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
@@ -1789,9 +1838,13 @@ func (c *OrgAppClient) Update() *OrgAppUpdate {
 
 // UpdateOne returns an update builder for the given entity.
 func (c *OrgAppClient) UpdateOne(oa *OrgApp) *OrgAppUpdateOne {
-	mutation := newOrgAppMutation(c.config, OpUpdateOne)
-	mutation.org = &oa.OrgID
-	mutation.app = &oa.AppID
+	mutation := newOrgAppMutation(c.config, OpUpdateOne, withOrgApp(oa))
+	return &OrgAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrgAppClient) UpdateOneID(id int) *OrgAppUpdateOne {
+	mutation := newOrgAppMutation(c.config, OpUpdateOne, withOrgAppID(id))
 	return &OrgAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -1799,6 +1852,19 @@ func (c *OrgAppClient) UpdateOne(oa *OrgApp) *OrgAppUpdateOne {
 func (c *OrgAppClient) Delete() *OrgAppDelete {
 	mutation := newOrgAppMutation(c.config, OpDelete)
 	return &OrgAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrgAppClient) DeleteOne(oa *OrgApp) *OrgAppDeleteOne {
+	return c.DeleteOneID(oa.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrgAppClient) DeleteOneID(id int) *OrgAppDeleteOne {
+	builder := c.Delete().Where(orgapp.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrgAppDeleteOne{builder}
 }
 
 // Query returns a query builder for OrgApp.
@@ -1810,18 +1876,50 @@ func (c *OrgAppClient) Query() *OrgAppQuery {
 	}
 }
 
+// Get returns a OrgApp entity by its id.
+func (c *OrgAppClient) Get(ctx context.Context, id int) (*OrgApp, error) {
+	return c.Query().Where(orgapp.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrgAppClient) GetX(ctx context.Context, id int) *OrgApp {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
 // QueryApp queries the app edge of a OrgApp.
 func (c *OrgAppClient) QueryApp(oa *OrgApp) *AppQuery {
-	return c.Query().
-		Where(orgapp.OrgID(oa.OrgID), orgapp.AppID(oa.AppID)).
-		QueryApp()
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgapp.Table, orgapp.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.AppTable, orgapp.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(oa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryOrg queries the org edge of a OrgApp.
 func (c *OrgAppClient) QueryOrg(oa *OrgApp) *OrgQuery {
-	return c.Query().
-		Where(orgapp.OrgID(oa.OrgID), orgapp.AppID(oa.AppID)).
-		QueryOrg()
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgapp.Table, orgapp.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.OrgTable, orgapp.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(oa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -1952,6 +2050,22 @@ func (c *OrgPolicyClient) QueryOrg(op *OrgPolicy) *OrgQuery {
 			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.OrgTable, orgpolicy.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPermissions queries the permissions edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryPermissions(op *OrgPolicy) *PermissionQuery {
+	query := (&PermissionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(permission.Table, permission.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, orgpolicy.PermissionsTable, orgpolicy.PermissionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
 		return fromV, nil
@@ -2117,7 +2231,7 @@ func (c *OrgRoleClient) QueryOrgRoleUser(or *OrgRole) *OrgRoleUserQuery {
 		id := or.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(orgrole.Table, orgrole.FieldID, id),
-			sqlgraph.To(orgroleuser.Table, orgroleuser.OrgRoleColumn),
+			sqlgraph.To(orgroleuser.Table, orgroleuser.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, orgrole.OrgRoleUserTable, orgrole.OrgRoleUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(or.driver.Dialect(), step)
@@ -2193,9 +2307,13 @@ func (c *OrgRoleUserClient) Update() *OrgRoleUserUpdate {
 
 // UpdateOne returns an update builder for the given entity.
 func (c *OrgRoleUserClient) UpdateOne(oru *OrgRoleUser) *OrgRoleUserUpdateOne {
-	mutation := newOrgRoleUserMutation(c.config, OpUpdateOne)
-	mutation.org_role = &oru.OrgRoleID
-	mutation.org_user = &oru.OrgUserID
+	mutation := newOrgRoleUserMutation(c.config, OpUpdateOne, withOrgRoleUser(oru))
+	return &OrgRoleUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrgRoleUserClient) UpdateOneID(id int) *OrgRoleUserUpdateOne {
+	mutation := newOrgRoleUserMutation(c.config, OpUpdateOne, withOrgRoleUserID(id))
 	return &OrgRoleUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -2203,6 +2321,19 @@ func (c *OrgRoleUserClient) UpdateOne(oru *OrgRoleUser) *OrgRoleUserUpdateOne {
 func (c *OrgRoleUserClient) Delete() *OrgRoleUserDelete {
 	mutation := newOrgRoleUserMutation(c.config, OpDelete)
 	return &OrgRoleUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrgRoleUserClient) DeleteOne(oru *OrgRoleUser) *OrgRoleUserDeleteOne {
+	return c.DeleteOneID(oru.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrgRoleUserClient) DeleteOneID(id int) *OrgRoleUserDeleteOne {
+	builder := c.Delete().Where(orgroleuser.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrgRoleUserDeleteOne{builder}
 }
 
 // Query returns a query builder for OrgRoleUser.
@@ -2214,18 +2345,50 @@ func (c *OrgRoleUserClient) Query() *OrgRoleUserQuery {
 	}
 }
 
+// Get returns a OrgRoleUser entity by its id.
+func (c *OrgRoleUserClient) Get(ctx context.Context, id int) (*OrgRoleUser, error) {
+	return c.Query().Where(orgroleuser.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrgRoleUserClient) GetX(ctx context.Context, id int) *OrgRoleUser {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
 // QueryOrgRole queries the org_role edge of a OrgRoleUser.
 func (c *OrgRoleUserClient) QueryOrgRole(oru *OrgRoleUser) *OrgRoleQuery {
-	return c.Query().
-		Where(orgroleuser.OrgRoleID(oru.OrgRoleID), orgroleuser.OrgUserID(oru.OrgUserID)).
-		QueryOrgRole()
+	query := (&OrgRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oru.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, id),
+			sqlgraph.To(orgrole.Table, orgrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.OrgRoleTable, orgroleuser.OrgRoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(oru.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryOrgUser queries the org_user edge of a OrgRoleUser.
 func (c *OrgRoleUserClient) QueryOrgUser(oru *OrgRoleUser) *OrgUserQuery {
-	return c.Query().
-		Where(orgroleuser.OrgRoleID(oru.OrgRoleID), orgroleuser.OrgUserID(oru.OrgUserID)).
-		QueryOrgUser()
+	query := (&OrgUserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oru.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, id),
+			sqlgraph.To(orguser.Table, orguser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.OrgUserTable, orgroleuser.OrgUserColumn),
+		)
+		fromV = sqlgraph.Neighbors(oru.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -2539,6 +2702,22 @@ func (c *PermissionClient) QueryUser(pe *Permission) *UserQuery {
 			sqlgraph.From(permission.Table, permission.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, permission.UserTable, permission.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrgPolicy queries the org_policy edge of a Permission.
+func (c *PermissionClient) QueryOrgPolicy(pe *Permission) *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pe.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(permission.Table, permission.FieldID, id),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrgPolicyTable, permission.OrgPolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
 		return fromV, nil

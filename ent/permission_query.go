@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -19,14 +20,15 @@ import (
 // PermissionQuery is the builder for querying Permission entities.
 type PermissionQuery struct {
 	config
-	ctx        *QueryContext
-	order      []OrderFunc
-	inters     []Interceptor
-	predicates []predicate.Permission
-	withOrg    *OrgQuery
-	withUser   *UserQuery
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*Permission) error
+	ctx           *QueryContext
+	order         []OrderFunc
+	inters        []Interceptor
+	predicates    []predicate.Permission
+	withOrg       *OrgQuery
+	withUser      *UserQuery
+	withOrgPolicy *OrgPolicyQuery
+	modifiers     []func(*sql.Selector)
+	loadTotal     []func(context.Context, []*Permission) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -100,6 +102,28 @@ func (pq *PermissionQuery) QueryUser() *UserQuery {
 			sqlgraph.From(permission.Table, permission.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, permission.UserTable, permission.UserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrgPolicy chains the current query on the "org_policy" edge.
+func (pq *PermissionQuery) QueryOrgPolicy() *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(permission.Table, permission.FieldID, selector),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, permission.OrgPolicyTable, permission.OrgPolicyColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
@@ -294,13 +318,14 @@ func (pq *PermissionQuery) Clone() *PermissionQuery {
 		return nil
 	}
 	return &PermissionQuery{
-		config:     pq.config,
-		ctx:        pq.ctx.Clone(),
-		order:      append([]OrderFunc{}, pq.order...),
-		inters:     append([]Interceptor{}, pq.inters...),
-		predicates: append([]predicate.Permission{}, pq.predicates...),
-		withOrg:    pq.withOrg.Clone(),
-		withUser:   pq.withUser.Clone(),
+		config:        pq.config,
+		ctx:           pq.ctx.Clone(),
+		order:         append([]OrderFunc{}, pq.order...),
+		inters:        append([]Interceptor{}, pq.inters...),
+		predicates:    append([]predicate.Permission{}, pq.predicates...),
+		withOrg:       pq.withOrg.Clone(),
+		withUser:      pq.withUser.Clone(),
+		withOrgPolicy: pq.withOrgPolicy.Clone(),
 		// clone intermediate query.
 		sql:  pq.sql.Clone(),
 		path: pq.path,
@@ -326,6 +351,17 @@ func (pq *PermissionQuery) WithUser(opts ...func(*UserQuery)) *PermissionQuery {
 		opt(query)
 	}
 	pq.withUser = query
+	return pq
+}
+
+// WithOrgPolicy tells the query-builder to eager-load the nodes that are connected to
+// the "org_policy" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PermissionQuery) WithOrgPolicy(opts ...func(*OrgPolicyQuery)) *PermissionQuery {
+	query := (&OrgPolicyClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withOrgPolicy = query
 	return pq
 }
 
@@ -407,9 +443,10 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 	var (
 		nodes       = []*Permission{}
 		_spec       = pq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			pq.withOrg != nil,
 			pq.withUser != nil,
+			pq.withOrgPolicy != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -442,6 +479,12 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*P
 	if query := pq.withUser; query != nil {
 		if err := pq.loadUser(ctx, query, nodes, nil,
 			func(n *Permission, e *User) { n.Edges.User = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := pq.withOrgPolicy; query != nil {
+		if err := pq.loadOrgPolicy(ctx, query, nodes, nil,
+			func(n *Permission, e *OrgPolicy) { n.Edges.OrgPolicy = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -504,6 +547,35 @@ func (pq *PermissionQuery) loadUser(ctx context.Context, query *UserQuery, nodes
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (pq *PermissionQuery) loadOrgPolicy(ctx context.Context, query *OrgPolicyQuery, nodes []*Permission, init func(*Permission), assign func(*Permission, *OrgPolicy)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Permission)
+	for i := range nodes {
+		fk := nodes[i].OrgPolicyID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(orgpolicy.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "org_policy_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

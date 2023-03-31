@@ -16,6 +16,8 @@ import (
 // OrgApp is the model entity for the OrgApp schema.
 type OrgApp struct {
 	config `json:"-"`
+	// ID of the ent.
+	ID int `json:"id,omitempty"`
 	// CreatedBy holds the value of the "created_by" field.
 	CreatedBy int `json:"created_by,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -77,7 +79,7 @@ func (*OrgApp) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orgapp.FieldCreatedBy, orgapp.FieldUpdatedBy, orgapp.FieldOrgID, orgapp.FieldAppID:
+		case orgapp.FieldID, orgapp.FieldCreatedBy, orgapp.FieldUpdatedBy, orgapp.FieldOrgID, orgapp.FieldAppID:
 			values[i] = new(sql.NullInt64)
 		case orgapp.FieldCreatedAt, orgapp.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -96,6 +98,12 @@ func (oa *OrgApp) assignValues(columns []string, values []any) error {
 	}
 	for i := range columns {
 		switch columns[i] {
+		case orgapp.FieldID:
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
+			}
+			oa.ID = int(value.Int64)
 		case orgapp.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
@@ -169,6 +177,7 @@ func (oa *OrgApp) Unwrap() *OrgApp {
 func (oa *OrgApp) String() string {
 	var builder strings.Builder
 	builder.WriteString("OrgApp(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", oa.ID))
 	builder.WriteString("created_by=")
 	builder.WriteString(fmt.Sprintf("%v", oa.CreatedBy))
 	builder.WriteString(", ")

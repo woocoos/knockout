@@ -33,7 +33,7 @@ func (AppRes) Mixin() []ent.Mixin {
 // Fields of the AppRes.
 func (AppRes) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("app_id").Comment("所属应用"),
+		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("资源名称"),
 		field.String("type_name").Comment("资源类型名称,如数据库表名"),
 		field.String("arn_pattern").Comment("应用资源表达式"),
@@ -43,6 +43,6 @@ func (AppRes) Fields() []ent.Field {
 // Edges of the AppRes.
 func (AppRes) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("app", App.Type).Ref("resources").Unique().Required().Field("app_id"),
+		edge.From("app", App.Type).Ref("resources").Unique().Immutable().Field("app_id"),
 	}
 }

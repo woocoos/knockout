@@ -75,6 +75,14 @@ func (arc *AppResCreate) SetAppID(i int) *AppResCreate {
 	return arc
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arc *AppResCreate) SetNillableAppID(i *int) *AppResCreate {
+	if i != nil {
+		arc.SetAppID(*i)
+	}
+	return arc
+}
+
 // SetName sets the "name" field.
 func (arc *AppResCreate) SetName(s string) *AppResCreate {
 	arc.mutation.SetName(s)
@@ -174,9 +182,6 @@ func (arc *AppResCreate) check() error {
 	if _, ok := arc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppRes.created_at"`)}
 	}
-	if _, ok := arc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRes.app_id"`)}
-	}
 	if _, ok := arc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppRes.name"`)}
 	}
@@ -185,9 +190,6 @@ func (arc *AppResCreate) check() error {
 	}
 	if _, ok := arc.mutation.ArnPattern(); !ok {
 		return &ValidationError{Name: "arn_pattern", err: errors.New(`ent: missing required field "AppRes.arn_pattern"`)}
-	}
-	if _, ok := arc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "AppRes.app"`)}
 	}
 	return nil
 }

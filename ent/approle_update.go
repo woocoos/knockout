@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -77,12 +77,6 @@ func (aru *AppRoleUpdate) ClearUpdatedAt() *AppRoleUpdate {
 	return aru
 }
 
-// SetAppID sets the "app_id" field.
-func (aru *AppRoleUpdate) SetAppID(i int) *AppRoleUpdate {
-	aru.mutation.SetAppID(i)
-	return aru
-}
-
 // SetName sets the "name" field.
 func (aru *AppRoleUpdate) SetName(s string) *AppRoleUpdate {
 	aru.mutation.SetName(s)
@@ -137,11 +131,6 @@ func (aru *AppRoleUpdate) SetNillableEditable(b *bool) *AppRoleUpdate {
 	return aru
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aru *AppRoleUpdate) SetApp(a *App) *AppRoleUpdate {
-	return aru.SetAppID(a.ID)
-}
-
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
 func (aru *AppRoleUpdate) AddPolicyIDs(ids ...int) *AppRoleUpdate {
 	aru.mutation.AddPolicyIDs(ids...)
@@ -157,15 +146,24 @@ func (aru *AppRoleUpdate) AddPolicies(a ...*AppPolicy) *AppRoleUpdate {
 	return aru.AddPolicyIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (aru *AppRoleUpdate) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
+	aru.mutation.AddAppRolePolicyIDs(ids...)
+	return aru
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (aru *AppRoleUpdate) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return aru.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppRoleMutation object of the builder.
 func (aru *AppRoleUpdate) Mutation() *AppRoleMutation {
 	return aru.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aru *AppRoleUpdate) ClearApp() *AppRoleUpdate {
-	aru.mutation.ClearApp()
-	return aru
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
@@ -187,6 +185,27 @@ func (aru *AppRoleUpdate) RemovePolicies(a ...*AppPolicy) *AppRoleUpdate {
 		ids[i] = a[i].ID
 	}
 	return aru.RemovePolicyIDs(ids...)
+}
+
+// ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
+func (aru *AppRoleUpdate) ClearAppRolePolicy() *AppRoleUpdate {
+	aru.mutation.ClearAppRolePolicy()
+	return aru
+}
+
+// RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
+func (aru *AppRoleUpdate) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdate {
+	aru.mutation.RemoveAppRolePolicyIDs(ids...)
+	return aru
+}
+
+// RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
+func (aru *AppRoleUpdate) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return aru.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -216,18 +235,7 @@ func (aru *AppRoleUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (aru *AppRoleUpdate) check() error {
-	if _, ok := aru.mutation.AppID(); aru.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppRole.app"`)
-	}
-	return nil
-}
-
 func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := aru.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(approle.Table, approle.Columns, sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt))
 	if ps := aru.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -265,35 +273,6 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := aru.mutation.Editable(); ok {
 		_spec.SetField(approle.FieldEditable, field.TypeBool, value)
-	}
-	if aru.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   approle.AppTable,
-			Columns: []string{approle.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   approle.AppTable,
-			Columns: []string{approle.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aru.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -350,6 +329,51 @@ func (aru *AppRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if aru.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := aru.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !aru.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := aru.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, aru.driver, _spec); err != nil {
@@ -419,12 +443,6 @@ func (aruo *AppRoleUpdateOne) ClearUpdatedAt() *AppRoleUpdateOne {
 	return aruo
 }
 
-// SetAppID sets the "app_id" field.
-func (aruo *AppRoleUpdateOne) SetAppID(i int) *AppRoleUpdateOne {
-	aruo.mutation.SetAppID(i)
-	return aruo
-}
-
 // SetName sets the "name" field.
 func (aruo *AppRoleUpdateOne) SetName(s string) *AppRoleUpdateOne {
 	aruo.mutation.SetName(s)
@@ -479,11 +497,6 @@ func (aruo *AppRoleUpdateOne) SetNillableEditable(b *bool) *AppRoleUpdateOne {
 	return aruo
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aruo *AppRoleUpdateOne) SetApp(a *App) *AppRoleUpdateOne {
-	return aruo.SetAppID(a.ID)
-}
-
 // AddPolicyIDs adds the "policies" edge to the AppPolicy entity by IDs.
 func (aruo *AppRoleUpdateOne) AddPolicyIDs(ids ...int) *AppRoleUpdateOne {
 	aruo.mutation.AddPolicyIDs(ids...)
@@ -499,15 +512,24 @@ func (aruo *AppRoleUpdateOne) AddPolicies(a ...*AppPolicy) *AppRoleUpdateOne {
 	return aruo.AddPolicyIDs(ids...)
 }
 
+// AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
+func (aruo *AppRoleUpdateOne) AddAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
+	aruo.mutation.AddAppRolePolicyIDs(ids...)
+	return aruo
+}
+
+// AddAppRolePolicy adds the "app_role_policy" edges to the AppRolePolicy entity.
+func (aruo *AppRoleUpdateOne) AddAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return aruo.AddAppRolePolicyIDs(ids...)
+}
+
 // Mutation returns the AppRoleMutation object of the builder.
 func (aruo *AppRoleUpdateOne) Mutation() *AppRoleMutation {
 	return aruo.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aruo *AppRoleUpdateOne) ClearApp() *AppRoleUpdateOne {
-	aruo.mutation.ClearApp()
-	return aruo
 }
 
 // ClearPolicies clears all "policies" edges to the AppPolicy entity.
@@ -529,6 +551,27 @@ func (aruo *AppRoleUpdateOne) RemovePolicies(a ...*AppPolicy) *AppRoleUpdateOne 
 		ids[i] = a[i].ID
 	}
 	return aruo.RemovePolicyIDs(ids...)
+}
+
+// ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
+func (aruo *AppRoleUpdateOne) ClearAppRolePolicy() *AppRoleUpdateOne {
+	aruo.mutation.ClearAppRolePolicy()
+	return aruo
+}
+
+// RemoveAppRolePolicyIDs removes the "app_role_policy" edge to AppRolePolicy entities by IDs.
+func (aruo *AppRoleUpdateOne) RemoveAppRolePolicyIDs(ids ...int) *AppRoleUpdateOne {
+	aruo.mutation.RemoveAppRolePolicyIDs(ids...)
+	return aruo
+}
+
+// RemoveAppRolePolicy removes "app_role_policy" edges to AppRolePolicy entities.
+func (aruo *AppRoleUpdateOne) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return aruo.RemoveAppRolePolicyIDs(ids...)
 }
 
 // Where appends a list predicates to the AppRoleUpdate builder.
@@ -571,18 +614,7 @@ func (aruo *AppRoleUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (aruo *AppRoleUpdateOne) check() error {
-	if _, ok := aruo.mutation.AppID(); aruo.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppRole.app"`)
-	}
-	return nil
-}
-
 func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err error) {
-	if err := aruo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(approle.Table, approle.Columns, sqlgraph.NewFieldSpec(approle.FieldID, field.TypeInt))
 	id, ok := aruo.mutation.ID()
 	if !ok {
@@ -637,35 +669,6 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 	}
 	if value, ok := aruo.mutation.Editable(); ok {
 		_spec.SetField(approle.FieldEditable, field.TypeBool, value)
-	}
-	if aruo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   approle.AppTable,
-			Columns: []string{approle.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   approle.AppTable,
-			Columns: []string{approle.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aruo.mutation.PoliciesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -722,6 +725,51 @@ func (aruo *AppRoleUpdateOne) sqlSave(ctx context.Context) (_node *AppRole, err 
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if aruo.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := aruo.mutation.RemovedAppRolePolicyIDs(); len(nodes) > 0 && !aruo.mutation.AppRolePolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := aruo.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   approle.AppRolePolicyTable,
+			Columns: []string{approle.AppRolePolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &AppRole{config: aruo.config}

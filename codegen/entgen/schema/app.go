@@ -20,7 +20,7 @@ func (App) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app"},
 		entgql.RelayConnection(),
-		entgql.QueryField(),
+		entgql.QueryField().Description("公开应用查询"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
@@ -39,7 +39,7 @@ func (App) Mixin() []ent.Mixin {
 func (App) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").MaxLen(45).Unique().Comment("名称"),
-		field.String("code").MaxLen(45).Unique().Comment("代码"),
+		field.String("code").MinLen(3).MaxLen(10).Immutable().Unique().Comment("用于标识应用资源的唯一代码,尽量简短"),
 		field.Enum("kind").NamedValues(
 			"web", "web",
 			"native", "native",
@@ -54,7 +54,9 @@ func (App) Fields() []ent.Field {
 		field.String("logo").Optional().Comment("图标"),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
-		field.Int("created_org_id").Optional().Comment("创建租户").Annotations(entgql.Skip(entgql.SkipAll)),
+		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").
+			Annotations(entgql.Skip(entgql.SkipAll)),
+		field.Int("org_id").Optional().Comment("创建的根组织ID").Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }
 
@@ -68,6 +70,6 @@ func (App) Edges() []ent.Edge {
 		edge.To("policies", AppPolicy.Type).Comment("策略"),
 		edge.From("orgs", Org.Type).Ref("apps").Comment("使用该应用的组织").
 			Through("org_app", OrgApp.Type).
-			Annotations(entgql.RelayConnection()),
+			Annotations(entgql.RelayConnection(), entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 	}
 }

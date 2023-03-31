@@ -295,6 +295,16 @@ func OrgIDNotIn(vs ...int) predicate.OrgRole {
 	return predicate.OrgRole(sql.FieldNotIn(FieldOrgID, vs...))
 }
 
+// OrgIDIsNil applies the IsNil predicate on the "org_id" field.
+func OrgIDIsNil() predicate.OrgRole {
+	return predicate.OrgRole(sql.FieldIsNull(FieldOrgID))
+}
+
+// OrgIDNotNil applies the NotNil predicate on the "org_id" field.
+func OrgIDNotNil() predicate.OrgRole {
+	return predicate.OrgRole(sql.FieldNotNull(FieldOrgID))
+}
+
 // KindEQ applies the EQ predicate on the "kind" field.
 func KindEQ(v Kind) predicate.OrgRole {
 	return predicate.OrgRole(sql.FieldEQ(FieldKind, v))
@@ -575,7 +585,7 @@ func HasOrgRoleUserWith(preds ...predicate.OrgRoleUser) predicate.OrgRole {
 	return predicate.OrgRole(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgRoleUserInverseTable, OrgRoleUserColumn),
+			sqlgraph.To(OrgRoleUserInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

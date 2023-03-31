@@ -1391,6 +1391,18 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				return err
 			}
 			op.withOrg = query
+		case "permissions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PermissionClient{config: op.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			op.WithNamedPermissions(alias, func(wq *PermissionQuery) {
+				*wq = *query
+			})
 		}
 	}
 	return nil
@@ -1448,6 +1460,74 @@ func newOrgPolicyPaginateArgs(rv map[string]interface{}) *orgpolicyPaginateArgs 
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (or *OrgRoleQuery) CollectFields(ctx context.Context, satisfies ...string) (*OrgRoleQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return or, nil
+	}
+	if err := or.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return or, nil
+}
+
+func (or *OrgRoleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	return nil
+}
+
+type orgrolePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []OrgRolePaginateOption
+}
+
+func newOrgRolePaginateArgs(rv map[string]interface{}) *orgrolePaginateArgs {
+	args := &orgrolePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]interface{}:
+			var (
+				err1, err2 error
+				order      = &OrgRoleOrder{Field: &OrgRoleOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithOrgRoleOrder(order))
+			}
+		case *OrgRoleOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithOrgRoleOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*OrgRoleWhereInput); ok {
+		args.opts = append(args.opts, WithOrgRoleFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (pe *PermissionQuery) CollectFields(ctx context.Context, satisfies ...string) (*PermissionQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -1483,6 +1563,16 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				return err
 			}
 			pe.withUser = query
+		case "orgPolicy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgPolicyClient{config: pe.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pe.withOrgPolicy = query
 		}
 	}
 	return nil

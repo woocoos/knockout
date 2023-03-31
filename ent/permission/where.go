@@ -426,26 +426,6 @@ func OrgPolicyIDNotIn(vs ...int) predicate.Permission {
 	return predicate.Permission(sql.FieldNotIn(FieldOrgPolicyID, vs...))
 }
 
-// OrgPolicyIDGT applies the GT predicate on the "org_policy_id" field.
-func OrgPolicyIDGT(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldGT(FieldOrgPolicyID, v))
-}
-
-// OrgPolicyIDGTE applies the GTE predicate on the "org_policy_id" field.
-func OrgPolicyIDGTE(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldGTE(FieldOrgPolicyID, v))
-}
-
-// OrgPolicyIDLT applies the LT predicate on the "org_policy_id" field.
-func OrgPolicyIDLT(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldLT(FieldOrgPolicyID, v))
-}
-
-// OrgPolicyIDLTE applies the LTE predicate on the "org_policy_id" field.
-func OrgPolicyIDLTE(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldLTE(FieldOrgPolicyID, v))
-}
-
 // StartAtEQ applies the EQ predicate on the "start_at" field.
 func StartAtEQ(v time.Time) predicate.Permission {
 	return predicate.Permission(sql.FieldEQ(FieldStartAt, v))
@@ -631,6 +611,33 @@ func HasUserWith(preds ...predicate.User) predicate.Permission {
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(UserInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrgPolicy applies the HasEdge predicate on the "org_policy" edge.
+func HasOrgPolicy() predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OrgPolicyTable, OrgPolicyColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgPolicyWith applies the HasEdge predicate on the "org_policy" edge with a given conditions (other predicates).
+func HasOrgPolicyWith(preds ...predicate.OrgPolicy) predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OrgPolicyInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OrgPolicyTable, OrgPolicyColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

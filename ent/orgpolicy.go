@@ -48,11 +48,15 @@ type OrgPolicy struct {
 type OrgPolicyEdges struct {
 	// Org holds the value of the org edge.
 	Org *Org `json:"org,omitempty"`
+	// Permissions holds the value of the permissions edge.
+	Permissions []*Permission `json:"permissions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
+
+	namedPermissions map[string][]*Permission
 }
 
 // OrgOrErr returns the Org value or an error if the edge
@@ -66,6 +70,15 @@ func (e OrgPolicyEdges) OrgOrErr() (*Org, error) {
 		return e.Org, nil
 	}
 	return nil, &NotLoadedError{edge: "org"}
+}
+
+// PermissionsOrErr returns the Permissions value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgPolicyEdges) PermissionsOrErr() ([]*Permission, error) {
+	if e.loadedTypes[1] {
+		return e.Permissions, nil
+	}
+	return nil, &NotLoadedError{edge: "permissions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -174,6 +187,11 @@ func (op *OrgPolicy) QueryOrg() *OrgQuery {
 	return NewOrgPolicyClient(op.config).QueryOrg(op)
 }
 
+// QueryPermissions queries the "permissions" edge of the OrgPolicy entity.
+func (op *OrgPolicy) QueryPermissions() *PermissionQuery {
+	return NewOrgPolicyClient(op.config).QueryPermissions(op)
+}
+
 // Update returns a builder for updating this OrgPolicy.
 // Note that you need to call OrgPolicy.Unwrap() before calling this method if this OrgPolicy
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -228,6 +246,30 @@ func (op *OrgPolicy) String() string {
 	builder.WriteString(fmt.Sprintf("%v", op.Rules))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedPermissions returns the Permissions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (op *OrgPolicy) NamedPermissions(name string) ([]*Permission, error) {
+	if op.Edges.namedPermissions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := op.Edges.namedPermissions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (op *OrgPolicy) appendNamedPermissions(name string, edges ...*Permission) {
+	if op.Edges.namedPermissions == nil {
+		op.Edges.namedPermissions = make(map[string][]*Permission)
+	}
+	if len(edges) == 0 {
+		op.Edges.namedPermissions[name] = []*Permission{}
+	} else {
+		op.Edges.namedPermissions[name] = append(op.Edges.namedPermissions[name], edges...)
+	}
 }
 
 // OrgPolicies is a parsable slice of OrgPolicy.

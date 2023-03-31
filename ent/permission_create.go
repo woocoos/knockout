@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -183,6 +184,11 @@ func (pc *PermissionCreate) SetUser(u *User) *PermissionCreate {
 	return pc.SetUserID(u.ID)
 }
 
+// SetOrgPolicy sets the "org_policy" edge to the OrgPolicy entity.
+func (pc *PermissionCreate) SetOrgPolicy(o *OrgPolicy) *PermissionCreate {
+	return pc.SetOrgPolicyID(o.ID)
+}
+
 // Mutation returns the PermissionMutation object of the builder.
 func (pc *PermissionCreate) Mutation() *PermissionMutation {
 	return pc.mutation
@@ -267,6 +273,9 @@ func (pc *PermissionCreate) check() error {
 	if _, ok := pc.mutation.OrgID(); !ok {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "Permission.org"`)}
 	}
+	if _, ok := pc.mutation.OrgPolicyID(); !ok {
+		return &ValidationError{Name: "org_policy", err: errors.New(`ent: missing required edge "Permission.org_policy"`)}
+	}
 	return nil
 }
 
@@ -323,10 +332,6 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 		_spec.SetField(permission.FieldRoleID, field.TypeInt, value)
 		_node.RoleID = value
 	}
-	if value, ok := pc.mutation.OrgPolicyID(); ok {
-		_spec.SetField(permission.FieldOrgPolicyID, field.TypeInt, value)
-		_node.OrgPolicyID = value
-	}
 	if value, ok := pc.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)
 		_node.StartAt = value
@@ -371,6 +376,23 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.UserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.OrgPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   permission.OrgPolicyTable,
+			Columns: []string{permission.OrgPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.OrgPolicyID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

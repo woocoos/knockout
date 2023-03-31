@@ -12,10 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
-	"github.com/woocoos/knockout/ent/user"
 )
 
 // PermissionUpdate is the builder for updating Permission entities.
@@ -75,78 +73,6 @@ func (pu *PermissionUpdate) SetNillableUpdatedAt(t *time.Time) *PermissionUpdate
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (pu *PermissionUpdate) ClearUpdatedAt() *PermissionUpdate {
 	pu.mutation.ClearUpdatedAt()
-	return pu
-}
-
-// SetOrgID sets the "org_id" field.
-func (pu *PermissionUpdate) SetOrgID(i int) *PermissionUpdate {
-	pu.mutation.SetOrgID(i)
-	return pu
-}
-
-// SetPrincipalKind sets the "principal_kind" field.
-func (pu *PermissionUpdate) SetPrincipalKind(pk permission.PrincipalKind) *PermissionUpdate {
-	pu.mutation.SetPrincipalKind(pk)
-	return pu
-}
-
-// SetUserID sets the "user_id" field.
-func (pu *PermissionUpdate) SetUserID(i int) *PermissionUpdate {
-	pu.mutation.SetUserID(i)
-	return pu
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (pu *PermissionUpdate) SetNillableUserID(i *int) *PermissionUpdate {
-	if i != nil {
-		pu.SetUserID(*i)
-	}
-	return pu
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (pu *PermissionUpdate) ClearUserID() *PermissionUpdate {
-	pu.mutation.ClearUserID()
-	return pu
-}
-
-// SetRoleID sets the "role_id" field.
-func (pu *PermissionUpdate) SetRoleID(i int) *PermissionUpdate {
-	pu.mutation.ResetRoleID()
-	pu.mutation.SetRoleID(i)
-	return pu
-}
-
-// SetNillableRoleID sets the "role_id" field if the given value is not nil.
-func (pu *PermissionUpdate) SetNillableRoleID(i *int) *PermissionUpdate {
-	if i != nil {
-		pu.SetRoleID(*i)
-	}
-	return pu
-}
-
-// AddRoleID adds i to the "role_id" field.
-func (pu *PermissionUpdate) AddRoleID(i int) *PermissionUpdate {
-	pu.mutation.AddRoleID(i)
-	return pu
-}
-
-// ClearRoleID clears the value of the "role_id" field.
-func (pu *PermissionUpdate) ClearRoleID() *PermissionUpdate {
-	pu.mutation.ClearRoleID()
-	return pu
-}
-
-// SetOrgPolicyID sets the "org_policy_id" field.
-func (pu *PermissionUpdate) SetOrgPolicyID(i int) *PermissionUpdate {
-	pu.mutation.ResetOrgPolicyID()
-	pu.mutation.SetOrgPolicyID(i)
-	return pu
-}
-
-// AddOrgPolicyID adds i to the "org_policy_id" field.
-func (pu *PermissionUpdate) AddOrgPolicyID(i int) *PermissionUpdate {
-	pu.mutation.AddOrgPolicyID(i)
 	return pu
 }
 
@@ -210,31 +136,9 @@ func (pu *PermissionUpdate) ClearStatus() *PermissionUpdate {
 	return pu
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (pu *PermissionUpdate) SetOrg(o *Org) *PermissionUpdate {
-	return pu.SetOrgID(o.ID)
-}
-
-// SetUser sets the "user" edge to the User entity.
-func (pu *PermissionUpdate) SetUser(u *User) *PermissionUpdate {
-	return pu.SetUserID(u.ID)
-}
-
 // Mutation returns the PermissionMutation object of the builder.
 func (pu *PermissionUpdate) Mutation() *PermissionMutation {
 	return pu.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (pu *PermissionUpdate) ClearOrg() *PermissionUpdate {
-	pu.mutation.ClearOrg()
-	return pu
-}
-
-// ClearUser clears the "user" edge to the User entity.
-func (pu *PermissionUpdate) ClearUser() *PermissionUpdate {
-	pu.mutation.ClearUser()
-	return pu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -266,11 +170,6 @@ func (pu *PermissionUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (pu *PermissionUpdate) check() error {
-	if v, ok := pu.mutation.PrincipalKind(); ok {
-		if err := permission.PrincipalKindValidator(v); err != nil {
-			return &ValidationError{Name: "principal_kind", err: fmt.Errorf(`ent: validator failed for field "Permission.principal_kind": %w`, err)}
-		}
-	}
 	if v, ok := pu.mutation.Status(); ok {
 		if err := permission.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
@@ -278,6 +177,9 @@ func (pu *PermissionUpdate) check() error {
 	}
 	if _, ok := pu.mutation.OrgID(); pu.mutation.OrgCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
+	}
+	if _, ok := pu.mutation.OrgPolicyID(); pu.mutation.OrgPolicyCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Permission.org_policy"`)
 	}
 	return nil
 }
@@ -309,23 +211,8 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(permission.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := pu.mutation.PrincipalKind(); ok {
-		_spec.SetField(permission.FieldPrincipalKind, field.TypeEnum, value)
-	}
-	if value, ok := pu.mutation.RoleID(); ok {
-		_spec.SetField(permission.FieldRoleID, field.TypeInt, value)
-	}
-	if value, ok := pu.mutation.AddedRoleID(); ok {
-		_spec.AddField(permission.FieldRoleID, field.TypeInt, value)
-	}
 	if pu.mutation.RoleIDCleared() {
 		_spec.ClearField(permission.FieldRoleID, field.TypeInt)
-	}
-	if value, ok := pu.mutation.OrgPolicyID(); ok {
-		_spec.SetField(permission.FieldOrgPolicyID, field.TypeInt, value)
-	}
-	if value, ok := pu.mutation.AddedOrgPolicyID(); ok {
-		_spec.AddField(permission.FieldOrgPolicyID, field.TypeInt, value)
 	}
 	if value, ok := pu.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)
@@ -344,64 +231,6 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if pu.mutation.StatusCleared() {
 		_spec.ClearField(permission.FieldStatus, field.TypeEnum)
-	}
-	if pu.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   permission.OrgTable,
-			Columns: []string{permission.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := pu.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   permission.OrgTable,
-			Columns: []string{permission.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if pu.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   permission.UserTable,
-			Columns: []string{permission.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := pu.mutation.UserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   permission.UserTable,
-			Columns: []string{permission.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -470,78 +299,6 @@ func (puo *PermissionUpdateOne) ClearUpdatedAt() *PermissionUpdateOne {
 	return puo
 }
 
-// SetOrgID sets the "org_id" field.
-func (puo *PermissionUpdateOne) SetOrgID(i int) *PermissionUpdateOne {
-	puo.mutation.SetOrgID(i)
-	return puo
-}
-
-// SetPrincipalKind sets the "principal_kind" field.
-func (puo *PermissionUpdateOne) SetPrincipalKind(pk permission.PrincipalKind) *PermissionUpdateOne {
-	puo.mutation.SetPrincipalKind(pk)
-	return puo
-}
-
-// SetUserID sets the "user_id" field.
-func (puo *PermissionUpdateOne) SetUserID(i int) *PermissionUpdateOne {
-	puo.mutation.SetUserID(i)
-	return puo
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (puo *PermissionUpdateOne) SetNillableUserID(i *int) *PermissionUpdateOne {
-	if i != nil {
-		puo.SetUserID(*i)
-	}
-	return puo
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (puo *PermissionUpdateOne) ClearUserID() *PermissionUpdateOne {
-	puo.mutation.ClearUserID()
-	return puo
-}
-
-// SetRoleID sets the "role_id" field.
-func (puo *PermissionUpdateOne) SetRoleID(i int) *PermissionUpdateOne {
-	puo.mutation.ResetRoleID()
-	puo.mutation.SetRoleID(i)
-	return puo
-}
-
-// SetNillableRoleID sets the "role_id" field if the given value is not nil.
-func (puo *PermissionUpdateOne) SetNillableRoleID(i *int) *PermissionUpdateOne {
-	if i != nil {
-		puo.SetRoleID(*i)
-	}
-	return puo
-}
-
-// AddRoleID adds i to the "role_id" field.
-func (puo *PermissionUpdateOne) AddRoleID(i int) *PermissionUpdateOne {
-	puo.mutation.AddRoleID(i)
-	return puo
-}
-
-// ClearRoleID clears the value of the "role_id" field.
-func (puo *PermissionUpdateOne) ClearRoleID() *PermissionUpdateOne {
-	puo.mutation.ClearRoleID()
-	return puo
-}
-
-// SetOrgPolicyID sets the "org_policy_id" field.
-func (puo *PermissionUpdateOne) SetOrgPolicyID(i int) *PermissionUpdateOne {
-	puo.mutation.ResetOrgPolicyID()
-	puo.mutation.SetOrgPolicyID(i)
-	return puo
-}
-
-// AddOrgPolicyID adds i to the "org_policy_id" field.
-func (puo *PermissionUpdateOne) AddOrgPolicyID(i int) *PermissionUpdateOne {
-	puo.mutation.AddOrgPolicyID(i)
-	return puo
-}
-
 // SetStartAt sets the "start_at" field.
 func (puo *PermissionUpdateOne) SetStartAt(t time.Time) *PermissionUpdateOne {
 	puo.mutation.SetStartAt(t)
@@ -602,31 +359,9 @@ func (puo *PermissionUpdateOne) ClearStatus() *PermissionUpdateOne {
 	return puo
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (puo *PermissionUpdateOne) SetOrg(o *Org) *PermissionUpdateOne {
-	return puo.SetOrgID(o.ID)
-}
-
-// SetUser sets the "user" edge to the User entity.
-func (puo *PermissionUpdateOne) SetUser(u *User) *PermissionUpdateOne {
-	return puo.SetUserID(u.ID)
-}
-
 // Mutation returns the PermissionMutation object of the builder.
 func (puo *PermissionUpdateOne) Mutation() *PermissionMutation {
 	return puo.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (puo *PermissionUpdateOne) ClearOrg() *PermissionUpdateOne {
-	puo.mutation.ClearOrg()
-	return puo
-}
-
-// ClearUser clears the "user" edge to the User entity.
-func (puo *PermissionUpdateOne) ClearUser() *PermissionUpdateOne {
-	puo.mutation.ClearUser()
-	return puo
 }
 
 // Where appends a list predicates to the PermissionUpdate builder.
@@ -671,11 +406,6 @@ func (puo *PermissionUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (puo *PermissionUpdateOne) check() error {
-	if v, ok := puo.mutation.PrincipalKind(); ok {
-		if err := permission.PrincipalKindValidator(v); err != nil {
-			return &ValidationError{Name: "principal_kind", err: fmt.Errorf(`ent: validator failed for field "Permission.principal_kind": %w`, err)}
-		}
-	}
 	if v, ok := puo.mutation.Status(); ok {
 		if err := permission.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
@@ -683,6 +413,9 @@ func (puo *PermissionUpdateOne) check() error {
 	}
 	if _, ok := puo.mutation.OrgID(); puo.mutation.OrgCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
+	}
+	if _, ok := puo.mutation.OrgPolicyID(); puo.mutation.OrgPolicyCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Permission.org_policy"`)
 	}
 	return nil
 }
@@ -731,23 +464,8 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	if puo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(permission.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := puo.mutation.PrincipalKind(); ok {
-		_spec.SetField(permission.FieldPrincipalKind, field.TypeEnum, value)
-	}
-	if value, ok := puo.mutation.RoleID(); ok {
-		_spec.SetField(permission.FieldRoleID, field.TypeInt, value)
-	}
-	if value, ok := puo.mutation.AddedRoleID(); ok {
-		_spec.AddField(permission.FieldRoleID, field.TypeInt, value)
-	}
 	if puo.mutation.RoleIDCleared() {
 		_spec.ClearField(permission.FieldRoleID, field.TypeInt)
-	}
-	if value, ok := puo.mutation.OrgPolicyID(); ok {
-		_spec.SetField(permission.FieldOrgPolicyID, field.TypeInt, value)
-	}
-	if value, ok := puo.mutation.AddedOrgPolicyID(); ok {
-		_spec.AddField(permission.FieldOrgPolicyID, field.TypeInt, value)
 	}
 	if value, ok := puo.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)
@@ -766,64 +484,6 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	}
 	if puo.mutation.StatusCleared() {
 		_spec.ClearField(permission.FieldStatus, field.TypeEnum)
-	}
-	if puo.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   permission.OrgTable,
-			Columns: []string{permission.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := puo.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   permission.OrgTable,
-			Columns: []string{permission.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if puo.mutation.UserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   permission.UserTable,
-			Columns: []string{permission.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := puo.mutation.UserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   permission.UserTable,
-			Columns: []string{permission.UserColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Permission{config: puo.config}
 	_spec.Assign = _node.assignValues

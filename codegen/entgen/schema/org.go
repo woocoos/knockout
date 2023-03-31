@@ -28,7 +28,7 @@ func (Org) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "org"},
 		entgql.RelayConnection(),
-		entgql.QueryField(),
+		entgql.QueryField("organizations"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),

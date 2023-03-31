@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -74,7 +75,7 @@ func (arpq *AppRolePolicyQuery) QueryRole() *AppRoleQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(approlepolicy.Table, approlepolicy.RoleColumn, selector),
+			sqlgraph.From(approlepolicy.Table, approlepolicy.FieldID, selector),
 			sqlgraph.To(approle.Table, approle.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.RoleTable, approlepolicy.RoleColumn),
 		)
@@ -96,7 +97,7 @@ func (arpq *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(approlepolicy.Table, approlepolicy.PolicyColumn, selector),
+			sqlgraph.From(approlepolicy.Table, approlepolicy.FieldID, selector),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, approlepolicy.PolicyTable, approlepolicy.PolicyColumn),
 		)
@@ -128,6 +129,29 @@ func (arpq *AppRolePolicyQuery) FirstX(ctx context.Context) *AppRolePolicy {
 	return node
 }
 
+// FirstID returns the first AppRolePolicy ID from the query.
+// Returns a *NotFoundError when no AppRolePolicy ID was found.
+func (arpq *AppRolePolicyQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = arpq.Limit(1).IDs(setContextOp(ctx, arpq.ctx, "FirstID")); err != nil {
+		return
+	}
+	if len(ids) == 0 {
+		err = &NotFoundError{approlepolicy.Label}
+		return
+	}
+	return ids[0], nil
+}
+
+// FirstIDX is like FirstID, but panics if an error occurs.
+func (arpq *AppRolePolicyQuery) FirstIDX(ctx context.Context) int {
+	id, err := arpq.FirstID(ctx)
+	if err != nil && !IsNotFound(err) {
+		panic(err)
+	}
+	return id
+}
+
 // Only returns a single AppRolePolicy entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one AppRolePolicy entity is found.
 // Returns a *NotFoundError when no AppRolePolicy entities are found.
@@ -155,6 +179,34 @@ func (arpq *AppRolePolicyQuery) OnlyX(ctx context.Context) *AppRolePolicy {
 	return node
 }
 
+// OnlyID is like Only, but returns the only AppRolePolicy ID in the query.
+// Returns a *NotSingularError when more than one AppRolePolicy ID is found.
+// Returns a *NotFoundError when no entities are found.
+func (arpq *AppRolePolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = arpq.Limit(2).IDs(setContextOp(ctx, arpq.ctx, "OnlyID")); err != nil {
+		return
+	}
+	switch len(ids) {
+	case 1:
+		id = ids[0]
+	case 0:
+		err = &NotFoundError{approlepolicy.Label}
+	default:
+		err = &NotSingularError{approlepolicy.Label}
+	}
+	return
+}
+
+// OnlyIDX is like OnlyID, but panics if an error occurs.
+func (arpq *AppRolePolicyQuery) OnlyIDX(ctx context.Context) int {
+	id, err := arpq.OnlyID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // All executes the query and returns a list of AppRolePolicies.
 func (arpq *AppRolePolicyQuery) All(ctx context.Context) ([]*AppRolePolicy, error) {
 	ctx = setContextOp(ctx, arpq.ctx, "All")
@@ -172,6 +224,27 @@ func (arpq *AppRolePolicyQuery) AllX(ctx context.Context) []*AppRolePolicy {
 		panic(err)
 	}
 	return nodes
+}
+
+// IDs executes the query and returns a list of AppRolePolicy IDs.
+func (arpq *AppRolePolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if arpq.ctx.Unique == nil && arpq.path != nil {
+		arpq.Unique(true)
+	}
+	ctx = setContextOp(ctx, arpq.ctx, "IDs")
+	if err = arpq.Select(approlepolicy.FieldID).Scan(ctx, &ids); err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
+// IDsX is like IDs, but panics if an error occurs.
+func (arpq *AppRolePolicyQuery) IDsX(ctx context.Context) []int {
+	ids, err := arpq.IDs(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return ids
 }
 
 // Count returns the count of the given query.
@@ -195,7 +268,7 @@ func (arpq *AppRolePolicyQuery) CountX(ctx context.Context) int {
 // Exist returns true if the query has elements in the graph.
 func (arpq *AppRolePolicyQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, arpq.ctx, "Exist")
-	switch _, err := arpq.First(ctx); {
+	switch _, err := arpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -444,13 +517,15 @@ func (arpq *AppRolePolicyQuery) sqlCount(ctx context.Context) (int, error) {
 	if len(arpq.modifiers) > 0 {
 		_spec.Modifiers = arpq.modifiers
 	}
-	_spec.Unique = false
-	_spec.Node.Columns = nil
+	_spec.Node.Columns = arpq.ctx.Fields
+	if len(arpq.ctx.Fields) > 0 {
+		_spec.Unique = arpq.ctx.Unique != nil && *arpq.ctx.Unique
+	}
 	return sqlgraph.CountNodes(ctx, arpq.driver, _spec)
 }
 
 func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(approlepolicy.Table, approlepolicy.Columns, nil)
+	_spec := sqlgraph.NewQuerySpec(approlepolicy.Table, approlepolicy.Columns, sqlgraph.NewFieldSpec(approlepolicy.FieldID, field.TypeInt))
 	_spec.From = arpq.sql
 	if unique := arpq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -459,8 +534,11 @@ func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := arpq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
+		_spec.Node.Columns = append(_spec.Node.Columns, approlepolicy.FieldID)
 		for i := range fields {
-			_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			if fields[i] != approlepolicy.FieldID {
+				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			}
 		}
 	}
 	if ps := arpq.predicates; len(ps) > 0 {

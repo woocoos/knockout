@@ -126,9 +126,14 @@ func Comments(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldComments, v))
 }
 
-// CreatedOrgID applies equality check predicate on the "created_org_id" field. It's identical to CreatedOrgIDEQ.
-func CreatedOrgID(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldCreatedOrgID, v))
+// Private applies equality check predicate on the "private" field. It's identical to PrivateEQ.
+func Private(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPrivate, v))
+}
+
+// OrgID applies equality check predicate on the "org_id" field. It's identical to OrgIDEQ.
+func OrgID(v int) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldOrgID, v))
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
@@ -1051,54 +1056,74 @@ func StatusNotNil() predicate.App {
 	return predicate.App(sql.FieldNotNull(FieldStatus))
 }
 
-// CreatedOrgIDEQ applies the EQ predicate on the "created_org_id" field.
-func CreatedOrgIDEQ(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldCreatedOrgID, v))
+// PrivateEQ applies the EQ predicate on the "private" field.
+func PrivateEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPrivate, v))
 }
 
-// CreatedOrgIDNEQ applies the NEQ predicate on the "created_org_id" field.
-func CreatedOrgIDNEQ(v int) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldCreatedOrgID, v))
+// PrivateNEQ applies the NEQ predicate on the "private" field.
+func PrivateNEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldPrivate, v))
 }
 
-// CreatedOrgIDIn applies the In predicate on the "created_org_id" field.
-func CreatedOrgIDIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldIn(FieldCreatedOrgID, vs...))
+// PrivateIsNil applies the IsNil predicate on the "private" field.
+func PrivateIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldPrivate))
 }
 
-// CreatedOrgIDNotIn applies the NotIn predicate on the "created_org_id" field.
-func CreatedOrgIDNotIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldNotIn(FieldCreatedOrgID, vs...))
+// PrivateNotNil applies the NotNil predicate on the "private" field.
+func PrivateNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldPrivate))
 }
 
-// CreatedOrgIDGT applies the GT predicate on the "created_org_id" field.
-func CreatedOrgIDGT(v int) predicate.App {
-	return predicate.App(sql.FieldGT(FieldCreatedOrgID, v))
+// OrgIDEQ applies the EQ predicate on the "org_id" field.
+func OrgIDEQ(v int) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldOrgID, v))
 }
 
-// CreatedOrgIDGTE applies the GTE predicate on the "created_org_id" field.
-func CreatedOrgIDGTE(v int) predicate.App {
-	return predicate.App(sql.FieldGTE(FieldCreatedOrgID, v))
+// OrgIDNEQ applies the NEQ predicate on the "org_id" field.
+func OrgIDNEQ(v int) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldOrgID, v))
 }
 
-// CreatedOrgIDLT applies the LT predicate on the "created_org_id" field.
-func CreatedOrgIDLT(v int) predicate.App {
-	return predicate.App(sql.FieldLT(FieldCreatedOrgID, v))
+// OrgIDIn applies the In predicate on the "org_id" field.
+func OrgIDIn(vs ...int) predicate.App {
+	return predicate.App(sql.FieldIn(FieldOrgID, vs...))
 }
 
-// CreatedOrgIDLTE applies the LTE predicate on the "created_org_id" field.
-func CreatedOrgIDLTE(v int) predicate.App {
-	return predicate.App(sql.FieldLTE(FieldCreatedOrgID, v))
+// OrgIDNotIn applies the NotIn predicate on the "org_id" field.
+func OrgIDNotIn(vs ...int) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldOrgID, vs...))
 }
 
-// CreatedOrgIDIsNil applies the IsNil predicate on the "created_org_id" field.
-func CreatedOrgIDIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldCreatedOrgID))
+// OrgIDGT applies the GT predicate on the "org_id" field.
+func OrgIDGT(v int) predicate.App {
+	return predicate.App(sql.FieldGT(FieldOrgID, v))
 }
 
-// CreatedOrgIDNotNil applies the NotNil predicate on the "created_org_id" field.
-func CreatedOrgIDNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldCreatedOrgID))
+// OrgIDGTE applies the GTE predicate on the "org_id" field.
+func OrgIDGTE(v int) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldOrgID, v))
+}
+
+// OrgIDLT applies the LT predicate on the "org_id" field.
+func OrgIDLT(v int) predicate.App {
+	return predicate.App(sql.FieldLT(FieldOrgID, v))
+}
+
+// OrgIDLTE applies the LTE predicate on the "org_id" field.
+func OrgIDLTE(v int) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldOrgID, v))
+}
+
+// OrgIDIsNil applies the IsNil predicate on the "org_id" field.
+func OrgIDIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldOrgID))
+}
+
+// OrgIDNotNil applies the NotNil predicate on the "org_id" field.
+func OrgIDNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldOrgID))
 }
 
 // HasMenus applies the HasEdge predicate on the "menus" edge.
@@ -1279,7 +1304,7 @@ func HasOrgAppWith(preds ...predicate.OrgApp) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgAppInverseTable, OrgAppColumn),
+			sqlgraph.To(OrgAppInverseTable, FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, OrgAppTable, OrgAppColumn),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

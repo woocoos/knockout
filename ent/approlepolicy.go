@@ -16,6 +16,8 @@ import (
 // AppRolePolicy is the model entity for the AppRolePolicy schema.
 type AppRolePolicy struct {
 	config `json:"-"`
+	// ID of the ent.
+	ID int `json:"id,omitempty"`
 	// CreatedBy holds the value of the "created_by" field.
 	CreatedBy int `json:"created_by,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -28,6 +30,8 @@ type AppRolePolicy struct {
 	AppRoleID int `json:"app_role_id,omitempty"`
 	// 策略ID
 	AppPolicyID int `json:"app_policy_id,omitempty"`
+	// 应用ID
+	AppID int `json:"app_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppRolePolicyQuery when eager-loading is set.
 	Edges AppRolePolicyEdges `json:"edges"`
@@ -77,7 +81,7 @@ func (*AppRolePolicy) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case approlepolicy.FieldCreatedBy, approlepolicy.FieldUpdatedBy, approlepolicy.FieldAppRoleID, approlepolicy.FieldAppPolicyID:
+		case approlepolicy.FieldID, approlepolicy.FieldCreatedBy, approlepolicy.FieldUpdatedBy, approlepolicy.FieldAppRoleID, approlepolicy.FieldAppPolicyID, approlepolicy.FieldAppID:
 			values[i] = new(sql.NullInt64)
 		case approlepolicy.FieldCreatedAt, approlepolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -96,6 +100,12 @@ func (arp *AppRolePolicy) assignValues(columns []string, values []any) error {
 	}
 	for i := range columns {
 		switch columns[i] {
+		case approlepolicy.FieldID:
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
+			}
+			arp.ID = int(value.Int64)
 		case approlepolicy.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
@@ -131,6 +141,12 @@ func (arp *AppRolePolicy) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field app_policy_id", values[i])
 			} else if value.Valid {
 				arp.AppPolicyID = int(value.Int64)
+			}
+		case approlepolicy.FieldAppID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+			} else if value.Valid {
+				arp.AppID = int(value.Int64)
 			}
 		}
 	}
@@ -169,6 +185,7 @@ func (arp *AppRolePolicy) Unwrap() *AppRolePolicy {
 func (arp *AppRolePolicy) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppRolePolicy(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", arp.ID))
 	builder.WriteString("created_by=")
 	builder.WriteString(fmt.Sprintf("%v", arp.CreatedBy))
 	builder.WriteString(", ")
@@ -186,6 +203,9 @@ func (arp *AppRolePolicy) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("app_policy_id=")
 	builder.WriteString(fmt.Sprintf("%v", arp.AppPolicyID))
+	builder.WriteString(", ")
+	builder.WriteString("app_id=")
+	builder.WriteString(fmt.Sprintf("%v", arp.AppID))
 	builder.WriteByte(')')
 	return builder.String()
 }

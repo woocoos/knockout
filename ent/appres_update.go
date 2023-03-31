@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -76,12 +75,6 @@ func (aru *AppResUpdate) ClearUpdatedAt() *AppResUpdate {
 	return aru
 }
 
-// SetAppID sets the "app_id" field.
-func (aru *AppResUpdate) SetAppID(i int) *AppResUpdate {
-	aru.mutation.SetAppID(i)
-	return aru
-}
-
 // SetName sets the "name" field.
 func (aru *AppResUpdate) SetName(s string) *AppResUpdate {
 	aru.mutation.SetName(s)
@@ -100,20 +93,9 @@ func (aru *AppResUpdate) SetArnPattern(s string) *AppResUpdate {
 	return aru
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aru *AppResUpdate) SetApp(a *App) *AppResUpdate {
-	return aru.SetAppID(a.ID)
-}
-
 // Mutation returns the AppResMutation object of the builder.
 func (aru *AppResUpdate) Mutation() *AppResMutation {
 	return aru.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aru *AppResUpdate) ClearApp() *AppResUpdate {
-	aru.mutation.ClearApp()
-	return aru
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -143,18 +125,7 @@ func (aru *AppResUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (aru *AppResUpdate) check() error {
-	if _, ok := aru.mutation.AppID(); aru.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppRes.app"`)
-	}
-	return nil
-}
-
 func (aru *AppResUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := aru.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(appres.Table, appres.Columns, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
 	if ps := aru.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -186,35 +157,6 @@ func (aru *AppResUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := aru.mutation.ArnPattern(); ok {
 		_spec.SetField(appres.FieldArnPattern, field.TypeString, value)
-	}
-	if aru.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appres.AppTable,
-			Columns: []string{appres.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appres.AppTable,
-			Columns: []string{appres.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, aru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -283,12 +225,6 @@ func (aruo *AppResUpdateOne) ClearUpdatedAt() *AppResUpdateOne {
 	return aruo
 }
 
-// SetAppID sets the "app_id" field.
-func (aruo *AppResUpdateOne) SetAppID(i int) *AppResUpdateOne {
-	aruo.mutation.SetAppID(i)
-	return aruo
-}
-
 // SetName sets the "name" field.
 func (aruo *AppResUpdateOne) SetName(s string) *AppResUpdateOne {
 	aruo.mutation.SetName(s)
@@ -307,20 +243,9 @@ func (aruo *AppResUpdateOne) SetArnPattern(s string) *AppResUpdateOne {
 	return aruo
 }
 
-// SetApp sets the "app" edge to the App entity.
-func (aruo *AppResUpdateOne) SetApp(a *App) *AppResUpdateOne {
-	return aruo.SetAppID(a.ID)
-}
-
 // Mutation returns the AppResMutation object of the builder.
 func (aruo *AppResUpdateOne) Mutation() *AppResMutation {
 	return aruo.mutation
-}
-
-// ClearApp clears the "app" edge to the App entity.
-func (aruo *AppResUpdateOne) ClearApp() *AppResUpdateOne {
-	aruo.mutation.ClearApp()
-	return aruo
 }
 
 // Where appends a list predicates to the AppResUpdate builder.
@@ -363,18 +288,7 @@ func (aruo *AppResUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (aruo *AppResUpdateOne) check() error {
-	if _, ok := aruo.mutation.AppID(); aruo.mutation.AppCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "AppRes.app"`)
-	}
-	return nil
-}
-
 func (aruo *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err error) {
-	if err := aruo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(appres.Table, appres.Columns, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
 	id, ok := aruo.mutation.ID()
 	if !ok {
@@ -423,35 +337,6 @@ func (aruo *AppResUpdateOne) sqlSave(ctx context.Context) (_node *AppRes, err er
 	}
 	if value, ok := aruo.mutation.ArnPattern(); ok {
 		_spec.SetField(appres.FieldArnPattern, field.TypeString, value)
-	}
-	if aruo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appres.AppTable,
-			Columns: []string{appres.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appres.AppTable,
-			Columns: []string{appres.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &AppRes{config: aruo.config}
 	_spec.Assign = _node.assignValues

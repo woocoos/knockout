@@ -212,34 +212,45 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
-		AssignOrganizationAppPolicy func(childComplexity int, orgID int, policyID int) int
+		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
+		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
-		ChangeAppMenuTree           func(childComplexity int, sourceID int, targetID int, targetLocation *string) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
-		CreateAppActions            func(childComplexity int, input []*ent.CreateAppActionInput) int
-		CreateAppMenus              func(childComplexity int, input []*ent.CreateAppMenuInput) int
-		CreateAppPolicies           func(childComplexity int, input []*ent.CreateAppPolicyInput) int
-		CreateAppRole               func(childComplexity int, input ent.CreateAppRoleInput) int
+		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
+		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
+		CreateAppPolicies           func(childComplexity int, appID int, input []*ent.CreateAppPolicyInput) int
+		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
+		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
+		DeleteAppMenu               func(childComplexity int, menuID int) int
+		DeleteAppPolicy             func(childComplexity int, policyID int) int
+		DeleteAppRole               func(childComplexity int, roleID int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
+		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
+		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
+		Revoke                      func(childComplexity int, orgID int, permissionID int) int
 		RevokeOrganizationApp       func(childComplexity int, orgID int, appID int) int
-		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, policyID int) int
+		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
+		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
-		UpdateAppMenu               func(childComplexity int, input ent.UpdateAppMenuInput) int
-		UpdateAppRole               func(childComplexity int, input ent.UpdateAppRoleInput) int
+		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
+		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
+		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
 		UpdateLoginProfile          func(childComplexity int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
+		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
+		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
 	}
 
@@ -289,6 +300,7 @@ type ComplexityRoot struct {
 		Name        func(childComplexity int) int
 		Org         func(childComplexity int) int
 		OrgID       func(childComplexity int) int
+		Permissions func(childComplexity int) int
 		Rules       func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
@@ -305,6 +317,18 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	OrgRole struct {
+		Comments  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Kind      func(childComplexity int) int
+		Name      func(childComplexity int) int
+		OrgID     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -319,6 +343,7 @@ type ComplexityRoot struct {
 		ID            func(childComplexity int) int
 		Org           func(childComplexity int) int
 		OrgID         func(childComplexity int) int
+		OrgPolicy     func(childComplexity int) int
 		OrgPolicyID   func(childComplexity int) int
 		PrincipalKind func(childComplexity int) int
 		RoleID        func(childComplexity int) int
@@ -349,12 +374,12 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Apps     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		GlobalID func(childComplexity int, typeArg string, id int) int
-		Node     func(childComplexity int, id string) int
-		Nodes    func(childComplexity int, ids []string) int
-		Orgs     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		Users    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Apps          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		GlobalID      func(childComplexity int, typeArg string, id int) int
+		Node          func(childComplexity int, id string) int
+		Nodes         func(childComplexity int, ids []string) int
+		Organizations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		Users         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	Subscription struct {
@@ -1339,7 +1364,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["policyID"].(int)), true
+		return e.complexity.Mutation.AssignOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
+
+	case "Mutation.assignRoleUser":
+		if e.complexity.Mutation.AssignRoleUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignRoleUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignRoleUser(childComplexity, args["input"].(model.AssignRoleUserInput)), true
 
 	case "Mutation.bindUserIdentity":
 		if e.complexity.Mutation.BindUserIdentity == nil {
@@ -1352,18 +1389,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.BindUserIdentity(childComplexity, args["input"].(ent.CreateUserIdentityInput)), true
-
-	case "Mutation.changeAppMenuTree":
-		if e.complexity.Mutation.ChangeAppMenuTree == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_changeAppMenuTree_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.ChangeAppMenuTree(childComplexity, args["sourceId"].(int), args["targetId"].(int), args["targetLocation"].(*string)), true
 
 	case "Mutation.changePassword":
 		if e.complexity.Mutation.ChangePassword == nil {
@@ -1399,7 +1424,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppActions(childComplexity, args["input"].([]*ent.CreateAppActionInput)), true
+		return e.complexity.Mutation.CreateAppActions(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppActionInput)), true
 
 	case "Mutation.createAppMenus":
 		if e.complexity.Mutation.CreateAppMenus == nil {
@@ -1411,7 +1436,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppMenus(childComplexity, args["input"].([]*ent.CreateAppMenuInput)), true
+		return e.complexity.Mutation.CreateAppMenus(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppMenuInput)), true
 
 	case "Mutation.createAppPolicies":
 		if e.complexity.Mutation.CreateAppPolicies == nil {
@@ -1423,7 +1448,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppPolicies(childComplexity, args["input"].([]*ent.CreateAppPolicyInput)), true
+		return e.complexity.Mutation.CreateAppPolicies(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppPolicyInput)), true
 
 	case "Mutation.createAppRole":
 		if e.complexity.Mutation.CreateAppRole == nil {
@@ -1435,7 +1460,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppRole(childComplexity, args["input"].(ent.CreateAppRoleInput)), true
+		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
 
 	case "Mutation.createOrganization":
 		if e.complexity.Mutation.CreateOrganization == nil {
@@ -1473,6 +1498,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput)), true
 
+	case "Mutation.createRole":
+		if e.complexity.Mutation.CreateRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRole(childComplexity, args["input"].(ent.CreateOrgRoleInput)), true
+
 	case "Mutation.deleteApp":
 		if e.complexity.Mutation.DeleteApp == nil {
 			break
@@ -1485,6 +1522,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteApp(childComplexity, args["appID"].(int)), true
 
+	case "Mutation.deleteAppMenu":
+		if e.complexity.Mutation.DeleteAppMenu == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppMenu_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppMenu(childComplexity, args["menuID"].(int)), true
+
+	case "Mutation.deleteAppPolicy":
+		if e.complexity.Mutation.DeleteAppPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppPolicy(childComplexity, args["policyID"].(int)), true
+
+	case "Mutation.deleteAppRole":
+		if e.complexity.Mutation.DeleteAppRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
+
 	case "Mutation.deleteOrganization":
 		if e.complexity.Mutation.DeleteOrganization == nil {
 			break
@@ -1496,6 +1569,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteOrganization(childComplexity, args["orgID"].(int)), true
+
+	case "Mutation.deleteRole":
+		if e.complexity.Mutation.DeleteRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteRole(childComplexity, args["roleID"].(int)), true
 
 	case "Mutation.deleteUser":
 		if e.complexity.Mutation.DeleteUser == nil {
@@ -1545,6 +1630,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Grant(childComplexity, args["input"].(ent.CreatePermissionInput)), true
 
+	case "Mutation.moveAppMenu":
+		if e.complexity.Mutation.MoveAppMenu == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveAppMenu_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveAppMenu(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
+
 	case "Mutation.moveOrganization":
 		if e.complexity.Mutation.MoveOrganization == nil {
 			break
@@ -1581,6 +1678,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ResetUserPasswordByEmail(childComplexity, args["userId"].(int)), true
 
+	case "Mutation.revoke":
+		if e.complexity.Mutation.Revoke == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_revoke_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Revoke(childComplexity, args["orgID"].(int), args["permissionID"].(int)), true
+
 	case "Mutation.revokeOrganizationApp":
 		if e.complexity.Mutation.RevokeOrganizationApp == nil {
 			break
@@ -1603,7 +1712,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RevokeOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["policyID"].(int)), true
+		return e.complexity.Mutation.RevokeOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
+
+	case "Mutation.revokeRoleUser":
+		if e.complexity.Mutation.RevokeRoleUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_revokeRoleUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RevokeRoleUser(childComplexity, args["roleID"].(int), args["userID"].(int)), true
 
 	case "Mutation.updateApp":
 		if e.complexity.Mutation.UpdateApp == nil {
@@ -1627,7 +1748,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateAppMenu(childComplexity, args["input"].(ent.UpdateAppMenuInput)), true
+		return e.complexity.Mutation.UpdateAppMenu(childComplexity, args["menuID"].(int), args["input"].(ent.UpdateAppMenuInput)), true
+
+	case "Mutation.updateAppPolicy":
+		if e.complexity.Mutation.UpdateAppPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppPolicy(childComplexity, args["policyID"].(int), args["input"].(ent.UpdateAppPolicyInput)), true
 
 	case "Mutation.updateAppRole":
 		if e.complexity.Mutation.UpdateAppRole == nil {
@@ -1639,7 +1772,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["input"].(ent.UpdateAppRoleInput)), true
+		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
 
 	case "Mutation.updateLoginProfile":
 		if e.complexity.Mutation.UpdateLoginProfile == nil {
@@ -1664,6 +1797,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateOrganization(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateOrgInput)), true
+
+	case "Mutation.updatePermission":
+		if e.complexity.Mutation.UpdatePermission == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updatePermission_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdatePermission(childComplexity, args["permissionID"].(int), args["input"].(ent.UpdatePermissionInput)), true
+
+	case "Mutation.updateRole":
+		if e.complexity.Mutation.UpdateRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateOrgRoleInput)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -1949,6 +2106,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgPolicy.OrgID(childComplexity), true
 
+	case "OrgPolicy.permissions":
+		if e.complexity.OrgPolicy.Permissions == nil {
+			break
+		}
+
+		return e.complexity.OrgPolicy.Permissions(childComplexity), true
+
 	case "OrgPolicy.rules":
 		if e.complexity.OrgPolicy.Rules == nil {
 			break
@@ -2004,6 +2168,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgPolicyEdge.Node(childComplexity), true
+
+	case "OrgRole.comments":
+		if e.complexity.OrgRole.Comments == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.Comments(childComplexity), true
+
+	case "OrgRole.createdAt":
+		if e.complexity.OrgRole.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.CreatedAt(childComplexity), true
+
+	case "OrgRole.createdBy":
+		if e.complexity.OrgRole.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.CreatedBy(childComplexity), true
+
+	case "OrgRole.id":
+		if e.complexity.OrgRole.ID == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.ID(childComplexity), true
+
+	case "OrgRole.kind":
+		if e.complexity.OrgRole.Kind == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.Kind(childComplexity), true
+
+	case "OrgRole.name":
+		if e.complexity.OrgRole.Name == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.Name(childComplexity), true
+
+	case "OrgRole.orgID":
+		if e.complexity.OrgRole.OrgID == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.OrgID(childComplexity), true
+
+	case "OrgRole.updatedAt":
+		if e.complexity.OrgRole.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.UpdatedAt(childComplexity), true
+
+	case "OrgRole.updatedBy":
+		if e.complexity.OrgRole.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.UpdatedBy(childComplexity), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -2074,6 +2301,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Permission.OrgID(childComplexity), true
+
+	case "Permission.orgPolicy":
+		if e.complexity.Permission.OrgPolicy == nil {
+			break
+		}
+
+		return e.complexity.Permission.OrgPolicy(childComplexity), true
 
 	case "Permission.orgPolicyID":
 		if e.complexity.Permission.OrgPolicyID == nil {
@@ -2249,17 +2483,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]string)), true
 
-	case "Query.orgs":
-		if e.complexity.Query.Orgs == nil {
+	case "Query.organizations":
+		if e.complexity.Query.Organizations == nil {
 			break
 		}
 
-		args, err := ec.field_Query_orgs_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_organizations_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Orgs(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
+		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -2828,8 +3062,11 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppResOrder,
 		ec.unmarshalInputAppResWhereInput,
 		ec.unmarshalInputAppRoleOrder,
+		ec.unmarshalInputAppRolePolicyOrder,
+		ec.unmarshalInputAppRolePolicyWhereInput,
 		ec.unmarshalInputAppRoleWhereInput,
 		ec.unmarshalInputAppWhereInput,
+		ec.unmarshalInputAssignRoleUserInput,
 		ec.unmarshalInputCreateAppActionInput,
 		ec.unmarshalInputCreateAppInput,
 		ec.unmarshalInputCreateAppMenuInput,
@@ -2838,6 +3075,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateOrgInput,
 		ec.unmarshalInputCreateOrgPolicyInput,
+		ec.unmarshalInputCreateOrgRoleInput,
 		ec.unmarshalInputCreateOrgUserInput,
 		ec.unmarshalInputCreatePermissionInput,
 		ec.unmarshalInputCreateUserIdentityInput,
@@ -2850,6 +3088,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputOrgPolicyOrder,
 		ec.unmarshalInputOrgPolicyWhereInput,
 		ec.unmarshalInputOrgRoleOrder,
+		ec.unmarshalInputOrgRoleUserOrder,
+		ec.unmarshalInputOrgRoleUserWhereInput,
 		ec.unmarshalInputOrgRoleWhereInput,
 		ec.unmarshalInputOrgUserOrder,
 		ec.unmarshalInputOrgUserWhereInput,
@@ -2865,6 +3105,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppRoleInput,
 		ec.unmarshalInputUpdateOrgInput,
 		ec.unmarshalInputUpdateOrgPolicyInput,
+		ec.unmarshalInputUpdateOrgRoleInput,
 		ec.unmarshalInputUpdateOrgUserInput,
 		ec.unmarshalInputUpdatePermissionInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
@@ -2968,7 +3209,7 @@ type App implements Node {
   updatedAt: Time
   """名称"""
   name: String!
-  """代码"""
+  """用于标识应用资源的唯一代码,尽量简短"""
   code: String!
   """应用类型"""
   kind: AppKind!
@@ -3078,7 +3319,7 @@ type AppAction implements Node {
   updatedBy: Int
   updatedAt: Time
   """所属应用"""
-  appID: ID!
+  appID: ID
   """名称"""
   name: String!
   """restful,graphql,rpc"""
@@ -3087,7 +3328,7 @@ type AppAction implements Node {
   method: AppActionMethod!
   """备注"""
   comments: String
-  app: App!
+  app: App
   """被引用的菜单项"""
   menus: [AppMenu!]
   """引用的资源"""
@@ -3194,6 +3435,8 @@ input AppActionWhereInput {
   appIDNEQ: ID
   appIDIn: [ID!]
   appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
   """name field predicates"""
   name: String
   nameNEQ: String
@@ -3257,19 +3500,19 @@ type AppMenu implements Node {
   updatedBy: Int
   updatedAt: Time
   """所属应用"""
-  appID: ID!
+  appID: ID
   """父级ID"""
   parentID: Int!
   """目录,菜单项"""
   kind: AppMenuKind!
   """菜单名称"""
-  name: String
+  name: String!
   """操作ID"""
   actionID: ID
   """备注"""
   comments: String
   displaySort: Int
-  app: App!
+  app: App
   """需要权限控制时对应的权限"""
   action: AppAction
 }
@@ -3367,6 +3610,8 @@ input AppMenuWhereInput {
   appIDNEQ: ID
   appIDIn: [ID!]
   appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
   """parent_id field predicates"""
   parentID: Int
   parentIDNEQ: Int
@@ -3393,8 +3638,6 @@ input AppMenuWhereInput {
   nameContains: String
   nameHasPrefix: String
   nameHasSuffix: String
-  nameIsNil: Boolean
-  nameNotNil: Boolean
   nameEqualFold: String
   nameContainsFold: String
   """action_id field predicates"""
@@ -3429,11 +3672,11 @@ type AppPolicy implements Node {
   updatedBy: Int
   updatedAt: Time
   """所属应用"""
-  appID: ID!
+  appID: ID
   """策略名称"""
   name: String!
   """描述"""
-  comments: String!
+  comments: String
   """策略规则"""
   rules: [PolicyRule!]!
   """版本号"""
@@ -3442,7 +3685,7 @@ type AppPolicy implements Node {
   autoGrant: Boolean!
   """状态"""
   status: AppPolicySimpleStatus
-  app: App!
+  app: App
   roles: [AppRole!]
 }
 """A connection to a list of items."""
@@ -3540,6 +3783,8 @@ input AppPolicyWhereInput {
   appIDNEQ: ID
   appIDIn: [ID!]
   appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
   """name field predicates"""
   name: String
   nameNEQ: String
@@ -3566,6 +3811,8 @@ input AppPolicyWhereInput {
   commentsContains: String
   commentsHasPrefix: String
   commentsHasSuffix: String
+  commentsIsNil: Boolean
+  commentsNotNil: Boolean
   commentsEqualFold: String
   commentsContainsFold: String
   """version field predicates"""
@@ -3598,6 +3845,9 @@ input AppPolicyWhereInput {
   """roles edge predicates"""
   hasRoles: Boolean
   hasRolesWith: [AppRoleWhereInput!]
+  """app_role_policy edge predicates"""
+  hasAppRolePolicy: Boolean
+  hasAppRolePolicyWith: [AppRolePolicyWhereInput!]
 }
 type AppRes implements Node {
   id: ID!
@@ -3606,14 +3856,14 @@ type AppRes implements Node {
   updatedBy: Int
   updatedAt: Time
   """所属应用"""
-  appID: ID!
+  appID: ID
   """资源名称"""
   name: String!
   """资源类型名称,如数据库表名"""
   typeName: String!
   """应用资源表达式"""
   arnPattern: String!
-  app: App!
+  app: App
 }
 """A connection to a list of items."""
 type AppResConnection {
@@ -3704,6 +3954,8 @@ input AppResWhereInput {
   appIDNEQ: ID
   appIDIn: [ID!]
   appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
   """name field predicates"""
   name: String
   nameNEQ: String
@@ -3757,7 +4009,7 @@ type AppRole implements Node {
   updatedBy: Int
   updatedAt: Time
   """所属应用"""
-  appID: ID!
+  appID: ID
   """角色名称"""
   name: String!
   """备注"""
@@ -3766,7 +4018,7 @@ type AppRole implements Node {
   autoGrant: Boolean!
   """授权后是否可编辑"""
   editable: Boolean!
-  app: App!
+  app: App
   """权限授权策略"""
   policies: [AppPolicy!]
 }
@@ -3780,6 +4032,84 @@ input AppRoleOrder {
 """Properties by which AppRole connections can be ordered."""
 enum AppRoleOrderField {
   createdAt
+}
+"""Ordering options for AppRolePolicy connections"""
+input AppRolePolicyOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order AppRolePolicies."""
+  field: AppRolePolicyOrderField!
+}
+"""Properties by which AppRolePolicy connections can be ordered."""
+enum AppRolePolicyOrderField {
+  createdAt
+}
+"""
+AppRolePolicyWhereInput is used for filtering AppRolePolicy objects.
+Input was generated by ent.
+"""
+input AppRolePolicyWhereInput {
+  not: AppRolePolicyWhereInput
+  and: [AppRolePolicyWhereInput!]
+  or: [AppRolePolicyWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """app_id field predicates"""
+  appID: Int
+  appIDNEQ: Int
+  appIDIn: [Int!]
+  appIDNotIn: [Int!]
+  appIDGT: Int
+  appIDGTE: Int
+  appIDLT: Int
+  appIDLTE: Int
 }
 """
 AppRoleWhereInput is used for filtering AppRole objects.
@@ -3843,6 +4173,8 @@ input AppRoleWhereInput {
   appIDNEQ: ID
   appIDIn: [ID!]
   appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
   """name field predicates"""
   name: String
   nameNEQ: String
@@ -3869,6 +4201,9 @@ input AppRoleWhereInput {
   """policies edge predicates"""
   hasPolicies: Boolean
   hasPoliciesWith: [AppPolicyWhereInput!]
+  """app_role_policy edge predicates"""
+  hasAppRolePolicy: Boolean
+  hasAppRolePolicyWith: [AppRolePolicyWhereInput!]
 }
 """AppSimpleStatus is enum for the field status"""
 enum AppSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
@@ -4123,7 +4458,7 @@ input CreateAppActionInput {
   method: AppActionMethod!
   """备注"""
   comments: String
-  appID: ID!
+  appID: ID
   menuIDs: [ID!]
   resourceIDs: [ID!]
 }
@@ -4134,7 +4469,7 @@ Input was generated by ent.
 input CreateAppInput {
   """名称"""
   name: String!
-  """代码"""
+  """用于标识应用资源的唯一代码,尽量简短"""
   code: String!
   """应用类型"""
   kind: AppKind!
@@ -4161,7 +4496,6 @@ input CreateAppInput {
   resourceIDs: [ID!]
   roleIDs: [ID!]
   policyIDs: [ID!]
-  orgIDs: [ID!]
 }
 """
 CreateAppMenuInput is used for create AppMenu object.
@@ -4173,10 +4507,10 @@ input CreateAppMenuInput {
   """目录,菜单项"""
   kind: AppMenuKind!
   """菜单名称"""
-  name: String
+  name: String!
   """备注"""
   comments: String
-  appID: ID!
+  appID: ID
   actionID: ID
 }
 """
@@ -4187,7 +4521,7 @@ input CreateAppPolicyInput {
   """策略名称"""
   name: String!
   """描述"""
-  comments: String!
+  comments: String
   """策略规则"""
   rules: [PolicyRuleInput!]!
   """版本号"""
@@ -4196,7 +4530,7 @@ input CreateAppPolicyInput {
   autoGrant: Boolean
   """状态"""
   status: AppPolicySimpleStatus
-  appID: ID!
+  appID: ID
   roleIDs: [ID!]
 }
 """
@@ -4210,7 +4544,7 @@ input CreateAppResInput {
   typeName: String!
   """应用资源表达式"""
   arnPattern: String!
-  appID: ID!
+  appID: ID
 }
 """
 CreateAppRoleInput is used for create AppRole object.
@@ -4225,7 +4559,7 @@ input CreateAppRoleInput {
   autoGrant: Boolean
   """授权后是否可编辑"""
   editable: Boolean
-  appID: ID!
+  appID: ID
   policyIDs: [ID!]
 }
 """
@@ -4264,10 +4598,24 @@ input CreateOrgPolicyInput {
   """策略名称"""
   name: String!
   """描述"""
-  comments: String!
+  comments: String
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRuleInput!]!
   orgID: ID!
+  permissionIDs: [ID!]
+}
+"""
+CreateOrgRoleInput is used for create OrgRole object.
+Input was generated by ent.
+"""
+input CreateOrgRoleInput {
+  """类型,group:组,role:角色"""
+  kind: OrgRoleKind!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
+  orgID: ID
 }
 """
 CreateOrgUserInput is used for create OrgUser object.
@@ -4290,14 +4638,13 @@ input CreatePermissionInput {
   principalKind: PermissionPrincipalKind!
   """授权类型为角色或用户组的ID"""
   roleID: Int
-  """策略"""
-  orgPolicyID: Int!
   """生效开始时间"""
   startAt: Time
   """生效结束时间"""
   endAt: Time
   orgID: ID!
   userID: ID
+  orgPolicyID: ID!
 }
 """
 CreateUserIdentityInput is used for create UserIdentity object.
@@ -4537,10 +4884,11 @@ type OrgPolicy implements Node {
   """策略名称"""
   name: String!
   """描述"""
-  comments: String!
+  comments: String
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRule!]!
   org: Org!
+  permissions: [Permission!]
 }
 """A connection to a list of items."""
 type OrgPolicyConnection {
@@ -4668,11 +5016,31 @@ input OrgPolicyWhereInput {
   commentsContains: String
   commentsHasPrefix: String
   commentsHasSuffix: String
+  commentsIsNil: Boolean
+  commentsNotNil: Boolean
   commentsEqualFold: String
   commentsContainsFold: String
   """org edge predicates"""
   hasOrg: Boolean
   hasOrgWith: [OrgWhereInput!]
+  """permissions edge predicates"""
+  hasPermissions: Boolean
+  hasPermissionsWith: [PermissionWhereInput!]
+}
+type OrgRole implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """组织ID"""
+  orgID: ID
+  """类型,group:组,role:角色"""
+  kind: OrgRoleKind!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
 }
 """OrgRoleKind is enum for the field kind"""
 enum OrgRoleKind @goModel(model: "github.com/woocoos/knockout/ent/orgrole.Kind") {
@@ -4689,6 +5057,75 @@ input OrgRoleOrder {
 """Properties by which OrgRole connections can be ordered."""
 enum OrgRoleOrderField {
   createdAt
+}
+"""Ordering options for OrgRoleUser connections"""
+input OrgRoleUserOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order OrgRoleUsers."""
+  field: OrgRoleUserOrderField!
+}
+"""Properties by which OrgRoleUser connections can be ordered."""
+enum OrgRoleUserOrderField {
+  createdAt
+}
+"""
+OrgRoleUserWhereInput is used for filtering OrgRoleUser objects.
+Input was generated by ent.
+"""
+input OrgRoleUserWhereInput {
+  not: OrgRoleUserWhereInput
+  and: [OrgRoleUserWhereInput!]
+  or: [OrgRoleUserWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
 }
 """
 OrgRoleWhereInput is used for filtering OrgRole objects.
@@ -4752,6 +5189,8 @@ input OrgRoleWhereInput {
   orgIDNEQ: ID
   orgIDIn: [ID!]
   orgIDNotIn: [ID!]
+  orgIDIsNil: Boolean
+  orgIDNotNil: Boolean
   """kind field predicates"""
   kind: OrgRoleKind
   kindNEQ: OrgRoleKind
@@ -4771,6 +5210,9 @@ input OrgRoleWhereInput {
   nameHasSuffix: String
   nameEqualFold: String
   nameContainsFold: String
+  """org edge predicates"""
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
 }
 """OrgSimpleStatus is enum for the field status"""
 enum OrgSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
@@ -5099,7 +5541,7 @@ type Permission implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
-  """授权的域级组织"""
+  """授权的域根组织"""
   orgID: ID!
   """授权类型:角色,用户"""
   principalKind: PermissionPrincipalKind!
@@ -5108,7 +5550,7 @@ type Permission implements Node {
   """授权类型为角色或用户组的ID"""
   roleID: Int
   """策略"""
-  orgPolicyID: Int!
+  orgPolicyID: ID!
   """生效开始时间"""
   startAt: Time
   """生效结束时间"""
@@ -5117,6 +5559,7 @@ type Permission implements Node {
   status: PermissionSimpleStatus
   org: Org!
   user: User
+  orgPolicy: OrgPolicy!
 }
 """A connection to a list of items."""
 type PermissionConnection {
@@ -5242,14 +5685,10 @@ input PermissionWhereInput {
   roleIDIsNil: Boolean
   roleIDNotNil: Boolean
   """org_policy_id field predicates"""
-  orgPolicyID: Int
-  orgPolicyIDNEQ: Int
-  orgPolicyIDIn: [Int!]
-  orgPolicyIDNotIn: [Int!]
-  orgPolicyIDGT: Int
-  orgPolicyIDGTE: Int
-  orgPolicyIDLT: Int
-  orgPolicyIDLTE: Int
+  orgPolicyID: ID
+  orgPolicyIDNEQ: ID
+  orgPolicyIDIn: [ID!]
+  orgPolicyIDNotIn: [ID!]
   """start_at field predicates"""
   startAt: Time
   startAtNEQ: Time
@@ -5285,6 +5724,9 @@ input PermissionWhereInput {
   """user edge predicates"""
   hasUser: Boolean
   hasUserWith: [UserWhereInput!]
+  """org_policy edge predicates"""
+  hasOrgPolicy: Boolean
+  hasOrgPolicyWith: [OrgPolicyWhereInput!]
 }
 type Query {
   """Fetches an object given its ID."""
@@ -5297,6 +5739,7 @@ type Query {
     """The list of node IDs."""
     ids: [GID!]!
   ): [Node]!
+  """公开应用查询"""
   apps(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
@@ -5316,7 +5759,7 @@ type Query {
     """Filtering options for Apps returned from the connection."""
     where: AppWhereInput
   ): AppConnection!
-  orgs(
+  organizations(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
 
@@ -5371,8 +5814,6 @@ input UpdateAppActionInput {
   """备注"""
   comments: String
   clearComments: Boolean
-  appID: ID
-  clearApp: Boolean
   addMenuIDs: [ID!]
   removeMenuIDs: [ID!]
   clearMenus: Boolean
@@ -5387,8 +5828,6 @@ Input was generated by ent.
 input UpdateAppInput {
   """名称"""
   name: String
-  """代码"""
-  code: String
   """应用类型"""
   kind: AppKind
   """回调地址"""
@@ -5433,9 +5872,6 @@ input UpdateAppInput {
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
-  addOrgIDs: [ID!]
-  removeOrgIDs: [ID!]
-  clearOrgs: Boolean
 }
 """
 UpdateAppMenuInput is used for update AppMenu object.
@@ -5448,12 +5884,9 @@ input UpdateAppMenuInput {
   kind: AppMenuKind
   """菜单名称"""
   name: String
-  clearName: Boolean
   """备注"""
   comments: String
   clearComments: Boolean
-  appID: ID
-  clearApp: Boolean
   actionID: ID
   clearAction: Boolean
 }
@@ -5466,6 +5899,7 @@ input UpdateAppPolicyInput {
   name: String
   """描述"""
   comments: String
+  clearComments: Boolean
   """策略规则"""
   rules: [PolicyRuleInput!]
   appendRules: [PolicyRuleInput!]
@@ -5476,8 +5910,6 @@ input UpdateAppPolicyInput {
   """状态"""
   status: AppPolicySimpleStatus
   clearStatus: Boolean
-  appID: ID
-  clearApp: Boolean
   addRoleIDs: [ID!]
   removeRoleIDs: [ID!]
   clearRoles: Boolean
@@ -5493,8 +5925,6 @@ input UpdateAppResInput {
   typeName: String
   """应用资源表达式"""
   arnPattern: String
-  appID: ID
-  clearApp: Boolean
 }
 """
 UpdateAppRoleInput is used for update AppRole object.
@@ -5510,8 +5940,6 @@ input UpdateAppRoleInput {
   autoGrant: Boolean
   """授权后是否可编辑"""
   editable: Boolean
-  appID: ID
-  clearApp: Boolean
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
@@ -5573,11 +6001,28 @@ input UpdateOrgPolicyInput {
   name: String
   """描述"""
   comments: String
+  clearComments: Boolean
   """策略规则,如果是应用策略,则为空"""
   rules: [PolicyRuleInput!]
   appendRules: [PolicyRuleInput!]
   orgID: ID
   clearOrg: Boolean
+  addPermissionIDs: [ID!]
+  removePermissionIDs: [ID!]
+  clearPermissions: Boolean
+}
+"""
+UpdateOrgRoleInput is used for update OrgRole object.
+Input was generated by ent.
+"""
+input UpdateOrgRoleInput {
+  """类型,group:组,role:角色"""
+  kind: OrgRoleKind
+  """名称"""
+  name: String
+  """备注"""
+  comments: String
+  clearComments: Boolean
 }
 """
 UpdateOrgUserInput is used for update OrgUser object.
@@ -5598,13 +6043,6 @@ UpdatePermissionInput is used for update Permission object.
 Input was generated by ent.
 """
 input UpdatePermissionInput {
-  """授权类型:角色,用户"""
-  principalKind: PermissionPrincipalKind
-  """授权类型为角色或用户组的ID"""
-  roleID: Int
-  clearRoleID: Boolean
-  """策略"""
-  orgPolicyID: Int
   """生效开始时间"""
   startAt: Time
   clearStartAt: Boolean
@@ -5614,10 +6052,6 @@ input UpdatePermissionInput {
   """状态"""
   status: PermissionSimpleStatus
   clearStatus: Boolean
-  orgID: ID
-  clearOrg: Boolean
-  userID: ID
-  clearUser: Boolean
 }
 """
 UpdateUserIdentityInput is used for update UserIdentity object.
@@ -6595,6 +7029,16 @@ extend input CreateUserInput {
     password: CreateUserPasswordInput
 }
 
+input AssignRoleUserInput {
+    """授权类型为角色或用户组的ID"""
+    orgRoleID: ID!
+    userID: ID!
+    """生效开始时间"""
+    startAt: Time
+    """生效结束时间"""
+    endAt: Time
+}
+
 """树操作类型"""
 enum TreeAction {
     """作为子节点"""
@@ -6687,29 +7131,55 @@ input GrantInput {
     """删除应用"""
     deleteApp(appID:ID!): Boolean!
     """创建应用操作"""
-    createAppActions(input: [CreateAppActionInput!]): Boolean!
-    """创建应用菜单"""
-    createAppMenus(input: [CreateAppMenuInput!]): Boolean!
+    createAppActions(appID:ID!,input: [CreateAppActionInput!]): Boolean!
     """创建应用策略模板"""
-    createAppPolicies(input: [CreateAppPolicyInput!]): Boolean!
+    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): Boolean!
+    """更新应用策略模板"""
+    updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
+    """删除应用策略模板"""
+    deleteAppPolicy(policyID:ID!): Boolean!
+    """创建应用菜单"""
+    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): Boolean!
     """更新应用菜单"""
-    updateAppMenu(input: UpdateAppMenuInput!): AppMenu
+    updateAppMenu(menuID:ID!,input: UpdateAppMenuInput!): AppMenu
     """应用菜单位置调整，targetLocation: child, up, down"""
-    changeAppMenuTree(sourceId:ID!,targetId:ID!,targetLocation:String): Boolean
+    moveAppMenu(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
+    """删除应用菜单"""
+    deleteAppMenu(menuID:ID!): Boolean!
     """创建应用角色"""
-    createAppRole(input: CreateAppRoleInput!): AppRole
+    createAppRole(appID:ID!,input: CreateAppRoleInput!): AppRole
     """更新应用角色"""
-    updateAppRole(input: UpdateAppRoleInput!): AppRole
+    updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
+    """删除应用角色"""
+    deleteAppRole(roleID:ID!): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""
     revokeOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """分配应用策略到组织"""
-    assignOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
     """取消分配到组织应用策略"""
-    revokeOrganizationAppPolicy(orgID:ID!,policyID:ID!): Boolean!
+    revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """创建角色或组"""
+    createRole(input: CreateOrgRoleInput!): OrgRole
+    """更新角色或组"""
+    updateRole(roleID:ID!,input: UpdateOrgRoleInput!): OrgRole
+    """删除角色或组"""
+    deleteRole(roleID:ID!): Boolean!
+    """分配组用户"""
+    assignRoleUser(input:AssignRoleUserInput!): Boolean!
+    """取消分配组用户"""
+    revokeRoleUser(roleID:ID!,userID:ID!): Boolean!
     """授权"""
     grant(input: CreatePermissionInput!): Permission
+    """更新授权"""
+    updatePermission(permissionID:ID!,input: UpdatePermissionInput!): Permission
+    """取消授权"""
+    revoke(
+        orgID:ID!
+        """组织内的授权ID"""
+        permissionID:ID!
+    ): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../subscription.graphql", Input: `type Subscription {

@@ -46,6 +46,8 @@ const (
 	EdgeOrg = "org"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
+	// EdgeOrgPolicy holds the string denoting the org_policy edge name in mutations.
+	EdgeOrgPolicy = "org_policy"
 	// Table holds the table name of the permission in the database.
 	Table = "permission"
 	// OrgTable is the table that holds the org relation/edge.
@@ -62,6 +64,13 @@ const (
 	UserInverseTable = "user"
 	// UserColumn is the table column denoting the user relation/edge.
 	UserColumn = "user_id"
+	// OrgPolicyTable is the table that holds the org_policy relation/edge.
+	OrgPolicyTable = "permission"
+	// OrgPolicyInverseTable is the table name for the OrgPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "orgpolicy" package.
+	OrgPolicyInverseTable = "org_policy"
+	// OrgPolicyColumn is the table column denoting the org_policy relation/edge.
+	OrgPolicyColumn = "org_policy_id"
 )
 
 // Columns holds all SQL columns for permission fields.

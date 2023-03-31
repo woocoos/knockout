@@ -5,8 +5,13 @@ import (
 	"context"
 	"flag"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -46,6 +51,7 @@ func main() {
 	}()
 	initUser(tx)
 	initOrg(tx)
+	initApp(tx)
 }
 
 func initOrg(client *ent.Tx) {
@@ -102,20 +108,70 @@ func initUser(client *ent.Tx) {
 			SetCode("user" + strconv.Itoa(i))
 		ui = append(ui, id)
 	}
-	err := client.User.CreateBulk(ub...).Exec(context.Background())
-	if err != nil {
-		panic(err)
+	client.User.CreateBulk(ub...).ExecX(context.Background())
+	client.UserLoginProfile.CreateBulk(ulp...).ExecX(context.Background())
+	client.UserPassword.CreateBulk(up...).ExecX(context.Background())
+	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
+}
+
+func initApp(client *ent.Tx) {
+	apps := make([]*ent.AppCreate, 0)
+	ars := make([]*ent.AppRoleCreate, 0)
+	ras := make([]*ent.AppActionCreate, 0)
+	aps := make([]*ent.AppPolicyCreate, 0)
+	rps := make([]*ent.AppRolePolicyCreate, 0)
+	ams := make([]*ent.AppMenuCreate, 0)
+	oas := make([]*ent.OrgAppCreate, 0)
+	ops := make([]*ent.OrgPolicyCreate, 0)
+	ors := make([]*ent.OrgRoleCreate, 0)
+	for i := 1; i < 2; i++ {
+		a := client.App.Create().SetID(i).SetName("资源权限管理").SetCode("resource").SetKind(app.KindWeb).
+			SetComments("资源权限管理是管理组织目录中的应用,组织,人员以及授权信息").SetStatus(typex.SimpleStatusActive).
+			SetCreatedBy(1).SetOrgID(1)
+		apps = append(apps, a)
+
+		ras = append(ras, client.AppAction.Create().SetID(i).SetAppID(i).SetCreatedBy(1).
+			SetName("entry").SetKind(appaction.KindGraphql).SetComments("应用入口").SetMethod(appaction.MethodList),
+		)
+
+		ars = append(ars, client.AppRole.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("管理员").
+			SetComments("管理员角色").SetAutoGrant(true).SetEditable(true),
+		)
+		aps = append(aps, client.AppPolicy.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("全部管理权限").
+			SetComments("全部管理权限").SetAutoGrant(true).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
+			SetRules([]types.PolicyRule{
+				{
+					Effect:    "allow",
+					Actions:   []string{"*"},
+					Resources: []string{"*"},
+				},
+			}),
+		)
+		ams = append(ams, client.AppMenu.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetActionID(i).SetParentID(0).
+			SetName("应用入口").SetKind(appmenu.KindMenu),
+		)
+		rps = append(rps, client.AppRolePolicy.Create().SetID(i).SetAppID(i).SetRoleID(i).SetPolicyID(i).SetCreatedBy(1))
+
+		oas = append(oas, client.OrgApp.Create().SetID(i).SetOrgID(1).SetAppID(i).SetCreatedBy(1))
+
+		ops = append(ops, client.OrgPolicy.Create().SetID(i).SetOrgID(1).SetAppID(i).SetAppPolicyID(i).
+			SetCreatedBy(1).SetName("全部管理权限").SetRules([]types.PolicyRule{
+			{
+				Effect:    "allow",
+				Actions:   []string{"*"},
+				Resources: []string{"*"},
+			},
+		}))
+		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").
+			SetCreatedBy(1).SetKind(orgrole.KindRole))
 	}
-	err = client.UserLoginProfile.CreateBulk(ulp...).Exec(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	err = client.UserPassword.CreateBulk(up...).Exec(context.Background())
-	if err != nil {
-		panic(err)
-	}
-	err = client.UserIdentity.CreateBulk(ui...).Exec(context.Background())
-	if err != nil {
-		panic(err)
-	}
+	client.App.CreateBulk(apps...).ExecX(context.Background())
+	client.AppAction.CreateBulk(ras...).ExecX(context.Background())
+	client.AppRole.CreateBulk(ars...).ExecX(context.Background())
+	client.AppPolicy.CreateBulk(aps...).ExecX(context.Background())
+	client.AppRolePolicy.CreateBulk(rps...).ExecX(context.Background())
+	client.AppMenu.CreateBulk(ams...).ExecX(context.Background())
+	client.OrgApp.CreateBulk(oas...).ExecX(context.Background())
+	client.OrgPolicy.CreateBulk(ops...).ExecX(context.Background())
+	client.OrgRole.CreateBulk(ors...).ExecX(context.Background())
 }

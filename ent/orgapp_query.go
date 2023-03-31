@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
@@ -74,7 +75,7 @@ func (oaq *OrgAppQuery) QueryApp() *AppQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(orgapp.Table, orgapp.AppColumn, selector),
+			sqlgraph.From(orgapp.Table, orgapp.FieldID, selector),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.AppTable, orgapp.AppColumn),
 		)
@@ -96,7 +97,7 @@ func (oaq *OrgAppQuery) QueryOrg() *OrgQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(orgapp.Table, orgapp.OrgColumn, selector),
+			sqlgraph.From(orgapp.Table, orgapp.FieldID, selector),
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, orgapp.OrgTable, orgapp.OrgColumn),
 		)
@@ -128,6 +129,29 @@ func (oaq *OrgAppQuery) FirstX(ctx context.Context) *OrgApp {
 	return node
 }
 
+// FirstID returns the first OrgApp ID from the query.
+// Returns a *NotFoundError when no OrgApp ID was found.
+func (oaq *OrgAppQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = oaq.Limit(1).IDs(setContextOp(ctx, oaq.ctx, "FirstID")); err != nil {
+		return
+	}
+	if len(ids) == 0 {
+		err = &NotFoundError{orgapp.Label}
+		return
+	}
+	return ids[0], nil
+}
+
+// FirstIDX is like FirstID, but panics if an error occurs.
+func (oaq *OrgAppQuery) FirstIDX(ctx context.Context) int {
+	id, err := oaq.FirstID(ctx)
+	if err != nil && !IsNotFound(err) {
+		panic(err)
+	}
+	return id
+}
+
 // Only returns a single OrgApp entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one OrgApp entity is found.
 // Returns a *NotFoundError when no OrgApp entities are found.
@@ -155,6 +179,34 @@ func (oaq *OrgAppQuery) OnlyX(ctx context.Context) *OrgApp {
 	return node
 }
 
+// OnlyID is like Only, but returns the only OrgApp ID in the query.
+// Returns a *NotSingularError when more than one OrgApp ID is found.
+// Returns a *NotFoundError when no entities are found.
+func (oaq *OrgAppQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
+	if ids, err = oaq.Limit(2).IDs(setContextOp(ctx, oaq.ctx, "OnlyID")); err != nil {
+		return
+	}
+	switch len(ids) {
+	case 1:
+		id = ids[0]
+	case 0:
+		err = &NotFoundError{orgapp.Label}
+	default:
+		err = &NotSingularError{orgapp.Label}
+	}
+	return
+}
+
+// OnlyIDX is like OnlyID, but panics if an error occurs.
+func (oaq *OrgAppQuery) OnlyIDX(ctx context.Context) int {
+	id, err := oaq.OnlyID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // All executes the query and returns a list of OrgApps.
 func (oaq *OrgAppQuery) All(ctx context.Context) ([]*OrgApp, error) {
 	ctx = setContextOp(ctx, oaq.ctx, "All")
@@ -172,6 +224,27 @@ func (oaq *OrgAppQuery) AllX(ctx context.Context) []*OrgApp {
 		panic(err)
 	}
 	return nodes
+}
+
+// IDs executes the query and returns a list of OrgApp IDs.
+func (oaq *OrgAppQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if oaq.ctx.Unique == nil && oaq.path != nil {
+		oaq.Unique(true)
+	}
+	ctx = setContextOp(ctx, oaq.ctx, "IDs")
+	if err = oaq.Select(orgapp.FieldID).Scan(ctx, &ids); err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
+// IDsX is like IDs, but panics if an error occurs.
+func (oaq *OrgAppQuery) IDsX(ctx context.Context) []int {
+	ids, err := oaq.IDs(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return ids
 }
 
 // Count returns the count of the given query.
@@ -195,7 +268,7 @@ func (oaq *OrgAppQuery) CountX(ctx context.Context) int {
 // Exist returns true if the query has elements in the graph.
 func (oaq *OrgAppQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, oaq.ctx, "Exist")
-	switch _, err := oaq.First(ctx); {
+	switch _, err := oaq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -444,13 +517,15 @@ func (oaq *OrgAppQuery) sqlCount(ctx context.Context) (int, error) {
 	if len(oaq.modifiers) > 0 {
 		_spec.Modifiers = oaq.modifiers
 	}
-	_spec.Unique = false
-	_spec.Node.Columns = nil
+	_spec.Node.Columns = oaq.ctx.Fields
+	if len(oaq.ctx.Fields) > 0 {
+		_spec.Unique = oaq.ctx.Unique != nil && *oaq.ctx.Unique
+	}
 	return sqlgraph.CountNodes(ctx, oaq.driver, _spec)
 }
 
 func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(orgapp.Table, orgapp.Columns, nil)
+	_spec := sqlgraph.NewQuerySpec(orgapp.Table, orgapp.Columns, sqlgraph.NewFieldSpec(orgapp.FieldID, field.TypeInt))
 	_spec.From = oaq.sql
 	if unique := oaq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -459,8 +534,11 @@ func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := oaq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
+		_spec.Node.Columns = append(_spec.Node.Columns, orgapp.FieldID)
 		for i := range fields {
-			_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			if fields[i] != orgapp.FieldID {
+				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
+			}
 		}
 	}
 	if ps := oaq.predicates; len(ps) > 0 {
