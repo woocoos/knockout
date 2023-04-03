@@ -13,8 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
-	"github.com/tsingsun/woocoo/contrib/telemetry"
-	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/web"
@@ -30,7 +28,6 @@ import (
 	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
-	"go.opentelemetry.io/contrib/propagators/b3"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -43,13 +40,13 @@ var (
 
 func main() {
 	app := woocoo.New()
-	if app.AppConfiguration().IsSet("otel") {
-		otelCnf := app.AppConfiguration().Sub("otel")
-		otelcfg := telemetry.NewConfig(otelCnf,
-			telemetry.WithPropagator(b3.New()),
-		)
-		defer otelcfg.Shutdown()
-	}
+	//if app.AppConfiguration().IsSet("otel") {
+	//	otelCnf := app.AppConfiguration().Sub("otel")
+	//	otelcfg := telemetry.NewConfig(otelCnf,
+	//		telemetry.WithPropagator(b3.New()),
+	//	)
+	//	defer otelcfg.Shutdown()
+	//}
 
 	err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake"))
 	if err != nil {
@@ -81,7 +78,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
 		web.RegisterMiddleware(gql.New()),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
+		//web.RegisterMiddleware(otelweb.NewMiddleware()),
 		web.RegisterMiddleware(authz.New()),
 		identity.RegistryTenantIDMiddleware(),
 	)

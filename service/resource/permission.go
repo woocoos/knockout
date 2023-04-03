@@ -158,7 +158,7 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 // AssignRoleUser is the resolver for the assignRoleUser field.
 func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	ouid, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(input.UserID)).OnlyID(ctx)
 	if err != nil {
 		return err
@@ -190,7 +190,7 @@ func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUser
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	has, err := client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.OrgID(tid), orguser.UserID(userID)),
 		orgroleuser.HasOrgRoleWith(orgrole.OrgID(tid), orgrole.ID(roleID))).Exist(ctx)
 	if err != nil {
@@ -311,7 +311,7 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 // UpdatePermission 更新权限的
 func (s *Service) UpdatePermission(ctx context.Context, permissionID int, input ent.UpdatePermissionInput) (*ent.Permission, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	domain, err := s.GetOrgDomain(ctx, tid)
 	if err != nil {
 		return nil, err

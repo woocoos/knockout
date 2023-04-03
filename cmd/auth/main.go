@@ -4,8 +4,6 @@ import (
 	"entgo.io/ent/dialect"
 	"github.com/gin-contrib/cors"
 	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/contrib/telemetry"
-	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -18,7 +16,6 @@ import (
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
-	"go.opentelemetry.io/contrib/propagators/b3"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -27,13 +24,13 @@ import (
 
 func main() {
 	app := woocoo.New()
-	if app.AppConfiguration().IsSet("otel") {
-		otelCnf := app.AppConfiguration().Sub("otel")
-		otelcfg := telemetry.NewConfig(otelCnf,
-			telemetry.WithPropagator(b3.New()),
-		)
-		defer otelcfg.Shutdown()
-	}
+	//if app.AppConfiguration().IsSet("otel") {
+	//	otelCnf := app.AppConfiguration().Sub("otel")
+	//	otelcfg := telemetry.NewConfig(otelCnf,
+	//		telemetry.WithPropagator(b3.New()),
+	//	)
+	//	defer otelcfg.Shutdown()
+	//}
 	pd := oteldriver.BuildOTELDriver(app.AppConfiguration(), "store.portal")
 	pd = ecx.BuildEntCacheDriver(app.AppConfiguration(), pd)
 	var portalClient *ent.Client
@@ -73,7 +70,7 @@ func main() {
 func buildWebServer(cnf *conf.AppConfiguration, ws *server.Service) *web.Server {
 	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
+		//web.RegisterMiddleware(otelweb.NewMiddleware()),
 	)
 	router := webSrv.Router()
 	router.Use(cors.Default())

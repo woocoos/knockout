@@ -195,7 +195,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 	if has {
 		return fmt.Errorf("user already in organization")
 	}
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	orgs, err := client.Org.Query().Where(org.IDIn(tid, input.OrgID)).Order(ent.Asc(org.FieldPath)).All(ctx)
 	if err != nil {
 		return err
@@ -218,7 +218,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 // RemoveOrganizationUser 将用户从组织目录中移除.
 func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	if orgID == tid {
 		return fmt.Errorf("can not remove from root org")
 	}
@@ -237,7 +237,7 @@ func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID 
 func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error {
 	client := ent.FromContext(ctx)
 
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	code := strconv.FormatInt(int64(tid), 36)
 
 	usr := client.User.GetX(ctx, userID)
@@ -316,21 +316,21 @@ func (s *Service) UpdateLoginProfile(ctx context.Context, input ent.UpdateUserLo
 // CreateRole 创建角色或工作组
 func (s *Service) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	return client.OrgRole.Create().SetInput(input).SetOrgID(tid).Save(ctx)
 }
 
 // UpdateRole 更新角色或工作组
 func (s *Service) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	return client.OrgRole.UpdateOneID(roleID).Where(orgrole.OrgID(tid)).SetInput(input).Save(ctx)
 }
 
 // DeleteRole 删除角色或工作组
 func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext[int](ctx)
+	tid := identity.TenantIDFromContext(ctx)
 	err := client.OrgRole.DeleteOneID(roleID).Where(orgrole.OrgID(tid)).Exec(ctx)
 	return err
 }
