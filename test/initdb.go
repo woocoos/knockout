@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"flag"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/migrate"
 	"log"
@@ -34,5 +35,10 @@ func main() {
 	)
 	if err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	_, err = entadapter.NewAdapter(*name, *dsn, entadapter.WithMigration())
+	if err != nil {
+		log.Fatalf("failed creating casbin adapter: %v", err)
 	}
 }
