@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -23,6 +24,7 @@ type AppPolicyCreate struct {
 	config
 	mutation *AppPolicyMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -311,6 +313,7 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		_node = &AppPolicy{config: apc.config}
 		_spec = sqlgraph.NewCreateSpec(apppolicy.Table, sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = apc.conflict
 	if id, ok := apc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -411,10 +414,423 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppPolicy.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppPolicyUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (apc *AppPolicyCreate) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertOne {
+	apc.conflict = opts
+	return &AppPolicyUpsertOne{
+		create: apc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (apc *AppPolicyCreate) OnConflictColumns(columns ...string) *AppPolicyUpsertOne {
+	apc.conflict = append(apc.conflict, sql.ConflictColumns(columns...))
+	return &AppPolicyUpsertOne{
+		create: apc,
+	}
+}
+
+type (
+	// AppPolicyUpsertOne is the builder for "upsert"-ing
+	//  one AppPolicy node.
+	AppPolicyUpsertOne struct {
+		create *AppPolicyCreate
+	}
+
+	// AppPolicyUpsert is the "OnConflict" setter.
+	AppPolicyUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppPolicyUpsert) SetUpdatedBy(v int) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateUpdatedBy() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppPolicyUpsert) AddUpdatedBy(v int) *AppPolicyUpsert {
+	u.Add(apppolicy.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppPolicyUpsert) ClearUpdatedBy() *AppPolicyUpsert {
+	u.SetNull(apppolicy.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppPolicyUpsert) SetUpdatedAt(v time.Time) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateUpdatedAt() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppPolicyUpsert) ClearUpdatedAt() *AppPolicyUpsert {
+	u.SetNull(apppolicy.FieldUpdatedAt)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *AppPolicyUpsert) SetName(v string) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateName() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldName)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *AppPolicyUpsert) SetComments(v string) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateComments() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppPolicyUpsert) ClearComments() *AppPolicyUpsert {
+	u.SetNull(apppolicy.FieldComments)
+	return u
+}
+
+// SetRules sets the "rules" field.
+func (u *AppPolicyUpsert) SetRules(v []types.PolicyRule) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldRules, v)
+	return u
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateRules() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldRules)
+	return u
+}
+
+// SetVersion sets the "version" field.
+func (u *AppPolicyUpsert) SetVersion(v string) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldVersion, v)
+	return u
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateVersion() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldVersion)
+	return u
+}
+
+// SetAutoGrant sets the "auto_grant" field.
+func (u *AppPolicyUpsert) SetAutoGrant(v bool) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldAutoGrant, v)
+	return u
+}
+
+// UpdateAutoGrant sets the "auto_grant" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateAutoGrant() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldAutoGrant)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *AppPolicyUpsert) SetStatus(v typex.SimpleStatus) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateStatus() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppPolicyUpsert) ClearStatus() *AppPolicyUpsert {
+	u.SetNull(apppolicy.FieldStatus)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(apppolicy.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppPolicyUpsertOne) UpdateNewValues() *AppPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(apppolicy.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(apppolicy.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(apppolicy.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.AppID(); exists {
+			s.SetIgnore(apppolicy.FieldAppID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AppPolicyUpsertOne) Ignore() *AppPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppPolicyUpsertOne) DoNothing() *AppPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppPolicyCreate.OnConflict
+// documentation for more info.
+func (u *AppPolicyUpsertOne) Update(set func(*AppPolicyUpsert)) *AppPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppPolicyUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppPolicyUpsertOne) SetUpdatedBy(v int) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppPolicyUpsertOne) AddUpdatedBy(v int) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateUpdatedBy() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppPolicyUpsertOne) ClearUpdatedBy() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppPolicyUpsertOne) SetUpdatedAt(v time.Time) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateUpdatedAt() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppPolicyUpsertOne) ClearUpdatedAt() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppPolicyUpsertOne) SetName(v string) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateName() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppPolicyUpsertOne) SetComments(v string) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateComments() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppPolicyUpsertOne) ClearComments() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetRules sets the "rules" field.
+func (u *AppPolicyUpsertOne) SetRules(v []types.PolicyRule) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetRules(v)
+	})
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateRules() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateRules()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *AppPolicyUpsertOne) SetVersion(v string) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateVersion() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateVersion()
+	})
+}
+
+// SetAutoGrant sets the "auto_grant" field.
+func (u *AppPolicyUpsertOne) SetAutoGrant(v bool) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetAutoGrant(v)
+	})
+}
+
+// UpdateAutoGrant sets the "auto_grant" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateAutoGrant() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateAutoGrant()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppPolicyUpsertOne) SetStatus(v typex.SimpleStatus) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateStatus() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppPolicyUpsertOne) ClearStatus() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *AppPolicyUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppPolicyCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppPolicyUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AppPolicyUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AppPolicyUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AppPolicyCreateBulk is the builder for creating many AppPolicy entities in bulk.
 type AppPolicyCreateBulk struct {
 	config
 	builders []*AppPolicyCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the AppPolicy entities in the database.
@@ -441,6 +857,7 @@ func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error)
 					_, err = mutators[i+1].Mutate(root, apcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = apcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, apcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -491,6 +908,273 @@ func (apcb *AppPolicyCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (apcb *AppPolicyCreateBulk) ExecX(ctx context.Context) {
 	if err := apcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppPolicy.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppPolicyUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (apcb *AppPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPolicyUpsertBulk {
+	apcb.conflict = opts
+	return &AppPolicyUpsertBulk{
+		create: apcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (apcb *AppPolicyCreateBulk) OnConflictColumns(columns ...string) *AppPolicyUpsertBulk {
+	apcb.conflict = append(apcb.conflict, sql.ConflictColumns(columns...))
+	return &AppPolicyUpsertBulk{
+		create: apcb,
+	}
+}
+
+// AppPolicyUpsertBulk is the builder for "upsert"-ing
+// a bulk of AppPolicy nodes.
+type AppPolicyUpsertBulk struct {
+	create *AppPolicyCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(apppolicy.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppPolicyUpsertBulk) UpdateNewValues() *AppPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(apppolicy.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(apppolicy.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(apppolicy.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.AppID(); exists {
+				s.SetIgnore(apppolicy.FieldAppID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppPolicy.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AppPolicyUpsertBulk) Ignore() *AppPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppPolicyUpsertBulk) DoNothing() *AppPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppPolicyCreateBulk.OnConflict
+// documentation for more info.
+func (u *AppPolicyUpsertBulk) Update(set func(*AppPolicyUpsert)) *AppPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppPolicyUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppPolicyUpsertBulk) SetUpdatedBy(v int) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppPolicyUpsertBulk) AddUpdatedBy(v int) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateUpdatedBy() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppPolicyUpsertBulk) ClearUpdatedBy() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppPolicyUpsertBulk) SetUpdatedAt(v time.Time) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateUpdatedAt() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppPolicyUpsertBulk) ClearUpdatedAt() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppPolicyUpsertBulk) SetName(v string) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateName() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppPolicyUpsertBulk) SetComments(v string) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateComments() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppPolicyUpsertBulk) ClearComments() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetRules sets the "rules" field.
+func (u *AppPolicyUpsertBulk) SetRules(v []types.PolicyRule) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetRules(v)
+	})
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateRules() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateRules()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *AppPolicyUpsertBulk) SetVersion(v string) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateVersion() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateVersion()
+	})
+}
+
+// SetAutoGrant sets the "auto_grant" field.
+func (u *AppPolicyUpsertBulk) SetAutoGrant(v bool) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetAutoGrant(v)
+	})
+}
+
+// UpdateAutoGrant sets the "auto_grant" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateAutoGrant() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateAutoGrant()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppPolicyUpsertBulk) SetStatus(v typex.SimpleStatus) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateStatus() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppPolicyUpsertBulk) ClearStatus() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *AppPolicyUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppPolicyCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppPolicyCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppPolicyUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

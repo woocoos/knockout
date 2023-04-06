@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
@@ -21,6 +22,7 @@ type AppActionCreate struct {
 	config
 	mutation *AppActionMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -280,6 +282,7 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 		_node = &AppAction{config: aac.config}
 		_spec = sqlgraph.NewCreateSpec(appaction.Table, sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = aac.conflict
 	if id, ok := aac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -368,10 +371,358 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppAction.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppActionUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (aac *AppActionCreate) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertOne {
+	aac.conflict = opts
+	return &AppActionUpsertOne{
+		create: aac,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (aac *AppActionCreate) OnConflictColumns(columns ...string) *AppActionUpsertOne {
+	aac.conflict = append(aac.conflict, sql.ConflictColumns(columns...))
+	return &AppActionUpsertOne{
+		create: aac,
+	}
+}
+
+type (
+	// AppActionUpsertOne is the builder for "upsert"-ing
+	//  one AppAction node.
+	AppActionUpsertOne struct {
+		create *AppActionCreate
+	}
+
+	// AppActionUpsert is the "OnConflict" setter.
+	AppActionUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppActionUpsert) SetUpdatedBy(v int) *AppActionUpsert {
+	u.Set(appaction.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateUpdatedBy() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppActionUpsert) AddUpdatedBy(v int) *AppActionUpsert {
+	u.Add(appaction.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppActionUpsert) ClearUpdatedBy() *AppActionUpsert {
+	u.SetNull(appaction.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppActionUpsert) SetUpdatedAt(v time.Time) *AppActionUpsert {
+	u.Set(appaction.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateUpdatedAt() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppActionUpsert) ClearUpdatedAt() *AppActionUpsert {
+	u.SetNull(appaction.FieldUpdatedAt)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *AppActionUpsert) SetName(v string) *AppActionUpsert {
+	u.Set(appaction.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateName() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldName)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *AppActionUpsert) SetKind(v appaction.Kind) *AppActionUpsert {
+	u.Set(appaction.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateKind() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldKind)
+	return u
+}
+
+// SetMethod sets the "method" field.
+func (u *AppActionUpsert) SetMethod(v appaction.Method) *AppActionUpsert {
+	u.Set(appaction.FieldMethod, v)
+	return u
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateMethod() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldMethod)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *AppActionUpsert) SetComments(v string) *AppActionUpsert {
+	u.Set(appaction.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppActionUpsert) UpdateComments() *AppActionUpsert {
+	u.SetExcluded(appaction.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppActionUpsert) ClearComments() *AppActionUpsert {
+	u.SetNull(appaction.FieldComments)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appaction.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppActionUpsertOne) UpdateNewValues() *AppActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(appaction.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(appaction.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(appaction.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.AppID(); exists {
+			s.SetIgnore(appaction.FieldAppID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AppActionUpsertOne) Ignore() *AppActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppActionUpsertOne) DoNothing() *AppActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppActionCreate.OnConflict
+// documentation for more info.
+func (u *AppActionUpsertOne) Update(set func(*AppActionUpsert)) *AppActionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppActionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppActionUpsertOne) SetUpdatedBy(v int) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppActionUpsertOne) AddUpdatedBy(v int) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateUpdatedBy() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppActionUpsertOne) ClearUpdatedBy() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppActionUpsertOne) SetUpdatedAt(v time.Time) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateUpdatedAt() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppActionUpsertOne) ClearUpdatedAt() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppActionUpsertOne) SetName(v string) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateName() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppActionUpsertOne) SetKind(v appaction.Kind) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateKind() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *AppActionUpsertOne) SetMethod(v appaction.Method) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateMethod() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppActionUpsertOne) SetComments(v string) *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppActionUpsertOne) UpdateComments() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppActionUpsertOne) ClearComments() *AppActionUpsertOne {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearComments()
+	})
+}
+
+// Exec executes the query.
+func (u *AppActionUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppActionCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppActionUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AppActionUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AppActionUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AppActionCreateBulk is the builder for creating many AppAction entities in bulk.
 type AppActionCreateBulk struct {
 	config
 	builders []*AppActionCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the AppAction entities in the database.
@@ -398,6 +749,7 @@ func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error)
 					_, err = mutators[i+1].Mutate(root, aacb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = aacb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, aacb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -448,6 +800,238 @@ func (aacb *AppActionCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (aacb *AppActionCreateBulk) ExecX(ctx context.Context) {
 	if err := aacb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppAction.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppActionUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (aacb *AppActionCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppActionUpsertBulk {
+	aacb.conflict = opts
+	return &AppActionUpsertBulk{
+		create: aacb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (aacb *AppActionCreateBulk) OnConflictColumns(columns ...string) *AppActionUpsertBulk {
+	aacb.conflict = append(aacb.conflict, sql.ConflictColumns(columns...))
+	return &AppActionUpsertBulk{
+		create: aacb,
+	}
+}
+
+// AppActionUpsertBulk is the builder for "upsert"-ing
+// a bulk of AppAction nodes.
+type AppActionUpsertBulk struct {
+	create *AppActionCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appaction.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppActionUpsertBulk) UpdateNewValues() *AppActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(appaction.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(appaction.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(appaction.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.AppID(); exists {
+				s.SetIgnore(appaction.FieldAppID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppAction.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AppActionUpsertBulk) Ignore() *AppActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppActionUpsertBulk) DoNothing() *AppActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppActionCreateBulk.OnConflict
+// documentation for more info.
+func (u *AppActionUpsertBulk) Update(set func(*AppActionUpsert)) *AppActionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppActionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppActionUpsertBulk) SetUpdatedBy(v int) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppActionUpsertBulk) AddUpdatedBy(v int) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateUpdatedBy() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppActionUpsertBulk) ClearUpdatedBy() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppActionUpsertBulk) SetUpdatedAt(v time.Time) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateUpdatedAt() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppActionUpsertBulk) ClearUpdatedAt() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppActionUpsertBulk) SetName(v string) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateName() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppActionUpsertBulk) SetKind(v appaction.Kind) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateKind() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetMethod sets the "method" field.
+func (u *AppActionUpsertBulk) SetMethod(v appaction.Method) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetMethod(v)
+	})
+}
+
+// UpdateMethod sets the "method" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateMethod() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateMethod()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppActionUpsertBulk) SetComments(v string) *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppActionUpsertBulk) UpdateComments() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppActionUpsertBulk) ClearComments() *AppActionUpsertBulk {
+	return u.Update(func(s *AppActionUpsert) {
+		s.ClearComments()
+	})
+}
+
+// Exec executes the query.
+func (u *AppActionUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppActionCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppActionCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppActionUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

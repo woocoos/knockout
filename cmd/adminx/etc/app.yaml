@@ -58,6 +58,7 @@ web:
                 exclude:
                   - "/graphql" #doc page
             - tenant:
+                lookup: "header:X-Tenant-ID,query:X-Tenant-Id" ## browser may be transfer query ID to Id
             - graphql:
                 group: "/graphql"
                 withAuthorization: false

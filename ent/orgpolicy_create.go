@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -21,6 +22,7 @@ type OrgPolicyCreate struct {
 	config
 	mutation *OrgPolicyMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -267,6 +269,7 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		_node = &OrgPolicy{config: opc.config}
 		_spec = sqlgraph.NewCreateSpec(orgpolicy.Table, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = opc.conflict
 	if id, ok := opc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -343,10 +346,459 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.OrgPolicy.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OrgPolicyUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (opc *OrgPolicyCreate) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertOne {
+	opc.conflict = opts
+	return &OrgPolicyUpsertOne{
+		create: opc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (opc *OrgPolicyCreate) OnConflictColumns(columns ...string) *OrgPolicyUpsertOne {
+	opc.conflict = append(opc.conflict, sql.ConflictColumns(columns...))
+	return &OrgPolicyUpsertOne{
+		create: opc,
+	}
+}
+
+type (
+	// OrgPolicyUpsertOne is the builder for "upsert"-ing
+	//  one OrgPolicy node.
+	OrgPolicyUpsertOne struct {
+		create *OrgPolicyCreate
+	}
+
+	// OrgPolicyUpsert is the "OnConflict" setter.
+	OrgPolicyUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgPolicyUpsert) SetUpdatedBy(v int) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateUpdatedBy() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgPolicyUpsert) AddUpdatedBy(v int) *OrgPolicyUpsert {
+	u.Add(orgpolicy.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgPolicyUpsert) ClearUpdatedBy() *OrgPolicyUpsert {
+	u.SetNull(orgpolicy.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgPolicyUpsert) SetUpdatedAt(v time.Time) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateUpdatedAt() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgPolicyUpsert) ClearUpdatedAt() *OrgPolicyUpsert {
+	u.SetNull(orgpolicy.FieldUpdatedAt)
+	return u
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgPolicyUpsert) SetOrgID(v int) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldOrgID, v)
+	return u
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateOrgID() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldOrgID)
+	return u
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrgPolicyUpsert) SetAppID(v int) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldAppID, v)
+	return u
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateAppID() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldAppID)
+	return u
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *OrgPolicyUpsert) AddAppID(v int) *OrgPolicyUpsert {
+	u.Add(orgpolicy.FieldAppID, v)
+	return u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrgPolicyUpsert) ClearAppID() *OrgPolicyUpsert {
+	u.SetNull(orgpolicy.FieldAppID)
+	return u
+}
+
+// SetAppPolicyID sets the "app_policy_id" field.
+func (u *OrgPolicyUpsert) SetAppPolicyID(v int) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldAppPolicyID, v)
+	return u
+}
+
+// UpdateAppPolicyID sets the "app_policy_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateAppPolicyID() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldAppPolicyID)
+	return u
+}
+
+// AddAppPolicyID adds v to the "app_policy_id" field.
+func (u *OrgPolicyUpsert) AddAppPolicyID(v int) *OrgPolicyUpsert {
+	u.Add(orgpolicy.FieldAppPolicyID, v)
+	return u
+}
+
+// ClearAppPolicyID clears the value of the "app_policy_id" field.
+func (u *OrgPolicyUpsert) ClearAppPolicyID() *OrgPolicyUpsert {
+	u.SetNull(orgpolicy.FieldAppPolicyID)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *OrgPolicyUpsert) SetName(v string) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateName() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldName)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *OrgPolicyUpsert) SetComments(v string) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateComments() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *OrgPolicyUpsert) ClearComments() *OrgPolicyUpsert {
+	u.SetNull(orgpolicy.FieldComments)
+	return u
+}
+
+// SetRules sets the "rules" field.
+func (u *OrgPolicyUpsert) SetRules(v []types.PolicyRule) *OrgPolicyUpsert {
+	u.Set(orgpolicy.FieldRules, v)
+	return u
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *OrgPolicyUpsert) UpdateRules() *OrgPolicyUpsert {
+	u.SetExcluded(orgpolicy.FieldRules)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(orgpolicy.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *OrgPolicyUpsertOne) UpdateNewValues() *OrgPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(orgpolicy.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(orgpolicy.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(orgpolicy.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *OrgPolicyUpsertOne) Ignore() *OrgPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OrgPolicyUpsertOne) DoNothing() *OrgPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OrgPolicyCreate.OnConflict
+// documentation for more info.
+func (u *OrgPolicyUpsertOne) Update(set func(*OrgPolicyUpsert)) *OrgPolicyUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OrgPolicyUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgPolicyUpsertOne) SetUpdatedBy(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgPolicyUpsertOne) AddUpdatedBy(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateUpdatedBy() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgPolicyUpsertOne) ClearUpdatedBy() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgPolicyUpsertOne) SetUpdatedAt(v time.Time) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateUpdatedAt() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgPolicyUpsertOne) ClearUpdatedAt() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgPolicyUpsertOne) SetOrgID(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateOrgID() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateOrgID()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrgPolicyUpsertOne) SetAppID(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *OrgPolicyUpsertOne) AddAppID(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateAppID() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrgPolicyUpsertOne) ClearAppID() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearAppID()
+	})
+}
+
+// SetAppPolicyID sets the "app_policy_id" field.
+func (u *OrgPolicyUpsertOne) SetAppPolicyID(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetAppPolicyID(v)
+	})
+}
+
+// AddAppPolicyID adds v to the "app_policy_id" field.
+func (u *OrgPolicyUpsertOne) AddAppPolicyID(v int) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddAppPolicyID(v)
+	})
+}
+
+// UpdateAppPolicyID sets the "app_policy_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateAppPolicyID() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateAppPolicyID()
+	})
+}
+
+// ClearAppPolicyID clears the value of the "app_policy_id" field.
+func (u *OrgPolicyUpsertOne) ClearAppPolicyID() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearAppPolicyID()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *OrgPolicyUpsertOne) SetName(v string) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateName() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *OrgPolicyUpsertOne) SetComments(v string) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateComments() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *OrgPolicyUpsertOne) ClearComments() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetRules sets the "rules" field.
+func (u *OrgPolicyUpsertOne) SetRules(v []types.PolicyRule) *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetRules(v)
+	})
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *OrgPolicyUpsertOne) UpdateRules() *OrgPolicyUpsertOne {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateRules()
+	})
+}
+
+// Exec executes the query.
+func (u *OrgPolicyUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OrgPolicyCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OrgPolicyUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *OrgPolicyUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *OrgPolicyUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // OrgPolicyCreateBulk is the builder for creating many OrgPolicy entities in bulk.
 type OrgPolicyCreateBulk struct {
 	config
 	builders []*OrgPolicyCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the OrgPolicy entities in the database.
@@ -373,6 +825,7 @@ func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error)
 					_, err = mutators[i+1].Mutate(root, opcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = opcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, opcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -423,6 +876,291 @@ func (opcb *OrgPolicyCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (opcb *OrgPolicyCreateBulk) ExecX(ctx context.Context) {
 	if err := opcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.OrgPolicy.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OrgPolicyUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (opcb *OrgPolicyCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgPolicyUpsertBulk {
+	opcb.conflict = opts
+	return &OrgPolicyUpsertBulk{
+		create: opcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (opcb *OrgPolicyCreateBulk) OnConflictColumns(columns ...string) *OrgPolicyUpsertBulk {
+	opcb.conflict = append(opcb.conflict, sql.ConflictColumns(columns...))
+	return &OrgPolicyUpsertBulk{
+		create: opcb,
+	}
+}
+
+// OrgPolicyUpsertBulk is the builder for "upsert"-ing
+// a bulk of OrgPolicy nodes.
+type OrgPolicyUpsertBulk struct {
+	create *OrgPolicyCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(orgpolicy.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *OrgPolicyUpsertBulk) UpdateNewValues() *OrgPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(orgpolicy.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(orgpolicy.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(orgpolicy.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.OrgPolicy.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *OrgPolicyUpsertBulk) Ignore() *OrgPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OrgPolicyUpsertBulk) DoNothing() *OrgPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OrgPolicyCreateBulk.OnConflict
+// documentation for more info.
+func (u *OrgPolicyUpsertBulk) Update(set func(*OrgPolicyUpsert)) *OrgPolicyUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OrgPolicyUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgPolicyUpsertBulk) SetUpdatedBy(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgPolicyUpsertBulk) AddUpdatedBy(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateUpdatedBy() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgPolicyUpsertBulk) ClearUpdatedBy() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgPolicyUpsertBulk) SetUpdatedAt(v time.Time) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateUpdatedAt() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgPolicyUpsertBulk) ClearUpdatedAt() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgPolicyUpsertBulk) SetOrgID(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateOrgID() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateOrgID()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrgPolicyUpsertBulk) SetAppID(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// AddAppID adds v to the "app_id" field.
+func (u *OrgPolicyUpsertBulk) AddAppID(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateAppID() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrgPolicyUpsertBulk) ClearAppID() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearAppID()
+	})
+}
+
+// SetAppPolicyID sets the "app_policy_id" field.
+func (u *OrgPolicyUpsertBulk) SetAppPolicyID(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetAppPolicyID(v)
+	})
+}
+
+// AddAppPolicyID adds v to the "app_policy_id" field.
+func (u *OrgPolicyUpsertBulk) AddAppPolicyID(v int) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.AddAppPolicyID(v)
+	})
+}
+
+// UpdateAppPolicyID sets the "app_policy_id" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateAppPolicyID() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateAppPolicyID()
+	})
+}
+
+// ClearAppPolicyID clears the value of the "app_policy_id" field.
+func (u *OrgPolicyUpsertBulk) ClearAppPolicyID() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearAppPolicyID()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *OrgPolicyUpsertBulk) SetName(v string) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateName() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *OrgPolicyUpsertBulk) SetComments(v string) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateComments() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *OrgPolicyUpsertBulk) ClearComments() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetRules sets the "rules" field.
+func (u *OrgPolicyUpsertBulk) SetRules(v []types.PolicyRule) *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.SetRules(v)
+	})
+}
+
+// UpdateRules sets the "rules" field to the value that was provided on create.
+func (u *OrgPolicyUpsertBulk) UpdateRules() *OrgPolicyUpsertBulk {
+	return u.Update(func(s *OrgPolicyUpsert) {
+		s.UpdateRules()
+	})
+}
+
+// Exec executes the query.
+func (u *OrgPolicyUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgPolicyCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OrgPolicyCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OrgPolicyUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

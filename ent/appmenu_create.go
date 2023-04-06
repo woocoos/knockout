@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
@@ -20,6 +21,7 @@ type AppMenuCreate struct {
 	config
 	mutation *AppMenuMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -272,6 +274,7 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_node = &AppMenu{config: amc.config}
 		_spec = sqlgraph.NewCreateSpec(appmenu.Table, sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = amc.conflict
 	if id, ok := amc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -349,10 +352,462 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppMenu.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppMenuUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (amc *AppMenuCreate) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertOne {
+	amc.conflict = opts
+	return &AppMenuUpsertOne{
+		create: amc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (amc *AppMenuCreate) OnConflictColumns(columns ...string) *AppMenuUpsertOne {
+	amc.conflict = append(amc.conflict, sql.ConflictColumns(columns...))
+	return &AppMenuUpsertOne{
+		create: amc,
+	}
+}
+
+type (
+	// AppMenuUpsertOne is the builder for "upsert"-ing
+	//  one AppMenu node.
+	AppMenuUpsertOne struct {
+		create *AppMenuCreate
+	}
+
+	// AppMenuUpsert is the "OnConflict" setter.
+	AppMenuUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppMenuUpsert) SetUpdatedBy(v int) *AppMenuUpsert {
+	u.Set(appmenu.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateUpdatedBy() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppMenuUpsert) AddUpdatedBy(v int) *AppMenuUpsert {
+	u.Add(appmenu.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppMenuUpsert) ClearUpdatedBy() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppMenuUpsert) SetUpdatedAt(v time.Time) *AppMenuUpsert {
+	u.Set(appmenu.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateUpdatedAt() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppMenuUpsert) ClearUpdatedAt() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldUpdatedAt)
+	return u
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *AppMenuUpsert) SetParentID(v int) *AppMenuUpsert {
+	u.Set(appmenu.FieldParentID, v)
+	return u
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateParentID() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldParentID)
+	return u
+}
+
+// AddParentID adds v to the "parent_id" field.
+func (u *AppMenuUpsert) AddParentID(v int) *AppMenuUpsert {
+	u.Add(appmenu.FieldParentID, v)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *AppMenuUpsert) SetKind(v appmenu.Kind) *AppMenuUpsert {
+	u.Set(appmenu.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateKind() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldKind)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *AppMenuUpsert) SetName(v string) *AppMenuUpsert {
+	u.Set(appmenu.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateName() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldName)
+	return u
+}
+
+// SetActionID sets the "action_id" field.
+func (u *AppMenuUpsert) SetActionID(v int) *AppMenuUpsert {
+	u.Set(appmenu.FieldActionID, v)
+	return u
+}
+
+// UpdateActionID sets the "action_id" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateActionID() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldActionID)
+	return u
+}
+
+// ClearActionID clears the value of the "action_id" field.
+func (u *AppMenuUpsert) ClearActionID() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldActionID)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *AppMenuUpsert) SetComments(v string) *AppMenuUpsert {
+	u.Set(appmenu.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateComments() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppMenuUpsert) ClearComments() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldComments)
+	return u
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *AppMenuUpsert) SetDisplaySort(v int32) *AppMenuUpsert {
+	u.Set(appmenu.FieldDisplaySort, v)
+	return u
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateDisplaySort() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldDisplaySort)
+	return u
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *AppMenuUpsert) AddDisplaySort(v int32) *AppMenuUpsert {
+	u.Add(appmenu.FieldDisplaySort, v)
+	return u
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *AppMenuUpsert) ClearDisplaySort() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldDisplaySort)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appmenu.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppMenuUpsertOne) UpdateNewValues() *AppMenuUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(appmenu.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(appmenu.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(appmenu.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.AppID(); exists {
+			s.SetIgnore(appmenu.FieldAppID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AppMenuUpsertOne) Ignore() *AppMenuUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppMenuUpsertOne) DoNothing() *AppMenuUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppMenuCreate.OnConflict
+// documentation for more info.
+func (u *AppMenuUpsertOne) Update(set func(*AppMenuUpsert)) *AppMenuUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppMenuUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppMenuUpsertOne) SetUpdatedBy(v int) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppMenuUpsertOne) AddUpdatedBy(v int) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateUpdatedBy() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppMenuUpsertOne) ClearUpdatedBy() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppMenuUpsertOne) SetUpdatedAt(v time.Time) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateUpdatedAt() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppMenuUpsertOne) ClearUpdatedAt() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *AppMenuUpsertOne) SetParentID(v int) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetParentID(v)
+	})
+}
+
+// AddParentID adds v to the "parent_id" field.
+func (u *AppMenuUpsertOne) AddParentID(v int) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddParentID(v)
+	})
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateParentID() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateParentID()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppMenuUpsertOne) SetKind(v appmenu.Kind) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateKind() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppMenuUpsertOne) SetName(v string) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateName() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetActionID sets the "action_id" field.
+func (u *AppMenuUpsertOne) SetActionID(v int) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetActionID(v)
+	})
+}
+
+// UpdateActionID sets the "action_id" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateActionID() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateActionID()
+	})
+}
+
+// ClearActionID clears the value of the "action_id" field.
+func (u *AppMenuUpsertOne) ClearActionID() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearActionID()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppMenuUpsertOne) SetComments(v string) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateComments() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppMenuUpsertOne) ClearComments() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *AppMenuUpsertOne) SetDisplaySort(v int32) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetDisplaySort(v)
+	})
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *AppMenuUpsertOne) AddDisplaySort(v int32) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddDisplaySort(v)
+	})
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateDisplaySort() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateDisplaySort()
+	})
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *AppMenuUpsertOne) ClearDisplaySort() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearDisplaySort()
+	})
+}
+
+// Exec executes the query.
+func (u *AppMenuUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppMenuCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppMenuUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AppMenuUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AppMenuUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AppMenuCreateBulk is the builder for creating many AppMenu entities in bulk.
 type AppMenuCreateBulk struct {
 	config
 	builders []*AppMenuCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the AppMenu entities in the database.
@@ -379,6 +834,7 @@ func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
 					_, err = mutators[i+1].Mutate(root, amcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = amcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, amcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -429,6 +885,294 @@ func (amcb *AppMenuCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (amcb *AppMenuCreateBulk) ExecX(ctx context.Context) {
 	if err := amcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppMenu.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppMenuUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (amcb *AppMenuCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppMenuUpsertBulk {
+	amcb.conflict = opts
+	return &AppMenuUpsertBulk{
+		create: amcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (amcb *AppMenuCreateBulk) OnConflictColumns(columns ...string) *AppMenuUpsertBulk {
+	amcb.conflict = append(amcb.conflict, sql.ConflictColumns(columns...))
+	return &AppMenuUpsertBulk{
+		create: amcb,
+	}
+}
+
+// AppMenuUpsertBulk is the builder for "upsert"-ing
+// a bulk of AppMenu nodes.
+type AppMenuUpsertBulk struct {
+	create *AppMenuCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appmenu.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppMenuUpsertBulk) UpdateNewValues() *AppMenuUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(appmenu.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(appmenu.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(appmenu.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.AppID(); exists {
+				s.SetIgnore(appmenu.FieldAppID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppMenu.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AppMenuUpsertBulk) Ignore() *AppMenuUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppMenuUpsertBulk) DoNothing() *AppMenuUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppMenuCreateBulk.OnConflict
+// documentation for more info.
+func (u *AppMenuUpsertBulk) Update(set func(*AppMenuUpsert)) *AppMenuUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppMenuUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppMenuUpsertBulk) SetUpdatedBy(v int) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppMenuUpsertBulk) AddUpdatedBy(v int) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateUpdatedBy() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppMenuUpsertBulk) ClearUpdatedBy() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppMenuUpsertBulk) SetUpdatedAt(v time.Time) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateUpdatedAt() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppMenuUpsertBulk) ClearUpdatedAt() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *AppMenuUpsertBulk) SetParentID(v int) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetParentID(v)
+	})
+}
+
+// AddParentID adds v to the "parent_id" field.
+func (u *AppMenuUpsertBulk) AddParentID(v int) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddParentID(v)
+	})
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateParentID() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateParentID()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppMenuUpsertBulk) SetKind(v appmenu.Kind) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateKind() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppMenuUpsertBulk) SetName(v string) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateName() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetActionID sets the "action_id" field.
+func (u *AppMenuUpsertBulk) SetActionID(v int) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetActionID(v)
+	})
+}
+
+// UpdateActionID sets the "action_id" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateActionID() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateActionID()
+	})
+}
+
+// ClearActionID clears the value of the "action_id" field.
+func (u *AppMenuUpsertBulk) ClearActionID() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearActionID()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppMenuUpsertBulk) SetComments(v string) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateComments() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppMenuUpsertBulk) ClearComments() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *AppMenuUpsertBulk) SetDisplaySort(v int32) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetDisplaySort(v)
+	})
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *AppMenuUpsertBulk) AddDisplaySort(v int32) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.AddDisplaySort(v)
+	})
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateDisplaySort() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateDisplaySort()
+	})
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *AppMenuUpsertBulk) ClearDisplaySort() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearDisplaySort()
+	})
+}
+
+// Exec executes the query.
+func (u *AppMenuUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppMenuCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppMenuCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppMenuUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -88,9 +88,7 @@ func init() {
 	app.DefaultID = appDescID.Default.(func() int)
 	appactionMixin := schema.AppAction{}.Mixin()
 	appactionMixinHooks1 := appactionMixin[1].Hooks()
-	appactionHooks := schema.AppAction{}.Hooks()
 	appaction.Hooks[0] = appactionMixinHooks1[0]
-	appaction.Hooks[1] = appactionHooks[0]
 	appactionMixinFields0 := appactionMixin[0].Fields()
 	_ = appactionMixinFields0
 	appactionMixinFields1 := appactionMixin[1].Fields()

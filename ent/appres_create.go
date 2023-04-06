@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
@@ -19,6 +20,7 @@ type AppResCreate struct {
 	config
 	mutation *AppResMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -219,6 +221,7 @@ func (arc *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
 		_node = &AppRes{config: arc.config}
 		_spec = sqlgraph.NewCreateSpec(appres.Table, sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = arc.conflict
 	if id, ok := arc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -271,10 +274,319 @@ func (arc *AppResCreate) createSpec() (*AppRes, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppRes.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppResUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (arc *AppResCreate) OnConflict(opts ...sql.ConflictOption) *AppResUpsertOne {
+	arc.conflict = opts
+	return &AppResUpsertOne{
+		create: arc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (arc *AppResCreate) OnConflictColumns(columns ...string) *AppResUpsertOne {
+	arc.conflict = append(arc.conflict, sql.ConflictColumns(columns...))
+	return &AppResUpsertOne{
+		create: arc,
+	}
+}
+
+type (
+	// AppResUpsertOne is the builder for "upsert"-ing
+	//  one AppRes node.
+	AppResUpsertOne struct {
+		create *AppResCreate
+	}
+
+	// AppResUpsert is the "OnConflict" setter.
+	AppResUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppResUpsert) SetUpdatedBy(v int) *AppResUpsert {
+	u.Set(appres.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppResUpsert) UpdateUpdatedBy() *AppResUpsert {
+	u.SetExcluded(appres.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppResUpsert) AddUpdatedBy(v int) *AppResUpsert {
+	u.Add(appres.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppResUpsert) ClearUpdatedBy() *AppResUpsert {
+	u.SetNull(appres.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppResUpsert) SetUpdatedAt(v time.Time) *AppResUpsert {
+	u.Set(appres.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppResUpsert) UpdateUpdatedAt() *AppResUpsert {
+	u.SetExcluded(appres.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppResUpsert) ClearUpdatedAt() *AppResUpsert {
+	u.SetNull(appres.FieldUpdatedAt)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *AppResUpsert) SetName(v string) *AppResUpsert {
+	u.Set(appres.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppResUpsert) UpdateName() *AppResUpsert {
+	u.SetExcluded(appres.FieldName)
+	return u
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *AppResUpsert) SetTypeName(v string) *AppResUpsert {
+	u.Set(appres.FieldTypeName, v)
+	return u
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *AppResUpsert) UpdateTypeName() *AppResUpsert {
+	u.SetExcluded(appres.FieldTypeName)
+	return u
+}
+
+// SetArnPattern sets the "arn_pattern" field.
+func (u *AppResUpsert) SetArnPattern(v string) *AppResUpsert {
+	u.Set(appres.FieldArnPattern, v)
+	return u
+}
+
+// UpdateArnPattern sets the "arn_pattern" field to the value that was provided on create.
+func (u *AppResUpsert) UpdateArnPattern() *AppResUpsert {
+	u.SetExcluded(appres.FieldArnPattern)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appres.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppResUpsertOne) UpdateNewValues() *AppResUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(appres.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(appres.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(appres.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.AppID(); exists {
+			s.SetIgnore(appres.FieldAppID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AppResUpsertOne) Ignore() *AppResUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppResUpsertOne) DoNothing() *AppResUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppResCreate.OnConflict
+// documentation for more info.
+func (u *AppResUpsertOne) Update(set func(*AppResUpsert)) *AppResUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppResUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppResUpsertOne) SetUpdatedBy(v int) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppResUpsertOne) AddUpdatedBy(v int) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppResUpsertOne) UpdateUpdatedBy() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppResUpsertOne) ClearUpdatedBy() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppResUpsertOne) SetUpdatedAt(v time.Time) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppResUpsertOne) UpdateUpdatedAt() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppResUpsertOne) ClearUpdatedAt() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppResUpsertOne) SetName(v string) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppResUpsertOne) UpdateName() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *AppResUpsertOne) SetTypeName(v string) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetTypeName(v)
+	})
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *AppResUpsertOne) UpdateTypeName() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateTypeName()
+	})
+}
+
+// SetArnPattern sets the "arn_pattern" field.
+func (u *AppResUpsertOne) SetArnPattern(v string) *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetArnPattern(v)
+	})
+}
+
+// UpdateArnPattern sets the "arn_pattern" field to the value that was provided on create.
+func (u *AppResUpsertOne) UpdateArnPattern() *AppResUpsertOne {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateArnPattern()
+	})
+}
+
+// Exec executes the query.
+func (u *AppResUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppResCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppResUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AppResUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AppResUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AppResCreateBulk is the builder for creating many AppRes entities in bulk.
 type AppResCreateBulk struct {
 	config
 	builders []*AppResCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the AppRes entities in the database.
@@ -301,6 +613,7 @@ func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
 					_, err = mutators[i+1].Mutate(root, arcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = arcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, arcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -351,6 +664,217 @@ func (arcb *AppResCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (arcb *AppResCreateBulk) ExecX(ctx context.Context) {
 	if err := arcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.AppRes.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppResUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (arcb *AppResCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppResUpsertBulk {
+	arcb.conflict = opts
+	return &AppResUpsertBulk{
+		create: arcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (arcb *AppResCreateBulk) OnConflictColumns(columns ...string) *AppResUpsertBulk {
+	arcb.conflict = append(arcb.conflict, sql.ConflictColumns(columns...))
+	return &AppResUpsertBulk{
+		create: arcb,
+	}
+}
+
+// AppResUpsertBulk is the builder for "upsert"-ing
+// a bulk of AppRes nodes.
+type AppResUpsertBulk struct {
+	create *AppResCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appres.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppResUpsertBulk) UpdateNewValues() *AppResUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(appres.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(appres.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(appres.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.AppID(); exists {
+				s.SetIgnore(appres.FieldAppID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.AppRes.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AppResUpsertBulk) Ignore() *AppResUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppResUpsertBulk) DoNothing() *AppResUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppResCreateBulk.OnConflict
+// documentation for more info.
+func (u *AppResUpsertBulk) Update(set func(*AppResUpsert)) *AppResUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppResUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppResUpsertBulk) SetUpdatedBy(v int) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppResUpsertBulk) AddUpdatedBy(v int) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppResUpsertBulk) UpdateUpdatedBy() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppResUpsertBulk) ClearUpdatedBy() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppResUpsertBulk) SetUpdatedAt(v time.Time) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppResUpsertBulk) UpdateUpdatedAt() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppResUpsertBulk) ClearUpdatedAt() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppResUpsertBulk) SetName(v string) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppResUpsertBulk) UpdateName() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetTypeName sets the "type_name" field.
+func (u *AppResUpsertBulk) SetTypeName(v string) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetTypeName(v)
+	})
+}
+
+// UpdateTypeName sets the "type_name" field to the value that was provided on create.
+func (u *AppResUpsertBulk) UpdateTypeName() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateTypeName()
+	})
+}
+
+// SetArnPattern sets the "arn_pattern" field.
+func (u *AppResUpsertBulk) SetArnPattern(v string) *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.SetArnPattern(v)
+	})
+}
+
+// UpdateArnPattern sets the "arn_pattern" field to the value that was provided on create.
+func (u *AppResUpsertBulk) UpdateArnPattern() *AppResUpsertBulk {
+	return u.Update(func(s *AppResUpsert) {
+		s.UpdateArnPattern()
+	})
+}
+
+// Exec executes the query.
+func (u *AppResUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppResCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppResCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppResUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

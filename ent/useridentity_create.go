@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -20,6 +21,7 @@ type UserIdentityCreate struct {
 	config
 	mutation *UserIdentityMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -239,6 +241,7 @@ func (uic *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec
 		_node = &UserIdentity{config: uic.config}
 		_spec = sqlgraph.NewCreateSpec(useridentity.Table, sqlgraph.NewFieldSpec(useridentity.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = uic.conflict
 	if id, ok := uic.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -295,10 +298,384 @@ func (uic *UserIdentityCreate) createSpec() (*UserIdentity, *sqlgraph.CreateSpec
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserIdentity.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserIdentityUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (uic *UserIdentityCreate) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertOne {
+	uic.conflict = opts
+	return &UserIdentityUpsertOne{
+		create: uic,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (uic *UserIdentityCreate) OnConflictColumns(columns ...string) *UserIdentityUpsertOne {
+	uic.conflict = append(uic.conflict, sql.ConflictColumns(columns...))
+	return &UserIdentityUpsertOne{
+		create: uic,
+	}
+}
+
+type (
+	// UserIdentityUpsertOne is the builder for "upsert"-ing
+	//  one UserIdentity node.
+	UserIdentityUpsertOne struct {
+		create *UserIdentityCreate
+	}
+
+	// UserIdentityUpsert is the "OnConflict" setter.
+	UserIdentityUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserIdentityUpsert) SetUpdatedBy(v int) *UserIdentityUpsert {
+	u.Set(useridentity.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateUpdatedBy() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserIdentityUpsert) AddUpdatedBy(v int) *UserIdentityUpsert {
+	u.Add(useridentity.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserIdentityUpsert) ClearUpdatedBy() *UserIdentityUpsert {
+	u.SetNull(useridentity.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserIdentityUpsert) SetUpdatedAt(v time.Time) *UserIdentityUpsert {
+	u.Set(useridentity.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateUpdatedAt() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserIdentityUpsert) ClearUpdatedAt() *UserIdentityUpsert {
+	u.SetNull(useridentity.FieldUpdatedAt)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *UserIdentityUpsert) SetKind(v useridentity.Kind) *UserIdentityUpsert {
+	u.Set(useridentity.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateKind() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldKind)
+	return u
+}
+
+// SetCode sets the "code" field.
+func (u *UserIdentityUpsert) SetCode(v string) *UserIdentityUpsert {
+	u.Set(useridentity.FieldCode, v)
+	return u
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateCode() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldCode)
+	return u
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *UserIdentityUpsert) ClearCode() *UserIdentityUpsert {
+	u.SetNull(useridentity.FieldCode)
+	return u
+}
+
+// SetCodeExtend sets the "code_extend" field.
+func (u *UserIdentityUpsert) SetCodeExtend(v string) *UserIdentityUpsert {
+	u.Set(useridentity.FieldCodeExtend, v)
+	return u
+}
+
+// UpdateCodeExtend sets the "code_extend" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateCodeExtend() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldCodeExtend)
+	return u
+}
+
+// ClearCodeExtend clears the value of the "code_extend" field.
+func (u *UserIdentityUpsert) ClearCodeExtend() *UserIdentityUpsert {
+	u.SetNull(useridentity.FieldCodeExtend)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *UserIdentityUpsert) SetStatus(v typex.SimpleStatus) *UserIdentityUpsert {
+	u.Set(useridentity.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserIdentityUpsert) UpdateStatus() *UserIdentityUpsert {
+	u.SetExcluded(useridentity.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserIdentityUpsert) ClearStatus() *UserIdentityUpsert {
+	u.SetNull(useridentity.FieldStatus)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(useridentity.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserIdentityUpsertOne) UpdateNewValues() *UserIdentityUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(useridentity.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(useridentity.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(useridentity.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.UserID(); exists {
+			s.SetIgnore(useridentity.FieldUserID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *UserIdentityUpsertOne) Ignore() *UserIdentityUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserIdentityUpsertOne) DoNothing() *UserIdentityUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserIdentityCreate.OnConflict
+// documentation for more info.
+func (u *UserIdentityUpsertOne) Update(set func(*UserIdentityUpsert)) *UserIdentityUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserIdentityUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserIdentityUpsertOne) SetUpdatedBy(v int) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserIdentityUpsertOne) AddUpdatedBy(v int) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateUpdatedBy() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserIdentityUpsertOne) ClearUpdatedBy() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserIdentityUpsertOne) SetUpdatedAt(v time.Time) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateUpdatedAt() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserIdentityUpsertOne) ClearUpdatedAt() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *UserIdentityUpsertOne) SetKind(v useridentity.Kind) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateKind() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetCode sets the "code" field.
+func (u *UserIdentityUpsertOne) SetCode(v string) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetCode(v)
+	})
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateCode() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateCode()
+	})
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *UserIdentityUpsertOne) ClearCode() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearCode()
+	})
+}
+
+// SetCodeExtend sets the "code_extend" field.
+func (u *UserIdentityUpsertOne) SetCodeExtend(v string) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetCodeExtend(v)
+	})
+}
+
+// UpdateCodeExtend sets the "code_extend" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateCodeExtend() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateCodeExtend()
+	})
+}
+
+// ClearCodeExtend clears the value of the "code_extend" field.
+func (u *UserIdentityUpsertOne) ClearCodeExtend() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearCodeExtend()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *UserIdentityUpsertOne) SetStatus(v typex.SimpleStatus) *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserIdentityUpsertOne) UpdateStatus() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserIdentityUpsertOne) ClearStatus() *UserIdentityUpsertOne {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserIdentityUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserIdentityCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserIdentityUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *UserIdentityUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *UserIdentityUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // UserIdentityCreateBulk is the builder for creating many UserIdentity entities in bulk.
 type UserIdentityCreateBulk struct {
 	config
 	builders []*UserIdentityCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the UserIdentity entities in the database.
@@ -325,6 +702,7 @@ func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, 
 					_, err = mutators[i+1].Mutate(root, uicb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = uicb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, uicb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -375,6 +753,252 @@ func (uicb *UserIdentityCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (uicb *UserIdentityCreateBulk) ExecX(ctx context.Context) {
 	if err := uicb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserIdentity.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserIdentityUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (uicb *UserIdentityCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserIdentityUpsertBulk {
+	uicb.conflict = opts
+	return &UserIdentityUpsertBulk{
+		create: uicb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (uicb *UserIdentityCreateBulk) OnConflictColumns(columns ...string) *UserIdentityUpsertBulk {
+	uicb.conflict = append(uicb.conflict, sql.ConflictColumns(columns...))
+	return &UserIdentityUpsertBulk{
+		create: uicb,
+	}
+}
+
+// UserIdentityUpsertBulk is the builder for "upsert"-ing
+// a bulk of UserIdentity nodes.
+type UserIdentityUpsertBulk struct {
+	create *UserIdentityCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(useridentity.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserIdentityUpsertBulk) UpdateNewValues() *UserIdentityUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(useridentity.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(useridentity.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(useridentity.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.UserID(); exists {
+				s.SetIgnore(useridentity.FieldUserID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserIdentity.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *UserIdentityUpsertBulk) Ignore() *UserIdentityUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserIdentityUpsertBulk) DoNothing() *UserIdentityUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserIdentityCreateBulk.OnConflict
+// documentation for more info.
+func (u *UserIdentityUpsertBulk) Update(set func(*UserIdentityUpsert)) *UserIdentityUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserIdentityUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserIdentityUpsertBulk) SetUpdatedBy(v int) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserIdentityUpsertBulk) AddUpdatedBy(v int) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateUpdatedBy() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserIdentityUpsertBulk) ClearUpdatedBy() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserIdentityUpsertBulk) SetUpdatedAt(v time.Time) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateUpdatedAt() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserIdentityUpsertBulk) ClearUpdatedAt() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *UserIdentityUpsertBulk) SetKind(v useridentity.Kind) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateKind() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetCode sets the "code" field.
+func (u *UserIdentityUpsertBulk) SetCode(v string) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetCode(v)
+	})
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateCode() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateCode()
+	})
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *UserIdentityUpsertBulk) ClearCode() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearCode()
+	})
+}
+
+// SetCodeExtend sets the "code_extend" field.
+func (u *UserIdentityUpsertBulk) SetCodeExtend(v string) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetCodeExtend(v)
+	})
+}
+
+// UpdateCodeExtend sets the "code_extend" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateCodeExtend() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateCodeExtend()
+	})
+}
+
+// ClearCodeExtend clears the value of the "code_extend" field.
+func (u *UserIdentityUpsertBulk) ClearCodeExtend() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearCodeExtend()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *UserIdentityUpsertBulk) SetStatus(v typex.SimpleStatus) *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserIdentityUpsertBulk) UpdateStatus() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserIdentityUpsertBulk) ClearStatus() *UserIdentityUpsertBulk {
+	return u.Update(func(s *UserIdentityUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserIdentityUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserIdentityCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserIdentityCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserIdentityUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

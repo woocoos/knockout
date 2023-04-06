@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -20,6 +21,7 @@ type UserPasswordCreate struct {
 	config
 	mutation *UserPasswordMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -243,6 +245,7 @@ func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec
 		_node = &UserPassword{config: upc.config}
 		_spec = sqlgraph.NewCreateSpec(userpassword.Table, sqlgraph.NewFieldSpec(userpassword.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = upc.conflict
 	if id, ok := upc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -299,10 +302,371 @@ func (upc *UserPasswordCreate) createSpec() (*UserPassword, *sqlgraph.CreateSpec
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserPassword.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserPasswordUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (upc *UserPasswordCreate) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertOne {
+	upc.conflict = opts
+	return &UserPasswordUpsertOne{
+		create: upc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (upc *UserPasswordCreate) OnConflictColumns(columns ...string) *UserPasswordUpsertOne {
+	upc.conflict = append(upc.conflict, sql.ConflictColumns(columns...))
+	return &UserPasswordUpsertOne{
+		create: upc,
+	}
+}
+
+type (
+	// UserPasswordUpsertOne is the builder for "upsert"-ing
+	//  one UserPassword node.
+	UserPasswordUpsertOne struct {
+		create *UserPasswordCreate
+	}
+
+	// UserPasswordUpsert is the "OnConflict" setter.
+	UserPasswordUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserPasswordUpsert) SetUpdatedBy(v int) *UserPasswordUpsert {
+	u.Set(userpassword.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdateUpdatedBy() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserPasswordUpsert) AddUpdatedBy(v int) *UserPasswordUpsert {
+	u.Add(userpassword.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserPasswordUpsert) ClearUpdatedBy() *UserPasswordUpsert {
+	u.SetNull(userpassword.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserPasswordUpsert) SetUpdatedAt(v time.Time) *UserPasswordUpsert {
+	u.Set(userpassword.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdateUpdatedAt() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserPasswordUpsert) ClearUpdatedAt() *UserPasswordUpsert {
+	u.SetNull(userpassword.FieldUpdatedAt)
+	return u
+}
+
+// SetScene sets the "scene" field.
+func (u *UserPasswordUpsert) SetScene(v userpassword.Scene) *UserPasswordUpsert {
+	u.Set(userpassword.FieldScene, v)
+	return u
+}
+
+// UpdateScene sets the "scene" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdateScene() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldScene)
+	return u
+}
+
+// SetPassword sets the "password" field.
+func (u *UserPasswordUpsert) SetPassword(v string) *UserPasswordUpsert {
+	u.Set(userpassword.FieldPassword, v)
+	return u
+}
+
+// UpdatePassword sets the "password" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdatePassword() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldPassword)
+	return u
+}
+
+// ClearPassword clears the value of the "password" field.
+func (u *UserPasswordUpsert) ClearPassword() *UserPasswordUpsert {
+	u.SetNull(userpassword.FieldPassword)
+	return u
+}
+
+// SetSalt sets the "salt" field.
+func (u *UserPasswordUpsert) SetSalt(v string) *UserPasswordUpsert {
+	u.Set(userpassword.FieldSalt, v)
+	return u
+}
+
+// UpdateSalt sets the "salt" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdateSalt() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldSalt)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *UserPasswordUpsert) SetStatus(v typex.SimpleStatus) *UserPasswordUpsert {
+	u.Set(userpassword.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserPasswordUpsert) UpdateStatus() *UserPasswordUpsert {
+	u.SetExcluded(userpassword.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserPasswordUpsert) ClearStatus() *UserPasswordUpsert {
+	u.SetNull(userpassword.FieldStatus)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(userpassword.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserPasswordUpsertOne) UpdateNewValues() *UserPasswordUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(userpassword.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(userpassword.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(userpassword.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.UserID(); exists {
+			s.SetIgnore(userpassword.FieldUserID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *UserPasswordUpsertOne) Ignore() *UserPasswordUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserPasswordUpsertOne) DoNothing() *UserPasswordUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserPasswordCreate.OnConflict
+// documentation for more info.
+func (u *UserPasswordUpsertOne) Update(set func(*UserPasswordUpsert)) *UserPasswordUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserPasswordUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserPasswordUpsertOne) SetUpdatedBy(v int) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserPasswordUpsertOne) AddUpdatedBy(v int) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdateUpdatedBy() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserPasswordUpsertOne) ClearUpdatedBy() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserPasswordUpsertOne) SetUpdatedAt(v time.Time) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdateUpdatedAt() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserPasswordUpsertOne) ClearUpdatedAt() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetScene sets the "scene" field.
+func (u *UserPasswordUpsertOne) SetScene(v userpassword.Scene) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetScene(v)
+	})
+}
+
+// UpdateScene sets the "scene" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdateScene() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateScene()
+	})
+}
+
+// SetPassword sets the "password" field.
+func (u *UserPasswordUpsertOne) SetPassword(v string) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetPassword(v)
+	})
+}
+
+// UpdatePassword sets the "password" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdatePassword() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdatePassword()
+	})
+}
+
+// ClearPassword clears the value of the "password" field.
+func (u *UserPasswordUpsertOne) ClearPassword() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearPassword()
+	})
+}
+
+// SetSalt sets the "salt" field.
+func (u *UserPasswordUpsertOne) SetSalt(v string) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetSalt(v)
+	})
+}
+
+// UpdateSalt sets the "salt" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdateSalt() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateSalt()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *UserPasswordUpsertOne) SetStatus(v typex.SimpleStatus) *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserPasswordUpsertOne) UpdateStatus() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserPasswordUpsertOne) ClearStatus() *UserPasswordUpsertOne {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserPasswordUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserPasswordCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserPasswordUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *UserPasswordUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *UserPasswordUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // UserPasswordCreateBulk is the builder for creating many UserPassword entities in bulk.
 type UserPasswordCreateBulk struct {
 	config
 	builders []*UserPasswordCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the UserPassword entities in the database.
@@ -329,6 +693,7 @@ func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, 
 					_, err = mutators[i+1].Mutate(root, upcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = upcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, upcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -379,6 +744,245 @@ func (upcb *UserPasswordCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (upcb *UserPasswordCreateBulk) ExecX(ctx context.Context) {
 	if err := upcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserPassword.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserPasswordUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (upcb *UserPasswordCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserPasswordUpsertBulk {
+	upcb.conflict = opts
+	return &UserPasswordUpsertBulk{
+		create: upcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (upcb *UserPasswordCreateBulk) OnConflictColumns(columns ...string) *UserPasswordUpsertBulk {
+	upcb.conflict = append(upcb.conflict, sql.ConflictColumns(columns...))
+	return &UserPasswordUpsertBulk{
+		create: upcb,
+	}
+}
+
+// UserPasswordUpsertBulk is the builder for "upsert"-ing
+// a bulk of UserPassword nodes.
+type UserPasswordUpsertBulk struct {
+	create *UserPasswordCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(userpassword.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserPasswordUpsertBulk) UpdateNewValues() *UserPasswordUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(userpassword.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(userpassword.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(userpassword.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.UserID(); exists {
+				s.SetIgnore(userpassword.FieldUserID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserPassword.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *UserPasswordUpsertBulk) Ignore() *UserPasswordUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserPasswordUpsertBulk) DoNothing() *UserPasswordUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserPasswordCreateBulk.OnConflict
+// documentation for more info.
+func (u *UserPasswordUpsertBulk) Update(set func(*UserPasswordUpsert)) *UserPasswordUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserPasswordUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserPasswordUpsertBulk) SetUpdatedBy(v int) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserPasswordUpsertBulk) AddUpdatedBy(v int) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdateUpdatedBy() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserPasswordUpsertBulk) ClearUpdatedBy() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserPasswordUpsertBulk) SetUpdatedAt(v time.Time) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdateUpdatedAt() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserPasswordUpsertBulk) ClearUpdatedAt() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetScene sets the "scene" field.
+func (u *UserPasswordUpsertBulk) SetScene(v userpassword.Scene) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetScene(v)
+	})
+}
+
+// UpdateScene sets the "scene" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdateScene() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateScene()
+	})
+}
+
+// SetPassword sets the "password" field.
+func (u *UserPasswordUpsertBulk) SetPassword(v string) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetPassword(v)
+	})
+}
+
+// UpdatePassword sets the "password" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdatePassword() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdatePassword()
+	})
+}
+
+// ClearPassword clears the value of the "password" field.
+func (u *UserPasswordUpsertBulk) ClearPassword() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearPassword()
+	})
+}
+
+// SetSalt sets the "salt" field.
+func (u *UserPasswordUpsertBulk) SetSalt(v string) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetSalt(v)
+	})
+}
+
+// UpdateSalt sets the "salt" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdateSalt() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateSalt()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *UserPasswordUpsertBulk) SetStatus(v typex.SimpleStatus) *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *UserPasswordUpsertBulk) UpdateStatus() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *UserPasswordUpsertBulk) ClearStatus() *UserPasswordUpsertBulk {
+	return u.Update(func(s *UserPasswordUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserPasswordUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserPasswordCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserPasswordCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserPasswordUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

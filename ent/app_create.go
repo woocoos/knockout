@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -26,6 +27,7 @@ type AppCreate struct {
 	config
 	mutation *AppMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -509,6 +511,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_node = &App{config: ac.config}
 		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = ac.conflict
 	if id, ok := ac.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -704,10 +707,761 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.App.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
+	ac.conflict = opts
+	return &AppUpsertOne{
+		create: ac,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.App.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ac *AppCreate) OnConflictColumns(columns ...string) *AppUpsertOne {
+	ac.conflict = append(ac.conflict, sql.ConflictColumns(columns...))
+	return &AppUpsertOne{
+		create: ac,
+	}
+}
+
+type (
+	// AppUpsertOne is the builder for "upsert"-ing
+	//  one App node.
+	AppUpsertOne struct {
+		create *AppCreate
+	}
+
+	// AppUpsert is the "OnConflict" setter.
+	AppUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppUpsert) SetUpdatedBy(v int) *AppUpsert {
+	u.Set(app.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppUpsert) UpdateUpdatedBy() *AppUpsert {
+	u.SetExcluded(app.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppUpsert) AddUpdatedBy(v int) *AppUpsert {
+	u.Add(app.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppUpsert) ClearUpdatedBy() *AppUpsert {
+	u.SetNull(app.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsert) SetUpdatedAt(v time.Time) *AppUpsert {
+	u.Set(app.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsert) UpdateUpdatedAt() *AppUpsert {
+	u.SetExcluded(app.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppUpsert) ClearUpdatedAt() *AppUpsert {
+	u.SetNull(app.FieldUpdatedAt)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *AppUpsert) SetName(v string) *AppUpsert {
+	u.Set(app.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppUpsert) UpdateName() *AppUpsert {
+	u.SetExcluded(app.FieldName)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *AppUpsert) SetKind(v app.Kind) *AppUpsert {
+	u.Set(app.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppUpsert) UpdateKind() *AppUpsert {
+	u.SetExcluded(app.FieldKind)
+	return u
+}
+
+// SetRedirectURI sets the "redirect_uri" field.
+func (u *AppUpsert) SetRedirectURI(v string) *AppUpsert {
+	u.Set(app.FieldRedirectURI, v)
+	return u
+}
+
+// UpdateRedirectURI sets the "redirect_uri" field to the value that was provided on create.
+func (u *AppUpsert) UpdateRedirectURI() *AppUpsert {
+	u.SetExcluded(app.FieldRedirectURI)
+	return u
+}
+
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (u *AppUpsert) ClearRedirectURI() *AppUpsert {
+	u.SetNull(app.FieldRedirectURI)
+	return u
+}
+
+// SetAppKey sets the "app_key" field.
+func (u *AppUpsert) SetAppKey(v string) *AppUpsert {
+	u.Set(app.FieldAppKey, v)
+	return u
+}
+
+// UpdateAppKey sets the "app_key" field to the value that was provided on create.
+func (u *AppUpsert) UpdateAppKey() *AppUpsert {
+	u.SetExcluded(app.FieldAppKey)
+	return u
+}
+
+// ClearAppKey clears the value of the "app_key" field.
+func (u *AppUpsert) ClearAppKey() *AppUpsert {
+	u.SetNull(app.FieldAppKey)
+	return u
+}
+
+// SetAppSecret sets the "app_secret" field.
+func (u *AppUpsert) SetAppSecret(v string) *AppUpsert {
+	u.Set(app.FieldAppSecret, v)
+	return u
+}
+
+// UpdateAppSecret sets the "app_secret" field to the value that was provided on create.
+func (u *AppUpsert) UpdateAppSecret() *AppUpsert {
+	u.SetExcluded(app.FieldAppSecret)
+	return u
+}
+
+// ClearAppSecret clears the value of the "app_secret" field.
+func (u *AppUpsert) ClearAppSecret() *AppUpsert {
+	u.SetNull(app.FieldAppSecret)
+	return u
+}
+
+// SetScopes sets the "scopes" field.
+func (u *AppUpsert) SetScopes(v string) *AppUpsert {
+	u.Set(app.FieldScopes, v)
+	return u
+}
+
+// UpdateScopes sets the "scopes" field to the value that was provided on create.
+func (u *AppUpsert) UpdateScopes() *AppUpsert {
+	u.SetExcluded(app.FieldScopes)
+	return u
+}
+
+// ClearScopes clears the value of the "scopes" field.
+func (u *AppUpsert) ClearScopes() *AppUpsert {
+	u.SetNull(app.FieldScopes)
+	return u
+}
+
+// SetTokenValidity sets the "token_validity" field.
+func (u *AppUpsert) SetTokenValidity(v int32) *AppUpsert {
+	u.Set(app.FieldTokenValidity, v)
+	return u
+}
+
+// UpdateTokenValidity sets the "token_validity" field to the value that was provided on create.
+func (u *AppUpsert) UpdateTokenValidity() *AppUpsert {
+	u.SetExcluded(app.FieldTokenValidity)
+	return u
+}
+
+// AddTokenValidity adds v to the "token_validity" field.
+func (u *AppUpsert) AddTokenValidity(v int32) *AppUpsert {
+	u.Add(app.FieldTokenValidity, v)
+	return u
+}
+
+// ClearTokenValidity clears the value of the "token_validity" field.
+func (u *AppUpsert) ClearTokenValidity() *AppUpsert {
+	u.SetNull(app.FieldTokenValidity)
+	return u
+}
+
+// SetRefreshTokenValidity sets the "refresh_token_validity" field.
+func (u *AppUpsert) SetRefreshTokenValidity(v int32) *AppUpsert {
+	u.Set(app.FieldRefreshTokenValidity, v)
+	return u
+}
+
+// UpdateRefreshTokenValidity sets the "refresh_token_validity" field to the value that was provided on create.
+func (u *AppUpsert) UpdateRefreshTokenValidity() *AppUpsert {
+	u.SetExcluded(app.FieldRefreshTokenValidity)
+	return u
+}
+
+// AddRefreshTokenValidity adds v to the "refresh_token_validity" field.
+func (u *AppUpsert) AddRefreshTokenValidity(v int32) *AppUpsert {
+	u.Add(app.FieldRefreshTokenValidity, v)
+	return u
+}
+
+// ClearRefreshTokenValidity clears the value of the "refresh_token_validity" field.
+func (u *AppUpsert) ClearRefreshTokenValidity() *AppUpsert {
+	u.SetNull(app.FieldRefreshTokenValidity)
+	return u
+}
+
+// SetLogo sets the "logo" field.
+func (u *AppUpsert) SetLogo(v string) *AppUpsert {
+	u.Set(app.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsert) UpdateLogo() *AppUpsert {
+	u.SetExcluded(app.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsert) ClearLogo() *AppUpsert {
+	u.SetNull(app.FieldLogo)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *AppUpsert) SetComments(v string) *AppUpsert {
+	u.Set(app.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppUpsert) UpdateComments() *AppUpsert {
+	u.SetExcluded(app.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppUpsert) ClearComments() *AppUpsert {
+	u.SetNull(app.FieldComments)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *AppUpsert) SetStatus(v typex.SimpleStatus) *AppUpsert {
+	u.Set(app.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppUpsert) UpdateStatus() *AppUpsert {
+	u.SetExcluded(app.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppUpsert) ClearStatus() *AppUpsert {
+	u.SetNull(app.FieldStatus)
+	return u
+}
+
+// SetPrivate sets the "private" field.
+func (u *AppUpsert) SetPrivate(v bool) *AppUpsert {
+	u.Set(app.FieldPrivate, v)
+	return u
+}
+
+// UpdatePrivate sets the "private" field to the value that was provided on create.
+func (u *AppUpsert) UpdatePrivate() *AppUpsert {
+	u.SetExcluded(app.FieldPrivate)
+	return u
+}
+
+// ClearPrivate clears the value of the "private" field.
+func (u *AppUpsert) ClearPrivate() *AppUpsert {
+	u.SetNull(app.FieldPrivate)
+	return u
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *AppUpsert) SetOrgID(v int) *AppUpsert {
+	u.Set(app.FieldOrgID, v)
+	return u
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateOrgID() *AppUpsert {
+	u.SetExcluded(app.FieldOrgID)
+	return u
+}
+
+// AddOrgID adds v to the "org_id" field.
+func (u *AppUpsert) AddOrgID(v int) *AppUpsert {
+	u.Add(app.FieldOrgID, v)
+	return u
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (u *AppUpsert) ClearOrgID() *AppUpsert {
+	u.SetNull(app.FieldOrgID)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.App.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(app.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppUpsertOne) UpdateNewValues() *AppUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(app.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(app.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(app.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.Code(); exists {
+			s.SetIgnore(app.FieldCode)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.App.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *AppUpsertOne) Ignore() *AppUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppUpsertOne) DoNothing() *AppUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppCreate.OnConflict
+// documentation for more info.
+func (u *AppUpsertOne) Update(set func(*AppUpsert)) *AppUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppUpsertOne) SetUpdatedBy(v int) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppUpsertOne) AddUpdatedBy(v int) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateUpdatedBy() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppUpsertOne) ClearUpdatedBy() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsertOne) SetUpdatedAt(v time.Time) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateUpdatedAt() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppUpsertOne) ClearUpdatedAt() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppUpsertOne) SetName(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateName() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppUpsertOne) SetKind(v app.Kind) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateKind() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetRedirectURI sets the "redirect_uri" field.
+func (u *AppUpsertOne) SetRedirectURI(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetRedirectURI(v)
+	})
+}
+
+// UpdateRedirectURI sets the "redirect_uri" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateRedirectURI() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateRedirectURI()
+	})
+}
+
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (u *AppUpsertOne) ClearRedirectURI() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearRedirectURI()
+	})
+}
+
+// SetAppKey sets the "app_key" field.
+func (u *AppUpsertOne) SetAppKey(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppKey(v)
+	})
+}
+
+// UpdateAppKey sets the "app_key" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateAppKey() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppKey()
+	})
+}
+
+// ClearAppKey clears the value of the "app_key" field.
+func (u *AppUpsertOne) ClearAppKey() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearAppKey()
+	})
+}
+
+// SetAppSecret sets the "app_secret" field.
+func (u *AppUpsertOne) SetAppSecret(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppSecret(v)
+	})
+}
+
+// UpdateAppSecret sets the "app_secret" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateAppSecret() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppSecret()
+	})
+}
+
+// ClearAppSecret clears the value of the "app_secret" field.
+func (u *AppUpsertOne) ClearAppSecret() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearAppSecret()
+	})
+}
+
+// SetScopes sets the "scopes" field.
+func (u *AppUpsertOne) SetScopes(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetScopes(v)
+	})
+}
+
+// UpdateScopes sets the "scopes" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateScopes() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateScopes()
+	})
+}
+
+// ClearScopes clears the value of the "scopes" field.
+func (u *AppUpsertOne) ClearScopes() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearScopes()
+	})
+}
+
+// SetTokenValidity sets the "token_validity" field.
+func (u *AppUpsertOne) SetTokenValidity(v int32) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetTokenValidity(v)
+	})
+}
+
+// AddTokenValidity adds v to the "token_validity" field.
+func (u *AppUpsertOne) AddTokenValidity(v int32) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddTokenValidity(v)
+	})
+}
+
+// UpdateTokenValidity sets the "token_validity" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateTokenValidity() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateTokenValidity()
+	})
+}
+
+// ClearTokenValidity clears the value of the "token_validity" field.
+func (u *AppUpsertOne) ClearTokenValidity() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearTokenValidity()
+	})
+}
+
+// SetRefreshTokenValidity sets the "refresh_token_validity" field.
+func (u *AppUpsertOne) SetRefreshTokenValidity(v int32) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetRefreshTokenValidity(v)
+	})
+}
+
+// AddRefreshTokenValidity adds v to the "refresh_token_validity" field.
+func (u *AppUpsertOne) AddRefreshTokenValidity(v int32) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddRefreshTokenValidity(v)
+	})
+}
+
+// UpdateRefreshTokenValidity sets the "refresh_token_validity" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateRefreshTokenValidity() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateRefreshTokenValidity()
+	})
+}
+
+// ClearRefreshTokenValidity clears the value of the "refresh_token_validity" field.
+func (u *AppUpsertOne) ClearRefreshTokenValidity() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearRefreshTokenValidity()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *AppUpsertOne) SetLogo(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateLogo() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsertOne) ClearLogo() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogo()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppUpsertOne) SetComments(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateComments() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppUpsertOne) ClearComments() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppUpsertOne) SetStatus(v typex.SimpleStatus) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateStatus() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppUpsertOne) ClearStatus() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// SetPrivate sets the "private" field.
+func (u *AppUpsertOne) SetPrivate(v bool) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPrivate(v)
+	})
+}
+
+// UpdatePrivate sets the "private" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdatePrivate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePrivate()
+	})
+}
+
+// ClearPrivate clears the value of the "private" field.
+func (u *AppUpsertOne) ClearPrivate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPrivate()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *AppUpsertOne) SetOrgID(v int) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// AddOrgID adds v to the "org_id" field.
+func (u *AppUpsertOne) AddOrgID(v int) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateOrgID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateOrgID()
+	})
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (u *AppUpsertOne) ClearOrgID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearOrgID()
+	})
+}
+
+// Exec executes the query.
+func (u *AppUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *AppUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *AppUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // AppCreateBulk is the builder for creating many App entities in bulk.
 type AppCreateBulk struct {
 	config
 	builders []*AppCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the App entities in the database.
@@ -734,6 +1488,7 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 					_, err = mutators[i+1].Mutate(root, acb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = acb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, acb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -784,6 +1539,455 @@ func (acb *AppCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 	if err := acb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.App.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.AppUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
+	acb.conflict = opts
+	return &AppUpsertBulk{
+		create: acb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.App.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (acb *AppCreateBulk) OnConflictColumns(columns ...string) *AppUpsertBulk {
+	acb.conflict = append(acb.conflict, sql.ConflictColumns(columns...))
+	return &AppUpsertBulk{
+		create: acb,
+	}
+}
+
+// AppUpsertBulk is the builder for "upsert"-ing
+// a bulk of App nodes.
+type AppUpsertBulk struct {
+	create *AppCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.App.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(app.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *AppUpsertBulk) UpdateNewValues() *AppUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(app.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(app.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(app.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.Code(); exists {
+				s.SetIgnore(app.FieldCode)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.App.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *AppUpsertBulk) Ignore() *AppUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *AppUpsertBulk) DoNothing() *AppUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the AppCreateBulk.OnConflict
+// documentation for more info.
+func (u *AppUpsertBulk) Update(set func(*AppUpsert)) *AppUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&AppUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *AppUpsertBulk) SetUpdatedBy(v int) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *AppUpsertBulk) AddUpdatedBy(v int) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateUpdatedBy() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *AppUpsertBulk) ClearUpdatedBy() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsertBulk) SetUpdatedAt(v time.Time) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateUpdatedAt() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *AppUpsertBulk) ClearUpdatedAt() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *AppUpsertBulk) SetName(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateName() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppUpsertBulk) SetKind(v app.Kind) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateKind() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetRedirectURI sets the "redirect_uri" field.
+func (u *AppUpsertBulk) SetRedirectURI(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetRedirectURI(v)
+	})
+}
+
+// UpdateRedirectURI sets the "redirect_uri" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateRedirectURI() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateRedirectURI()
+	})
+}
+
+// ClearRedirectURI clears the value of the "redirect_uri" field.
+func (u *AppUpsertBulk) ClearRedirectURI() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearRedirectURI()
+	})
+}
+
+// SetAppKey sets the "app_key" field.
+func (u *AppUpsertBulk) SetAppKey(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppKey(v)
+	})
+}
+
+// UpdateAppKey sets the "app_key" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateAppKey() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppKey()
+	})
+}
+
+// ClearAppKey clears the value of the "app_key" field.
+func (u *AppUpsertBulk) ClearAppKey() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearAppKey()
+	})
+}
+
+// SetAppSecret sets the "app_secret" field.
+func (u *AppUpsertBulk) SetAppSecret(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppSecret(v)
+	})
+}
+
+// UpdateAppSecret sets the "app_secret" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateAppSecret() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppSecret()
+	})
+}
+
+// ClearAppSecret clears the value of the "app_secret" field.
+func (u *AppUpsertBulk) ClearAppSecret() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearAppSecret()
+	})
+}
+
+// SetScopes sets the "scopes" field.
+func (u *AppUpsertBulk) SetScopes(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetScopes(v)
+	})
+}
+
+// UpdateScopes sets the "scopes" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateScopes() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateScopes()
+	})
+}
+
+// ClearScopes clears the value of the "scopes" field.
+func (u *AppUpsertBulk) ClearScopes() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearScopes()
+	})
+}
+
+// SetTokenValidity sets the "token_validity" field.
+func (u *AppUpsertBulk) SetTokenValidity(v int32) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetTokenValidity(v)
+	})
+}
+
+// AddTokenValidity adds v to the "token_validity" field.
+func (u *AppUpsertBulk) AddTokenValidity(v int32) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddTokenValidity(v)
+	})
+}
+
+// UpdateTokenValidity sets the "token_validity" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateTokenValidity() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateTokenValidity()
+	})
+}
+
+// ClearTokenValidity clears the value of the "token_validity" field.
+func (u *AppUpsertBulk) ClearTokenValidity() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearTokenValidity()
+	})
+}
+
+// SetRefreshTokenValidity sets the "refresh_token_validity" field.
+func (u *AppUpsertBulk) SetRefreshTokenValidity(v int32) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetRefreshTokenValidity(v)
+	})
+}
+
+// AddRefreshTokenValidity adds v to the "refresh_token_validity" field.
+func (u *AppUpsertBulk) AddRefreshTokenValidity(v int32) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddRefreshTokenValidity(v)
+	})
+}
+
+// UpdateRefreshTokenValidity sets the "refresh_token_validity" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateRefreshTokenValidity() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateRefreshTokenValidity()
+	})
+}
+
+// ClearRefreshTokenValidity clears the value of the "refresh_token_validity" field.
+func (u *AppUpsertBulk) ClearRefreshTokenValidity() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearRefreshTokenValidity()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *AppUpsertBulk) SetLogo(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateLogo() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsertBulk) ClearLogo() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogo()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *AppUpsertBulk) SetComments(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateComments() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *AppUpsertBulk) ClearComments() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearComments()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppUpsertBulk) SetStatus(v typex.SimpleStatus) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateStatus() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppUpsertBulk) ClearStatus() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// SetPrivate sets the "private" field.
+func (u *AppUpsertBulk) SetPrivate(v bool) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPrivate(v)
+	})
+}
+
+// UpdatePrivate sets the "private" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdatePrivate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePrivate()
+	})
+}
+
+// ClearPrivate clears the value of the "private" field.
+func (u *AppUpsertBulk) ClearPrivate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPrivate()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *AppUpsertBulk) SetOrgID(v int) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// AddOrgID adds v to the "org_id" field.
+func (u *AppUpsertBulk) AddOrgID(v int) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateOrgID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateOrgID()
+	})
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (u *AppUpsertBulk) ClearOrgID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearOrgID()
+	})
+}
+
+// Exec executes the query.
+func (u *AppUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for AppCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *AppUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

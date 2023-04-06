@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -26,6 +27,7 @@ type OrgCreate struct {
 	config
 	mutation *OrgMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -543,6 +545,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_node = &Org{config: oc.config}
 		_spec = sqlgraph.NewCreateSpec(org.Table, sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = oc.conflict
 	if id, ok := oc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -780,10 +783,719 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Org.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OrgUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (oc *OrgCreate) OnConflict(opts ...sql.ConflictOption) *OrgUpsertOne {
+	oc.conflict = opts
+	return &OrgUpsertOne{
+		create: oc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (oc *OrgCreate) OnConflictColumns(columns ...string) *OrgUpsertOne {
+	oc.conflict = append(oc.conflict, sql.ConflictColumns(columns...))
+	return &OrgUpsertOne{
+		create: oc,
+	}
+}
+
+type (
+	// OrgUpsertOne is the builder for "upsert"-ing
+	//  one Org node.
+	OrgUpsertOne struct {
+		create *OrgCreate
+	}
+
+	// OrgUpsert is the "OnConflict" setter.
+	OrgUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgUpsert) SetUpdatedBy(v int) *OrgUpsert {
+	u.Set(org.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateUpdatedBy() *OrgUpsert {
+	u.SetExcluded(org.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgUpsert) AddUpdatedBy(v int) *OrgUpsert {
+	u.Add(org.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgUpsert) ClearUpdatedBy() *OrgUpsert {
+	u.SetNull(org.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgUpsert) SetUpdatedAt(v time.Time) *OrgUpsert {
+	u.Set(org.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateUpdatedAt() *OrgUpsert {
+	u.SetExcluded(org.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgUpsert) ClearUpdatedAt() *OrgUpsert {
+	u.SetNull(org.FieldUpdatedAt)
+	return u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *OrgUpsert) SetDeletedAt(v time.Time) *OrgUpsert {
+	u.Set(org.FieldDeletedAt, v)
+	return u
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateDeletedAt() *OrgUpsert {
+	u.SetExcluded(org.FieldDeletedAt)
+	return u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *OrgUpsert) ClearDeletedAt() *OrgUpsert {
+	u.SetNull(org.FieldDeletedAt)
+	return u
+}
+
+// SetOwnerID sets the "owner_id" field.
+func (u *OrgUpsert) SetOwnerID(v int) *OrgUpsert {
+	u.Set(org.FieldOwnerID, v)
+	return u
+}
+
+// UpdateOwnerID sets the "owner_id" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateOwnerID() *OrgUpsert {
+	u.SetExcluded(org.FieldOwnerID)
+	return u
+}
+
+// ClearOwnerID clears the value of the "owner_id" field.
+func (u *OrgUpsert) ClearOwnerID() *OrgUpsert {
+	u.SetNull(org.FieldOwnerID)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *OrgUpsert) SetKind(v org.Kind) *OrgUpsert {
+	u.Set(org.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateKind() *OrgUpsert {
+	u.SetExcluded(org.FieldKind)
+	return u
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *OrgUpsert) SetParentID(v int) *OrgUpsert {
+	u.Set(org.FieldParentID, v)
+	return u
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateParentID() *OrgUpsert {
+	u.SetExcluded(org.FieldParentID)
+	return u
+}
+
+// SetDomain sets the "domain" field.
+func (u *OrgUpsert) SetDomain(v string) *OrgUpsert {
+	u.Set(org.FieldDomain, v)
+	return u
+}
+
+// UpdateDomain sets the "domain" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateDomain() *OrgUpsert {
+	u.SetExcluded(org.FieldDomain)
+	return u
+}
+
+// ClearDomain clears the value of the "domain" field.
+func (u *OrgUpsert) ClearDomain() *OrgUpsert {
+	u.SetNull(org.FieldDomain)
+	return u
+}
+
+// SetCode sets the "code" field.
+func (u *OrgUpsert) SetCode(v string) *OrgUpsert {
+	u.Set(org.FieldCode, v)
+	return u
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateCode() *OrgUpsert {
+	u.SetExcluded(org.FieldCode)
+	return u
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *OrgUpsert) ClearCode() *OrgUpsert {
+	u.SetNull(org.FieldCode)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *OrgUpsert) SetName(v string) *OrgUpsert {
+	u.Set(org.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateName() *OrgUpsert {
+	u.SetExcluded(org.FieldName)
+	return u
+}
+
+// SetProfile sets the "profile" field.
+func (u *OrgUpsert) SetProfile(v string) *OrgUpsert {
+	u.Set(org.FieldProfile, v)
+	return u
+}
+
+// UpdateProfile sets the "profile" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateProfile() *OrgUpsert {
+	u.SetExcluded(org.FieldProfile)
+	return u
+}
+
+// ClearProfile clears the value of the "profile" field.
+func (u *OrgUpsert) ClearProfile() *OrgUpsert {
+	u.SetNull(org.FieldProfile)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *OrgUpsert) SetStatus(v typex.SimpleStatus) *OrgUpsert {
+	u.Set(org.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateStatus() *OrgUpsert {
+	u.SetExcluded(org.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *OrgUpsert) ClearStatus() *OrgUpsert {
+	u.SetNull(org.FieldStatus)
+	return u
+}
+
+// SetPath sets the "path" field.
+func (u *OrgUpsert) SetPath(v string) *OrgUpsert {
+	u.Set(org.FieldPath, v)
+	return u
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *OrgUpsert) UpdatePath() *OrgUpsert {
+	u.SetExcluded(org.FieldPath)
+	return u
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *OrgUpsert) ClearPath() *OrgUpsert {
+	u.SetNull(org.FieldPath)
+	return u
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *OrgUpsert) SetDisplaySort(v int32) *OrgUpsert {
+	u.Set(org.FieldDisplaySort, v)
+	return u
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateDisplaySort() *OrgUpsert {
+	u.SetExcluded(org.FieldDisplaySort)
+	return u
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *OrgUpsert) AddDisplaySort(v int32) *OrgUpsert {
+	u.Add(org.FieldDisplaySort, v)
+	return u
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *OrgUpsert) ClearDisplaySort() *OrgUpsert {
+	u.SetNull(org.FieldDisplaySort)
+	return u
+}
+
+// SetCountryCode sets the "country_code" field.
+func (u *OrgUpsert) SetCountryCode(v string) *OrgUpsert {
+	u.Set(org.FieldCountryCode, v)
+	return u
+}
+
+// UpdateCountryCode sets the "country_code" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateCountryCode() *OrgUpsert {
+	u.SetExcluded(org.FieldCountryCode)
+	return u
+}
+
+// ClearCountryCode clears the value of the "country_code" field.
+func (u *OrgUpsert) ClearCountryCode() *OrgUpsert {
+	u.SetNull(org.FieldCountryCode)
+	return u
+}
+
+// SetTimezone sets the "timezone" field.
+func (u *OrgUpsert) SetTimezone(v string) *OrgUpsert {
+	u.Set(org.FieldTimezone, v)
+	return u
+}
+
+// UpdateTimezone sets the "timezone" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateTimezone() *OrgUpsert {
+	u.SetExcluded(org.FieldTimezone)
+	return u
+}
+
+// ClearTimezone clears the value of the "timezone" field.
+func (u *OrgUpsert) ClearTimezone() *OrgUpsert {
+	u.SetNull(org.FieldTimezone)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(org.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *OrgUpsertOne) UpdateNewValues() *OrgUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(org.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(org.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(org.FieldCreatedAt)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *OrgUpsertOne) Ignore() *OrgUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OrgUpsertOne) DoNothing() *OrgUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OrgCreate.OnConflict
+// documentation for more info.
+func (u *OrgUpsertOne) Update(set func(*OrgUpsert)) *OrgUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OrgUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgUpsertOne) SetUpdatedBy(v int) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgUpsertOne) AddUpdatedBy(v int) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateUpdatedBy() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgUpsertOne) ClearUpdatedBy() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgUpsertOne) SetUpdatedAt(v time.Time) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateUpdatedAt() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgUpsertOne) ClearUpdatedAt() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *OrgUpsertOne) SetDeletedAt(v time.Time) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateDeletedAt() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *OrgUpsertOne) ClearDeletedAt() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDeletedAt()
+	})
+}
+
+// SetOwnerID sets the "owner_id" field.
+func (u *OrgUpsertOne) SetOwnerID(v int) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetOwnerID(v)
+	})
+}
+
+// UpdateOwnerID sets the "owner_id" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateOwnerID() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateOwnerID()
+	})
+}
+
+// ClearOwnerID clears the value of the "owner_id" field.
+func (u *OrgUpsertOne) ClearOwnerID() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearOwnerID()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *OrgUpsertOne) SetKind(v org.Kind) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateKind() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *OrgUpsertOne) SetParentID(v int) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetParentID(v)
+	})
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateParentID() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateParentID()
+	})
+}
+
+// SetDomain sets the "domain" field.
+func (u *OrgUpsertOne) SetDomain(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDomain(v)
+	})
+}
+
+// UpdateDomain sets the "domain" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDomain()
+	})
+}
+
+// ClearDomain clears the value of the "domain" field.
+func (u *OrgUpsertOne) ClearDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDomain()
+	})
+}
+
+// SetCode sets the "code" field.
+func (u *OrgUpsertOne) SetCode(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCode(v)
+	})
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateCode() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCode()
+	})
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *OrgUpsertOne) ClearCode() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCode()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *OrgUpsertOne) SetName(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateName() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetProfile sets the "profile" field.
+func (u *OrgUpsertOne) SetProfile(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetProfile(v)
+	})
+}
+
+// UpdateProfile sets the "profile" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateProfile() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateProfile()
+	})
+}
+
+// ClearProfile clears the value of the "profile" field.
+func (u *OrgUpsertOne) ClearProfile() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearProfile()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *OrgUpsertOne) SetStatus(v typex.SimpleStatus) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateStatus() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *OrgUpsertOne) ClearStatus() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *OrgUpsertOne) SetPath(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdatePath() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *OrgUpsertOne) ClearPath() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearPath()
+	})
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *OrgUpsertOne) SetDisplaySort(v int32) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDisplaySort(v)
+	})
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *OrgUpsertOne) AddDisplaySort(v int32) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.AddDisplaySort(v)
+	})
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateDisplaySort() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDisplaySort()
+	})
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *OrgUpsertOne) ClearDisplaySort() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDisplaySort()
+	})
+}
+
+// SetCountryCode sets the "country_code" field.
+func (u *OrgUpsertOne) SetCountryCode(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCountryCode(v)
+	})
+}
+
+// UpdateCountryCode sets the "country_code" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateCountryCode() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCountryCode()
+	})
+}
+
+// ClearCountryCode clears the value of the "country_code" field.
+func (u *OrgUpsertOne) ClearCountryCode() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCountryCode()
+	})
+}
+
+// SetTimezone sets the "timezone" field.
+func (u *OrgUpsertOne) SetTimezone(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetTimezone(v)
+	})
+}
+
+// UpdateTimezone sets the "timezone" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateTimezone() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateTimezone()
+	})
+}
+
+// ClearTimezone clears the value of the "timezone" field.
+func (u *OrgUpsertOne) ClearTimezone() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearTimezone()
+	})
+}
+
+// Exec executes the query.
+func (u *OrgUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OrgCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OrgUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *OrgUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *OrgUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // OrgCreateBulk is the builder for creating many Org entities in bulk.
 type OrgCreateBulk struct {
 	config
 	builders []*OrgCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Org entities in the database.
@@ -810,6 +1522,7 @@ func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
 					_, err = mutators[i+1].Mutate(root, ocb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = ocb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, ocb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -860,6 +1573,431 @@ func (ocb *OrgCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (ocb *OrgCreateBulk) ExecX(ctx context.Context) {
 	if err := ocb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Org.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OrgUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (ocb *OrgCreateBulk) OnConflict(opts ...sql.ConflictOption) *OrgUpsertBulk {
+	ocb.conflict = opts
+	return &OrgUpsertBulk{
+		create: ocb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ocb *OrgCreateBulk) OnConflictColumns(columns ...string) *OrgUpsertBulk {
+	ocb.conflict = append(ocb.conflict, sql.ConflictColumns(columns...))
+	return &OrgUpsertBulk{
+		create: ocb,
+	}
+}
+
+// OrgUpsertBulk is the builder for "upsert"-ing
+// a bulk of Org nodes.
+type OrgUpsertBulk struct {
+	create *OrgCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(org.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *OrgUpsertBulk) UpdateNewValues() *OrgUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(org.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(org.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(org.FieldCreatedAt)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Org.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *OrgUpsertBulk) Ignore() *OrgUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OrgUpsertBulk) DoNothing() *OrgUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OrgCreateBulk.OnConflict
+// documentation for more info.
+func (u *OrgUpsertBulk) Update(set func(*OrgUpsert)) *OrgUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OrgUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *OrgUpsertBulk) SetUpdatedBy(v int) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *OrgUpsertBulk) AddUpdatedBy(v int) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateUpdatedBy() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *OrgUpsertBulk) ClearUpdatedBy() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *OrgUpsertBulk) SetUpdatedAt(v time.Time) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateUpdatedAt() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *OrgUpsertBulk) ClearUpdatedAt() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *OrgUpsertBulk) SetDeletedAt(v time.Time) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateDeletedAt() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *OrgUpsertBulk) ClearDeletedAt() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDeletedAt()
+	})
+}
+
+// SetOwnerID sets the "owner_id" field.
+func (u *OrgUpsertBulk) SetOwnerID(v int) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetOwnerID(v)
+	})
+}
+
+// UpdateOwnerID sets the "owner_id" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateOwnerID() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateOwnerID()
+	})
+}
+
+// ClearOwnerID clears the value of the "owner_id" field.
+func (u *OrgUpsertBulk) ClearOwnerID() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearOwnerID()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *OrgUpsertBulk) SetKind(v org.Kind) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateKind() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateKind()
+	})
+}
+
+// SetParentID sets the "parent_id" field.
+func (u *OrgUpsertBulk) SetParentID(v int) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetParentID(v)
+	})
+}
+
+// UpdateParentID sets the "parent_id" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateParentID() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateParentID()
+	})
+}
+
+// SetDomain sets the "domain" field.
+func (u *OrgUpsertBulk) SetDomain(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDomain(v)
+	})
+}
+
+// UpdateDomain sets the "domain" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDomain()
+	})
+}
+
+// ClearDomain clears the value of the "domain" field.
+func (u *OrgUpsertBulk) ClearDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDomain()
+	})
+}
+
+// SetCode sets the "code" field.
+func (u *OrgUpsertBulk) SetCode(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCode(v)
+	})
+}
+
+// UpdateCode sets the "code" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateCode() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCode()
+	})
+}
+
+// ClearCode clears the value of the "code" field.
+func (u *OrgUpsertBulk) ClearCode() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCode()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *OrgUpsertBulk) SetName(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateName() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateName()
+	})
+}
+
+// SetProfile sets the "profile" field.
+func (u *OrgUpsertBulk) SetProfile(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetProfile(v)
+	})
+}
+
+// UpdateProfile sets the "profile" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateProfile() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateProfile()
+	})
+}
+
+// ClearProfile clears the value of the "profile" field.
+func (u *OrgUpsertBulk) ClearProfile() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearProfile()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *OrgUpsertBulk) SetStatus(v typex.SimpleStatus) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateStatus() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *OrgUpsertBulk) ClearStatus() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearStatus()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *OrgUpsertBulk) SetPath(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdatePath() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *OrgUpsertBulk) ClearPath() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearPath()
+	})
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (u *OrgUpsertBulk) SetDisplaySort(v int32) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetDisplaySort(v)
+	})
+}
+
+// AddDisplaySort adds v to the "display_sort" field.
+func (u *OrgUpsertBulk) AddDisplaySort(v int32) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.AddDisplaySort(v)
+	})
+}
+
+// UpdateDisplaySort sets the "display_sort" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateDisplaySort() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateDisplaySort()
+	})
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (u *OrgUpsertBulk) ClearDisplaySort() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearDisplaySort()
+	})
+}
+
+// SetCountryCode sets the "country_code" field.
+func (u *OrgUpsertBulk) SetCountryCode(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCountryCode(v)
+	})
+}
+
+// UpdateCountryCode sets the "country_code" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateCountryCode() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCountryCode()
+	})
+}
+
+// ClearCountryCode clears the value of the "country_code" field.
+func (u *OrgUpsertBulk) ClearCountryCode() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCountryCode()
+	})
+}
+
+// SetTimezone sets the "timezone" field.
+func (u *OrgUpsertBulk) SetTimezone(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetTimezone(v)
+	})
+}
+
+// UpdateTimezone sets the "timezone" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateTimezone() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateTimezone()
+	})
+}
+
+// ClearTimezone clears the value of the "timezone" field.
+func (u *OrgUpsertBulk) ClearTimezone() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearTimezone()
+	})
+}
+
+// Exec executes the query.
+func (u *OrgUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OrgCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OrgUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

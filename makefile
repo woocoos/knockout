@@ -37,3 +37,7 @@ gengqlfile:
 	go run codegen/gqlgen/allinone.go
 genoas:
 	go run codegen/oasgen/oasgen.go
+
+.PHONY: cli-gql-actions
+cli-gql-actions:
+	go run cmd/tools/main.go res gql-action -a resource

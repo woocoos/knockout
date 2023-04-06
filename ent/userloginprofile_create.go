@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
@@ -20,6 +21,7 @@ type UserLoginProfileCreate struct {
 	config
 	mutation *UserLoginProfileMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreatedBy sets the "created_by" field.
@@ -309,6 +311,7 @@ func (ulpc *UserLoginProfileCreate) createSpec() (*UserLoginProfile, *sqlgraph.C
 		_node = &UserLoginProfile{config: ulpc.config}
 		_spec = sqlgraph.NewCreateSpec(userloginprofile.Table, sqlgraph.NewFieldSpec(userloginprofile.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = ulpc.conflict
 	if id, ok := ulpc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -385,10 +388,566 @@ func (ulpc *UserLoginProfileCreate) createSpec() (*UserLoginProfile, *sqlgraph.C
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserLoginProfile.Create().
+//		SetCreatedBy(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserLoginProfileUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (ulpc *UserLoginProfileCreate) OnConflict(opts ...sql.ConflictOption) *UserLoginProfileUpsertOne {
+	ulpc.conflict = opts
+	return &UserLoginProfileUpsertOne{
+		create: ulpc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ulpc *UserLoginProfileCreate) OnConflictColumns(columns ...string) *UserLoginProfileUpsertOne {
+	ulpc.conflict = append(ulpc.conflict, sql.ConflictColumns(columns...))
+	return &UserLoginProfileUpsertOne{
+		create: ulpc,
+	}
+}
+
+type (
+	// UserLoginProfileUpsertOne is the builder for "upsert"-ing
+	//  one UserLoginProfile node.
+	UserLoginProfileUpsertOne struct {
+		create *UserLoginProfileCreate
+	}
+
+	// UserLoginProfileUpsert is the "OnConflict" setter.
+	UserLoginProfileUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserLoginProfileUpsert) SetUpdatedBy(v int) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldUpdatedBy, v)
+	return u
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateUpdatedBy() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldUpdatedBy)
+	return u
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserLoginProfileUpsert) AddUpdatedBy(v int) *UserLoginProfileUpsert {
+	u.Add(userloginprofile.FieldUpdatedBy, v)
+	return u
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserLoginProfileUpsert) ClearUpdatedBy() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldUpdatedBy)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserLoginProfileUpsert) SetUpdatedAt(v time.Time) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateUpdatedAt() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldUpdatedAt)
+	return u
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserLoginProfileUpsert) ClearUpdatedAt() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldUpdatedAt)
+	return u
+}
+
+// SetLastLoginIP sets the "last_login_ip" field.
+func (u *UserLoginProfileUpsert) SetLastLoginIP(v string) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldLastLoginIP, v)
+	return u
+}
+
+// UpdateLastLoginIP sets the "last_login_ip" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateLastLoginIP() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldLastLoginIP)
+	return u
+}
+
+// ClearLastLoginIP clears the value of the "last_login_ip" field.
+func (u *UserLoginProfileUpsert) ClearLastLoginIP() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldLastLoginIP)
+	return u
+}
+
+// SetLastLoginAt sets the "last_login_at" field.
+func (u *UserLoginProfileUpsert) SetLastLoginAt(v time.Time) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldLastLoginAt, v)
+	return u
+}
+
+// UpdateLastLoginAt sets the "last_login_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateLastLoginAt() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldLastLoginAt)
+	return u
+}
+
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (u *UserLoginProfileUpsert) ClearLastLoginAt() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldLastLoginAt)
+	return u
+}
+
+// SetCanLogin sets the "can_login" field.
+func (u *UserLoginProfileUpsert) SetCanLogin(v bool) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldCanLogin, v)
+	return u
+}
+
+// UpdateCanLogin sets the "can_login" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateCanLogin() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldCanLogin)
+	return u
+}
+
+// ClearCanLogin clears the value of the "can_login" field.
+func (u *UserLoginProfileUpsert) ClearCanLogin() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldCanLogin)
+	return u
+}
+
+// SetSetKind sets the "set_kind" field.
+func (u *UserLoginProfileUpsert) SetSetKind(v userloginprofile.SetKind) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldSetKind, v)
+	return u
+}
+
+// UpdateSetKind sets the "set_kind" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateSetKind() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldSetKind)
+	return u
+}
+
+// SetPasswordReset sets the "password_reset" field.
+func (u *UserLoginProfileUpsert) SetPasswordReset(v bool) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldPasswordReset, v)
+	return u
+}
+
+// UpdatePasswordReset sets the "password_reset" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdatePasswordReset() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldPasswordReset)
+	return u
+}
+
+// ClearPasswordReset clears the value of the "password_reset" field.
+func (u *UserLoginProfileUpsert) ClearPasswordReset() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldPasswordReset)
+	return u
+}
+
+// SetVerifyDevice sets the "verify_device" field.
+func (u *UserLoginProfileUpsert) SetVerifyDevice(v bool) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldVerifyDevice, v)
+	return u
+}
+
+// UpdateVerifyDevice sets the "verify_device" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateVerifyDevice() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldVerifyDevice)
+	return u
+}
+
+// SetMfaEnabled sets the "mfa_enabled" field.
+func (u *UserLoginProfileUpsert) SetMfaEnabled(v bool) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldMfaEnabled, v)
+	return u
+}
+
+// UpdateMfaEnabled sets the "mfa_enabled" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateMfaEnabled() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldMfaEnabled)
+	return u
+}
+
+// ClearMfaEnabled clears the value of the "mfa_enabled" field.
+func (u *UserLoginProfileUpsert) ClearMfaEnabled() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldMfaEnabled)
+	return u
+}
+
+// SetMfaSecret sets the "mfa_secret" field.
+func (u *UserLoginProfileUpsert) SetMfaSecret(v string) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldMfaSecret, v)
+	return u
+}
+
+// UpdateMfaSecret sets the "mfa_secret" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateMfaSecret() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldMfaSecret)
+	return u
+}
+
+// ClearMfaSecret clears the value of the "mfa_secret" field.
+func (u *UserLoginProfileUpsert) ClearMfaSecret() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldMfaSecret)
+	return u
+}
+
+// SetMfaStatus sets the "mfa_status" field.
+func (u *UserLoginProfileUpsert) SetMfaStatus(v typex.SimpleStatus) *UserLoginProfileUpsert {
+	u.Set(userloginprofile.FieldMfaStatus, v)
+	return u
+}
+
+// UpdateMfaStatus sets the "mfa_status" field to the value that was provided on create.
+func (u *UserLoginProfileUpsert) UpdateMfaStatus() *UserLoginProfileUpsert {
+	u.SetExcluded(userloginprofile.FieldMfaStatus)
+	return u
+}
+
+// ClearMfaStatus clears the value of the "mfa_status" field.
+func (u *UserLoginProfileUpsert) ClearMfaStatus() *UserLoginProfileUpsert {
+	u.SetNull(userloginprofile.FieldMfaStatus)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(userloginprofile.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserLoginProfileUpsertOne) UpdateNewValues() *UserLoginProfileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(userloginprofile.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatedBy(); exists {
+			s.SetIgnore(userloginprofile.FieldCreatedBy)
+		}
+		if _, exists := u.create.mutation.CreatedAt(); exists {
+			s.SetIgnore(userloginprofile.FieldCreatedAt)
+		}
+		if _, exists := u.create.mutation.UserID(); exists {
+			s.SetIgnore(userloginprofile.FieldUserID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *UserLoginProfileUpsertOne) Ignore() *UserLoginProfileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserLoginProfileUpsertOne) DoNothing() *UserLoginProfileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserLoginProfileCreate.OnConflict
+// documentation for more info.
+func (u *UserLoginProfileUpsertOne) Update(set func(*UserLoginProfileUpsert)) *UserLoginProfileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserLoginProfileUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserLoginProfileUpsertOne) SetUpdatedBy(v int) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserLoginProfileUpsertOne) AddUpdatedBy(v int) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateUpdatedBy() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserLoginProfileUpsertOne) ClearUpdatedBy() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserLoginProfileUpsertOne) SetUpdatedAt(v time.Time) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateUpdatedAt() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserLoginProfileUpsertOne) ClearUpdatedAt() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetLastLoginIP sets the "last_login_ip" field.
+func (u *UserLoginProfileUpsertOne) SetLastLoginIP(v string) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetLastLoginIP(v)
+	})
+}
+
+// UpdateLastLoginIP sets the "last_login_ip" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateLastLoginIP() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateLastLoginIP()
+	})
+}
+
+// ClearLastLoginIP clears the value of the "last_login_ip" field.
+func (u *UserLoginProfileUpsertOne) ClearLastLoginIP() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearLastLoginIP()
+	})
+}
+
+// SetLastLoginAt sets the "last_login_at" field.
+func (u *UserLoginProfileUpsertOne) SetLastLoginAt(v time.Time) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetLastLoginAt(v)
+	})
+}
+
+// UpdateLastLoginAt sets the "last_login_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateLastLoginAt() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateLastLoginAt()
+	})
+}
+
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (u *UserLoginProfileUpsertOne) ClearLastLoginAt() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearLastLoginAt()
+	})
+}
+
+// SetCanLogin sets the "can_login" field.
+func (u *UserLoginProfileUpsertOne) SetCanLogin(v bool) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetCanLogin(v)
+	})
+}
+
+// UpdateCanLogin sets the "can_login" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateCanLogin() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateCanLogin()
+	})
+}
+
+// ClearCanLogin clears the value of the "can_login" field.
+func (u *UserLoginProfileUpsertOne) ClearCanLogin() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearCanLogin()
+	})
+}
+
+// SetSetKind sets the "set_kind" field.
+func (u *UserLoginProfileUpsertOne) SetSetKind(v userloginprofile.SetKind) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetSetKind(v)
+	})
+}
+
+// UpdateSetKind sets the "set_kind" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateSetKind() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateSetKind()
+	})
+}
+
+// SetPasswordReset sets the "password_reset" field.
+func (u *UserLoginProfileUpsertOne) SetPasswordReset(v bool) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetPasswordReset(v)
+	})
+}
+
+// UpdatePasswordReset sets the "password_reset" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdatePasswordReset() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdatePasswordReset()
+	})
+}
+
+// ClearPasswordReset clears the value of the "password_reset" field.
+func (u *UserLoginProfileUpsertOne) ClearPasswordReset() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearPasswordReset()
+	})
+}
+
+// SetVerifyDevice sets the "verify_device" field.
+func (u *UserLoginProfileUpsertOne) SetVerifyDevice(v bool) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetVerifyDevice(v)
+	})
+}
+
+// UpdateVerifyDevice sets the "verify_device" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateVerifyDevice() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateVerifyDevice()
+	})
+}
+
+// SetMfaEnabled sets the "mfa_enabled" field.
+func (u *UserLoginProfileUpsertOne) SetMfaEnabled(v bool) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaEnabled(v)
+	})
+}
+
+// UpdateMfaEnabled sets the "mfa_enabled" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateMfaEnabled() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaEnabled()
+	})
+}
+
+// ClearMfaEnabled clears the value of the "mfa_enabled" field.
+func (u *UserLoginProfileUpsertOne) ClearMfaEnabled() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaEnabled()
+	})
+}
+
+// SetMfaSecret sets the "mfa_secret" field.
+func (u *UserLoginProfileUpsertOne) SetMfaSecret(v string) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaSecret(v)
+	})
+}
+
+// UpdateMfaSecret sets the "mfa_secret" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateMfaSecret() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaSecret()
+	})
+}
+
+// ClearMfaSecret clears the value of the "mfa_secret" field.
+func (u *UserLoginProfileUpsertOne) ClearMfaSecret() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaSecret()
+	})
+}
+
+// SetMfaStatus sets the "mfa_status" field.
+func (u *UserLoginProfileUpsertOne) SetMfaStatus(v typex.SimpleStatus) *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaStatus(v)
+	})
+}
+
+// UpdateMfaStatus sets the "mfa_status" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertOne) UpdateMfaStatus() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaStatus()
+	})
+}
+
+// ClearMfaStatus clears the value of the "mfa_status" field.
+func (u *UserLoginProfileUpsertOne) ClearMfaStatus() *UserLoginProfileUpsertOne {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserLoginProfileUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserLoginProfileCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserLoginProfileUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *UserLoginProfileUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *UserLoginProfileUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // UserLoginProfileCreateBulk is the builder for creating many UserLoginProfile entities in bulk.
 type UserLoginProfileCreateBulk struct {
 	config
 	builders []*UserLoginProfileCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the UserLoginProfile entities in the database.
@@ -415,6 +974,7 @@ func (ulpcb *UserLoginProfileCreateBulk) Save(ctx context.Context) ([]*UserLogin
 					_, err = mutators[i+1].Mutate(root, ulpcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = ulpcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, ulpcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -465,6 +1025,350 @@ func (ulpcb *UserLoginProfileCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (ulpcb *UserLoginProfileCreateBulk) ExecX(ctx context.Context) {
 	if err := ulpcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.UserLoginProfile.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.UserLoginProfileUpsert) {
+//			SetCreatedBy(v+v).
+//		}).
+//		Exec(ctx)
+func (ulpcb *UserLoginProfileCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserLoginProfileUpsertBulk {
+	ulpcb.conflict = opts
+	return &UserLoginProfileUpsertBulk{
+		create: ulpcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ulpcb *UserLoginProfileCreateBulk) OnConflictColumns(columns ...string) *UserLoginProfileUpsertBulk {
+	ulpcb.conflict = append(ulpcb.conflict, sql.ConflictColumns(columns...))
+	return &UserLoginProfileUpsertBulk{
+		create: ulpcb,
+	}
+}
+
+// UserLoginProfileUpsertBulk is the builder for "upsert"-ing
+// a bulk of UserLoginProfile nodes.
+type UserLoginProfileUpsertBulk struct {
+	create *UserLoginProfileCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(userloginprofile.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *UserLoginProfileUpsertBulk) UpdateNewValues() *UserLoginProfileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(userloginprofile.FieldID)
+			}
+			if _, exists := b.mutation.CreatedBy(); exists {
+				s.SetIgnore(userloginprofile.FieldCreatedBy)
+			}
+			if _, exists := b.mutation.CreatedAt(); exists {
+				s.SetIgnore(userloginprofile.FieldCreatedAt)
+			}
+			if _, exists := b.mutation.UserID(); exists {
+				s.SetIgnore(userloginprofile.FieldUserID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.UserLoginProfile.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *UserLoginProfileUpsertBulk) Ignore() *UserLoginProfileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *UserLoginProfileUpsertBulk) DoNothing() *UserLoginProfileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the UserLoginProfileCreateBulk.OnConflict
+// documentation for more info.
+func (u *UserLoginProfileUpsertBulk) Update(set func(*UserLoginProfileUpsert)) *UserLoginProfileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&UserLoginProfileUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (u *UserLoginProfileUpsertBulk) SetUpdatedBy(v int) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetUpdatedBy(v)
+	})
+}
+
+// AddUpdatedBy adds v to the "updated_by" field.
+func (u *UserLoginProfileUpsertBulk) AddUpdatedBy(v int) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.AddUpdatedBy(v)
+	})
+}
+
+// UpdateUpdatedBy sets the "updated_by" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateUpdatedBy() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateUpdatedBy()
+	})
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (u *UserLoginProfileUpsertBulk) ClearUpdatedBy() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearUpdatedBy()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *UserLoginProfileUpsertBulk) SetUpdatedAt(v time.Time) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateUpdatedAt() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateUpdatedAt()
+	})
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (u *UserLoginProfileUpsertBulk) ClearUpdatedAt() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearUpdatedAt()
+	})
+}
+
+// SetLastLoginIP sets the "last_login_ip" field.
+func (u *UserLoginProfileUpsertBulk) SetLastLoginIP(v string) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetLastLoginIP(v)
+	})
+}
+
+// UpdateLastLoginIP sets the "last_login_ip" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateLastLoginIP() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateLastLoginIP()
+	})
+}
+
+// ClearLastLoginIP clears the value of the "last_login_ip" field.
+func (u *UserLoginProfileUpsertBulk) ClearLastLoginIP() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearLastLoginIP()
+	})
+}
+
+// SetLastLoginAt sets the "last_login_at" field.
+func (u *UserLoginProfileUpsertBulk) SetLastLoginAt(v time.Time) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetLastLoginAt(v)
+	})
+}
+
+// UpdateLastLoginAt sets the "last_login_at" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateLastLoginAt() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateLastLoginAt()
+	})
+}
+
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (u *UserLoginProfileUpsertBulk) ClearLastLoginAt() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearLastLoginAt()
+	})
+}
+
+// SetCanLogin sets the "can_login" field.
+func (u *UserLoginProfileUpsertBulk) SetCanLogin(v bool) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetCanLogin(v)
+	})
+}
+
+// UpdateCanLogin sets the "can_login" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateCanLogin() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateCanLogin()
+	})
+}
+
+// ClearCanLogin clears the value of the "can_login" field.
+func (u *UserLoginProfileUpsertBulk) ClearCanLogin() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearCanLogin()
+	})
+}
+
+// SetSetKind sets the "set_kind" field.
+func (u *UserLoginProfileUpsertBulk) SetSetKind(v userloginprofile.SetKind) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetSetKind(v)
+	})
+}
+
+// UpdateSetKind sets the "set_kind" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateSetKind() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateSetKind()
+	})
+}
+
+// SetPasswordReset sets the "password_reset" field.
+func (u *UserLoginProfileUpsertBulk) SetPasswordReset(v bool) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetPasswordReset(v)
+	})
+}
+
+// UpdatePasswordReset sets the "password_reset" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdatePasswordReset() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdatePasswordReset()
+	})
+}
+
+// ClearPasswordReset clears the value of the "password_reset" field.
+func (u *UserLoginProfileUpsertBulk) ClearPasswordReset() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearPasswordReset()
+	})
+}
+
+// SetVerifyDevice sets the "verify_device" field.
+func (u *UserLoginProfileUpsertBulk) SetVerifyDevice(v bool) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetVerifyDevice(v)
+	})
+}
+
+// UpdateVerifyDevice sets the "verify_device" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateVerifyDevice() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateVerifyDevice()
+	})
+}
+
+// SetMfaEnabled sets the "mfa_enabled" field.
+func (u *UserLoginProfileUpsertBulk) SetMfaEnabled(v bool) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaEnabled(v)
+	})
+}
+
+// UpdateMfaEnabled sets the "mfa_enabled" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateMfaEnabled() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaEnabled()
+	})
+}
+
+// ClearMfaEnabled clears the value of the "mfa_enabled" field.
+func (u *UserLoginProfileUpsertBulk) ClearMfaEnabled() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaEnabled()
+	})
+}
+
+// SetMfaSecret sets the "mfa_secret" field.
+func (u *UserLoginProfileUpsertBulk) SetMfaSecret(v string) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaSecret(v)
+	})
+}
+
+// UpdateMfaSecret sets the "mfa_secret" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateMfaSecret() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaSecret()
+	})
+}
+
+// ClearMfaSecret clears the value of the "mfa_secret" field.
+func (u *UserLoginProfileUpsertBulk) ClearMfaSecret() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaSecret()
+	})
+}
+
+// SetMfaStatus sets the "mfa_status" field.
+func (u *UserLoginProfileUpsertBulk) SetMfaStatus(v typex.SimpleStatus) *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.SetMfaStatus(v)
+	})
+}
+
+// UpdateMfaStatus sets the "mfa_status" field to the value that was provided on create.
+func (u *UserLoginProfileUpsertBulk) UpdateMfaStatus() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.UpdateMfaStatus()
+	})
+}
+
+// ClearMfaStatus clears the value of the "mfa_status" field.
+func (u *UserLoginProfileUpsertBulk) ClearMfaStatus() *UserLoginProfileUpsertBulk {
+	return u.Update(func(s *UserLoginProfileUpsert) {
+		s.ClearMfaStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *UserLoginProfileUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserLoginProfileCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for UserLoginProfileCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *UserLoginProfileUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

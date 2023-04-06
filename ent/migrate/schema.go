@@ -63,6 +63,13 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appaction_app_id_name",
+				Unique:  true,
+				Columns: []*schema.Column{AppActionColumns[9], AppActionColumns[5]},
+			},
+		},
 	}
 	// AppMenuColumns holds the columns for the "app_menu" table.
 	AppMenuColumns = []*schema.Column{
