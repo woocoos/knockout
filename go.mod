@@ -21,7 +21,7 @@ require (
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230403084811-972005040ae2
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230403090225-b46581e3d5c0
+	github.com/woocoos/entco v0.0.0-20230403161739-24b677f51f39
 	golang.org/x/sync v0.1.0
 )
 

@@ -13,7 +13,7 @@ linux:
 	GOOS=linux go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)-linux ./cmd/main.go
 	$(if $(shell command -v upx), upx $(BUILD_NAME)-linux)
 ent-new:
-	GOWORK=off go run -mod=mod entgo.io/ent/cmd/ent --target graph/entgen/schema new $(NAME)
+	GOWORK=off go run -mod=mod entgo.io/ent/cmd/ent --target codegen/entgen/schema new $(NAME)
 migration-init:
 	GOWORK=off go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/versioned-migration ./ent/schema
 migration:
