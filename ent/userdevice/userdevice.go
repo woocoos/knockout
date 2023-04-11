@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/woocoos/entco/schemax/typex"
 )
@@ -114,6 +116,93 @@ func StatusValidator(s typex.SimpleStatus) error {
 	default:
 		return fmt.Errorf("userdevice: invalid enum value for status field: %q", s)
 	}
+}
+
+// Order defines the ordering method for the UserDevice queries.
+type Order func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedBy orders the results by the created_by field.
+func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedBy orders the results by the updated_by field.
+func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+}
+
+// ByDeviceUID orders the results by the device_uid field.
+func ByDeviceUID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDeviceUID, opts...).ToFunc()
+}
+
+// ByDeviceName orders the results by the device_name field.
+func ByDeviceName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
+}
+
+// BySystemName orders the results by the system_name field.
+func BySystemName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldSystemName, opts...).ToFunc()
+}
+
+// BySystemVersion orders the results by the system_version field.
+func BySystemVersion(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldSystemVersion, opts...).ToFunc()
+}
+
+// ByAppVersion orders the results by the app_version field.
+func ByAppVersion(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldAppVersion, opts...).ToFunc()
+}
+
+// ByDeviceModel orders the results by the device_model field.
+func ByDeviceModel(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldDeviceModel, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByComments orders the results by the comments field.
+func ByComments(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldComments, opts...).ToFunc()
+}
+
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+	)
 }
 
 var (

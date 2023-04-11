@@ -11,8 +11,20 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/appres"
+	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
+	"github.com/woocoos/knockout/ent/useridentity"
+	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/ent/userpassword"
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
@@ -27,9 +39,14 @@ func (a *AppQuery) CollectFields(ctx context.Context, satisfies ...string) (*App
 	return a, nil
 }
 
-func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(app.Columns))
+		selectedFields = []string{app.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "menus":
 			var (
@@ -399,7 +416,92 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			a.WithNamedOrgs(alias, func(wq *OrgQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[app.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, app.FieldCreatedBy)
+				fieldSeen[app.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[app.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, app.FieldCreatedAt)
+				fieldSeen[app.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[app.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, app.FieldUpdatedBy)
+				fieldSeen[app.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[app.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, app.FieldUpdatedAt)
+				fieldSeen[app.FieldUpdatedAt] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[app.FieldName]; !ok {
+				selectedFields = append(selectedFields, app.FieldName)
+				fieldSeen[app.FieldName] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[app.FieldCode]; !ok {
+				selectedFields = append(selectedFields, app.FieldCode)
+				fieldSeen[app.FieldCode] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[app.FieldKind]; !ok {
+				selectedFields = append(selectedFields, app.FieldKind)
+				fieldSeen[app.FieldKind] = struct{}{}
+			}
+		case "redirectURI":
+			if _, ok := fieldSeen[app.FieldRedirectURI]; !ok {
+				selectedFields = append(selectedFields, app.FieldRedirectURI)
+				fieldSeen[app.FieldRedirectURI] = struct{}{}
+			}
+		case "appKey":
+			if _, ok := fieldSeen[app.FieldAppKey]; !ok {
+				selectedFields = append(selectedFields, app.FieldAppKey)
+				fieldSeen[app.FieldAppKey] = struct{}{}
+			}
+		case "appSecret":
+			if _, ok := fieldSeen[app.FieldAppSecret]; !ok {
+				selectedFields = append(selectedFields, app.FieldAppSecret)
+				fieldSeen[app.FieldAppSecret] = struct{}{}
+			}
+		case "scopes":
+			if _, ok := fieldSeen[app.FieldScopes]; !ok {
+				selectedFields = append(selectedFields, app.FieldScopes)
+				fieldSeen[app.FieldScopes] = struct{}{}
+			}
+		case "tokenValidity":
+			if _, ok := fieldSeen[app.FieldTokenValidity]; !ok {
+				selectedFields = append(selectedFields, app.FieldTokenValidity)
+				fieldSeen[app.FieldTokenValidity] = struct{}{}
+			}
+		case "refreshTokenValidity":
+			if _, ok := fieldSeen[app.FieldRefreshTokenValidity]; !ok {
+				selectedFields = append(selectedFields, app.FieldRefreshTokenValidity)
+				fieldSeen[app.FieldRefreshTokenValidity] = struct{}{}
+			}
+		case "logo":
+			if _, ok := fieldSeen[app.FieldLogo]; !ok {
+				selectedFields = append(selectedFields, app.FieldLogo)
+				fieldSeen[app.FieldLogo] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[app.FieldComments]; !ok {
+				selectedFields = append(selectedFields, app.FieldComments)
+				fieldSeen[app.FieldComments] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[app.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, app.FieldStatus)
+				fieldSeen[app.FieldStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		a.Select(selectedFields...)
 	}
 	return nil
 }
@@ -467,9 +569,14 @@ func (aa *AppActionQuery) CollectFields(ctx context.Context, satisfies ...string
 	return aa, nil
 }
 
-func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(appaction.Columns))
+		selectedFields = []string{appaction.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "app":
 			var (
@@ -481,6 +588,10 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				return err
 			}
 			aa.withApp = query
+			if _, ok := fieldSeen[appaction.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldAppID)
+				fieldSeen[appaction.FieldAppID] = struct{}{}
+			}
 		case "menus":
 			var (
 				alias = field.Alias
@@ -505,7 +616,57 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 			aa.WithNamedResources(alias, func(wq *AppResQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[appaction.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldCreatedBy)
+				fieldSeen[appaction.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[appaction.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldCreatedAt)
+				fieldSeen[appaction.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[appaction.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldUpdatedBy)
+				fieldSeen[appaction.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[appaction.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldUpdatedAt)
+				fieldSeen[appaction.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[appaction.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldAppID)
+				fieldSeen[appaction.FieldAppID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[appaction.FieldName]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldName)
+				fieldSeen[appaction.FieldName] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[appaction.FieldKind]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldKind)
+				fieldSeen[appaction.FieldKind] = struct{}{}
+			}
+		case "method":
+			if _, ok := fieldSeen[appaction.FieldMethod]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldMethod)
+				fieldSeen[appaction.FieldMethod] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[appaction.FieldComments]; !ok {
+				selectedFields = append(selectedFields, appaction.FieldComments)
+				fieldSeen[appaction.FieldComments] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		aa.Select(selectedFields...)
 	}
 	return nil
 }
@@ -573,9 +734,14 @@ func (am *AppMenuQuery) CollectFields(ctx context.Context, satisfies ...string) 
 	return am, nil
 }
 
-func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(appmenu.Columns))
+		selectedFields = []string{appmenu.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "app":
 			var (
@@ -587,6 +753,10 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				return err
 			}
 			am.withApp = query
+			if _, ok := fieldSeen[appmenu.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldAppID)
+				fieldSeen[appmenu.FieldAppID] = struct{}{}
+			}
 		case "action":
 			var (
 				alias = field.Alias
@@ -597,7 +767,71 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				return err
 			}
 			am.withAction = query
+			if _, ok := fieldSeen[appmenu.FieldActionID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldActionID)
+				fieldSeen[appmenu.FieldActionID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[appmenu.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldCreatedBy)
+				fieldSeen[appmenu.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[appmenu.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldCreatedAt)
+				fieldSeen[appmenu.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[appmenu.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldUpdatedBy)
+				fieldSeen[appmenu.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[appmenu.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldUpdatedAt)
+				fieldSeen[appmenu.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[appmenu.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldAppID)
+				fieldSeen[appmenu.FieldAppID] = struct{}{}
+			}
+		case "parentID":
+			if _, ok := fieldSeen[appmenu.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldParentID)
+				fieldSeen[appmenu.FieldParentID] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[appmenu.FieldKind]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldKind)
+				fieldSeen[appmenu.FieldKind] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[appmenu.FieldName]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldName)
+				fieldSeen[appmenu.FieldName] = struct{}{}
+			}
+		case "actionID":
+			if _, ok := fieldSeen[appmenu.FieldActionID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldActionID)
+				fieldSeen[appmenu.FieldActionID] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[appmenu.FieldComments]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldComments)
+				fieldSeen[appmenu.FieldComments] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[appmenu.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldDisplaySort)
+				fieldSeen[appmenu.FieldDisplaySort] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		am.Select(selectedFields...)
 	}
 	return nil
 }
@@ -665,9 +899,14 @@ func (ap *AppPolicyQuery) CollectFields(ctx context.Context, satisfies ...string
 	return ap, nil
 }
 
-func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(apppolicy.Columns))
+		selectedFields = []string{apppolicy.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "app":
 			var (
@@ -679,6 +918,10 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				return err
 			}
 			ap.withApp = query
+			if _, ok := fieldSeen[apppolicy.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldAppID)
+				fieldSeen[apppolicy.FieldAppID] = struct{}{}
+			}
 		case "roles":
 			var (
 				alias = field.Alias
@@ -691,7 +934,67 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 			ap.WithNamedRoles(alias, func(wq *AppRoleQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[apppolicy.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldCreatedBy)
+				fieldSeen[apppolicy.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[apppolicy.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldCreatedAt)
+				fieldSeen[apppolicy.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[apppolicy.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldUpdatedBy)
+				fieldSeen[apppolicy.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[apppolicy.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldUpdatedAt)
+				fieldSeen[apppolicy.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[apppolicy.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldAppID)
+				fieldSeen[apppolicy.FieldAppID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[apppolicy.FieldName]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldName)
+				fieldSeen[apppolicy.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[apppolicy.FieldComments]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldComments)
+				fieldSeen[apppolicy.FieldComments] = struct{}{}
+			}
+		case "rules":
+			if _, ok := fieldSeen[apppolicy.FieldRules]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldRules)
+				fieldSeen[apppolicy.FieldRules] = struct{}{}
+			}
+		case "version":
+			if _, ok := fieldSeen[apppolicy.FieldVersion]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldVersion)
+				fieldSeen[apppolicy.FieldVersion] = struct{}{}
+			}
+		case "autoGrant":
+			if _, ok := fieldSeen[apppolicy.FieldAutoGrant]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldAutoGrant)
+				fieldSeen[apppolicy.FieldAutoGrant] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[apppolicy.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldStatus)
+				fieldSeen[apppolicy.FieldStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ap.Select(selectedFields...)
 	}
 	return nil
 }
@@ -759,9 +1062,14 @@ func (ar *AppResQuery) CollectFields(ctx context.Context, satisfies ...string) (
 	return ar, nil
 }
 
-func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(appres.Columns))
+		selectedFields = []string{appres.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "app":
 			var (
@@ -773,7 +1081,56 @@ func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.Operatio
 				return err
 			}
 			ar.withApp = query
+			if _, ok := fieldSeen[appres.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appres.FieldAppID)
+				fieldSeen[appres.FieldAppID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[appres.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, appres.FieldCreatedBy)
+				fieldSeen[appres.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[appres.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, appres.FieldCreatedAt)
+				fieldSeen[appres.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[appres.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, appres.FieldUpdatedBy)
+				fieldSeen[appres.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[appres.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, appres.FieldUpdatedAt)
+				fieldSeen[appres.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[appres.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appres.FieldAppID)
+				fieldSeen[appres.FieldAppID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[appres.FieldName]; !ok {
+				selectedFields = append(selectedFields, appres.FieldName)
+				fieldSeen[appres.FieldName] = struct{}{}
+			}
+		case "typeName":
+			if _, ok := fieldSeen[appres.FieldTypeName]; !ok {
+				selectedFields = append(selectedFields, appres.FieldTypeName)
+				fieldSeen[appres.FieldTypeName] = struct{}{}
+			}
+		case "arnPattern":
+			if _, ok := fieldSeen[appres.FieldArnPattern]; !ok {
+				selectedFields = append(selectedFields, appres.FieldArnPattern)
+				fieldSeen[appres.FieldArnPattern] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ar.Select(selectedFields...)
 	}
 	return nil
 }
@@ -841,9 +1198,14 @@ func (ar *AppRoleQuery) CollectFields(ctx context.Context, satisfies ...string) 
 	return ar, nil
 }
 
-func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(approle.Columns))
+		selectedFields = []string{approle.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "app":
 			var (
@@ -855,6 +1217,10 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				return err
 			}
 			ar.withApp = query
+			if _, ok := fieldSeen[approle.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, approle.FieldAppID)
+				fieldSeen[approle.FieldAppID] = struct{}{}
+			}
 		case "policies":
 			var (
 				alias = field.Alias
@@ -867,7 +1233,57 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 			ar.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[approle.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, approle.FieldCreatedBy)
+				fieldSeen[approle.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[approle.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, approle.FieldCreatedAt)
+				fieldSeen[approle.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[approle.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, approle.FieldUpdatedBy)
+				fieldSeen[approle.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[approle.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, approle.FieldUpdatedAt)
+				fieldSeen[approle.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[approle.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, approle.FieldAppID)
+				fieldSeen[approle.FieldAppID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[approle.FieldName]; !ok {
+				selectedFields = append(selectedFields, approle.FieldName)
+				fieldSeen[approle.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[approle.FieldComments]; !ok {
+				selectedFields = append(selectedFields, approle.FieldComments)
+				fieldSeen[approle.FieldComments] = struct{}{}
+			}
+		case "autoGrant":
+			if _, ok := fieldSeen[approle.FieldAutoGrant]; !ok {
+				selectedFields = append(selectedFields, approle.FieldAutoGrant)
+				fieldSeen[approle.FieldAutoGrant] = struct{}{}
+			}
+		case "editable":
+			if _, ok := fieldSeen[approle.FieldEditable]; !ok {
+				selectedFields = append(selectedFields, approle.FieldEditable)
+				fieldSeen[approle.FieldEditable] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ar.Select(selectedFields...)
 	}
 	return nil
 }
@@ -935,9 +1351,14 @@ func (o *OrgQuery) CollectFields(ctx context.Context, satisfies ...string) (*Org
 	return o, nil
 }
 
-func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(org.Columns))
+		selectedFields = []string{org.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "parent":
 			var (
@@ -949,6 +1370,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			o.withParent = query
+			if _, ok := fieldSeen[org.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, org.FieldParentID)
+				fieldSeen[org.FieldParentID] = struct{}{}
+			}
 		case "children":
 			var (
 				alias = field.Alias
@@ -1309,7 +1734,92 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			o.WithNamedApps(alias, func(wq *AppQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[org.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, org.FieldCreatedBy)
+				fieldSeen[org.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[org.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, org.FieldCreatedAt)
+				fieldSeen[org.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[org.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, org.FieldUpdatedBy)
+				fieldSeen[org.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[org.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, org.FieldUpdatedAt)
+				fieldSeen[org.FieldUpdatedAt] = struct{}{}
+			}
+		case "deletedAt":
+			if _, ok := fieldSeen[org.FieldDeletedAt]; !ok {
+				selectedFields = append(selectedFields, org.FieldDeletedAt)
+				fieldSeen[org.FieldDeletedAt] = struct{}{}
+			}
+		case "ownerID":
+			if _, ok := fieldSeen[org.FieldOwnerID]; !ok {
+				selectedFields = append(selectedFields, org.FieldOwnerID)
+				fieldSeen[org.FieldOwnerID] = struct{}{}
+			}
+		case "parentID":
+			if _, ok := fieldSeen[org.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, org.FieldParentID)
+				fieldSeen[org.FieldParentID] = struct{}{}
+			}
+		case "domain":
+			if _, ok := fieldSeen[org.FieldDomain]; !ok {
+				selectedFields = append(selectedFields, org.FieldDomain)
+				fieldSeen[org.FieldDomain] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[org.FieldCode]; !ok {
+				selectedFields = append(selectedFields, org.FieldCode)
+				fieldSeen[org.FieldCode] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[org.FieldName]; !ok {
+				selectedFields = append(selectedFields, org.FieldName)
+				fieldSeen[org.FieldName] = struct{}{}
+			}
+		case "profile":
+			if _, ok := fieldSeen[org.FieldProfile]; !ok {
+				selectedFields = append(selectedFields, org.FieldProfile)
+				fieldSeen[org.FieldProfile] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[org.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, org.FieldStatus)
+				fieldSeen[org.FieldStatus] = struct{}{}
+			}
+		case "path":
+			if _, ok := fieldSeen[org.FieldPath]; !ok {
+				selectedFields = append(selectedFields, org.FieldPath)
+				fieldSeen[org.FieldPath] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[org.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, org.FieldDisplaySort)
+				fieldSeen[org.FieldDisplaySort] = struct{}{}
+			}
+		case "countryCode":
+			if _, ok := fieldSeen[org.FieldCountryCode]; !ok {
+				selectedFields = append(selectedFields, org.FieldCountryCode)
+				fieldSeen[org.FieldCountryCode] = struct{}{}
+			}
+		case "timezone":
+			if _, ok := fieldSeen[org.FieldTimezone]; !ok {
+				selectedFields = append(selectedFields, org.FieldTimezone)
+				fieldSeen[org.FieldTimezone] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		o.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1377,9 +1887,14 @@ func (op *OrgPolicyQuery) CollectFields(ctx context.Context, satisfies ...string
 	return op, nil
 }
 
-func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(orgpolicy.Columns))
+		selectedFields = []string{orgpolicy.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "org":
 			var (
@@ -1391,6 +1906,10 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				return err
 			}
 			op.withOrg = query
+			if _, ok := fieldSeen[orgpolicy.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldOrgID)
+				fieldSeen[orgpolicy.FieldOrgID] = struct{}{}
+			}
 		case "permissions":
 			var (
 				alias = field.Alias
@@ -1403,7 +1922,57 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 			op.WithNamedPermissions(alias, func(wq *PermissionQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[orgpolicy.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldCreatedBy)
+				fieldSeen[orgpolicy.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[orgpolicy.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldCreatedAt)
+				fieldSeen[orgpolicy.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[orgpolicy.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldUpdatedBy)
+				fieldSeen[orgpolicy.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[orgpolicy.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldUpdatedAt)
+				fieldSeen[orgpolicy.FieldUpdatedAt] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[orgpolicy.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldOrgID)
+				fieldSeen[orgpolicy.FieldOrgID] = struct{}{}
+			}
+		case "appPolicyID":
+			if _, ok := fieldSeen[orgpolicy.FieldAppPolicyID]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldAppPolicyID)
+				fieldSeen[orgpolicy.FieldAppPolicyID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[orgpolicy.FieldName]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldName)
+				fieldSeen[orgpolicy.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[orgpolicy.FieldComments]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldComments)
+				fieldSeen[orgpolicy.FieldComments] = struct{}{}
+			}
+		case "rules":
+			if _, ok := fieldSeen[orgpolicy.FieldRules]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldRules)
+				fieldSeen[orgpolicy.FieldRules] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		op.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1471,8 +2040,62 @@ func (or *OrgRoleQuery) CollectFields(ctx context.Context, satisfies ...string) 
 	return or, nil
 }
 
-func (or *OrgRoleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (or *OrgRoleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(orgrole.Columns))
+		selectedFields = []string{orgrole.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "createdBy":
+			if _, ok := fieldSeen[orgrole.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldCreatedBy)
+				fieldSeen[orgrole.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[orgrole.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldCreatedAt)
+				fieldSeen[orgrole.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[orgrole.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldUpdatedBy)
+				fieldSeen[orgrole.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[orgrole.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldUpdatedAt)
+				fieldSeen[orgrole.FieldUpdatedAt] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[orgrole.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldOrgID)
+				fieldSeen[orgrole.FieldOrgID] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[orgrole.FieldKind]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldKind)
+				fieldSeen[orgrole.FieldKind] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[orgrole.FieldName]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldName)
+				fieldSeen[orgrole.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[orgrole.FieldComments]; !ok {
+				selectedFields = append(selectedFields, orgrole.FieldComments)
+				fieldSeen[orgrole.FieldComments] = struct{}{}
+			}
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		or.Select(selectedFields...)
+	}
 	return nil
 }
 
@@ -1539,9 +2162,14 @@ func (pe *PermissionQuery) CollectFields(ctx context.Context, satisfies ...strin
 	return pe, nil
 }
 
-func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(permission.Columns))
+		selectedFields = []string{permission.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "org":
 			var (
@@ -1553,6 +2181,10 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				return err
 			}
 			pe.withOrg = query
+			if _, ok := fieldSeen[permission.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldOrgID)
+				fieldSeen[permission.FieldOrgID] = struct{}{}
+			}
 		case "user":
 			var (
 				alias = field.Alias
@@ -1563,6 +2195,10 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				return err
 			}
 			pe.withUser = query
+			if _, ok := fieldSeen[permission.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldUserID)
+				fieldSeen[permission.FieldUserID] = struct{}{}
+			}
 		case "orgPolicy":
 			var (
 				alias = field.Alias
@@ -1573,7 +2209,76 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				return err
 			}
 			pe.withOrgPolicy = query
+			if _, ok := fieldSeen[permission.FieldOrgPolicyID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldOrgPolicyID)
+				fieldSeen[permission.FieldOrgPolicyID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[permission.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, permission.FieldCreatedBy)
+				fieldSeen[permission.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[permission.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, permission.FieldCreatedAt)
+				fieldSeen[permission.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[permission.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, permission.FieldUpdatedBy)
+				fieldSeen[permission.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[permission.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, permission.FieldUpdatedAt)
+				fieldSeen[permission.FieldUpdatedAt] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[permission.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldOrgID)
+				fieldSeen[permission.FieldOrgID] = struct{}{}
+			}
+		case "principalKind":
+			if _, ok := fieldSeen[permission.FieldPrincipalKind]; !ok {
+				selectedFields = append(selectedFields, permission.FieldPrincipalKind)
+				fieldSeen[permission.FieldPrincipalKind] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[permission.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldUserID)
+				fieldSeen[permission.FieldUserID] = struct{}{}
+			}
+		case "roleID":
+			if _, ok := fieldSeen[permission.FieldRoleID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldRoleID)
+				fieldSeen[permission.FieldRoleID] = struct{}{}
+			}
+		case "orgPolicyID":
+			if _, ok := fieldSeen[permission.FieldOrgPolicyID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldOrgPolicyID)
+				fieldSeen[permission.FieldOrgPolicyID] = struct{}{}
+			}
+		case "startAt":
+			if _, ok := fieldSeen[permission.FieldStartAt]; !ok {
+				selectedFields = append(selectedFields, permission.FieldStartAt)
+				fieldSeen[permission.FieldStartAt] = struct{}{}
+			}
+		case "endAt":
+			if _, ok := fieldSeen[permission.FieldEndAt]; !ok {
+				selectedFields = append(selectedFields, permission.FieldEndAt)
+				fieldSeen[permission.FieldEndAt] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[permission.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, permission.FieldStatus)
+				fieldSeen[permission.FieldStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		pe.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1641,9 +2346,14 @@ func (u *UserQuery) CollectFields(ctx context.Context, satisfies ...string) (*Us
 	return u, nil
 }
 
-func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(user.Columns))
+		selectedFields = []string{user.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "identities":
 			var (
@@ -1776,7 +2486,82 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			u.WithNamedPermissions(alias, func(wq *PermissionQuery) {
 				*wq = *query
 			})
+		case "createdBy":
+			if _, ok := fieldSeen[user.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, user.FieldCreatedBy)
+				fieldSeen[user.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[user.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, user.FieldCreatedAt)
+				fieldSeen[user.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[user.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, user.FieldUpdatedBy)
+				fieldSeen[user.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[user.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, user.FieldUpdatedAt)
+				fieldSeen[user.FieldUpdatedAt] = struct{}{}
+			}
+		case "deletedAt":
+			if _, ok := fieldSeen[user.FieldDeletedAt]; !ok {
+				selectedFields = append(selectedFields, user.FieldDeletedAt)
+				fieldSeen[user.FieldDeletedAt] = struct{}{}
+			}
+		case "principalName":
+			if _, ok := fieldSeen[user.FieldPrincipalName]; !ok {
+				selectedFields = append(selectedFields, user.FieldPrincipalName)
+				fieldSeen[user.FieldPrincipalName] = struct{}{}
+			}
+		case "displayName":
+			if _, ok := fieldSeen[user.FieldDisplayName]; !ok {
+				selectedFields = append(selectedFields, user.FieldDisplayName)
+				fieldSeen[user.FieldDisplayName] = struct{}{}
+			}
+		case "email":
+			if _, ok := fieldSeen[user.FieldEmail]; !ok {
+				selectedFields = append(selectedFields, user.FieldEmail)
+				fieldSeen[user.FieldEmail] = struct{}{}
+			}
+		case "mobile":
+			if _, ok := fieldSeen[user.FieldMobile]; !ok {
+				selectedFields = append(selectedFields, user.FieldMobile)
+				fieldSeen[user.FieldMobile] = struct{}{}
+			}
+		case "userType":
+			if _, ok := fieldSeen[user.FieldUserType]; !ok {
+				selectedFields = append(selectedFields, user.FieldUserType)
+				fieldSeen[user.FieldUserType] = struct{}{}
+			}
+		case "creationType":
+			if _, ok := fieldSeen[user.FieldCreationType]; !ok {
+				selectedFields = append(selectedFields, user.FieldCreationType)
+				fieldSeen[user.FieldCreationType] = struct{}{}
+			}
+		case "registerIP":
+			if _, ok := fieldSeen[user.FieldRegisterIP]; !ok {
+				selectedFields = append(selectedFields, user.FieldRegisterIP)
+				fieldSeen[user.FieldRegisterIP] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[user.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, user.FieldStatus)
+				fieldSeen[user.FieldStatus] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[user.FieldComments]; !ok {
+				selectedFields = append(selectedFields, user.FieldComments)
+				fieldSeen[user.FieldComments] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		u.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1844,9 +2629,14 @@ func (ud *UserDeviceQuery) CollectFields(ctx context.Context, satisfies ...strin
 	return ud, nil
 }
 
-func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userdevice.Columns))
+		selectedFields = []string{userdevice.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "user":
 			var (
@@ -1858,7 +2648,81 @@ func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				return err
 			}
 			ud.withUser = query
+			if _, ok := fieldSeen[userdevice.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldUserID)
+				fieldSeen[userdevice.FieldUserID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[userdevice.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldCreatedBy)
+				fieldSeen[userdevice.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[userdevice.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldCreatedAt)
+				fieldSeen[userdevice.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[userdevice.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldUpdatedBy)
+				fieldSeen[userdevice.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[userdevice.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldUpdatedAt)
+				fieldSeen[userdevice.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[userdevice.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldUserID)
+				fieldSeen[userdevice.FieldUserID] = struct{}{}
+			}
+		case "deviceUID":
+			if _, ok := fieldSeen[userdevice.FieldDeviceUID]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldDeviceUID)
+				fieldSeen[userdevice.FieldDeviceUID] = struct{}{}
+			}
+		case "deviceName":
+			if _, ok := fieldSeen[userdevice.FieldDeviceName]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldDeviceName)
+				fieldSeen[userdevice.FieldDeviceName] = struct{}{}
+			}
+		case "systemName":
+			if _, ok := fieldSeen[userdevice.FieldSystemName]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldSystemName)
+				fieldSeen[userdevice.FieldSystemName] = struct{}{}
+			}
+		case "systemVersion":
+			if _, ok := fieldSeen[userdevice.FieldSystemVersion]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldSystemVersion)
+				fieldSeen[userdevice.FieldSystemVersion] = struct{}{}
+			}
+		case "appVersion":
+			if _, ok := fieldSeen[userdevice.FieldAppVersion]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldAppVersion)
+				fieldSeen[userdevice.FieldAppVersion] = struct{}{}
+			}
+		case "deviceModel":
+			if _, ok := fieldSeen[userdevice.FieldDeviceModel]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldDeviceModel)
+				fieldSeen[userdevice.FieldDeviceModel] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[userdevice.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldStatus)
+				fieldSeen[userdevice.FieldStatus] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[userdevice.FieldComments]; !ok {
+				selectedFields = append(selectedFields, userdevice.FieldComments)
+				fieldSeen[userdevice.FieldComments] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ud.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1926,9 +2790,14 @@ func (ui *UserIdentityQuery) CollectFields(ctx context.Context, satisfies ...str
 	return ui, nil
 }
 
-func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(useridentity.Columns))
+		selectedFields = []string{useridentity.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "user":
 			var (
@@ -1940,7 +2809,61 @@ func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				return err
 			}
 			ui.withUser = query
+			if _, ok := fieldSeen[useridentity.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldUserID)
+				fieldSeen[useridentity.FieldUserID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[useridentity.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldCreatedBy)
+				fieldSeen[useridentity.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[useridentity.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldCreatedAt)
+				fieldSeen[useridentity.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[useridentity.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldUpdatedBy)
+				fieldSeen[useridentity.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[useridentity.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldUpdatedAt)
+				fieldSeen[useridentity.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[useridentity.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldUserID)
+				fieldSeen[useridentity.FieldUserID] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[useridentity.FieldKind]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldKind)
+				fieldSeen[useridentity.FieldKind] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[useridentity.FieldCode]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldCode)
+				fieldSeen[useridentity.FieldCode] = struct{}{}
+			}
+		case "codeExtend":
+			if _, ok := fieldSeen[useridentity.FieldCodeExtend]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldCodeExtend)
+				fieldSeen[useridentity.FieldCodeExtend] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[useridentity.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, useridentity.FieldStatus)
+				fieldSeen[useridentity.FieldStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ui.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2008,9 +2931,14 @@ func (ulp *UserLoginProfileQuery) CollectFields(ctx context.Context, satisfies .
 	return ulp, nil
 }
 
-func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userloginprofile.Columns))
+		selectedFields = []string{userloginprofile.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "user":
 			var (
@@ -2022,7 +2950,81 @@ func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graph
 				return err
 			}
 			ulp.withUser = query
+			if _, ok := fieldSeen[userloginprofile.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldUserID)
+				fieldSeen[userloginprofile.FieldUserID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[userloginprofile.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldCreatedBy)
+				fieldSeen[userloginprofile.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[userloginprofile.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldCreatedAt)
+				fieldSeen[userloginprofile.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[userloginprofile.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldUpdatedBy)
+				fieldSeen[userloginprofile.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[userloginprofile.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldUpdatedAt)
+				fieldSeen[userloginprofile.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[userloginprofile.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldUserID)
+				fieldSeen[userloginprofile.FieldUserID] = struct{}{}
+			}
+		case "lastLoginIP":
+			if _, ok := fieldSeen[userloginprofile.FieldLastLoginIP]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldLastLoginIP)
+				fieldSeen[userloginprofile.FieldLastLoginIP] = struct{}{}
+			}
+		case "lastLoginAt":
+			if _, ok := fieldSeen[userloginprofile.FieldLastLoginAt]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldLastLoginAt)
+				fieldSeen[userloginprofile.FieldLastLoginAt] = struct{}{}
+			}
+		case "canLogin":
+			if _, ok := fieldSeen[userloginprofile.FieldCanLogin]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldCanLogin)
+				fieldSeen[userloginprofile.FieldCanLogin] = struct{}{}
+			}
+		case "setKind":
+			if _, ok := fieldSeen[userloginprofile.FieldSetKind]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldSetKind)
+				fieldSeen[userloginprofile.FieldSetKind] = struct{}{}
+			}
+		case "passwordReset":
+			if _, ok := fieldSeen[userloginprofile.FieldPasswordReset]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldPasswordReset)
+				fieldSeen[userloginprofile.FieldPasswordReset] = struct{}{}
+			}
+		case "verifyDevice":
+			if _, ok := fieldSeen[userloginprofile.FieldVerifyDevice]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldVerifyDevice)
+				fieldSeen[userloginprofile.FieldVerifyDevice] = struct{}{}
+			}
+		case "mfaEnabled":
+			if _, ok := fieldSeen[userloginprofile.FieldMfaEnabled]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldMfaEnabled)
+				fieldSeen[userloginprofile.FieldMfaEnabled] = struct{}{}
+			}
+		case "mfaStatus":
+			if _, ok := fieldSeen[userloginprofile.FieldMfaStatus]; !ok {
+				selectedFields = append(selectedFields, userloginprofile.FieldMfaStatus)
+				fieldSeen[userloginprofile.FieldMfaStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		ulp.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2090,9 +3092,14 @@ func (up *UserPasswordQuery) CollectFields(ctx context.Context, satisfies ...str
 	return up, nil
 }
 
-func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, field.Selections, satisfies) {
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userpassword.Columns))
+		selectedFields = []string{userpassword.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "user":
 			var (
@@ -2104,7 +3111,51 @@ func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				return err
 			}
 			up.withUser = query
+			if _, ok := fieldSeen[userpassword.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldUserID)
+				fieldSeen[userpassword.FieldUserID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[userpassword.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldCreatedBy)
+				fieldSeen[userpassword.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[userpassword.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldCreatedAt)
+				fieldSeen[userpassword.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[userpassword.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldUpdatedBy)
+				fieldSeen[userpassword.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[userpassword.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldUpdatedAt)
+				fieldSeen[userpassword.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[userpassword.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldUserID)
+				fieldSeen[userpassword.FieldUserID] = struct{}{}
+			}
+		case "scene":
+			if _, ok := fieldSeen[userpassword.FieldScene]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldScene)
+				fieldSeen[userpassword.FieldScene] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[userpassword.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, userpassword.FieldStatus)
+				fieldSeen[userpassword.FieldStatus] = struct{}{}
+			}
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		up.Select(selectedFields...)
 	}
 	return nil
 }

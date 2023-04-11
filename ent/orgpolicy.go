@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
@@ -41,7 +42,8 @@ type OrgPolicy struct {
 	Rules []types.PolicyRule `json:"rules,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgPolicyQuery when eager-loading is set.
-	Edges OrgPolicyEdges `json:"edges"`
+	Edges        OrgPolicyEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OrgPolicyEdges holds the relations/edges for other nodes in the graph.
@@ -95,7 +97,7 @@ func (*OrgPolicy) scanValues(columns []string) ([]any, error) {
 		case orgpolicy.FieldCreatedAt, orgpolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type OrgPolicy", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -177,9 +179,17 @@ func (op *OrgPolicy) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field rules: %w", err)
 				}
 			}
+		default:
+			op.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the OrgPolicy.
+// This includes values selected through modifiers, order, etc.
+func (op *OrgPolicy) Value(name string) (ent.Value, error) {
+	return op.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the OrgPolicy entity.

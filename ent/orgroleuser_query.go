@@ -20,7 +20,7 @@ import (
 type OrgRoleUserQuery struct {
 	config
 	ctx         *QueryContext
-	order       []OrderFunc
+	order       []orgroleuser.Order
 	inters      []Interceptor
 	predicates  []predicate.OrgRoleUser
 	withOrgRole *OrgRoleQuery
@@ -58,7 +58,7 @@ func (oruq *OrgRoleUserQuery) Unique(unique bool) *OrgRoleUserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oruq *OrgRoleUserQuery) Order(o ...OrderFunc) *OrgRoleUserQuery {
+func (oruq *OrgRoleUserQuery) Order(o ...orgroleuser.Order) *OrgRoleUserQuery {
 	oruq.order = append(oruq.order, o...)
 	return oruq
 }
@@ -296,7 +296,7 @@ func (oruq *OrgRoleUserQuery) Clone() *OrgRoleUserQuery {
 	return &OrgRoleUserQuery{
 		config:      oruq.config,
 		ctx:         oruq.ctx.Clone(),
-		order:       append([]OrderFunc{}, oruq.order...),
+		order:       append([]orgroleuser.Order{}, oruq.order...),
 		inters:      append([]Interceptor{}, oruq.inters...),
 		predicates:  append([]predicate.OrgRoleUser{}, oruq.predicates...),
 		withOrgRole: oruq.withOrgRole.Clone(),
@@ -539,6 +539,12 @@ func (oruq *OrgRoleUserQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != orgroleuser.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if oruq.withOrgRole != nil {
+			_spec.Node.AddColumnOnce(orgroleuser.FieldOrgRoleID)
+		}
+		if oruq.withOrgUser != nil {
+			_spec.Node.AddColumnOnce(orgroleuser.FieldOrgUserID)
 		}
 	}
 	if ps := oruq.predicates; len(ps) > 0 {

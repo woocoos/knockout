@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
@@ -34,7 +35,8 @@ type AppRolePolicy struct {
 	AppID int `json:"app_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppRolePolicyQuery when eager-loading is set.
-	Edges AppRolePolicyEdges `json:"edges"`
+	Edges        AppRolePolicyEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppRolePolicyEdges holds the relations/edges for other nodes in the graph.
@@ -86,7 +88,7 @@ func (*AppRolePolicy) scanValues(columns []string) ([]any, error) {
 		case approlepolicy.FieldCreatedAt, approlepolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppRolePolicy", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -148,9 +150,17 @@ func (arp *AppRolePolicy) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				arp.AppID = int(value.Int64)
 			}
+		default:
+			arp.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppRolePolicy.
+// This includes values selected through modifiers, order, etc.
+func (arp *AppRolePolicy) Value(name string) (ent.Value, error) {
+	return arp.selectValues.Get(name)
 }
 
 // QueryRole queries the "role" edge of the AppRolePolicy entity.

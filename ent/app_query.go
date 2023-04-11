@@ -26,7 +26,7 @@ import (
 type AppQuery struct {
 	config
 	ctx                *QueryContext
-	order              []OrderFunc
+	order              []app.Order
 	inters             []Interceptor
 	predicates         []predicate.App
 	withMenus          *AppMenuQuery
@@ -76,7 +76,7 @@ func (aq *AppQuery) Unique(unique bool) *AppQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (aq *AppQuery) Order(o ...OrderFunc) *AppQuery {
+func (aq *AppQuery) Order(o ...app.Order) *AppQuery {
 	aq.order = append(aq.order, o...)
 	return aq
 }
@@ -424,7 +424,7 @@ func (aq *AppQuery) Clone() *AppQuery {
 	return &AppQuery{
 		config:        aq.config,
 		ctx:           aq.ctx.Clone(),
-		order:         append([]OrderFunc{}, aq.order...),
+		order:         append([]app.Order{}, aq.order...),
 		inters:        append([]Interceptor{}, aq.inters...),
 		predicates:    append([]predicate.App{}, aq.predicates...),
 		withMenus:     aq.withMenus.Clone(),

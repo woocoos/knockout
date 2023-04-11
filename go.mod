@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	ariga.io/entcache v0.1.1-0.20220825100256-1b8bbeb21c75
-	entgo.io/contrib v0.3.6-0.20230318215747-ecbb9cd4a59c
-	entgo.io/ent v0.11.10
+	entgo.io/contrib v0.4.0
+	entgo.io/ent v0.12.0
 	github.com/99designs/gqlgen v0.17.26
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/dchest/captcha v1.0.0
@@ -19,9 +19,10 @@ require (
 	github.com/tsingsun/woocoo v0.2.4-0.20230403070847-0d4f1edf6ed0
 	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230403084811-972005040ae2
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230403084811-972005040ae2
+	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230403161739-24b677f51f39
+	github.com/woocoos/entco v0.0.0-20230411075730-f8ffcbe7591c
 	golang.org/x/sync v0.1.0
 )
 
@@ -48,7 +49,6 @@ require (
 	github.com/perimeterx/marshmallow v1.1.4 // indirect
 	github.com/redis/go-redis/v9 v9.0.3 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/urfave/cli/v2 v2.25.0 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yuin/gopher-lua v1.1.0 // indirect
@@ -62,7 +62,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.9.2-0.20230303073438-03a4779a6338 // indirect
+	ariga.io/atlas v0.10.0 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/XSAM/otelsql v0.18.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect

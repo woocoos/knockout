@@ -19,7 +19,7 @@ import (
 type AppResQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []appres.Order
 	inters     []Interceptor
 	predicates []predicate.AppRes
 	withApp    *AppQuery
@@ -57,7 +57,7 @@ func (arq *AppResQuery) Unique(unique bool) *AppResQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arq *AppResQuery) Order(o ...OrderFunc) *AppResQuery {
+func (arq *AppResQuery) Order(o ...appres.Order) *AppResQuery {
 	arq.order = append(arq.order, o...)
 	return arq
 }
@@ -273,7 +273,7 @@ func (arq *AppResQuery) Clone() *AppResQuery {
 	return &AppResQuery{
 		config:     arq.config,
 		ctx:        arq.ctx.Clone(),
-		order:      append([]OrderFunc{}, arq.order...),
+		order:      append([]appres.Order{}, arq.order...),
 		inters:     append([]Interceptor{}, arq.inters...),
 		predicates: append([]predicate.AppRes{}, arq.predicates...),
 		withApp:    arq.withApp.Clone(),
@@ -377,9 +377,6 @@ func (arq *AppResQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppR
 			arq.withApp != nil,
 		}
 	)
-	if arq.withApp != nil {
-		withFKs = true
-	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, appres.ForeignKeys...)
 	}
@@ -475,6 +472,9 @@ func (arq *AppResQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != appres.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if arq.withApp != nil {
+			_spec.Node.AddColumnOnce(appres.FieldAppID)
 		}
 	}
 	if ps := arq.predicates; len(ps) > 0 {

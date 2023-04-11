@@ -30,6 +30,7 @@ func main() {
 	opts := []entc.Option{
 		entc.Extensions(ex, protoExtension),
 		genx.GlobalID(),
+		genx.SimplePagination(),
 	}
 	err = entc.Generate("./codegen/entgen/schema", &gen.Config{
 		Package:  "github.com/woocoos/knockout/ent",

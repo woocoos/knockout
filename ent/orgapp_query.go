@@ -20,7 +20,7 @@ import (
 type OrgAppQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []orgapp.Order
 	inters     []Interceptor
 	predicates []predicate.OrgApp
 	withApp    *AppQuery
@@ -58,7 +58,7 @@ func (oaq *OrgAppQuery) Unique(unique bool) *OrgAppQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oaq *OrgAppQuery) Order(o ...OrderFunc) *OrgAppQuery {
+func (oaq *OrgAppQuery) Order(o ...orgapp.Order) *OrgAppQuery {
 	oaq.order = append(oaq.order, o...)
 	return oaq
 }
@@ -296,7 +296,7 @@ func (oaq *OrgAppQuery) Clone() *OrgAppQuery {
 	return &OrgAppQuery{
 		config:     oaq.config,
 		ctx:        oaq.ctx.Clone(),
-		order:      append([]OrderFunc{}, oaq.order...),
+		order:      append([]orgapp.Order{}, oaq.order...),
 		inters:     append([]Interceptor{}, oaq.inters...),
 		predicates: append([]predicate.OrgApp{}, oaq.predicates...),
 		withApp:    oaq.withApp.Clone(),
@@ -539,6 +539,12 @@ func (oaq *OrgAppQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != orgapp.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if oaq.withApp != nil {
+			_spec.Node.AddColumnOnce(orgapp.FieldAppID)
+		}
+		if oaq.withOrg != nil {
+			_spec.Node.AddColumnOnce(orgapp.FieldOrgID)
 		}
 	}
 	if ps := oaq.predicates; len(ps) > 0 {

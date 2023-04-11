@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
@@ -38,7 +39,8 @@ type UserPassword struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserPasswordQuery when eager-loading is set.
-	Edges UserPasswordEdges `json:"edges"`
+	Edges        UserPasswordEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // UserPasswordEdges holds the relations/edges for other nodes in the graph.
@@ -77,7 +79,7 @@ func (*UserPassword) scanValues(columns []string) ([]any, error) {
 		case userpassword.FieldCreatedAt, userpassword.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type UserPassword", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -151,9 +153,17 @@ func (up *UserPassword) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				up.Status = typex.SimpleStatus(value.String)
 			}
+		default:
+			up.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the UserPassword.
+// This includes values selected through modifiers, order, etc.
+func (up *UserPassword) Value(name string) (ent.Value, error) {
+	return up.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserPassword entity.

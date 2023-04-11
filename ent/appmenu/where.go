@@ -609,11 +609,7 @@ func HasApp() predicate.AppMenu {
 // HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
 func HasAppWith(preds ...predicate.App) predicate.AppMenu {
 	return predicate.AppMenu(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, AppTable, AppColumn),
-		)
+		step := newAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -636,11 +632,7 @@ func HasAction() predicate.AppMenu {
 // HasActionWith applies the HasEdge predicate on the "action" edge with a given conditions (other predicates).
 func HasActionWith(preds ...predicate.AppAction) predicate.AppMenu {
 	return predicate.AppMenu(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ActionInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, ActionTable, ActionColumn),
-		)
+		step := newActionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

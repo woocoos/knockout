@@ -19,7 +19,7 @@ import (
 type UserLoginProfileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []userloginprofile.Order
 	inters     []Interceptor
 	predicates []predicate.UserLoginProfile
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (ulpq *UserLoginProfileQuery) Unique(unique bool) *UserLoginProfileQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ulpq *UserLoginProfileQuery) Order(o ...OrderFunc) *UserLoginProfileQuery {
+func (ulpq *UserLoginProfileQuery) Order(o ...userloginprofile.Order) *UserLoginProfileQuery {
 	ulpq.order = append(ulpq.order, o...)
 	return ulpq
 }
@@ -272,7 +272,7 @@ func (ulpq *UserLoginProfileQuery) Clone() *UserLoginProfileQuery {
 	return &UserLoginProfileQuery{
 		config:     ulpq.config,
 		ctx:        ulpq.ctx.Clone(),
-		order:      append([]OrderFunc{}, ulpq.order...),
+		order:      append([]userloginprofile.Order{}, ulpq.order...),
 		inters:     append([]Interceptor{}, ulpq.inters...),
 		predicates: append([]predicate.UserLoginProfile{}, ulpq.predicates...),
 		withUser:   ulpq.withUser.Clone(),
@@ -467,6 +467,9 @@ func (ulpq *UserLoginProfileQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != userloginprofile.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if ulpq.withUser != nil {
+			_spec.Node.AddColumnOnce(userloginprofile.FieldUserID)
 		}
 	}
 	if ps := ulpq.predicates; len(ps) > 0 {

@@ -22,7 +22,7 @@ import (
 type AppPolicyQuery struct {
 	config
 	ctx                    *QueryContext
-	order                  []OrderFunc
+	order                  []apppolicy.Order
 	inters                 []Interceptor
 	predicates             []predicate.AppPolicy
 	withApp                *AppQuery
@@ -63,7 +63,7 @@ func (apq *AppPolicyQuery) Unique(unique bool) *AppPolicyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (apq *AppPolicyQuery) Order(o ...OrderFunc) *AppPolicyQuery {
+func (apq *AppPolicyQuery) Order(o ...apppolicy.Order) *AppPolicyQuery {
 	apq.order = append(apq.order, o...)
 	return apq
 }
@@ -323,7 +323,7 @@ func (apq *AppPolicyQuery) Clone() *AppPolicyQuery {
 	return &AppPolicyQuery{
 		config:            apq.config,
 		ctx:               apq.ctx.Clone(),
-		order:             append([]OrderFunc{}, apq.order...),
+		order:             append([]apppolicy.Order{}, apq.order...),
 		inters:            append([]Interceptor{}, apq.inters...),
 		predicates:        append([]predicate.AppPolicy{}, apq.predicates...),
 		withApp:           apq.withApp.Clone(),
@@ -660,6 +660,9 @@ func (apq *AppPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != apppolicy.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if apq.withApp != nil {
+			_spec.Node.AddColumnOnce(apppolicy.FieldAppID)
 		}
 	}
 	if ps := apq.predicates; len(ps) > 0 {

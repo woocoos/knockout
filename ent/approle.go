@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/approle"
@@ -37,7 +38,8 @@ type AppRole struct {
 	Editable bool `json:"editable,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppRoleQuery when eager-loading is set.
-	Edges AppRoleEdges `json:"edges"`
+	Edges        AppRoleEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppRoleEdges holds the relations/edges for other nodes in the graph.
@@ -103,7 +105,7 @@ func (*AppRole) scanValues(columns []string) ([]any, error) {
 		case approle.FieldCreatedAt, approle.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppRole", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -177,9 +179,17 @@ func (ar *AppRole) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ar.Editable = value.Bool
 			}
+		default:
+			ar.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppRole.
+// This includes values selected through modifiers, order, etc.
+func (ar *AppRole) Value(name string) (ent.Value, error) {
+	return ar.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppRole entity.

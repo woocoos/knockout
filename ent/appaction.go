@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -37,7 +38,8 @@ type AppAction struct {
 	Comments string `json:"comments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppActionQuery when eager-loading is set.
-	Edges AppActionEdges `json:"edges"`
+	Edges        AppActionEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppActionEdges holds the relations/edges for other nodes in the graph.
@@ -101,7 +103,7 @@ func (*AppAction) scanValues(columns []string) ([]any, error) {
 		case appaction.FieldCreatedAt, appaction.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppAction", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -175,9 +177,17 @@ func (aa *AppAction) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				aa.Comments = value.String
 			}
+		default:
+			aa.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppAction.
+// This includes values selected through modifiers, order, etc.
+func (aa *AppAction) Value(name string) (ent.Value, error) {
+	return aa.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppAction entity.

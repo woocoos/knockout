@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -42,7 +43,8 @@ type AppMenu struct {
 	DisplaySort int32 `json:"display_sort,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppMenuQuery when eager-loading is set.
-	Edges AppMenuEdges `json:"edges"`
+	Edges        AppMenuEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppMenuEdges holds the relations/edges for other nodes in the graph.
@@ -96,7 +98,7 @@ func (*AppMenu) scanValues(columns []string) ([]any, error) {
 		case appmenu.FieldCreatedAt, appmenu.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppMenu", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -183,9 +185,17 @@ func (am *AppMenu) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				am.DisplaySort = int32(value.Int64)
 			}
+		default:
+			am.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppMenu.
+// This includes values selected through modifiers, order, etc.
+func (am *AppMenu) Value(name string) (ent.Value, error) {
+	return am.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppMenu entity.

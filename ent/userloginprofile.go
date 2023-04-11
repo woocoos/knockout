@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
@@ -48,7 +49,8 @@ type UserLoginProfile struct {
 	MfaStatus typex.SimpleStatus `json:"mfa_status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserLoginProfileQuery when eager-loading is set.
-	Edges UserLoginProfileEdges `json:"edges"`
+	Edges        UserLoginProfileEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // UserLoginProfileEdges holds the relations/edges for other nodes in the graph.
@@ -89,7 +91,7 @@ func (*UserLoginProfile) scanValues(columns []string) ([]any, error) {
 		case userloginprofile.FieldCreatedAt, userloginprofile.FieldUpdatedAt, userloginprofile.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type UserLoginProfile", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -193,9 +195,17 @@ func (ulp *UserLoginProfile) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				ulp.MfaStatus = typex.SimpleStatus(value.String)
 			}
+		default:
+			ulp.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the UserLoginProfile.
+// This includes values selected through modifiers, order, etc.
+func (ulp *UserLoginProfile) Value(name string) (ent.Value, error) {
+	return ulp.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserLoginProfile entity.

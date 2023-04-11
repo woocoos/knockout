@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/org"
@@ -32,7 +33,8 @@ type OrgApp struct {
 	AppID int `json:"app_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgAppQuery when eager-loading is set.
-	Edges OrgAppEdges `json:"edges"`
+	Edges        OrgAppEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OrgAppEdges holds the relations/edges for other nodes in the graph.
@@ -84,7 +86,7 @@ func (*OrgApp) scanValues(columns []string) ([]any, error) {
 		case orgapp.FieldCreatedAt, orgapp.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type OrgApp", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -140,9 +142,17 @@ func (oa *OrgApp) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				oa.AppID = int(value.Int64)
 			}
+		default:
+			oa.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the OrgApp.
+// This includes values selected through modifiers, order, etc.
+func (oa *OrgApp) Value(name string) (ent.Value, error) {
+	return oa.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the OrgApp entity.

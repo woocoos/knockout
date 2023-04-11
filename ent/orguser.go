@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -36,7 +37,8 @@ type OrgUser struct {
 	DisplayName string `json:"display_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgUserQuery when eager-loading is set.
-	Edges OrgUserEdges `json:"edges"`
+	Edges        OrgUserEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OrgUserEdges holds the relations/edges for other nodes in the graph.
@@ -103,7 +105,7 @@ func (*OrgUser) scanValues(columns []string) ([]any, error) {
 		case orguser.FieldCreatedAt, orguser.FieldUpdatedAt, orguser.FieldJoinedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type OrgUser", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -171,9 +173,17 @@ func (ou *OrgUser) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ou.DisplayName = value.String
 			}
+		default:
+			ou.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the OrgUser.
+// This includes values selected through modifiers, order, etc.
+func (ou *OrgUser) Value(name string) (ent.Value, error) {
+	return ou.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the OrgUser entity.

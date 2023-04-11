@@ -8,6 +8,7 @@ import (
 	"context"
 
 	"entgo.io/contrib/entgql"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -25,7 +26,12 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 
 // Apps is the resolver for the apps field.默认查询是公共的应用(org_id=0)
 func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) (*ent.AppConnection, error) {
-	return r.Client.App.Query().Where(app.Private(false)).Paginate(ctx, after, first, before, last,
+	gctx := ctx.Value(gin.ContextKey).(*gin.Context)
+	sp, err := ent.NewSimplePagination(gctx.Query("p"), gctx.Query("c"))
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.App.Query().Where(app.Private(false)).SimplePaginate(ctx, sp, after, first, before, last,
 		ent.WithAppOrder(orderBy),
 		ent.WithAppFilter(where.Filter))
 }

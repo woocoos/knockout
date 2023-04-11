@@ -19,7 +19,7 @@ import (
 type UserDeviceQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []userdevice.Order
 	inters     []Interceptor
 	predicates []predicate.UserDevice
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (udq *UserDeviceQuery) Unique(unique bool) *UserDeviceQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (udq *UserDeviceQuery) Order(o ...OrderFunc) *UserDeviceQuery {
+func (udq *UserDeviceQuery) Order(o ...userdevice.Order) *UserDeviceQuery {
 	udq.order = append(udq.order, o...)
 	return udq
 }
@@ -272,7 +272,7 @@ func (udq *UserDeviceQuery) Clone() *UserDeviceQuery {
 	return &UserDeviceQuery{
 		config:     udq.config,
 		ctx:        udq.ctx.Clone(),
-		order:      append([]OrderFunc{}, udq.order...),
+		order:      append([]userdevice.Order{}, udq.order...),
 		inters:     append([]Interceptor{}, udq.inters...),
 		predicates: append([]predicate.UserDevice{}, udq.predicates...),
 		withUser:   udq.withUser.Clone(),
@@ -467,6 +467,9 @@ func (udq *UserDeviceQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != userdevice.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if udq.withUser != nil {
+			_spec.Node.AddColumnOnce(userdevice.FieldUserID)
 		}
 	}
 	if ps := udq.predicates; len(ps) > 0 {

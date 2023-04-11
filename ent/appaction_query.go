@@ -22,7 +22,7 @@ import (
 type AppActionQuery struct {
 	config
 	ctx                *QueryContext
-	order              []OrderFunc
+	order              []appaction.Order
 	inters             []Interceptor
 	predicates         []predicate.AppAction
 	withApp            *AppQuery
@@ -63,7 +63,7 @@ func (aaq *AppActionQuery) Unique(unique bool) *AppActionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (aaq *AppActionQuery) Order(o ...OrderFunc) *AppActionQuery {
+func (aaq *AppActionQuery) Order(o ...appaction.Order) *AppActionQuery {
 	aaq.order = append(aaq.order, o...)
 	return aaq
 }
@@ -323,7 +323,7 @@ func (aaq *AppActionQuery) Clone() *AppActionQuery {
 	return &AppActionQuery{
 		config:        aaq.config,
 		ctx:           aaq.ctx.Clone(),
-		order:         append([]OrderFunc{}, aaq.order...),
+		order:         append([]appaction.Order{}, aaq.order...),
 		inters:        append([]Interceptor{}, aaq.inters...),
 		predicates:    append([]predicate.AppAction{}, aaq.predicates...),
 		withApp:       aaq.withApp.Clone(),
@@ -633,6 +633,9 @@ func (aaq *AppActionQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != appaction.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if aaq.withApp != nil {
+			_spec.Node.AddColumnOnce(appaction.FieldAppID)
 		}
 	}
 	if ps := aaq.predicates; len(ps) > 0 {

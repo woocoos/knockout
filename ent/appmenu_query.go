@@ -20,7 +20,7 @@ import (
 type AppMenuQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []appmenu.Order
 	inters     []Interceptor
 	predicates []predicate.AppMenu
 	withApp    *AppQuery
@@ -58,7 +58,7 @@ func (amq *AppMenuQuery) Unique(unique bool) *AppMenuQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (amq *AppMenuQuery) Order(o ...OrderFunc) *AppMenuQuery {
+func (amq *AppMenuQuery) Order(o ...appmenu.Order) *AppMenuQuery {
 	amq.order = append(amq.order, o...)
 	return amq
 }
@@ -296,7 +296,7 @@ func (amq *AppMenuQuery) Clone() *AppMenuQuery {
 	return &AppMenuQuery{
 		config:     amq.config,
 		ctx:        amq.ctx.Clone(),
-		order:      append([]OrderFunc{}, amq.order...),
+		order:      append([]appmenu.Order{}, amq.order...),
 		inters:     append([]Interceptor{}, amq.inters...),
 		predicates: append([]predicate.AppMenu{}, amq.predicates...),
 		withApp:    amq.withApp.Clone(),
@@ -542,6 +542,12 @@ func (amq *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != appmenu.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if amq.withApp != nil {
+			_spec.Node.AddColumnOnce(appmenu.FieldAppID)
+		}
+		if amq.withAction != nil {
+			_spec.Node.AddColumnOnce(appmenu.FieldActionID)
 		}
 	}
 	if ps := amq.predicates; len(ps) > 0 {

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/woocoos/entco/schemax/typex"
 )
@@ -133,6 +135,98 @@ func MfaStatusValidator(ms typex.SimpleStatus) error {
 	default:
 		return fmt.Errorf("userloginprofile: invalid enum value for mfa_status field: %q", ms)
 	}
+}
+
+// Order defines the ordering method for the UserLoginProfile queries.
+type Order func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedBy orders the results by the created_by field.
+func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedBy orders the results by the updated_by field.
+func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+}
+
+// ByLastLoginIP orders the results by the last_login_ip field.
+func ByLastLoginIP(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldLastLoginIP, opts...).ToFunc()
+}
+
+// ByLastLoginAt orders the results by the last_login_at field.
+func ByLastLoginAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldLastLoginAt, opts...).ToFunc()
+}
+
+// ByCanLogin orders the results by the can_login field.
+func ByCanLogin(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCanLogin, opts...).ToFunc()
+}
+
+// BySetKind orders the results by the set_kind field.
+func BySetKind(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldSetKind, opts...).ToFunc()
+}
+
+// ByPasswordReset orders the results by the password_reset field.
+func ByPasswordReset(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldPasswordReset, opts...).ToFunc()
+}
+
+// ByVerifyDevice orders the results by the verify_device field.
+func ByVerifyDevice(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldVerifyDevice, opts...).ToFunc()
+}
+
+// ByMfaEnabled orders the results by the mfa_enabled field.
+func ByMfaEnabled(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldMfaEnabled, opts...).ToFunc()
+}
+
+// ByMfaSecret orders the results by the mfa_secret field.
+func ByMfaSecret(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldMfaSecret, opts...).ToFunc()
+}
+
+// ByMfaStatus orders the results by the mfa_status field.
+func ByMfaStatus(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldMfaStatus, opts...).ToFunc()
+}
+
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, true, UserTable, UserColumn),
+	)
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -125,6 +127,115 @@ func KindValidator(k Kind) error {
 	default:
 		return fmt.Errorf("orgrole: invalid enum value for kind field: %q", k)
 	}
+}
+
+// Order defines the ordering method for the OrgRole queries.
+type Order func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedBy orders the results by the created_by field.
+func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedBy orders the results by the updated_by field.
+func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByOrgID orders the results by the org_id field.
+func ByOrgID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
+}
+
+// ByKind orders the results by the kind field.
+func ByKind(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldKind, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByAppRoleID orders the results by the app_role_id field.
+func ByAppRoleID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldAppRoleID, opts...).ToFunc()
+}
+
+// ByComments orders the results by the comments field.
+func ByComments(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldComments, opts...).ToFunc()
+}
+
+// ByOrgField orders the results by org field.
+func ByOrgField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByOrgUsersCount orders the results by org_users count.
+func ByOrgUsersCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgUsersStep(), opts...)
+	}
+}
+
+// ByOrgUsers orders the results by org_users terms.
+func ByOrgUsers(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByOrgRoleUserCount orders the results by org_role_user count.
+func ByOrgRoleUserCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgRoleUserStep(), opts...)
+	}
+}
+
+// ByOrgRoleUser orders the results by org_role_user terms.
+func ByOrgRoleUser(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgRoleUserStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newOrgStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
+	)
+}
+func newOrgUsersStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgUsersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, OrgUsersTable, OrgUsersPrimaryKey...),
+	)
+}
+func newOrgRoleUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgRoleUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
+	)
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

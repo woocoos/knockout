@@ -19,7 +19,7 @@ import (
 type UserPasswordQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []userpassword.Order
 	inters     []Interceptor
 	predicates []predicate.UserPassword
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (upq *UserPasswordQuery) Unique(unique bool) *UserPasswordQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (upq *UserPasswordQuery) Order(o ...OrderFunc) *UserPasswordQuery {
+func (upq *UserPasswordQuery) Order(o ...userpassword.Order) *UserPasswordQuery {
 	upq.order = append(upq.order, o...)
 	return upq
 }
@@ -272,7 +272,7 @@ func (upq *UserPasswordQuery) Clone() *UserPasswordQuery {
 	return &UserPasswordQuery{
 		config:     upq.config,
 		ctx:        upq.ctx.Clone(),
-		order:      append([]OrderFunc{}, upq.order...),
+		order:      append([]userpassword.Order{}, upq.order...),
 		inters:     append([]Interceptor{}, upq.inters...),
 		predicates: append([]predicate.UserPassword{}, upq.predicates...),
 		withUser:   upq.withUser.Clone(),
@@ -467,6 +467,9 @@ func (upq *UserPasswordQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != userpassword.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if upq.withUser != nil {
+			_spec.Node.AddColumnOnce(userpassword.FieldUserID)
 		}
 	}
 	if ps := upq.predicates; len(ps) > 0 {

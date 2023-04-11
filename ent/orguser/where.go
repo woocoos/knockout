@@ -434,11 +434,7 @@ func HasOrg() predicate.OrgUser {
 // HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
 func HasOrgWith(preds ...predicate.Org) predicate.OrgUser {
 	return predicate.OrgUser(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
-		)
+		step := newOrgStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -461,11 +457,7 @@ func HasUser() predicate.OrgUser {
 // HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
 func HasUserWith(preds ...predicate.User) predicate.OrgUser {
 	return predicate.OrgUser(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(UserInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, UserTable, UserColumn),
-		)
+		step := newUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -488,11 +480,7 @@ func HasOrgRoles() predicate.OrgUser {
 // HasOrgRolesWith applies the HasEdge predicate on the "org_roles" edge with a given conditions (other predicates).
 func HasOrgRolesWith(preds ...predicate.OrgRole) predicate.OrgUser {
 	return predicate.OrgUser(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgRolesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, OrgRolesTable, OrgRolesPrimaryKey...),
-		)
+		step := newOrgRolesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

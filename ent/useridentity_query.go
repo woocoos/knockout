@@ -19,7 +19,7 @@ import (
 type UserIdentityQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []useridentity.Order
 	inters     []Interceptor
 	predicates []predicate.UserIdentity
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (uiq *UserIdentityQuery) Unique(unique bool) *UserIdentityQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uiq *UserIdentityQuery) Order(o ...OrderFunc) *UserIdentityQuery {
+func (uiq *UserIdentityQuery) Order(o ...useridentity.Order) *UserIdentityQuery {
 	uiq.order = append(uiq.order, o...)
 	return uiq
 }
@@ -272,7 +272,7 @@ func (uiq *UserIdentityQuery) Clone() *UserIdentityQuery {
 	return &UserIdentityQuery{
 		config:     uiq.config,
 		ctx:        uiq.ctx.Clone(),
-		order:      append([]OrderFunc{}, uiq.order...),
+		order:      append([]useridentity.Order{}, uiq.order...),
 		inters:     append([]Interceptor{}, uiq.inters...),
 		predicates: append([]predicate.UserIdentity{}, uiq.predicates...),
 		withUser:   uiq.withUser.Clone(),
@@ -467,6 +467,9 @@ func (uiq *UserIdentityQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != useridentity.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if uiq.withUser != nil {
+			_spec.Node.AddColumnOnce(useridentity.FieldUserID)
 		}
 	}
 	if ps := uiq.predicates; len(ps) > 0 {

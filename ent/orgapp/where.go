@@ -319,11 +319,7 @@ func HasApp() predicate.OrgApp {
 // HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
 func HasAppWith(preds ...predicate.App) predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
-		)
+		step := newAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -346,11 +342,7 @@ func HasOrg() predicate.OrgApp {
 // HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
 func HasOrgWith(preds ...predicate.Org) predicate.OrgApp {
 	return predicate.OrgApp(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
-		)
+		step := newOrgStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

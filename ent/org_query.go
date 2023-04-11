@@ -26,7 +26,7 @@ import (
 type OrgQuery struct {
 	config
 	ctx                     *QueryContext
-	order                   []OrderFunc
+	order                   []org.Order
 	inters                  []Interceptor
 	predicates              []predicate.Org
 	withParent              *OrgQuery
@@ -80,7 +80,7 @@ func (oq *OrgQuery) Unique(unique bool) *OrgQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oq *OrgQuery) Order(o ...OrderFunc) *OrgQuery {
+func (oq *OrgQuery) Order(o ...org.Order) *OrgQuery {
 	oq.order = append(oq.order, o...)
 	return oq
 }
@@ -494,7 +494,7 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 	return &OrgQuery{
 		config:             oq.config,
 		ctx:                oq.ctx.Clone(),
-		order:              append([]OrderFunc{}, oq.order...),
+		order:              append([]org.Order{}, oq.order...),
 		inters:             append([]Interceptor{}, oq.inters...),
 		predicates:         append([]predicate.Org{}, oq.predicates...),
 		withParent:         oq.withParent.Clone(),
@@ -1237,6 +1237,12 @@ func (oq *OrgQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != org.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if oq.withParent != nil {
+			_spec.Node.AddColumnOnce(org.FieldParentID)
+		}
+		if oq.withOwner != nil {
+			_spec.Node.AddColumnOnce(org.FieldOwnerID)
 		}
 	}
 	if ps := oq.predicates; len(ps) > 0 {

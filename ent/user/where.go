@@ -855,11 +855,7 @@ func HasIdentities() predicate.User {
 // HasIdentitiesWith applies the HasEdge predicate on the "identities" edge with a given conditions (other predicates).
 func HasIdentitiesWith(preds ...predicate.UserIdentity) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(IdentitiesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, IdentitiesTable, IdentitiesColumn),
-		)
+		step := newIdentitiesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -882,11 +878,7 @@ func HasLoginProfile() predicate.User {
 // HasLoginProfileWith applies the HasEdge predicate on the "login_profile" edge with a given conditions (other predicates).
 func HasLoginProfileWith(preds ...predicate.UserLoginProfile) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(LoginProfileInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, LoginProfileTable, LoginProfileColumn),
-		)
+		step := newLoginProfileStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -909,11 +901,7 @@ func HasPasswords() predicate.User {
 // HasPasswordsWith applies the HasEdge predicate on the "passwords" edge with a given conditions (other predicates).
 func HasPasswordsWith(preds ...predicate.UserPassword) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PasswordsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, PasswordsTable, PasswordsColumn),
-		)
+		step := newPasswordsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -936,11 +924,7 @@ func HasDevices() predicate.User {
 // HasDevicesWith applies the HasEdge predicate on the "devices" edge with a given conditions (other predicates).
 func HasDevicesWith(preds ...predicate.UserDevice) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(DevicesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DevicesTable, DevicesColumn),
-		)
+		step := newDevicesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -963,11 +947,7 @@ func HasOrgs() predicate.User {
 // HasOrgsWith applies the HasEdge predicate on the "orgs" edge with a given conditions (other predicates).
 func HasOrgsWith(preds ...predicate.Org) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, OrgsTable, OrgsPrimaryKey...),
-		)
+		step := newOrgsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -990,11 +970,7 @@ func HasPermissions() predicate.User {
 // HasPermissionsWith applies the HasEdge predicate on the "permissions" edge with a given conditions (other predicates).
 func HasPermissionsWith(preds ...predicate.Permission) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PermissionsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, PermissionsTable, PermissionsColumn),
-		)
+		step := newPermissionsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -1017,11 +993,7 @@ func HasOrgUser() predicate.User {
 // HasOrgUserWith applies the HasEdge predicate on the "org_user" edge with a given conditions (other predicates).
 func HasOrgUserWith(preds ...predicate.OrgUser) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OrgUserInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, OrgUserTable, OrgUserColumn),
-		)
+		step := newOrgUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

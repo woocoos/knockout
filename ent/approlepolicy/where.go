@@ -364,11 +364,7 @@ func HasRole() predicate.AppRolePolicy {
 // HasRoleWith applies the HasEdge predicate on the "role" edge with a given conditions (other predicates).
 func HasRoleWith(preds ...predicate.AppRole) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(RoleInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, RoleTable, RoleColumn),
-		)
+		step := newRoleStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -391,11 +387,7 @@ func HasPolicy() predicate.AppRolePolicy {
 // HasPolicyWith applies the HasEdge predicate on the "policy" edge with a given conditions (other predicates).
 func HasPolicyWith(preds ...predicate.AppPolicy) predicate.AppRolePolicy {
 	return predicate.AppRolePolicy(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PolicyInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, PolicyTable, PolicyColumn),
-		)
+		step := newPolicyStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

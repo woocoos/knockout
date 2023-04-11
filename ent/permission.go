@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
@@ -46,7 +47,8 @@ type Permission struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PermissionQuery when eager-loading is set.
-	Edges PermissionEdges `json:"edges"`
+	Edges        PermissionEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // PermissionEdges holds the relations/edges for other nodes in the graph.
@@ -115,7 +117,7 @@ func (*Permission) scanValues(columns []string) ([]any, error) {
 		case permission.FieldCreatedAt, permission.FieldUpdatedAt, permission.FieldStartAt, permission.FieldEndAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Permission", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -207,9 +209,17 @@ func (pe *Permission) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pe.Status = typex.SimpleStatus(value.String)
 			}
+		default:
+			pe.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Permission.
+// This includes values selected through modifiers, order, etc.
+func (pe *Permission) Value(name string) (ent.Value, error) {
+	return pe.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the Permission entity.

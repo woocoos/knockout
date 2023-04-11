@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
@@ -54,7 +55,8 @@ type Org struct {
 	Timezone string `json:"timezone,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgQuery when eager-loading is set.
-	Edges OrgEdges `json:"edges"`
+	Edges        OrgEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OrgEdges holds the relations/edges for other nodes in the graph.
@@ -205,7 +207,7 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 		case org.FieldCreatedAt, org.FieldUpdatedAt, org.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Org", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -327,9 +329,17 @@ func (o *Org) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				o.Timezone = value.String
 			}
+		default:
+			o.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Org.
+// This includes values selected through modifiers, order, etc.
+func (o *Org) Value(name string) (ent.Value, error) {
+	return o.selectValues.Get(name)
 }
 
 // QueryParent queries the "parent" edge of the Org entity.

@@ -20,7 +20,7 @@ import (
 type AppRolePolicyQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []approlepolicy.Order
 	inters     []Interceptor
 	predicates []predicate.AppRolePolicy
 	withRole   *AppRoleQuery
@@ -58,7 +58,7 @@ func (arpq *AppRolePolicyQuery) Unique(unique bool) *AppRolePolicyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arpq *AppRolePolicyQuery) Order(o ...OrderFunc) *AppRolePolicyQuery {
+func (arpq *AppRolePolicyQuery) Order(o ...approlepolicy.Order) *AppRolePolicyQuery {
 	arpq.order = append(arpq.order, o...)
 	return arpq
 }
@@ -296,7 +296,7 @@ func (arpq *AppRolePolicyQuery) Clone() *AppRolePolicyQuery {
 	return &AppRolePolicyQuery{
 		config:     arpq.config,
 		ctx:        arpq.ctx.Clone(),
-		order:      append([]OrderFunc{}, arpq.order...),
+		order:      append([]approlepolicy.Order{}, arpq.order...),
 		inters:     append([]Interceptor{}, arpq.inters...),
 		predicates: append([]predicate.AppRolePolicy{}, arpq.predicates...),
 		withRole:   arpq.withRole.Clone(),
@@ -539,6 +539,12 @@ func (arpq *AppRolePolicyQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != approlepolicy.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if arpq.withRole != nil {
+			_spec.Node.AddColumnOnce(approlepolicy.FieldAppRoleID)
+		}
+		if arpq.withPolicy != nil {
+			_spec.Node.AddColumnOnce(approlepolicy.FieldAppPolicyID)
 		}
 	}
 	if ps := arpq.predicates; len(ps) > 0 {

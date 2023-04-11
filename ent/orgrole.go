@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -37,7 +38,8 @@ type OrgRole struct {
 	Comments string `json:"comments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgRoleQuery when eager-loading is set.
-	Edges OrgRoleEdges `json:"edges"`
+	Edges        OrgRoleEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OrgRoleEdges holds the relations/edges for other nodes in the graph.
@@ -99,7 +101,7 @@ func (*OrgRole) scanValues(columns []string) ([]any, error) {
 		case orgrole.FieldCreatedAt, orgrole.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type OrgRole", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -173,9 +175,17 @@ func (or *OrgRole) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				or.Comments = value.String
 			}
+		default:
+			or.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the OrgRole.
+// This includes values selected through modifiers, order, etc.
+func (or *OrgRole) Value(name string) (ent.Value, error) {
+	return or.selectValues.Get(name)
 }
 
 // QueryOrg queries the "org" edge of the OrgRole entity.

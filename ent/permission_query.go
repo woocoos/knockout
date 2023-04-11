@@ -21,7 +21,7 @@ import (
 type PermissionQuery struct {
 	config
 	ctx           *QueryContext
-	order         []OrderFunc
+	order         []permission.Order
 	inters        []Interceptor
 	predicates    []predicate.Permission
 	withOrg       *OrgQuery
@@ -60,7 +60,7 @@ func (pq *PermissionQuery) Unique(unique bool) *PermissionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PermissionQuery) Order(o ...OrderFunc) *PermissionQuery {
+func (pq *PermissionQuery) Order(o ...permission.Order) *PermissionQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -320,7 +320,7 @@ func (pq *PermissionQuery) Clone() *PermissionQuery {
 	return &PermissionQuery{
 		config:        pq.config,
 		ctx:           pq.ctx.Clone(),
-		order:         append([]OrderFunc{}, pq.order...),
+		order:         append([]permission.Order{}, pq.order...),
 		inters:        append([]Interceptor{}, pq.inters...),
 		predicates:    append([]predicate.Permission{}, pq.predicates...),
 		withOrg:       pq.withOrg.Clone(),
@@ -611,6 +611,15 @@ func (pq *PermissionQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != permission.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if pq.withOrg != nil {
+			_spec.Node.AddColumnOnce(permission.FieldOrgID)
+		}
+		if pq.withUser != nil {
+			_spec.Node.AddColumnOnce(permission.FieldUserID)
+		}
+		if pq.withOrgPolicy != nil {
+			_spec.Node.AddColumnOnce(permission.FieldOrgPolicyID)
 		}
 	}
 	if ps := pq.predicates; len(ps) > 0 {

@@ -21,7 +21,7 @@ import (
 type OrgPolicyQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []OrderFunc
+	order                []orgpolicy.Order
 	inters               []Interceptor
 	predicates           []predicate.OrgPolicy
 	withOrg              *OrgQuery
@@ -60,7 +60,7 @@ func (opq *OrgPolicyQuery) Unique(unique bool) *OrgPolicyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (opq *OrgPolicyQuery) Order(o ...OrderFunc) *OrgPolicyQuery {
+func (opq *OrgPolicyQuery) Order(o ...orgpolicy.Order) *OrgPolicyQuery {
 	opq.order = append(opq.order, o...)
 	return opq
 }
@@ -298,7 +298,7 @@ func (opq *OrgPolicyQuery) Clone() *OrgPolicyQuery {
 	return &OrgPolicyQuery{
 		config:          opq.config,
 		ctx:             opq.ctx.Clone(),
-		order:           append([]OrderFunc{}, opq.order...),
+		order:           append([]orgpolicy.Order{}, opq.order...),
 		inters:          append([]Interceptor{}, opq.inters...),
 		predicates:      append([]predicate.OrgPolicy{}, opq.predicates...),
 		withOrg:         opq.withOrg.Clone(),
@@ -547,6 +547,9 @@ func (opq *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != orgpolicy.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if opq.withOrg != nil {
+			_spec.Node.AddColumnOnce(orgpolicy.FieldOrgID)
 		}
 	}
 	if ps := opq.predicates; len(ps) > 0 {

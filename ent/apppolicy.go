@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -44,7 +45,8 @@ type AppPolicy struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppPolicyQuery when eager-loading is set.
-	Edges AppPolicyEdges `json:"edges"`
+	Edges        AppPolicyEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppPolicyEdges holds the relations/edges for other nodes in the graph.
@@ -112,7 +114,7 @@ func (*AppPolicy) scanValues(columns []string) ([]any, error) {
 		case apppolicy.FieldCreatedAt, apppolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppPolicy", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -200,9 +202,17 @@ func (ap *AppPolicy) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.Status = typex.SimpleStatus(value.String)
 			}
+		default:
+			ap.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppPolicy.
+// This includes values selected through modifiers, order, etc.
+func (ap *AppPolicy) Value(name string) (ent.Value, error) {
+	return ap.selectValues.Get(name)
 }
 
 // QueryApp queries the "app" edge of the AppPolicy entity.

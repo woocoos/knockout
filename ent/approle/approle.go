@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -106,3 +108,112 @@ var (
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() int
 )
+
+// Order defines the ordering method for the AppRole queries.
+type Order func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreatedBy orders the results by the created_by field.
+func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedBy orders the results by the updated_by field.
+func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByAppID orders the results by the app_id field.
+func ByAppID(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldAppID, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByComments orders the results by the comments field.
+func ByComments(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldComments, opts...).ToFunc()
+}
+
+// ByAutoGrant orders the results by the auto_grant field.
+func ByAutoGrant(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldAutoGrant, opts...).ToFunc()
+}
+
+// ByEditable orders the results by the editable field.
+func ByEditable(opts ...sql.OrderTermOption) Order {
+	return sql.OrderByField(FieldEditable, opts...).ToFunc()
+}
+
+// ByAppField orders the results by app field.
+func ByAppField(field string, opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByPoliciesCount orders the results by policies count.
+func ByPoliciesCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPoliciesStep(), opts...)
+	}
+}
+
+// ByPolicies orders the results by policies terms.
+func ByPolicies(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPoliciesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAppRolePolicyCount orders the results by app_role_policy count.
+func ByAppRolePolicyCount(opts ...sql.OrderTermOption) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppRolePolicyStep(), opts...)
+	}
+}
+
+// ByAppRolePolicy orders the results by app_role_policy terms.
+func ByAppRolePolicy(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppRolePolicyStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AppTable, AppColumn),
+	)
+}
+func newPoliciesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PoliciesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, PoliciesTable, PoliciesPrimaryKey...),
+	)
+}
+func newAppRolePolicyStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppRolePolicyInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, AppRolePolicyTable, AppRolePolicyColumn),
+	)
+}

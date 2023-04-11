@@ -1,6 +1,7 @@
 package server
 
 import (
+	"ariga.io/entcache"
 	"bytes"
 	"context"
 	"errors"
@@ -296,7 +297,7 @@ func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPa
 	pwd, err := s.DB.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.PrincipalName(req.Body.Username)),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
-	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(ctx)
+	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Evict(ctx))
 	if err != nil {
 		return nil, err
 	}

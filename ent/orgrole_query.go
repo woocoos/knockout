@@ -22,7 +22,7 @@ import (
 type OrgRoleQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []OrderFunc
+	order                []orgrole.Order
 	inters               []Interceptor
 	predicates           []predicate.OrgRole
 	withOrg              *OrgQuery
@@ -63,7 +63,7 @@ func (orq *OrgRoleQuery) Unique(unique bool) *OrgRoleQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (orq *OrgRoleQuery) Order(o ...OrderFunc) *OrgRoleQuery {
+func (orq *OrgRoleQuery) Order(o ...orgrole.Order) *OrgRoleQuery {
 	orq.order = append(orq.order, o...)
 	return orq
 }
@@ -323,7 +323,7 @@ func (orq *OrgRoleQuery) Clone() *OrgRoleQuery {
 	return &OrgRoleQuery{
 		config:          orq.config,
 		ctx:             orq.ctx.Clone(),
-		order:           append([]OrderFunc{}, orq.order...),
+		order:           append([]orgrole.Order{}, orq.order...),
 		inters:          append([]Interceptor{}, orq.inters...),
 		predicates:      append([]predicate.OrgRole{}, orq.predicates...),
 		withOrg:         orq.withOrg.Clone(),
@@ -660,6 +660,9 @@ func (orq *OrgRoleQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != orgrole.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if orq.withOrg != nil {
+			_spec.Node.AddColumnOnce(orgrole.FieldOrgID)
 		}
 	}
 	if ps := orq.predicates; len(ps) > 0 {

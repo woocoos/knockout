@@ -22,7 +22,7 @@ import (
 type AppRoleQuery struct {
 	config
 	ctx                    *QueryContext
-	order                  []OrderFunc
+	order                  []approle.Order
 	inters                 []Interceptor
 	predicates             []predicate.AppRole
 	withApp                *AppQuery
@@ -63,7 +63,7 @@ func (arq *AppRoleQuery) Unique(unique bool) *AppRoleQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arq *AppRoleQuery) Order(o ...OrderFunc) *AppRoleQuery {
+func (arq *AppRoleQuery) Order(o ...approle.Order) *AppRoleQuery {
 	arq.order = append(arq.order, o...)
 	return arq
 }
@@ -323,7 +323,7 @@ func (arq *AppRoleQuery) Clone() *AppRoleQuery {
 	return &AppRoleQuery{
 		config:            arq.config,
 		ctx:               arq.ctx.Clone(),
-		order:             append([]OrderFunc{}, arq.order...),
+		order:             append([]approle.Order{}, arq.order...),
 		inters:            append([]Interceptor{}, arq.inters...),
 		predicates:        append([]predicate.AppRole{}, arq.predicates...),
 		withApp:           arq.withApp.Clone(),
@@ -660,6 +660,9 @@ func (arq *AppRoleQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != approle.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if arq.withApp != nil {
+			_spec.Node.AddColumnOnce(approle.FieldAppID)
 		}
 	}
 	if ps := arq.predicates; len(ps) > 0 {

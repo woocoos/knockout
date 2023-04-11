@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
@@ -46,7 +47,8 @@ type UserDevice struct {
 	Comments string `json:"comments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserDeviceQuery when eager-loading is set.
-	Edges UserDeviceEdges `json:"edges"`
+	Edges        UserDeviceEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // UserDeviceEdges holds the relations/edges for other nodes in the graph.
@@ -85,7 +87,7 @@ func (*UserDevice) scanValues(columns []string) ([]any, error) {
 		case userdevice.FieldCreatedAt, userdevice.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type UserDevice", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -183,9 +185,17 @@ func (ud *UserDevice) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ud.Comments = value.String
 			}
+		default:
+			ud.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the UserDevice.
+// This includes values selected through modifiers, order, etc.
+func (ud *UserDevice) Value(name string) (ent.Value, error) {
+	return ud.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the UserDevice entity.

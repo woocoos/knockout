@@ -8,7 +8,26 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/appres"
+	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
+	"github.com/woocoos/knockout/ent/useridentity"
+	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/ent/userpassword"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -24,7 +43,7 @@ type Query interface {
 	// Unique configures the query builder to filter duplicate records.
 	Unique(bool)
 	// Order specifies how the records should be ordered.
-	Order(...ent.OrderFunc)
+	Order(...func(*sql.Selector))
 	// WhereP appends storage-level predicates to the query builder. Using this method, users
 	// can use type-assertion to append predicates that do not depend on any generated package.
 	WhereP(...func(*sql.Selector))
@@ -584,80 +603,84 @@ func (f TraverseUserPassword) Traverse(ctx context.Context, q ent.Query) error {
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.AppQuery:
-		return &query[*ent.AppQuery, predicate.App]{typ: ent.TypeApp, tq: q}, nil
+		return &query[*ent.AppQuery, predicate.App, app.Order]{typ: ent.TypeApp, tq: q}, nil
 	case *ent.AppActionQuery:
-		return &query[*ent.AppActionQuery, predicate.AppAction]{typ: ent.TypeAppAction, tq: q}, nil
+		return &query[*ent.AppActionQuery, predicate.AppAction, appaction.Order]{typ: ent.TypeAppAction, tq: q}, nil
 	case *ent.AppMenuQuery:
-		return &query[*ent.AppMenuQuery, predicate.AppMenu]{typ: ent.TypeAppMenu, tq: q}, nil
+		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.Order]{typ: ent.TypeAppMenu, tq: q}, nil
 	case *ent.AppPolicyQuery:
-		return &query[*ent.AppPolicyQuery, predicate.AppPolicy]{typ: ent.TypeAppPolicy, tq: q}, nil
+		return &query[*ent.AppPolicyQuery, predicate.AppPolicy, apppolicy.Order]{typ: ent.TypeAppPolicy, tq: q}, nil
 	case *ent.AppResQuery:
-		return &query[*ent.AppResQuery, predicate.AppRes]{typ: ent.TypeAppRes, tq: q}, nil
+		return &query[*ent.AppResQuery, predicate.AppRes, appres.Order]{typ: ent.TypeAppRes, tq: q}, nil
 	case *ent.AppRoleQuery:
-		return &query[*ent.AppRoleQuery, predicate.AppRole]{typ: ent.TypeAppRole, tq: q}, nil
+		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.Order]{typ: ent.TypeAppRole, tq: q}, nil
 	case *ent.AppRolePolicyQuery:
-		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy]{typ: ent.TypeAppRolePolicy, tq: q}, nil
+		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.Order]{typ: ent.TypeAppRolePolicy, tq: q}, nil
 	case *ent.OrgQuery:
-		return &query[*ent.OrgQuery, predicate.Org]{typ: ent.TypeOrg, tq: q}, nil
+		return &query[*ent.OrgQuery, predicate.Org, org.Order]{typ: ent.TypeOrg, tq: q}, nil
 	case *ent.OrgAppQuery:
-		return &query[*ent.OrgAppQuery, predicate.OrgApp]{typ: ent.TypeOrgApp, tq: q}, nil
+		return &query[*ent.OrgAppQuery, predicate.OrgApp, orgapp.Order]{typ: ent.TypeOrgApp, tq: q}, nil
 	case *ent.OrgPolicyQuery:
-		return &query[*ent.OrgPolicyQuery, predicate.OrgPolicy]{typ: ent.TypeOrgPolicy, tq: q}, nil
+		return &query[*ent.OrgPolicyQuery, predicate.OrgPolicy, orgpolicy.Order]{typ: ent.TypeOrgPolicy, tq: q}, nil
 	case *ent.OrgRoleQuery:
-		return &query[*ent.OrgRoleQuery, predicate.OrgRole]{typ: ent.TypeOrgRole, tq: q}, nil
+		return &query[*ent.OrgRoleQuery, predicate.OrgRole, orgrole.Order]{typ: ent.TypeOrgRole, tq: q}, nil
 	case *ent.OrgRoleUserQuery:
-		return &query[*ent.OrgRoleUserQuery, predicate.OrgRoleUser]{typ: ent.TypeOrgRoleUser, tq: q}, nil
+		return &query[*ent.OrgRoleUserQuery, predicate.OrgRoleUser, orgroleuser.Order]{typ: ent.TypeOrgRoleUser, tq: q}, nil
 	case *ent.OrgUserQuery:
-		return &query[*ent.OrgUserQuery, predicate.OrgUser]{typ: ent.TypeOrgUser, tq: q}, nil
+		return &query[*ent.OrgUserQuery, predicate.OrgUser, orguser.Order]{typ: ent.TypeOrgUser, tq: q}, nil
 	case *ent.PermissionQuery:
-		return &query[*ent.PermissionQuery, predicate.Permission]{typ: ent.TypePermission, tq: q}, nil
+		return &query[*ent.PermissionQuery, predicate.Permission, permission.Order]{typ: ent.TypePermission, tq: q}, nil
 	case *ent.UserQuery:
-		return &query[*ent.UserQuery, predicate.User]{typ: ent.TypeUser, tq: q}, nil
+		return &query[*ent.UserQuery, predicate.User, user.Order]{typ: ent.TypeUser, tq: q}, nil
 	case *ent.UserDeviceQuery:
-		return &query[*ent.UserDeviceQuery, predicate.UserDevice]{typ: ent.TypeUserDevice, tq: q}, nil
+		return &query[*ent.UserDeviceQuery, predicate.UserDevice, userdevice.Order]{typ: ent.TypeUserDevice, tq: q}, nil
 	case *ent.UserIdentityQuery:
-		return &query[*ent.UserIdentityQuery, predicate.UserIdentity]{typ: ent.TypeUserIdentity, tq: q}, nil
+		return &query[*ent.UserIdentityQuery, predicate.UserIdentity, useridentity.Order]{typ: ent.TypeUserIdentity, tq: q}, nil
 	case *ent.UserLoginProfileQuery:
-		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile]{typ: ent.TypeUserLoginProfile, tq: q}, nil
+		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile, userloginprofile.Order]{typ: ent.TypeUserLoginProfile, tq: q}, nil
 	case *ent.UserPasswordQuery:
-		return &query[*ent.UserPasswordQuery, predicate.UserPassword]{typ: ent.TypeUserPassword, tq: q}, nil
+		return &query[*ent.UserPasswordQuery, predicate.UserPassword, userpassword.Order]{typ: ent.TypeUserPassword, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}
 }
 
-type query[T any, P ~func(*sql.Selector)] struct {
+type query[T any, P ~func(*sql.Selector), R ~func(*sql.Selector)] struct {
 	typ string
 	tq  interface {
 		Limit(int) T
 		Offset(int) T
 		Unique(bool) T
-		Order(...ent.OrderFunc) T
+		Order(...R) T
 		Where(...P) T
 	}
 }
 
-func (q query[T, P]) Type() string {
+func (q query[T, P, R]) Type() string {
 	return q.typ
 }
 
-func (q query[T, P]) Limit(limit int) {
+func (q query[T, P, R]) Limit(limit int) {
 	q.tq.Limit(limit)
 }
 
-func (q query[T, P]) Offset(offset int) {
+func (q query[T, P, R]) Offset(offset int) {
 	q.tq.Offset(offset)
 }
 
-func (q query[T, P]) Unique(unique bool) {
+func (q query[T, P, R]) Unique(unique bool) {
 	q.tq.Unique(unique)
 }
 
-func (q query[T, P]) Order(orders ...ent.OrderFunc) {
-	q.tq.Order(orders...)
+func (q query[T, P, R]) Order(orders ...func(*sql.Selector)) {
+	rs := make([]R, len(orders))
+	for i := range orders {
+		rs[i] = orders[i]
+	}
+	q.tq.Order(rs...)
 }
 
-func (q query[T, P]) WhereP(ps ...func(*sql.Selector)) {
+func (q query[T, P, R]) WhereP(ps ...func(*sql.Selector)) {
 	p := make([]P, len(ps))
 	for i := range ps {
 		p[i] = ps[i]

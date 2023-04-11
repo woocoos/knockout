@@ -494,11 +494,7 @@ func HasApp() predicate.AppAction {
 // HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
 func HasAppWith(preds ...predicate.App) predicate.AppAction {
 	return predicate.AppAction(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, AppTable, AppColumn),
-		)
+		step := newAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -521,11 +517,7 @@ func HasMenus() predicate.AppAction {
 // HasMenusWith applies the HasEdge predicate on the "menus" edge with a given conditions (other predicates).
 func HasMenusWith(preds ...predicate.AppMenu) predicate.AppAction {
 	return predicate.AppAction(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(MenusInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, MenusTable, MenusColumn),
-		)
+		step := newMenusStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -548,11 +540,7 @@ func HasResources() predicate.AppAction {
 // HasResourcesWith applies the HasEdge predicate on the "resources" edge with a given conditions (other predicates).
 func HasResourcesWith(preds ...predicate.AppRes) predicate.AppAction {
 	return predicate.AppAction(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ResourcesInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ResourcesTable, ResourcesColumn),
-		)
+		step := newResourcesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
