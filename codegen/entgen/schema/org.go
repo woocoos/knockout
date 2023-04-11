@@ -63,7 +63,7 @@ func (Org) Fields() []ent.Field {
 		field.Text("path").Optional().Comment("路径编码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Int32("display_sort").Optional().
-			Annotations(entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
+			Annotations(entgql.OrderField("displaySort"), entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("country_code").MaxLen(10).Optional().Comment("国家或地区2字码"),
 		field.String("timezone").MaxLen(45).Optional().Comment("时区"),
 	}

@@ -9,7 +9,7 @@ import "google/protobuf/timestamp.proto";
 
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/woocoos/knockout/api/proto/entpb";
+option go_package = "github.com/woocoos/knockout/ent/proto/entpb";
 
 message User {
   int64 id = 1;

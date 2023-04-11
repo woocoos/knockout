@@ -3547,6 +3547,7 @@ input AppMenuOrder {
 """Properties by which AppMenu connections can be ordered."""
 enum AppMenuOrderField {
   createdAt
+  displaySort
 }
 """
 AppMenuWhereInput is used for filtering AppMenu objects.
@@ -4870,6 +4871,7 @@ input OrgOrder {
 """Properties by which Org connections can be ordered."""
 enum OrgOrderField {
   createdAt
+  displaySort
 }
 type OrgPolicy implements Node {
   id: ID!

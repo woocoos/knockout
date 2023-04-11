@@ -879,6 +879,16 @@ var (
 			}
 		},
 	}
+	// AppMenuOrderFieldDisplaySort orders AppMenu by display_sort.
+	AppMenuOrderFieldDisplaySort = &AppMenuOrderField{
+		field: appmenu.FieldDisplaySort,
+		toCursor: func(am *AppMenu) Cursor {
+			return Cursor{
+				ID:    am.ID,
+				Value: am.DisplaySort,
+			}
+		},
+	}
 )
 
 // String implement fmt.Stringer interface.
@@ -887,6 +897,8 @@ func (f AppMenuOrderField) String() string {
 	switch f.field {
 	case appmenu.FieldCreatedAt:
 		str = "createdAt"
+	case appmenu.FieldDisplaySort:
+		str = "displaySort"
 	}
 	return str
 }
@@ -905,6 +917,8 @@ func (f *AppMenuOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "createdAt":
 		*f = *AppMenuOrderFieldCreatedAt
+	case "displaySort":
+		*f = *AppMenuOrderFieldDisplaySort
 	default:
 		return fmt.Errorf("%s is not a valid AppMenuOrderField", str)
 	}
@@ -1991,6 +2005,16 @@ var (
 			}
 		},
 	}
+	// OrgOrderFieldDisplaySort orders Org by display_sort.
+	OrgOrderFieldDisplaySort = &OrgOrderField{
+		field: org.FieldDisplaySort,
+		toCursor: func(o *Org) Cursor {
+			return Cursor{
+				ID:    o.ID,
+				Value: o.DisplaySort,
+			}
+		},
+	}
 )
 
 // String implement fmt.Stringer interface.
@@ -1999,6 +2023,8 @@ func (f OrgOrderField) String() string {
 	switch f.field {
 	case org.FieldCreatedAt:
 		str = "createdAt"
+	case org.FieldDisplaySort:
+		str = "displaySort"
 	}
 	return str
 }
@@ -2017,6 +2043,8 @@ func (f *OrgOrderField) UnmarshalGQL(v interface{}) error {
 	switch str {
 	case "createdAt":
 		*f = *OrgOrderFieldCreatedAt
+	case "displaySort":
+		*f = *OrgOrderFieldDisplaySort
 	default:
 		return fmt.Errorf("%s is not a valid OrgOrderField", str)
 	}
