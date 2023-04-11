@@ -40,7 +40,7 @@ type MutationResolver interface {
 	CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) (bool, error)
 	UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error)
 	DeleteAppPolicy(ctx context.Context, policyID int) (bool, error)
-	CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) (bool, error)
+	CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error)
 	UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error)
 	MoveAppMenu(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
 	DeleteAppMenu(ctx context.Context, menuID int) (bool, error)
@@ -2647,9 +2647,9 @@ func (ec *executionContext) _Mutation_createAppMenus(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.([]*ent.AppMenu)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenu(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2659,7 +2659,37 @@ func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppMenu_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppMenu_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppMenu_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppMenu_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppMenu_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppMenu_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppMenu_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppMenu_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppMenu_name(ctx, field)
+			case "actionID":
+				return ec.fieldContext_AppMenu_actionID(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppMenu_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppMenu_app(ctx, field)
+			case "action":
+				return ec.fieldContext_AppMenu_action(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
 	}
 	defer func() {

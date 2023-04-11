@@ -43,25 +43,25 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 }
 
 // CreateAppMenus
-func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) error {
+func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
 	client := ent.FromContext(ctx)
 	tid := identity.TenantIDFromContext(ctx)
 	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
 	if !has {
-		return fmt.Errorf("app not exist")
+		return nil, fmt.Errorf("app not exist")
 	}
 	builders := make([]*ent.AppMenuCreate, len(input))
 	for i, menu := range input {
 		if menu.ActionID != nil {
 			has := client.AppAction.Query().Where(appaction.ID(*menu.ActionID), appaction.AppID(appID)).ExistX(ctx)
 			if !has {
-				return fmt.Errorf("app action not exist")
+				return nil, fmt.Errorf("app action not exist")
 			}
 		}
 		builders[i] = client.AppMenu.Create().SetInput(*menu).SetAppID(appID)
 	}
-	err := client.AppMenu.CreateBulk(builders...).Exec(ctx)
-	return err
+	ams, err := client.AppMenu.CreateBulk(builders...).Save(ctx)
+	return ams, err
 }
 
 // MoveAppMenu

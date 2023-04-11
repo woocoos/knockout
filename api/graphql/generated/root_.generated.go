@@ -7139,7 +7139,7 @@ input GrantInput {
     """删除应用策略模板"""
     deleteAppPolicy(policyID:ID!): Boolean!
     """创建应用菜单"""
-    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): Boolean!
+    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
     """更新应用菜单"""
     updateAppMenu(menuID:ID!,input: UpdateAppMenuInput!): AppMenu
     """应用菜单位置调整，targetLocation: child, up, down"""

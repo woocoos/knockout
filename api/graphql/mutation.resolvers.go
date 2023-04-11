@@ -144,9 +144,8 @@ func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (b
 }
 
 // CreateAppMenus is the resolver for the createAppMenus field.
-func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) (bool, error) {
-	err := r.Resource.CreateAppMenus(ctx, appID, input)
-	return err == nil, err
+func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
+	return r.Resource.CreateAppMenus(ctx, appID, input)
 }
 
 // UpdateAppMenu is the resolver for the updateAppMenu field.
