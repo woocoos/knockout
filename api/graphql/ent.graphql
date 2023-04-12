@@ -1567,6 +1567,8 @@ type Org implements Node {
   timezone: String
   parent: Org!
   children: [Org!]
+  """管理账户"""
+  owner: User
   users(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor

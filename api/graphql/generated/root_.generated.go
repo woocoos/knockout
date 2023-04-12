@@ -266,6 +266,7 @@ type ComplexityRoot struct {
 		Domain      func(childComplexity int) int
 		ID          func(childComplexity int) int
 		Name        func(childComplexity int) int
+		Owner       func(childComplexity int) int
 		OwnerID     func(childComplexity int) int
 		Parent      func(childComplexity int) int
 		ParentID    func(childComplexity int) int
@@ -1915,6 +1916,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.Name(childComplexity), true
+
+	case "Org.owner":
+		if e.complexity.Org.Owner == nil {
+			break
+		}
+
+		return e.complexity.Org.Owner(childComplexity), true
 
 	case "Org.ownerID":
 		if e.complexity.Org.OwnerID == nil {
@@ -4768,6 +4776,8 @@ type Org implements Node {
   timezone: String
   parent: Org!
   children: [Org!]
+  """管理账户"""
+  owner: User
   users(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor

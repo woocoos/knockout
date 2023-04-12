@@ -927,7 +927,10 @@ func (oq *OrgQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Or
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Org)
 	for i := range nodes {
-		fk := nodes[i].OwnerID
+		if nodes[i].OwnerID == nil {
+			continue
+		}
+		fk := *nodes[i].OwnerID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

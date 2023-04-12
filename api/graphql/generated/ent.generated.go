@@ -6600,9 +6600,9 @@ func (ec *executionContext) _Org_ownerID(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Org_ownerID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7111,6 +7111,8 @@ func (ec *executionContext) fieldContext_Org_parent(ctx context.Context, field g
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -7200,6 +7202,8 @@ func (ec *executionContext) fieldContext_Org_children(ctx context.Context, field
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -7210,6 +7214,89 @@ func (ec *executionContext) fieldContext_Org_children(ctx context.Context, field
 				return ec.fieldContext_Org_apps(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Org_owner(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_owner(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Owner(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.User)
+	fc.Result = res
+	return ec.marshalOUser2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_owner(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_User_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_User_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_User_deletedAt(ctx, field)
+			case "principalName":
+				return ec.fieldContext_User_principalName(ctx, field)
+			case "displayName":
+				return ec.fieldContext_User_displayName(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "mobile":
+				return ec.fieldContext_User_mobile(ctx, field)
+			case "userType":
+				return ec.fieldContext_User_userType(ctx, field)
+			case "creationType":
+				return ec.fieldContext_User_creationType(ctx, field)
+			case "registerIP":
+				return ec.fieldContext_User_registerIP(ctx, field)
+			case "status":
+				return ec.fieldContext_User_status(ctx, field)
+			case "comments":
+				return ec.fieldContext_User_comments(ctx, field)
+			case "identities":
+				return ec.fieldContext_User_identities(ctx, field)
+			case "loginProfile":
+				return ec.fieldContext_User_loginProfile(ctx, field)
+			case "passwords":
+				return ec.fieldContext_User_passwords(ctx, field)
+			case "devices":
+				return ec.fieldContext_User_devices(ctx, field)
+			case "permissions":
+				return ec.fieldContext_User_permissions(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	return fc, nil
@@ -7686,6 +7773,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(ctx context.Context, field
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -8260,6 +8349,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(ctx context.Context, fiel
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -9788,6 +9879,8 @@ func (ec *executionContext) fieldContext_Permission_org(ctx context.Context, fie
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -33969,6 +34062,23 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 					}
 				}()
 				res = ec._Org_children(ctx, field, obj)
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "owner":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Org_owner(ctx, field, obj)
 				return res
 			}
 

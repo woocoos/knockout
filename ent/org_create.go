@@ -657,7 +657,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.OwnerID = nodes[0]
+		_node.OwnerID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := oc.mutation.UsersIDs(); len(nodes) > 0 {

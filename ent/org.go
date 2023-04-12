@@ -30,7 +30,7 @@ type Org struct {
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// 管理账户ID,如果设置则该组织将升级为根组织
-	OwnerID int `json:"owner_id,omitempty"`
+	OwnerID *int `json:"owner_id,omitempty"`
 	// 分类: 根节点,组织节点
 	Kind org.Kind `json:"kind,omitempty"`
 	// 父级ID,0为根组织.
@@ -85,7 +85,7 @@ type OrgEdges struct {
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [10]bool
 	// totalCount holds the count of the edges above.
-	totalCount [6]map[string]int
+	totalCount [7]map[string]int
 
 	namedChildren       map[string][]*Org
 	namedUsers          map[string][]*User
@@ -261,7 +261,8 @@ func (o *Org) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
 			} else if value.Valid {
-				o.OwnerID = int(value.Int64)
+				o.OwnerID = new(int)
+				*o.OwnerID = int(value.Int64)
 			}
 		case org.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -430,8 +431,10 @@ func (o *Org) String() string {
 	builder.WriteString("deleted_at=")
 	builder.WriteString(o.DeletedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("owner_id=")
-	builder.WriteString(fmt.Sprintf("%v", o.OwnerID))
+	if v := o.OwnerID; v != nil {
+		builder.WriteString("owner_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
 	builder.WriteString(fmt.Sprintf("%v", o.Kind))

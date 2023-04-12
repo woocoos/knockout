@@ -9353,7 +9353,7 @@ func (m *OrgMutation) OwnerID() (r int, exists bool) {
 // OldOwnerID returns the old "owner_id" field's value of the Org entity.
 // If the Org object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrgMutation) OldOwnerID(ctx context.Context) (v int, err error) {
+func (m *OrgMutation) OldOwnerID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOwnerID is only allowed on UpdateOne operations")
 	}

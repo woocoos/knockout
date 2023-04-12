@@ -47,14 +47,14 @@ func (Org) Mixin() []ent.Mixin {
 // Fields of the Org.
 func (Org) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("owner_id").Optional().Comment("管理账户ID,如果设置则该组织将升级为根组织"),
+		field.Int("owner_id").Optional().Nillable().Comment("管理账户ID,如果设置则该组织将升级为根组织"),
 		field.Enum("kind").NamedValues(
 			"root", "root",
 			"organization", "org",
 		).Default("org").Comment("分类: 根节点,组织节点").Annotations(entgql.Skip(entgql.SkipAll)),
 		field.Int("parent_id").Default(0).Comment("父级ID,0为根组织."),
 		field.String("domain").Optional().Unique().Comment("默认域名").
-			Match(regexp.MustCompile(`(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]`)),
+			Match(regexp.MustCompile(`^(?:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]|)$`)),
 		field.String("code").MaxLen(45).Optional().Comment("系统代码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("name").MaxLen(100).Comment("组织名称"),
@@ -74,8 +74,7 @@ func (Org) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("children", Org.Type).
 			From("parent").Unique().Required().Field("parent_id"),
-		edge.To("owner", User.Type).Field("owner_id").Unique().Comment("管理账户").
-			Annotations(entgql.Skip(entgql.SkipType)),
+		edge.To("owner", User.Type).Field("owner_id").Unique().Comment("管理账户"),
 		edge.To("users", User.Type).Through("org_user", OrgUser.Type).
 			Annotations(entgql.RelayConnection()).Comment("组织下用户"),
 		edge.To("roles_and_groups", OrgRole.Type).

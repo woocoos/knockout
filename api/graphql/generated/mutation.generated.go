@@ -1011,6 +1011,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -1111,6 +1113,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":
@@ -1211,6 +1215,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
 			case "users":
 				return ec.fieldContext_Org_users(ctx, field)
 			case "permissions":

@@ -1386,6 +1386,20 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			o.WithNamedChildren(alias, func(wq *OrgQuery) {
 				*wq = *query
 			})
+		case "owner":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: o.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			o.withOwner = query
+			if _, ok := fieldSeen[org.FieldOwnerID]; !ok {
+				selectedFields = append(selectedFields, org.FieldOwnerID)
+				fieldSeen[org.FieldOwnerID] = struct{}{}
+			}
 		case "users":
 			var (
 				alias = field.Alias
@@ -1433,10 +1447,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[2] == nil {
-								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[2][alias] = n
+							nodes[i].Edges.totalCount[3][alias] = n
 						}
 						return nil
 					})
@@ -1444,10 +1458,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 					o.loadTotal = append(o.loadTotal, func(_ context.Context, nodes []*Org) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Users)
-							if nodes[i].Edges.totalCount[2] == nil {
-								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[2][alias] = n
+							nodes[i].Edges.totalCount[3][alias] = n
 						}
 						return nil
 					})
@@ -1518,10 +1532,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[3] == nil {
-								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							if nodes[i].Edges.totalCount[4] == nil {
+								nodes[i].Edges.totalCount[4] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[3][alias] = n
+							nodes[i].Edges.totalCount[4][alias] = n
 						}
 						return nil
 					})
@@ -1529,10 +1543,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 					o.loadTotal = append(o.loadTotal, func(_ context.Context, nodes []*Org) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Permissions)
-							if nodes[i].Edges.totalCount[3] == nil {
-								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							if nodes[i].Edges.totalCount[4] == nil {
+								nodes[i].Edges.totalCount[4] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[3][alias] = n
+							nodes[i].Edges.totalCount[4][alias] = n
 						}
 						return nil
 					})
@@ -1603,10 +1617,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[5][alias] = n
 						}
 						return nil
 					})
@@ -1614,10 +1628,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 					o.loadTotal = append(o.loadTotal, func(_ context.Context, nodes []*Org) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Policies)
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[5][alias] = n
 						}
 						return nil
 					})
@@ -1692,10 +1706,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -1703,10 +1717,10 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 					o.loadTotal = append(o.loadTotal, func(_ context.Context, nodes []*Org) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Apps)
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})

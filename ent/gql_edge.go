@@ -232,6 +232,14 @@ func (o *Org) Children(ctx context.Context) (result []*Org, err error) {
 	return result, err
 }
 
+func (o *Org) Owner(ctx context.Context) (*User, error) {
+	result, err := o.Edges.OwnerOrErr()
+	if IsNotLoaded(err) {
+		result, err = o.QueryOwner().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (o *Org) Users(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserOrder, where *UserWhereInput,
 ) (*UserConnection, error) {
@@ -240,7 +248,7 @@ func (o *Org) Users(
 		WithUserFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[2][alias]
+	totalCount, hasTotalCount := o.Edges.totalCount[3][alias]
 	if nodes, err := o.NamedUsers(alias); err == nil || hasTotalCount {
 		pager, err := newUserPager(opts, last != nil)
 		if err != nil {
@@ -261,7 +269,7 @@ func (o *Org) Permissions(
 		WithPermissionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[3][alias]
+	totalCount, hasTotalCount := o.Edges.totalCount[4][alias]
 	if nodes, err := o.NamedPermissions(alias); err == nil || hasTotalCount {
 		pager, err := newPermissionPager(opts, last != nil)
 		if err != nil {
@@ -282,7 +290,7 @@ func (o *Org) Policies(
 		WithOrgPolicyFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[4][alias]
+	totalCount, hasTotalCount := o.Edges.totalCount[5][alias]
 	if nodes, err := o.NamedPolicies(alias); err == nil || hasTotalCount {
 		pager, err := newOrgPolicyPager(opts, last != nil)
 		if err != nil {
@@ -303,7 +311,7 @@ func (o *Org) Apps(
 		WithAppFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[5][alias]
+	totalCount, hasTotalCount := o.Edges.totalCount[6][alias]
 	if nodes, err := o.NamedApps(alias); err == nil || hasTotalCount {
 		pager, err := newAppPager(opts, last != nil)
 		if err != nil {
