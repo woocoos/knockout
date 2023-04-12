@@ -72,8 +72,8 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent
 }
 
 // UpdateLoginProfile is the resolver for the updateLoginProfile field.
-func (r *mutationResolver) UpdateLoginProfile(ctx context.Context, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
-	return r.Resource.UpdateLoginProfile(ctx, input)
+func (r *mutationResolver) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
+	return r.Resource.UpdateLoginProfile(ctx, userID, input)
 }
 
 // DeleteUser is the resolver for the deleteUser field.

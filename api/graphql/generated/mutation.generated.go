@@ -27,7 +27,7 @@ type MutationResolver interface {
 	AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) (bool, error)
 	RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
 	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error)
-	UpdateLoginProfile(ctx context.Context, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error)
+	UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error)
 	DeleteUser(ctx context.Context, userID int) (bool, error)
 	BindUserIdentity(ctx context.Context, input ent.CreateUserIdentityInput) (*ent.UserIdentity, error)
 	DeleteUserIdentity(ctx context.Context, id int) (bool, error)
@@ -821,15 +821,24 @@ func (ec *executionContext) field_Mutation_updateApp_args(ctx context.Context, r
 func (ec *executionContext) field_Mutation_updateLoginProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.UpdateUserLoginProfileInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateUserLoginProfileInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserLoginProfileInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["userID"] = arg0
+	var arg1 ent.UpdateUserLoginProfileInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateUserLoginProfileInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserLoginProfileInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -1759,7 +1768,7 @@ func (ec *executionContext) _Mutation_updateLoginProfile(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateLoginProfile(rctx, fc.Args["input"].(ent.UpdateUserLoginProfileInput))
+		return ec.resolvers.Mutation().UpdateLoginProfile(rctx, fc.Args["userID"].(int), fc.Args["input"].(ent.UpdateUserLoginProfileInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -35,7 +35,7 @@ type Mutation {
     """更新用户"""
     updateUser(userID:ID!,input: UpdateUserInput!): User
     """用户登陆配置"""
-    updateLoginProfile(input: UpdateUserLoginProfileInput!): UserLoginProfile
+    updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
     deleteUser(userID:ID!): Boolean!
     """绑定用户凭证(管理端使用)"""

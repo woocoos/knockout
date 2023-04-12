@@ -307,10 +307,9 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	return err
 }
 
-func (s *Service) UpdateLoginProfile(ctx context.Context, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
+func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
 	client := ent.FromContext(ctx)
-	uid := identity.UserIDFromContext(ctx)
-	return client.UserLoginProfile.UpdateOneID(uid).SetInput(input).Save(ctx)
+	return client.UserLoginProfile.UpdateOneID(userID).SetInput(input).Save(ctx)
 }
 
 // CreateRole 创建角色或工作组

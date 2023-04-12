@@ -247,7 +247,7 @@ type ComplexityRoot struct {
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
-		UpdateLoginProfile          func(childComplexity int, input ent.UpdateUserLoginProfileInput) int
+		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
@@ -1785,7 +1785,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateLoginProfile(childComplexity, args["input"].(ent.UpdateUserLoginProfileInput)), true
+		return e.complexity.Mutation.UpdateLoginProfile(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserLoginProfileInput)), true
 
 	case "Mutation.updateOrganization":
 		if e.complexity.Mutation.UpdateOrganization == nil {
@@ -7125,7 +7125,7 @@ input GrantInput {
     """更新用户"""
     updateUser(userID:ID!,input: UpdateUserInput!): User
     """用户登陆配置"""
-    updateLoginProfile(input: UpdateUserLoginProfileInput!): UserLoginProfile
+    updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
     deleteUser(userID:ID!): Boolean!
     """绑定用户凭证(管理端使用)"""
