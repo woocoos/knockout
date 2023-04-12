@@ -77,6 +77,6 @@ snowflake:
   nodeBits: 1
   # 序列号位数
   stepBits: 8
-#entcache:
-#  level: db
-#  ttl: 5m
+entcache:
+  level: context
+#  ttl: 5m # level: db时有效
