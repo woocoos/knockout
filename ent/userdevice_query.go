@@ -19,7 +19,7 @@ import (
 type UserDeviceQuery struct {
 	config
 	ctx        *QueryContext
-	order      []userdevice.Order
+	order      []userdevice.OrderOption
 	inters     []Interceptor
 	predicates []predicate.UserDevice
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (udq *UserDeviceQuery) Unique(unique bool) *UserDeviceQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (udq *UserDeviceQuery) Order(o ...userdevice.Order) *UserDeviceQuery {
+func (udq *UserDeviceQuery) Order(o ...userdevice.OrderOption) *UserDeviceQuery {
 	udq.order = append(udq.order, o...)
 	return udq
 }
@@ -272,7 +272,7 @@ func (udq *UserDeviceQuery) Clone() *UserDeviceQuery {
 	return &UserDeviceQuery{
 		config:     udq.config,
 		ctx:        udq.ctx.Clone(),
-		order:      append([]userdevice.Order{}, udq.order...),
+		order:      append([]userdevice.OrderOption{}, udq.order...),
 		inters:     append([]Interceptor{}, udq.inters...),
 		predicates: append([]predicate.UserDevice{}, udq.predicates...),
 		withUser:   udq.withUser.Clone(),

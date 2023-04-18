@@ -22,7 +22,7 @@ import (
 type AppRoleQuery struct {
 	config
 	ctx                    *QueryContext
-	order                  []approle.Order
+	order                  []approle.OrderOption
 	inters                 []Interceptor
 	predicates             []predicate.AppRole
 	withApp                *AppQuery
@@ -63,7 +63,7 @@ func (arq *AppRoleQuery) Unique(unique bool) *AppRoleQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arq *AppRoleQuery) Order(o ...approle.Order) *AppRoleQuery {
+func (arq *AppRoleQuery) Order(o ...approle.OrderOption) *AppRoleQuery {
 	arq.order = append(arq.order, o...)
 	return arq
 }
@@ -323,7 +323,7 @@ func (arq *AppRoleQuery) Clone() *AppRoleQuery {
 	return &AppRoleQuery{
 		config:            arq.config,
 		ctx:               arq.ctx.Clone(),
-		order:             append([]approle.Order{}, arq.order...),
+		order:             append([]approle.OrderOption{}, arq.order...),
 		inters:            append([]Interceptor{}, arq.inters...),
 		predicates:        append([]predicate.AppRole{}, arq.predicates...),
 		withApp:           arq.withApp.Clone(),
@@ -616,7 +616,7 @@ func (arq *AppRoleQuery) loadAppRolePolicy(ctx context.Context, query *AppRolePo
 		}
 	}
 	query.Where(predicate.AppRolePolicy(func(s *sql.Selector) {
-		s.Where(sql.InValues(approle.AppRolePolicyColumn, fks...))
+		s.Where(sql.InValues(s.C(approle.AppRolePolicyColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

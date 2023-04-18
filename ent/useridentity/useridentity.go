@@ -122,61 +122,61 @@ func StatusValidator(s typex.SimpleStatus) error {
 	}
 }
 
-// Order defines the ordering method for the UserIdentity queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the UserIdentity queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) Order {
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.
-func ByKind(opts ...sql.OrderTermOption) Order {
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByCode orders the results by the code field.
-func ByCode(opts ...sql.OrderTermOption) Order {
+func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
 }
 
 // ByCodeExtend orders the results by the code_extend field.
-func ByCodeExtend(opts ...sql.OrderTermOption) Order {
+func ByCodeExtend(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCodeExtend, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
-func ByStatus(opts ...sql.OrderTermOption) Order {
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByUserField orders the results by user field.
-func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}

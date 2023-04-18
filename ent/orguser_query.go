@@ -22,7 +22,7 @@ import (
 type OrgUserQuery struct {
 	config
 	ctx               *QueryContext
-	order             []orguser.Order
+	order             []orguser.OrderOption
 	inters            []Interceptor
 	predicates        []predicate.OrgUser
 	withOrg           *OrgQuery
@@ -62,7 +62,7 @@ func (ouq *OrgUserQuery) Unique(unique bool) *OrgUserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ouq *OrgUserQuery) Order(o ...orguser.Order) *OrgUserQuery {
+func (ouq *OrgUserQuery) Order(o ...orguser.OrderOption) *OrgUserQuery {
 	ouq.order = append(ouq.order, o...)
 	return ouq
 }
@@ -322,7 +322,7 @@ func (ouq *OrgUserQuery) Clone() *OrgUserQuery {
 	return &OrgUserQuery{
 		config:       ouq.config,
 		ctx:          ouq.ctx.Clone(),
-		order:        append([]orguser.Order{}, ouq.order...),
+		order:        append([]orguser.OrderOption{}, ouq.order...),
 		inters:       append([]Interceptor{}, ouq.inters...),
 		predicates:   append([]predicate.OrgUser{}, ouq.predicates...),
 		withOrg:      ouq.withOrg.Clone(),

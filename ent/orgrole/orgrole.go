@@ -129,89 +129,89 @@ func KindValidator(k Kind) error {
 	}
 }
 
-// Order defines the ordering method for the OrgRole queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the OrgRole queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByOrgID orders the results by the org_id field.
-func ByOrgID(opts ...sql.OrderTermOption) Order {
+func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.
-func ByKind(opts ...sql.OrderTermOption) Order {
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByAppRoleID orders the results by the app_role_id field.
-func ByAppRoleID(opts ...sql.OrderTermOption) Order {
+func ByAppRoleID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppRoleID, opts...).ToFunc()
 }
 
 // ByComments orders the results by the comments field.
-func ByComments(opts ...sql.OrderTermOption) Order {
+func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
 // ByOrgField orders the results by org field.
-func ByOrgField(field string, opts ...sql.OrderTermOption) Order {
+func ByOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByOrgUsersCount orders the results by org_users count.
-func ByOrgUsersCount(opts ...sql.OrderTermOption) Order {
+func ByOrgUsersCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newOrgUsersStep(), opts...)
 	}
 }
 
 // ByOrgUsers orders the results by org_users terms.
-func ByOrgUsers(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByOrgUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByOrgRoleUserCount orders the results by org_role_user count.
-func ByOrgRoleUserCount(opts ...sql.OrderTermOption) Order {
+func ByOrgRoleUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newOrgRoleUserStep(), opts...)
 	}
 }
 
 // ByOrgRoleUser orders the results by org_role_user terms.
-func ByOrgRoleUser(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByOrgRoleUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgRoleUserStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

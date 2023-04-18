@@ -14,24 +14,21 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
 // AppActionQuery is the builder for querying AppAction entities.
 type AppActionQuery struct {
 	config
-	ctx                *QueryContext
-	order              []appaction.Order
-	inters             []Interceptor
-	predicates         []predicate.AppAction
-	withApp            *AppQuery
-	withMenus          *AppMenuQuery
-	withResources      *AppResQuery
-	modifiers          []func(*sql.Selector)
-	loadTotal          []func(context.Context, []*AppAction) error
-	withNamedMenus     map[string]*AppMenuQuery
-	withNamedResources map[string]*AppResQuery
+	ctx            *QueryContext
+	order          []appaction.OrderOption
+	inters         []Interceptor
+	predicates     []predicate.AppAction
+	withApp        *AppQuery
+	withMenus      *AppMenuQuery
+	modifiers      []func(*sql.Selector)
+	loadTotal      []func(context.Context, []*AppAction) error
+	withNamedMenus map[string]*AppMenuQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,7 +60,7 @@ func (aaq *AppActionQuery) Unique(unique bool) *AppActionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (aaq *AppActionQuery) Order(o ...appaction.Order) *AppActionQuery {
+func (aaq *AppActionQuery) Order(o ...appaction.OrderOption) *AppActionQuery {
 	aaq.order = append(aaq.order, o...)
 	return aaq
 }
@@ -105,28 +102,6 @@ func (aaq *AppActionQuery) QueryMenus() *AppMenuQuery {
 			sqlgraph.From(appaction.Table, appaction.FieldID, selector),
 			sqlgraph.To(appmenu.Table, appmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, appaction.MenusTable, appaction.MenusColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aaq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryResources chains the current query on the "resources" edge.
-func (aaq *AppActionQuery) QueryResources() *AppResQuery {
-	query := (&AppResClient{config: aaq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aaq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aaq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appaction.Table, appaction.FieldID, selector),
-			sqlgraph.To(appres.Table, appres.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appaction.ResourcesTable, appaction.ResourcesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aaq.driver.Dialect(), step)
 		return fromU, nil
@@ -321,14 +296,13 @@ func (aaq *AppActionQuery) Clone() *AppActionQuery {
 		return nil
 	}
 	return &AppActionQuery{
-		config:        aaq.config,
-		ctx:           aaq.ctx.Clone(),
-		order:         append([]appaction.Order{}, aaq.order...),
-		inters:        append([]Interceptor{}, aaq.inters...),
-		predicates:    append([]predicate.AppAction{}, aaq.predicates...),
-		withApp:       aaq.withApp.Clone(),
-		withMenus:     aaq.withMenus.Clone(),
-		withResources: aaq.withResources.Clone(),
+		config:     aaq.config,
+		ctx:        aaq.ctx.Clone(),
+		order:      append([]appaction.OrderOption{}, aaq.order...),
+		inters:     append([]Interceptor{}, aaq.inters...),
+		predicates: append([]predicate.AppAction{}, aaq.predicates...),
+		withApp:    aaq.withApp.Clone(),
+		withMenus:  aaq.withMenus.Clone(),
 		// clone intermediate query.
 		sql:  aaq.sql.Clone(),
 		path: aaq.path,
@@ -354,17 +328,6 @@ func (aaq *AppActionQuery) WithMenus(opts ...func(*AppMenuQuery)) *AppActionQuer
 		opt(query)
 	}
 	aaq.withMenus = query
-	return aaq
-}
-
-// WithResources tells the query-builder to eager-load the nodes that are connected to
-// the "resources" edge. The optional arguments are used to configure the query builder of the edge.
-func (aaq *AppActionQuery) WithResources(opts ...func(*AppResQuery)) *AppActionQuery {
-	query := (&AppResClient{config: aaq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aaq.withResources = query
 	return aaq
 }
 
@@ -446,10 +409,9 @@ func (aaq *AppActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*A
 	var (
 		nodes       = []*AppAction{}
 		_spec       = aaq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [2]bool{
 			aaq.withApp != nil,
 			aaq.withMenus != nil,
-			aaq.withResources != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -486,24 +448,10 @@ func (aaq *AppActionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*A
 			return nil, err
 		}
 	}
-	if query := aaq.withResources; query != nil {
-		if err := aaq.loadResources(ctx, query, nodes,
-			func(n *AppAction) { n.Edges.Resources = []*AppRes{} },
-			func(n *AppAction, e *AppRes) { n.Edges.Resources = append(n.Edges.Resources, e) }); err != nil {
-			return nil, err
-		}
-	}
 	for name, query := range aaq.withNamedMenus {
 		if err := aaq.loadMenus(ctx, query, nodes,
 			func(n *AppAction) { n.appendNamedMenus(name) },
 			func(n *AppAction, e *AppMenu) { n.appendNamedMenus(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range aaq.withNamedResources {
-		if err := aaq.loadResources(ctx, query, nodes,
-			func(n *AppAction) { n.appendNamedResources(name) },
-			func(n *AppAction, e *AppRes) { n.appendNamedResources(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -555,7 +503,7 @@ func (aaq *AppActionQuery) loadMenus(ctx context.Context, query *AppMenuQuery, n
 		}
 	}
 	query.Where(predicate.AppMenu(func(s *sql.Selector) {
-		s.Where(sql.InValues(appaction.MenusColumn, fks...))
+		s.Where(sql.InValues(s.C(appaction.MenusColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -569,37 +517,6 @@ func (aaq *AppActionQuery) loadMenus(ctx context.Context, query *AppMenuQuery, n
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "action_id" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (aaq *AppActionQuery) loadResources(ctx context.Context, query *AppResQuery, nodes []*AppAction, init func(*AppAction), assign func(*AppAction, *AppRes)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*AppAction)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.AppRes(func(s *sql.Selector) {
-		s.Where(sql.InValues(appaction.ResourcesColumn, fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.app_action_resources
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "app_action_resources" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_action_resources" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -704,20 +621,6 @@ func (aaq *AppActionQuery) WithNamedMenus(name string, opts ...func(*AppMenuQuer
 		aaq.withNamedMenus = make(map[string]*AppMenuQuery)
 	}
 	aaq.withNamedMenus[name] = query
-	return aaq
-}
-
-// WithNamedResources tells the query-builder to eager-load the nodes that are connected to the "resources"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (aaq *AppActionQuery) WithNamedResources(name string, opts ...func(*AppResQuery)) *AppActionQuery {
-	query := (&AppResClient{config: aaq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if aaq.withNamedResources == nil {
-		aaq.withNamedResources = make(map[string]*AppResQuery)
-	}
-	aaq.withNamedResources[name] = query
 	return aaq
 }
 

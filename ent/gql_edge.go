@@ -136,18 +136,6 @@ func (aa *AppAction) Menus(ctx context.Context) (result []*AppMenu, err error) {
 	return result, err
 }
 
-func (aa *AppAction) Resources(ctx context.Context) (result []*AppRes, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = aa.NamedResources(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = aa.Edges.ResourcesOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = aa.QueryResources().All(ctx)
-	}
-	return result, err
-}
-
 func (am *AppMenu) App(ctx context.Context) (*App, error) {
 	result, err := am.Edges.AppOrErr()
 	if IsNotLoaded(err) {

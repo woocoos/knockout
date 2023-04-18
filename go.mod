@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	ariga.io/entcache v0.1.1-0.20220825100256-1b8bbeb21c75
-	entgo.io/contrib v0.4.0
-	entgo.io/ent v0.12.0
+	entgo.io/contrib v0.4.1
+	entgo.io/ent v0.12.1
 	github.com/99designs/gqlgen v0.17.26
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/dchest/captcha v1.0.0
@@ -16,13 +16,13 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.4-0.20230403070847-0d4f1edf6ed0
-	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230403084811-972005040ae2
+	github.com/tsingsun/woocoo v0.2.5-0.20230415042012-76493bca9442
+	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230417101157-8350720ebba3
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230403084811-972005040ae2
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230411075730-f8ffcbe7591c
+	github.com/woocoos/entco v0.0.0-20230417060633-7852bf3e7727
 	golang.org/x/sync v0.1.0
 )
 
@@ -70,7 +70,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.8.0 // indirect
-	github.com/casbin/casbin/v2 v2.66.1 // indirect
+	github.com/casbin/casbin/v2 v2.67.0 // indirect
 	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -95,7 +95,7 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.16.3 // indirect
+	github.com/klauspost/compress v1.16.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
@@ -118,14 +118,14 @@ require (
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
-	golang.org/x/mod v0.9.0 // indirect
-	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/sys v0.6.0 // indirect; indirectgo
-	golang.org/x/text v0.8.0 // indirect
-	golang.org/x/tools v0.7.0 // indirect
+	golang.org/x/mod v0.10.0 // indirect
+	golang.org/x/net v0.9.0 // indirect
+	golang.org/x/sys v0.7.0 // indirect; indirectgo
+	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/tools v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230131230820-1c016267d619 // indirect
-	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/grpc v1.54.0
+	google.golang.org/protobuf v1.30.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

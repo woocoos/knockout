@@ -243,220 +243,220 @@ func StatusValidator(s typex.SimpleStatus) error {
 	}
 }
 
-// Order defines the ordering method for the Org queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the Org queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByDeletedAt orders the results by the deleted_at field.
-func ByDeletedAt(opts ...sql.OrderTermOption) Order {
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByOwnerID orders the results by the owner_id field.
-func ByOwnerID(opts ...sql.OrderTermOption) Order {
+func ByOwnerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwnerID, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.
-func ByKind(opts ...sql.OrderTermOption) Order {
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByParentID orders the results by the parent_id field.
-func ByParentID(opts ...sql.OrderTermOption) Order {
+func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
 // ByDomain orders the results by the domain field.
-func ByDomain(opts ...sql.OrderTermOption) Order {
+func ByDomain(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDomain, opts...).ToFunc()
 }
 
 // ByCode orders the results by the code field.
-func ByCode(opts ...sql.OrderTermOption) Order {
+func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByProfile orders the results by the profile field.
-func ByProfile(opts ...sql.OrderTermOption) Order {
+func ByProfile(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProfile, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
-func ByStatus(opts ...sql.OrderTermOption) Order {
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByPath orders the results by the path field.
-func ByPath(opts ...sql.OrderTermOption) Order {
+func ByPath(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPath, opts...).ToFunc()
 }
 
 // ByDisplaySort orders the results by the display_sort field.
-func ByDisplaySort(opts ...sql.OrderTermOption) Order {
+func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
 }
 
 // ByCountryCode orders the results by the country_code field.
-func ByCountryCode(opts ...sql.OrderTermOption) Order {
+func ByCountryCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCountryCode, opts...).ToFunc()
 }
 
 // ByTimezone orders the results by the timezone field.
-func ByTimezone(opts ...sql.OrderTermOption) Order {
+func ByTimezone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTimezone, opts...).ToFunc()
 }
 
 // ByParentField orders the results by parent field.
-func ByParentField(field string, opts ...sql.OrderTermOption) Order {
+func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newParentStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByChildrenCount orders the results by children count.
-func ByChildrenCount(opts ...sql.OrderTermOption) Order {
+func ByChildrenCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newChildrenStep(), opts...)
 	}
 }
 
 // ByChildren orders the results by children terms.
-func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newChildrenStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByOwnerField orders the results by owner field.
-func ByOwnerField(field string, opts ...sql.OrderTermOption) Order {
+func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByUsersCount orders the results by users count.
-func ByUsersCount(opts ...sql.OrderTermOption) Order {
+func ByUsersCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newUsersStep(), opts...)
 	}
 }
 
 // ByUsers orders the results by users terms.
-func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByRolesAndGroupsCount orders the results by roles_and_groups count.
-func ByRolesAndGroupsCount(opts ...sql.OrderTermOption) Order {
+func ByRolesAndGroupsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newRolesAndGroupsStep(), opts...)
 	}
 }
 
 // ByRolesAndGroups orders the results by roles_and_groups terms.
-func ByRolesAndGroups(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByRolesAndGroups(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newRolesAndGroupsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByPermissionsCount orders the results by permissions count.
-func ByPermissionsCount(opts ...sql.OrderTermOption) Order {
+func ByPermissionsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newPermissionsStep(), opts...)
 	}
 }
 
 // ByPermissions orders the results by permissions terms.
-func ByPermissions(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByPermissions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newPermissionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByPoliciesCount orders the results by policies count.
-func ByPoliciesCount(opts ...sql.OrderTermOption) Order {
+func ByPoliciesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newPoliciesStep(), opts...)
 	}
 }
 
 // ByPolicies orders the results by policies terms.
-func ByPolicies(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByPolicies(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newPoliciesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByAppsCount orders the results by apps count.
-func ByAppsCount(opts ...sql.OrderTermOption) Order {
+func ByAppsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newAppsStep(), opts...)
 	}
 }
 
 // ByApps orders the results by apps terms.
-func ByApps(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByApps(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAppsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByOrgUserCount orders the results by org_user count.
-func ByOrgUserCount(opts ...sql.OrderTermOption) Order {
+func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newOrgUserStep(), opts...)
 	}
 }
 
 // ByOrgUser orders the results by org_user terms.
-func ByOrgUser(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByOrgUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgUserStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
 // ByOrgAppCount orders the results by org_app count.
-func ByOrgAppCount(opts ...sql.OrderTermOption) Order {
+func ByOrgAppCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newOrgAppStep(), opts...)
 	}
 }
 
 // ByOrgApp orders the results by org_app terms.
-func ByOrgApp(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByOrgApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgAppStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}

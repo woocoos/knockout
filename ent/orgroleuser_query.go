@@ -20,7 +20,7 @@ import (
 type OrgRoleUserQuery struct {
 	config
 	ctx         *QueryContext
-	order       []orgroleuser.Order
+	order       []orgroleuser.OrderOption
 	inters      []Interceptor
 	predicates  []predicate.OrgRoleUser
 	withOrgRole *OrgRoleQuery
@@ -58,7 +58,7 @@ func (oruq *OrgRoleUserQuery) Unique(unique bool) *OrgRoleUserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oruq *OrgRoleUserQuery) Order(o ...orgroleuser.Order) *OrgRoleUserQuery {
+func (oruq *OrgRoleUserQuery) Order(o ...orgroleuser.OrderOption) *OrgRoleUserQuery {
 	oruq.order = append(oruq.order, o...)
 	return oruq
 }
@@ -296,7 +296,7 @@ func (oruq *OrgRoleUserQuery) Clone() *OrgRoleUserQuery {
 	return &OrgRoleUserQuery{
 		config:      oruq.config,
 		ctx:         oruq.ctx.Clone(),
-		order:       append([]orgroleuser.Order{}, oruq.order...),
+		order:       append([]orgroleuser.OrderOption{}, oruq.order...),
 		inters:      append([]Interceptor{}, oruq.inters...),
 		predicates:  append([]predicate.OrgRoleUser{}, oruq.predicates...),
 		withOrgRole: oruq.withOrgRole.Clone(),

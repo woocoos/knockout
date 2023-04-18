@@ -1148,10 +1148,6 @@ type AppActionWhereInput struct {
 	// "menus" edge predicates.
 	HasMenus     *bool                `json:"hasMenus,omitempty"`
 	HasMenusWith []*AppMenuWhereInput `json:"hasMenusWith,omitempty"`
-
-	// "resources" edge predicates.
-	HasResources     *bool               `json:"hasResources,omitempty"`
-	HasResourcesWith []*AppResWhereInput `json:"hasResourcesWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1474,24 +1470,6 @@ func (i *AppActionWhereInput) P() (predicate.AppAction, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, appaction.HasMenusWith(with...))
-	}
-	if i.HasResources != nil {
-		p := appaction.HasResources()
-		if !*i.HasResources {
-			p = appaction.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasResourcesWith) > 0 {
-		with := make([]predicate.AppRes, 0, len(i.HasResourcesWith))
-		for _, w := range i.HasResourcesWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasResourcesWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, appaction.HasResourcesWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

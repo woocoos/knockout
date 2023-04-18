@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -130,21 +129,6 @@ func (aau *AppActionUpdate) AddMenus(a ...*AppMenu) *AppActionUpdate {
 	return aau.AddMenuIDs(ids...)
 }
 
-// AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (aau *AppActionUpdate) AddResourceIDs(ids ...int) *AppActionUpdate {
-	aau.mutation.AddResourceIDs(ids...)
-	return aau
-}
-
-// AddResources adds the "resources" edges to the AppRes entity.
-func (aau *AppActionUpdate) AddResources(a ...*AppRes) *AppActionUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aau.AddResourceIDs(ids...)
-}
-
 // Mutation returns the AppActionMutation object of the builder.
 func (aau *AppActionUpdate) Mutation() *AppActionMutation {
 	return aau.mutation
@@ -169,27 +153,6 @@ func (aau *AppActionUpdate) RemoveMenus(a ...*AppMenu) *AppActionUpdate {
 		ids[i] = a[i].ID
 	}
 	return aau.RemoveMenuIDs(ids...)
-}
-
-// ClearResources clears all "resources" edges to the AppRes entity.
-func (aau *AppActionUpdate) ClearResources() *AppActionUpdate {
-	aau.mutation.ClearResources()
-	return aau
-}
-
-// RemoveResourceIDs removes the "resources" edge to AppRes entities by IDs.
-func (aau *AppActionUpdate) RemoveResourceIDs(ids ...int) *AppActionUpdate {
-	aau.mutation.RemoveResourceIDs(ids...)
-	return aau
-}
-
-// RemoveResources removes "resources" edges to AppRes entities.
-func (aau *AppActionUpdate) RemoveResources(a ...*AppRes) *AppActionUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aau.RemoveResourceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -326,51 +289,6 @@ func (aau *AppActionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if aau.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aau.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !aau.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aau.mutation.ResourcesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, aau.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{appaction.Label}
@@ -491,21 +409,6 @@ func (aauo *AppActionUpdateOne) AddMenus(a ...*AppMenu) *AppActionUpdateOne {
 	return aauo.AddMenuIDs(ids...)
 }
 
-// AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (aauo *AppActionUpdateOne) AddResourceIDs(ids ...int) *AppActionUpdateOne {
-	aauo.mutation.AddResourceIDs(ids...)
-	return aauo
-}
-
-// AddResources adds the "resources" edges to the AppRes entity.
-func (aauo *AppActionUpdateOne) AddResources(a ...*AppRes) *AppActionUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aauo.AddResourceIDs(ids...)
-}
-
 // Mutation returns the AppActionMutation object of the builder.
 func (aauo *AppActionUpdateOne) Mutation() *AppActionMutation {
 	return aauo.mutation
@@ -530,27 +433,6 @@ func (aauo *AppActionUpdateOne) RemoveMenus(a ...*AppMenu) *AppActionUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return aauo.RemoveMenuIDs(ids...)
-}
-
-// ClearResources clears all "resources" edges to the AppRes entity.
-func (aauo *AppActionUpdateOne) ClearResources() *AppActionUpdateOne {
-	aauo.mutation.ClearResources()
-	return aauo
-}
-
-// RemoveResourceIDs removes the "resources" edge to AppRes entities by IDs.
-func (aauo *AppActionUpdateOne) RemoveResourceIDs(ids ...int) *AppActionUpdateOne {
-	aauo.mutation.RemoveResourceIDs(ids...)
-	return aauo
-}
-
-// RemoveResources removes "resources" edges to AppRes entities.
-func (aauo *AppActionUpdateOne) RemoveResources(a ...*AppRes) *AppActionUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aauo.RemoveResourceIDs(ids...)
 }
 
 // Where appends a list predicates to the AppActionUpdate builder.
@@ -710,51 +592,6 @@ func (aauo *AppActionUpdateOne) sqlSave(ctx context.Context) (_node *AppAction, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aauo.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aauo.mutation.RemovedResourcesIDs(); len(nodes) > 0 && !aauo.mutation.ResourcesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aauo.mutation.ResourcesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

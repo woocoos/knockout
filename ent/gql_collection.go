@@ -80,7 +80,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(app.MenusColumn, ids...))
+							s.Where(sql.InValues(s.C(app.MenusColumn), ids...))
 						})
 						if err := query.GroupBy(app.MenusColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -119,7 +119,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.MenusColumn, limit, pager.orderExpr())
+				modify := limitRows(app.MenusColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -165,7 +165,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(app.ActionsColumn, ids...))
+							s.Where(sql.InValues(s.C(app.ActionsColumn), ids...))
 						})
 						if err := query.GroupBy(app.ActionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -204,7 +204,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.ActionsColumn, limit, pager.orderExpr())
+				modify := limitRows(app.ActionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -250,7 +250,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(app.ResourcesColumn, ids...))
+							s.Where(sql.InValues(s.C(app.ResourcesColumn), ids...))
 						})
 						if err := query.GroupBy(app.ResourcesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -289,7 +289,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.ResourcesColumn, limit, pager.orderExpr())
+				modify := limitRows(app.ResourcesColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -402,7 +402,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.OrgsPrimaryKey[1], limit, pager.orderExpr())
+				modify := limitRows(app.OrgsPrimaryKey[1], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -602,18 +602,6 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				return err
 			}
 			aa.WithNamedMenus(alias, func(wq *AppMenuQuery) {
-				*wq = *query
-			})
-		case "resources":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&AppResClient{config: aa.config}).Query()
-			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
-				return err
-			}
-			aa.WithNamedResources(alias, func(wq *AppResQuery) {
 				*wq = *query
 			})
 		case "createdBy":
@@ -1475,7 +1463,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.UsersPrimaryKey[0], limit, pager.orderExpr())
+				modify := limitRows(org.UsersPrimaryKey[0], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1521,7 +1509,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(org.PermissionsColumn, ids...))
+							s.Where(sql.InValues(s.C(org.PermissionsColumn), ids...))
 						})
 						if err := query.GroupBy(org.PermissionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -1560,7 +1548,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.PermissionsColumn, limit, pager.orderExpr())
+				modify := limitRows(org.PermissionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1606,7 +1594,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(org.PoliciesColumn, ids...))
+							s.Where(sql.InValues(s.C(org.PoliciesColumn), ids...))
 						})
 						if err := query.GroupBy(org.PoliciesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -1645,7 +1633,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.PoliciesColumn, limit, pager.orderExpr())
+				modify := limitRows(org.PoliciesColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1734,7 +1722,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.AppsPrimaryKey[0], limit, pager.orderExpr())
+				modify := limitRows(org.AppsPrimaryKey[0], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -2447,7 +2435,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 							Count  int `sql:"count"`
 						}
 						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(user.PermissionsColumn, ids...))
+							s.Where(sql.InValues(s.C(user.PermissionsColumn), ids...))
 						})
 						if err := query.GroupBy(user.PermissionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
 							return err
@@ -2486,7 +2474,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				return err
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(user.PermissionsColumn, limit, pager.orderExpr())
+				modify := limitRows(user.PermissionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)

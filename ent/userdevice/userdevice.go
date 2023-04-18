@@ -118,81 +118,81 @@ func StatusValidator(s typex.SimpleStatus) error {
 	}
 }
 
-// Order defines the ordering method for the UserDevice queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the UserDevice queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) Order {
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByDeviceUID orders the results by the device_uid field.
-func ByDeviceUID(opts ...sql.OrderTermOption) Order {
+func ByDeviceUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceUID, opts...).ToFunc()
 }
 
 // ByDeviceName orders the results by the device_name field.
-func ByDeviceName(opts ...sql.OrderTermOption) Order {
+func ByDeviceName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
 }
 
 // BySystemName orders the results by the system_name field.
-func BySystemName(opts ...sql.OrderTermOption) Order {
+func BySystemName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSystemName, opts...).ToFunc()
 }
 
 // BySystemVersion orders the results by the system_version field.
-func BySystemVersion(opts ...sql.OrderTermOption) Order {
+func BySystemVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSystemVersion, opts...).ToFunc()
 }
 
 // ByAppVersion orders the results by the app_version field.
-func ByAppVersion(opts ...sql.OrderTermOption) Order {
+func ByAppVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppVersion, opts...).ToFunc()
 }
 
 // ByDeviceModel orders the results by the device_model field.
-func ByDeviceModel(opts ...sql.OrderTermOption) Order {
+func ByDeviceModel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceModel, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.
-func ByStatus(opts ...sql.OrderTermOption) Order {
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByComments orders the results by the comments field.
-func ByComments(opts ...sql.OrderTermOption) Order {
+func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
 // ByUserField orders the results by user field.
-func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}

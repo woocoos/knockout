@@ -2331,31 +2331,28 @@ func (m *AppMutation) ResetEdge(name string) error {
 // AppActionMutation represents an operation that mutates the AppAction nodes in the graph.
 type AppActionMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *int
-	created_by       *int
-	addcreated_by    *int
-	created_at       *time.Time
-	updated_by       *int
-	addupdated_by    *int
-	updated_at       *time.Time
-	name             *string
-	kind             *appaction.Kind
-	method           *appaction.Method
-	comments         *string
-	clearedFields    map[string]struct{}
-	app              *int
-	clearedapp       bool
-	menus            map[int]struct{}
-	removedmenus     map[int]struct{}
-	clearedmenus     bool
-	resources        map[int]struct{}
-	removedresources map[int]struct{}
-	clearedresources bool
-	done             bool
-	oldValue         func(context.Context) (*AppAction, error)
-	predicates       []predicate.AppAction
+	op            Op
+	typ           string
+	id            *int
+	created_by    *int
+	addcreated_by *int
+	created_at    *time.Time
+	updated_by    *int
+	addupdated_by *int
+	updated_at    *time.Time
+	name          *string
+	kind          *appaction.Kind
+	method        *appaction.Method
+	comments      *string
+	clearedFields map[string]struct{}
+	app           *int
+	clearedapp    bool
+	menus         map[int]struct{}
+	removedmenus  map[int]struct{}
+	clearedmenus  bool
+	done          bool
+	oldValue      func(context.Context) (*AppAction, error)
+	predicates    []predicate.AppAction
 }
 
 var _ ent.Mutation = (*AppActionMutation)(nil)
@@ -2959,60 +2956,6 @@ func (m *AppActionMutation) ResetMenus() {
 	m.removedmenus = nil
 }
 
-// AddResourceIDs adds the "resources" edge to the AppRes entity by ids.
-func (m *AppActionMutation) AddResourceIDs(ids ...int) {
-	if m.resources == nil {
-		m.resources = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.resources[ids[i]] = struct{}{}
-	}
-}
-
-// ClearResources clears the "resources" edge to the AppRes entity.
-func (m *AppActionMutation) ClearResources() {
-	m.clearedresources = true
-}
-
-// ResourcesCleared reports if the "resources" edge to the AppRes entity was cleared.
-func (m *AppActionMutation) ResourcesCleared() bool {
-	return m.clearedresources
-}
-
-// RemoveResourceIDs removes the "resources" edge to the AppRes entity by IDs.
-func (m *AppActionMutation) RemoveResourceIDs(ids ...int) {
-	if m.removedresources == nil {
-		m.removedresources = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.resources, ids[i])
-		m.removedresources[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedResources returns the removed IDs of the "resources" edge to the AppRes entity.
-func (m *AppActionMutation) RemovedResourcesIDs() (ids []int) {
-	for id := range m.removedresources {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResourcesIDs returns the "resources" edge IDs in the mutation.
-func (m *AppActionMutation) ResourcesIDs() (ids []int) {
-	for id := range m.resources {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetResources resets all changes to the "resources" edge.
-func (m *AppActionMutation) ResetResources() {
-	m.resources = nil
-	m.clearedresources = false
-	m.removedresources = nil
-}
-
 // Where appends a list predicates to the AppActionMutation builder.
 func (m *AppActionMutation) Where(ps ...predicate.AppAction) {
 	m.predicates = append(m.predicates, ps...)
@@ -3336,15 +3279,12 @@ func (m *AppActionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppActionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.app != nil {
 		edges = append(edges, appaction.EdgeApp)
 	}
 	if m.menus != nil {
 		edges = append(edges, appaction.EdgeMenus)
-	}
-	if m.resources != nil {
-		edges = append(edges, appaction.EdgeResources)
 	}
 	return edges
 }
@@ -3363,24 +3303,15 @@ func (m *AppActionMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case appaction.EdgeResources:
-		ids := make([]ent.Value, 0, len(m.resources))
-		for id := range m.resources {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppActionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.removedmenus != nil {
 		edges = append(edges, appaction.EdgeMenus)
-	}
-	if m.removedresources != nil {
-		edges = append(edges, appaction.EdgeResources)
 	}
 	return edges
 }
@@ -3395,27 +3326,18 @@ func (m *AppActionMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case appaction.EdgeResources:
-		ids := make([]ent.Value, 0, len(m.removedresources))
-		for id := range m.removedresources {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppActionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.clearedapp {
 		edges = append(edges, appaction.EdgeApp)
 	}
 	if m.clearedmenus {
 		edges = append(edges, appaction.EdgeMenus)
-	}
-	if m.clearedresources {
-		edges = append(edges, appaction.EdgeResources)
 	}
 	return edges
 }
@@ -3428,8 +3350,6 @@ func (m *AppActionMutation) EdgeCleared(name string) bool {
 		return m.clearedapp
 	case appaction.EdgeMenus:
 		return m.clearedmenus
-	case appaction.EdgeResources:
-		return m.clearedresources
 	}
 	return false
 }
@@ -3454,9 +3374,6 @@ func (m *AppActionMutation) ResetEdge(name string) error {
 		return nil
 	case appaction.EdgeMenus:
 		m.ResetMenus()
-		return nil
-	case appaction.EdgeResources:
-		m.ResetResources()
 		return nil
 	}
 	return fmt.Errorf("unknown AppAction edge %s", name)

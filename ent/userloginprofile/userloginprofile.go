@@ -137,86 +137,86 @@ func MfaStatusValidator(ms typex.SimpleStatus) error {
 	}
 }
 
-// Order defines the ordering method for the UserLoginProfile queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the UserLoginProfile queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) Order {
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByLastLoginIP orders the results by the last_login_ip field.
-func ByLastLoginIP(opts ...sql.OrderTermOption) Order {
+func ByLastLoginIP(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastLoginIP, opts...).ToFunc()
 }
 
 // ByLastLoginAt orders the results by the last_login_at field.
-func ByLastLoginAt(opts ...sql.OrderTermOption) Order {
+func ByLastLoginAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastLoginAt, opts...).ToFunc()
 }
 
 // ByCanLogin orders the results by the can_login field.
-func ByCanLogin(opts ...sql.OrderTermOption) Order {
+func ByCanLogin(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCanLogin, opts...).ToFunc()
 }
 
 // BySetKind orders the results by the set_kind field.
-func BySetKind(opts ...sql.OrderTermOption) Order {
+func BySetKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSetKind, opts...).ToFunc()
 }
 
 // ByPasswordReset orders the results by the password_reset field.
-func ByPasswordReset(opts ...sql.OrderTermOption) Order {
+func ByPasswordReset(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPasswordReset, opts...).ToFunc()
 }
 
 // ByVerifyDevice orders the results by the verify_device field.
-func ByVerifyDevice(opts ...sql.OrderTermOption) Order {
+func ByVerifyDevice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVerifyDevice, opts...).ToFunc()
 }
 
 // ByMfaEnabled orders the results by the mfa_enabled field.
-func ByMfaEnabled(opts ...sql.OrderTermOption) Order {
+func ByMfaEnabled(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMfaEnabled, opts...).ToFunc()
 }
 
 // ByMfaSecret orders the results by the mfa_secret field.
-func ByMfaSecret(opts ...sql.OrderTermOption) Order {
+func ByMfaSecret(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMfaSecret, opts...).ToFunc()
 }
 
 // ByMfaStatus orders the results by the mfa_status field.
-func ByMfaStatus(opts ...sql.OrderTermOption) Order {
+func ByMfaStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMfaStatus, opts...).ToFunc()
 }
 
 // ByUserField orders the results by user field.
-func ByUserField(field string, opts ...sql.OrderTermOption) Order {
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}

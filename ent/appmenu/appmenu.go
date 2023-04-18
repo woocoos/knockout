@@ -124,78 +124,78 @@ func KindValidator(k Kind) error {
 	}
 }
 
-// Order defines the ordering method for the AppMenu queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the AppMenu queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) Order {
+func ByAppID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }
 
 // ByParentID orders the results by the parent_id field.
-func ByParentID(opts ...sql.OrderTermOption) Order {
+func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.
-func ByKind(opts ...sql.OrderTermOption) Order {
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByActionID orders the results by the action_id field.
-func ByActionID(opts ...sql.OrderTermOption) Order {
+func ByActionID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActionID, opts...).ToFunc()
 }
 
 // ByComments orders the results by the comments field.
-func ByComments(opts ...sql.OrderTermOption) Order {
+func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
 // ByDisplaySort orders the results by the display_sort field.
-func ByDisplaySort(opts ...sql.OrderTermOption) Order {
+func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
 }
 
 // ByAppField orders the results by app field.
-func ByAppField(field string, opts ...sql.OrderTermOption) Order {
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByActionField orders the results by action field.
-func ByActionField(field string, opts ...sql.OrderTermOption) Order {
+func ByActionField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newActionStep(), sql.OrderByField(field, opts...))
 	}

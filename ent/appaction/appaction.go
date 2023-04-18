@@ -40,8 +40,6 @@ const (
 	EdgeApp = "app"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
-	// EdgeResources holds the string denoting the resources edge name in mutations.
-	EdgeResources = "resources"
 	// Table holds the table name of the appaction in the database.
 	Table = "app_action"
 	// AppTable is the table that holds the app relation/edge.
@@ -58,13 +56,6 @@ const (
 	MenusInverseTable = "app_menu"
 	// MenusColumn is the table column denoting the menus relation/edge.
 	MenusColumn = "action_id"
-	// ResourcesTable is the table that holds the resources relation/edge.
-	ResourcesTable = "app_res"
-	// ResourcesInverseTable is the table name for the AppRes entity.
-	// It exists in this package in order to avoid circular dependency with the "appres" package.
-	ResourcesInverseTable = "app_res"
-	// ResourcesColumn is the table column denoting the resources relation/edge.
-	ResourcesColumn = "app_action_resources"
 )
 
 // Columns holds all SQL columns for appaction fields.
@@ -111,9 +102,10 @@ type Kind string
 
 // Kind values.
 const (
-	KindRestful Kind = "restful"
-	KindGraphql Kind = "graphql"
-	KindRPC     Kind = "rpc"
+	KindRestful  Kind = "restful"
+	KindGraphql  Kind = "graphql"
+	KindRPC      Kind = "rpc"
+	KindFunction Kind = "function"
 )
 
 func (k Kind) String() string {
@@ -123,7 +115,7 @@ func (k Kind) String() string {
 // KindValidator is a validator for the "kind" field enum values. It is called by the builders before save.
 func KindValidator(k Kind) error {
 	switch k {
-	case KindRestful, KindGraphql, KindRPC:
+	case KindRestful, KindGraphql, KindRPC, KindFunction:
 		return nil
 	default:
 		return fmt.Errorf("appaction: invalid enum value for kind field: %q", k)
@@ -154,91 +146,77 @@ func MethodValidator(m Method) error {
 	}
 }
 
-// Order defines the ordering method for the AppAction queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the AppAction queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) Order {
+func ByAppID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByKind orders the results by the kind field.
-func ByKind(opts ...sql.OrderTermOption) Order {
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByMethod orders the results by the method field.
-func ByMethod(opts ...sql.OrderTermOption) Order {
+func ByMethod(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMethod, opts...).ToFunc()
 }
 
 // ByComments orders the results by the comments field.
-func ByComments(opts ...sql.OrderTermOption) Order {
+func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
 // ByAppField orders the results by app field.
-func ByAppField(field string, opts ...sql.OrderTermOption) Order {
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByMenusCount orders the results by menus count.
-func ByMenusCount(opts ...sql.OrderTermOption) Order {
+func ByMenusCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborsCount(s, newMenusStep(), opts...)
 	}
 }
 
 // ByMenus orders the results by menus terms.
-func ByMenus(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
+func ByMenus(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newMenusStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByResourcesCount orders the results by resources count.
-func ByResourcesCount(opts ...sql.OrderTermOption) Order {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newResourcesStep(), opts...)
-	}
-}
-
-// ByResources orders the results by resources terms.
-func ByResources(term sql.OrderTerm, terms ...sql.OrderTerm) Order {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newResourcesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newAppStep() *sqlgraph.Step {
@@ -253,13 +231,6 @@ func newMenusStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MenusInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, MenusTable, MenusColumn),
-	)
-}
-func newResourcesStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ResourcesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ResourcesTable, ResourcesColumn),
 	)
 }
 

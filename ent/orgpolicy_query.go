@@ -21,7 +21,7 @@ import (
 type OrgPolicyQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []orgpolicy.Order
+	order                []orgpolicy.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.OrgPolicy
 	withOrg              *OrgQuery
@@ -60,7 +60,7 @@ func (opq *OrgPolicyQuery) Unique(unique bool) *OrgPolicyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (opq *OrgPolicyQuery) Order(o ...orgpolicy.Order) *OrgPolicyQuery {
+func (opq *OrgPolicyQuery) Order(o ...orgpolicy.OrderOption) *OrgPolicyQuery {
 	opq.order = append(opq.order, o...)
 	return opq
 }
@@ -298,7 +298,7 @@ func (opq *OrgPolicyQuery) Clone() *OrgPolicyQuery {
 	return &OrgPolicyQuery{
 		config:          opq.config,
 		ctx:             opq.ctx.Clone(),
-		order:           append([]orgpolicy.Order{}, opq.order...),
+		order:           append([]orgpolicy.OrderOption{}, opq.order...),
 		inters:          append([]Interceptor{}, opq.inters...),
 		predicates:      append([]predicate.OrgPolicy{}, opq.predicates...),
 		withOrg:         opq.withOrg.Clone(),
@@ -503,7 +503,7 @@ func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *Permissio
 		}
 	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.InValues(orgpolicy.PermissionsColumn, fks...))
+		s.Where(sql.InValues(s.C(orgpolicy.PermissionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

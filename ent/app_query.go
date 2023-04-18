@@ -26,7 +26,7 @@ import (
 type AppQuery struct {
 	config
 	ctx                *QueryContext
-	order              []app.Order
+	order              []app.OrderOption
 	inters             []Interceptor
 	predicates         []predicate.App
 	withMenus          *AppMenuQuery
@@ -76,7 +76,7 @@ func (aq *AppQuery) Unique(unique bool) *AppQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (aq *AppQuery) Order(o ...app.Order) *AppQuery {
+func (aq *AppQuery) Order(o ...app.OrderOption) *AppQuery {
 	aq.order = append(aq.order, o...)
 	return aq
 }
@@ -424,7 +424,7 @@ func (aq *AppQuery) Clone() *AppQuery {
 	return &AppQuery{
 		config:        aq.config,
 		ctx:           aq.ctx.Clone(),
-		order:         append([]app.Order{}, aq.order...),
+		order:         append([]app.OrderOption{}, aq.order...),
 		inters:        append([]Interceptor{}, aq.inters...),
 		predicates:    append([]predicate.App{}, aq.predicates...),
 		withMenus:     aq.withMenus.Clone(),
@@ -743,7 +743,7 @@ func (aq *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []
 		}
 	}
 	query.Where(predicate.AppMenu(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.MenusColumn, fks...))
+		s.Where(sql.InValues(s.C(app.MenusColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -770,7 +770,7 @@ func (aq *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, node
 		}
 	}
 	query.Where(predicate.AppAction(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.ActionsColumn, fks...))
+		s.Where(sql.InValues(s.C(app.ActionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -796,9 +796,8 @@ func (aq *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.AppRes(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.ResourcesColumn, fks...))
+		s.Where(sql.InValues(s.C(app.ResourcesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -825,7 +824,7 @@ func (aq *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []
 		}
 	}
 	query.Where(predicate.AppRole(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.RolesColumn, fks...))
+		s.Where(sql.InValues(s.C(app.RolesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -852,7 +851,7 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 		}
 	}
 	query.Where(predicate.AppPolicy(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.PoliciesColumn, fks...))
+		s.Where(sql.InValues(s.C(app.PoliciesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -940,7 +939,7 @@ func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 		}
 	}
 	query.Where(predicate.OrgApp(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.OrgAppColumn, fks...))
+		s.Where(sql.InValues(s.C(app.OrgAppColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

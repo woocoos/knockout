@@ -19,7 +19,7 @@ import (
 type UserPasswordQuery struct {
 	config
 	ctx        *QueryContext
-	order      []userpassword.Order
+	order      []userpassword.OrderOption
 	inters     []Interceptor
 	predicates []predicate.UserPassword
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (upq *UserPasswordQuery) Unique(unique bool) *UserPasswordQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (upq *UserPasswordQuery) Order(o ...userpassword.Order) *UserPasswordQuery {
+func (upq *UserPasswordQuery) Order(o ...userpassword.OrderOption) *UserPasswordQuery {
 	upq.order = append(upq.order, o...)
 	return upq
 }
@@ -272,7 +272,7 @@ func (upq *UserPasswordQuery) Clone() *UserPasswordQuery {
 	return &UserPasswordQuery{
 		config:     upq.config,
 		ctx:        upq.ctx.Clone(),
-		order:      append([]userpassword.Order{}, upq.order...),
+		order:      append([]userpassword.OrderOption{}, upq.order...),
 		inters:     append([]Interceptor{}, upq.inters...),
 		predicates: append([]predicate.UserPassword{}, upq.predicates...),
 		withUser:   upq.withUser.Clone(),

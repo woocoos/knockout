@@ -21,7 +21,7 @@ import (
 type PermissionQuery struct {
 	config
 	ctx           *QueryContext
-	order         []permission.Order
+	order         []permission.OrderOption
 	inters        []Interceptor
 	predicates    []predicate.Permission
 	withOrg       *OrgQuery
@@ -60,7 +60,7 @@ func (pq *PermissionQuery) Unique(unique bool) *PermissionQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PermissionQuery) Order(o ...permission.Order) *PermissionQuery {
+func (pq *PermissionQuery) Order(o ...permission.OrderOption) *PermissionQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -320,7 +320,7 @@ func (pq *PermissionQuery) Clone() *PermissionQuery {
 	return &PermissionQuery{
 		config:        pq.config,
 		ctx:           pq.ctx.Clone(),
-		order:         append([]permission.Order{}, pq.order...),
+		order:         append([]permission.OrderOption{}, pq.order...),
 		inters:        append([]Interceptor{}, pq.inters...),
 		predicates:    append([]predicate.Permission{}, pq.predicates...),
 		withOrg:       pq.withOrg.Clone(),

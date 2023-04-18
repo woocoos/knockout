@@ -19,7 +19,7 @@ import (
 type UserLoginProfileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []userloginprofile.Order
+	order      []userloginprofile.OrderOption
 	inters     []Interceptor
 	predicates []predicate.UserLoginProfile
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (ulpq *UserLoginProfileQuery) Unique(unique bool) *UserLoginProfileQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ulpq *UserLoginProfileQuery) Order(o ...userloginprofile.Order) *UserLoginProfileQuery {
+func (ulpq *UserLoginProfileQuery) Order(o ...userloginprofile.OrderOption) *UserLoginProfileQuery {
 	ulpq.order = append(ulpq.order, o...)
 	return ulpq
 }
@@ -272,7 +272,7 @@ func (ulpq *UserLoginProfileQuery) Clone() *UserLoginProfileQuery {
 	return &UserLoginProfileQuery{
 		config:     ulpq.config,
 		ctx:        ulpq.ctx.Clone(),
-		order:      append([]userloginprofile.Order{}, ulpq.order...),
+		order:      append([]userloginprofile.OrderOption{}, ulpq.order...),
 		inters:     append([]Interceptor{}, ulpq.inters...),
 		predicates: append([]predicate.UserLoginProfile{}, ulpq.predicates...),
 		withUser:   ulpq.withUser.Clone(),

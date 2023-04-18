@@ -30,7 +30,7 @@ type AppAction struct {
 	AppID int `json:"app_id,omitempty"`
 	// 名称
 	Name string `json:"name,omitempty"`
-	// restful,graphql,rpc
+	// restful,graphql,rpc,function
 	Kind appaction.Kind `json:"kind,omitempty"`
 	// 操作方法:读,写,列表
 	Method appaction.Method `json:"method,omitempty"`
@@ -48,16 +48,13 @@ type AppActionEdges struct {
 	App *App `json:"app,omitempty"`
 	// 被引用的菜单项
 	Menus []*AppMenu `json:"menus,omitempty"`
-	// 引用的资源
-	Resources []*AppRes `json:"resources,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [2]map[string]int
 
-	namedMenus     map[string][]*AppMenu
-	namedResources map[string][]*AppRes
+	namedMenus map[string][]*AppMenu
 }
 
 // AppOrErr returns the App value or an error if the edge
@@ -80,15 +77,6 @@ func (e AppActionEdges) MenusOrErr() ([]*AppMenu, error) {
 		return e.Menus, nil
 	}
 	return nil, &NotLoadedError{edge: "menus"}
-}
-
-// ResourcesOrErr returns the Resources value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppActionEdges) ResourcesOrErr() ([]*AppRes, error) {
-	if e.loadedTypes[2] {
-		return e.Resources, nil
-	}
-	return nil, &NotLoadedError{edge: "resources"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -200,11 +188,6 @@ func (aa *AppAction) QueryMenus() *AppMenuQuery {
 	return NewAppActionClient(aa.config).QueryMenus(aa)
 }
 
-// QueryResources queries the "resources" edge of the AppAction entity.
-func (aa *AppAction) QueryResources() *AppResQuery {
-	return NewAppActionClient(aa.config).QueryResources(aa)
-}
-
 // Update returns a builder for updating this AppAction.
 // Note that you need to call AppAction.Unwrap() before calling this method if this AppAction
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -279,30 +262,6 @@ func (aa *AppAction) appendNamedMenus(name string, edges ...*AppMenu) {
 		aa.Edges.namedMenus[name] = []*AppMenu{}
 	} else {
 		aa.Edges.namedMenus[name] = append(aa.Edges.namedMenus[name], edges...)
-	}
-}
-
-// NamedResources returns the Resources named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (aa *AppAction) NamedResources(name string) ([]*AppRes, error) {
-	if aa.Edges.namedResources == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := aa.Edges.namedResources[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (aa *AppAction) appendNamedResources(name string, edges ...*AppRes) {
-	if aa.Edges.namedResources == nil {
-		aa.Edges.namedResources = make(map[string][]*AppRes)
-	}
-	if len(edges) == 0 {
-		aa.Edges.namedResources[name] = []*AppRes{}
-	} else {
-		aa.Edges.namedResources[name] = append(aa.Edges.namedResources[name], edges...)
 	}
 }
 

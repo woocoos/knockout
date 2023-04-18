@@ -57,21 +57,10 @@ var Columns = []string{
 	FieldArnPattern,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "app_res"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"app_action_resources",
-}
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -91,56 +80,56 @@ var (
 	DefaultID func() int
 )
 
-// Order defines the ordering method for the AppRes queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the AppRes queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) Order {
+func ByAppID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) Order {
+func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
 // ByTypeName orders the results by the type_name field.
-func ByTypeName(opts ...sql.OrderTermOption) Order {
+func ByTypeName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTypeName, opts...).ToFunc()
 }
 
 // ByArnPattern orders the results by the arn_pattern field.
-func ByArnPattern(opts ...sql.OrderTermOption) Order {
+func ByArnPattern(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldArnPattern, opts...).ToFunc()
 }
 
 // ByAppField orders the results by app field.
-func ByAppField(field string, opts ...sql.OrderTermOption) Order {
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
 	}

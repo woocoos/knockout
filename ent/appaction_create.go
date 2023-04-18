@@ -14,7 +14,6 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/appres"
 )
 
 // AppActionCreate is the builder for creating a AppAction entity.
@@ -151,21 +150,6 @@ func (aac *AppActionCreate) AddMenus(a ...*AppMenu) *AppActionCreate {
 		ids[i] = a[i].ID
 	}
 	return aac.AddMenuIDs(ids...)
-}
-
-// AddResourceIDs adds the "resources" edge to the AppRes entity by IDs.
-func (aac *AppActionCreate) AddResourceIDs(ids ...int) *AppActionCreate {
-	aac.mutation.AddResourceIDs(ids...)
-	return aac
-}
-
-// AddResources adds the "resources" edges to the AppRes entity.
-func (aac *AppActionCreate) AddResources(a ...*AppRes) *AppActionCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aac.AddResourceIDs(ids...)
 }
 
 // Mutation returns the AppActionMutation object of the builder.
@@ -345,22 +329,6 @@ func (aac *AppActionCreate) createSpec() (*AppAction, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aac.mutation.ResourcesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appaction.ResourcesTable,
-			Columns: []string{appaction.ResourcesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appres.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

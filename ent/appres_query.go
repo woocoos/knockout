@@ -19,11 +19,10 @@ import (
 type AppResQuery struct {
 	config
 	ctx        *QueryContext
-	order      []appres.Order
+	order      []appres.OrderOption
 	inters     []Interceptor
 	predicates []predicate.AppRes
 	withApp    *AppQuery
-	withFKs    bool
 	modifiers  []func(*sql.Selector)
 	loadTotal  []func(context.Context, []*AppRes) error
 	// intermediate query (i.e. traversal path).
@@ -57,7 +56,7 @@ func (arq *AppResQuery) Unique(unique bool) *AppResQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arq *AppResQuery) Order(o ...appres.Order) *AppResQuery {
+func (arq *AppResQuery) Order(o ...appres.OrderOption) *AppResQuery {
 	arq.order = append(arq.order, o...)
 	return arq
 }
@@ -273,7 +272,7 @@ func (arq *AppResQuery) Clone() *AppResQuery {
 	return &AppResQuery{
 		config:     arq.config,
 		ctx:        arq.ctx.Clone(),
-		order:      append([]appres.Order{}, arq.order...),
+		order:      append([]appres.OrderOption{}, arq.order...),
 		inters:     append([]Interceptor{}, arq.inters...),
 		predicates: append([]predicate.AppRes{}, arq.predicates...),
 		withApp:    arq.withApp.Clone(),
@@ -371,15 +370,11 @@ func (arq *AppResQuery) prepareQuery(ctx context.Context) error {
 func (arq *AppResQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppRes, error) {
 	var (
 		nodes       = []*AppRes{}
-		withFKs     = arq.withFKs
 		_spec       = arq.querySpec()
 		loadedTypes = [1]bool{
 			arq.withApp != nil,
 		}
 	)
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, appres.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppRes).scanValues(nil, columns)
 	}

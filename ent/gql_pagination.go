@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"entgo.io/contrib/entgql"
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
@@ -229,7 +230,7 @@ func (p *appPager) applyCursors(query *AppQuery, after, before *Cursor) (*AppQue
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -240,22 +241,22 @@ func (p *appPager) applyOrder(query *AppQuery) *AppQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppOrder.Field.field))
+		query = query.Order(DefaultAppOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *appPager) orderExpr() sql.Querier {
+func (p *appPager) orderExpr(query *AppQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppOrder.Field {
-			b.Comma().Ident(DefaultAppOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -315,7 +316,11 @@ func (a *AppQuery) Paginate(
 var (
 	// AppOrderFieldCreatedAt orders App by created_at.
 	AppOrderFieldCreatedAt = &AppOrderField{
-		field: app.FieldCreatedAt,
+		Value: func(a *App) (ent.Value, error) {
+			return a.CreatedAt, nil
+		},
+		column: app.FieldCreatedAt,
+		toTerm: app.ByCreatedAt,
 		toCursor: func(a *App) Cursor {
 			return Cursor{
 				ID:    a.ID,
@@ -328,8 +333,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppOrderField) String() string {
 	var str string
-	switch f.field {
-	case app.FieldCreatedAt:
+	switch f.column {
+	case AppOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -357,7 +362,10 @@ func (f *AppOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppOrderField defines the ordering field of App.
 type AppOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given App.
+	Value    func(*App) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) app.OrderOption
 	toCursor func(*App) Cursor
 }
 
@@ -371,7 +379,11 @@ type AppOrder struct {
 var DefaultAppOrder = &AppOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppOrderField{
-		field: app.FieldID,
+		Value: func(a *App) (ent.Value, error) {
+			return a.ID, nil
+		},
+		column: app.FieldID,
+		toTerm: app.ByID,
 		toCursor: func(a *App) Cursor {
 			return Cursor{ID: a.ID}
 		},
@@ -507,7 +519,7 @@ func (p *appactionPager) applyCursors(query *AppActionQuery, after, before *Curs
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppActionOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppActionOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -518,22 +530,22 @@ func (p *appactionPager) applyOrder(query *AppActionQuery) *AppActionQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppActionOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppActionOrder.Field.field))
+		query = query.Order(DefaultAppActionOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *appactionPager) orderExpr() sql.Querier {
+func (p *appactionPager) orderExpr(query *AppActionQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppActionOrder.Field {
-			b.Comma().Ident(DefaultAppActionOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppActionOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -593,7 +605,11 @@ func (aa *AppActionQuery) Paginate(
 var (
 	// AppActionOrderFieldCreatedAt orders AppAction by created_at.
 	AppActionOrderFieldCreatedAt = &AppActionOrderField{
-		field: appaction.FieldCreatedAt,
+		Value: func(aa *AppAction) (ent.Value, error) {
+			return aa.CreatedAt, nil
+		},
+		column: appaction.FieldCreatedAt,
+		toTerm: appaction.ByCreatedAt,
 		toCursor: func(aa *AppAction) Cursor {
 			return Cursor{
 				ID:    aa.ID,
@@ -606,8 +622,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppActionOrderField) String() string {
 	var str string
-	switch f.field {
-	case appaction.FieldCreatedAt:
+	switch f.column {
+	case AppActionOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -635,7 +651,10 @@ func (f *AppActionOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppActionOrderField defines the ordering field of AppAction.
 type AppActionOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given AppAction.
+	Value    func(*AppAction) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) appaction.OrderOption
 	toCursor func(*AppAction) Cursor
 }
 
@@ -649,7 +668,11 @@ type AppActionOrder struct {
 var DefaultAppActionOrder = &AppActionOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppActionOrderField{
-		field: appaction.FieldID,
+		Value: func(aa *AppAction) (ent.Value, error) {
+			return aa.ID, nil
+		},
+		column: appaction.FieldID,
+		toTerm: appaction.ByID,
 		toCursor: func(aa *AppAction) Cursor {
 			return Cursor{ID: aa.ID}
 		},
@@ -785,7 +808,7 @@ func (p *appmenuPager) applyCursors(query *AppMenuQuery, after, before *Cursor) 
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppMenuOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppMenuOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -796,22 +819,22 @@ func (p *appmenuPager) applyOrder(query *AppMenuQuery) *AppMenuQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppMenuOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppMenuOrder.Field.field))
+		query = query.Order(DefaultAppMenuOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *appmenuPager) orderExpr() sql.Querier {
+func (p *appmenuPager) orderExpr(query *AppMenuQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppMenuOrder.Field {
-			b.Comma().Ident(DefaultAppMenuOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppMenuOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -871,7 +894,11 @@ func (am *AppMenuQuery) Paginate(
 var (
 	// AppMenuOrderFieldCreatedAt orders AppMenu by created_at.
 	AppMenuOrderFieldCreatedAt = &AppMenuOrderField{
-		field: appmenu.FieldCreatedAt,
+		Value: func(am *AppMenu) (ent.Value, error) {
+			return am.CreatedAt, nil
+		},
+		column: appmenu.FieldCreatedAt,
+		toTerm: appmenu.ByCreatedAt,
 		toCursor: func(am *AppMenu) Cursor {
 			return Cursor{
 				ID:    am.ID,
@@ -881,7 +908,11 @@ var (
 	}
 	// AppMenuOrderFieldDisplaySort orders AppMenu by display_sort.
 	AppMenuOrderFieldDisplaySort = &AppMenuOrderField{
-		field: appmenu.FieldDisplaySort,
+		Value: func(am *AppMenu) (ent.Value, error) {
+			return am.DisplaySort, nil
+		},
+		column: appmenu.FieldDisplaySort,
+		toTerm: appmenu.ByDisplaySort,
 		toCursor: func(am *AppMenu) Cursor {
 			return Cursor{
 				ID:    am.ID,
@@ -894,10 +925,10 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppMenuOrderField) String() string {
 	var str string
-	switch f.field {
-	case appmenu.FieldCreatedAt:
+	switch f.column {
+	case AppMenuOrderFieldCreatedAt.column:
 		str = "createdAt"
-	case appmenu.FieldDisplaySort:
+	case AppMenuOrderFieldDisplaySort.column:
 		str = "displaySort"
 	}
 	return str
@@ -927,7 +958,10 @@ func (f *AppMenuOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppMenuOrderField defines the ordering field of AppMenu.
 type AppMenuOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given AppMenu.
+	Value    func(*AppMenu) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) appmenu.OrderOption
 	toCursor func(*AppMenu) Cursor
 }
 
@@ -941,7 +975,11 @@ type AppMenuOrder struct {
 var DefaultAppMenuOrder = &AppMenuOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppMenuOrderField{
-		field: appmenu.FieldID,
+		Value: func(am *AppMenu) (ent.Value, error) {
+			return am.ID, nil
+		},
+		column: appmenu.FieldID,
+		toTerm: appmenu.ByID,
 		toCursor: func(am *AppMenu) Cursor {
 			return Cursor{ID: am.ID}
 		},
@@ -1077,7 +1115,7 @@ func (p *apppolicyPager) applyCursors(query *AppPolicyQuery, after, before *Curs
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppPolicyOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppPolicyOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -1088,22 +1126,22 @@ func (p *apppolicyPager) applyOrder(query *AppPolicyQuery) *AppPolicyQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppPolicyOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppPolicyOrder.Field.field))
+		query = query.Order(DefaultAppPolicyOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *apppolicyPager) orderExpr() sql.Querier {
+func (p *apppolicyPager) orderExpr(query *AppPolicyQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppPolicyOrder.Field {
-			b.Comma().Ident(DefaultAppPolicyOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppPolicyOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -1163,7 +1201,11 @@ func (ap *AppPolicyQuery) Paginate(
 var (
 	// AppPolicyOrderFieldCreatedAt orders AppPolicy by created_at.
 	AppPolicyOrderFieldCreatedAt = &AppPolicyOrderField{
-		field: apppolicy.FieldCreatedAt,
+		Value: func(ap *AppPolicy) (ent.Value, error) {
+			return ap.CreatedAt, nil
+		},
+		column: apppolicy.FieldCreatedAt,
+		toTerm: apppolicy.ByCreatedAt,
 		toCursor: func(ap *AppPolicy) Cursor {
 			return Cursor{
 				ID:    ap.ID,
@@ -1176,8 +1218,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppPolicyOrderField) String() string {
 	var str string
-	switch f.field {
-	case apppolicy.FieldCreatedAt:
+	switch f.column {
+	case AppPolicyOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -1205,7 +1247,10 @@ func (f *AppPolicyOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppPolicyOrderField defines the ordering field of AppPolicy.
 type AppPolicyOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given AppPolicy.
+	Value    func(*AppPolicy) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) apppolicy.OrderOption
 	toCursor func(*AppPolicy) Cursor
 }
 
@@ -1219,7 +1264,11 @@ type AppPolicyOrder struct {
 var DefaultAppPolicyOrder = &AppPolicyOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppPolicyOrderField{
-		field: apppolicy.FieldID,
+		Value: func(ap *AppPolicy) (ent.Value, error) {
+			return ap.ID, nil
+		},
+		column: apppolicy.FieldID,
+		toTerm: apppolicy.ByID,
 		toCursor: func(ap *AppPolicy) Cursor {
 			return Cursor{ID: ap.ID}
 		},
@@ -1355,7 +1404,7 @@ func (p *appresPager) applyCursors(query *AppResQuery, after, before *Cursor) (*
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppResOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppResOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -1366,22 +1415,22 @@ func (p *appresPager) applyOrder(query *AppResQuery) *AppResQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppResOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppResOrder.Field.field))
+		query = query.Order(DefaultAppResOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *appresPager) orderExpr() sql.Querier {
+func (p *appresPager) orderExpr(query *AppResQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppResOrder.Field {
-			b.Comma().Ident(DefaultAppResOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppResOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -1441,7 +1490,11 @@ func (ar *AppResQuery) Paginate(
 var (
 	// AppResOrderFieldCreatedAt orders AppRes by created_at.
 	AppResOrderFieldCreatedAt = &AppResOrderField{
-		field: appres.FieldCreatedAt,
+		Value: func(ar *AppRes) (ent.Value, error) {
+			return ar.CreatedAt, nil
+		},
+		column: appres.FieldCreatedAt,
+		toTerm: appres.ByCreatedAt,
 		toCursor: func(ar *AppRes) Cursor {
 			return Cursor{
 				ID:    ar.ID,
@@ -1454,8 +1507,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppResOrderField) String() string {
 	var str string
-	switch f.field {
-	case appres.FieldCreatedAt:
+	switch f.column {
+	case AppResOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -1483,7 +1536,10 @@ func (f *AppResOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppResOrderField defines the ordering field of AppRes.
 type AppResOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given AppRes.
+	Value    func(*AppRes) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) appres.OrderOption
 	toCursor func(*AppRes) Cursor
 }
 
@@ -1497,7 +1553,11 @@ type AppResOrder struct {
 var DefaultAppResOrder = &AppResOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppResOrderField{
-		field: appres.FieldID,
+		Value: func(ar *AppRes) (ent.Value, error) {
+			return ar.ID, nil
+		},
+		column: appres.FieldID,
+		toTerm: appres.ByID,
 		toCursor: func(ar *AppRes) Cursor {
 			return Cursor{ID: ar.ID}
 		},
@@ -1633,7 +1693,7 @@ func (p *approlePager) applyCursors(query *AppRoleQuery, after, before *Cursor) 
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppRoleOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppRoleOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -1644,22 +1704,22 @@ func (p *approlePager) applyOrder(query *AppRoleQuery) *AppRoleQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultAppRoleOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultAppRoleOrder.Field.field))
+		query = query.Order(DefaultAppRoleOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *approlePager) orderExpr() sql.Querier {
+func (p *approlePager) orderExpr(query *AppRoleQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultAppRoleOrder.Field {
-			b.Comma().Ident(DefaultAppRoleOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultAppRoleOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -1719,7 +1779,11 @@ func (ar *AppRoleQuery) Paginate(
 var (
 	// AppRoleOrderFieldCreatedAt orders AppRole by created_at.
 	AppRoleOrderFieldCreatedAt = &AppRoleOrderField{
-		field: approle.FieldCreatedAt,
+		Value: func(ar *AppRole) (ent.Value, error) {
+			return ar.CreatedAt, nil
+		},
+		column: approle.FieldCreatedAt,
+		toTerm: approle.ByCreatedAt,
 		toCursor: func(ar *AppRole) Cursor {
 			return Cursor{
 				ID:    ar.ID,
@@ -1732,8 +1796,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f AppRoleOrderField) String() string {
 	var str string
-	switch f.field {
-	case approle.FieldCreatedAt:
+	switch f.column {
+	case AppRoleOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -1761,7 +1825,10 @@ func (f *AppRoleOrderField) UnmarshalGQL(v interface{}) error {
 
 // AppRoleOrderField defines the ordering field of AppRole.
 type AppRoleOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given AppRole.
+	Value    func(*AppRole) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) approle.OrderOption
 	toCursor func(*AppRole) Cursor
 }
 
@@ -1775,7 +1842,11 @@ type AppRoleOrder struct {
 var DefaultAppRoleOrder = &AppRoleOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &AppRoleOrderField{
-		field: approle.FieldID,
+		Value: func(ar *AppRole) (ent.Value, error) {
+			return ar.ID, nil
+		},
+		column: approle.FieldID,
+		toTerm: approle.ByID,
 		toCursor: func(ar *AppRole) Cursor {
 			return Cursor{ID: ar.ID}
 		},
@@ -1911,7 +1982,7 @@ func (p *orgPager) applyCursors(query *OrgQuery, after, before *Cursor) (*OrgQue
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -1922,22 +1993,22 @@ func (p *orgPager) applyOrder(query *OrgQuery) *OrgQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultOrgOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultOrgOrder.Field.field))
+		query = query.Order(DefaultOrgOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *orgPager) orderExpr() sql.Querier {
+func (p *orgPager) orderExpr(query *OrgQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultOrgOrder.Field {
-			b.Comma().Ident(DefaultOrgOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultOrgOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -1997,7 +2068,11 @@ func (o *OrgQuery) Paginate(
 var (
 	// OrgOrderFieldCreatedAt orders Org by created_at.
 	OrgOrderFieldCreatedAt = &OrgOrderField{
-		field: org.FieldCreatedAt,
+		Value: func(o *Org) (ent.Value, error) {
+			return o.CreatedAt, nil
+		},
+		column: org.FieldCreatedAt,
+		toTerm: org.ByCreatedAt,
 		toCursor: func(o *Org) Cursor {
 			return Cursor{
 				ID:    o.ID,
@@ -2007,7 +2082,11 @@ var (
 	}
 	// OrgOrderFieldDisplaySort orders Org by display_sort.
 	OrgOrderFieldDisplaySort = &OrgOrderField{
-		field: org.FieldDisplaySort,
+		Value: func(o *Org) (ent.Value, error) {
+			return o.DisplaySort, nil
+		},
+		column: org.FieldDisplaySort,
+		toTerm: org.ByDisplaySort,
 		toCursor: func(o *Org) Cursor {
 			return Cursor{
 				ID:    o.ID,
@@ -2020,10 +2099,10 @@ var (
 // String implement fmt.Stringer interface.
 func (f OrgOrderField) String() string {
 	var str string
-	switch f.field {
-	case org.FieldCreatedAt:
+	switch f.column {
+	case OrgOrderFieldCreatedAt.column:
 		str = "createdAt"
-	case org.FieldDisplaySort:
+	case OrgOrderFieldDisplaySort.column:
 		str = "displaySort"
 	}
 	return str
@@ -2053,7 +2132,10 @@ func (f *OrgOrderField) UnmarshalGQL(v interface{}) error {
 
 // OrgOrderField defines the ordering field of Org.
 type OrgOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given Org.
+	Value    func(*Org) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) org.OrderOption
 	toCursor func(*Org) Cursor
 }
 
@@ -2067,7 +2149,11 @@ type OrgOrder struct {
 var DefaultOrgOrder = &OrgOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &OrgOrderField{
-		field: org.FieldID,
+		Value: func(o *Org) (ent.Value, error) {
+			return o.ID, nil
+		},
+		column: org.FieldID,
+		toTerm: org.ByID,
 		toCursor: func(o *Org) Cursor {
 			return Cursor{ID: o.ID}
 		},
@@ -2203,7 +2289,7 @@ func (p *orgpolicyPager) applyCursors(query *OrgPolicyQuery, after, before *Curs
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgPolicyOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgPolicyOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -2214,22 +2300,22 @@ func (p *orgpolicyPager) applyOrder(query *OrgPolicyQuery) *OrgPolicyQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultOrgPolicyOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultOrgPolicyOrder.Field.field))
+		query = query.Order(DefaultOrgPolicyOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *orgpolicyPager) orderExpr() sql.Querier {
+func (p *orgpolicyPager) orderExpr(query *OrgPolicyQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultOrgPolicyOrder.Field {
-			b.Comma().Ident(DefaultOrgPolicyOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultOrgPolicyOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -2289,7 +2375,11 @@ func (op *OrgPolicyQuery) Paginate(
 var (
 	// OrgPolicyOrderFieldCreatedAt orders OrgPolicy by created_at.
 	OrgPolicyOrderFieldCreatedAt = &OrgPolicyOrderField{
-		field: orgpolicy.FieldCreatedAt,
+		Value: func(op *OrgPolicy) (ent.Value, error) {
+			return op.CreatedAt, nil
+		},
+		column: orgpolicy.FieldCreatedAt,
+		toTerm: orgpolicy.ByCreatedAt,
 		toCursor: func(op *OrgPolicy) Cursor {
 			return Cursor{
 				ID:    op.ID,
@@ -2302,8 +2392,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f OrgPolicyOrderField) String() string {
 	var str string
-	switch f.field {
-	case orgpolicy.FieldCreatedAt:
+	switch f.column {
+	case OrgPolicyOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -2331,7 +2421,10 @@ func (f *OrgPolicyOrderField) UnmarshalGQL(v interface{}) error {
 
 // OrgPolicyOrderField defines the ordering field of OrgPolicy.
 type OrgPolicyOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given OrgPolicy.
+	Value    func(*OrgPolicy) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) orgpolicy.OrderOption
 	toCursor func(*OrgPolicy) Cursor
 }
 
@@ -2345,7 +2438,11 @@ type OrgPolicyOrder struct {
 var DefaultOrgPolicyOrder = &OrgPolicyOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &OrgPolicyOrderField{
-		field: orgpolicy.FieldID,
+		Value: func(op *OrgPolicy) (ent.Value, error) {
+			return op.ID, nil
+		},
+		column: orgpolicy.FieldID,
+		toTerm: orgpolicy.ByID,
 		toCursor: func(op *OrgPolicy) Cursor {
 			return Cursor{ID: op.ID}
 		},
@@ -2481,7 +2578,7 @@ func (p *orgrolePager) applyCursors(query *OrgRoleQuery, after, before *Cursor) 
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgRoleOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgRoleOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -2492,22 +2589,22 @@ func (p *orgrolePager) applyOrder(query *OrgRoleQuery) *OrgRoleQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultOrgRoleOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultOrgRoleOrder.Field.field))
+		query = query.Order(DefaultOrgRoleOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *orgrolePager) orderExpr() sql.Querier {
+func (p *orgrolePager) orderExpr(query *OrgRoleQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultOrgRoleOrder.Field {
-			b.Comma().Ident(DefaultOrgRoleOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultOrgRoleOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -2567,7 +2664,11 @@ func (or *OrgRoleQuery) Paginate(
 var (
 	// OrgRoleOrderFieldCreatedAt orders OrgRole by created_at.
 	OrgRoleOrderFieldCreatedAt = &OrgRoleOrderField{
-		field: orgrole.FieldCreatedAt,
+		Value: func(or *OrgRole) (ent.Value, error) {
+			return or.CreatedAt, nil
+		},
+		column: orgrole.FieldCreatedAt,
+		toTerm: orgrole.ByCreatedAt,
 		toCursor: func(or *OrgRole) Cursor {
 			return Cursor{
 				ID:    or.ID,
@@ -2580,8 +2681,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f OrgRoleOrderField) String() string {
 	var str string
-	switch f.field {
-	case orgrole.FieldCreatedAt:
+	switch f.column {
+	case OrgRoleOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -2609,7 +2710,10 @@ func (f *OrgRoleOrderField) UnmarshalGQL(v interface{}) error {
 
 // OrgRoleOrderField defines the ordering field of OrgRole.
 type OrgRoleOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given OrgRole.
+	Value    func(*OrgRole) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) orgrole.OrderOption
 	toCursor func(*OrgRole) Cursor
 }
 
@@ -2623,7 +2727,11 @@ type OrgRoleOrder struct {
 var DefaultOrgRoleOrder = &OrgRoleOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &OrgRoleOrderField{
-		field: orgrole.FieldID,
+		Value: func(or *OrgRole) (ent.Value, error) {
+			return or.ID, nil
+		},
+		column: orgrole.FieldID,
+		toTerm: orgrole.ByID,
 		toCursor: func(or *OrgRole) Cursor {
 			return Cursor{ID: or.ID}
 		},
@@ -2759,7 +2867,7 @@ func (p *permissionPager) applyCursors(query *PermissionQuery, after, before *Cu
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultPermissionOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultPermissionOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -2770,22 +2878,22 @@ func (p *permissionPager) applyOrder(query *PermissionQuery) *PermissionQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultPermissionOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultPermissionOrder.Field.field))
+		query = query.Order(DefaultPermissionOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *permissionPager) orderExpr() sql.Querier {
+func (p *permissionPager) orderExpr(query *PermissionQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultPermissionOrder.Field {
-			b.Comma().Ident(DefaultPermissionOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultPermissionOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -2845,7 +2953,11 @@ func (pe *PermissionQuery) Paginate(
 var (
 	// PermissionOrderFieldCreatedAt orders Permission by created_at.
 	PermissionOrderFieldCreatedAt = &PermissionOrderField{
-		field: permission.FieldCreatedAt,
+		Value: func(pe *Permission) (ent.Value, error) {
+			return pe.CreatedAt, nil
+		},
+		column: permission.FieldCreatedAt,
+		toTerm: permission.ByCreatedAt,
 		toCursor: func(pe *Permission) Cursor {
 			return Cursor{
 				ID:    pe.ID,
@@ -2858,8 +2970,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f PermissionOrderField) String() string {
 	var str string
-	switch f.field {
-	case permission.FieldCreatedAt:
+	switch f.column {
+	case PermissionOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -2887,7 +2999,10 @@ func (f *PermissionOrderField) UnmarshalGQL(v interface{}) error {
 
 // PermissionOrderField defines the ordering field of Permission.
 type PermissionOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given Permission.
+	Value    func(*Permission) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) permission.OrderOption
 	toCursor func(*Permission) Cursor
 }
 
@@ -2901,7 +3016,11 @@ type PermissionOrder struct {
 var DefaultPermissionOrder = &PermissionOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &PermissionOrderField{
-		field: permission.FieldID,
+		Value: func(pe *Permission) (ent.Value, error) {
+			return pe.ID, nil
+		},
+		column: permission.FieldID,
+		toTerm: permission.ByID,
 		toCursor: func(pe *Permission) Cursor {
 			return Cursor{ID: pe.ID}
 		},
@@ -3037,7 +3156,7 @@ func (p *userPager) applyCursors(query *UserQuery, after, before *Cursor) (*User
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -3048,22 +3167,22 @@ func (p *userPager) applyOrder(query *UserQuery) *UserQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultUserOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultUserOrder.Field.field))
+		query = query.Order(DefaultUserOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *userPager) orderExpr() sql.Querier {
+func (p *userPager) orderExpr(query *UserQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultUserOrder.Field {
-			b.Comma().Ident(DefaultUserOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultUserOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -3123,7 +3242,11 @@ func (u *UserQuery) Paginate(
 var (
 	// UserOrderFieldCreatedAt orders User by created_at.
 	UserOrderFieldCreatedAt = &UserOrderField{
-		field: user.FieldCreatedAt,
+		Value: func(u *User) (ent.Value, error) {
+			return u.CreatedAt, nil
+		},
+		column: user.FieldCreatedAt,
+		toTerm: user.ByCreatedAt,
 		toCursor: func(u *User) Cursor {
 			return Cursor{
 				ID:    u.ID,
@@ -3136,8 +3259,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f UserOrderField) String() string {
 	var str string
-	switch f.field {
-	case user.FieldCreatedAt:
+	switch f.column {
+	case UserOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -3165,7 +3288,10 @@ func (f *UserOrderField) UnmarshalGQL(v interface{}) error {
 
 // UserOrderField defines the ordering field of User.
 type UserOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given User.
+	Value    func(*User) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) user.OrderOption
 	toCursor func(*User) Cursor
 }
 
@@ -3179,7 +3305,11 @@ type UserOrder struct {
 var DefaultUserOrder = &UserOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &UserOrderField{
-		field: user.FieldID,
+		Value: func(u *User) (ent.Value, error) {
+			return u.ID, nil
+		},
+		column: user.FieldID,
+		toTerm: user.ByID,
 		toCursor: func(u *User) Cursor {
 			return Cursor{ID: u.ID}
 		},
@@ -3315,7 +3445,7 @@ func (p *userdevicePager) applyCursors(query *UserDeviceQuery, after, before *Cu
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserDeviceOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserDeviceOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -3326,22 +3456,22 @@ func (p *userdevicePager) applyOrder(query *UserDeviceQuery) *UserDeviceQuery {
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultUserDeviceOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultUserDeviceOrder.Field.field))
+		query = query.Order(DefaultUserDeviceOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *userdevicePager) orderExpr() sql.Querier {
+func (p *userdevicePager) orderExpr(query *UserDeviceQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultUserDeviceOrder.Field {
-			b.Comma().Ident(DefaultUserDeviceOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultUserDeviceOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -3401,7 +3531,11 @@ func (ud *UserDeviceQuery) Paginate(
 var (
 	// UserDeviceOrderFieldCreatedAt orders UserDevice by created_at.
 	UserDeviceOrderFieldCreatedAt = &UserDeviceOrderField{
-		field: userdevice.FieldCreatedAt,
+		Value: func(ud *UserDevice) (ent.Value, error) {
+			return ud.CreatedAt, nil
+		},
+		column: userdevice.FieldCreatedAt,
+		toTerm: userdevice.ByCreatedAt,
 		toCursor: func(ud *UserDevice) Cursor {
 			return Cursor{
 				ID:    ud.ID,
@@ -3414,8 +3548,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f UserDeviceOrderField) String() string {
 	var str string
-	switch f.field {
-	case userdevice.FieldCreatedAt:
+	switch f.column {
+	case UserDeviceOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -3443,7 +3577,10 @@ func (f *UserDeviceOrderField) UnmarshalGQL(v interface{}) error {
 
 // UserDeviceOrderField defines the ordering field of UserDevice.
 type UserDeviceOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given UserDevice.
+	Value    func(*UserDevice) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) userdevice.OrderOption
 	toCursor func(*UserDevice) Cursor
 }
 
@@ -3457,7 +3594,11 @@ type UserDeviceOrder struct {
 var DefaultUserDeviceOrder = &UserDeviceOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &UserDeviceOrderField{
-		field: userdevice.FieldID,
+		Value: func(ud *UserDevice) (ent.Value, error) {
+			return ud.ID, nil
+		},
+		column: userdevice.FieldID,
+		toTerm: userdevice.ByID,
 		toCursor: func(ud *UserDevice) Cursor {
 			return Cursor{ID: ud.ID}
 		},
@@ -3593,7 +3734,7 @@ func (p *useridentityPager) applyCursors(query *UserIdentityQuery, after, before
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserIdentityOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserIdentityOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -3604,22 +3745,22 @@ func (p *useridentityPager) applyOrder(query *UserIdentityQuery) *UserIdentityQu
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultUserIdentityOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultUserIdentityOrder.Field.field))
+		query = query.Order(DefaultUserIdentityOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *useridentityPager) orderExpr() sql.Querier {
+func (p *useridentityPager) orderExpr(query *UserIdentityQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultUserIdentityOrder.Field {
-			b.Comma().Ident(DefaultUserIdentityOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultUserIdentityOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -3679,7 +3820,11 @@ func (ui *UserIdentityQuery) Paginate(
 var (
 	// UserIdentityOrderFieldCreatedAt orders UserIdentity by created_at.
 	UserIdentityOrderFieldCreatedAt = &UserIdentityOrderField{
-		field: useridentity.FieldCreatedAt,
+		Value: func(ui *UserIdentity) (ent.Value, error) {
+			return ui.CreatedAt, nil
+		},
+		column: useridentity.FieldCreatedAt,
+		toTerm: useridentity.ByCreatedAt,
 		toCursor: func(ui *UserIdentity) Cursor {
 			return Cursor{
 				ID:    ui.ID,
@@ -3692,8 +3837,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f UserIdentityOrderField) String() string {
 	var str string
-	switch f.field {
-	case useridentity.FieldCreatedAt:
+	switch f.column {
+	case UserIdentityOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -3721,7 +3866,10 @@ func (f *UserIdentityOrderField) UnmarshalGQL(v interface{}) error {
 
 // UserIdentityOrderField defines the ordering field of UserIdentity.
 type UserIdentityOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given UserIdentity.
+	Value    func(*UserIdentity) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) useridentity.OrderOption
 	toCursor func(*UserIdentity) Cursor
 }
 
@@ -3735,7 +3883,11 @@ type UserIdentityOrder struct {
 var DefaultUserIdentityOrder = &UserIdentityOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &UserIdentityOrderField{
-		field: useridentity.FieldID,
+		Value: func(ui *UserIdentity) (ent.Value, error) {
+			return ui.ID, nil
+		},
+		column: useridentity.FieldID,
+		toTerm: useridentity.ByID,
 		toCursor: func(ui *UserIdentity) Cursor {
 			return Cursor{ID: ui.ID}
 		},
@@ -3871,7 +4023,7 @@ func (p *userloginprofilePager) applyCursors(query *UserLoginProfileQuery, after
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserLoginProfileOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserLoginProfileOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -3882,22 +4034,22 @@ func (p *userloginprofilePager) applyOrder(query *UserLoginProfileQuery) *UserLo
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultUserLoginProfileOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultUserLoginProfileOrder.Field.field))
+		query = query.Order(DefaultUserLoginProfileOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *userloginprofilePager) orderExpr() sql.Querier {
+func (p *userloginprofilePager) orderExpr(query *UserLoginProfileQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultUserLoginProfileOrder.Field {
-			b.Comma().Ident(DefaultUserLoginProfileOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultUserLoginProfileOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -3957,7 +4109,11 @@ func (ulp *UserLoginProfileQuery) Paginate(
 var (
 	// UserLoginProfileOrderFieldCreatedAt orders UserLoginProfile by created_at.
 	UserLoginProfileOrderFieldCreatedAt = &UserLoginProfileOrderField{
-		field: userloginprofile.FieldCreatedAt,
+		Value: func(ulp *UserLoginProfile) (ent.Value, error) {
+			return ulp.CreatedAt, nil
+		},
+		column: userloginprofile.FieldCreatedAt,
+		toTerm: userloginprofile.ByCreatedAt,
 		toCursor: func(ulp *UserLoginProfile) Cursor {
 			return Cursor{
 				ID:    ulp.ID,
@@ -3970,8 +4126,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f UserLoginProfileOrderField) String() string {
 	var str string
-	switch f.field {
-	case userloginprofile.FieldCreatedAt:
+	switch f.column {
+	case UserLoginProfileOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -3999,7 +4155,10 @@ func (f *UserLoginProfileOrderField) UnmarshalGQL(v interface{}) error {
 
 // UserLoginProfileOrderField defines the ordering field of UserLoginProfile.
 type UserLoginProfileOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given UserLoginProfile.
+	Value    func(*UserLoginProfile) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) userloginprofile.OrderOption
 	toCursor func(*UserLoginProfile) Cursor
 }
 
@@ -4013,7 +4172,11 @@ type UserLoginProfileOrder struct {
 var DefaultUserLoginProfileOrder = &UserLoginProfileOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &UserLoginProfileOrderField{
-		field: userloginprofile.FieldID,
+		Value: func(ulp *UserLoginProfile) (ent.Value, error) {
+			return ulp.ID, nil
+		},
+		column: userloginprofile.FieldID,
+		toTerm: userloginprofile.ByID,
 		toCursor: func(ulp *UserLoginProfile) Cursor {
 			return Cursor{ID: ulp.ID}
 		},
@@ -4149,7 +4312,7 @@ func (p *userpasswordPager) applyCursors(query *UserPasswordQuery, after, before
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserPasswordOrder.Field.field, p.order.Field.field, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserPasswordOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
@@ -4160,22 +4323,22 @@ func (p *userpasswordPager) applyOrder(query *UserPasswordQuery) *UserPasswordQu
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	query = query.Order(orderFunc(direction, p.order.Field.field))
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
 	if p.order.Field != DefaultUserPasswordOrder.Field {
-		query = query.Order(orderFunc(direction, DefaultUserPasswordOrder.Field.field))
+		query = query.Order(DefaultUserPasswordOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	return query
 }
 
-func (p *userpasswordPager) orderExpr() sql.Querier {
+func (p *userpasswordPager) orderExpr(query *UserPasswordQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
-		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
 		if p.order.Field != DefaultUserPasswordOrder.Field {
-			b.Comma().Ident(DefaultUserPasswordOrder.Field.field).Pad().WriteString(string(direction))
+			b.Comma().Ident(DefaultUserPasswordOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
@@ -4235,7 +4398,11 @@ func (up *UserPasswordQuery) Paginate(
 var (
 	// UserPasswordOrderFieldCreatedAt orders UserPassword by created_at.
 	UserPasswordOrderFieldCreatedAt = &UserPasswordOrderField{
-		field: userpassword.FieldCreatedAt,
+		Value: func(up *UserPassword) (ent.Value, error) {
+			return up.CreatedAt, nil
+		},
+		column: userpassword.FieldCreatedAt,
+		toTerm: userpassword.ByCreatedAt,
 		toCursor: func(up *UserPassword) Cursor {
 			return Cursor{
 				ID:    up.ID,
@@ -4248,8 +4415,8 @@ var (
 // String implement fmt.Stringer interface.
 func (f UserPasswordOrderField) String() string {
 	var str string
-	switch f.field {
-	case userpassword.FieldCreatedAt:
+	switch f.column {
+	case UserPasswordOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
@@ -4277,7 +4444,10 @@ func (f *UserPasswordOrderField) UnmarshalGQL(v interface{}) error {
 
 // UserPasswordOrderField defines the ordering field of UserPassword.
 type UserPasswordOrderField struct {
-	field    string
+	// Value extracts the ordering value from the given UserPassword.
+	Value    func(*UserPassword) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) userpassword.OrderOption
 	toCursor func(*UserPassword) Cursor
 }
 
@@ -4291,7 +4461,11 @@ type UserPasswordOrder struct {
 var DefaultUserPasswordOrder = &UserPasswordOrder{
 	Direction: entgql.OrderDirectionAsc,
 	Field: &UserPasswordOrderField{
-		field: userpassword.FieldID,
+		Value: func(up *UserPassword) (ent.Value, error) {
+			return up.ID, nil
+		},
+		column: userpassword.FieldID,
+		toTerm: userpassword.ByID,
 		toCursor: func(up *UserPassword) Cursor {
 			return Cursor{ID: up.ID}
 		},

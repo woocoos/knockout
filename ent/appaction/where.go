@@ -526,29 +526,6 @@ func HasMenusWith(preds ...predicate.AppMenu) predicate.AppAction {
 	})
 }
 
-// HasResources applies the HasEdge predicate on the "resources" edge.
-func HasResources() predicate.AppAction {
-	return predicate.AppAction(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ResourcesTable, ResourcesColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasResourcesWith applies the HasEdge predicate on the "resources" edge with a given conditions (other predicates).
-func HasResourcesWith(preds ...predicate.AppRes) predicate.AppAction {
-	return predicate.AppAction(func(s *sql.Selector) {
-		step := newResourcesStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.AppAction) predicate.AppAction {
 	return predicate.AppAction(func(s *sql.Selector) {

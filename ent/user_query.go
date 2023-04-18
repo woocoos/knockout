@@ -26,7 +26,7 @@ import (
 type UserQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []user.Order
+	order                []user.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.User
 	withIdentities       *UserIdentityQuery
@@ -75,7 +75,7 @@ func (uq *UserQuery) Unique(unique bool) *UserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uq *UserQuery) Order(o ...user.Order) *UserQuery {
+func (uq *UserQuery) Order(o ...user.OrderOption) *UserQuery {
 	uq.order = append(uq.order, o...)
 	return uq
 }
@@ -423,7 +423,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 	return &UserQuery{
 		config:           uq.config,
 		ctx:              uq.ctx.Clone(),
-		order:            append([]user.Order{}, uq.order...),
+		order:            append([]user.OrderOption{}, uq.order...),
 		inters:           append([]Interceptor{}, uq.inters...),
 		predicates:       append([]predicate.User{}, uq.predicates...),
 		withIdentities:   uq.withIdentities.Clone(),
@@ -734,7 +734,7 @@ func (uq *UserQuery) loadIdentities(ctx context.Context, query *UserIdentityQuer
 		}
 	}
 	query.Where(predicate.UserIdentity(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.IdentitiesColumn, fks...))
+		s.Where(sql.InValues(s.C(user.IdentitiesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -758,7 +758,7 @@ func (uq *UserQuery) loadLoginProfile(ctx context.Context, query *UserLoginProfi
 		nodeids[nodes[i].ID] = nodes[i]
 	}
 	query.Where(predicate.UserLoginProfile(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.LoginProfileColumn, fks...))
+		s.Where(sql.InValues(s.C(user.LoginProfileColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -785,7 +785,7 @@ func (uq *UserQuery) loadPasswords(ctx context.Context, query *UserPasswordQuery
 		}
 	}
 	query.Where(predicate.UserPassword(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.PasswordsColumn, fks...))
+		s.Where(sql.InValues(s.C(user.PasswordsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -812,7 +812,7 @@ func (uq *UserQuery) loadDevices(ctx context.Context, query *UserDeviceQuery, no
 		}
 	}
 	query.Where(predicate.UserDevice(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.DevicesColumn, fks...))
+		s.Where(sql.InValues(s.C(user.DevicesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -900,7 +900,7 @@ func (uq *UserQuery) loadPermissions(ctx context.Context, query *PermissionQuery
 		}
 	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.PermissionsColumn, fks...))
+		s.Where(sql.InValues(s.C(user.PermissionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -927,7 +927,7 @@ func (uq *UserQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes
 		}
 	}
 	query.Where(predicate.OrgUser(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.OrgUserColumn, fks...))
+		s.Where(sql.InValues(s.C(user.OrgUserColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

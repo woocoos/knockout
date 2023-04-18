@@ -603,43 +603,43 @@ func (f TraverseUserPassword) Traverse(ctx context.Context, q ent.Query) error {
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
 	case *ent.AppQuery:
-		return &query[*ent.AppQuery, predicate.App, app.Order]{typ: ent.TypeApp, tq: q}, nil
+		return &query[*ent.AppQuery, predicate.App, app.OrderOption]{typ: ent.TypeApp, tq: q}, nil
 	case *ent.AppActionQuery:
-		return &query[*ent.AppActionQuery, predicate.AppAction, appaction.Order]{typ: ent.TypeAppAction, tq: q}, nil
+		return &query[*ent.AppActionQuery, predicate.AppAction, appaction.OrderOption]{typ: ent.TypeAppAction, tq: q}, nil
 	case *ent.AppMenuQuery:
-		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.Order]{typ: ent.TypeAppMenu, tq: q}, nil
+		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.OrderOption]{typ: ent.TypeAppMenu, tq: q}, nil
 	case *ent.AppPolicyQuery:
-		return &query[*ent.AppPolicyQuery, predicate.AppPolicy, apppolicy.Order]{typ: ent.TypeAppPolicy, tq: q}, nil
+		return &query[*ent.AppPolicyQuery, predicate.AppPolicy, apppolicy.OrderOption]{typ: ent.TypeAppPolicy, tq: q}, nil
 	case *ent.AppResQuery:
-		return &query[*ent.AppResQuery, predicate.AppRes, appres.Order]{typ: ent.TypeAppRes, tq: q}, nil
+		return &query[*ent.AppResQuery, predicate.AppRes, appres.OrderOption]{typ: ent.TypeAppRes, tq: q}, nil
 	case *ent.AppRoleQuery:
-		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.Order]{typ: ent.TypeAppRole, tq: q}, nil
+		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.OrderOption]{typ: ent.TypeAppRole, tq: q}, nil
 	case *ent.AppRolePolicyQuery:
-		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.Order]{typ: ent.TypeAppRolePolicy, tq: q}, nil
+		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.OrderOption]{typ: ent.TypeAppRolePolicy, tq: q}, nil
 	case *ent.OrgQuery:
-		return &query[*ent.OrgQuery, predicate.Org, org.Order]{typ: ent.TypeOrg, tq: q}, nil
+		return &query[*ent.OrgQuery, predicate.Org, org.OrderOption]{typ: ent.TypeOrg, tq: q}, nil
 	case *ent.OrgAppQuery:
-		return &query[*ent.OrgAppQuery, predicate.OrgApp, orgapp.Order]{typ: ent.TypeOrgApp, tq: q}, nil
+		return &query[*ent.OrgAppQuery, predicate.OrgApp, orgapp.OrderOption]{typ: ent.TypeOrgApp, tq: q}, nil
 	case *ent.OrgPolicyQuery:
-		return &query[*ent.OrgPolicyQuery, predicate.OrgPolicy, orgpolicy.Order]{typ: ent.TypeOrgPolicy, tq: q}, nil
+		return &query[*ent.OrgPolicyQuery, predicate.OrgPolicy, orgpolicy.OrderOption]{typ: ent.TypeOrgPolicy, tq: q}, nil
 	case *ent.OrgRoleQuery:
-		return &query[*ent.OrgRoleQuery, predicate.OrgRole, orgrole.Order]{typ: ent.TypeOrgRole, tq: q}, nil
+		return &query[*ent.OrgRoleQuery, predicate.OrgRole, orgrole.OrderOption]{typ: ent.TypeOrgRole, tq: q}, nil
 	case *ent.OrgRoleUserQuery:
-		return &query[*ent.OrgRoleUserQuery, predicate.OrgRoleUser, orgroleuser.Order]{typ: ent.TypeOrgRoleUser, tq: q}, nil
+		return &query[*ent.OrgRoleUserQuery, predicate.OrgRoleUser, orgroleuser.OrderOption]{typ: ent.TypeOrgRoleUser, tq: q}, nil
 	case *ent.OrgUserQuery:
-		return &query[*ent.OrgUserQuery, predicate.OrgUser, orguser.Order]{typ: ent.TypeOrgUser, tq: q}, nil
+		return &query[*ent.OrgUserQuery, predicate.OrgUser, orguser.OrderOption]{typ: ent.TypeOrgUser, tq: q}, nil
 	case *ent.PermissionQuery:
-		return &query[*ent.PermissionQuery, predicate.Permission, permission.Order]{typ: ent.TypePermission, tq: q}, nil
+		return &query[*ent.PermissionQuery, predicate.Permission, permission.OrderOption]{typ: ent.TypePermission, tq: q}, nil
 	case *ent.UserQuery:
-		return &query[*ent.UserQuery, predicate.User, user.Order]{typ: ent.TypeUser, tq: q}, nil
+		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
 	case *ent.UserDeviceQuery:
-		return &query[*ent.UserDeviceQuery, predicate.UserDevice, userdevice.Order]{typ: ent.TypeUserDevice, tq: q}, nil
+		return &query[*ent.UserDeviceQuery, predicate.UserDevice, userdevice.OrderOption]{typ: ent.TypeUserDevice, tq: q}, nil
 	case *ent.UserIdentityQuery:
-		return &query[*ent.UserIdentityQuery, predicate.UserIdentity, useridentity.Order]{typ: ent.TypeUserIdentity, tq: q}, nil
+		return &query[*ent.UserIdentityQuery, predicate.UserIdentity, useridentity.OrderOption]{typ: ent.TypeUserIdentity, tq: q}, nil
 	case *ent.UserLoginProfileQuery:
-		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile, userloginprofile.Order]{typ: ent.TypeUserLoginProfile, tq: q}, nil
+		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile, userloginprofile.OrderOption]{typ: ent.TypeUserLoginProfile, tq: q}, nil
 	case *ent.UserPasswordQuery:
-		return &query[*ent.UserPasswordQuery, predicate.UserPassword, userpassword.Order]{typ: ent.TypeUserPassword, tq: q}, nil
+		return &query[*ent.UserPasswordQuery, predicate.UserPassword, userpassword.OrderOption]{typ: ent.TypeUserPassword, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

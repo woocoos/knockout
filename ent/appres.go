@@ -36,9 +36,8 @@ type AppRes struct {
 	ArnPattern string `json:"arn_pattern,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppResQuery when eager-loading is set.
-	Edges                AppResEdges `json:"edges"`
-	app_action_resources *int
-	selectValues         sql.SelectValues
+	Edges        AppResEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AppResEdges holds the relations/edges for other nodes in the graph.
@@ -76,8 +75,6 @@ func (*AppRes) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case appres.FieldCreatedAt, appres.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case appres.ForeignKeys[0]: // app_action_resources
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -146,13 +143,6 @@ func (ar *AppRes) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field arn_pattern", values[i])
 			} else if value.Valid {
 				ar.ArnPattern = value.String
-			}
-		case appres.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field app_action_resources", value)
-			} else if value.Valid {
-				ar.app_action_resources = new(int)
-				*ar.app_action_resources = int(value.Int64)
 			}
 		default:
 			ar.selectValues.Set(columns[i], values[i])

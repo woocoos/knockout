@@ -2540,69 +2540,6 @@ func (ec *executionContext) fieldContext_AppAction_menus(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _AppAction_resources(ctx context.Context, field graphql.CollectedField, obj *ent.AppAction) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppAction_resources(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Resources(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.AppRes)
-	fc.Result = res
-	return ec.marshalOAppRes2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppResᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppAction_resources(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppAction",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_AppRes_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_AppRes_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AppRes_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_AppRes_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AppRes_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppRes_appID(ctx, field)
-			case "name":
-				return ec.fieldContext_AppRes_name(ctx, field)
-			case "typeName":
-				return ec.fieldContext_AppRes_typeName(ctx, field)
-			case "arnPattern":
-				return ec.fieldContext_AppRes_arnPattern(ctx, field)
-			case "app":
-				return ec.fieldContext_AppRes_app(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppRes", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _AppActionConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.AppActionConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AppActionConnection_edges(ctx, field)
 	if err != nil {
@@ -2808,8 +2745,6 @@ func (ec *executionContext) fieldContext_AppActionEdge_node(ctx context.Context,
 				return ec.fieldContext_AppAction_app(ctx, field)
 			case "menus":
 				return ec.fieldContext_AppAction_menus(ctx, field)
-			case "resources":
-				return ec.fieldContext_AppAction_resources(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppAction", field.Name)
 		},
@@ -3798,8 +3733,6 @@ func (ec *executionContext) fieldContext_AppMenu_action(ctx context.Context, fie
 				return ec.fieldContext_AppAction_app(ctx, field)
 			case "menus":
 				return ec.fieldContext_AppAction_menus(ctx, field)
-			case "resources":
-				return ec.fieldContext_AppAction_resources(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppAction", field.Name)
 		},
@@ -14356,7 +14289,7 @@ func (ec *executionContext) unmarshalInputAppActionWhereInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "kind", "kindNEQ", "kindIn", "kindNotIn", "method", "methodNEQ", "methodIn", "methodNotIn", "hasApp", "hasAppWith", "hasMenus", "hasMenusWith", "hasResources", "hasResourcesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "kind", "kindNEQ", "kindIn", "kindNotIn", "method", "methodNEQ", "methodIn", "methodNotIn", "hasApp", "hasAppWith", "hasMenus", "hasMenusWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -14984,22 +14917,6 @@ func (ec *executionContext) unmarshalInputAppActionWhereInput(ctx context.Contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMenusWith"))
 			it.HasMenusWith, err = ec.unmarshalOAppMenuWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasResources":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasResources"))
-			it.HasResources, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "hasResourcesWith":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasResourcesWith"))
-			it.HasResourcesWith, err = ec.unmarshalOAppResWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppResWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -20384,7 +20301,7 @@ func (ec *executionContext) unmarshalInputCreateAppActionInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "kind", "method", "comments", "appID", "menuIDs", "resourceIDs"}
+	fieldsInOrder := [...]string{"name", "kind", "method", "comments", "appID", "menuIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20436,14 +20353,6 @@ func (ec *executionContext) unmarshalInputCreateAppActionInput(ctx context.Conte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuIDs"))
 			it.MenuIDs, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "resourceIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceIDs"))
-			it.ResourceIDs, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26474,7 +26383,7 @@ func (ec *executionContext) unmarshalInputUpdateAppActionInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "kind", "method", "comments", "clearComments", "addMenuIDs", "removeMenuIDs", "clearMenus", "addResourceIDs", "removeResourceIDs", "clearResources"}
+	fieldsInOrder := [...]string{"name", "kind", "method", "comments", "clearComments", "addMenuIDs", "removeMenuIDs", "clearMenus"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -26542,30 +26451,6 @@ func (ec *executionContext) unmarshalInputUpdateAppActionInput(ctx context.Conte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearMenus"))
 			it.ClearMenus, err = ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "addResourceIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addResourceIDs"))
-			it.AddResourceIDs, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "removeResourceIDs":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeResourceIDs"))
-			it.RemoveResourceIDs, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "clearResources":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearResources"))
-			it.ClearResources, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27202,7 +27087,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "parentID", "clearParent", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27302,14 +27187,6 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
 			it.ParentID, err = ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "clearParent":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearParent"))
-			it.ClearParent, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27486,7 +27363,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"appPolicyID", "clearAppPolicyID", "name", "comments", "clearComments", "rules", "appendRules", "orgID", "clearOrg", "addPermissionIDs", "removePermissionIDs", "clearPermissions"}
+	fieldsInOrder := [...]string{"appPolicyID", "clearAppPolicyID", "name", "comments", "clearComments", "rules", "appendRules", "orgID", "addPermissionIDs", "removePermissionIDs", "clearPermissions"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27554,14 +27431,6 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
 			it.OrgID, err = ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "clearOrg":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearOrg"))
-			it.ClearOrg, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27654,7 +27523,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgUserInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"joinedAt", "displayName", "orgID", "clearOrg", "userID", "clearUser"}
+	fieldsInOrder := [...]string{"joinedAt", "displayName", "orgID", "userID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27685,27 +27554,11 @@ func (ec *executionContext) unmarshalInputUpdateOrgUserInput(ctx context.Context
 			if err != nil {
 				return it, err
 			}
-		case "clearOrg":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearOrg"))
-			it.ClearOrg, err = ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "userID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
 			it.UserID, err = ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "clearUser":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearUser"))
-			it.ClearUser, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -33106,23 +32959,6 @@ func (ec *executionContext) _AppAction(ctx context.Context, sel ast.SelectionSet
 				return innerFunc(ctx)
 
 			})
-		case "resources":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AppAction_resources(ctx, field, obj)
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -35819,16 +35655,6 @@ func (ec *executionContext) unmarshalNAppPolicyWhereInput2ᚖgithubᚗcomᚋwooc
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAppRes2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppRes(ctx context.Context, sel ast.SelectionSet, v *ent.AppRes) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AppRes(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNAppResConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppResConnection(ctx context.Context, sel ast.SelectionSet, v *ent.AppResConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -37410,53 +37236,6 @@ func (ec *executionContext) unmarshalOAppPolicyWhereInput2ᚖgithubᚗcomᚋwooc
 	}
 	res, err := ec.unmarshalInputAppPolicyWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAppRes2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppResᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.AppRes) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNAppRes2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppRes(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) marshalOAppRes2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppRes(ctx context.Context, sel ast.SelectionSet, v *ent.AppRes) graphql.Marshaler {

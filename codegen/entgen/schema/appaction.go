@@ -13,6 +13,10 @@ import (
 )
 
 // AppAction holds the schema definition for the AppAction entity.
+//
+// Kind:
+//
+//	function: 功能性权限,此时需要明确该操作的类型(读,写,列表)
 type AppAction struct {
 	ent.Schema
 }
@@ -38,7 +42,7 @@ func (AppAction) Fields() []ent.Field {
 		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("名称").
 			Match(regexp.MustCompile("[a-zA-Z0-9/]+$")),
-		field.Enum("kind").Values("restful", "graphql", "rpc").Comment("restful,graphql,rpc"),
+		field.Enum("kind").Values("restful", "graphql", "rpc", "function").Comment("restful,graphql,rpc,function"),
 		field.Enum("method").Values("read", "write", "list").Comment("操作方法:读,写,列表"),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
@@ -50,7 +54,6 @@ func (AppAction) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("app", App.Type).Ref("actions").Unique().Immutable().Field("app_id"),
 		edge.To("menus", AppMenu.Type).Comment("被引用的菜单项"),
-		edge.To("resources", AppRes.Type).Comment("引用的资源"),
 	}
 }
 

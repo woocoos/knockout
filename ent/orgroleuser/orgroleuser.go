@@ -81,53 +81,53 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
-// Order defines the ordering method for the OrgRoleUser queries.
-type Order func(*sql.Selector)
+// OrderOption defines the ordering options for the OrgRoleUser queries.
+type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
-func ByID(opts ...sql.OrderTermOption) Order {
+func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
 // ByCreatedBy orders the results by the created_by field.
-func ByCreatedBy(opts ...sql.OrderTermOption) Order {
+func ByCreatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedBy, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
-func ByCreatedAt(opts ...sql.OrderTermOption) Order {
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
 // ByUpdatedBy orders the results by the updated_by field.
-func ByUpdatedBy(opts ...sql.OrderTermOption) Order {
+func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
-func ByUpdatedAt(opts ...sql.OrderTermOption) Order {
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
 // ByOrgRoleID orders the results by the org_role_id field.
-func ByOrgRoleID(opts ...sql.OrderTermOption) Order {
+func ByOrgRoleID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrgRoleID, opts...).ToFunc()
 }
 
 // ByOrgUserID orders the results by the org_user_id field.
-func ByOrgUserID(opts ...sql.OrderTermOption) Order {
+func ByOrgUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrgUserID, opts...).ToFunc()
 }
 
 // ByOrgRoleField orders the results by org_role field.
-func ByOrgRoleField(field string, opts ...sql.OrderTermOption) Order {
+func ByOrgRoleField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgRoleStep(), sql.OrderByField(field, opts...))
 	}
 }
 
 // ByOrgUserField orders the results by org_user field.
-func ByOrgUserField(field string, opts ...sql.OrderTermOption) Order {
+func ByOrgUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgUserStep(), sql.OrderByField(field, opts...))
 	}

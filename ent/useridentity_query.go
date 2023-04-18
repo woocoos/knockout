@@ -19,7 +19,7 @@ import (
 type UserIdentityQuery struct {
 	config
 	ctx        *QueryContext
-	order      []useridentity.Order
+	order      []useridentity.OrderOption
 	inters     []Interceptor
 	predicates []predicate.UserIdentity
 	withUser   *UserQuery
@@ -56,7 +56,7 @@ func (uiq *UserIdentityQuery) Unique(unique bool) *UserIdentityQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uiq *UserIdentityQuery) Order(o ...useridentity.Order) *UserIdentityQuery {
+func (uiq *UserIdentityQuery) Order(o ...useridentity.OrderOption) *UserIdentityQuery {
 	uiq.order = append(uiq.order, o...)
 	return uiq
 }
@@ -272,7 +272,7 @@ func (uiq *UserIdentityQuery) Clone() *UserIdentityQuery {
 	return &UserIdentityQuery{
 		config:     uiq.config,
 		ctx:        uiq.ctx.Clone(),
-		order:      append([]useridentity.Order{}, uiq.order...),
+		order:      append([]useridentity.OrderOption{}, uiq.order...),
 		inters:     append([]Interceptor{}, uiq.inters...),
 		predicates: append([]predicate.UserIdentity{}, uiq.predicates...),
 		withUser:   uiq.withUser.Clone(),

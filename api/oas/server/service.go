@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/service/resource"
@@ -295,7 +296,7 @@ func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, err
 
 func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
 	pwd, err := s.DB.UserPassword.Query().Where(
-		userpassword.HasUserWith(user.PrincipalName(req.Body.Username)),
+		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
 	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Evict(ctx))
 	if err != nil {

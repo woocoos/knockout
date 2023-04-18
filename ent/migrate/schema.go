@@ -45,7 +45,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc", "function"}},
 		{Name: "method", Type: field.TypeEnum, Enums: []string{"read", "write", "list"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -146,7 +146,6 @@ var (
 		{Name: "type_name", Type: field.TypeString},
 		{Name: "arn_pattern", Type: field.TypeString},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
-		{Name: "app_action_resources", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppResTable holds the schema information for the "app_res" table.
 	AppResTable = &schema.Table{
@@ -158,12 +157,6 @@ var (
 				Symbol:     "app_res_app_resources",
 				Columns:    []*schema.Column{AppResColumns[8]},
 				RefColumns: []*schema.Column{AppColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "app_res_app_action_resources",
-				Columns:    []*schema.Column{AppResColumns[9]},
-				RefColumns: []*schema.Column{AppActionColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -674,7 +667,6 @@ func init() {
 		Table: "app_policy",
 	}
 	AppResTable.ForeignKeys[0].RefTable = AppTable
-	AppResTable.ForeignKeys[1].RefTable = AppActionTable
 	AppResTable.Annotation = &entsql.Annotation{
 		Table: "app_res",
 	}

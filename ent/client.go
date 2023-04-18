@@ -704,22 +704,6 @@ func (c *AppActionClient) QueryMenus(aa *AppAction) *AppMenuQuery {
 	return query
 }
 
-// QueryResources queries the resources edge of a AppAction.
-func (c *AppActionClient) QueryResources(aa *AppAction) *AppResQuery {
-	query := (&AppResClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := aa.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appaction.Table, appaction.FieldID, id),
-			sqlgraph.To(appres.Table, appres.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appaction.ResourcesTable, appaction.ResourcesColumn),
-		)
-		fromV = sqlgraph.Neighbors(aa.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *AppActionClient) Hooks() []Hook {
 	hooks := c.hooks.AppAction

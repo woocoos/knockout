@@ -20,7 +20,7 @@ import (
 type OrgAppQuery struct {
 	config
 	ctx        *QueryContext
-	order      []orgapp.Order
+	order      []orgapp.OrderOption
 	inters     []Interceptor
 	predicates []predicate.OrgApp
 	withApp    *AppQuery
@@ -58,7 +58,7 @@ func (oaq *OrgAppQuery) Unique(unique bool) *OrgAppQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oaq *OrgAppQuery) Order(o ...orgapp.Order) *OrgAppQuery {
+func (oaq *OrgAppQuery) Order(o ...orgapp.OrderOption) *OrgAppQuery {
 	oaq.order = append(oaq.order, o...)
 	return oaq
 }
@@ -296,7 +296,7 @@ func (oaq *OrgAppQuery) Clone() *OrgAppQuery {
 	return &OrgAppQuery{
 		config:     oaq.config,
 		ctx:        oaq.ctx.Clone(),
-		order:      append([]orgapp.Order{}, oaq.order...),
+		order:      append([]orgapp.OrderOption{}, oaq.order...),
 		inters:     append([]Interceptor{}, oaq.inters...),
 		predicates: append([]predicate.OrgApp{}, oaq.predicates...),
 		withApp:    oaq.withApp.Clone(),

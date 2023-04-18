@@ -26,7 +26,7 @@ import (
 type OrgQuery struct {
 	config
 	ctx                     *QueryContext
-	order                   []org.Order
+	order                   []org.OrderOption
 	inters                  []Interceptor
 	predicates              []predicate.Org
 	withParent              *OrgQuery
@@ -80,7 +80,7 @@ func (oq *OrgQuery) Unique(unique bool) *OrgQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (oq *OrgQuery) Order(o ...org.Order) *OrgQuery {
+func (oq *OrgQuery) Order(o ...org.OrderOption) *OrgQuery {
 	oq.order = append(oq.order, o...)
 	return oq
 }
@@ -494,7 +494,7 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 	return &OrgQuery{
 		config:             oq.config,
 		ctx:                oq.ctx.Clone(),
-		order:              append([]org.Order{}, oq.order...),
+		order:              append([]org.OrderOption{}, oq.order...),
 		inters:             append([]Interceptor{}, oq.inters...),
 		predicates:         append([]predicate.Org{}, oq.predicates...),
 		withParent:         oq.withParent.Clone(),
@@ -907,7 +907,7 @@ func (oq *OrgQuery) loadChildren(ctx context.Context, query *OrgQuery, nodes []*
 		}
 	}
 	query.Where(predicate.Org(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.ChildrenColumn, fks...))
+		s.Where(sql.InValues(s.C(org.ChildrenColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1027,7 +1027,7 @@ func (oq *OrgQuery) loadRolesAndGroups(ctx context.Context, query *OrgRoleQuery,
 		}
 	}
 	query.Where(predicate.OrgRole(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.RolesAndGroupsColumn, fks...))
+		s.Where(sql.InValues(s.C(org.RolesAndGroupsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1054,7 +1054,7 @@ func (oq *OrgQuery) loadPermissions(ctx context.Context, query *PermissionQuery,
 		}
 	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.PermissionsColumn, fks...))
+		s.Where(sql.InValues(s.C(org.PermissionsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1081,7 +1081,7 @@ func (oq *OrgQuery) loadPolicies(ctx context.Context, query *OrgPolicyQuery, nod
 		}
 	}
 	query.Where(predicate.OrgPolicy(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.PoliciesColumn, fks...))
+		s.Where(sql.InValues(s.C(org.PoliciesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1169,7 +1169,7 @@ func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes 
 		}
 	}
 	query.Where(predicate.OrgUser(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.OrgUserColumn, fks...))
+		s.Where(sql.InValues(s.C(org.OrgUserColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1196,7 +1196,7 @@ func (oq *OrgQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 		}
 	}
 	query.Where(predicate.OrgApp(func(s *sql.Selector) {
-		s.Where(sql.InValues(org.OrgAppColumn, fks...))
+		s.Where(sql.InValues(s.C(org.OrgAppColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

@@ -22,7 +22,7 @@ import (
 type OrgRoleQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []orgrole.Order
+	order                []orgrole.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.OrgRole
 	withOrg              *OrgQuery
@@ -63,7 +63,7 @@ func (orq *OrgRoleQuery) Unique(unique bool) *OrgRoleQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (orq *OrgRoleQuery) Order(o ...orgrole.Order) *OrgRoleQuery {
+func (orq *OrgRoleQuery) Order(o ...orgrole.OrderOption) *OrgRoleQuery {
 	orq.order = append(orq.order, o...)
 	return orq
 }
@@ -323,7 +323,7 @@ func (orq *OrgRoleQuery) Clone() *OrgRoleQuery {
 	return &OrgRoleQuery{
 		config:          orq.config,
 		ctx:             orq.ctx.Clone(),
-		order:           append([]orgrole.Order{}, orq.order...),
+		order:           append([]orgrole.OrderOption{}, orq.order...),
 		inters:          append([]Interceptor{}, orq.inters...),
 		predicates:      append([]predicate.OrgRole{}, orq.predicates...),
 		withOrg:         orq.withOrg.Clone(),
@@ -616,7 +616,7 @@ func (orq *OrgRoleQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUser
 		}
 	}
 	query.Where(predicate.OrgRoleUser(func(s *sql.Selector) {
-		s.Where(sql.InValues(orgrole.OrgRoleUserColumn, fks...))
+		s.Where(sql.InValues(s.C(orgrole.OrgRoleUserColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

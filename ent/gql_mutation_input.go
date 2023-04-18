@@ -255,13 +255,12 @@ func (c *AppUpdateOne) SetInput(i UpdateAppInput) *AppUpdateOne {
 
 // CreateAppActionInput represents a mutation input for creating appactions.
 type CreateAppActionInput struct {
-	Name        string
-	Kind        appaction.Kind
-	Method      appaction.Method
-	Comments    *string
-	AppID       *int
-	MenuIDs     []int
-	ResourceIDs []int
+	Name     string
+	Kind     appaction.Kind
+	Method   appaction.Method
+	Comments *string
+	AppID    *int
+	MenuIDs  []int
 }
 
 // Mutate applies the CreateAppActionInput on the AppActionMutation builder.
@@ -278,9 +277,6 @@ func (i *CreateAppActionInput) Mutate(m *AppActionMutation) {
 	if v := i.MenuIDs; len(v) > 0 {
 		m.AddMenuIDs(v...)
 	}
-	if v := i.ResourceIDs; len(v) > 0 {
-		m.AddResourceIDs(v...)
-	}
 }
 
 // SetInput applies the change-set in the CreateAppActionInput on the AppActionCreate builder.
@@ -291,17 +287,14 @@ func (c *AppActionCreate) SetInput(i CreateAppActionInput) *AppActionCreate {
 
 // UpdateAppActionInput represents a mutation input for updating appactions.
 type UpdateAppActionInput struct {
-	Name              *string
-	Kind              *appaction.Kind
-	Method            *appaction.Method
-	ClearComments     bool
-	Comments          *string
-	ClearMenus        bool
-	AddMenuIDs        []int
-	RemoveMenuIDs     []int
-	ClearResources    bool
-	AddResourceIDs    []int
-	RemoveResourceIDs []int
+	Name          *string
+	Kind          *appaction.Kind
+	Method        *appaction.Method
+	ClearComments bool
+	Comments      *string
+	ClearMenus    bool
+	AddMenuIDs    []int
+	RemoveMenuIDs []int
 }
 
 // Mutate applies the UpdateAppActionInput on the AppActionMutation builder.
@@ -329,15 +322,6 @@ func (i *UpdateAppActionInput) Mutate(m *AppActionMutation) {
 	}
 	if v := i.RemoveMenuIDs; len(v) > 0 {
 		m.RemoveMenuIDs(v...)
-	}
-	if i.ClearResources {
-		m.ClearResources()
-	}
-	if v := i.AddResourceIDs; len(v) > 0 {
-		m.AddResourceIDs(v...)
-	}
-	if v := i.RemoveResourceIDs; len(v) > 0 {
-		m.RemoveResourceIDs(v...)
 	}
 }
 
@@ -766,7 +750,6 @@ type UpdateOrgInput struct {
 	CountryCode            *string
 	ClearTimezone          bool
 	Timezone               *string
-	ClearParent            bool
 	ParentID               *int
 	ClearChildren          bool
 	AddChildIDs            []int
@@ -824,9 +807,6 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.Timezone; v != nil {
 		m.SetTimezone(*v)
-	}
-	if i.ClearParent {
-		m.ClearParent()
 	}
 	if v := i.ParentID; v != nil {
 		m.SetParentID(*v)
@@ -948,7 +928,6 @@ type UpdateOrgPolicyInput struct {
 	Comments            *string
 	Rules               []types.PolicyRule
 	AppendRules         []types.PolicyRule
-	ClearOrg            bool
 	OrgID               *int
 	ClearPermissions    bool
 	AddPermissionIDs    []int
@@ -977,9 +956,6 @@ func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if i.AppendRules != nil {
 		m.AppendRules(i.Rules)
-	}
-	if i.ClearOrg {
-		m.ClearOrg()
 	}
 	if v := i.OrgID; v != nil {
 		m.SetOrgID(*v)
@@ -1097,9 +1073,7 @@ func (c *OrgUserCreate) SetInput(i CreateOrgUserInput) *OrgUserCreate {
 type UpdateOrgUserInput struct {
 	JoinedAt    *time.Time
 	DisplayName *string
-	ClearOrg    bool
 	OrgID       *int
-	ClearUser   bool
 	UserID      *int
 }
 
@@ -1111,14 +1085,8 @@ func (i *UpdateOrgUserInput) Mutate(m *OrgUserMutation) {
 	if v := i.DisplayName; v != nil {
 		m.SetDisplayName(*v)
 	}
-	if i.ClearOrg {
-		m.ClearOrg()
-	}
 	if v := i.OrgID; v != nil {
 		m.SetOrgID(*v)
-	}
-	if i.ClearUser {
-		m.ClearUser()
 	}
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)

@@ -48,17 +48,6 @@ var Cmd = &cli.Command{
 					Aliases: []string{"f"},
 				},
 				&cli.StringFlag{
-					Name:    "dialect",
-					Value:   "mysql",
-					Aliases: []string{"d"},
-					Usage:   "database dialect",
-				},
-				&cli.StringFlag{
-					Name:  "dsn",
-					Usage: "data source name (connection information)",
-					Value: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local",
-				},
-				&cli.StringFlag{
 					Name:    "app",
 					Usage:   "application code",
 					Aliases: []string{"a"},
@@ -68,10 +57,35 @@ var Cmd = &cli.Command{
 				return GenGqlActions(Config{
 					AppConfig: ctx.String("config"),
 					GQLConfig: ctx.String("gql"),
-					Dialect:   ctx.String("dialect"),
-					DSN:       ctx.String("dsn"),
 					AppCode:   ctx.String("app"),
 				})
+			},
+		},
+		{
+			Name:  "ent",
+			Usage: "gen resource from ent schema",
+			Flags: []cli.Flag{
+				&cli.PathFlag{
+					Name:    "schema",
+					Usage:   "the schema path",
+					Value:   "./codegen/gqlgen/gqlgen.yaml",
+					Aliases: []string{"c"},
+					//FilePath: "./codegen/gqlgen/gqlgen.yaml",
+				},
+				&cli.PathFlag{
+					Name:    "config",
+					Usage:   "the knockout config",
+					Value:   "./cmd/adminx/etc/app.yaml",
+					Aliases: []string{"f"},
+				},
+				&cli.StringFlag{
+					Name:    "app",
+					Usage:   "application code",
+					Aliases: []string{"a"},
+				},
+			},
+			Action: func(ctx *cli.Context) error {
+				return nil
 			},
 		},
 	},

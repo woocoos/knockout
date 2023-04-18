@@ -20,7 +20,7 @@ import (
 type AppRolePolicyQuery struct {
 	config
 	ctx        *QueryContext
-	order      []approlepolicy.Order
+	order      []approlepolicy.OrderOption
 	inters     []Interceptor
 	predicates []predicate.AppRolePolicy
 	withRole   *AppRoleQuery
@@ -58,7 +58,7 @@ func (arpq *AppRolePolicyQuery) Unique(unique bool) *AppRolePolicyQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (arpq *AppRolePolicyQuery) Order(o ...approlepolicy.Order) *AppRolePolicyQuery {
+func (arpq *AppRolePolicyQuery) Order(o ...approlepolicy.OrderOption) *AppRolePolicyQuery {
 	arpq.order = append(arpq.order, o...)
 	return arpq
 }
@@ -296,7 +296,7 @@ func (arpq *AppRolePolicyQuery) Clone() *AppRolePolicyQuery {
 	return &AppRolePolicyQuery{
 		config:     arpq.config,
 		ctx:        arpq.ctx.Clone(),
-		order:      append([]approlepolicy.Order{}, arpq.order...),
+		order:      append([]approlepolicy.OrderOption{}, arpq.order...),
 		inters:     append([]Interceptor{}, arpq.inters...),
 		predicates: append([]predicate.AppRolePolicy{}, arpq.predicates...),
 		withRole:   arpq.withRole.Clone(),
