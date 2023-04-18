@@ -225,6 +225,7 @@ type ComplexityRoot struct {
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
+		DeleteAppActions            func(childComplexity int, actionIDs []int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
@@ -243,6 +244,7 @@ type ComplexityRoot struct {
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
+		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
@@ -1515,6 +1517,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteApp(childComplexity, args["appID"].(int)), true
 
+	case "Mutation.deleteAppActions":
+		if e.complexity.Mutation.DeleteAppActions == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppActions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppActions(childComplexity, args["actionIDs"].([]int)), true
+
 	case "Mutation.deleteAppMenu":
 		if e.complexity.Mutation.DeleteAppMenu == nil {
 			break
@@ -1730,6 +1744,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateApp(childComplexity, args["appID"].(int), args["input"].(ent.UpdateAppInput)), true
+
+	case "Mutation.updateAppAction":
+		if e.complexity.Mutation.UpdateAppAction == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppAction_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppAction(childComplexity, args["actionID"].(int), args["input"].(ent.UpdateAppActionInput)), true
 
 	case "Mutation.updateAppMenu":
 		if e.complexity.Mutation.UpdateAppMenu == nil {
@@ -7123,9 +7149,13 @@ input GrantInput {
     """删除应用"""
     deleteApp(appID:ID!): Boolean!
     """创建应用操作"""
-    createAppActions(appID:ID!,input: [CreateAppActionInput!]): Boolean!
+    createAppActions(appID:ID!,input: [CreateAppActionInput!]): [AppAction]!
+    """更新应用操作"""
+    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction!
+    """删除应用操作"""
+    deleteAppActions(actionIDs:[ID!]!): Boolean!
     """创建应用策略模板"""
-    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): Boolean!
+    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): [AppPolicy]!
     """更新应用策略模板"""
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""

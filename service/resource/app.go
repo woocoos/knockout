@@ -27,19 +27,18 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 }
 
 // CreateAppActions
-func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) error {
+func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error) {
 	client := ent.FromContext(ctx)
 	tid := identity.TenantIDFromContext(ctx)
 	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
 	if !has {
-		return fmt.Errorf("app not exist")
+		return nil, fmt.Errorf("app not exist")
 	}
 	builders := make([]*ent.AppActionCreate, len(input))
 	for i := range input {
 		builders[i] = client.AppAction.Create().SetInput(*input[i]).SetAppID(appID)
 	}
-	err := client.AppAction.CreateBulk(builders...).Exec(ctx)
-	return err
+	return client.AppAction.CreateBulk(builders...).Save(ctx)
 }
 
 // CreateAppMenus
@@ -107,12 +106,12 @@ func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action mode
 // CreateAppPolicies 创建应用策略.
 //
 // 该方法会检查应用策略的规则中的action是否以应用代码开头.
-func (s *Service) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) error {
+func (s *Service) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) ([]*ent.AppPolicy, error) {
 	client := ent.FromContext(ctx)
 	tid := identity.TenantIDFromContext(ctx)
 	apl, err := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).Only(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	builders := make([]*ent.AppPolicyCreate, len(input))
@@ -123,13 +122,13 @@ func (s *Service) CreateAppPolicies(ctx context.Context, appID int, input []*ent
 					continue
 				}
 				if !strings.HasPrefix(action, apl.Code+":") {
-					return fmt.Errorf("action %s must start with app code %s", action, apl.Code)
+					return nil, fmt.Errorf("action %s must start with app code %s", action, apl.Code)
 				}
 			}
 		}
 		builders[i] = client.AppPolicy.Create().SetInput(*input[i]).SetAppID(appID)
 	}
-	return client.AppPolicy.CreateBulk(builders...).Exec(ctx)
+	return client.AppPolicy.CreateBulk(builders...).Save(ctx)
 }
 
 func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {

@@ -11,6 +11,7 @@ import (
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/user"
 )
 
@@ -121,15 +122,24 @@ func (r *mutationResolver) DeleteApp(ctx context.Context, appID int) (bool, erro
 }
 
 // CreateAppActions is the resolver for the createAppActions field.
-func (r *mutationResolver) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) (bool, error) {
-	err := r.Resource.CreateAppActions(ctx, appID, input)
+func (r *mutationResolver) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error) {
+	return r.Resource.CreateAppActions(ctx, appID, input)
+}
+
+// UpdateAppAction is the resolver for the updateAppAction field.
+func (r *mutationResolver) UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error) {
+	return r.Client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+}
+
+// DeleteAppActions is the resolver for the deleteAppActions field.
+func (r *mutationResolver) DeleteAppActions(ctx context.Context, actionIDs []int) (bool, error) {
+	_, err := r.Client.AppRolePolicy.Delete().Where(approlepolicy.IDIn(actionIDs...)).Exec(ctx)
 	return err == nil, err
 }
 
 // CreateAppPolicies is the resolver for the createAppPolicies field.
-func (r *mutationResolver) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) (bool, error) {
-	err := r.Resource.CreateAppPolicies(ctx, appID, input)
-	return err == nil, err
+func (r *mutationResolver) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) ([]*ent.AppPolicy, error) {
+	return r.Resource.CreateAppPolicies(ctx, appID, input)
 }
 
 // UpdateAppPolicy is the resolver for the updateAppPolicy field.
