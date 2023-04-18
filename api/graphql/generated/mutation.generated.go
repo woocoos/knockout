@@ -2493,8 +2493,6 @@ func (ec *executionContext) fieldContext_Mutation_createAppActions(ctx context.C
 				return ec.fieldContext_AppAction_app(ctx, field)
 			case "menus":
 				return ec.fieldContext_AppAction_menus(ctx, field)
-			case "resources":
-				return ec.fieldContext_AppAction_resources(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppAction", field.Name)
 		},
@@ -2576,8 +2574,6 @@ func (ec *executionContext) fieldContext_Mutation_updateAppAction(ctx context.Co
 				return ec.fieldContext_AppAction_app(ctx, field)
 			case "menus":
 				return ec.fieldContext_AppAction_menus(ctx, field)
-			case "resources":
-				return ec.fieldContext_AppAction_resources(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppAction", field.Name)
 		},
