@@ -51,7 +51,7 @@ func (Org) Fields() []ent.Field {
 		field.Enum("kind").NamedValues(
 			"root", "root",
 			"organization", "org",
-		).Default("org").Comment("分类: 根节点,组织节点").Annotations(entgql.Skip(entgql.SkipAll)),
+		).Default("org").Comment("分类: 根节点,组织节点").Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Int("parent_id").Default(0).Comment("父级ID,0为根组织."),
 		field.String("domain").Optional().Unique().Comment("默认域名").
 			Match(regexp.MustCompile(`^(?:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]|)$`)),

@@ -178,7 +178,7 @@ func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUser
 	if has {
 		return fmt.Errorf("user already in role")
 	}
-	err = client.OrgRoleUser.Create().SetOrgRoleID(input.OrgRoleID).SetOrgUserID(input.UserID).Exec(ctx)
+	err = client.OrgRoleUser.Create().SetOrgRoleID(input.OrgRoleID).SetOrgUserID(ouid).Exec(ctx)
 	if err != nil {
 		return err
 	}

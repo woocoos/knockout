@@ -2,6 +2,8 @@ ariga.io/atlas v0.10.0 h1:B1aCP6gSDQET6j8ybn7m6MArjQuoLH5d4DQBT+NP5k8=
 ariga.io/atlas v0.10.0/go.mod h1:+TR129FJZ5Lvzms6dvCeGWh1yR6hMvmXBhug4hrNIGk=
 ariga.io/entcache v0.1.1-0.20220825100256-1b8bbeb21c75 h1:zl7g5wEJyZI7UTLWyj8ZrH3GlGpXoVFHOd2t/glAE+w=
 ariga.io/entcache v0.1.1-0.20220825100256-1b8bbeb21c75/go.mod h1:MjalxvL0davaFD+o9j5fTFx091xnQTkslb9N0lYfHcw=
+ariga.io/entcache v0.1.1-0.20230414114609-164fed2e1c70 h1:JD5skl+XOOSLdXnzaJP/T3NK2Oc6qmRq0GCI4kW9C7k=
+ariga.io/entcache v0.1.1-0.20230414114609-164fed2e1c70/go.mod h1:MjalxvL0davaFD+o9j5fTFx091xnQTkslb9N0lYfHcw=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.105.0 h1:DNtEKRBAAzeS4KyIory52wWHuClNaXJ5x1F7xa4q+5Y=
 cloud.google.com/go/compute v1.15.1 h1:7UGq3QknM33pw5xATlpzeoomNxsacIVvTqTTvbfajmE=
@@ -296,6 +298,8 @@ github.com/woocoos/casbin-ent-adapter v0.0.0-20230404005858-cd33f1b0b92e h1:GbxL
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230404005858-cd33f1b0b92e/go.mod h1:44V48kYKt7r9gWei7Ld+QaL0qVIBlOWrhkNTVMpnx3I=
 github.com/woocoos/entco v0.0.0-20230417060633-7852bf3e7727 h1:QxIzkzRg9Qqi8YuUcZRYcPe10MGzP1qpPY8i3sE12sc=
 github.com/woocoos/entco v0.0.0-20230417060633-7852bf3e7727/go.mod h1:qpvKO0R6lntBjkd6jP6hK3/2wOV0An6oDDcsgXDY0rU=
+github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6 h1:E6NMKO/4AxUfa4vnV/TiQGJFb4nPw1RyQcF/vmbDLl8=
+github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6/go.mod h1:iFoA6ss5cSwWy+WZ8GzcX2XM7NpBW+Tojb9KqsyXypk=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 h1:bAn7/zixMGCfxrRTfdpNzjtPYqr8smhKouy9mxVdGPU=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673/go.mod h1:N3UwUGtsrSj3ccvlPHLoLsHnpR27oXr4ZE984MbSER8=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

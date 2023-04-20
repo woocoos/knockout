@@ -19,6 +19,7 @@ type OrgRole struct {
 func (OrgRole) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "org_role"},
+		entgql.RelayConnection(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}
 }

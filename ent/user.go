@@ -73,7 +73,7 @@ type UserEdges struct {
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [7]bool
 	// totalCount holds the count of the edges above.
-	totalCount [5]map[string]int
+	totalCount [4]map[string]int
 
 	namedIdentities  map[string][]*UserIdentity
 	namedPasswords   map[string][]*UserPassword

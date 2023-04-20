@@ -2,6 +2,8 @@ package resource
 
 import (
 	"context"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -13,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -40,10 +43,172 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 		return nil, fmt.Errorf("app not exist")
 	}
 	builders := make([]*ent.AppActionCreate, len(input))
+	names := make([]string, len(input))
 	for i := range input {
 		builders[i] = client.AppAction.Create().SetInput(*input[i]).SetAppID(appID)
+		names[i] = input[i].Name
+	}
+	existNames, err := client.AppAction.Query().Where(appaction.NameIn(names...), appaction.AppID(appID)).Select(appaction.FieldName).Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(existNames) > 0 {
+		return nil, fmt.Errorf("action %s is exist", existNames[0])
 	}
 	return client.AppAction.CreateBulk(builders...).Save(ctx)
+}
+
+// UpdateAppAction 更新action时，同步更新app_police与org_police引用的action
+func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	aa, err := client.AppAction.Query().WithApp(func(query *ent.AppQuery) {
+		query.Where(app.OrgID(tid)).Select(app.FieldID, app.FieldCode)
+	}).Where(appaction.ID(actionID)).Select(appaction.FieldName, appaction.FieldAppID).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if aa == nil {
+		return nil, fmt.Errorf("action not exist")
+	}
+	// 判断应用下action name唯一
+	exist, err := client.AppAction.Query().Where(appaction.Name(*input.Name), appaction.AppID(aa.AppID)).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if exist {
+		return nil, fmt.Errorf("action %s is exist", *input.Name)
+	}
+	// Name更新需同步更新police中的引用
+	if aa.Name != *input.Name {
+		oac := aa.Edges.App.Code + ":" + aa.Name
+		nac := aa.Edges.App.Code + ":" + *input.Name
+		appid := aa.Edges.App.ID
+
+		// 更新AppPolice
+		aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
+			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+oac+"\""))
+		}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, policy := range aps {
+			prs := policy.Rules
+			if prs == nil {
+				continue
+			}
+			for i, rule := range prs {
+				if rule.Actions == nil {
+					continue
+				}
+				prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+			}
+			err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		// 更新OrgPolice
+		ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
+			selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+oac+"\""))
+		}).Select(orgpolicy.FieldID, orgpolicy.FieldRules).All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, policy := range ops {
+			prs := policy.Rules
+			if prs == nil {
+				continue
+			}
+			for i, rule := range prs {
+				if rule.Actions == nil {
+					continue
+				}
+				prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+			}
+			err = client.OrgPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+}
+
+// DeleteAppAction 删除action时，同步删除app_police与org_police引用的action
+func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	aa, err := client.AppAction.Query().WithApp(func(query *ent.AppQuery) {
+		query.Where(app.OrgID(tid)).Select(app.FieldID, app.FieldCode)
+	}).Where(appaction.ID(actionID)).Select(appaction.FieldName).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if aa == nil {
+		return fmt.Errorf("action not exist")
+	}
+
+	aac := aa.Edges.App.Code + ":" + aa.Name
+	appid := aa.Edges.App.ID
+
+	// 更新AppPolice
+	aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
+		selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aac+"\""))
+	}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, policy := range aps {
+		prs := policy.Rules
+		if prs == nil {
+			continue
+		}
+		for i, rule := range prs {
+			if rule.Actions == nil {
+				continue
+			}
+			//rule.Actions = RemoveSliceElement[string](rule.Actions, aac)
+			prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
+		}
+		err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 更新OrgPolice
+	ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
+		selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+aac+"\""))
+	}).Select(orgpolicy.FieldID, orgpolicy.FieldRules).All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, policy := range ops {
+		prs := policy.Rules
+		if prs == nil {
+			continue
+		}
+		for i, rule := range prs {
+			if rule.Actions == nil {
+				continue
+			}
+			prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
+		}
+		err = client.OrgPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
+		if err != nil {
+			return err
+		}
+	}
+	client.AppAction.Delete().Where(appaction.ID(actionID)).ExecX(ctx)
+	return nil
 }
 
 // CreateAppMenus

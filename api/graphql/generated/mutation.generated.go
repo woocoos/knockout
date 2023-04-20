@@ -38,7 +38,7 @@ type MutationResolver interface {
 	DeleteApp(ctx context.Context, appID int) (bool, error)
 	CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error)
 	UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error)
-	DeleteAppActions(ctx context.Context, actionIDs []int) (bool, error)
+	DeleteAppAction(ctx context.Context, actionID int) (bool, error)
 	CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error)
 	UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error)
 	DeleteAppPolicy(ctx context.Context, policyID int) (bool, error)
@@ -391,18 +391,18 @@ func (ec *executionContext) field_Mutation_createRole_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteAppActions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteAppAction_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []int
-	if tmp, ok := rawArgs["actionIDs"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actionIDs"))
-		arg0, err = ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["actionID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["actionIDs"] = arg0
+	args["actionID"] = arg0
 	return args, nil
 }
 
@@ -1094,6 +1094,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -1196,6 +1198,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -1298,6 +1302,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -1530,8 +1536,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -1624,8 +1628,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -1828,8 +1830,6 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -2646,8 +2646,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppAction(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteAppActions(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteAppActions(ctx, field)
+func (ec *executionContext) _Mutation_deleteAppAction(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppAction(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2660,7 +2660,7 @@ func (ec *executionContext) _Mutation_deleteAppActions(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteAppActions(rctx, fc.Args["actionIDs"].([]int))
+		return ec.resolvers.Mutation().DeleteAppAction(rctx, fc.Args["actionID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2677,7 +2677,7 @@ func (ec *executionContext) _Mutation_deleteAppActions(ctx context.Context, fiel
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteAppActions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteAppAction(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -2694,7 +2694,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteAppActions(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteAppActions_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_deleteAppAction_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -4562,10 +4562,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateAppAction(ctx, field)
 			})
 
-		case "deleteAppActions":
+		case "deleteAppAction":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteAppActions(ctx, field)
+				return ec._Mutation_deleteAppAction(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

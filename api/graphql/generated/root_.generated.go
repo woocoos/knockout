@@ -226,7 +226,7 @@ type ComplexityRoot struct {
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
-		DeleteAppActions            func(childComplexity int, actionIDs []int) int
+		DeleteAppAction             func(childComplexity int, actionID int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
@@ -269,6 +269,7 @@ type ComplexityRoot struct {
 		DisplaySort func(childComplexity int) int
 		Domain      func(childComplexity int) int
 		ID          func(childComplexity int) int
+		Kind        func(childComplexity int) int
 		Name        func(childComplexity int) int
 		Owner       func(childComplexity int) int
 		OwnerID     func(childComplexity int) int
@@ -334,6 +335,17 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 	}
 
+	OrgRoleConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	OrgRoleEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -383,6 +395,9 @@ type ComplexityRoot struct {
 		GlobalID      func(childComplexity int, typeArg string, id int) int
 		Node          func(childComplexity int, id string) int
 		Nodes         func(childComplexity int, ids []string) int
+		OrgGroups     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgRoleUsers  func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		Organizations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		Users         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
@@ -404,7 +419,6 @@ type ComplexityRoot struct {
 		Identities    func(childComplexity int) int
 		LoginProfile  func(childComplexity int) int
 		Mobile        func(childComplexity int) int
-		Passwords     func(childComplexity int) int
 		Permissions   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName func(childComplexity int) int
 		RegisterIP    func(childComplexity int) int
@@ -1532,17 +1546,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteApp(childComplexity, args["appID"].(int)), true
 
-	case "Mutation.deleteAppActions":
-		if e.complexity.Mutation.DeleteAppActions == nil {
+	case "Mutation.deleteAppAction":
+		if e.complexity.Mutation.DeleteAppAction == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteAppActions_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_deleteAppAction_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteAppActions(childComplexity, args["actionIDs"].([]int)), true
+		return e.complexity.Mutation.DeleteAppAction(childComplexity, args["actionID"].(int)), true
 
 	case "Mutation.deleteAppMenu":
 		if e.complexity.Mutation.DeleteAppMenu == nil {
@@ -1967,6 +1981,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.ID(childComplexity), true
 
+	case "Org.kind":
+		if e.complexity.Org.Kind == nil {
+			break
+		}
+
+		return e.complexity.Org.Kind(childComplexity), true
+
 	case "Org.name":
 		if e.complexity.Org.Name == nil {
 			break
@@ -2297,6 +2318,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgRole.UpdatedBy(childComplexity), true
 
+	case "OrgRoleConnection.edges":
+		if e.complexity.OrgRoleConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.OrgRoleConnection.Edges(childComplexity), true
+
+	case "OrgRoleConnection.pageInfo":
+		if e.complexity.OrgRoleConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.OrgRoleConnection.PageInfo(childComplexity), true
+
+	case "OrgRoleConnection.totalCount":
+		if e.complexity.OrgRoleConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.OrgRoleConnection.TotalCount(childComplexity), true
+
+	case "OrgRoleEdge.cursor":
+		if e.complexity.OrgRoleEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.OrgRoleEdge.Cursor(childComplexity), true
+
+	case "OrgRoleEdge.node":
+		if e.complexity.OrgRoleEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.OrgRoleEdge.Node(childComplexity), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -2548,6 +2604,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]string)), true
 
+	case "Query.orgGroups":
+		if e.complexity.Query.OrgGroups == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgGroups_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgGroups(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.orgRoleUsers":
+		if e.complexity.Query.OrgRoleUsers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgRoleUsers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgRoleUsers(childComplexity, args["roleID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+
+	case "Query.orgRoles":
+		if e.complexity.Query.OrgRoles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgRoles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgRoles(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
 	case "Query.organizations":
 		if e.complexity.Query.Organizations == nil {
 			break
@@ -2662,13 +2754,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Mobile(childComplexity), true
-
-	case "User.passwords":
-		if e.complexity.User.Passwords == nil {
-			break
-		}
-
-		return e.complexity.User.Passwords(childComplexity), true
 
 	case "User.permissions":
 		if e.complexity.User.Permissions == nil {
@@ -4807,6 +4892,8 @@ type Org implements Node {
   deletedAt: Time
   """管理账户ID,如果设置则该组织将升级为根组织"""
   ownerID: ID
+  """分类: 根节点,组织节点"""
+  kind: OrgKind!
   """父级ID,0为根组织."""
   parentID: ID!
   """默认域名"""
@@ -4922,6 +5009,11 @@ type OrgEdge {
   node: Org
   """A cursor for use in pagination."""
   cursor: Cursor!
+}
+"""OrgKind is enum for the field kind"""
+enum OrgKind @goModel(model: "github.com/woocoos/knockout/ent/org.Kind") {
+  root
+  org
 }
 """Ordering options for Org connections"""
 input OrgOrder {
@@ -5107,6 +5199,22 @@ type OrgRole implements Node {
   name: String!
   """备注"""
   comments: String
+}
+"""A connection to a list of items."""
+type OrgRoleConnection {
+  """A list of edges."""
+  edges: [OrgRoleEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type OrgRoleEdge {
+  """The item at the end of the edge."""
+  node: OrgRole
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 """OrgRoleKind is enum for the field kind"""
 enum OrgRoleKind @goModel(model: "github.com/woocoos/knockout/ent/orgrole.Kind") {
@@ -5453,6 +5561,11 @@ input OrgWhereInput {
   ownerIDNotIn: [ID!]
   ownerIDIsNil: Boolean
   ownerIDNotNil: Boolean
+  """kind field predicates"""
+  kind: OrgKind
+  kindNEQ: OrgKind
+  kindIn: [OrgKind!]
+  kindNotIn: [OrgKind!]
   """parent_id field predicates"""
   parentID: ID
   parentIDNEQ: ID
@@ -6215,8 +6328,6 @@ type User implements Node {
   identities: [UserIdentity!]
   """登陆设置"""
   loginProfile: UserLoginProfile
-  """用户密码"""
-  passwords: [UserPassword!]
   """用户设备"""
   devices: [UserDevice!]
   permissions(
@@ -7133,6 +7244,35 @@ input GrantInput {
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
+    """用户组"""
+    orgGroups(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户组组成员"""
+    orgRoleUsers(
+        roleID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ): UserConnection!
+    """角色"""
+    orgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -7193,7 +7333,7 @@ input GrantInput {
     """更新应用操作"""
     updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
     """删除应用操作"""
-    deleteAppActions(actionIDs:[ID!]!): Boolean!
+    deleteAppAction(actionID:ID!): Boolean!
     """创建应用策略模板"""
     createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""

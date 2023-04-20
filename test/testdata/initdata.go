@@ -106,6 +106,9 @@ func initUser(client *ent.Tx) {
 
 		id := client.UserIdentity.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetKind(useridentity.KindName).
 			SetCode("user" + strconv.Itoa(i))
+		if i == 1 {
+			id.SetCode("admin")
+		}
 		ui = append(ui, id)
 	}
 	client.User.CreateBulk(ub...).ExecX(context.Background())

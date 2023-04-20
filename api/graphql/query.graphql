@@ -1,4 +1,33 @@
 extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
+    """用户组"""
+    orgGroups(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户组组成员"""
+    orgRoleUsers(
+        roleID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ): UserConnection!
+    """角色"""
+    orgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+
 }

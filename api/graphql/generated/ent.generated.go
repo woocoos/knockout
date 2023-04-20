@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
@@ -39,6 +40,9 @@ type QueryResolver interface {
 	Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error)
 	Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	GlobalID(ctx context.Context, typeArg string, id int) (*string, error)
+	OrgGroups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
+	OrgRoleUsers(ctx context.Context, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
+	OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 }
 
 type CreateUserInputResolver interface {
@@ -656,6 +660,195 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["ids"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_orgGroups_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *ent.OrgRoleOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOOrgRoleOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *ent.OrgRoleWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOOrgRoleWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_orgRoleUsers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["roleID"] = arg0
+	var arg1 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg1, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg2
+	var arg3 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg3, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg3
+	var arg4 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg4, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg4
+	var arg5 *ent.UserOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg5, err = ec.unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg5
+	var arg6 *ent.UserWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg6, err = ec.unmarshalOUserWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg6
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_orgRoles_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *ent.OrgRoleOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOOrgRoleOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *ent.OrgRoleWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOOrgRoleWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
 	return args, nil
 }
 
@@ -6551,6 +6744,50 @@ func (ec *executionContext) fieldContext_Org_ownerID(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_kind(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_kind(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Kind, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(org.Kind)
+	fc.Result = res
+	return ec.marshalNOrgKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_kind(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type OrgKind does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_parentID(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_parentID(ctx, field)
 	if err != nil {
@@ -7020,6 +7257,8 @@ func (ec *executionContext) fieldContext_Org_parent(ctx context.Context, field g
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -7111,6 +7350,8 @@ func (ec *executionContext) fieldContext_Org_children(ctx context.Context, field
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -7222,8 +7463,6 @@ func (ec *executionContext) fieldContext_Org_owner(ctx context.Context, field gr
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -7682,6 +7921,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(ctx context.Context, field
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -8252,6 +8493,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(ctx context.Context, fiel
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -9003,6 +9246,256 @@ func (ec *executionContext) fieldContext_OrgRole_comments(ctx context.Context, f
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgRoleConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRoleConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.OrgRoleEdge)
+	fc.Result = res
+	return ec.marshalOOrgRoleEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRoleConnection_edges(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRoleConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_OrgRoleEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_OrgRoleEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRoleEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgRoleConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRoleConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[int])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRoleConnection_pageInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRoleConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgRoleConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRoleConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRoleConnection_totalCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRoleConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgRoleEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRoleEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRole)
+	fc.Result = res
+	return ec.marshalOOrgRole2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRole(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRoleEdge_node(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRoleEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgRole_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgRole_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgRole_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgRole_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgRole_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgRole_orgID(ctx, field)
+			case "kind":
+				return ec.fieldContext_OrgRole_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgRole_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgRole_comments(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgRoleEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRoleEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[int])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRoleEdge_cursor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRoleEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
 		},
 	}
 	return fc, nil
@@ -9782,6 +10275,8 @@ func (ec *executionContext) fieldContext_Permission_org(ctx context.Context, fie
 				return ec.fieldContext_Org_deletedAt(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
 			case "parentID":
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
@@ -9893,8 +10388,6 @@ func (ec *executionContext) fieldContext_Permission_user(ctx context.Context, fi
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -10582,6 +11075,195 @@ func (ec *executionContext) fieldContext_Query_globalID(ctx context.Context, fie
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_globalID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgGroups(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgGroups(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgGroups(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.OrgRoleOrder), fc.Args["where"].(*ent.OrgRoleWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRoleConnection)
+	fc.Result = res
+	return ec.marshalNOrgRoleConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgGroups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_OrgRoleConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_OrgRoleConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_OrgRoleConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRoleConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgGroups_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgRoleUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgRoleUsers(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgRoleUsers(rctx, fc.Args["roleID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.UserOrder), fc.Args["where"].(*ent.UserWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserConnection)
+	fc.Result = res
+	return ec.marshalNUserConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgRoleUsers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_UserConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_UserConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_UserConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgRoleUsers_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgRoles(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgRoles(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgRoles(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.OrgRoleOrder), fc.Args["where"].(*ent.OrgRoleWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRoleConnection)
+	fc.Result = res
+	return ec.marshalNOrgRoleConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgRoles(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_OrgRoleConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_OrgRoleConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_OrgRoleConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRoleConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgRoles_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -11489,67 +12171,6 @@ func (ec *executionContext) fieldContext_User_loginProfile(ctx context.Context, 
 				return ec.fieldContext_UserLoginProfile_user(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserLoginProfile", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _User_passwords(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_passwords(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Passwords(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.UserPassword)
-	fc.Result = res
-	return ec.marshalOUserPassword2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_passwords(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_UserPassword_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_UserPassword_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_UserPassword_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_UserPassword_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_UserPassword_updatedAt(ctx, field)
-			case "userID":
-				return ec.fieldContext_UserPassword_userID(ctx, field)
-			case "scene":
-				return ec.fieldContext_UserPassword_scene(ctx, field)
-			case "status":
-				return ec.fieldContext_UserPassword_status(ctx, field)
-			case "user":
-				return ec.fieldContext_UserPassword_user(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type UserPassword", field.Name)
 		},
 	}
 	return fc, nil
@@ -12492,8 +13113,6 @@ func (ec *executionContext) fieldContext_UserDevice_user(ctx context.Context, fi
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -12575,8 +13194,6 @@ func (ec *executionContext) fieldContext_UserEdge_node(ctx context.Context, fiel
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -13124,8 +13741,6 @@ func (ec *executionContext) fieldContext_UserIdentity_user(ctx context.Context, 
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -13796,8 +14411,6 @@ func (ec *executionContext) fieldContext_UserLoginProfile_user(ctx context.Conte
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -14219,8 +14832,6 @@ func (ec *executionContext) fieldContext_UserPassword_user(ctx context.Context, 
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
 				return ec.fieldContext_User_loginProfile(ctx, field)
-			case "passwords":
-				return ec.fieldContext_User_passwords(ctx, field)
 			case "devices":
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
@@ -24025,7 +24636,7 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasOrgUser", "hasOrgUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasOrgUser", "hasOrgUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -24533,6 +25144,38 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerIDNotNil"))
 			it.OwnerIDNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "kind":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
+			it.Kind, err = ec.unmarshalOOrgKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "kindNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kindNEQ"))
+			it.KindNEQ, err = ec.unmarshalOOrgKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "kindIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kindIn"))
+			it.KindIn, err = ec.unmarshalOOrgKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKindᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "kindNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kindNotIn"))
+			it.KindNotIn, err = ec.unmarshalOOrgKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKindᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -33824,6 +34467,13 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 
 			out.Values[i] = ec._Org_ownerID(ctx, field, obj)
 
+		case "kind":
+
+			out.Values[i] = ec._Org_kind(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "parentID":
 
 			out.Values[i] = ec._Org_parentID(ctx, field, obj)
@@ -34339,6 +34989,77 @@ func (ec *executionContext) _OrgRole(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var orgRoleConnectionImplementors = []string{"OrgRoleConnection"}
+
+func (ec *executionContext) _OrgRoleConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.OrgRoleConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, orgRoleConnectionImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("OrgRoleConnection")
+		case "edges":
+
+			out.Values[i] = ec._OrgRoleConnection_edges(ctx, field, obj)
+
+		case "pageInfo":
+
+			out.Values[i] = ec._OrgRoleConnection_pageInfo(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "totalCount":
+
+			out.Values[i] = ec._OrgRoleConnection_totalCount(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var orgRoleEdgeImplementors = []string{"OrgRoleEdge"}
+
+func (ec *executionContext) _OrgRoleEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.OrgRoleEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, orgRoleEdgeImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("OrgRoleEdge")
+		case "node":
+
+			out.Values[i] = ec._OrgRoleEdge_node(ctx, field, obj)
+
+		case "cursor":
+
+			out.Values[i] = ec._OrgRoleEdge_cursor(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var pageInfoImplementors = []string{"PageInfo"}
 
 func (ec *executionContext) _PageInfo(ctx context.Context, sel ast.SelectionSet, obj *entgql.PageInfo[int]) graphql.Marshaler {
@@ -34752,6 +35473,75 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "orgGroups":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgGroups(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "orgRoleUsers":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgRoleUsers(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "orgRoles":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgRoles(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "__type":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -34896,23 +35686,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_loginProfile(ctx, field, obj)
-				return res
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
-
-			})
-		case "passwords":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._User_passwords(ctx, field, obj)
 				return res
 			}
 
@@ -35923,6 +36696,16 @@ func (ec *executionContext) marshalNOrgConnection2ᚖgithubᚗcomᚋwoocoosᚋkn
 	return ec._OrgConnection(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNOrgKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx context.Context, v interface{}) (org.Kind, error) {
+	var res org.Kind
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNOrgKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx context.Context, sel ast.SelectionSet, v org.Kind) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNOrgOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgOrderField(ctx context.Context, v interface{}) (*ent.OrgOrderField, error) {
 	var res = new(ent.OrgOrderField)
 	err := res.UnmarshalGQL(v)
@@ -35978,6 +36761,20 @@ func (ec *executionContext) marshalNOrgPolicyOrderField2ᚖgithubᚗcomᚋwoocoo
 func (ec *executionContext) unmarshalNOrgPolicyWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgPolicyWhereInput(ctx context.Context, v interface{}) (*ent.OrgPolicyWhereInput, error) {
 	res, err := ec.unmarshalInputOrgPolicyWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNOrgRoleConnection2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleConnection(ctx context.Context, sel ast.SelectionSet, v ent.OrgRoleConnection) graphql.Marshaler {
+	return ec._OrgRoleConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNOrgRoleConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleConnection(ctx context.Context, sel ast.SelectionSet, v *ent.OrgRoleConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._OrgRoleConnection(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNOrgRoleKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgroleᚐKind(ctx context.Context, v interface{}) (orgrole.Kind, error) {
@@ -36362,16 +37159,6 @@ func (ec *executionContext) marshalNUserOrderField2ᚖgithubᚗcomᚋwoocoosᚋk
 		return graphql.Null
 	}
 	return v
-}
-
-func (ec *executionContext) marshalNUserPassword2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPassword(ctx context.Context, sel ast.SelectionSet, v *ent.UserPassword) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._UserPassword(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNUserPasswordOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordOrderField(ctx context.Context, v interface{}) (*ent.UserPasswordOrderField, error) {
@@ -37790,6 +38577,89 @@ func (ec *executionContext) marshalOOrgEdge2ᚖgithubᚗcomᚋwoocoosᚋknockout
 	return ec._OrgEdge(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOOrgKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKindᚄ(ctx context.Context, v interface{}) ([]org.Kind, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]org.Kind, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNOrgKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOOrgKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKindᚄ(ctx context.Context, sel ast.SelectionSet, v []org.Kind) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNOrgKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOOrgKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx context.Context, v interface{}) (*org.Kind, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(org.Kind)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOOrgKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgᚐKind(ctx context.Context, sel ast.SelectionSet, v *org.Kind) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOOrgOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgOrder(ctx context.Context, v interface{}) (*ent.OrgOrder, error) {
 	if v == nil {
 		return nil, nil
@@ -37896,6 +38766,54 @@ func (ec *executionContext) marshalOOrgRole2ᚖgithubᚗcomᚋwoocoosᚋknockout
 	return ec._OrgRole(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOOrgRoleEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.OrgRoleEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOOrgRoleEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOOrgRoleEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleEdge(ctx context.Context, sel ast.SelectionSet, v *ent.OrgRoleEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._OrgRoleEdge(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOOrgRoleKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorgroleᚐKindᚄ(ctx context.Context, v interface{}) ([]orgrole.Kind, error) {
 	if v == nil {
 		return nil, nil
@@ -37977,6 +38895,14 @@ func (ec *executionContext) marshalOOrgRoleKind2ᚖgithubᚗcomᚋwoocoosᚋknoc
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) unmarshalOOrgRoleOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleOrder(ctx context.Context, v interface{}) (*ent.OrgRoleOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputOrgRoleOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOOrgRoleUserWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleUserWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.OrgRoleUserWhereInput, error) {
@@ -39343,53 +40269,6 @@ func (ec *executionContext) unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknoc
 	}
 	res, err := ec.unmarshalInputUserOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUserPassword2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.UserPassword) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNUserPassword2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPassword(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalOUserPasswordScene2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserpasswordᚐSceneᚄ(ctx context.Context, v interface{}) ([]userpassword.Scene, error) {

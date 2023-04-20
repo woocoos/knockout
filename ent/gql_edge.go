@@ -376,18 +376,6 @@ func (u *User) LoginProfile(ctx context.Context) (*UserLoginProfile, error) {
 	return result, MaskNotFound(err)
 }
 
-func (u *User) Passwords(ctx context.Context) (result []*UserPassword, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedPasswords(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = u.Edges.PasswordsOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = u.QueryPasswords().All(ctx)
-	}
-	return result, err
-}
-
 func (u *User) Devices(ctx context.Context) (result []*UserDevice, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = u.NamedDevices(graphql.GetFieldContext(ctx).Field.Alias)
@@ -408,7 +396,7 @@ func (u *User) Permissions(
 		WithPermissionFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := u.Edges.totalCount[4][alias]
+	totalCount, hasTotalCount := u.Edges.totalCount[3][alias]
 	if nodes, err := u.NamedPermissions(alias); err == nil || hasTotalCount {
 		pager, err := newPermissionPager(opts, last != nil)
 		if err != nil {

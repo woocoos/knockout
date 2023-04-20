@@ -57,7 +57,7 @@ type Mutation {
     """更新应用操作"""
     updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
     """删除应用操作"""
-    deleteAppActions(actionIDs:[ID!]!): Boolean!
+    deleteAppAction(actionID:ID!): Boolean!
     """创建应用策略模板"""
     createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""

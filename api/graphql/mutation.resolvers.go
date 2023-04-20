@@ -11,7 +11,6 @@ import (
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/user"
 )
 
@@ -128,12 +127,13 @@ func (r *mutationResolver) CreateAppActions(ctx context.Context, appID int, inpu
 
 // UpdateAppAction is the resolver for the updateAppAction field.
 func (r *mutationResolver) UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error) {
-	return r.Client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+	//return r.Client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+	return r.Resource.UpdateAppAction(ctx, actionID, input)
 }
 
-// DeleteAppActions is the resolver for the deleteAppActions field.
-func (r *mutationResolver) DeleteAppActions(ctx context.Context, actionIDs []int) (bool, error) {
-	_, err := r.Client.AppRolePolicy.Delete().Where(approlepolicy.IDIn(actionIDs...)).Exec(ctx)
+// DeleteAppAction is the resolver for the deleteAppAction field.
+func (r *mutationResolver) DeleteAppAction(ctx context.Context, actionID int) (bool, error) {
+	err := r.Resource.DeleteAppAction(ctx, actionID)
 	return err == nil, err
 }
 

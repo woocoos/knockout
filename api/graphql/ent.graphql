@@ -1541,6 +1541,8 @@ type Org implements Node {
   deletedAt: Time
   """管理账户ID,如果设置则该组织将升级为根组织"""
   ownerID: ID
+  """分类: 根节点,组织节点"""
+  kind: OrgKind!
   """父级ID,0为根组织."""
   parentID: ID!
   """默认域名"""
@@ -1656,6 +1658,11 @@ type OrgEdge {
   node: Org
   """A cursor for use in pagination."""
   cursor: Cursor!
+}
+"""OrgKind is enum for the field kind"""
+enum OrgKind @goModel(model: "github.com/woocoos/knockout/ent/org.Kind") {
+  root
+  org
 }
 """Ordering options for Org connections"""
 input OrgOrder {
@@ -1841,6 +1848,22 @@ type OrgRole implements Node {
   name: String!
   """备注"""
   comments: String
+}
+"""A connection to a list of items."""
+type OrgRoleConnection {
+  """A list of edges."""
+  edges: [OrgRoleEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type OrgRoleEdge {
+  """The item at the end of the edge."""
+  node: OrgRole
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 """OrgRoleKind is enum for the field kind"""
 enum OrgRoleKind @goModel(model: "github.com/woocoos/knockout/ent/orgrole.Kind") {
@@ -2187,6 +2210,11 @@ input OrgWhereInput {
   ownerIDNotIn: [ID!]
   ownerIDIsNil: Boolean
   ownerIDNotNil: Boolean
+  """kind field predicates"""
+  kind: OrgKind
+  kindNEQ: OrgKind
+  kindIn: [OrgKind!]
+  kindNotIn: [OrgKind!]
   """parent_id field predicates"""
   parentID: ID
   parentIDNEQ: ID
@@ -2949,8 +2977,6 @@ type User implements Node {
   identities: [UserIdentity!]
   """登陆设置"""
   loginProfile: UserLoginProfile
-  """用户密码"""
-  passwords: [UserPassword!]
   """用户设备"""
   devices: [UserDevice!]
   permissions(

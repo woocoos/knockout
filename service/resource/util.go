@@ -45,3 +45,25 @@ func GeneralMFASecret() string {
 	secret := base32.StdEncoding.EncodeToString(randomBytes)
 	return secret
 }
+
+// RemoveSliceElement 移除数组指定元素
+func RemoveSliceElement[T int | int64 | string | float32 | float64](a []T, el T) []T {
+	j := 0
+	for _, v := range a {
+		if v != el {
+			a[j] = v
+			j++
+		}
+	}
+	return a[:j]
+}
+
+// UpdateSliceElement 更新数组指定元素
+func UpdateSliceElement[T int | int64 | string | float32 | float64](a []T, newEl T, oldEl T) []T {
+	for i, v := range a {
+		if v == oldEl {
+			a[i] = newEl
+		}
+	}
+	return a
+}

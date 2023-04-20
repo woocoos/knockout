@@ -92,7 +92,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("login_profile", UserLoginProfile.Type).Unique().Comment("登陆设置").
 			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 		edge.To("passwords", UserPassword.Type).Comment("用户密码").
-			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipType)),
 		edge.To("devices", UserDevice.Type).Comment("用户设备").
 			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 		edge.From("orgs", Org.Type).Ref("users").Comment("用户所属组织").

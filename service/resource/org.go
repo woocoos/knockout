@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
@@ -281,7 +282,15 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		// 非手动创建的用户,不允许删除,移除后返回
 		return nil
 	}
-	client.User.Update().Where(user.ID(userID)).ClearDevices().ClearIdentities().ClearLoginProfile().ClearPasswords().
+	_, err = client.UserIdentity.Delete().Where(useridentity.UserID(userID)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = client.UserPassword.Delete().Where(userpassword.UserID(userID)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	client.User.Update().Where(user.ID(userID)).ClearIdentities().ClearPasswords().
 		SetDeletedAt(time.Now()).Exec(ctx)
 	return nil
 }
@@ -380,4 +389,20 @@ func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int)
 		return err
 	}
 	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
+}
+
+// GetRoleUserIds 获取组织用户组/角色用户ids
+func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	exist, err := s.Client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.ID(roleID)).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, fmt.Errorf("role not found")
+	}
+	return s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
 }

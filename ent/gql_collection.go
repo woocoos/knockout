@@ -1766,6 +1766,11 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, org.FieldOwnerID)
 				fieldSeen[org.FieldOwnerID] = struct{}{}
 			}
+		case "kind":
+			if _, ok := fieldSeen[org.FieldKind]; !ok {
+				selectedFields = append(selectedFields, org.FieldKind)
+				fieldSeen[org.FieldKind] = struct{}{}
+			}
 		case "parentID":
 			if _, ok := fieldSeen[org.FieldParentID]; !ok {
 				selectedFields = append(selectedFields, org.FieldParentID)
@@ -2379,18 +2384,6 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				return err
 			}
 			u.withLoginProfile = query
-		case "passwords":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&UserPasswordClient{config: u.config}).Query()
-			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
-				return err
-			}
-			u.WithNamedPasswords(alias, func(wq *UserPasswordQuery) {
-				*wq = *query
-			})
 		case "devices":
 			var (
 				alias = field.Alias
@@ -2446,10 +2439,10 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[3][alias] = n
 						}
 						return nil
 					})
@@ -2457,10 +2450,10 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 					u.loadTotal = append(u.loadTotal, func(_ context.Context, nodes []*User) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Permissions)
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[3] == nil {
+								nodes[i].Edges.totalCount[3] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[3][alias] = n
 						}
 						return nil
 					})

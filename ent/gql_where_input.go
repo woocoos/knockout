@@ -3932,6 +3932,12 @@ type OrgWhereInput struct {
 	OwnerIDIsNil  bool  `json:"ownerIDIsNil,omitempty"`
 	OwnerIDNotNil bool  `json:"ownerIDNotNil,omitempty"`
 
+	// "kind" field predicates.
+	Kind      *org.Kind  `json:"kind,omitempty"`
+	KindNEQ   *org.Kind  `json:"kindNEQ,omitempty"`
+	KindIn    []org.Kind `json:"kindIn,omitempty"`
+	KindNotIn []org.Kind `json:"kindNotIn,omitempty"`
+
 	// "parent_id" field predicates.
 	ParentID      *int  `json:"parentID,omitempty"`
 	ParentIDNEQ   *int  `json:"parentIDNEQ,omitempty"`
@@ -4333,6 +4339,18 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 	}
 	if i.OwnerIDNotNil {
 		predicates = append(predicates, org.OwnerIDNotNil())
+	}
+	if i.Kind != nil {
+		predicates = append(predicates, org.KindEQ(*i.Kind))
+	}
+	if i.KindNEQ != nil {
+		predicates = append(predicates, org.KindNEQ(*i.KindNEQ))
+	}
+	if len(i.KindIn) > 0 {
+		predicates = append(predicates, org.KindIn(i.KindIn...))
+	}
+	if len(i.KindNotIn) > 0 {
+		predicates = append(predicates, org.KindNotIn(i.KindNotIn...))
 	}
 	if i.ParentID != nil {
 		predicates = append(predicates, org.ParentIDEQ(*i.ParentID))

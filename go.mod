@@ -3,7 +3,7 @@ module github.com/woocoos/knockout
 go 1.20
 
 require (
-	ariga.io/entcache v0.1.1-0.20220825100256-1b8bbeb21c75
+	ariga.io/entcache v0.1.1-0.20230414114609-164fed2e1c70
 	entgo.io/contrib v0.4.1
 	entgo.io/ent v0.12.1
 	github.com/99designs/gqlgen v0.17.26
@@ -22,7 +22,7 @@ require (
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230417060633-7852bf3e7727
+	github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6
 	golang.org/x/sync v0.1.0
 )
 
