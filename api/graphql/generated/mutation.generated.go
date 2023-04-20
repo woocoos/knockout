@@ -39,7 +39,7 @@ type MutationResolver interface {
 	CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error)
 	UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error)
 	DeleteAppActions(ctx context.Context, actionIDs []int) (bool, error)
-	CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) ([]*ent.AppPolicy, error)
+	CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error)
 	UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error)
 	DeleteAppPolicy(ctx context.Context, policyID int) (bool, error)
 	CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error)
@@ -53,6 +53,9 @@ type MutationResolver interface {
 	RevokeOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error)
 	AssignOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error)
 	RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error)
+	CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error)
+	UpdateOrganizationPolicy(ctx context.Context, orgPolicyID int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error)
+	DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) (bool, error)
 	CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error)
 	UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error)
 	DeleteRole(ctx context.Context, roleID int) (bool, error)
@@ -232,7 +235,7 @@ func (ec *executionContext) field_Mutation_createAppMenus_args(ctx context.Conte
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createAppPolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_createAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -244,10 +247,10 @@ func (ec *executionContext) field_Mutation_createAppPolicies_args(ctx context.Co
 		}
 	}
 	args["appID"] = arg0
-	var arg1 []*ent.CreateAppPolicyInput
+	var arg1 ent.CreateAppPolicyInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOCreateAppPolicyInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInputᚄ(ctx, tmp)
+		arg1, err = ec.unmarshalNCreateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -316,6 +319,21 @@ func (ec *executionContext) field_Mutation_createOrganizationAccount_args(ctx co
 		}
 	}
 	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateOrgPolicyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgPolicyInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -445,6 +463,21 @@ func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, r
 		}
 	}
 	args["appID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgPolicyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgPolicyID"] = arg0
 	return args, nil
 }
 
@@ -875,6 +908,30 @@ func (ec *executionContext) field_Mutation_updateLoginProfile_args(ctx context.C
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg1, err = ec.unmarshalNUpdateUserLoginProfileInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserLoginProfileInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgPolicyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgPolicyID"] = arg0
+	var arg1 ent.UpdateOrgPolicyInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgPolicyInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2532,14 +2589,11 @@ func (ec *executionContext) _Mutation_updateAppAction(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*ent.AppAction)
 	fc.Result = res
-	return ec.marshalNAppAction2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx, field.Selections, res)
+	return ec.marshalOAppAction2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateAppAction(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2647,8 +2701,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteAppActions(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createAppPolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createAppPolicies(ctx, field)
+func (ec *executionContext) _Mutation_createAppPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAppPolicy(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2661,24 +2715,21 @@ func (ec *executionContext) _Mutation_createAppPolicies(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAppPolicies(rctx, fc.Args["appID"].(int), fc.Args["input"].([]*ent.CreateAppPolicyInput))
+		return ec.resolvers.Mutation().CreateAppPolicy(rctx, fc.Args["appID"].(int), fc.Args["input"].(ent.CreateAppPolicyInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.AppPolicy)
+	res := resTmp.(*ent.AppPolicy)
 	fc.Result = res
-	return ec.marshalNAppPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx, field.Selections, res)
+	return ec.marshalOAppPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createAppPolicies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createAppPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -2725,7 +2776,7 @@ func (ec *executionContext) fieldContext_Mutation_createAppPolicies(ctx context.
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createAppPolicies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createAppPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -3577,6 +3628,217 @@ func (ec *executionContext) fieldContext_Mutation_revokeOrganizationAppPolicy(ct
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createOrganizationPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateOrganizationPolicy(rctx, fc.Args["input"].(ent.CreateOrgPolicyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgPolicy)
+	fc.Result = res
+	return ec.marshalOOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgPolicy_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgPolicy_orgID(ctx, field)
+			case "appPolicyID":
+				return ec.fieldContext_OrgPolicy_appPolicyID(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgPolicy_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgPolicy_comments(ctx, field)
+			case "rules":
+				return ec.fieldContext_OrgPolicy_rules(ctx, field)
+			case "org":
+				return ec.fieldContext_OrgPolicy_org(ctx, field)
+			case "permissions":
+				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createOrganizationPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateOrganizationPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateOrganizationPolicy(rctx, fc.Args["orgPolicyID"].(int), fc.Args["input"].(ent.UpdateOrgPolicyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgPolicy)
+	fc.Result = res
+	return ec.marshalOOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgPolicy_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgPolicy_orgID(ctx, field)
+			case "appPolicyID":
+				return ec.fieldContext_OrgPolicy_appPolicyID(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgPolicy_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgPolicy_comments(ctx, field)
+			case "rules":
+				return ec.fieldContext_OrgPolicy_rules(ctx, field)
+			case "org":
+				return ec.fieldContext_OrgPolicy_org(ctx, field)
+			case "permissions":
+				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateOrganizationPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteOrganizationPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteOrganizationPolicy(rctx, fc.Args["orgPolicyID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteOrganizationPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteOrganizationPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createRole(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createRole(ctx, field)
 	if err != nil {
@@ -4300,9 +4562,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateAppAction(ctx, field)
 			})
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "deleteAppActions":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -4312,15 +4571,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createAppPolicies":
+		case "createAppPolicy":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createAppPolicies(ctx, field)
+				return ec._Mutation_createAppPolicy(ctx, field)
 			})
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "updateAppPolicy":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -4421,6 +4677,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_revokeOrganizationAppPolicy(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createOrganizationPolicy":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createOrganizationPolicy(ctx, field)
+			})
+
+		case "updateOrganizationPolicy":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateOrganizationPolicy(ctx, field)
+			})
+
+		case "deleteOrganizationPolicy":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteOrganizationPolicy(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

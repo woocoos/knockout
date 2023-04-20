@@ -158,7 +158,10 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 // AssignRoleUser is the resolver for the assignRoleUser field.
 func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	ouid, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(input.UserID)).OnlyID(ctx)
 	if err != nil {
 		return err
@@ -190,7 +193,10 @@ func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUser
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	has, err := client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.OrgID(tid), orguser.UserID(userID)),
 		orgroleuser.HasOrgRoleWith(orgrole.OrgID(tid), orgrole.ID(roleID))).Exist(ctx)
 	if err != nil {
@@ -311,7 +317,10 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 // UpdatePermission 更新权限的
 func (s *Service) UpdatePermission(ctx context.Context, permissionID int, input ent.UpdatePermissionInput) (*ent.Permission, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	domain, err := s.GetOrgDomain(ctx, tid)
 	if err != nil {
 		return nil, err
@@ -360,11 +369,11 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 // GetOrgDomain 获取组织域名.orgID为根组织.
 func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
 	c := ent.FromContext(ctx)
-	org := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
-	if org.Domain == "" {
+	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
+	if orgr.Domain == "" {
 		return "", fmt.Errorf("organization %d domain is empty", orgID)
 	}
-	return org.Domain, nil
+	return orgr.Domain, nil
 }
 
 // GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID

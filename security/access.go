@@ -32,7 +32,7 @@ func GrantPolicy(rules []types.PolicyRule, principal, domain string, principalKi
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			pls = append(pls, []string{role, domain, action, "read", "allow"})
+			pls = append(pls, []string{role, domain, action, "read", rule.Effect.String()})
 		}
 	}
 	if len(pls) > 0 {

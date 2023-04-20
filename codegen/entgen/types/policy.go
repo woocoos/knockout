@@ -10,7 +10,7 @@ type (
 	PolicyRule struct {
 		Effect     PolicyEffect `json:"effect"`
 		Actions    []string     `json:"actions"`
-		Resources  []string     `json:"resources"`
+		Resources  []string     `json:"resources,omitempty"`
 		Conditions []string     `json:"conditions,omitempty"`
 	}
 )

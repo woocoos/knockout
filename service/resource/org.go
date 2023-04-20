@@ -9,6 +9,7 @@ import (
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -195,7 +196,10 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 	if has {
 		return fmt.Errorf("user already in organization")
 	}
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	orgs, err := client.Org.Query().Where(org.IDIn(tid, input.OrgID)).Order(ent.Asc(org.FieldPath)).All(ctx)
 	if err != nil {
 		return err
@@ -218,7 +222,10 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 // RemoveOrganizationUser 将用户从组织目录中移除.
 func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	if orgID == tid {
 		return fmt.Errorf("can not remove from root org")
 	}
@@ -237,7 +244,10 @@ func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID 
 func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error {
 	client := ent.FromContext(ctx)
 
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	code := strconv.FormatInt(int64(tid), 36)
 
 	usr := client.User.GetX(ctx, userID)
@@ -315,21 +325,59 @@ func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.
 // CreateRole 创建角色或工作组
 func (s *Service) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return client.OrgRole.Create().SetInput(input).SetOrgID(tid).Save(ctx)
 }
 
 // UpdateRole 更新角色或工作组
 func (s *Service) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return client.OrgRole.UpdateOneID(roleID).Where(orgrole.OrgID(tid)).SetInput(input).Save(ctx)
 }
 
 // DeleteRole 删除角色或工作组
 func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
-	err := client.OrgRole.DeleteOneID(roleID).Where(orgrole.OrgID(tid)).Exec(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	err = client.OrgRole.DeleteOneID(roleID).Where(orgrole.OrgID(tid)).Exec(ctx)
 	return err
+}
+
+// CreateOrganizationPolicy 创建组织策略,该策略属于租户组织
+func (s *Service) CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return client.OrgPolicy.Create().SetOrgID(tid).SetInput(input).Save(ctx)
+}
+
+func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	data, err := client.OrgPolicy.UpdateOneID(id).Where(orgpolicy.OrgID(tid)).SetInput(input).Save(ctx)
+	return data, err
+}
+
+func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
 }

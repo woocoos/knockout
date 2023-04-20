@@ -79,6 +79,14 @@ func (opc *OrgPolicyCreate) SetOrgID(i int) *OrgPolicyCreate {
 	return opc
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (opc *OrgPolicyCreate) SetNillableOrgID(i *int) *OrgPolicyCreate {
+	if i != nil {
+		opc.SetOrgID(*i)
+	}
+	return opc
+}
+
 // SetAppID sets the "app_id" field.
 func (opc *OrgPolicyCreate) SetAppID(i int) *OrgPolicyCreate {
 	opc.mutation.SetAppID(i)
@@ -229,17 +237,11 @@ func (opc *OrgPolicyCreate) check() error {
 	if _, ok := opc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "OrgPolicy.created_at"`)}
 	}
-	if _, ok := opc.mutation.OrgID(); !ok {
-		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgPolicy.org_id"`)}
-	}
 	if _, ok := opc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrgPolicy.name"`)}
 	}
 	if _, ok := opc.mutation.Rules(); !ok {
 		return &ValidationError{Name: "rules", err: errors.New(`ent: missing required field "OrgPolicy.rules"`)}
-	}
-	if _, ok := opc.mutation.OrgID(); !ok {
-		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgPolicy.org"`)}
 	}
 	return nil
 }
@@ -437,18 +439,6 @@ func (u *OrgPolicyUpsert) ClearUpdatedAt() *OrgPolicyUpsert {
 	return u
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *OrgPolicyUpsert) SetOrgID(v int) *OrgPolicyUpsert {
-	u.Set(orgpolicy.FieldOrgID, v)
-	return u
-}
-
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *OrgPolicyUpsert) UpdateOrgID() *OrgPolicyUpsert {
-	u.SetExcluded(orgpolicy.FieldOrgID)
-	return u
-}
-
 // SetAppID sets the "app_id" field.
 func (u *OrgPolicyUpsert) SetAppID(v int) *OrgPolicyUpsert {
 	u.Set(orgpolicy.FieldAppID, v)
@@ -562,6 +552,9 @@ func (u *OrgPolicyUpsertOne) UpdateNewValues() *OrgPolicyUpsertOne {
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(orgpolicy.FieldCreatedAt)
 		}
+		if _, exists := u.create.mutation.OrgID(); exists {
+			s.SetIgnore(orgpolicy.FieldOrgID)
+		}
 	}))
 	return u
 }
@@ -639,20 +632,6 @@ func (u *OrgPolicyUpsertOne) UpdateUpdatedAt() *OrgPolicyUpsertOne {
 func (u *OrgPolicyUpsertOne) ClearUpdatedAt() *OrgPolicyUpsertOne {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.ClearUpdatedAt()
-	})
-}
-
-// SetOrgID sets the "org_id" field.
-func (u *OrgPolicyUpsertOne) SetOrgID(v int) *OrgPolicyUpsertOne {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.SetOrgID(v)
-	})
-}
-
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *OrgPolicyUpsertOne) UpdateOrgID() *OrgPolicyUpsertOne {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.UpdateOrgID()
 	})
 }
 
@@ -945,6 +924,9 @@ func (u *OrgPolicyUpsertBulk) UpdateNewValues() *OrgPolicyUpsertBulk {
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(orgpolicy.FieldCreatedAt)
 			}
+			if _, exists := b.mutation.OrgID(); exists {
+				s.SetIgnore(orgpolicy.FieldOrgID)
+			}
 		}
 	}))
 	return u
@@ -1023,20 +1005,6 @@ func (u *OrgPolicyUpsertBulk) UpdateUpdatedAt() *OrgPolicyUpsertBulk {
 func (u *OrgPolicyUpsertBulk) ClearUpdatedAt() *OrgPolicyUpsertBulk {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.ClearUpdatedAt()
-	})
-}
-
-// SetOrgID sets the "org_id" field.
-func (u *OrgPolicyUpsertBulk) SetOrgID(v int) *OrgPolicyUpsertBulk {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.SetOrgID(v)
-	})
-}
-
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *OrgPolicyUpsertBulk) UpdateOrgID() *OrgPolicyUpsertBulk {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.UpdateOrgID()
 	})
 }
 

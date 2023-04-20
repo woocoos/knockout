@@ -317,7 +317,7 @@ func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
 	if IsNotLoaded(err) {
 		result, err = op.QueryOrg().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err error) {

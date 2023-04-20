@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/codegen/entgen/types"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -76,12 +75,6 @@ func (opu *OrgPolicyUpdate) SetNillableUpdatedAt(t *time.Time) *OrgPolicyUpdate 
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (opu *OrgPolicyUpdate) ClearUpdatedAt() *OrgPolicyUpdate {
 	opu.mutation.ClearUpdatedAt()
-	return opu
-}
-
-// SetOrgID sets the "org_id" field.
-func (opu *OrgPolicyUpdate) SetOrgID(i int) *OrgPolicyUpdate {
-	opu.mutation.SetOrgID(i)
 	return opu
 }
 
@@ -177,11 +170,6 @@ func (opu *OrgPolicyUpdate) AppendRules(tr []types.PolicyRule) *OrgPolicyUpdate 
 	return opu
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (opu *OrgPolicyUpdate) SetOrg(o *Org) *OrgPolicyUpdate {
-	return opu.SetOrgID(o.ID)
-}
-
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
 func (opu *OrgPolicyUpdate) AddPermissionIDs(ids ...int) *OrgPolicyUpdate {
 	opu.mutation.AddPermissionIDs(ids...)
@@ -200,12 +188,6 @@ func (opu *OrgPolicyUpdate) AddPermissions(p ...*Permission) *OrgPolicyUpdate {
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opu *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
 	return opu.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (opu *OrgPolicyUpdate) ClearOrg() *OrgPolicyUpdate {
-	opu.mutation.ClearOrg()
-	return opu
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
@@ -256,18 +238,7 @@ func (opu *OrgPolicyUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (opu *OrgPolicyUpdate) check() error {
-	if _, ok := opu.mutation.OrgID(); opu.mutation.OrgCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "OrgPolicy.org"`)
-	}
-	return nil
-}
-
 func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := opu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(orgpolicy.Table, orgpolicy.Columns, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
 	if ps := opu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -325,35 +296,6 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orgpolicy.FieldRules, value)
 		})
-	}
-	if opu.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orgpolicy.OrgTable,
-			Columns: []string{orgpolicy.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := opu.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orgpolicy.OrgTable,
-			Columns: []string{orgpolicy.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if opu.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -467,12 +409,6 @@ func (opuo *OrgPolicyUpdateOne) ClearUpdatedAt() *OrgPolicyUpdateOne {
 	return opuo
 }
 
-// SetOrgID sets the "org_id" field.
-func (opuo *OrgPolicyUpdateOne) SetOrgID(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.SetOrgID(i)
-	return opuo
-}
-
 // SetAppID sets the "app_id" field.
 func (opuo *OrgPolicyUpdateOne) SetAppID(i int) *OrgPolicyUpdateOne {
 	opuo.mutation.ResetAppID()
@@ -565,11 +501,6 @@ func (opuo *OrgPolicyUpdateOne) AppendRules(tr []types.PolicyRule) *OrgPolicyUpd
 	return opuo
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (opuo *OrgPolicyUpdateOne) SetOrg(o *Org) *OrgPolicyUpdateOne {
-	return opuo.SetOrgID(o.ID)
-}
-
 // AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
 func (opuo *OrgPolicyUpdateOne) AddPermissionIDs(ids ...int) *OrgPolicyUpdateOne {
 	opuo.mutation.AddPermissionIDs(ids...)
@@ -588,12 +519,6 @@ func (opuo *OrgPolicyUpdateOne) AddPermissions(p ...*Permission) *OrgPolicyUpdat
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opuo *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
 	return opuo.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (opuo *OrgPolicyUpdateOne) ClearOrg() *OrgPolicyUpdateOne {
-	opuo.mutation.ClearOrg()
-	return opuo
 }
 
 // ClearPermissions clears all "permissions" edges to the Permission entity.
@@ -657,18 +582,7 @@ func (opuo *OrgPolicyUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (opuo *OrgPolicyUpdateOne) check() error {
-	if _, ok := opuo.mutation.OrgID(); opuo.mutation.OrgCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "OrgPolicy.org"`)
-	}
-	return nil
-}
-
 func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, err error) {
-	if err := opuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(orgpolicy.Table, orgpolicy.Columns, sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt))
 	id, ok := opuo.mutation.ID()
 	if !ok {
@@ -743,35 +657,6 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, orgpolicy.FieldRules, value)
 		})
-	}
-	if opuo.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orgpolicy.OrgTable,
-			Columns: []string{orgpolicy.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := opuo.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   orgpolicy.OrgTable,
-			Columns: []string{orgpolicy.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if opuo.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{

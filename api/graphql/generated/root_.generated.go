@@ -218,10 +218,11 @@ type ComplexityRoot struct {
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
-		CreateAppPolicies           func(childComplexity int, appID int, input []*ent.CreateAppPolicyInput) int
+		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
+		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
@@ -230,6 +231,7 @@ type ComplexityRoot struct {
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
+		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
@@ -250,6 +252,7 @@ type ComplexityRoot struct {
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
+		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
@@ -1433,17 +1436,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppMenus(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppMenuInput)), true
 
-	case "Mutation.createAppPolicies":
-		if e.complexity.Mutation.CreateAppPolicies == nil {
+	case "Mutation.createAppPolicy":
+		if e.complexity.Mutation.CreateAppPolicy == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createAppPolicies_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_createAppPolicy_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppPolicies(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppPolicyInput)), true
+		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppPolicyInput)), true
 
 	case "Mutation.createAppRole":
 		if e.complexity.Mutation.CreateAppRole == nil {
@@ -1480,6 +1483,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateOrganizationAccount(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput)), true
+
+	case "Mutation.createOrganizationPolicy":
+		if e.complexity.Mutation.CreateOrganizationPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createOrganizationPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateOrganizationPolicy(childComplexity, args["input"].(ent.CreateOrgPolicyInput)), true
 
 	case "Mutation.createOrganizationUser":
 		if e.complexity.Mutation.CreateOrganizationUser == nil {
@@ -1576,6 +1591,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteOrganization(childComplexity, args["orgID"].(int)), true
+
+	case "Mutation.deleteOrganizationPolicy":
+		if e.complexity.Mutation.DeleteOrganizationPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteOrganizationPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteOrganizationPolicy(childComplexity, args["orgPolicyID"].(int)), true
 
 	case "Mutation.deleteRole":
 		if e.complexity.Mutation.DeleteRole == nil {
@@ -1816,6 +1843,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateOrganization(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateOrgInput)), true
+
+	case "Mutation.updateOrganizationPolicy":
+		if e.complexity.Mutation.UpdateOrganizationPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateOrganizationPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateOrganizationPolicy(childComplexity, args["orgPolicyID"].(int), args["input"].(ent.UpdateOrgPolicyInput)), true
 
 	case "Mutation.updatePermission":
 		if e.complexity.Mutation.UpdatePermission == nil {
@@ -4621,9 +4660,9 @@ input CreateOrgPolicyInput {
   name: String!
   """描述"""
   comments: String
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRuleInput!]!
-  orgID: ID!
+  orgID: ID
   permissionIDs: [ID!]
 }
 """
@@ -4903,16 +4942,16 @@ type OrgPolicy implements Node {
   updatedBy: Int
   updatedAt: Time
   """组织ID"""
-  orgID: ID!
+  orgID: ID
   """所属应用策略,如果是自定义应用策略,则为空"""
   appPolicyID: Int
   """策略名称"""
   name: String!
   """描述"""
   comments: String
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRule!]!
-  org: Org!
+  org: Org
   permissions: [Permission!]
 }
 """A connection to a list of items."""
@@ -5004,6 +5043,8 @@ input OrgPolicyWhereInput {
   orgIDNEQ: ID
   orgIDIn: [ID!]
   orgIDNotIn: [ID!]
+  orgIDIsNil: Boolean
+  orgIDNotNil: Boolean
   """app_policy_id field predicates"""
   appPolicyID: Int
   appPolicyIDNEQ: Int
@@ -6023,10 +6064,9 @@ input UpdateOrgPolicyInput {
   """描述"""
   comments: String
   clearComments: Boolean
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRuleInput!]
   appendRules: [PolicyRuleInput!]
-  orgID: ID
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean
@@ -7151,11 +7191,11 @@ input GrantInput {
     """创建应用操作"""
     createAppActions(appID:ID!,input: [CreateAppActionInput!]): [AppAction]!
     """更新应用操作"""
-    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction!
+    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
     """删除应用操作"""
     deleteAppActions(actionIDs:[ID!]!): Boolean!
     """创建应用策略模板"""
-    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): [AppPolicy]!
+    createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
@@ -7182,6 +7222,12 @@ input GrantInput {
     assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
     """取消分配到组织应用策略"""
     revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """创建组织策略"""
+    createOrganizationPolicy(input: CreateOrgPolicyInput!): OrgPolicy
+    """更新组织策略"""
+    updateOrganizationPolicy(orgPolicyID:ID!,input: UpdateOrgPolicyInput!): OrgPolicy
+    """删除组织策略"""
+    deleteOrganizationPolicy(orgPolicyID:ID!): Boolean!
     """创建角色或组"""
     createRole(input: CreateOrgRoleInput!): OrgRole
     """更新角色或组"""

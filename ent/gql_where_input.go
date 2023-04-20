@@ -4863,10 +4863,12 @@ type OrgPolicyWhereInput struct {
 	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
 
 	// "org_id" field predicates.
-	OrgID      *int  `json:"orgID,omitempty"`
-	OrgIDNEQ   *int  `json:"orgIDNEQ,omitempty"`
-	OrgIDIn    []int `json:"orgIDIn,omitempty"`
-	OrgIDNotIn []int `json:"orgIDNotIn,omitempty"`
+	OrgID       *int  `json:"orgID,omitempty"`
+	OrgIDNEQ    *int  `json:"orgIDNEQ,omitempty"`
+	OrgIDIn     []int `json:"orgIDIn,omitempty"`
+	OrgIDNotIn  []int `json:"orgIDNotIn,omitempty"`
+	OrgIDIsNil  bool  `json:"orgIDIsNil,omitempty"`
+	OrgIDNotNil bool  `json:"orgIDNotNil,omitempty"`
 
 	// "app_policy_id" field predicates.
 	AppPolicyID       *int  `json:"appPolicyID,omitempty"`
@@ -5135,6 +5137,12 @@ func (i *OrgPolicyWhereInput) P() (predicate.OrgPolicy, error) {
 	}
 	if len(i.OrgIDNotIn) > 0 {
 		predicates = append(predicates, orgpolicy.OrgIDNotIn(i.OrgIDNotIn...))
+	}
+	if i.OrgIDIsNil {
+		predicates = append(predicates, orgpolicy.OrgIDIsNil())
+	}
+	if i.OrgIDNotNil {
+		predicates = append(predicates, orgpolicy.OrgIDNotNil())
 	}
 	if i.AppPolicyID != nil {
 		predicates = append(predicates, orgpolicy.AppPolicyIDEQ(*i.AppPolicyID))

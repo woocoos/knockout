@@ -38,7 +38,7 @@ type OrgPolicy struct {
 	Name string `json:"name,omitempty"`
 	// 描述
 	Comments string `json:"comments,omitempty"`
-	// 策略规则,如果是应用策略,则为空
+	// 策略规则
 	Rules []types.PolicyRule `json:"rules,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgPolicyQuery when eager-loading is set.

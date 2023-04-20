@@ -8002,14 +8002,11 @@ func (ec *executionContext) _OrgPolicy_orgID(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalOID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OrgPolicy_orgID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8226,14 +8223,11 @@ func (ec *executionContext) _OrgPolicy_org(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*ent.Org)
 	fc.Result = res
-	return ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OrgPolicy_org(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20972,7 +20966,7 @@ func (ec *executionContext) unmarshalInputCreateOrgPolicyInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			it.OrgID, err = ec.unmarshalNID2int(ctx, v)
+			it.OrgID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21575,7 +21569,7 @@ func (ec *executionContext) unmarshalInputOrgPolicyWhereInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "orgID", "orgIDNEQ", "orgIDIn", "orgIDNotIn", "appPolicyID", "appPolicyIDNEQ", "appPolicyIDIn", "appPolicyIDNotIn", "appPolicyIDGT", "appPolicyIDGTE", "appPolicyIDLT", "appPolicyIDLTE", "appPolicyIDIsNil", "appPolicyIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "hasOrg", "hasOrgWith", "hasPermissions", "hasPermissionsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "orgID", "orgIDNEQ", "orgIDIn", "orgIDNotIn", "orgIDIsNil", "orgIDNotNil", "appPolicyID", "appPolicyIDNEQ", "appPolicyIDIn", "appPolicyIDNotIn", "appPolicyIDGT", "appPolicyIDGTE", "appPolicyIDLT", "appPolicyIDLTE", "appPolicyIDIsNil", "appPolicyIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "hasOrg", "hasOrgWith", "hasPermissions", "hasPermissionsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21987,6 +21981,22 @@ func (ec *executionContext) unmarshalInputOrgPolicyWhereInput(ctx context.Contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDNotIn"))
 			it.OrgIDNotIn, err = ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "orgIDIsNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDIsNil"))
+			it.OrgIDIsNil, err = ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "orgIDNotNil":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDNotNil"))
+			it.OrgIDNotNil, err = ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27363,7 +27373,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"appPolicyID", "clearAppPolicyID", "name", "comments", "clearComments", "rules", "appendRules", "orgID", "addPermissionIDs", "removePermissionIDs", "clearPermissions"}
+	fieldsInOrder := [...]string{"appPolicyID", "clearAppPolicyID", "name", "comments", "clearComments", "rules", "appendRules", "addPermissionIDs", "removePermissionIDs", "clearPermissions"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -27423,14 +27433,6 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appendRules"))
 			it.AppendRules, err = ec.unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "orgID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			it.OrgID, err = ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -34127,9 +34129,6 @@ func (ec *executionContext) _OrgPolicy(ctx context.Context, sel ast.SelectionSet
 
 			out.Values[i] = ec._OrgPolicy_orgID(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "appPolicyID":
 
 			out.Values[i] = ec._OrgPolicy_appPolicyID(ctx, field, obj)
@@ -34162,9 +34161,6 @@ func (ec *executionContext) _OrgPolicy(ctx context.Context, sel ast.SelectionSet
 					}
 				}()
 				res = ec._OrgPolicy_org(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
 				return res
 			}
 
@@ -35434,10 +35430,6 @@ func (ec *executionContext) _UserPassword(ctx context.Context, sel ast.Selection
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAppAction2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx context.Context, sel ast.SelectionSet, v ent.AppAction) graphql.Marshaler {
-	return ec._AppAction(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx context.Context, sel ast.SelectionSet, v []*ent.AppAction) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -35474,16 +35466,6 @@ func (ec *executionContext) marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋkno
 	wg.Wait()
 
 	return ret
-}
-
-func (ec *executionContext) marshalNAppAction2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx context.Context, sel ast.SelectionSet, v *ent.AppAction) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AppAction(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNAppActionConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionConnection(ctx context.Context, sel ast.SelectionSet, v *ent.AppActionConnection) graphql.Marshaler {
@@ -35666,44 +35648,6 @@ func (ec *executionContext) marshalNAppOrderField2ᚖgithubᚗcomᚋwoocoosᚋkn
 	return v
 }
 
-func (ec *executionContext) marshalNAppPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx context.Context, sel ast.SelectionSet, v []*ent.AppPolicy) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOAppPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
 func (ec *executionContext) marshalNAppPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicy(ctx context.Context, sel ast.SelectionSet, v *ent.AppPolicy) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -35852,9 +35796,9 @@ func (ec *executionContext) unmarshalNCreateAppMenuInput2ᚖgithubᚗcomᚋwooco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreateAppPolicyInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx context.Context, v interface{}) (*ent.CreateAppPolicyInput, error) {
+func (ec *executionContext) unmarshalNCreateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx context.Context, v interface{}) (ent.CreateAppPolicyInput, error) {
 	res, err := ec.unmarshalInputCreateAppPolicyInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppRoleInput(ctx context.Context, v interface{}) (ent.CreateAppRoleInput, error) {
@@ -35864,6 +35808,11 @@ func (ec *executionContext) unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoos�
 
 func (ec *executionContext) unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx context.Context, v interface{}) (ent.CreateOrgInput, error) {
 	res, err := ec.unmarshalInputCreateOrgInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNCreateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgPolicyInput(ctx context.Context, v interface{}) (ent.CreateOrgPolicyInput, error) {
+	res, err := ec.unmarshalInputCreateOrgPolicyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -36214,6 +36163,11 @@ func (ec *executionContext) unmarshalNUpdateAppRoleInput2githubᚗcomᚋwoocoos�
 
 func (ec *executionContext) unmarshalNUpdateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgInput(ctx context.Context, v interface{}) (ent.UpdateOrgInput, error) {
 	res, err := ec.unmarshalInputUpdateOrgInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgPolicyInput(ctx context.Context, v interface{}) (ent.UpdateOrgPolicyInput, error) {
+	res, err := ec.unmarshalInputUpdateOrgPolicyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -37688,26 +37642,6 @@ func (ec *executionContext) unmarshalOCreateAppMenuInput2ᚕᚖgithubᚗcomᚋwo
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
 		res[i], err = ec.unmarshalNCreateAppMenuInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppMenuInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOCreateAppPolicyInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInputᚄ(ctx context.Context, v interface{}) ([]*ent.CreateAppPolicyInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*ent.CreateAppPolicyInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNCreateAppPolicyInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}

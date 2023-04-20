@@ -1394,9 +1394,9 @@ input CreateOrgPolicyInput {
   name: String!
   """描述"""
   comments: String
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRuleInput!]!
-  orgID: ID!
+  orgID: ID
   permissionIDs: [ID!]
 }
 """
@@ -1676,16 +1676,16 @@ type OrgPolicy implements Node {
   updatedBy: Int
   updatedAt: Time
   """组织ID"""
-  orgID: ID!
+  orgID: ID
   """所属应用策略,如果是自定义应用策略,则为空"""
   appPolicyID: Int
   """策略名称"""
   name: String!
   """描述"""
   comments: String
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRule!]!
-  org: Org!
+  org: Org
   permissions: [Permission!]
 }
 """A connection to a list of items."""
@@ -1777,6 +1777,8 @@ input OrgPolicyWhereInput {
   orgIDNEQ: ID
   orgIDIn: [ID!]
   orgIDNotIn: [ID!]
+  orgIDIsNil: Boolean
+  orgIDNotNil: Boolean
   """app_policy_id field predicates"""
   appPolicyID: Int
   appPolicyIDNEQ: Int
@@ -2796,10 +2798,9 @@ input UpdateOrgPolicyInput {
   """描述"""
   comments: String
   clearComments: Boolean
-  """策略规则,如果是应用策略,则为空"""
+  """策略规则"""
   rules: [PolicyRuleInput!]
   appendRules: [PolicyRuleInput!]
-  orgID: ID
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean

@@ -13,14 +13,15 @@ import (
 func InitDisplaySortHook(table string) ent.Hook {
 	parentField := org.FieldParentID
 	displayField := org.FieldDisplaySort
+	type displaySorter interface {
+		SetDisplaySort(int32)
+		Client() *gen.Client
+	}
 	return hook.On(
 		func(next ent.Mutator) ent.Mutator {
 			return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
 				pid, _ := m.Field(parentField)
-				if mx, ok := m.(interface {
-					SetDisplaySort(int32)
-					Client() *gen.Client
-				}); ok {
+				if mx, ok := m.(displaySorter); ok {
 					var old int
 					switch table {
 					case org.Table:

@@ -300,6 +300,16 @@ func OrgIDNotIn(vs ...int) predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldNotIn(FieldOrgID, vs...))
 }
 
+// OrgIDIsNil applies the IsNil predicate on the "org_id" field.
+func OrgIDIsNil() predicate.OrgPolicy {
+	return predicate.OrgPolicy(sql.FieldIsNull(FieldOrgID))
+}
+
+// OrgIDNotNil applies the NotNil predicate on the "org_id" field.
+func OrgIDNotNil() predicate.OrgPolicy {
+	return predicate.OrgPolicy(sql.FieldNotNull(FieldOrgID))
+}
+
 // AppIDEQ applies the EQ predicate on the "app_id" field.
 func AppIDEQ(v int) predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldEQ(FieldAppID, v))

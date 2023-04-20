@@ -891,7 +891,7 @@ type CreateOrgPolicyInput struct {
 	Name          string
 	Comments      *string
 	Rules         []types.PolicyRule
-	OrgID         int
+	OrgID         *int
 	PermissionIDs []int
 }
 
@@ -907,7 +907,9 @@ func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	if v := i.Rules; v != nil {
 		m.SetRules(v)
 	}
-	m.SetOrgID(i.OrgID)
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
 	if v := i.PermissionIDs; len(v) > 0 {
 		m.AddPermissionIDs(v...)
 	}
@@ -928,7 +930,6 @@ type UpdateOrgPolicyInput struct {
 	Comments            *string
 	Rules               []types.PolicyRule
 	AppendRules         []types.PolicyRule
-	OrgID               *int
 	ClearPermissions    bool
 	AddPermissionIDs    []int
 	RemovePermissionIDs []int
@@ -956,9 +957,6 @@ func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if i.AppendRules != nil {
 		m.AppendRules(i.Rules)
-	}
-	if v := i.OrgID; v != nil {
-		m.SetOrgID(*v)
 	}
 	if i.ClearPermissions {
 		m.ClearPermissions()

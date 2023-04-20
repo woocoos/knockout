@@ -316,7 +316,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// OrgPolicyTable holds the schema information for the "org_policy" table.
 	OrgPolicyTable = &schema.Table{
@@ -328,7 +328,7 @@ var (
 				Symbol:     "org_policy_org_policies",
 				Columns:    []*schema.Column{OrgPolicyColumns[10]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}

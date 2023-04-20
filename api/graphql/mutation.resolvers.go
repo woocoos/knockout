@@ -137,9 +137,9 @@ func (r *mutationResolver) DeleteAppActions(ctx context.Context, actionIDs []int
 	return err == nil, err
 }
 
-// CreateAppPolicies is the resolver for the createAppPolicies field.
-func (r *mutationResolver) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) ([]*ent.AppPolicy, error) {
-	return r.Resource.CreateAppPolicies(ctx, appID, input)
+// CreateAppPolicy is the resolver for the createAppPolicy field.
+func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+	return r.Resource.CreateAppPolicy(ctx, appID, input)
 }
 
 // UpdateAppPolicy is the resolver for the updateAppPolicy field.
@@ -149,7 +149,7 @@ func (r *mutationResolver) UpdateAppPolicy(ctx context.Context, policyID int, in
 
 // DeleteAppPolicy is the resolver for the deleteAppPolicy field.
 func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (bool, error) {
-	err := r.Client.AppRolePolicy.DeleteOneID(policyID).Exec(ctx)
+	err := r.Resource.DeleteAppPolicy(ctx, policyID)
 	return err == nil, err
 }
 
@@ -212,6 +212,22 @@ func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgI
 // RevokeOrganizationAppPolicy is the resolver for the revokeOrganizationAppPolicy field.
 func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
 	err := r.Resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
+	return err == nil, err
+}
+
+// CreateOrganizationPolicy is the resolver for the createOrganizationPolicy field.
+func (r *mutationResolver) CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error) {
+	return r.Resource.CreateOrganizationPolicy(ctx, input)
+}
+
+// UpdateOrganizationPolicy is the resolver for the updateOrganizationPolicy field.
+func (r *mutationResolver) UpdateOrganizationPolicy(ctx context.Context, orgPolicyID int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
+	return r.Resource.UpdateOrganizationPolicy(ctx, orgPolicyID, input)
+}
+
+// DeleteOrganizationPolicy is the resolver for the deleteOrganizationPolicy field.
+func (r *mutationResolver) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) (bool, error) {
+	err := r.Resource.DeleteOrganizationPolicy(ctx, orgPolicyID)
 	return err == nil, err
 }
 

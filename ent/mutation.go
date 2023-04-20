@@ -12314,9 +12314,22 @@ func (m *OrgPolicyMutation) OldOrgID(ctx context.Context) (v int, err error) {
 	return oldValue.OrgID, nil
 }
 
+// ClearOrgID clears the value of the "org_id" field.
+func (m *OrgPolicyMutation) ClearOrgID() {
+	m.org = nil
+	m.clearedFields[orgpolicy.FieldOrgID] = struct{}{}
+}
+
+// OrgIDCleared returns if the "org_id" field was cleared in this mutation.
+func (m *OrgPolicyMutation) OrgIDCleared() bool {
+	_, ok := m.clearedFields[orgpolicy.FieldOrgID]
+	return ok
+}
+
 // ResetOrgID resets all changes to the "org_id" field.
 func (m *OrgPolicyMutation) ResetOrgID() {
 	m.org = nil
+	delete(m.clearedFields, orgpolicy.FieldOrgID)
 }
 
 // SetAppID sets the "app_id" field.
@@ -12602,7 +12615,7 @@ func (m *OrgPolicyMutation) ClearOrg() {
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
 func (m *OrgPolicyMutation) OrgCleared() bool {
-	return m.clearedorg
+	return m.OrgIDCleared() || m.clearedorg
 }
 
 // OrgIDs returns the "org" edge IDs in the mutation.
@@ -12963,6 +12976,9 @@ func (m *OrgPolicyMutation) ClearedFields() []string {
 	if m.FieldCleared(orgpolicy.FieldUpdatedAt) {
 		fields = append(fields, orgpolicy.FieldUpdatedAt)
 	}
+	if m.FieldCleared(orgpolicy.FieldOrgID) {
+		fields = append(fields, orgpolicy.FieldOrgID)
+	}
 	if m.FieldCleared(orgpolicy.FieldAppID) {
 		fields = append(fields, orgpolicy.FieldAppID)
 	}
@@ -12991,6 +13007,9 @@ func (m *OrgPolicyMutation) ClearField(name string) error {
 		return nil
 	case orgpolicy.FieldUpdatedAt:
 		m.ClearUpdatedAt()
+		return nil
+	case orgpolicy.FieldOrgID:
+		m.ClearOrgID()
 		return nil
 	case orgpolicy.FieldAppID:
 		m.ClearAppID()

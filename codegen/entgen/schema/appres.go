@@ -11,6 +11,8 @@ import (
 )
 
 // AppRes 是应用下的资源信息
+//
+// 应用资源表达式参数说明:
 type AppRes struct {
 	ent.Schema
 }

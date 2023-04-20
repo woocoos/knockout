@@ -55,11 +55,11 @@ type Mutation {
     """创建应用操作"""
     createAppActions(appID:ID!,input: [CreateAppActionInput!]): [AppAction]!
     """更新应用操作"""
-    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction!
+    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
     """删除应用操作"""
     deleteAppActions(actionIDs:[ID!]!): Boolean!
     """创建应用策略模板"""
-    createAppPolicies(appID:ID!,input: [CreateAppPolicyInput!]): [AppPolicy]!
+    createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
@@ -86,6 +86,12 @@ type Mutation {
     assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
     """取消分配到组织应用策略"""
     revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """创建组织策略"""
+    createOrganizationPolicy(input: CreateOrgPolicyInput!): OrgPolicy
+    """更新组织策略"""
+    updateOrganizationPolicy(orgPolicyID:ID!,input: UpdateOrgPolicyInput!): OrgPolicy
+    """删除组织策略"""
+    deleteOrganizationPolicy(orgPolicyID:ID!): Boolean!
     """创建角色或组"""
     createRole(input: CreateOrgRoleInput!): OrgRole
     """更新角色或组"""

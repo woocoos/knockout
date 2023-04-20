@@ -39,7 +39,6 @@ var Cmd = &cli.Command{
 					Usage:   "the gqlgen config path",
 					Value:   "./codegen/gqlgen/gqlgen.yaml",
 					Aliases: []string{"c"},
-					//FilePath: "./codegen/gqlgen/gqlgen.yaml",
 				},
 				&cli.PathFlag{
 					Name:    "config",
@@ -70,7 +69,6 @@ var Cmd = &cli.Command{
 					Usage:   "the schema path",
 					Value:   "./codegen/gqlgen/gqlgen.yaml",
 					Aliases: []string{"c"},
-					//FilePath: "./codegen/gqlgen/gqlgen.yaml",
 				},
 				&cli.PathFlag{
 					Name:    "config",

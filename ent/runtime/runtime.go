@@ -128,7 +128,9 @@ func init() {
 	appmenu.DefaultID = appmenuDescID.Default.(func() int)
 	apppolicyMixin := schema.AppPolicy{}.Mixin()
 	apppolicyMixinHooks1 := apppolicyMixin[1].Hooks()
+	apppolicyHooks := schema.AppPolicy{}.Hooks()
 	apppolicy.Hooks[0] = apppolicyMixinHooks1[0]
+	apppolicy.Hooks[1] = apppolicyHooks[0]
 	apppolicyMixinFields0 := apppolicyMixin[0].Fields()
 	_ = apppolicyMixinFields0
 	apppolicyMixinFields1 := apppolicyMixin[1].Fields()
@@ -263,7 +265,9 @@ func init() {
 	orgapp.DefaultCreatedAt = orgappDescCreatedAt.Default.(func() time.Time)
 	orgpolicyMixin := schema.OrgPolicy{}.Mixin()
 	orgpolicyMixinHooks1 := orgpolicyMixin[1].Hooks()
+	orgpolicyHooks := schema.OrgPolicy{}.Hooks()
 	orgpolicy.Hooks[0] = orgpolicyMixinHooks1[0]
+	orgpolicy.Hooks[1] = orgpolicyHooks[0]
 	orgpolicyMixinFields0 := orgpolicyMixin[0].Fields()
 	_ = orgpolicyMixinFields0
 	orgpolicyMixinFields1 := orgpolicyMixin[1].Fields()

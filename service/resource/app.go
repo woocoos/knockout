@@ -13,7 +13,6 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgapp"
-	"strings"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -21,7 +20,10 @@ import (
 // TODO 应用工作流
 func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	apl := client.App.Create().SetInput(input).SetOrgID(tid).SetPrivate(false).SaveX(ctx)
 	return apl, nil
 }
@@ -29,7 +31,10 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 // CreateAppActions
 func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
 	if !has {
 		return nil, fmt.Errorf("app not exist")
@@ -44,7 +49,10 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 // CreateAppMenus
 func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
 	if !has {
 		return nil, fmt.Errorf("app not exist")
@@ -103,62 +111,13 @@ func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action mode
 	return builder.Exec(ctx)
 }
 
-// CreateAppPolicies 创建应用策略.
-//
-// 该方法会检查应用策略的规则中的action是否以应用代码开头.
-func (s *Service) CreateAppPolicies(ctx context.Context, appID int, input []*ent.CreateAppPolicyInput) ([]*ent.AppPolicy, error) {
-	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
-	apl, err := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	builders := make([]*ent.AppPolicyCreate, len(input))
-	for i, data := range input {
-		for _, rule := range data.Rules {
-			for _, action := range rule.Actions {
-				if action == "*" {
-					continue
-				}
-				if !strings.HasPrefix(action, apl.Code+":") {
-					return nil, fmt.Errorf("action %s must start with app code %s", action, apl.Code)
-				}
-			}
-		}
-		builders[i] = client.AppPolicy.Create().SetInput(*input[i]).SetAppID(appID)
-	}
-	return client.AppPolicy.CreateBulk(builders...).Save(ctx)
-}
-
-func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
-	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
-	apl, err := client.AppPolicy.Query().WithApp(func(query *ent.AppQuery) {
-		query.Where(app.OrgID(tid))
-	}).Where(apppolicy.ID(policyID)).Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	appcode := apl.Edges.App.Code
-	for _, rule := range input.Rules {
-		for _, action := range rule.Actions {
-			if action == "*" {
-				continue
-			}
-			if !strings.HasPrefix(action, appcode+":") {
-				return nil, fmt.Errorf("action %s must start with app code %s", action, appcode)
-			}
-		}
-	}
-
-	return client.AppPolicy.UpdateOneID(policyID).SetInput(input).Save(ctx)
-}
-
 // UpdateApp 更新应用
 func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	has, err := client.App.Query().Where(app.OrgID(tid), app.ID(appID)).Exist(ctx)
 	if err != nil {
 		return nil, err
@@ -196,7 +155,10 @@ func (s *Service) DeleteApp(ctx context.Context, appID int) error {
 
 func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
 	if err != nil {
 		return nil, err
@@ -209,7 +171,10 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 
 func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
-	tid := identity.TenantIDFromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
 	if err != nil {
 		return err
@@ -218,4 +183,63 @@ func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 		return fmt.Errorf("role not exist")
 	}
 	return client.AppRole.DeleteOneID(roleID).Exec(ctx)
+}
+
+// CreateAppPolicy 创建应用策略.
+//
+// 该方法会检查应用策略的规则中的action是否以应用代码开头.
+func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	exist, err := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if !exist {
+		return nil, fmt.Errorf("app not exist")
+	}
+
+	return client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
+}
+
+// UpdateAppPolicy 更新应用策略,该应用必须属于(创建者)该租户才可更新
+// 当应用策略更新时,会被当前最新的策略模板,原有引用该策略的都保持不变
+func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	apl, err := client.AppPolicy.Query().WithApp(func(query *ent.AppQuery) {
+		query.Where(app.OrgID(tid))
+	}).Where(apppolicy.ID(policyID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	builder := client.AppPolicy.UpdateOneID(policyID).SetInput(input)
+	builder.Mutation().SetAppID(apl.AppID)
+	return builder.Save(ctx)
+}
+
+// DeleteAppPolicy 删除应用策略,该应用必须属于(创建者)该租户才可删除
+// 当应用策略被删除时,原有引用该策略的都保持不变
+func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	exists, err := client.AppPolicy.Query().WithApp(func(query *ent.AppQuery) {
+		query.Where(app.OrgID(tid))
+	}).Where(apppolicy.ID(policyID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("policy not exist")
+	}
+	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
 }
