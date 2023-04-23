@@ -1,6 +1,8 @@
 type Mutation {
     """启用目录管理,返回根节点组织信息"""
     enableDirectory(input: EnableDirectoryInput!):Org
+    """创建组织根节点(管理端使用)"""
+    createRoot(input: CreateOrgInput!): Org
     """创建组织目录"""
     createOrganization(input: CreateOrgInput!): Org
     """更新组织目录"""
@@ -64,6 +66,8 @@ type Mutation {
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
     deleteAppPolicy(policyID:ID!): Boolean!
+    """分配应用策略给组织"""
+    assignAppPolicyToOrg(policyID:ID!,orgID:ID!):Boolean!
     """创建应用菜单"""
     createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
     """更新应用菜单"""
@@ -78,6 +82,10 @@ type Mutation {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
+    """分配应用角色给组织"""
+    assignAppRoleToOrg(roleID:ID!,orgID:ID!):Boolean!
+    """角色添加策略"""
+    assignAppRolePolice(appID:ID!,roleID:ID!,policeIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""

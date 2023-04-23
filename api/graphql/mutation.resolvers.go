@@ -19,6 +19,11 @@ func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.Enab
 	return r.Resource.EnableOrganization(ctx, input)
 }
 
+// CreateRoot is the resolver for the createRoot field.
+func (r *mutationResolver) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
+	return r.Resource.CreateRoot(ctx, input)
+}
+
 // CreateOrganization is the resolver for the createOrganization field.
 func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	return r.Resource.CreateOrganization(ctx, input)
@@ -153,6 +158,12 @@ func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (b
 	return err == nil, err
 }
 
+// AssignAppPolicyToOrg is the resolver for the assignAppPolicyToOrg field.
+func (r *mutationResolver) AssignAppPolicyToOrg(ctx context.Context, policyID int, orgID int) (bool, error) {
+	err := r.Resource.AssignAppPolicyToOrg(ctx, policyID, orgID)
+	return err == nil, err
+}
+
 // CreateAppMenus is the resolver for the createAppMenus field.
 func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
 	return r.Resource.CreateAppMenus(ctx, appID, input)
@@ -188,6 +199,18 @@ func (r *mutationResolver) UpdateAppRole(ctx context.Context, roleID int, input 
 // DeleteAppRole is the resolver for the deleteAppRole field.
 func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool, error) {
 	err := r.Resource.DeleteAppRole(ctx, roleID)
+	return err == nil, err
+}
+
+// AssignAppRoleToOrg is the resolver for the assignAppRoleToOrg field.
+func (r *mutationResolver) AssignAppRoleToOrg(ctx context.Context, roleID int, orgID int) (bool, error) {
+	err := r.Resource.AssignAppRoleToOrg(ctx, roleID, orgID)
+	return err == nil, err
+}
+
+// AssignAppRolePolice is the resolver for the assignAppRolePolice field.
+func (r *mutationResolver) AssignAppRolePolice(ctx context.Context, appID int, roleID int, policeIDs []int) (bool, error) {
+	err := r.Resource.AssignAppRolePolice(ctx, appID, roleID, policeIDs)
 	return err == nil, err
 }
 

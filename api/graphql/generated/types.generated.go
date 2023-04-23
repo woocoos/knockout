@@ -502,11 +502,7 @@ func (ec *executionContext) marshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknocko
 	return v
 }
 
-func (ec *executionContext) marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v types.PolicyRule) graphql.Marshaler {
-	return ec._PolicyRule(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []types.PolicyRule) graphql.Marshaler {
+func (ec *executionContext) marshalNPolicyRule2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v []*types.PolicyRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -530,7 +526,7 @@ func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknock
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPolicyRule2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, sel, v[i])
+			ret[i] = ec.marshalOPolicyRule2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -541,30 +537,19 @@ func (ec *executionContext) marshalNPolicyRule2ᚕgithubᚗcomᚋwoocoosᚋknock
 	}
 	wg.Wait()
 
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) (types.PolicyRule, error) {
-	res, err := ec.unmarshalInputPolicyRuleInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
+func (ec *executionContext) unmarshalNPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) ([]*types.PolicyRule, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]types.PolicyRule, len(vSlice))
+	res := make([]*types.PolicyRule, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOPolicyRuleInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -598,7 +583,14 @@ func (ec *executionContext) marshalOGID2ᚖstring(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRuleᚄ(ctx context.Context, v interface{}) ([]types.PolicyRule, error) {
+func (ec *executionContext) marshalOPolicyRule2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v *types.PolicyRule) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PolicyRule(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) ([]*types.PolicyRule, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -607,15 +599,23 @@ func (ec *executionContext) unmarshalOPolicyRuleInput2ᚕgithubᚗcomᚋwoocoos�
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]types.PolicyRule, len(vSlice))
+	res := make([]*types.PolicyRule, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNPolicyRuleInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOPolicyRuleInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) unmarshalOPolicyRuleInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, v interface{}) (*types.PolicyRule, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPolicyRuleInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

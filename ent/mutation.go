@@ -4617,8 +4617,8 @@ type AppPolicyMutation struct {
 	updated_at             *time.Time
 	name                   *string
 	comments               *string
-	rules                  *[]types.PolicyRule
-	appendrules            []types.PolicyRule
+	rules                  *[]*types.PolicyRule
+	appendrules            []*types.PolicyRule
 	version                *string
 	auto_grant             *bool
 	status                 *typex.SimpleStatus
@@ -5086,13 +5086,13 @@ func (m *AppPolicyMutation) ResetComments() {
 }
 
 // SetRules sets the "rules" field.
-func (m *AppPolicyMutation) SetRules(tr []types.PolicyRule) {
+func (m *AppPolicyMutation) SetRules(tr []*types.PolicyRule) {
 	m.rules = &tr
 	m.appendrules = nil
 }
 
 // Rules returns the value of the "rules" field in the mutation.
-func (m *AppPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
+func (m *AppPolicyMutation) Rules() (r []*types.PolicyRule, exists bool) {
 	v := m.rules
 	if v == nil {
 		return
@@ -5103,7 +5103,7 @@ func (m *AppPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
 // OldRules returns the old "rules" field's value of the AppPolicy entity.
 // If the AppPolicy object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule, err error) {
+func (m *AppPolicyMutation) OldRules(ctx context.Context) (v []*types.PolicyRule, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRules is only allowed on UpdateOne operations")
 	}
@@ -5118,12 +5118,12 @@ func (m *AppPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule,
 }
 
 // AppendRules adds tr to the "rules" field.
-func (m *AppPolicyMutation) AppendRules(tr []types.PolicyRule) {
+func (m *AppPolicyMutation) AppendRules(tr []*types.PolicyRule) {
 	m.appendrules = append(m.appendrules, tr...)
 }
 
 // AppendedRules returns the list of values that were appended to the "rules" field in this mutation.
-func (m *AppPolicyMutation) AppendedRules() ([]types.PolicyRule, bool) {
+func (m *AppPolicyMutation) AppendedRules() ([]*types.PolicyRule, bool) {
 	if len(m.appendrules) == 0 {
 		return nil, false
 	}
@@ -5579,7 +5579,7 @@ func (m *AppPolicyMutation) SetField(name string, value ent.Value) error {
 		m.SetComments(v)
 		return nil
 	case apppolicy.FieldRules:
-		v, ok := value.([]types.PolicyRule)
+		v, ok := value.([]*types.PolicyRule)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -11955,8 +11955,8 @@ type OrgPolicyMutation struct {
 	addapp_policy_id   *int
 	name               *string
 	comments           *string
-	rules              *[]types.PolicyRule
-	appendrules        []types.PolicyRule
+	rules              *[]*types.PolicyRule
+	appendrules        []*types.PolicyRule
 	clearedFields      map[string]struct{}
 	org                *int
 	clearedorg         bool
@@ -12558,13 +12558,13 @@ func (m *OrgPolicyMutation) ResetComments() {
 }
 
 // SetRules sets the "rules" field.
-func (m *OrgPolicyMutation) SetRules(tr []types.PolicyRule) {
+func (m *OrgPolicyMutation) SetRules(tr []*types.PolicyRule) {
 	m.rules = &tr
 	m.appendrules = nil
 }
 
 // Rules returns the value of the "rules" field in the mutation.
-func (m *OrgPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
+func (m *OrgPolicyMutation) Rules() (r []*types.PolicyRule, exists bool) {
 	v := m.rules
 	if v == nil {
 		return
@@ -12575,7 +12575,7 @@ func (m *OrgPolicyMutation) Rules() (r []types.PolicyRule, exists bool) {
 // OldRules returns the old "rules" field's value of the OrgPolicy entity.
 // If the OrgPolicy object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrgPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule, err error) {
+func (m *OrgPolicyMutation) OldRules(ctx context.Context) (v []*types.PolicyRule, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRules is only allowed on UpdateOne operations")
 	}
@@ -12590,12 +12590,12 @@ func (m *OrgPolicyMutation) OldRules(ctx context.Context) (v []types.PolicyRule,
 }
 
 // AppendRules adds tr to the "rules" field.
-func (m *OrgPolicyMutation) AppendRules(tr []types.PolicyRule) {
+func (m *OrgPolicyMutation) AppendRules(tr []*types.PolicyRule) {
 	m.appendrules = append(m.appendrules, tr...)
 }
 
 // AppendedRules returns the list of values that were appended to the "rules" field in this mutation.
-func (m *OrgPolicyMutation) AppendedRules() ([]types.PolicyRule, bool) {
+func (m *OrgPolicyMutation) AppendedRules() ([]*types.PolicyRule, bool) {
 	if len(m.appendrules) == 0 {
 		return nil, false
 	}
@@ -12883,7 +12883,7 @@ func (m *OrgPolicyMutation) SetField(name string, value ent.Value) error {
 		m.SetComments(v)
 		return nil
 	case orgpolicy.FieldRules:
-		v, ok := value.([]types.PolicyRule)
+		v, ok := value.([]*types.PolicyRule)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

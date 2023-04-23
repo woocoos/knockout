@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -82,6 +83,11 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	if exist {
 		return nil, fmt.Errorf("action %s is exist", *input.Name)
 	}
+	//
+	resaa, err := client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
 	// Name更新需同步更新police中的引用
 	if aa.Name != *input.Name {
 		oac := aa.Edges.App.Code + ":" + aa.Name
@@ -100,11 +106,12 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			if prs == nil {
 				continue
 			}
-			for i, rule := range prs {
+			for _, rule := range prs {
 				if rule.Actions == nil {
 					continue
 				}
-				prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+				rule.Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+				//prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
 			}
 			err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
 			if err != nil {
@@ -124,11 +131,12 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			if prs == nil {
 				continue
 			}
-			for i, rule := range prs {
+			for _, rule := range prs {
 				if rule.Actions == nil {
 					continue
 				}
-				prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+				rule.Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+				//prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
 			}
 			err = client.OrgPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
 			if err != nil {
@@ -136,7 +144,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			}
 		}
 	}
-	return client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+	return resaa, nil
 }
 
 // DeleteAppAction 删除action时，同步删除app_police与org_police引用的action
@@ -171,12 +179,12 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		if prs == nil {
 			continue
 		}
-		for i, rule := range prs {
+		for _, rule := range prs {
 			if rule.Actions == nil {
 				continue
 			}
-			//rule.Actions = RemoveSliceElement[string](rule.Actions, aac)
-			prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
+			rule.Actions = RemoveSliceElement[string](rule.Actions, aac)
+			//prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
 		}
 		err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
 		if err != nil {
@@ -196,11 +204,12 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		if prs == nil {
 			continue
 		}
-		for i, rule := range prs {
+		for _, rule := range prs {
 			if rule.Actions == nil {
 				continue
 			}
-			prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
+			rule.Actions = RemoveSliceElement[string](rule.Actions, aac)
+			//prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
 		}
 		err = client.OrgPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
 		if err != nil {
@@ -350,6 +359,34 @@ func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 	return client.AppRole.DeleteOneID(roleID).Exec(ctx)
 }
 
+// AssignAppRolePolice 角色添加权限
+func (s *Service) AssignAppRolePolice(ctx context.Context, appID int, roleID int, policeIDs []int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.AppID(appID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !has {
+		return fmt.Errorf("role not exist")
+	}
+	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policeIDs...), apppolicy.AppID(appID)).Count(ctx)
+	if err != nil {
+		return err
+	}
+	if count != len(policeIDs) {
+		return fmt.Errorf("invalid police in policeIDs")
+	}
+	builders := make([]*ent.AppRolePolicyCreate, len(policeIDs))
+	for i, v := range policeIDs {
+		builders[i] = client.AppRolePolicy.Create().SetAppID(appID).SetRoleID(roleID).SetPolicyID(v)
+	}
+	return client.AppRolePolicy.CreateBulk(builders...).Exec(ctx)
+}
+
 // CreateAppPolicy 创建应用策略.
 //
 // 该方法会检查应用策略的规则中的action是否以应用代码开头.
@@ -407,4 +444,32 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return fmt.Errorf("policy not exist")
 	}
 	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
+}
+
+// AssignAppPolicyToOrg 添加应用策略给组织
+func (s *Service) AssignAppPolicyToOrg(ctx context.Context, policyID int, orgID int) error {
+	client := ent.FromContext(ctx)
+	ap, err := client.AppPolicy.Query().Where(apppolicy.ID(policyID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if ap.Edges.App.OrgID != orgID {
+		return fmt.Errorf("app not assigned to org")
+	}
+	return client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(ap.ID).
+		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Exec(ctx)
+}
+
+// AssignAppRoleToOrg 添加应用角色给组织
+func (s *Service) AssignAppRoleToOrg(ctx context.Context, roleID int, orgID int) error {
+	client := ent.FromContext(ctx)
+	ar, err := client.AppRole.Query().Where(approle.ID(roleID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if ar.Edges.App.OrgID != orgID {
+		return fmt.Errorf("app not assigned to org")
+	}
+	return client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(ar.ID).
+		SetComments(ar.Comments).SetName(ar.Name).Exec(ctx)
 }

@@ -110,7 +110,7 @@ func (apc *AppPolicyCreate) SetNillableComments(s *string) *AppPolicyCreate {
 }
 
 // SetRules sets the "rules" field.
-func (apc *AppPolicyCreate) SetRules(tr []types.PolicyRule) *AppPolicyCreate {
+func (apc *AppPolicyCreate) SetRules(tr []*types.PolicyRule) *AppPolicyCreate {
 	apc.mutation.SetRules(tr)
 	return apc
 }
@@ -536,7 +536,7 @@ func (u *AppPolicyUpsert) ClearComments() *AppPolicyUpsert {
 }
 
 // SetRules sets the "rules" field.
-func (u *AppPolicyUpsert) SetRules(v []types.PolicyRule) *AppPolicyUpsert {
+func (u *AppPolicyUpsert) SetRules(v []*types.PolicyRule) *AppPolicyUpsert {
 	u.Set(apppolicy.FieldRules, v)
 	return u
 }
@@ -731,7 +731,7 @@ func (u *AppPolicyUpsertOne) ClearComments() *AppPolicyUpsertOne {
 }
 
 // SetRules sets the "rules" field.
-func (u *AppPolicyUpsertOne) SetRules(v []types.PolicyRule) *AppPolicyUpsertOne {
+func (u *AppPolicyUpsertOne) SetRules(v []*types.PolicyRule) *AppPolicyUpsertOne {
 	return u.Update(func(s *AppPolicyUpsert) {
 		s.SetRules(v)
 	})
@@ -1097,7 +1097,7 @@ func (u *AppPolicyUpsertBulk) ClearComments() *AppPolicyUpsertBulk {
 }
 
 // SetRules sets the "rules" field.
-func (u *AppPolicyUpsertBulk) SetRules(v []types.PolicyRule) *AppPolicyUpsertBulk {
+func (u *AppPolicyUpsertBulk) SetRules(v []*types.PolicyRule) *AppPolicyUpsertBulk {
 	return u.Update(func(s *AppPolicyUpsert) {
 		s.SetRules(v)
 	})

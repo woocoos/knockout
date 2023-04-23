@@ -210,6 +210,9 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
+		AssignAppPolicyToOrg        func(childComplexity int, policyID int, orgID int) int
+		AssignAppRolePolice         func(childComplexity int, appID int, roleID int, policeIDs []int) int
+		AssignAppRoleToOrg          func(childComplexity int, roleID int, orgID int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
@@ -225,6 +228,7 @@ type ComplexityRoot struct {
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
+		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteAppAction             func(childComplexity int, actionID int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
@@ -391,15 +395,17 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Apps          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		GlobalID      func(childComplexity int, typeArg string, id int) int
-		Node          func(childComplexity int, id string) int
-		Nodes         func(childComplexity int, ids []string) int
-		OrgGroups     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgRoleUsers  func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoles      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		Organizations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		Users         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		AppPoliceAssignOrgs func(childComplexity int, policeID int) int
+		AppRoleAssignOrgs   func(childComplexity int, roleID int) int
+		Apps                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		GlobalID            func(childComplexity int, typeArg string, id int) int
+		Node                func(childComplexity int, id string) int
+		Nodes               func(childComplexity int, ids []string) int
+		OrgGroups           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgRoleUsers        func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles            func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		Organizations       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		Users               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	Subscription struct {
@@ -1354,6 +1360,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AllotOrganizationUser(childComplexity, args["input"].(ent.CreateOrgUserInput)), true
 
+	case "Mutation.assignAppPolicyToOrg":
+		if e.complexity.Mutation.AssignAppPolicyToOrg == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignAppPolicyToOrg_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignAppPolicyToOrg(childComplexity, args["policyID"].(int), args["orgID"].(int)), true
+
+	case "Mutation.assignAppRolePolice":
+		if e.complexity.Mutation.AssignAppRolePolice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignAppRolePolice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignAppRolePolice(childComplexity, args["appID"].(int), args["roleID"].(int), args["policeIDs"].([]int)), true
+
+	case "Mutation.assignAppRoleToOrg":
+		if e.complexity.Mutation.AssignAppRoleToOrg == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignAppRoleToOrg_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignAppRoleToOrg(childComplexity, args["roleID"].(int), args["orgID"].(int)), true
+
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
 			break
@@ -1533,6 +1575,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateRole(childComplexity, args["input"].(ent.CreateOrgRoleInput)), true
+
+	case "Mutation.createRoot":
+		if e.complexity.Mutation.CreateRoot == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRoot_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRoot(childComplexity, args["input"].(ent.CreateOrgInput)), true
 
 	case "Mutation.deleteApp":
 		if e.complexity.Mutation.DeleteApp == nil {
@@ -2555,6 +2609,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
+
+	case "Query.appPoliceAssignOrgs":
+		if e.complexity.Query.AppPoliceAssignOrgs == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appPoliceAssignOrgs_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppPoliceAssignOrgs(childComplexity, args["policeID"].(int)), true
+
+	case "Query.appRoleAssignOrgs":
+		if e.complexity.Query.AppRoleAssignOrgs == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appRoleAssignOrgs_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppRoleAssignOrgs(childComplexity, args["roleID"].(int)), true
 
 	case "Query.apps":
 		if e.complexity.Query.Apps == nil {
@@ -3825,7 +3903,7 @@ type AppPolicy implements Node {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRule!]!
+  rules: [PolicyRule]!
   """版本号"""
   version: String!
   """标识是否自动授予到账户"""
@@ -4669,7 +4747,7 @@ input CreateAppPolicyInput {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRuleInput!]!
+  rules: [PolicyRuleInput]!
   """版本号"""
   version: String!
   """标识是否自动授予到账户"""
@@ -4706,7 +4784,6 @@ input CreateAppRoleInput {
   """授权后是否可编辑"""
   editable: Boolean
   appID: ID
-  policyIDs: [ID!]
 }
 """
 CreateOrgInput is used for create Org object.
@@ -4746,7 +4823,7 @@ input CreateOrgPolicyInput {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRuleInput!]!
+  rules: [PolicyRuleInput]!
   orgID: ID
   permissionIDs: [ID!]
 }
@@ -5042,7 +5119,7 @@ type OrgPolicy implements Node {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRule!]!
+  rules: [PolicyRule]!
   org: Org
   permissions: [Permission!]
 }
@@ -6077,8 +6154,8 @@ input UpdateAppPolicyInput {
   comments: String
   clearComments: Boolean
   """策略规则"""
-  rules: [PolicyRuleInput!]
-  appendRules: [PolicyRuleInput!]
+  rules: [PolicyRuleInput]
+  appendRules: [PolicyRuleInput]
   """版本号"""
   version: String
   """标识是否自动授予到账户"""
@@ -6116,9 +6193,6 @@ input UpdateAppRoleInput {
   autoGrant: Boolean
   """授权后是否可编辑"""
   editable: Boolean
-  addPolicyIDs: [ID!]
-  removePolicyIDs: [ID!]
-  clearPolicies: Boolean
 }
 """
 UpdateOrgInput is used for update Org object.
@@ -6178,8 +6252,8 @@ input UpdateOrgPolicyInput {
   comments: String
   clearComments: Boolean
   """策略规则"""
-  rules: [PolicyRuleInput!]
-  appendRules: [PolicyRuleInput!]
+  rules: [PolicyRuleInput]
+  appendRules: [PolicyRuleInput]
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean
@@ -7141,6 +7215,11 @@ input UserWhereInput {
   mobileNotNil: Boolean
   mobileEqualFold: String
   mobileContainsFold: String
+  """user_type field predicates"""
+  userType: UserUserType
+  userTypeNEQ: UserUserType
+  userTypeIn: [UserUserType!]
+  userTypeNotIn: [UserUserType!]
   """creation_type field predicates"""
   creationType: UserCreationType
   creationTypeNEQ: UserCreationType
@@ -7272,11 +7351,17 @@ input GrantInput {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
+    """角色授权的组织列表"""
+    appRoleAssignOrgs(roleID:ID!):[Org]!
+    """策略授权的组织列表"""
+    appPoliceAssignOrgs(policeID:ID!):[Org]!
 
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
     enableDirectory(input: EnableDirectoryInput!):Org
+    """创建组织根节点(管理端使用)"""
+    createRoot(input: CreateOrgInput!): Org
     """创建组织目录"""
     createOrganization(input: CreateOrgInput!): Org
     """更新组织目录"""
@@ -7340,6 +7425,8 @@ input GrantInput {
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
     deleteAppPolicy(policyID:ID!): Boolean!
+    """分配应用策略给组织"""
+    assignAppPolicyToOrg(policyID:ID!,orgID:ID!):Boolean!
     """创建应用菜单"""
     createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
     """更新应用菜单"""
@@ -7354,6 +7441,10 @@ input GrantInput {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
+    """分配应用角色给组织"""
+    assignAppRoleToOrg(roleID:ID!,orgID:ID!):Boolean!
+    """角色添加策略"""
+    assignAppRolePolice(appID:ID!,roleID:ID!,policeIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""

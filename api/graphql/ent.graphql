@@ -474,7 +474,7 @@ type AppPolicy implements Node {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRule!]!
+  rules: [PolicyRule]!
   """版本号"""
   version: String!
   """标识是否自动授予到账户"""
@@ -1318,7 +1318,7 @@ input CreateAppPolicyInput {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRuleInput!]!
+  rules: [PolicyRuleInput]!
   """版本号"""
   version: String!
   """标识是否自动授予到账户"""
@@ -1355,7 +1355,6 @@ input CreateAppRoleInput {
   """授权后是否可编辑"""
   editable: Boolean
   appID: ID
-  policyIDs: [ID!]
 }
 """
 CreateOrgInput is used for create Org object.
@@ -1395,7 +1394,7 @@ input CreateOrgPolicyInput {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRuleInput!]!
+  rules: [PolicyRuleInput]!
   orgID: ID
   permissionIDs: [ID!]
 }
@@ -1691,7 +1690,7 @@ type OrgPolicy implements Node {
   """描述"""
   comments: String
   """策略规则"""
-  rules: [PolicyRule!]!
+  rules: [PolicyRule]!
   org: Org
   permissions: [Permission!]
 }
@@ -2726,8 +2725,8 @@ input UpdateAppPolicyInput {
   comments: String
   clearComments: Boolean
   """策略规则"""
-  rules: [PolicyRuleInput!]
-  appendRules: [PolicyRuleInput!]
+  rules: [PolicyRuleInput]
+  appendRules: [PolicyRuleInput]
   """版本号"""
   version: String
   """标识是否自动授予到账户"""
@@ -2765,9 +2764,6 @@ input UpdateAppRoleInput {
   autoGrant: Boolean
   """授权后是否可编辑"""
   editable: Boolean
-  addPolicyIDs: [ID!]
-  removePolicyIDs: [ID!]
-  clearPolicies: Boolean
 }
 """
 UpdateOrgInput is used for update Org object.
@@ -2827,8 +2823,8 @@ input UpdateOrgPolicyInput {
   comments: String
   clearComments: Boolean
   """策略规则"""
-  rules: [PolicyRuleInput!]
-  appendRules: [PolicyRuleInput!]
+  rules: [PolicyRuleInput]
+  appendRules: [PolicyRuleInput]
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean
@@ -3790,6 +3786,11 @@ input UserWhereInput {
   mobileNotNil: Boolean
   mobileEqualFold: String
   mobileContainsFold: String
+  """user_type field predicates"""
+  userType: UserUserType
+  userTypeNEQ: UserUserType
+  userTypeIn: [UserUserType!]
+  userTypeNotIn: [UserUserType!]
   """creation_type field predicates"""
   creationType: UserCreationType
   creationTypeNEQ: UserCreationType

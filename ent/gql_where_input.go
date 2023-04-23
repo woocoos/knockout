@@ -7230,6 +7230,12 @@ type UserWhereInput struct {
 	MobileEqualFold    *string  `json:"mobileEqualFold,omitempty"`
 	MobileContainsFold *string  `json:"mobileContainsFold,omitempty"`
 
+	// "user_type" field predicates.
+	UserType      *user.UserType  `json:"userType,omitempty"`
+	UserTypeNEQ   *user.UserType  `json:"userTypeNEQ,omitempty"`
+	UserTypeIn    []user.UserType `json:"userTypeIn,omitempty"`
+	UserTypeNotIn []user.UserType `json:"userTypeNotIn,omitempty"`
+
 	// "creation_type" field predicates.
 	CreationType      *user.CreationType  `json:"creationType,omitempty"`
 	CreationTypeNEQ   *user.CreationType  `json:"creationTypeNEQ,omitempty"`
@@ -7680,6 +7686,18 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 	}
 	if i.MobileContainsFold != nil {
 		predicates = append(predicates, user.MobileContainsFold(*i.MobileContainsFold))
+	}
+	if i.UserType != nil {
+		predicates = append(predicates, user.UserTypeEQ(*i.UserType))
+	}
+	if i.UserTypeNEQ != nil {
+		predicates = append(predicates, user.UserTypeNEQ(*i.UserTypeNEQ))
+	}
+	if len(i.UserTypeIn) > 0 {
+		predicates = append(predicates, user.UserTypeIn(i.UserTypeIn...))
+	}
+	if len(i.UserTypeNotIn) > 0 {
+		predicates = append(predicates, user.UserTypeNotIn(i.UserTypeNotIn...))
 	}
 	if i.CreationType != nil {
 		predicates = append(predicates, user.CreationTypeEQ(*i.CreationType))

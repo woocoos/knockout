@@ -136,7 +136,7 @@ func (opc *OrgPolicyCreate) SetNillableComments(s *string) *OrgPolicyCreate {
 }
 
 // SetRules sets the "rules" field.
-func (opc *OrgPolicyCreate) SetRules(tr []types.PolicyRule) *OrgPolicyCreate {
+func (opc *OrgPolicyCreate) SetRules(tr []*types.PolicyRule) *OrgPolicyCreate {
 	opc.mutation.SetRules(tr)
 	return opc
 }
@@ -518,7 +518,7 @@ func (u *OrgPolicyUpsert) ClearComments() *OrgPolicyUpsert {
 }
 
 // SetRules sets the "rules" field.
-func (u *OrgPolicyUpsert) SetRules(v []types.PolicyRule) *OrgPolicyUpsert {
+func (u *OrgPolicyUpsert) SetRules(v []*types.PolicyRule) *OrgPolicyUpsert {
 	u.Set(orgpolicy.FieldRules, v)
 	return u
 }
@@ -727,7 +727,7 @@ func (u *OrgPolicyUpsertOne) ClearComments() *OrgPolicyUpsertOne {
 }
 
 // SetRules sets the "rules" field.
-func (u *OrgPolicyUpsertOne) SetRules(v []types.PolicyRule) *OrgPolicyUpsertOne {
+func (u *OrgPolicyUpsertOne) SetRules(v []*types.PolicyRule) *OrgPolicyUpsertOne {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.SetRules(v)
 	})
@@ -1100,7 +1100,7 @@ func (u *OrgPolicyUpsertBulk) ClearComments() *OrgPolicyUpsertBulk {
 }
 
 // SetRules sets the "rules" field.
-func (u *OrgPolicyUpsertBulk) SetRules(v []types.PolicyRule) *OrgPolicyUpsertBulk {
+func (u *OrgPolicyUpsertBulk) SetRules(v []*types.PolicyRule) *OrgPolicyUpsertBulk {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.SetRules(v)
 	})

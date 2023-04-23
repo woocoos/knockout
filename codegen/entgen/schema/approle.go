@@ -44,7 +44,8 @@ func (AppRole) Fields() []ent.Field {
 func (AppRole) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("app", App.Type).Ref("roles").Unique().Immutable().Field("app_id"),
-		edge.To("policies", AppPolicy.Type).Comment("权限授权策略").
+		edge.To("policies", AppPolicy.Type).
+			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationCreateInput)).Comment("权限授权策略").
 			Through("app_role_policy", AppRolePolicy.Type),
 	}
 }

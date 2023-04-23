@@ -44,6 +44,11 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 	return os[0], err
 }
 
+// CreateRoot 创建组织root
+func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
+	return s.Client.Org.Create().SetInput(input).SetKind(org.KindRoot).Save(ctx)
+}
+
 // CreateOrganization 创建组织目录,基于根目录创建
 func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	if input.ParentID == 0 {
@@ -404,5 +409,9 @@ func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error)
 	if !exist {
 		return nil, fmt.Errorf("role not found")
 	}
-	return s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
+	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.Client.OrgUser.Query().Where(orguser.IDIn(ouIds...)).Select(orguser.FieldUserID).Ints(ctx)
 }

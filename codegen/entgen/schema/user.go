@@ -54,7 +54,7 @@ func (User) Fields() []ent.Field {
 			"member", "member",
 		).Comment("用户类型").
 			Annotations(
-				entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
+				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
 				entproto.Field(11),
 				entproto.Enum(map[string]int32{
 					"account": 1,

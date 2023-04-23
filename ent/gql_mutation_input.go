@@ -421,7 +421,7 @@ func (c *AppMenuUpdateOne) SetInput(i UpdateAppMenuInput) *AppMenuUpdateOne {
 type CreateAppPolicyInput struct {
 	Name      string
 	Comments  *string
-	Rules     []types.PolicyRule
+	Rules     []*types.PolicyRule
 	Version   string
 	AutoGrant *bool
 	Status    *typex.SimpleStatus
@@ -464,8 +464,8 @@ type UpdateAppPolicyInput struct {
 	Name          *string
 	ClearComments bool
 	Comments      *string
-	Rules         []types.PolicyRule
-	AppendRules   []types.PolicyRule
+	Rules         []*types.PolicyRule
+	AppendRules   []*types.PolicyRule
 	Version       *string
 	AutoGrant     *bool
 	ClearStatus   bool
@@ -590,7 +590,6 @@ type CreateAppRoleInput struct {
 	AutoGrant *bool
 	Editable  *bool
 	AppID     *int
-	PolicyIDs []int
 }
 
 // Mutate applies the CreateAppRoleInput on the AppRoleMutation builder.
@@ -608,9 +607,6 @@ func (i *CreateAppRoleInput) Mutate(m *AppRoleMutation) {
 	if v := i.AppID; v != nil {
 		m.SetAppID(*v)
 	}
-	if v := i.PolicyIDs; len(v) > 0 {
-		m.AddPolicyIDs(v...)
-	}
 }
 
 // SetInput applies the change-set in the CreateAppRoleInput on the AppRoleCreate builder.
@@ -621,14 +617,11 @@ func (c *AppRoleCreate) SetInput(i CreateAppRoleInput) *AppRoleCreate {
 
 // UpdateAppRoleInput represents a mutation input for updating approles.
 type UpdateAppRoleInput struct {
-	Name            *string
-	ClearComments   bool
-	Comments        *string
-	AutoGrant       *bool
-	Editable        *bool
-	ClearPolicies   bool
-	AddPolicyIDs    []int
-	RemovePolicyIDs []int
+	Name          *string
+	ClearComments bool
+	Comments      *string
+	AutoGrant     *bool
+	Editable      *bool
 }
 
 // Mutate applies the UpdateAppRoleInput on the AppRoleMutation builder.
@@ -647,15 +640,6 @@ func (i *UpdateAppRoleInput) Mutate(m *AppRoleMutation) {
 	}
 	if v := i.Editable; v != nil {
 		m.SetEditable(*v)
-	}
-	if i.ClearPolicies {
-		m.ClearPolicies()
-	}
-	if v := i.AddPolicyIDs; len(v) > 0 {
-		m.AddPolicyIDs(v...)
-	}
-	if v := i.RemovePolicyIDs; len(v) > 0 {
-		m.RemovePolicyIDs(v...)
 	}
 }
 
@@ -890,7 +874,7 @@ type CreateOrgPolicyInput struct {
 	AppPolicyID   *int
 	Name          string
 	Comments      *string
-	Rules         []types.PolicyRule
+	Rules         []*types.PolicyRule
 	OrgID         *int
 	PermissionIDs []int
 }
@@ -928,8 +912,8 @@ type UpdateOrgPolicyInput struct {
 	Name                *string
 	ClearComments       bool
 	Comments            *string
-	Rules               []types.PolicyRule
-	AppendRules         []types.PolicyRule
+	Rules               []*types.PolicyRule
+	AppendRules         []*types.PolicyRule
 	ClearPermissions    bool
 	AddPermissionIDs    []int
 	RemovePermissionIDs []int

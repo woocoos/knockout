@@ -15,7 +15,7 @@ import (
 //  1. 将授权信息同步到cashbin中.
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
-func GrantPolicy(rules []types.PolicyRule, principal, domain string, principalKind permission.PrincipalKind) error {
+func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalKind permission.PrincipalKind) error {
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch principalKind {
@@ -59,7 +59,7 @@ func GrantByPermission(permission *ent.Permission, domain string) error {
 //  1. 将授权信息同步到cashbin中.
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
-func RevokePolicy(rules []types.PolicyRule, principal, domain string, perm permission.PrincipalKind) error {
+func RevokePolicy(rules []*types.PolicyRule, principal, domain string, perm permission.PrincipalKind) error {
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch perm {

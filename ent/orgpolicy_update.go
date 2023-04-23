@@ -159,13 +159,13 @@ func (opu *OrgPolicyUpdate) ClearComments() *OrgPolicyUpdate {
 }
 
 // SetRules sets the "rules" field.
-func (opu *OrgPolicyUpdate) SetRules(tr []types.PolicyRule) *OrgPolicyUpdate {
+func (opu *OrgPolicyUpdate) SetRules(tr []*types.PolicyRule) *OrgPolicyUpdate {
 	opu.mutation.SetRules(tr)
 	return opu
 }
 
 // AppendRules appends tr to the "rules" field.
-func (opu *OrgPolicyUpdate) AppendRules(tr []types.PolicyRule) *OrgPolicyUpdate {
+func (opu *OrgPolicyUpdate) AppendRules(tr []*types.PolicyRule) *OrgPolicyUpdate {
 	opu.mutation.AppendRules(tr)
 	return opu
 }
@@ -490,13 +490,13 @@ func (opuo *OrgPolicyUpdateOne) ClearComments() *OrgPolicyUpdateOne {
 }
 
 // SetRules sets the "rules" field.
-func (opuo *OrgPolicyUpdateOne) SetRules(tr []types.PolicyRule) *OrgPolicyUpdateOne {
+func (opuo *OrgPolicyUpdateOne) SetRules(tr []*types.PolicyRule) *OrgPolicyUpdateOne {
 	opuo.mutation.SetRules(tr)
 	return opuo
 }
 
 // AppendRules appends tr to the "rules" field.
-func (opuo *OrgPolicyUpdateOne) AppendRules(tr []types.PolicyRule) *OrgPolicyUpdateOne {
+func (opuo *OrgPolicyUpdateOne) AppendRules(tr []*types.PolicyRule) *OrgPolicyUpdateOne {
 	opuo.mutation.AppendRules(tr)
 	return opuo
 }

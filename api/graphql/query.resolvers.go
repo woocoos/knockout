@@ -6,13 +6,15 @@ package graphql
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
-	"github.com/woocoos/knockout/ent/user"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -33,12 +35,7 @@ func (r *queryResolver) OrgGroups(ctx context.Context, after *entgql.Cursor[int]
 
 // OrgRoleUsers is the resolver for the orgRoleUsers field.
 func (r *queryResolver) OrgRoleUsers(ctx context.Context, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
-	uIds, err := r.Resource.GetRoleUserIds(ctx, roleID)
-	if err != nil {
-		return nil, err
-	}
-	return r.Client.User.Query().Where(user.IDIn(uIds...)).Paginate(ctx, after, first, before, last,
-		ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
+	panic(fmt.Errorf("not implemented: OrgRoleUsers - orgRoleUsers"))
 }
 
 // OrgRoles is the resolver for the orgRoles field.
@@ -49,4 +46,22 @@ func (r *queryResolver) OrgRoles(ctx context.Context, after *entgql.Cursor[int],
 	}
 	return r.Client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.KindEQ(orgrole.KindRole)).Paginate(ctx, after, first, before, last,
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
+}
+
+// AppRoleAssignOrgs is the resolver for the appRoleAssignOrgs field.
+func (r *queryResolver) AppRoleAssignOrgs(ctx context.Context, roleID int) ([]*ent.Org, error) {
+	oIds, err := r.Client.OrgRole.Query().Where(orgrole.AppRoleID(roleID)).Select(orgrole.FieldOrgID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.Org.Query().Where(org.IDIn(oIds...)).All(ctx)
+}
+
+// AppPoliceAssignOrgs is the resolver for the appPoliceAssignOrgs field.
+func (r *queryResolver) AppPoliceAssignOrgs(ctx context.Context, policeID int) ([]*ent.Org, error) {
+	oIds, err := r.Client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policeID)).Select(orgrole.FieldOrgID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.Org.Query().Where(org.IDIn(oIds...)).All(ctx)
 }

@@ -48,7 +48,7 @@ func (OrgPolicy) Fields() []ent.Field {
 		field.Int("app_policy_id").Optional().Comment("所属应用策略,如果是自定义应用策略,则为空"),
 		field.String("name").Comment("策略名称"),
 		field.String("comments").Optional().Comment("描述"),
-		field.JSON("rules", []types.PolicyRule{}).Comment("策略规则"),
+		field.JSON("rules", []*types.PolicyRule{}).Comment("策略规则"),
 	}
 }
 

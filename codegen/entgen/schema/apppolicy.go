@@ -48,7 +48,7 @@ func (AppPolicy) Fields() []ent.Field {
 		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("策略名称"),
 		field.String("comments").Optional().Comment("描述"),
-		field.JSON("rules", []types.PolicyRule{}).Comment("策略规则"),
+		field.JSON("rules", []*types.PolicyRule{}).Comment("策略规则"),
 		field.String("version").Comment("版本号"),
 		field.Bool("auto_grant").Default(false).Comment("标识是否自动授予到账户"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).

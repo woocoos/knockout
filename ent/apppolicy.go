@@ -36,7 +36,7 @@ type AppPolicy struct {
 	// 描述
 	Comments string `json:"comments,omitempty"`
 	// 策略规则
-	Rules []types.PolicyRule `json:"rules,omitempty"`
+	Rules []*types.PolicyRule `json:"rules,omitempty"`
 	// 版本号
 	Version string `json:"version,omitempty"`
 	// 标识是否自动授予到账户

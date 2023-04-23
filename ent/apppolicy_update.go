@@ -107,13 +107,13 @@ func (apu *AppPolicyUpdate) ClearComments() *AppPolicyUpdate {
 }
 
 // SetRules sets the "rules" field.
-func (apu *AppPolicyUpdate) SetRules(tr []types.PolicyRule) *AppPolicyUpdate {
+func (apu *AppPolicyUpdate) SetRules(tr []*types.PolicyRule) *AppPolicyUpdate {
 	apu.mutation.SetRules(tr)
 	return apu
 }
 
 // AppendRules appends tr to the "rules" field.
-func (apu *AppPolicyUpdate) AppendRules(tr []types.PolicyRule) *AppPolicyUpdate {
+func (apu *AppPolicyUpdate) AppendRules(tr []*types.PolicyRule) *AppPolicyUpdate {
 	apu.mutation.AppendRules(tr)
 	return apu
 }
@@ -524,13 +524,13 @@ func (apuo *AppPolicyUpdateOne) ClearComments() *AppPolicyUpdateOne {
 }
 
 // SetRules sets the "rules" field.
-func (apuo *AppPolicyUpdateOne) SetRules(tr []types.PolicyRule) *AppPolicyUpdateOne {
+func (apuo *AppPolicyUpdateOne) SetRules(tr []*types.PolicyRule) *AppPolicyUpdateOne {
 	apuo.mutation.SetRules(tr)
 	return apuo
 }
 
 // AppendRules appends tr to the "rules" field.
-func (apuo *AppPolicyUpdateOne) AppendRules(tr []types.PolicyRule) *AppPolicyUpdateOne {
+func (apuo *AppPolicyUpdateOne) AppendRules(tr []*types.PolicyRule) *AppPolicyUpdateOne {
 	apuo.mutation.AppendRules(tr)
 	return apuo
 }
