@@ -211,7 +211,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppPolicyToOrg        func(childComplexity int, policyID int, orgID int) int
-		AssignAppRolePolice         func(childComplexity int, appID int, roleID int, policeIDs []int) int
+		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
 		AssignAppRoleToOrg          func(childComplexity int, roleID int, orgID int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
@@ -395,17 +395,18 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppPoliceAssignOrgs func(childComplexity int, policeID int) int
-		AppRoleAssignOrgs   func(childComplexity int, roleID int) int
-		Apps                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		GlobalID            func(childComplexity int, typeArg string, id int) int
-		Node                func(childComplexity int, id string) int
-		Nodes               func(childComplexity int, ids []string) int
-		OrgGroups           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgRoleUsers        func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoles            func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		Organizations       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		Users               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		AppPolicyAssignedTOOrgs func(childComplexity int, policyID int) int
+		AppRoleAssignedToOrgs   func(childComplexity int, roleID int) int
+		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		GlobalID                func(childComplexity int, typeArg string, id int) int
+		Node                    func(childComplexity int, id string) int
+		Nodes                   func(childComplexity int, ids []string) int
+		OrgGroups               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgPolicyReferences     func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgRoleUsers            func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	Subscription struct {
@@ -1372,17 +1373,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AssignAppPolicyToOrg(childComplexity, args["policyID"].(int), args["orgID"].(int)), true
 
-	case "Mutation.assignAppRolePolice":
-		if e.complexity.Mutation.AssignAppRolePolice == nil {
+	case "Mutation.assignAppRolePolicy":
+		if e.complexity.Mutation.AssignAppRolePolicy == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_assignAppRolePolice_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_assignAppRolePolicy_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignAppRolePolice(childComplexity, args["appID"].(int), args["roleID"].(int), args["policeIDs"].([]int)), true
+		return e.complexity.Mutation.AssignAppRolePolicy(childComplexity, args["appID"].(int), args["roleID"].(int), args["policyIDs"].([]int)), true
 
 	case "Mutation.assignAppRoleToOrg":
 		if e.complexity.Mutation.AssignAppRoleToOrg == nil {
@@ -2610,29 +2611,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
 
-	case "Query.appPoliceAssignOrgs":
-		if e.complexity.Query.AppPoliceAssignOrgs == nil {
+	case "Query.appPolicyAssignedTOOrgs":
+		if e.complexity.Query.AppPolicyAssignedTOOrgs == nil {
 			break
 		}
 
-		args, err := ec.field_Query_appPoliceAssignOrgs_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_appPolicyAssignedTOOrgs_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AppPoliceAssignOrgs(childComplexity, args["policeID"].(int)), true
+		return e.complexity.Query.AppPolicyAssignedTOOrgs(childComplexity, args["policyID"].(int)), true
 
-	case "Query.appRoleAssignOrgs":
-		if e.complexity.Query.AppRoleAssignOrgs == nil {
+	case "Query.appRoleAssignedToOrgs":
+		if e.complexity.Query.AppRoleAssignedToOrgs == nil {
 			break
 		}
 
-		args, err := ec.field_Query_appRoleAssignOrgs_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_appRoleAssignedToOrgs_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AppRoleAssignOrgs(childComplexity, args["roleID"].(int)), true
+		return e.complexity.Query.AppRoleAssignedToOrgs(childComplexity, args["roleID"].(int)), true
 
 	case "Query.apps":
 		if e.complexity.Query.Apps == nil {
@@ -2693,6 +2694,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgGroups(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.orgPolicyReferences":
+		if e.complexity.Query.OrgPolicyReferences == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyReferences_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
 	case "Query.orgRoleUsers":
 		if e.complexity.Query.OrgRoleUsers == nil {
@@ -7352,10 +7365,19 @@ input GrantInput {
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
     """角色授权的组织列表"""
-    appRoleAssignOrgs(roleID:ID!):[Org]!
+    appRoleAssignedToOrgs(roleID:ID!):[Org]!
     """策略授权的组织列表"""
-    appPoliceAssignOrgs(policeID:ID!):[Org]!
-
+    appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
+    """权限策略引用列表"""
+    orgPolicyReferences(
+        policyID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -7444,7 +7466,7 @@ input GrantInput {
     """分配应用角色给组织"""
     assignAppRoleToOrg(roleID:ID!,orgID:ID!):Boolean!
     """角色添加策略"""
-    assignAppRolePolice(appID:ID!,roleID:ID!,policeIDs:[ID!]): Boolean!
+    assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""

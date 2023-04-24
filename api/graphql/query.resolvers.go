@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -48,8 +49,8 @@ func (r *queryResolver) OrgRoles(ctx context.Context, after *entgql.Cursor[int],
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
-// AppRoleAssignOrgs is the resolver for the appRoleAssignOrgs field.
-func (r *queryResolver) AppRoleAssignOrgs(ctx context.Context, roleID int) ([]*ent.Org, error) {
+// AppRoleAssignedToOrgs is the resolver for the appRoleAssignedToOrgs field.
+func (r *queryResolver) AppRoleAssignedToOrgs(ctx context.Context, roleID int) ([]*ent.Org, error) {
 	oIds, err := r.Client.OrgRole.Query().Where(orgrole.AppRoleID(roleID)).Select(orgrole.FieldOrgID).Ints(ctx)
 	if err != nil {
 		return nil, err
@@ -57,11 +58,27 @@ func (r *queryResolver) AppRoleAssignOrgs(ctx context.Context, roleID int) ([]*e
 	return r.Client.Org.Query().Where(org.IDIn(oIds...)).All(ctx)
 }
 
-// AppPoliceAssignOrgs is the resolver for the appPoliceAssignOrgs field.
-func (r *queryResolver) AppPoliceAssignOrgs(ctx context.Context, policeID int) ([]*ent.Org, error) {
-	oIds, err := r.Client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policeID)).Select(orgrole.FieldOrgID).Ints(ctx)
+// AppPolicyAssignedTOOrgs is the resolver for the appPolicyAssignedTOOrgs field.
+func (r *queryResolver) AppPolicyAssignedTOOrgs(ctx context.Context, policyID int) ([]*ent.Org, error) {
+	oIds, err := r.Client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policyID)).Select(orgrole.FieldOrgID).Ints(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return r.Client.Org.Query().Where(org.IDIn(oIds...)).All(ctx)
+}
+
+// OrgPolicyReferences is the resolver for the orgPolicyReferences field.
+func (r *queryResolver) OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	has, err := r.Client.OrgPolicy.Query().Where(orgpolicy.ID(policyID), orgpolicy.OrgID(tid)).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if !has {
+		return nil, fmt.Errorf("policy not exist")
+	}
+	return r.Client.Permission.Query().Where(permission.OrgID(tid), permission.OrgPolicyID(policyID)).Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
 }

@@ -43,8 +43,9 @@ type QueryResolver interface {
 	OrgGroups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 	OrgRoleUsers(ctx context.Context, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
-	AppRoleAssignOrgs(ctx context.Context, roleID int) ([]*ent.Org, error)
-	AppPoliceAssignOrgs(ctx context.Context, policeID int) ([]*ent.Org, error)
+	AppRoleAssignedToOrgs(ctx context.Context, roleID int) ([]*ent.Org, error)
+	AppPolicyAssignedTOOrgs(ctx context.Context, policyID int) ([]*ent.Org, error)
+	OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 }
 
 type CreateUserInputResolver interface {
@@ -551,22 +552,22 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_appPoliceAssignOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_appPolicyAssignedTOOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
-	if tmp, ok := rawArgs["policeID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policeID"))
+	if tmp, ok := rawArgs["policyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
 		arg0, err = ec.unmarshalNID2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["policeID"] = arg0
+	args["policyID"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_appRoleAssignOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_appRoleAssignedToOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -752,6 +753,75 @@ func (ec *executionContext) field_Query_orgGroups_args(ctx context.Context, rawA
 		}
 	}
 	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyReferences_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["policyID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["policyID"] = arg0
+	var arg1 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg1, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg2
+	var arg3 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg3, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg3
+	var arg4 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg4, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg4
+	var arg5 *ent.PermissionOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg5, err = ec.unmarshalOPermissionOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg5
+	var arg6 *ent.PermissionWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg6, err = ec.unmarshalOPermissionWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg6
 	return args, nil
 }
 
@@ -11302,8 +11372,8 @@ func (ec *executionContext) fieldContext_Query_orgRoles(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_appRoleAssignOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_appRoleAssignOrgs(ctx, field)
+func (ec *executionContext) _Query_appRoleAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_appRoleAssignedToOrgs(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11316,7 +11386,7 @@ func (ec *executionContext) _Query_appRoleAssignOrgs(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AppRoleAssignOrgs(rctx, fc.Args["roleID"].(int))
+		return ec.resolvers.Query().AppRoleAssignedToOrgs(rctx, fc.Args["roleID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11333,7 +11403,7 @@ func (ec *executionContext) _Query_appRoleAssignOrgs(ctx context.Context, field 
 	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_appRoleAssignOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -11402,15 +11472,15 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignOrgs(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_appRoleAssignOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_appRoleAssignedToOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_appPoliceAssignOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_appPoliceAssignOrgs(ctx, field)
+func (ec *executionContext) _Query_appPolicyAssignedTOOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_appPolicyAssignedTOOrgs(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11423,7 +11493,7 @@ func (ec *executionContext) _Query_appPoliceAssignOrgs(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AppPoliceAssignOrgs(rctx, fc.Args["policeID"].(int))
+		return ec.resolvers.Query().AppPolicyAssignedTOOrgs(rctx, fc.Args["policyID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11440,7 +11510,7 @@ func (ec *executionContext) _Query_appPoliceAssignOrgs(ctx context.Context, fiel
 	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_appPoliceAssignOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_appPolicyAssignedTOOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -11509,7 +11579,70 @@ func (ec *executionContext) fieldContext_Query_appPoliceAssignOrgs(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_appPoliceAssignOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_appPolicyAssignedTOOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgPolicyReferences(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgPolicyReferences(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgPolicyReferences(rctx, fc.Args["policyID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.PermissionConnection)
+	fc.Result = res
+	return ec.marshalNPermissionConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgPolicyReferences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_PermissionConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_PermissionConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_PermissionConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PermissionConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgPolicyReferences_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -35788,7 +35921,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "appRoleAssignOrgs":
+		case "appRoleAssignedToOrgs":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -35797,7 +35930,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_appRoleAssignOrgs(ctx, field)
+				res = ec._Query_appRoleAssignedToOrgs(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -35811,7 +35944,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "appPoliceAssignOrgs":
+		case "appPolicyAssignedTOOrgs":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -35820,7 +35953,30 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_appPoliceAssignOrgs(ctx, field)
+				res = ec._Query_appPolicyAssignedTOOrgs(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "orgPolicyReferences":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgPolicyReferences(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -37195,6 +37351,10 @@ func (ec *executionContext) marshalNPermission2ᚖgithubᚗcomᚋwoocoosᚋknock
 		return graphql.Null
 	}
 	return ec._Permission(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPermissionConnection2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionConnection(ctx context.Context, sel ast.SelectionSet, v ent.PermissionConnection) graphql.Marshaler {
+	return ec._PermissionConnection(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNPermissionConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionConnection(ctx context.Context, sel ast.SelectionSet, v *ent.PermissionConnection) graphql.Marshaler {

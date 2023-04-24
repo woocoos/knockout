@@ -208,9 +208,9 @@ func (r *mutationResolver) AssignAppRoleToOrg(ctx context.Context, roleID int, o
 	return err == nil, err
 }
 
-// AssignAppRolePolice is the resolver for the assignAppRolePolice field.
-func (r *mutationResolver) AssignAppRolePolice(ctx context.Context, appID int, roleID int, policeIDs []int) (bool, error) {
-	err := r.Resource.AssignAppRolePolice(ctx, appID, roleID, policeIDs)
+// AssignAppRolePolicy is the resolver for the assignAppRolePolicy field.
+func (r *mutationResolver) AssignAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) (bool, error) {
+	err := r.Resource.AssignAppRolePolicy(ctx, appID, roleID, policyIDs)
 	return err == nil, err
 }
 

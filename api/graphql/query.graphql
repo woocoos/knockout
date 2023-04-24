@@ -30,8 +30,17 @@ extend type Query {
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
     """角色授权的组织列表"""
-    appRoleAssignOrgs(roleID:ID!):[Org]!
+    appRoleAssignedToOrgs(roleID:ID!):[Org]!
     """策略授权的组织列表"""
-    appPoliceAssignOrgs(policeID:ID!):[Org]!
-
+    appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
+    """权限策略引用列表"""
+    orgPolicyReferences(
+        policyID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
 }

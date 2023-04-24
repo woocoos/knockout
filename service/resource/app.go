@@ -59,7 +59,7 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 	return client.AppAction.CreateBulk(builders...).Save(ctx)
 }
 
-// UpdateAppAction 更新action时，同步更新app_police与org_police引用的action
+// UpdateAppAction 更新action时，同步更新app_policy与org_policy引用的action
 func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -88,13 +88,13 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	if err != nil {
 		return nil, err
 	}
-	// Name更新需同步更新police中的引用
+	// Name更新需同步更新policy中的引用
 	if aa.Name != *input.Name {
 		oac := aa.Edges.App.Code + ":" + aa.Name
 		nac := aa.Edges.App.Code + ":" + *input.Name
 		appid := aa.Edges.App.ID
 
-		// 更新AppPolice
+		// 更新AppPolicy
 		aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
 			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+oac+"\""))
 		}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
@@ -119,7 +119,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			}
 		}
 
-		// 更新OrgPolice
+		// 更新OrgPolicy
 		ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
 			selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+oac+"\""))
 		}).Select(orgpolicy.FieldID, orgpolicy.FieldRules).All(ctx)
@@ -147,7 +147,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	return resaa, nil
 }
 
-// DeleteAppAction 删除action时，同步删除app_police与org_police引用的action
+// DeleteAppAction 删除action时，同步删除app_policy与org_policy引用的action
 func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -167,7 +167,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 	aac := aa.Edges.App.Code + ":" + aa.Name
 	appid := aa.Edges.App.ID
 
-	// 更新AppPolice
+	// 更新AppPolicy
 	aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
 		selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aac+"\""))
 	}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
@@ -192,7 +192,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		}
 	}
 
-	// 更新OrgPolice
+	// 更新OrgPolicy
 	ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
 		selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+aac+"\""))
 	}).Select(orgpolicy.FieldID, orgpolicy.FieldRules).All(ctx)
@@ -359,8 +359,8 @@ func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 	return client.AppRole.DeleteOneID(roleID).Exec(ctx)
 }
 
-// AssignAppRolePolice 角色添加权限
-func (s *Service) AssignAppRolePolice(ctx context.Context, appID int, roleID int, policeIDs []int) error {
+// AssignAppRolePolicy 角色添加权限
+func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) error {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -373,15 +373,15 @@ func (s *Service) AssignAppRolePolice(ctx context.Context, appID int, roleID int
 	if !has {
 		return fmt.Errorf("role not exist")
 	}
-	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policeIDs...), apppolicy.AppID(appID)).Count(ctx)
+	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policyIDs...), apppolicy.AppID(appID)).Count(ctx)
 	if err != nil {
 		return err
 	}
-	if count != len(policeIDs) {
-		return fmt.Errorf("invalid police in policeIDs")
+	if count != len(policyIDs) {
+		return fmt.Errorf("invalid policy in policyIDs")
 	}
-	builders := make([]*ent.AppRolePolicyCreate, len(policeIDs))
-	for i, v := range policeIDs {
+	builders := make([]*ent.AppRolePolicyCreate, len(policyIDs))
+	for i, v := range policyIDs {
 		builders[i] = client.AppRolePolicy.Create().SetAppID(appID).SetRoleID(roleID).SetPolicyID(v)
 	}
 	return client.AppRolePolicy.CreateBulk(builders...).Exec(ctx)
