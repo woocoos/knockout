@@ -32,7 +32,7 @@ extend type Query {
     """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!):[Org]!
     """应用策略授权的组织列表"""
-    appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
+    appPolicyAssignedToOrgs(policyID:ID!):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(
         policyID:ID!
