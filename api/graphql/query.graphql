@@ -29,9 +29,9 @@ extend type Query {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
-    """角色授权的组织列表"""
+    """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!):[Org]!
-    """策略授权的组织列表"""
+    """应用策略授权的组织列表"""
     appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(

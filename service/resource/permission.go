@@ -150,6 +150,13 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	if !has {
 		return fmt.Errorf("org not found or not has app")
 	}
+	has, err = client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(appPolicyID), orgpolicy.OrgID(orgID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("policy has assigned to org")
+	}
 	err = client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(ap.ID).
 		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Exec(ctx)
 	return err
@@ -218,7 +225,55 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 }
 
 func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) error {
-	panic("implement me")
+	client := ent.FromContext(ctx)
+	ar, err := client.AppRole.Query().Where(approle.ID(appRoleID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	has, err := client.OrgApp.Query().Where(orgapp.OrgID(orgID), orgapp.AppID(ar.AppID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !has {
+		return fmt.Errorf("org not found or not has app")
+	}
+	has, err = client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("role has assigned to org")
+	}
+	return client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(ar.ID).
+		SetComments(ar.Comments).SetName(ar.Name).Exec(ctx)
+}
+
+func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) error {
+	client := ent.FromContext(ctx)
+
+	domain, err := s.GetOrgDomain(ctx, orgID)
+	if err != nil {
+		return err
+	}
+
+	ps, err := client.OrgRoleUser.Query().Where(
+		orgroleuser.HasOrgUserWith(orguser.OrgID(orgID)),
+		orgroleuser.HasOrgRoleWith(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID))).
+		WithOrgRole().WithOrgUser().All(ctx)
+	if err != nil {
+		return err
+	}
+	//
+	pids := make([]int, len(ps))
+	for i, p := range ps {
+		pids[i] = p.ID
+		err = security.RevokeGroupForUser(p.Edges.OrgUser.UserID, p.Edges.OrgRole.ID, domain)
+		if err != nil {
+			log.Error(err)
+		}
+	}
+	_, err = client.OrgRoleUser.Delete().Where(orgroleuser.IDIn(pids...)).Exec(ctx)
+	return err
 }
 
 func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) error {

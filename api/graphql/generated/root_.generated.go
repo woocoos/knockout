@@ -210,11 +210,10 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
-		AssignAppPolicyToOrg        func(childComplexity int, policyID int, orgID int) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
-		AssignAppRoleToOrg          func(childComplexity int, roleID int, orgID int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
+		AssignOrganizationAppRole   func(childComplexity int, orgID int, appPolicyID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
@@ -248,6 +247,7 @@ type ComplexityRoot struct {
 		Revoke                      func(childComplexity int, orgID int, permissionID int) int
 		RevokeOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
+		RevokeOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
@@ -1361,18 +1361,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AllotOrganizationUser(childComplexity, args["input"].(ent.CreateOrgUserInput)), true
 
-	case "Mutation.assignAppPolicyToOrg":
-		if e.complexity.Mutation.AssignAppPolicyToOrg == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_assignAppPolicyToOrg_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.AssignAppPolicyToOrg(childComplexity, args["policyID"].(int), args["orgID"].(int)), true
-
 	case "Mutation.assignAppRolePolicy":
 		if e.complexity.Mutation.AssignAppRolePolicy == nil {
 			break
@@ -1384,18 +1372,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AssignAppRolePolicy(childComplexity, args["appID"].(int), args["roleID"].(int), args["policyIDs"].([]int)), true
-
-	case "Mutation.assignAppRoleToOrg":
-		if e.complexity.Mutation.AssignAppRoleToOrg == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_assignAppRoleToOrg_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.AssignAppRoleToOrg(childComplexity, args["roleID"].(int), args["orgID"].(int)), true
 
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
@@ -1420,6 +1396,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AssignOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
+
+	case "Mutation.assignOrganizationAppRole":
+		if e.complexity.Mutation.AssignOrganizationAppRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignOrganizationAppRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignOrganizationAppRole(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
 
 	case "Mutation.assignRoleUser":
 		if e.complexity.Mutation.AssignRoleUser == nil {
@@ -1816,6 +1804,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RevokeOrganizationAppPolicy(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
+
+	case "Mutation.revokeOrganizationAppRole":
+		if e.complexity.Mutation.RevokeOrganizationAppRole == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_revokeOrganizationAppRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RevokeOrganizationAppRole(childComplexity, args["orgID"].(int), args["appRoleID"].(int)), true
 
 	case "Mutation.revokeRoleUser":
 		if e.complexity.Mutation.RevokeRoleUser == nil {
@@ -7364,9 +7364,9 @@ input GrantInput {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
-    """角色授权的组织列表"""
+    """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!):[Org]!
-    """策略授权的组织列表"""
+    """应用策略授权的组织列表"""
     appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(
@@ -7447,8 +7447,6 @@ input GrantInput {
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
     deleteAppPolicy(policyID:ID!): Boolean!
-    """分配应用策略给组织"""
-    assignAppPolicyToOrg(policyID:ID!,orgID:ID!):Boolean!
     """创建应用菜单"""
     createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
     """更新应用菜单"""
@@ -7463,8 +7461,10 @@ input GrantInput {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
-    """分配应用角色给组织"""
-    assignAppRoleToOrg(roleID:ID!,orgID:ID!):Boolean!
+    """分配应用角色到组织"""
+    assignOrganizationAppRole(orgID:ID!,appPolicyID:ID!): Boolean!
+    """取消分配到组织应用角色"""
+    revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
     assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""

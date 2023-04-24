@@ -66,8 +66,6 @@ type Mutation {
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
     deleteAppPolicy(policyID:ID!): Boolean!
-    """分配应用策略给组织"""
-    assignAppPolicyToOrg(policyID:ID!,orgID:ID!):Boolean!
     """创建应用菜单"""
     createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
     """更新应用菜单"""
@@ -82,8 +80,10 @@ type Mutation {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
-    """分配应用角色给组织"""
-    assignAppRoleToOrg(roleID:ID!,orgID:ID!):Boolean!
+    """分配应用角色到组织"""
+    assignOrganizationAppRole(orgID:ID!,appPolicyID:ID!): Boolean!
+    """取消分配到组织应用角色"""
+    revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
     assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""

@@ -158,12 +158,6 @@ func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (b
 	return err == nil, err
 }
 
-// AssignAppPolicyToOrg is the resolver for the assignAppPolicyToOrg field.
-func (r *mutationResolver) AssignAppPolicyToOrg(ctx context.Context, policyID int, orgID int) (bool, error) {
-	err := r.Resource.AssignAppPolicyToOrg(ctx, policyID, orgID)
-	return err == nil, err
-}
-
 // CreateAppMenus is the resolver for the createAppMenus field.
 func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
 	return r.Resource.CreateAppMenus(ctx, appID, input)
@@ -202,9 +196,15 @@ func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool,
 	return err == nil, err
 }
 
-// AssignAppRoleToOrg is the resolver for the assignAppRoleToOrg field.
-func (r *mutationResolver) AssignAppRoleToOrg(ctx context.Context, roleID int, orgID int) (bool, error) {
-	err := r.Resource.AssignAppRoleToOrg(ctx, roleID, orgID)
+// AssignOrganizationAppRole is the resolver for the assignOrganizationAppRole field.
+func (r *mutationResolver) AssignOrganizationAppRole(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	err := r.Resource.AssignOrganizationAppRole(ctx, orgID, appPolicyID)
+	return err == nil, err
+}
+
+// RevokeOrganizationAppRole is the resolver for the revokeOrganizationAppRole field.
+func (r *mutationResolver) RevokeOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error) {
+	err := r.Resource.RevokeOrganizationAppRole(ctx, orgID, appRoleID)
 	return err == nil, err
 }
 

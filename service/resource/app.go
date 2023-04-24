@@ -16,7 +16,6 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
-	"github.com/woocoos/knockout/ent/orgrole"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -444,46 +443,4 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return fmt.Errorf("policy not exist")
 	}
 	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
-}
-
-// AssignAppPolicyToOrg 添加应用策略给组织
-func (s *Service) AssignAppPolicyToOrg(ctx context.Context, policyID int, orgID int) error {
-	client := ent.FromContext(ctx)
-	ap, err := client.AppPolicy.Query().Where(apppolicy.ID(policyID)).WithApp().Only(ctx)
-	if err != nil {
-		return err
-	}
-	if ap.Edges.App.OrgID != orgID {
-		return fmt.Errorf("app not assigned to org")
-	}
-	exist, err := client.OrgPolicy.Query().Where(orgpolicy.ID(policyID), orgpolicy.OrgID(orgID)).Exist(ctx)
-	if err != nil {
-		return err
-	}
-	if exist {
-		return fmt.Errorf("policy has assigned to org")
-	}
-	return client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(ap.ID).
-		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Exec(ctx)
-}
-
-// AssignAppRoleToOrg 添加应用角色给组织
-func (s *Service) AssignAppRoleToOrg(ctx context.Context, roleID int, orgID int) error {
-	client := ent.FromContext(ctx)
-	ar, err := client.AppRole.Query().Where(approle.ID(roleID)).WithApp().Only(ctx)
-	if err != nil {
-		return err
-	}
-	if ar.Edges.App.OrgID != orgID {
-		return fmt.Errorf("app not assigned to org")
-	}
-	exist, err := client.OrgRole.Query().Where(orgrole.ID(roleID), orgrole.OrgID(orgID)).Exist(ctx)
-	if err != nil {
-		return err
-	}
-	if exist {
-		return fmt.Errorf("role has assigned to org")
-	}
-	return client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(ar.ID).
-		SetComments(ar.Comments).SetName(ar.Name).Exec(ctx)
 }
