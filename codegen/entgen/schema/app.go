@@ -56,7 +56,7 @@ func (App) Fields() []ent.Field {
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
 		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").
 			Annotations(entgql.Skip(entgql.SkipAll)),
-		field.Int("org_id").Optional().Comment("创建的根组织ID").Annotations(entgql.Skip(entgql.SkipAll)),
+		field.Int("owner_org_id").Optional().Comment("创建的根组织ID").Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }
 

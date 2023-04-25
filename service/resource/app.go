@@ -27,7 +27,7 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 	if err != nil {
 		return nil, err
 	}
-	apl := client.App.Create().SetInput(input).SetOrgID(tid).SetPrivate(false).SaveX(ctx)
+	apl := client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).SaveX(ctx)
 	return apl, nil
 }
 
@@ -38,7 +38,7 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 	if err != nil {
 		return nil, err
 	}
-	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
+	has := client.App.Query().Where(app.ID(appID), app.OwnerOrgID(tid)).ExistX(ctx)
 	if !has {
 		return nil, fmt.Errorf("app not exist")
 	}
@@ -66,7 +66,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 		return nil, err
 	}
 	aa, err := client.AppAction.Query().WithApp(func(query *ent.AppQuery) {
-		query.Where(app.OrgID(tid)).Select(app.FieldID, app.FieldCode)
+		query.Where(app.OwnerOrgID(tid)).Select(app.FieldID, app.FieldCode)
 	}).Where(appaction.ID(actionID)).Select(appaction.FieldName, appaction.FieldAppID).Only(ctx)
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		return err
 	}
 	aa, err := client.AppAction.Query().WithApp(func(query *ent.AppQuery) {
-		query.Where(app.OrgID(tid)).Select(app.FieldID, app.FieldCode)
+		query.Where(app.OwnerOrgID(tid)).Select(app.FieldID, app.FieldCode)
 	}).Where(appaction.ID(actionID)).Select(appaction.FieldName).Only(ctx)
 	if err != nil {
 		return err
@@ -226,7 +226,7 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 	if err != nil {
 		return nil, err
 	}
-	has := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).ExistX(ctx)
+	has := client.App.Query().Where(app.ID(appID), app.OwnerOrgID(tid)).ExistX(ctx)
 	if !has {
 		return nil, fmt.Errorf("app not exist")
 	}
@@ -291,7 +291,7 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 	if err != nil {
 		return nil, err
 	}
-	has, err := client.App.Query().Where(app.OrgID(tid), app.ID(appID)).Exist(ctx)
+	has, err := client.App.Query().Where(app.OwnerOrgID(tid), app.ID(appID)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -332,7 +332,7 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 	if err != nil {
 		return nil, err
 	}
-	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
+	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OwnerOrgID(tid))).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -348,7 +348,7 @@ func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 	if err != nil {
 		return err
 	}
-	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
+	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.HasAppWith(app.OwnerOrgID(tid))).Exist(ctx)
 	if err != nil {
 		return err
 	}
@@ -365,7 +365,7 @@ func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int
 	if err != nil {
 		return err
 	}
-	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.AppID(appID), approle.HasAppWith(app.OrgID(tid))).Exist(ctx)
+	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.AppID(appID), approle.HasAppWith(app.OwnerOrgID(tid))).Exist(ctx)
 	if err != nil {
 		return err
 	}
@@ -395,7 +395,7 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.Crea
 	if err != nil {
 		return nil, err
 	}
-	exist, err := client.App.Query().Where(app.ID(appID), app.OrgID(tid)).Exist(ctx)
+	exist, err := client.App.Query().Where(app.ID(appID), app.OwnerOrgID(tid)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -415,7 +415,7 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 		return nil, err
 	}
 	apl, err := client.AppPolicy.Query().WithApp(func(query *ent.AppQuery) {
-		query.Where(app.OrgID(tid))
+		query.Where(app.OwnerOrgID(tid))
 	}).Where(apppolicy.ID(policyID)).Only(ctx)
 	if err != nil {
 		return nil, err
@@ -434,7 +434,7 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return err
 	}
 	exists, err := client.AppPolicy.Query().WithApp(func(query *ent.AppQuery) {
-		query.Where(app.OrgID(tid))
+		query.Where(app.OwnerOrgID(tid))
 	}).Where(apppolicy.ID(policyID)).Exist(ctx)
 	if err != nil {
 		return err

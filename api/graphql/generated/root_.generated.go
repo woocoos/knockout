@@ -395,7 +395,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppPolicyAssignedTOOrgs func(childComplexity int, policyID int) int
+		AppPolicyAssignedToOrgs func(childComplexity int, policyID int) int
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
@@ -2611,17 +2611,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
 
-	case "Query.appPolicyAssignedTOOrgs":
-		if e.complexity.Query.AppPolicyAssignedTOOrgs == nil {
+	case "Query.appPolicyAssignedToOrgs":
+		if e.complexity.Query.AppPolicyAssignedToOrgs == nil {
 			break
 		}
 
-		args, err := ec.field_Query_appPolicyAssignedTOOrgs_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_appPolicyAssignedToOrgs_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AppPolicyAssignedTOOrgs(childComplexity, args["policyID"].(int)), true
+		return e.complexity.Query.AppPolicyAssignedToOrgs(childComplexity, args["policyID"].(int)), true
 
 	case "Query.appRoleAssignedToOrgs":
 		if e.complexity.Query.AppRoleAssignedToOrgs == nil {
@@ -7367,7 +7367,7 @@ input GrantInput {
     """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!):[Org]!
     """应用策略授权的组织列表"""
-    appPolicyAssignedTOOrgs(policyID:ID!):[Org]!
+    appPolicyAssignedToOrgs(policyID:ID!):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(
         policyID:ID!

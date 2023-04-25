@@ -92,8 +92,8 @@ type AppMutation struct {
 	comments                  *string
 	status                    *typex.SimpleStatus
 	private                   *bool
-	org_id                    *int
-	addorg_id                 *int
+	owner_org_id              *int
+	addowner_org_id           *int
 	clearedFields             map[string]struct{}
 	menus                     map[int]struct{}
 	removedmenus              map[int]struct{}
@@ -1076,74 +1076,74 @@ func (m *AppMutation) ResetPrivate() {
 	delete(m.clearedFields, app.FieldPrivate)
 }
 
-// SetOrgID sets the "org_id" field.
-func (m *AppMutation) SetOrgID(i int) {
-	m.org_id = &i
-	m.addorg_id = nil
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (m *AppMutation) SetOwnerOrgID(i int) {
+	m.owner_org_id = &i
+	m.addowner_org_id = nil
 }
 
-// OrgID returns the value of the "org_id" field in the mutation.
-func (m *AppMutation) OrgID() (r int, exists bool) {
-	v := m.org_id
+// OwnerOrgID returns the value of the "owner_org_id" field in the mutation.
+func (m *AppMutation) OwnerOrgID() (r int, exists bool) {
+	v := m.owner_org_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOrgID returns the old "org_id" field's value of the App entity.
+// OldOwnerOrgID returns the old "owner_org_id" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldOrgID(ctx context.Context) (v int, err error) {
+func (m *AppMutation) OldOwnerOrgID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
+		return v, errors.New("OldOwnerOrgID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrgID requires an ID field in the mutation")
+		return v, errors.New("OldOwnerOrgID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
+		return v, fmt.Errorf("querying old value for OldOwnerOrgID: %w", err)
 	}
-	return oldValue.OrgID, nil
+	return oldValue.OwnerOrgID, nil
 }
 
-// AddOrgID adds i to the "org_id" field.
-func (m *AppMutation) AddOrgID(i int) {
-	if m.addorg_id != nil {
-		*m.addorg_id += i
+// AddOwnerOrgID adds i to the "owner_org_id" field.
+func (m *AppMutation) AddOwnerOrgID(i int) {
+	if m.addowner_org_id != nil {
+		*m.addowner_org_id += i
 	} else {
-		m.addorg_id = &i
+		m.addowner_org_id = &i
 	}
 }
 
-// AddedOrgID returns the value that was added to the "org_id" field in this mutation.
-func (m *AppMutation) AddedOrgID() (r int, exists bool) {
-	v := m.addorg_id
+// AddedOwnerOrgID returns the value that was added to the "owner_org_id" field in this mutation.
+func (m *AppMutation) AddedOwnerOrgID() (r int, exists bool) {
+	v := m.addowner_org_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (m *AppMutation) ClearOrgID() {
-	m.org_id = nil
-	m.addorg_id = nil
-	m.clearedFields[app.FieldOrgID] = struct{}{}
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (m *AppMutation) ClearOwnerOrgID() {
+	m.owner_org_id = nil
+	m.addowner_org_id = nil
+	m.clearedFields[app.FieldOwnerOrgID] = struct{}{}
 }
 
-// OrgIDCleared returns if the "org_id" field was cleared in this mutation.
-func (m *AppMutation) OrgIDCleared() bool {
-	_, ok := m.clearedFields[app.FieldOrgID]
+// OwnerOrgIDCleared returns if the "owner_org_id" field was cleared in this mutation.
+func (m *AppMutation) OwnerOrgIDCleared() bool {
+	_, ok := m.clearedFields[app.FieldOwnerOrgID]
 	return ok
 }
 
-// ResetOrgID resets all changes to the "org_id" field.
-func (m *AppMutation) ResetOrgID() {
-	m.org_id = nil
-	m.addorg_id = nil
-	delete(m.clearedFields, app.FieldOrgID)
+// ResetOwnerOrgID resets all changes to the "owner_org_id" field.
+func (m *AppMutation) ResetOwnerOrgID() {
+	m.owner_org_id = nil
+	m.addowner_org_id = nil
+	delete(m.clearedFields, app.FieldOwnerOrgID)
 }
 
 // AddMenuIDs adds the "menus" edge to the AppMenu entity by ids.
@@ -1610,8 +1610,8 @@ func (m *AppMutation) Fields() []string {
 	if m.private != nil {
 		fields = append(fields, app.FieldPrivate)
 	}
-	if m.org_id != nil {
-		fields = append(fields, app.FieldOrgID)
+	if m.owner_org_id != nil {
+		fields = append(fields, app.FieldOwnerOrgID)
 	}
 	return fields
 }
@@ -1655,8 +1655,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Status()
 	case app.FieldPrivate:
 		return m.Private()
-	case app.FieldOrgID:
-		return m.OrgID()
+	case app.FieldOwnerOrgID:
+		return m.OwnerOrgID()
 	}
 	return nil, false
 }
@@ -1700,8 +1700,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldStatus(ctx)
 	case app.FieldPrivate:
 		return m.OldPrivate(ctx)
-	case app.FieldOrgID:
-		return m.OldOrgID(ctx)
+	case app.FieldOwnerOrgID:
+		return m.OldOwnerOrgID(ctx)
 	}
 	return nil, fmt.Errorf("unknown App field %s", name)
 }
@@ -1830,12 +1830,12 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPrivate(v)
 		return nil
-	case app.FieldOrgID:
+	case app.FieldOwnerOrgID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOrgID(v)
+		m.SetOwnerOrgID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown App field %s", name)
@@ -1857,8 +1857,8 @@ func (m *AppMutation) AddedFields() []string {
 	if m.addrefresh_token_validity != nil {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
-	if m.addorg_id != nil {
-		fields = append(fields, app.FieldOrgID)
+	if m.addowner_org_id != nil {
+		fields = append(fields, app.FieldOwnerOrgID)
 	}
 	return fields
 }
@@ -1876,8 +1876,8 @@ func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTokenValidity()
 	case app.FieldRefreshTokenValidity:
 		return m.AddedRefreshTokenValidity()
-	case app.FieldOrgID:
-		return m.AddedOrgID()
+	case app.FieldOwnerOrgID:
+		return m.AddedOwnerOrgID()
 	}
 	return nil, false
 }
@@ -1915,12 +1915,12 @@ func (m *AppMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddRefreshTokenValidity(v)
 		return nil
-	case app.FieldOrgID:
+	case app.FieldOwnerOrgID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddOrgID(v)
+		m.AddOwnerOrgID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown App numeric field %s", name)
@@ -1966,8 +1966,8 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldPrivate) {
 		fields = append(fields, app.FieldPrivate)
 	}
-	if m.FieldCleared(app.FieldOrgID) {
-		fields = append(fields, app.FieldOrgID)
+	if m.FieldCleared(app.FieldOwnerOrgID) {
+		fields = append(fields, app.FieldOwnerOrgID)
 	}
 	return fields
 }
@@ -2019,8 +2019,8 @@ func (m *AppMutation) ClearField(name string) error {
 	case app.FieldPrivate:
 		m.ClearPrivate()
 		return nil
-	case app.FieldOrgID:
-		m.ClearOrgID()
+	case app.FieldOwnerOrgID:
+		m.ClearOwnerOrgID()
 		return nil
 	}
 	return fmt.Errorf("unknown App nullable field %s", name)
@@ -2081,8 +2081,8 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldPrivate:
 		m.ResetPrivate()
 		return nil
-	case app.FieldOrgID:
-		m.ResetOrgID()
+	case app.FieldOwnerOrgID:
+		m.ResetOwnerOrgID()
 		return nil
 	}
 	return fmt.Errorf("unknown App field %s", name)

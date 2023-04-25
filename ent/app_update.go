@@ -309,30 +309,30 @@ func (au *AppUpdate) ClearPrivate() *AppUpdate {
 	return au
 }
 
-// SetOrgID sets the "org_id" field.
-func (au *AppUpdate) SetOrgID(i int) *AppUpdate {
-	au.mutation.ResetOrgID()
-	au.mutation.SetOrgID(i)
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (au *AppUpdate) SetOwnerOrgID(i int) *AppUpdate {
+	au.mutation.ResetOwnerOrgID()
+	au.mutation.SetOwnerOrgID(i)
 	return au
 }
 
-// SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableOrgID(i *int) *AppUpdate {
+// SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableOwnerOrgID(i *int) *AppUpdate {
 	if i != nil {
-		au.SetOrgID(*i)
+		au.SetOwnerOrgID(*i)
 	}
 	return au
 }
 
-// AddOrgID adds i to the "org_id" field.
-func (au *AppUpdate) AddOrgID(i int) *AppUpdate {
-	au.mutation.AddOrgID(i)
+// AddOwnerOrgID adds i to the "owner_org_id" field.
+func (au *AppUpdate) AddOwnerOrgID(i int) *AppUpdate {
+	au.mutation.AddOwnerOrgID(i)
 	return au
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (au *AppUpdate) ClearOrgID() *AppUpdate {
-	au.mutation.ClearOrgID()
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (au *AppUpdate) ClearOwnerOrgID() *AppUpdate {
+	au.mutation.ClearOwnerOrgID()
 	return au
 }
 
@@ -754,14 +754,14 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.PrivateCleared() {
 		_spec.ClearField(app.FieldPrivate, field.TypeBool)
 	}
-	if value, ok := au.mutation.OrgID(); ok {
-		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
+	if value, ok := au.mutation.OwnerOrgID(); ok {
+		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if value, ok := au.mutation.AddedOrgID(); ok {
-		_spec.AddField(app.FieldOrgID, field.TypeInt, value)
+	if value, ok := au.mutation.AddedOwnerOrgID(); ok {
+		_spec.AddField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if au.mutation.OrgIDCleared() {
-		_spec.ClearField(app.FieldOrgID, field.TypeInt)
+	if au.mutation.OwnerOrgIDCleared() {
+		_spec.ClearField(app.FieldOwnerOrgID, field.TypeInt)
 	}
 	if au.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1383,30 +1383,30 @@ func (auo *AppUpdateOne) ClearPrivate() *AppUpdateOne {
 	return auo
 }
 
-// SetOrgID sets the "org_id" field.
-func (auo *AppUpdateOne) SetOrgID(i int) *AppUpdateOne {
-	auo.mutation.ResetOrgID()
-	auo.mutation.SetOrgID(i)
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (auo *AppUpdateOne) SetOwnerOrgID(i int) *AppUpdateOne {
+	auo.mutation.ResetOwnerOrgID()
+	auo.mutation.SetOwnerOrgID(i)
 	return auo
 }
 
-// SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableOrgID(i *int) *AppUpdateOne {
+// SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableOwnerOrgID(i *int) *AppUpdateOne {
 	if i != nil {
-		auo.SetOrgID(*i)
+		auo.SetOwnerOrgID(*i)
 	}
 	return auo
 }
 
-// AddOrgID adds i to the "org_id" field.
-func (auo *AppUpdateOne) AddOrgID(i int) *AppUpdateOne {
-	auo.mutation.AddOrgID(i)
+// AddOwnerOrgID adds i to the "owner_org_id" field.
+func (auo *AppUpdateOne) AddOwnerOrgID(i int) *AppUpdateOne {
+	auo.mutation.AddOwnerOrgID(i)
 	return auo
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (auo *AppUpdateOne) ClearOrgID() *AppUpdateOne {
-	auo.mutation.ClearOrgID()
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (auo *AppUpdateOne) ClearOwnerOrgID() *AppUpdateOne {
+	auo.mutation.ClearOwnerOrgID()
 	return auo
 }
 
@@ -1858,14 +1858,14 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.PrivateCleared() {
 		_spec.ClearField(app.FieldPrivate, field.TypeBool)
 	}
-	if value, ok := auo.mutation.OrgID(); ok {
-		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
+	if value, ok := auo.mutation.OwnerOrgID(); ok {
+		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if value, ok := auo.mutation.AddedOrgID(); ok {
-		_spec.AddField(app.FieldOrgID, field.TypeInt, value)
+	if value, ok := auo.mutation.AddedOwnerOrgID(); ok {
+		_spec.AddField(app.FieldOwnerOrgID, field.TypeInt, value)
 	}
-	if auo.mutation.OrgIDCleared() {
-		_spec.ClearField(app.FieldOrgID, field.TypeInt)
+	if auo.mutation.OwnerOrgIDCleared() {
+		_spec.ClearField(app.FieldOwnerOrgID, field.TypeInt)
 	}
 	if auo.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{

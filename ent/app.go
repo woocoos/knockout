@@ -53,7 +53,7 @@ type App struct {
 	// 私有App,表示由组织创建
 	Private bool `json:"private,omitempty"`
 	// 创建的根组织ID
-	OrgID int `json:"org_id,omitempty"`
+	OwnerOrgID int `json:"owner_org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.
 	Edges        AppEdges `json:"edges"`
@@ -161,7 +161,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case app.FieldPrivate:
 			values[i] = new(sql.NullBool)
-		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldOrgID:
+		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldOwnerOrgID:
 			values[i] = new(sql.NullInt64)
 		case app.FieldName, app.FieldCode, app.FieldKind, app.FieldRedirectURI, app.FieldAppKey, app.FieldAppSecret, app.FieldScopes, app.FieldLogo, app.FieldComments, app.FieldStatus:
 			values[i] = new(sql.NullString)
@@ -290,11 +290,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Private = value.Bool
 			}
-		case app.FieldOrgID:
+		case app.FieldOwnerOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field org_id", values[i])
+				return fmt.Errorf("unexpected type %T for field owner_org_id", values[i])
 			} else if value.Valid {
-				a.OrgID = int(value.Int64)
+				a.OwnerOrgID = int(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -418,8 +418,8 @@ func (a *App) String() string {
 	builder.WriteString("private=")
 	builder.WriteString(fmt.Sprintf("%v", a.Private))
 	builder.WriteString(", ")
-	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.OrgID))
+	builder.WriteString("owner_org_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.OwnerOrgID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -54,8 +54,8 @@ const (
 	FieldStatus = "status"
 	// FieldPrivate holds the string denoting the private field in the database.
 	FieldPrivate = "private"
-	// FieldOrgID holds the string denoting the org_id field in the database.
-	FieldOrgID = "org_id"
+	// FieldOwnerOrgID holds the string denoting the owner_org_id field in the database.
+	FieldOwnerOrgID = "owner_org_id"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
 	// EdgeActions holds the string denoting the actions edge name in mutations.
@@ -141,7 +141,7 @@ var Columns = []string{
 	FieldComments,
 	FieldStatus,
 	FieldPrivate,
-	FieldOrgID,
+	FieldOwnerOrgID,
 }
 
 var (
@@ -314,9 +314,9 @@ func ByPrivate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPrivate, opts...).ToFunc()
 }
 
-// ByOrgID orders the results by the org_id field.
-func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
+// ByOwnerOrgID orders the results by the owner_org_id field.
+func ByOwnerOrgID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOwnerOrgID, opts...).ToFunc()
 }
 
 // ByMenusCount orders the results by menus count.

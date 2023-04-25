@@ -44,7 +44,7 @@ type QueryResolver interface {
 	OrgRoleUsers(ctx context.Context, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 	AppRoleAssignedToOrgs(ctx context.Context, roleID int) ([]*ent.Org, error)
-	AppPolicyAssignedTOOrgs(ctx context.Context, policyID int) ([]*ent.Org, error)
+	AppPolicyAssignedToOrgs(ctx context.Context, policyID int) ([]*ent.Org, error)
 	OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 }
 
@@ -552,7 +552,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_appPolicyAssignedTOOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_appPolicyAssignedToOrgs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -11479,8 +11479,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_appPolicyAssignedTOOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_appPolicyAssignedTOOrgs(ctx, field)
+func (ec *executionContext) _Query_appPolicyAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_appPolicyAssignedToOrgs(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11493,7 +11493,7 @@ func (ec *executionContext) _Query_appPolicyAssignedTOOrgs(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AppPolicyAssignedTOOrgs(rctx, fc.Args["policyID"].(int))
+		return ec.resolvers.Query().AppPolicyAssignedToOrgs(rctx, fc.Args["policyID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11510,7 +11510,7 @@ func (ec *executionContext) _Query_appPolicyAssignedTOOrgs(ctx context.Context, 
 	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_appPolicyAssignedTOOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -11579,7 +11579,7 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedTOOrgs(ctx conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_appPolicyAssignedTOOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_appPolicyAssignedToOrgs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -35944,7 +35944,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "appPolicyAssignedTOOrgs":
+		case "appPolicyAssignedToOrgs":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -35953,7 +35953,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_appPolicyAssignedTOOrgs(ctx, field)
+				res = ec._Query_appPolicyAssignedToOrgs(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

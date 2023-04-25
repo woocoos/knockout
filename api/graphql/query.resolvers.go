@@ -7,7 +7,6 @@ package graphql
 import (
 	"context"
 	"fmt"
-	"github.com/woocoos/knockout/ent/user"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
@@ -17,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/user"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -64,8 +64,8 @@ func (r *queryResolver) AppRoleAssignedToOrgs(ctx context.Context, roleID int) (
 	return r.Client.Org.Query().Where(org.IDIn(oIds...)).All(ctx)
 }
 
-// AppPolicyAssignedTOOrgs is the resolver for the appPolicyAssignedTOOrgs field.
-func (r *queryResolver) AppPolicyAssignedTOOrgs(ctx context.Context, policyID int) ([]*ent.Org, error) {
+// AppPolicyAssignedToOrgs is the resolver for the appPolicyAssignedToOrgs field.
+func (r *queryResolver) AppPolicyAssignedToOrgs(ctx context.Context, policyID int) ([]*ent.Org, error) {
 	oIds, err := r.Client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policyID)).Select(orgrole.FieldOrgID).Ints(ctx)
 	if err != nil {
 		return nil, err

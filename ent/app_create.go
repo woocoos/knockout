@@ -236,16 +236,16 @@ func (ac *AppCreate) SetNillablePrivate(b *bool) *AppCreate {
 	return ac
 }
 
-// SetOrgID sets the "org_id" field.
-func (ac *AppCreate) SetOrgID(i int) *AppCreate {
-	ac.mutation.SetOrgID(i)
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (ac *AppCreate) SetOwnerOrgID(i int) *AppCreate {
+	ac.mutation.SetOwnerOrgID(i)
 	return ac
 }
 
-// SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableOrgID(i *int) *AppCreate {
+// SetNillableOwnerOrgID sets the "owner_org_id" field if the given value is not nil.
+func (ac *AppCreate) SetNillableOwnerOrgID(i *int) *AppCreate {
 	if i != nil {
-		ac.SetOrgID(*i)
+		ac.SetOwnerOrgID(*i)
 	}
 	return ac
 }
@@ -584,9 +584,9 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
 		_node.Private = value
 	}
-	if value, ok := ac.mutation.OrgID(); ok {
-		_spec.SetField(app.FieldOrgID, field.TypeInt, value)
-		_node.OrgID = value
+	if value, ok := ac.mutation.OwnerOrgID(); ok {
+		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
+		_node.OwnerOrgID = value
 	}
 	if nodes := ac.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1014,27 +1014,27 @@ func (u *AppUpsert) ClearPrivate() *AppUpsert {
 	return u
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *AppUpsert) SetOrgID(v int) *AppUpsert {
-	u.Set(app.FieldOrgID, v)
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (u *AppUpsert) SetOwnerOrgID(v int) *AppUpsert {
+	u.Set(app.FieldOwnerOrgID, v)
 	return u
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *AppUpsert) UpdateOrgID() *AppUpsert {
-	u.SetExcluded(app.FieldOrgID)
+// UpdateOwnerOrgID sets the "owner_org_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateOwnerOrgID() *AppUpsert {
+	u.SetExcluded(app.FieldOwnerOrgID)
 	return u
 }
 
-// AddOrgID adds v to the "org_id" field.
-func (u *AppUpsert) AddOrgID(v int) *AppUpsert {
-	u.Add(app.FieldOrgID, v)
+// AddOwnerOrgID adds v to the "owner_org_id" field.
+func (u *AppUpsert) AddOwnerOrgID(v int) *AppUpsert {
+	u.Add(app.FieldOwnerOrgID, v)
 	return u
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (u *AppUpsert) ClearOrgID() *AppUpsert {
-	u.SetNull(app.FieldOrgID)
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (u *AppUpsert) ClearOwnerOrgID() *AppUpsert {
+	u.SetNull(app.FieldOwnerOrgID)
 	return u
 }
 
@@ -1396,31 +1396,31 @@ func (u *AppUpsertOne) ClearPrivate() *AppUpsertOne {
 	})
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *AppUpsertOne) SetOrgID(v int) *AppUpsertOne {
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (u *AppUpsertOne) SetOwnerOrgID(v int) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetOrgID(v)
+		s.SetOwnerOrgID(v)
 	})
 }
 
-// AddOrgID adds v to the "org_id" field.
-func (u *AppUpsertOne) AddOrgID(v int) *AppUpsertOne {
+// AddOwnerOrgID adds v to the "owner_org_id" field.
+func (u *AppUpsertOne) AddOwnerOrgID(v int) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.AddOrgID(v)
+		s.AddOwnerOrgID(v)
 	})
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateOrgID() *AppUpsertOne {
+// UpdateOwnerOrgID sets the "owner_org_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateOwnerOrgID() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateOrgID()
+		s.UpdateOwnerOrgID()
 	})
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (u *AppUpsertOne) ClearOrgID() *AppUpsertOne {
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (u *AppUpsertOne) ClearOwnerOrgID() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearOrgID()
+		s.ClearOwnerOrgID()
 	})
 }
 
@@ -1944,31 +1944,31 @@ func (u *AppUpsertBulk) ClearPrivate() *AppUpsertBulk {
 	})
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *AppUpsertBulk) SetOrgID(v int) *AppUpsertBulk {
+// SetOwnerOrgID sets the "owner_org_id" field.
+func (u *AppUpsertBulk) SetOwnerOrgID(v int) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetOrgID(v)
+		s.SetOwnerOrgID(v)
 	})
 }
 
-// AddOrgID adds v to the "org_id" field.
-func (u *AppUpsertBulk) AddOrgID(v int) *AppUpsertBulk {
+// AddOwnerOrgID adds v to the "owner_org_id" field.
+func (u *AppUpsertBulk) AddOwnerOrgID(v int) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.AddOrgID(v)
+		s.AddOwnerOrgID(v)
 	})
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateOrgID() *AppUpsertBulk {
+// UpdateOwnerOrgID sets the "owner_org_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateOwnerOrgID() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateOrgID()
+		s.UpdateOwnerOrgID()
 	})
 }
 
-// ClearOrgID clears the value of the "org_id" field.
-func (u *AppUpsertBulk) ClearOrgID() *AppUpsertBulk {
+// ClearOwnerOrgID clears the value of the "owner_org_id" field.
+func (u *AppUpsertBulk) ClearOwnerOrgID() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearOrgID()
+		s.ClearOwnerOrgID()
 	})
 }
 
