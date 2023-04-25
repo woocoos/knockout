@@ -220,7 +220,11 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 	if err != nil {
 		return err
 	}
-	_, err = client.OrgRoleUser.Delete().Where(orgroleuser.OrgRoleID(roleID), orgroleuser.OrgUserID(userID)).Exec(ctx)
+	ouId, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(userID)).Select(orguser.FieldUserID).Int(ctx)
+	if err != nil {
+		return err
+	}
+	_, err = client.OrgRoleUser.Delete().Where(orgroleuser.OrgRoleID(roleID), orgroleuser.OrgUserID(ouId)).Exec(ctx)
 	return err
 }
 
