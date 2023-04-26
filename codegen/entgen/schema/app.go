@@ -25,6 +25,8 @@ func (App) Annotations() []schema.Annotation {
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
 		),
+		schemax.Resources([]string{"private"}),
+		schemax.TenantField("owner_org_id"),
 	}
 }
 

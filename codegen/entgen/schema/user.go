@@ -10,6 +10,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax"
 	"github.com/woocoos/entco/schemax/typex"
+	gen "github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/intercept"
 )
 
 // User holds the schema definition for the User entity.
@@ -37,7 +39,7 @@ func (User) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
-		SoftDeleteMixin{},
+		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
 	}
 }
 

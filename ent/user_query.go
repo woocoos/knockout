@@ -733,6 +733,9 @@ func (uq *UserQuery) loadIdentities(ctx context.Context, query *UserIdentityQuer
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(useridentity.FieldUserID)
+	}
 	query.Where(predicate.UserIdentity(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.IdentitiesColumn), fks...))
 	}))
@@ -744,7 +747,7 @@ func (uq *UserQuery) loadIdentities(ctx context.Context, query *UserIdentityQuer
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -757,6 +760,9 @@ func (uq *UserQuery) loadLoginProfile(ctx context.Context, query *UserLoginProfi
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userloginprofile.FieldUserID)
+	}
 	query.Where(predicate.UserLoginProfile(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.LoginProfileColumn), fks...))
 	}))
@@ -768,7 +774,7 @@ func (uq *UserQuery) loadLoginProfile(ctx context.Context, query *UserLoginProfi
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -784,6 +790,9 @@ func (uq *UserQuery) loadPasswords(ctx context.Context, query *UserPasswordQuery
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userpassword.FieldUserID)
+	}
 	query.Where(predicate.UserPassword(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.PasswordsColumn), fks...))
 	}))
@@ -795,7 +804,7 @@ func (uq *UserQuery) loadPasswords(ctx context.Context, query *UserPasswordQuery
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -811,6 +820,9 @@ func (uq *UserQuery) loadDevices(ctx context.Context, query *UserDeviceQuery, no
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userdevice.FieldUserID)
+	}
 	query.Where(predicate.UserDevice(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.DevicesColumn), fks...))
 	}))
@@ -822,7 +834,7 @@ func (uq *UserQuery) loadDevices(ctx context.Context, query *UserDeviceQuery, no
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -899,6 +911,9 @@ func (uq *UserQuery) loadPermissions(ctx context.Context, query *PermissionQuery
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(permission.FieldUserID)
+	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.PermissionsColumn), fks...))
 	}))
@@ -910,7 +925,7 @@ func (uq *UserQuery) loadPermissions(ctx context.Context, query *PermissionQuery
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -926,6 +941,9 @@ func (uq *UserQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orguser.FieldUserID)
+	}
 	query.Where(predicate.OrgUser(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.OrgUserColumn), fks...))
 	}))
@@ -937,7 +955,7 @@ func (uq *UserQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes
 		fk := n.UserID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

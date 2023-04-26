@@ -29,7 +29,7 @@ func main() {
 	os.MkdirAll("./api/graphql", os.ModePerm)
 	opts := []entc.Option{
 		entc.Extensions(ex, protoExtension),
-		entc.FeatureNames("privacy", "schema/snapshot"),
+		//entc.FeatureNames("privacy", "schema/snapshot"),
 		genx.GlobalID(),
 		genx.SimplePagination(),
 	}

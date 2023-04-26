@@ -85,15 +85,17 @@ func rulesHook() ent.Hook {
 				for _, rule := range rules {
 					for _, action := range rule.Actions {
 						if action == "*" {
-							continue
+							return nil, fmt.Errorf("missing app code %s", action)
 						}
 						// 分离出appcode和action
 						parts := strings.SplitN(action, ":", 2)
 						if len(parts) != 2 {
 							return nil, fmt.Errorf("invalid action %s", action)
 						}
-						appcode := parts[0]
-						acs[appcode] = append(acs[appcode], parts[1])
+						if parts[1] != "*" {
+							appcode := parts[0]
+							acs[appcode] = append(acs[appcode], parts[1])
+						}
 					}
 				}
 				// 检查action是否存在

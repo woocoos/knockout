@@ -502,6 +502,9 @@ func (aaq *AppActionQuery) loadMenus(ctx context.Context, query *AppMenuQuery, n
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appmenu.FieldActionID)
+	}
 	query.Where(predicate.AppMenu(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(appaction.MenusColumn), fks...))
 	}))
@@ -516,7 +519,7 @@ func (aaq *AppActionQuery) loadMenus(ctx context.Context, query *AppMenuQuery, n
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_id" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

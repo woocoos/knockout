@@ -114,21 +114,20 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppMenu")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(app.MenusColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			a.WithNamedMenus(alias, func(wq *AppMenuQuery) {
 				*wq = *query
@@ -199,21 +198,20 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppAction")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(app.ActionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			a.WithNamedActions(alias, func(wq *AppActionQuery) {
 				*wq = *query
@@ -284,21 +282,20 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppRes")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(app.ResourcesColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			a.WithNamedResources(alias, func(wq *AppResQuery) {
 				*wq = *query
@@ -397,21 +394,20 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(app.OrgsPrimaryKey[1], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			a.WithNamedOrgs(alias, func(wq *OrgQuery) {
 				*wq = *query
@@ -496,6 +492,8 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, app.FieldStatus)
 				fieldSeen[app.FieldStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -649,6 +647,8 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, appaction.FieldComments)
 				fieldSeen[appaction.FieldComments] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -814,6 +814,8 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, appmenu.FieldDisplaySort)
 				fieldSeen[appmenu.FieldDisplaySort] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -977,6 +979,8 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, apppolicy.FieldStatus)
 				fieldSeen[apppolicy.FieldStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1113,6 +1117,8 @@ func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.Operatio
 				selectedFields = append(selectedFields, appres.FieldArnPattern)
 				fieldSeen[appres.FieldArnPattern] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1266,6 +1272,8 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, approle.FieldEditable)
 				fieldSeen[approle.FieldEditable] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1458,21 +1466,20 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "User")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(org.UsersPrimaryKey[0], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			o.WithNamedUsers(alias, func(wq *UserQuery) {
 				*wq = *query
@@ -1543,21 +1550,20 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(org.PermissionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			o.WithNamedPermissions(alias, func(wq *PermissionQuery) {
 				*wq = *query
@@ -1628,21 +1634,20 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "OrgPolicy")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(org.PoliciesColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			o.WithNamedPolicies(alias, func(wq *OrgPolicyQuery) {
 				*wq = *query
@@ -1717,21 +1722,20 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "App")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(org.AppsPrimaryKey[0], limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			o.WithNamedApps(alias, func(wq *AppQuery) {
 				*wq = *query
@@ -1821,6 +1825,8 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, org.FieldTimezone)
 				fieldSeen[org.FieldTimezone] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -1974,6 +1980,8 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, orgpolicy.FieldRules)
 				fieldSeen[orgpolicy.FieldRules] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2096,6 +2104,8 @@ func (or *OrgRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, orgrole.FieldComments)
 				fieldSeen[orgrole.FieldComments] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2280,6 +2290,8 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, permission.FieldStatus)
 				fieldSeen[permission.FieldStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2462,21 +2474,20 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
 				continue
 			}
-
 			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
 				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
+					return err
+				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
 				modify := limitRows(user.PermissionsColumn, limit, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, satisfies...); err != nil {
-					return err
-				}
 			}
 			u.WithNamedPermissions(alias, func(wq *PermissionQuery) {
 				*wq = *query
@@ -2551,6 +2562,8 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, user.FieldComments)
 				fieldSeen[user.FieldComments] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2712,6 +2725,8 @@ func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, userdevice.FieldComments)
 				fieldSeen[userdevice.FieldComments] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -2853,6 +2868,8 @@ func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, useridentity.FieldStatus)
 				fieldSeen[useridentity.FieldStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3014,6 +3031,8 @@ func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graph
 				selectedFields = append(selectedFields, userloginprofile.FieldMfaStatus)
 				fieldSeen[userloginprofile.FieldMfaStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3145,6 +3164,8 @@ func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, userpassword.FieldStatus)
 				fieldSeen[userpassword.FieldStatus] = struct{}{}
 			}
+		case "id":
+		case "__typename":
 		default:
 			unknownSeen = true
 		}
@@ -3296,4 +3317,18 @@ func limitRows(partitionBy string, limit int, orderBy ...sql.Querier) func(s *sq
 			Where(sql.LTE(t.C("row_number"), limit)).
 			Prefix(with)
 	}
+}
+
+// mayAddCondition appends another type condition to the satisfies list
+// if condition is enabled (Node/Nodes) and it does not exist in the list.
+func mayAddCondition(satisfies []string, typeCond string) []string {
+	if len(satisfies) == 0 {
+		return satisfies
+	}
+	for _, s := range satisfies {
+		if typeCond == s {
+			return satisfies
+		}
+	}
+	return append(satisfies, typeCond)
 }

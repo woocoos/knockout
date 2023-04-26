@@ -502,6 +502,9 @@ func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *Permissio
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(permission.FieldOrgPolicyID)
+	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(orgpolicy.PermissionsColumn), fks...))
 	}))
@@ -513,7 +516,7 @@ func (opq *OrgPolicyQuery) loadPermissions(ctx context.Context, query *Permissio
 		fk := n.OrgPolicyID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_policy_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_policy_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

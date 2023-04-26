@@ -615,6 +615,9 @@ func (orq *OrgRoleQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUser
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgroleuser.FieldOrgRoleID)
+	}
 	query.Where(predicate.OrgRoleUser(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(orgrole.OrgRoleUserColumn), fks...))
 	}))
@@ -626,7 +629,7 @@ func (orq *OrgRoleQuery) loadOrgRoleUser(ctx context.Context, query *OrgRoleUser
 		fk := n.OrgRoleID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_role_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_role_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -906,6 +906,9 @@ func (oq *OrgQuery) loadChildren(ctx context.Context, query *OrgQuery, nodes []*
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(org.FieldParentID)
+	}
 	query.Where(predicate.Org(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.ChildrenColumn), fks...))
 	}))
@@ -917,7 +920,7 @@ func (oq *OrgQuery) loadChildren(ctx context.Context, query *OrgQuery, nodes []*
 		fk := n.ParentID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "parent_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "parent_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1026,6 +1029,9 @@ func (oq *OrgQuery) loadRolesAndGroups(ctx context.Context, query *OrgRoleQuery,
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgrole.FieldOrgID)
+	}
 	query.Where(predicate.OrgRole(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.RolesAndGroupsColumn), fks...))
 	}))
@@ -1037,7 +1043,7 @@ func (oq *OrgQuery) loadRolesAndGroups(ctx context.Context, query *OrgRoleQuery,
 		fk := n.OrgID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1053,6 +1059,9 @@ func (oq *OrgQuery) loadPermissions(ctx context.Context, query *PermissionQuery,
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(permission.FieldOrgID)
+	}
 	query.Where(predicate.Permission(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.PermissionsColumn), fks...))
 	}))
@@ -1064,7 +1073,7 @@ func (oq *OrgQuery) loadPermissions(ctx context.Context, query *PermissionQuery,
 		fk := n.OrgID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1080,6 +1089,9 @@ func (oq *OrgQuery) loadPolicies(ctx context.Context, query *OrgPolicyQuery, nod
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgpolicy.FieldOrgID)
+	}
 	query.Where(predicate.OrgPolicy(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.PoliciesColumn), fks...))
 	}))
@@ -1091,7 +1103,7 @@ func (oq *OrgQuery) loadPolicies(ctx context.Context, query *OrgPolicyQuery, nod
 		fk := n.OrgID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1168,6 +1180,9 @@ func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes 
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orguser.FieldOrgID)
+	}
 	query.Where(predicate.OrgUser(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.OrgUserColumn), fks...))
 	}))
@@ -1179,7 +1194,7 @@ func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes 
 		fk := n.OrgID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1195,6 +1210,9 @@ func (oq *OrgQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgapp.FieldOrgID)
+	}
 	query.Where(predicate.OrgApp(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(org.OrgAppColumn), fks...))
 	}))
@@ -1206,7 +1224,7 @@ func (oq *OrgQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 		fk := n.OrgID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "org_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

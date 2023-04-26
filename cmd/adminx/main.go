@@ -4,13 +4,13 @@ import (
 	"ariga.io/entcache"
 	"context"
 	"entgo.io/contrib/entgql"
-	"entgo.io/ent/dialect"
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -19,6 +19,7 @@ import (
 	webhander "github.com/tsingsun/woocoo/web/handler"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	"github.com/vektah/gqlparser/v2/ast"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
@@ -27,15 +28,14 @@ import (
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
+	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/service/resource"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 var (
 	portalClient *ent.Client
+	casbinClient *casbinent.Client
 )
 
 func main() {
@@ -57,17 +57,20 @@ func main() {
 	pd = ecx.BuildEntCacheDriver(app.AppConfiguration(), pd)
 	if app.AppConfiguration().Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
+		casbinClient = casbinent.NewClient(casbinent.Driver(pd), casbinent.Debug())
 	} else {
 		portalClient = ent.NewClient(ent.Driver(pd))
+		casbinClient = casbinent.NewClient(casbinent.Driver(pd))
 	}
 
-	buildCashbin(app.AppConfiguration(), pd)
+	buildCashbin(app.AppConfiguration(), casbinClient)
 
 	webSrv := buildWebServer(app.AppConfiguration())
 	app.RegisterServer(webSrv)
 
 	defer func() {
 		portalClient.Close()
+		casbinClient.Close()
 	}()
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
@@ -127,8 +130,8 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	return webSrv
 }
 
-func buildCashbin(cnf *conf.AppConfiguration, driver dialect.Driver) {
-	_, err := authorization.SetAuthorization(cnf.Sub("authz"), driver)
+func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
+	_, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
 	if err != nil {
 		log.Fatal(err)
 	}

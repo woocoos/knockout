@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
+	"github.com/woocoos/knockout/ent/intercept"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
 	"regexp"
@@ -40,7 +41,7 @@ func (Org) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
-		SoftDeleteMixin{},
+		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
 	}
 }
 

@@ -615,6 +615,9 @@ func (apq *AppPolicyQuery) loadAppRolePolicy(ctx context.Context, query *AppRole
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(approlepolicy.FieldAppPolicyID)
+	}
 	query.Where(predicate.AppRolePolicy(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(apppolicy.AppRolePolicyColumn), fks...))
 	}))
@@ -626,7 +629,7 @@ func (apq *AppPolicyQuery) loadAppRolePolicy(ctx context.Context, query *AppRole
 		fk := n.AppPolicyID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_policy_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_policy_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

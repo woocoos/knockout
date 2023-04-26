@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/tsingsun/woocoo/pkg/log"
+	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
@@ -24,17 +26,18 @@ import (
 	"time"
 )
 
+const ArnSplit = authorization.ArnSplit
+
 // AssignOrganizationApp 分配应用到根组织下. 如: 新账户创建时, 根账户分配已有应用给子账户(需要验证根用户是否该应用权限,可在外层验证).
 func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID int) error {
 	client := ent.FromContext(ctx)
-	has, err := client.Org.Query().Where(org.ID(orgID), org.KindEQ(org.KindRoot),
-		org.HasAppsWith(app.ID(appID))).Exist(ctx)
-	if err != nil {
+	if has, err := client.Org.Query().Where(org.ID(orgID), org.KindEQ(org.KindRoot),
+		org.HasAppsWith(app.ID(appID))).Exist(ctx); err != nil {
 		return err
-	}
-	if has {
+	} else if has {
 		return fmt.Errorf("org not found or already has app")
 	}
+
 	ap, err := client.App.Query().Where(app.ID(appID)).
 		WithPolicies(func(query *ent.AppPolicyQuery) {
 			query.Where(apppolicy.AutoGrant(true)).Unique(true).
@@ -45,10 +48,11 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 	if err != nil {
 		return err
 	}
-	err = client.OrgApp.Create().SetOrgID(orgID).SetAppID(ap.ID).Exec(ctx)
-	if err != nil {
+
+	if err = client.OrgApp.Create().SetOrgID(orgID).SetAppID(ap.ID).Exec(ctx); err != nil {
 		return err
 	}
+
 	// 创建应用策略
 	ps, err := ap.Policies(ctx)
 	if err != nil {
@@ -62,21 +66,39 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 
 	pbk := make([]*ent.OrgPolicyCreate, len(ps))
 	for i, p := range ps {
+		if err = appPolicyToOrgPolicy(ap.Code, p.Rules, orgID); err != nil {
+			return err
+		}
 		pbk[i] = client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(p.ID).
 			SetComments(p.Comments).SetRules(p.Rules).SetComments(p.Comments).SetName(p.Name)
 	}
-	err = client.OrgPolicy.CreateBulk(pbk...).Exec(ctx)
-	if err != nil {
+	if err = client.OrgPolicy.CreateBulk(pbk...).Exec(ctx); err != nil {
 		return err
 	}
+
 	rbk := make([]*ent.OrgRoleCreate, len(rs))
 	for i, r := range rs {
 		rbk[i] = client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(r.ID).
 			SetComments(r.Comments).SetName(r.Name)
 	}
-	err = client.OrgRole.CreateBulk(rbk...).Exec(ctx)
-	if err != nil {
+	if err = client.OrgRole.CreateBulk(rbk...).Exec(ctx); err != nil {
 		return err
+	}
+	return nil
+}
+
+// appPolicy to orgPolicy
+func appPolicyToOrgPolicy(appCode string, rules []*types.PolicyRule, tenantID int) error {
+	for _, rule := range rules {
+		for j, action := range rule.Actions {
+			rule.Actions[j] = appCode + ArnSplit + action
+		}
+		for j, resource := range rule.Resources {
+			// 替换tenant_id
+			resource = authorization.ReplaceTenantID(resource, tenantID)
+			// 补充appCode
+			rule.Resources[j] = appCode + ArnSplit + authorization.FormatResourceArn(resource)
+		}
 	}
 	return nil
 }
@@ -139,7 +161,7 @@ func (s *Service) RevokeOrganizationApp(ctx context.Context, orgID int, appID in
 
 func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) error {
 	client := ent.FromContext(ctx)
-	ap, err := client.AppPolicy.Query().Where(apppolicy.ID(appPolicyID)).Only(ctx)
+	ap, err := client.AppPolicy.Query().Where(apppolicy.ID(appPolicyID)).WithApp().Only(ctx)
 	if err != nil {
 		return err
 	}
@@ -156,6 +178,10 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	}
 	if has {
 		return fmt.Errorf("policy has assigned to org")
+	}
+	err = appPolicyToOrgPolicy(ap.Edges.App.Code, ap.Rules, orgID)
+	if err != nil {
+		return err
 	}
 	err = client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(ap.ID).
 		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Exec(ctx)
@@ -329,6 +355,9 @@ func (s *Service) Grant(ctx context.Context, input ent.CreatePermissionInput) (*
 // grantPolicy 给用户或角色授权.
 func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInput) (*ent.Permission, error) {
 	client := ent.FromContext(ctx)
+	// 检查是否已经存在该授权,不允许重复授权
+	existsq := client.Permission.Query().Where(permission.OrgID(input.OrgID), permission.PrincipalKindEQ(input.PrincipalKind),
+		permission.OrgPolicyID(input.OrgPolicyID))
 	domain, err := s.GetOrgDomain(ctx, input.OrgID)
 	if err != nil {
 		return nil, err
@@ -342,6 +371,7 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 			return nil, fmt.Errorf("user id is required")
 		}
 		pid = *input.UserID
+		existsq.Where(permission.UserID(pid))
 		builder.SetUserID(pid)
 		builder.SetPrincipalKind(permission.PrincipalKindUser)
 	case permission.PrincipalKindRole:
@@ -349,10 +379,14 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 			return nil, fmt.Errorf("role id is required")
 		}
 		pid = *input.RoleID
+		existsq.Where(permission.RoleID(pid))
 		builder.SetRoleID(pid)
 		builder.SetPrincipalKind(permission.PrincipalKindRole)
 	default:
 		return nil, fmt.Errorf("grant type %s not support", input.PrincipalKind)
+	}
+	if has, _ := existsq.Exist(ctx); has {
+		return nil, fmt.Errorf("permission already granted")
 	}
 	// save first
 	perm, err := builder.Save(ctx)

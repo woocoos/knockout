@@ -742,6 +742,9 @@ func (aq *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appmenu.FieldAppID)
+	}
 	query.Where(predicate.AppMenu(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.MenusColumn), fks...))
 	}))
@@ -753,7 +756,7 @@ func (aq *AppQuery) loadMenus(ctx context.Context, query *AppMenuQuery, nodes []
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -769,6 +772,9 @@ func (aq *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, node
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appaction.FieldAppID)
+	}
 	query.Where(predicate.AppAction(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.ActionsColumn), fks...))
 	}))
@@ -780,7 +786,7 @@ func (aq *AppQuery) loadActions(ctx context.Context, query *AppActionQuery, node
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -796,6 +802,9 @@ func (aq *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appres.FieldAppID)
+	}
 	query.Where(predicate.AppRes(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.ResourcesColumn), fks...))
 	}))
@@ -807,7 +816,7 @@ func (aq *AppQuery) loadResources(ctx context.Context, query *AppResQuery, nodes
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -823,6 +832,9 @@ func (aq *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(approle.FieldAppID)
+	}
 	query.Where(predicate.AppRole(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.RolesColumn), fks...))
 	}))
@@ -834,7 +846,7 @@ func (aq *AppQuery) loadRoles(ctx context.Context, query *AppRoleQuery, nodes []
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -850,6 +862,9 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(apppolicy.FieldAppID)
+	}
 	query.Where(predicate.AppPolicy(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.PoliciesColumn), fks...))
 	}))
@@ -861,7 +876,7 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -938,6 +953,9 @@ func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgapp.FieldAppID)
+	}
 	query.Where(predicate.OrgApp(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.OrgAppColumn), fks...))
 	}))
@@ -949,7 +967,7 @@ func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []
 		fk := n.AppID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

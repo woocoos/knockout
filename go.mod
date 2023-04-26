@@ -4,8 +4,8 @@ go 1.20
 
 require (
 	ariga.io/entcache v0.1.1-0.20230414114609-164fed2e1c70
-	entgo.io/contrib v0.4.1
-	entgo.io/ent v0.12.1
+	entgo.io/contrib v0.4.4
+	entgo.io/ent v0.12.2
 	github.com/99designs/gqlgen v0.17.26
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/dchest/captcha v1.0.0
@@ -16,13 +16,13 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tsingsun/woocoo v0.2.5-0.20230415042012-76493bca9442
+	github.com/tsingsun/woocoo v0.2.5-0.20230425093650-6e431d3bd950
 	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230417101157-8350720ebba3
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230403084811-972005040ae2
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6
+	github.com/woocoos/entco v0.0.0-20230426031308-0dde24c4b5b4
 	golang.org/x/sync v0.1.0
 )
 
@@ -70,7 +70,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.8.0 // indirect
-	github.com/casbin/casbin/v2 v2.67.0 // indirect
+	github.com/casbin/casbin/v2 v2.68.0 // indirect
 	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -95,14 +95,14 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.16.4 // indirect
+	github.com/klauspost/compress v1.16.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

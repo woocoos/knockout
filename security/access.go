@@ -32,17 +32,23 @@ func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalK
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			pls = append(pls, []string{role, domain, action, "read", rule.Effect.String()})
+			p := []string{role, domain, action, "read", rule.Effect.String()}
+			if !authorizer.Enforcer.HasPolicy(p) {
+				pls = append(pls, p)
+			}
+		}
+		for _, resource := range rule.Resources {
+			p := []string{role, domain, resource, "read", rule.Effect.String()}
+			if !authorizer.Enforcer.HasPolicy(p) {
+				pls = append(pls, p)
+			}
 		}
 	}
 	if len(pls) > 0 {
-		_, err := authorizer.Enforcer.AddPolicies(pls)
-		if err != nil {
-			return err
-		}
-		return authorizer.Enforcer.SavePolicy()
+		_, err := authorizer.Enforcer.AddPoliciesEx(pls)
+		return err
 	}
-	return fmt.Errorf("no policy to grant")
+	return fmt.Errorf("all policies has grant")
 }
 
 func GrantByPermission(permission *ent.Permission, domain string) error {
@@ -76,14 +82,17 @@ func RevokePolicy(rules []*types.PolicyRule, principal, domain string, perm perm
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			pls = append(pls, []string{role, domain, action, "read", "allow"})
+			pls = append(pls, []string{role, domain, action, "read", rule.Effect.String()})
+		}
+		for _, resource := range rule.Resources {
+			pls = append(pls, []string{role, domain, resource, "read", rule.Effect.String()})
 		}
 	}
 	_, err := authorizer.Enforcer.RemovePolicies(pls)
 	if err != nil {
 		return err
 	}
-	return authorizer.Enforcer.SavePolicy()
+	return nil
 }
 
 func RevokeByPermission(perm *ent.Permission, domain string) error {
@@ -98,17 +107,11 @@ func RevokeByPermission(perm *ent.Permission, domain string) error {
 func GrantRoleForUser(userID, roleID int, domain string) error {
 	authorizer := authz.DefaultAuthorization
 	_, err := authorizer.Enforcer.AddRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), domain)
-	if err != nil {
-		return err
-	}
-	return authorizer.Enforcer.SavePolicy()
+	return err
 }
 
 func RevokeGroupForUser(userID, roleID int, domain string) error {
 	authorizer := authz.DefaultAuthorization
 	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), domain)
-	if err != nil {
-		return err
-	}
-	return authorizer.Enforcer.SavePolicy()
+	return err
 }

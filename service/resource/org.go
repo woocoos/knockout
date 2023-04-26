@@ -25,8 +25,10 @@ import (
 // EnableOrganization 开启组织目录
 func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
-	uid := identity.UserIDFromContext(ctx)
-
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Evict(ctx))
 	if err != nil {
 		return nil, err
@@ -314,7 +316,10 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 		return fmt.Errorf("old password can not equal new password")
 	}
 	client := ent.FromContext(ctx)
-	uid := identity.UserIDFromContext(ctx)
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	usr := client.User.Query().Where(user.ID(uid)).
 		WithPasswords(func(query *ent.UserPasswordQuery) {
 			query.Where(userpassword.SceneEQ(userpassword.SceneLogin))
@@ -326,7 +331,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 		return fmt.Errorf("old password not match")
 	}
 
-	_, err := client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
+	_, err = client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
 		SetPassword(n).Save(ctx)
 	return err
 }
