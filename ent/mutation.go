@@ -16179,8 +16179,6 @@ type PermissionMutation struct {
 	addupdated_by     *int
 	updated_at        *time.Time
 	principal_kind    *permission.PrincipalKind
-	role_id           *int
-	addrole_id        *int
 	start_at          *time.Time
 	end_at            *time.Time
 	status            *typex.SimpleStatus
@@ -16189,6 +16187,8 @@ type PermissionMutation struct {
 	clearedorg        bool
 	user              *int
 	cleareduser       bool
+	role              *int
+	clearedrole       bool
 	org_policy        *int
 	clearedorg_policy bool
 	done              bool
@@ -16634,13 +16634,12 @@ func (m *PermissionMutation) ResetUserID() {
 
 // SetRoleID sets the "role_id" field.
 func (m *PermissionMutation) SetRoleID(i int) {
-	m.role_id = &i
-	m.addrole_id = nil
+	m.role = &i
 }
 
 // RoleID returns the value of the "role_id" field in the mutation.
 func (m *PermissionMutation) RoleID() (r int, exists bool) {
-	v := m.role_id
+	v := m.role
 	if v == nil {
 		return
 	}
@@ -16664,28 +16663,9 @@ func (m *PermissionMutation) OldRoleID(ctx context.Context) (v int, err error) {
 	return oldValue.RoleID, nil
 }
 
-// AddRoleID adds i to the "role_id" field.
-func (m *PermissionMutation) AddRoleID(i int) {
-	if m.addrole_id != nil {
-		*m.addrole_id += i
-	} else {
-		m.addrole_id = &i
-	}
-}
-
-// AddedRoleID returns the value that was added to the "role_id" field in this mutation.
-func (m *PermissionMutation) AddedRoleID() (r int, exists bool) {
-	v := m.addrole_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearRoleID clears the value of the "role_id" field.
 func (m *PermissionMutation) ClearRoleID() {
-	m.role_id = nil
-	m.addrole_id = nil
+	m.role = nil
 	m.clearedFields[permission.FieldRoleID] = struct{}{}
 }
 
@@ -16697,8 +16677,7 @@ func (m *PermissionMutation) RoleIDCleared() bool {
 
 // ResetRoleID resets all changes to the "role_id" field.
 func (m *PermissionMutation) ResetRoleID() {
-	m.role_id = nil
-	m.addrole_id = nil
+	m.role = nil
 	delete(m.clearedFields, permission.FieldRoleID)
 }
 
@@ -16937,6 +16916,32 @@ func (m *PermissionMutation) ResetUser() {
 	m.cleareduser = false
 }
 
+// ClearRole clears the "role" edge to the OrgRole entity.
+func (m *PermissionMutation) ClearRole() {
+	m.clearedrole = true
+}
+
+// RoleCleared reports if the "role" edge to the OrgRole entity was cleared.
+func (m *PermissionMutation) RoleCleared() bool {
+	return m.RoleIDCleared() || m.clearedrole
+}
+
+// RoleIDs returns the "role" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// RoleID instead. It exists only for internal usage by the builders.
+func (m *PermissionMutation) RoleIDs() (ids []int) {
+	if id := m.role; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetRole resets all changes to the "role" edge.
+func (m *PermissionMutation) ResetRole() {
+	m.role = nil
+	m.clearedrole = false
+}
+
 // ClearOrgPolicy clears the "org_policy" edge to the OrgPolicy entity.
 func (m *PermissionMutation) ClearOrgPolicy() {
 	m.clearedorg_policy = true
@@ -17019,7 +17024,7 @@ func (m *PermissionMutation) Fields() []string {
 	if m.user != nil {
 		fields = append(fields, permission.FieldUserID)
 	}
-	if m.role_id != nil {
+	if m.role != nil {
 		fields = append(fields, permission.FieldRoleID)
 	}
 	if m.org_policy != nil {
@@ -17206,9 +17211,6 @@ func (m *PermissionMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, permission.FieldUpdatedBy)
 	}
-	if m.addrole_id != nil {
-		fields = append(fields, permission.FieldRoleID)
-	}
 	return fields
 }
 
@@ -17221,8 +17223,6 @@ func (m *PermissionMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case permission.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case permission.FieldRoleID:
-		return m.AddedRoleID()
 	}
 	return nil, false
 }
@@ -17245,13 +17245,6 @@ func (m *PermissionMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case permission.FieldRoleID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRoleID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Permission numeric field %s", name)
@@ -17367,12 +17360,15 @@ func (m *PermissionMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PermissionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.org != nil {
 		edges = append(edges, permission.EdgeOrg)
 	}
 	if m.user != nil {
 		edges = append(edges, permission.EdgeUser)
+	}
+	if m.role != nil {
+		edges = append(edges, permission.EdgeRole)
 	}
 	if m.org_policy != nil {
 		edges = append(edges, permission.EdgeOrgPolicy)
@@ -17392,6 +17388,10 @@ func (m *PermissionMutation) AddedIDs(name string) []ent.Value {
 		if id := m.user; id != nil {
 			return []ent.Value{*id}
 		}
+	case permission.EdgeRole:
+		if id := m.role; id != nil {
+			return []ent.Value{*id}
+		}
 	case permission.EdgeOrgPolicy:
 		if id := m.org_policy; id != nil {
 			return []ent.Value{*id}
@@ -17402,7 +17402,7 @@ func (m *PermissionMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PermissionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	return edges
 }
 
@@ -17414,12 +17414,15 @@ func (m *PermissionMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PermissionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedorg {
 		edges = append(edges, permission.EdgeOrg)
 	}
 	if m.cleareduser {
 		edges = append(edges, permission.EdgeUser)
+	}
+	if m.clearedrole {
+		edges = append(edges, permission.EdgeRole)
 	}
 	if m.clearedorg_policy {
 		edges = append(edges, permission.EdgeOrgPolicy)
@@ -17435,6 +17438,8 @@ func (m *PermissionMutation) EdgeCleared(name string) bool {
 		return m.clearedorg
 	case permission.EdgeUser:
 		return m.cleareduser
+	case permission.EdgeRole:
+		return m.clearedrole
 	case permission.EdgeOrgPolicy:
 		return m.clearedorg_policy
 	}
@@ -17450,6 +17455,9 @@ func (m *PermissionMutation) ClearEdge(name string) error {
 		return nil
 	case permission.EdgeUser:
 		m.ClearUser()
+		return nil
+	case permission.EdgeRole:
+		m.ClearRole()
 		return nil
 	case permission.EdgeOrgPolicy:
 		m.ClearOrgPolicy()
@@ -17467,6 +17475,9 @@ func (m *PermissionMutation) ResetEdge(name string) error {
 		return nil
 	case permission.EdgeUser:
 		m.ResetUser()
+		return nil
+	case permission.EdgeRole:
+		m.ResetRole()
 		return nil
 	case permission.EdgeOrgPolicy:
 		m.ResetOrgPolicy()

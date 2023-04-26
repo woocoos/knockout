@@ -2216,6 +2216,20 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, permission.FieldUserID)
 				fieldSeen[permission.FieldUserID] = struct{}{}
 			}
+		case "role":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgRoleClient{config: pe.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+				return err
+			}
+			pe.withRole = query
+			if _, ok := fieldSeen[permission.FieldRoleID]; !ok {
+				selectedFields = append(selectedFields, permission.FieldRoleID)
+				fieldSeen[permission.FieldRoleID] = struct{}{}
+			}
 		case "orgPolicy":
 			var (
 				alias = field.Alias

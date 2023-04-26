@@ -1090,20 +1090,17 @@ func (c *OrgUserUpdateOne) SetInput(i UpdateOrgUserInput) *OrgUserUpdateOne {
 // CreatePermissionInput represents a mutation input for creating permissions.
 type CreatePermissionInput struct {
 	PrincipalKind permission.PrincipalKind
-	RoleID        *int
 	StartAt       *time.Time
 	EndAt         *time.Time
 	OrgID         int
 	UserID        *int
+	RoleID        *int
 	OrgPolicyID   int
 }
 
 // Mutate applies the CreatePermissionInput on the PermissionMutation builder.
 func (i *CreatePermissionInput) Mutate(m *PermissionMutation) {
 	m.SetPrincipalKind(i.PrincipalKind)
-	if v := i.RoleID; v != nil {
-		m.SetRoleID(*v)
-	}
 	if v := i.StartAt; v != nil {
 		m.SetStartAt(*v)
 	}
@@ -1113,6 +1110,9 @@ func (i *CreatePermissionInput) Mutate(m *PermissionMutation) {
 	m.SetOrgID(i.OrgID)
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)
+	}
+	if v := i.RoleID; v != nil {
+		m.SetRoleID(*v)
 	}
 	m.SetOrgPolicyID(i.OrgPolicyID)
 }

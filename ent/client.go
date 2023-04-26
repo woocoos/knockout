@@ -2693,6 +2693,22 @@ func (c *PermissionClient) QueryUser(pe *Permission) *UserQuery {
 	return query
 }
 
+// QueryRole queries the role edge of a Permission.
+func (c *PermissionClient) QueryRole(pe *Permission) *OrgRoleQuery {
+	query := (&OrgRoleClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pe.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(permission.Table, permission.FieldID, id),
+			sqlgraph.To(orgrole.Table, orgrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, permission.RoleTable, permission.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgPolicy queries the org_policy edge of a Permission.
 func (c *PermissionClient) QueryOrgPolicy(pe *Permission) *OrgPolicyQuery {
 	query := (&OrgPolicyClient{config: c.config}).Query()

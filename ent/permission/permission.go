@@ -48,6 +48,8 @@ const (
 	EdgeOrg = "org"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
+	// EdgeRole holds the string denoting the role edge name in mutations.
+	EdgeRole = "role"
 	// EdgeOrgPolicy holds the string denoting the org_policy edge name in mutations.
 	EdgeOrgPolicy = "org_policy"
 	// Table holds the table name of the permission in the database.
@@ -66,6 +68,13 @@ const (
 	UserInverseTable = "user"
 	// UserColumn is the table column denoting the user relation/edge.
 	UserColumn = "user_id"
+	// RoleTable is the table that holds the role relation/edge.
+	RoleTable = "permission"
+	// RoleInverseTable is the table name for the OrgRole entity.
+	// It exists in this package in order to avoid circular dependency with the "orgrole" package.
+	RoleInverseTable = "org_role"
+	// RoleColumn is the table column denoting the role relation/edge.
+	RoleColumn = "role_id"
 	// OrgPolicyTable is the table that holds the org_policy relation/edge.
 	OrgPolicyTable = "permission"
 	// OrgPolicyInverseTable is the table name for the OrgPolicy entity.
@@ -230,6 +239,13 @@ func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
+// ByRoleField orders the results by role field.
+func ByRoleField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newRoleStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByOrgPolicyField orders the results by org_policy field.
 func ByOrgPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -248,6 +264,13 @@ func newUserStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UserInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, UserTable, UserColumn),
+	)
+}
+func newRoleStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(RoleInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, RoleTable, RoleColumn),
 	)
 }
 func newOrgPolicyStep() *sqlgraph.Step {

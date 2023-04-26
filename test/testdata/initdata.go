@@ -128,9 +128,10 @@ func initApp(client *ent.Tx) {
 	ops := make([]*ent.OrgPolicyCreate, 0)
 	ors := make([]*ent.OrgRoleCreate, 0)
 	for i := 1; i < 2; i++ {
-		a := client.App.Create().SetID(i).SetName("资源权限管理").SetCode("resource").SetKind(app.KindWeb).
+		ac := "resource"
+		a := client.App.Create().SetID(i).SetName("资源权限管理").SetCode(ac).SetKind(app.KindWeb).
 			SetComments("资源权限管理是管理组织目录中的应用,组织,人员以及授权信息").SetStatus(typex.SimpleStatusActive).
-			SetCreatedBy(1).SetOrgID(1)
+			SetCreatedBy(1).SetOwnerOrgID(1)
 		apps = append(apps, a)
 
 		ras = append(ras, client.AppAction.Create().SetID(i).SetAppID(i).SetCreatedBy(1).
@@ -142,7 +143,7 @@ func initApp(client *ent.Tx) {
 		)
 		aps = append(aps, client.AppPolicy.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("全部管理权限").
 			SetComments("全部管理权限").SetAutoGrant(true).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
-			SetRules([]types.PolicyRule{
+			SetRules([]*types.PolicyRule{
 				{
 					Effect:    "allow",
 					Actions:   []string{"*"},
@@ -158,10 +159,10 @@ func initApp(client *ent.Tx) {
 		oas = append(oas, client.OrgApp.Create().SetID(i).SetOrgID(1).SetAppID(i).SetCreatedBy(1))
 
 		ops = append(ops, client.OrgPolicy.Create().SetID(i).SetOrgID(1).SetAppID(i).SetAppPolicyID(i).
-			SetCreatedBy(1).SetName("全部管理权限").SetRules([]types.PolicyRule{
+			SetCreatedBy(1).SetName("全部管理权限").SetRules([]*types.PolicyRule{
 			{
 				Effect:    "allow",
-				Actions:   []string{"*"},
+				Actions:   []string{ac + ":*"},
 				Resources: []string{"*"},
 			},
 		}))

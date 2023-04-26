@@ -6,8 +6,7 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 cloud.google.com/go v0.105.0 h1:DNtEKRBAAzeS4KyIory52wWHuClNaXJ5x1F7xa4q+5Y=
 cloud.google.com/go/compute v1.15.1 h1:7UGq3QknM33pw5xATlpzeoomNxsacIVvTqTTvbfajmE=
 cloud.google.com/go/compute/metadata v0.2.3 h1:mg4jlk7mCAj6xXp9UJ4fjI9VUI5rubuGBW5aJ7UnBMY=
-entgo.io/contrib v0.4.2 h1:D18yJUMJ8HU8XWNQE06vwNQgkiTa8IcKAN9pQ7w2H7Q=
-entgo.io/contrib v0.4.2/go.mod h1:wpZyq2DJgthugFvDBlaqMXj9mV4/9ebyGEn7xlTVQqE=
+entgo.io/contrib v0.4.4 h1:7pAco0odTsHIBaz/G1z4dzqONnuiIeA8GBtXqXCGz10=
 entgo.io/contrib v0.4.4/go.mod h1:wpZyq2DJgthugFvDBlaqMXj9mV4/9ebyGEn7xlTVQqE=
 entgo.io/ent v0.12.2 h1:Ndl/JvCX76xCtUDlrUfMnOKBRodAtxE5yfGYxjbOxmM=
 entgo.io/ent v0.12.2/go.mod h1:OA1Y5bNE8EtlxKv4IyzWwt4jgvGbkoKMcwp668iEKQE=
@@ -44,8 +43,6 @@ github.com/bwmarrin/snowflake v0.3.0/go.mod h1:NdZxfVWX+oR6y2K0o6qAYv6gIOP9rjG0/
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.8.0 h1:ea0Xadu+sHlu7x5O3gKhRpQ1IKiMrSiHttPF0ybECuA=
 github.com/bytedance/sonic v1.8.0/go.mod h1:i736AoUSYt75HyZLoJW9ERYxcy6eaN6h4BZXU064P/U=
-github.com/casbin/casbin/v2 v2.67.0 h1:+cOjW1hZJG18IsXXQJf2wK597SBo2XQJBVUeDYNt8u4=
-github.com/casbin/casbin/v2 v2.67.0/go.mod h1:vByNa/Fchek0KZUgG5wEsl7iFsiviAYKRtgrQfcJqHg=
 github.com/casbin/casbin/v2 v2.68.0 h1:7L4kwNJJw/pzdSEhl4SkeHz+1JzYn8guO+Q422sxzLM=
 github.com/casbin/casbin/v2 v2.68.0/go.mod h1:vByNa/Fchek0KZUgG5wEsl7iFsiviAYKRtgrQfcJqHg=
 github.com/casbin/redis-watcher/v2 v2.5.0 h1:a0922GOKYDSSiD7hEQxmLh/psea2eLZtf1V12XzLI5w=
@@ -178,8 +175,7 @@ github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFF
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
-github.com/klauspost/compress v1.16.4 h1:91KN02FnsOYhuunwU4ssRe8lc2JosWmizWa91B5v1PU=
-github.com/klauspost/compress v1.16.4/go.mod h1:ntbaceVETuRiXiv4DpjP66DpAtAGkEQskQzEyD//IeE=
+github.com/klauspost/compress v1.16.5 h1:IFV2oUNUzZaz+XyusxpLzpzS8Pt5rh0Z16For/djlyI=
 github.com/klauspost/compress v1.16.5/go.mod h1:ntbaceVETuRiXiv4DpjP66DpAtAGkEQskQzEyD//IeE=
 github.com/klauspost/cpuid/v2 v2.0.9 h1:lgaqFMSdTdQYdZ04uHyN2d/eKdOMyi2YLSvlQIBFYa4=
 github.com/klauspost/cpuid/v2 v2.0.9/go.mod h1:FInQzS24/EEf25PyTYn52gqo7WaD8xa0213Md/qVLRg=
@@ -272,8 +268,6 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/tsingsun/woocoo v0.2.5-0.20230415042012-76493bca9442 h1:b7dx+ureNu+O4lpLb3rJf1EQCphPRF4ONoUzdBj2NiA=
-github.com/tsingsun/woocoo v0.2.5-0.20230415042012-76493bca9442/go.mod h1:zqnkxMm6gTTHbA/yiWxOp5iXmFoCX8YW6cqhRHbPDJg=
 github.com/tsingsun/woocoo v0.2.5-0.20230425093650-6e431d3bd950 h1:UWRDHJPRX2go2+qhUUYxa2aTT2315R1Qni5376rUP5A=
 github.com/tsingsun/woocoo v0.2.5-0.20230425093650-6e431d3bd950/go.mod h1:/CeXmIDTGTEwwCiPZybgRikFW3OYlXyMceBmxmL2hGw=
 github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230417101157-8350720ebba3 h1:SxAqwSLJPRFdNBPrf6zA+neil9PFffXYOmJ5P1fh9fA=
@@ -300,8 +294,6 @@ github.com/vmihailenco/tagparser/v2 v2.0.0 h1:y09buUbR+b5aycVFQs/g70pqKVZNBmxwAh
 github.com/vmihailenco/tagparser/v2 v2.0.0/go.mod h1:Wri+At7QHww0WTrCBeu4J6bNtoV6mEfg5OIWRZA9qds=
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230404005858-cd33f1b0b92e h1:GbxL4wa7cs+l7Bi6L2mjfkFiqDK9t6N2oyOrNp+yV1U=
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230404005858-cd33f1b0b92e/go.mod h1:44V48kYKt7r9gWei7Ld+QaL0qVIBlOWrhkNTVMpnx3I=
-github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6 h1:E6NMKO/4AxUfa4vnV/TiQGJFb4nPw1RyQcF/vmbDLl8=
-github.com/woocoos/entco v0.0.0-20230420100621-be27aa4019b6/go.mod h1:iFoA6ss5cSwWy+WZ8GzcX2XM7NpBW+Tojb9KqsyXypk=
 github.com/woocoos/entco v0.0.0-20230426031308-0dde24c4b5b4 h1:fT5oF1/5g2EUjq2lGnEf7r5r44P0IY/qDMF4rUbCkj8=
 github.com/woocoos/entco v0.0.0-20230426031308-0dde24c4b5b4/go.mod h1:j3p6Q+QFX7ak8v6jhAnuG1eA4JmizXWtI/P0NXwg8b0=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 h1:bAn7/zixMGCfxrRTfdpNzjtPYqr8smhKouy9mxVdGPU=

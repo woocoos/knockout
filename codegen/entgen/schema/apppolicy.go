@@ -17,7 +17,6 @@ import (
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/hook"
-	"strings"
 )
 
 // AppPolicy 应用定义的策略.
@@ -82,19 +81,13 @@ func appRulesHook() ent.Hook {
 				}
 
 				var (
-					appcode string
-					err     error
-					acs     = make(map[string][]string)
+					err error
+					acs = make(map[int][]string)
 				)
 				appID, _ := m.AppID()
 				if appID == 0 {
 					id, _ := m.ID()
-					appcode, err = m.Client().AppPolicy.Query().Where(apppolicy.ID(id)).QueryApp().Select(app.FieldCode).String(ctx)
-					if err != nil {
-						return nil, err
-					}
-				} else {
-					appcode, err = m.Client().App.Query().Where(app.ID(appID)).Select(app.FieldCode).String(ctx)
+					appID, err = m.Client().AppPolicy.Query().Where(apppolicy.ID(id)).QueryApp().Select(app.FieldID).Int(ctx)
 					if err != nil {
 						return nil, err
 					}
@@ -105,21 +98,13 @@ func appRulesHook() ent.Hook {
 						if action == "*" {
 							continue
 						}
-						if !strings.HasPrefix(action, appcode+":") {
-							return nil, fmt.Errorf("action %s must start with app code %s", action, appcode)
-						}
-						// 分离出appcode和action
-						parts := strings.SplitN(action, ":", 2)
-						if len(parts) != 2 {
-							return nil, fmt.Errorf("invalid action %s", action)
-						}
-						acs[appcode] = append(acs[appcode], parts[1])
+						acs[appID] = append(acs[appID], action)
 					}
 				}
 				// 检查action是否存在
 				for cd, actions := range acs {
 					// 检查action是否存在
-					count, err := m.Client().AppAction.Query().Where(appaction.NameIn(actions...), appaction.HasAppWith(app.Code(cd))).Count(ctx)
+					count, err := m.Client().AppAction.Query().Where(appaction.AppID(appID), appaction.NameIn(actions...), appaction.HasAppWith(app.ID(cd))).Count(ctx)
 					if err != nil {
 						return nil, err
 					}

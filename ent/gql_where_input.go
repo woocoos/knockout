@@ -6605,10 +6605,6 @@ type PermissionWhereInput struct {
 	RoleIDNEQ    *int  `json:"roleIDNEQ,omitempty"`
 	RoleIDIn     []int `json:"roleIDIn,omitempty"`
 	RoleIDNotIn  []int `json:"roleIDNotIn,omitempty"`
-	RoleIDGT     *int  `json:"roleIDGT,omitempty"`
-	RoleIDGTE    *int  `json:"roleIDGTE,omitempty"`
-	RoleIDLT     *int  `json:"roleIDLT,omitempty"`
-	RoleIDLTE    *int  `json:"roleIDLTE,omitempty"`
 	RoleIDIsNil  bool  `json:"roleIDIsNil,omitempty"`
 	RoleIDNotNil bool  `json:"roleIDNotNil,omitempty"`
 
@@ -6657,6 +6653,10 @@ type PermissionWhereInput struct {
 	// "user" edge predicates.
 	HasUser     *bool             `json:"hasUser,omitempty"`
 	HasUserWith []*UserWhereInput `json:"hasUserWith,omitempty"`
+
+	// "role" edge predicates.
+	HasRole     *bool                `json:"hasRole,omitempty"`
+	HasRoleWith []*OrgRoleWhereInput `json:"hasRoleWith,omitempty"`
 
 	// "org_policy" edge predicates.
 	HasOrgPolicy     *bool                  `json:"hasOrgPolicy,omitempty"`
@@ -6920,18 +6920,6 @@ func (i *PermissionWhereInput) P() (predicate.Permission, error) {
 	if len(i.RoleIDNotIn) > 0 {
 		predicates = append(predicates, permission.RoleIDNotIn(i.RoleIDNotIn...))
 	}
-	if i.RoleIDGT != nil {
-		predicates = append(predicates, permission.RoleIDGT(*i.RoleIDGT))
-	}
-	if i.RoleIDGTE != nil {
-		predicates = append(predicates, permission.RoleIDGTE(*i.RoleIDGTE))
-	}
-	if i.RoleIDLT != nil {
-		predicates = append(predicates, permission.RoleIDLT(*i.RoleIDLT))
-	}
-	if i.RoleIDLTE != nil {
-		predicates = append(predicates, permission.RoleIDLTE(*i.RoleIDLTE))
-	}
 	if i.RoleIDIsNil {
 		predicates = append(predicates, permission.RoleIDIsNil())
 	}
@@ -7064,6 +7052,24 @@ func (i *PermissionWhereInput) P() (predicate.Permission, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, permission.HasUserWith(with...))
+	}
+	if i.HasRole != nil {
+		p := permission.HasRole()
+		if !*i.HasRole {
+			p = permission.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasRoleWith) > 0 {
+		with := make([]predicate.OrgRole, 0, len(i.HasRoleWith))
+		for _, w := range i.HasRoleWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasRoleWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, permission.HasRoleWith(with...))
 	}
 	if i.HasOrgPolicy != nil {
 		p := permission.HasOrgPolicy()

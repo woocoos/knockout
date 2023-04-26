@@ -211,9 +211,6 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(permission.FieldUpdatedAt, field.TypeTime)
 	}
-	if pu.mutation.RoleIDCleared() {
-		_spec.ClearField(permission.FieldRoleID, field.TypeInt)
-	}
 	if value, ok := pu.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)
 	}
@@ -463,9 +460,6 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	}
 	if puo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(permission.FieldUpdatedAt, field.TypeTime)
-	}
-	if puo.mutation.RoleIDCleared() {
-		_spec.ClearField(permission.FieldRoleID, field.TypeInt)
 	}
 	if value, ok := puo.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)

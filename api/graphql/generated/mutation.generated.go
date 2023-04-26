@@ -4583,6 +4583,8 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 				return ec.fieldContext_Permission_org(ctx, field)
 			case "user":
 				return ec.fieldContext_Permission_user(ctx, field)
+			case "role":
+				return ec.fieldContext_Permission_role(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_Permission_orgPolicy(ctx, field)
 			}
@@ -4669,6 +4671,8 @@ func (ec *executionContext) fieldContext_Mutation_updatePermission(ctx context.C
 				return ec.fieldContext_Permission_org(ctx, field)
 			case "user":
 				return ec.fieldContext_Permission_user(ctx, field)
+			case "role":
+				return ec.fieldContext_Permission_role(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_Permission_orgPolicy(ctx, field)
 			}

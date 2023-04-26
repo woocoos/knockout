@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -57,13 +58,15 @@ type PermissionEdges struct {
 	Org *Org `json:"org,omitempty"`
 	// User holds the value of the user edge.
 	User *User `json:"user,omitempty"`
+	// Role holds the value of the role edge.
+	Role *OrgRole `json:"role,omitempty"`
 	// OrgPolicy holds the value of the org_policy edge.
 	OrgPolicy *OrgPolicy `json:"org_policy,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 }
 
 // OrgOrErr returns the Org value or an error if the edge
@@ -92,10 +95,23 @@ func (e PermissionEdges) UserOrErr() (*User, error) {
 	return nil, &NotLoadedError{edge: "user"}
 }
 
+// RoleOrErr returns the Role value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PermissionEdges) RoleOrErr() (*OrgRole, error) {
+	if e.loadedTypes[2] {
+		if e.Role == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: orgrole.Label}
+		}
+		return e.Role, nil
+	}
+	return nil, &NotLoadedError{edge: "role"}
+}
+
 // OrgPolicyOrErr returns the OrgPolicy value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e PermissionEdges) OrgPolicyOrErr() (*OrgPolicy, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		if e.OrgPolicy == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: orgpolicy.Label}
@@ -230,6 +246,11 @@ func (pe *Permission) QueryOrg() *OrgQuery {
 // QueryUser queries the "user" edge of the Permission entity.
 func (pe *Permission) QueryUser() *UserQuery {
 	return NewPermissionClient(pe.config).QueryUser(pe)
+}
+
+// QueryRole queries the "role" edge of the Permission entity.
+func (pe *Permission) QueryRole() *OrgRoleQuery {
+	return NewPermissionClient(pe.config).QueryRole(pe)
 }
 
 // QueryOrgPolicy queries the "org_policy" edge of the Permission entity.

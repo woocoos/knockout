@@ -53,6 +53,7 @@ func (Permission) Edges() []ent.Edge {
 		edge.From("org", Org.Type).Ref("permissions").
 			Unique().Required().Immutable().Field("org_id"),
 		edge.To("user", User.Type).Unique().Immutable().Field("user_id"),
+		edge.To("role", OrgRole.Type).Unique().Immutable().Field("role_id"),
 		edge.From("org_policy", OrgPolicy.Type).Ref("permissions").Unique().Required().Immutable().Field("org_policy_id"),
 	}
 }

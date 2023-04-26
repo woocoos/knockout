@@ -450,13 +450,13 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "principal_kind", Type: field.TypeEnum, Enums: []string{"user", "role"}},
-		{Name: "role_id", Type: field.TypeInt, Nullable: true},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
 		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "org_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "role_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
 	}
 	// PermissionTable holds the schema information for the "permission" table.
 	PermissionTable = &schema.Table{
@@ -466,20 +466,26 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "permission_org_permissions",
-				Columns:    []*schema.Column{PermissionColumns[10]},
+				Columns:    []*schema.Column{PermissionColumns[9]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "permission_org_policy_permissions",
-				Columns:    []*schema.Column{PermissionColumns[11]},
+				Columns:    []*schema.Column{PermissionColumns[10]},
 				RefColumns: []*schema.Column{OrgPolicyColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "permission_user_user",
-				Columns:    []*schema.Column{PermissionColumns[12]},
+				Columns:    []*schema.Column{PermissionColumns[11]},
 				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "permission_org_role_role",
+				Columns:    []*schema.Column{PermissionColumns[12]},
+				RefColumns: []*schema.Column{OrgRoleColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -710,6 +716,7 @@ func init() {
 	PermissionTable.ForeignKeys[0].RefTable = OrgTable
 	PermissionTable.ForeignKeys[1].RefTable = OrgPolicyTable
 	PermissionTable.ForeignKeys[2].RefTable = UserTable
+	PermissionTable.ForeignKeys[3].RefTable = OrgRoleTable
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
 	}

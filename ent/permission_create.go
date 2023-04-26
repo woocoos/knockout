@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -186,6 +187,11 @@ func (pc *PermissionCreate) SetUser(u *User) *PermissionCreate {
 	return pc.SetUserID(u.ID)
 }
 
+// SetRole sets the "role" edge to the OrgRole entity.
+func (pc *PermissionCreate) SetRole(o *OrgRole) *PermissionCreate {
+	return pc.SetRoleID(o.ID)
+}
+
 // SetOrgPolicy sets the "org_policy" edge to the OrgPolicy entity.
 func (pc *PermissionCreate) SetOrgPolicy(o *OrgPolicy) *PermissionCreate {
 	return pc.SetOrgPolicyID(o.ID)
@@ -331,10 +337,6 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 		_spec.SetField(permission.FieldPrincipalKind, field.TypeEnum, value)
 		_node.PrincipalKind = value
 	}
-	if value, ok := pc.mutation.RoleID(); ok {
-		_spec.SetField(permission.FieldRoleID, field.TypeInt, value)
-		_node.RoleID = value
-	}
 	if value, ok := pc.mutation.StartAt(); ok {
 		_spec.SetField(permission.FieldStartAt, field.TypeTime, value)
 		_node.StartAt = value
@@ -379,6 +381,23 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.UserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.RoleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   permission.RoleTable,
+			Columns: []string{permission.RoleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.RoleID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pc.mutation.OrgPolicyIDs(); len(nodes) > 0 {

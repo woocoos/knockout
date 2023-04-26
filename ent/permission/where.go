@@ -376,26 +376,6 @@ func RoleIDNotIn(vs ...int) predicate.Permission {
 	return predicate.Permission(sql.FieldNotIn(FieldRoleID, vs...))
 }
 
-// RoleIDGT applies the GT predicate on the "role_id" field.
-func RoleIDGT(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldGT(FieldRoleID, v))
-}
-
-// RoleIDGTE applies the GTE predicate on the "role_id" field.
-func RoleIDGTE(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldGTE(FieldRoleID, v))
-}
-
-// RoleIDLT applies the LT predicate on the "role_id" field.
-func RoleIDLT(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldLT(FieldRoleID, v))
-}
-
-// RoleIDLTE applies the LTE predicate on the "role_id" field.
-func RoleIDLTE(v int) predicate.Permission {
-	return predicate.Permission(sql.FieldLTE(FieldRoleID, v))
-}
-
 // RoleIDIsNil applies the IsNil predicate on the "role_id" field.
 func RoleIDIsNil() predicate.Permission {
 	return predicate.Permission(sql.FieldIsNull(FieldRoleID))
@@ -604,6 +584,29 @@ func HasUser() predicate.Permission {
 func HasUserWith(preds ...predicate.User) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
 		step := newUserStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasRole applies the HasEdge predicate on the "role" edge.
+func HasRole() predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, RoleTable, RoleColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRoleWith applies the HasEdge predicate on the "role" edge with a given conditions (other predicates).
+func HasRoleWith(preds ...predicate.OrgRole) predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := newRoleStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

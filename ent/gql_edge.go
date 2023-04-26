@@ -348,6 +348,14 @@ func (pe *Permission) User(ctx context.Context) (*User, error) {
 	return result, MaskNotFound(err)
 }
 
+func (pe *Permission) Role(ctx context.Context) (*OrgRole, error) {
+	result, err := pe.Edges.RoleOrErr()
+	if IsNotLoaded(err) {
+		result, err = pe.QueryRole().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
 	result, err := pe.Edges.OrgPolicyOrErr()
 	if IsNotLoaded(err) {

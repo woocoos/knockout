@@ -1,7 +1,6 @@
 package main
 
 import (
-	"entgo.io/ent/dialect"
 	"github.com/gin-contrib/cors"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/cache"
@@ -10,6 +9,7 @@ import (
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
@@ -20,6 +20,11 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/woocoos/knockout/ent/runtime"
+)
+
+var (
+	portalClient *ent.Client
+	casbinClient *casbinent.Client
 )
 
 func main() {
@@ -33,15 +38,16 @@ func main() {
 	//}
 	pd := oteldriver.BuildOTELDriver(app.AppConfiguration(), "store.portal")
 	pd = ecx.BuildEntCacheDriver(app.AppConfiguration(), pd)
-	var portalClient *ent.Client
 
 	if app.AppConfiguration().Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
+		casbinClient = casbinent.NewClient(casbinent.Driver(pd), casbinent.Debug())
 	} else {
 		portalClient = ent.NewClient(ent.Driver(pd))
+		casbinClient = casbinent.NewClient(casbinent.Driver(pd))
 	}
 
-	buildCashbin(app.AppConfiguration(), pd)
+	buildCashbin(app.AppConfiguration(), casbinClient)
 
 	us := entpb.NewUserService(portalClient)
 	srv := grpcx.New(grpcx.WithGracefulStop())
@@ -62,6 +68,10 @@ func main() {
 
 	app.RegisterServer(websrv, srv)
 
+	defer func() {
+		portalClient.Close()
+		casbinClient.Close()
+	}()
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
@@ -82,8 +92,8 @@ func buildWebServer(cnf *conf.AppConfiguration, ws *server.Service) *web.Server 
 	return webSrv
 }
 
-func buildCashbin(cnf *conf.AppConfiguration, driver dialect.Driver) {
-	_, err := authorization.SetAuthorization(cnf.Sub("authz"), driver)
+func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
+	_, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
 	if err != nil {
 		log.Fatal(err)
 	}
