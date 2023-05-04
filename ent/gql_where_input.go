@@ -2060,21 +2060,6 @@ type AppPolicyWhereInput struct {
 	CommentsEqualFold    *string  `json:"commentsEqualFold,omitempty"`
 	CommentsContainsFold *string  `json:"commentsContainsFold,omitempty"`
 
-	// "version" field predicates.
-	Version             *string  `json:"version,omitempty"`
-	VersionNEQ          *string  `json:"versionNEQ,omitempty"`
-	VersionIn           []string `json:"versionIn,omitempty"`
-	VersionNotIn        []string `json:"versionNotIn,omitempty"`
-	VersionGT           *string  `json:"versionGT,omitempty"`
-	VersionGTE          *string  `json:"versionGTE,omitempty"`
-	VersionLT           *string  `json:"versionLT,omitempty"`
-	VersionLTE          *string  `json:"versionLTE,omitempty"`
-	VersionContains     *string  `json:"versionContains,omitempty"`
-	VersionHasPrefix    *string  `json:"versionHasPrefix,omitempty"`
-	VersionHasSuffix    *string  `json:"versionHasSuffix,omitempty"`
-	VersionEqualFold    *string  `json:"versionEqualFold,omitempty"`
-	VersionContainsFold *string  `json:"versionContainsFold,omitempty"`
-
 	// "auto_grant" field predicates.
 	AutoGrant    *bool `json:"autoGrant,omitempty"`
 	AutoGrantNEQ *bool `json:"autoGrantNEQ,omitempty"`
@@ -2404,45 +2389,6 @@ func (i *AppPolicyWhereInput) P() (predicate.AppPolicy, error) {
 	}
 	if i.CommentsContainsFold != nil {
 		predicates = append(predicates, apppolicy.CommentsContainsFold(*i.CommentsContainsFold))
-	}
-	if i.Version != nil {
-		predicates = append(predicates, apppolicy.VersionEQ(*i.Version))
-	}
-	if i.VersionNEQ != nil {
-		predicates = append(predicates, apppolicy.VersionNEQ(*i.VersionNEQ))
-	}
-	if len(i.VersionIn) > 0 {
-		predicates = append(predicates, apppolicy.VersionIn(i.VersionIn...))
-	}
-	if len(i.VersionNotIn) > 0 {
-		predicates = append(predicates, apppolicy.VersionNotIn(i.VersionNotIn...))
-	}
-	if i.VersionGT != nil {
-		predicates = append(predicates, apppolicy.VersionGT(*i.VersionGT))
-	}
-	if i.VersionGTE != nil {
-		predicates = append(predicates, apppolicy.VersionGTE(*i.VersionGTE))
-	}
-	if i.VersionLT != nil {
-		predicates = append(predicates, apppolicy.VersionLT(*i.VersionLT))
-	}
-	if i.VersionLTE != nil {
-		predicates = append(predicates, apppolicy.VersionLTE(*i.VersionLTE))
-	}
-	if i.VersionContains != nil {
-		predicates = append(predicates, apppolicy.VersionContains(*i.VersionContains))
-	}
-	if i.VersionHasPrefix != nil {
-		predicates = append(predicates, apppolicy.VersionHasPrefix(*i.VersionHasPrefix))
-	}
-	if i.VersionHasSuffix != nil {
-		predicates = append(predicates, apppolicy.VersionHasSuffix(*i.VersionHasSuffix))
-	}
-	if i.VersionEqualFold != nil {
-		predicates = append(predicates, apppolicy.VersionEqualFold(*i.VersionEqualFold))
-	}
-	if i.VersionContainsFold != nil {
-		predicates = append(predicates, apppolicy.VersionContainsFold(*i.VersionContainsFold))
 	}
 	if i.AutoGrant != nil {
 		predicates = append(predicates, apppolicy.AutoGrantEQ(*i.AutoGrant))

@@ -141,6 +141,10 @@ func init() {
 	apppolicyDescCreatedAt := apppolicyMixinFields1[1].Descriptor()
 	// apppolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppolicy.DefaultCreatedAt = apppolicyDescCreatedAt.Default.(func() time.Time)
+	// apppolicyDescVersion is the schema descriptor for version field.
+	apppolicyDescVersion := apppolicyFields[4].Descriptor()
+	// apppolicy.DefaultVersion holds the default value on creation for the version field.
+	apppolicy.DefaultVersion = apppolicyDescVersion.Default.(string)
 	// apppolicyDescAutoGrant is the schema descriptor for auto_grant field.
 	apppolicyDescAutoGrant := apppolicyFields[5].Descriptor()
 	// apppolicy.DefaultAutoGrant holds the default value on creation for the auto_grant field.

@@ -30,9 +30,9 @@ extend type Query {
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
     """应用角色授权的组织列表"""
-    appRoleAssignedToOrgs(roleID:ID!):[Org]!
+    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org]!
     """应用策略授权的组织列表"""
-    appPolicyAssignedToOrgs(policyID:ID!):[Org]!
+    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(
         policyID:ID!
@@ -43,4 +43,34 @@ extend type Query {
         orderBy: PermissionOrder
         where: PermissionWhereInput
     ):PermissionConnection!
+    """获取应用资源模板"""
+    appResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """获取组织应用资源模板"""
+    orgAppResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """用户加入的用户组"""
+    userGroups(
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
 }

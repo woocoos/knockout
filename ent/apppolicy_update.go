@@ -124,6 +124,14 @@ func (apu *AppPolicyUpdate) SetVersion(s string) *AppPolicyUpdate {
 	return apu
 }
 
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (apu *AppPolicyUpdate) SetNillableVersion(s *string) *AppPolicyUpdate {
+	if s != nil {
+		apu.SetVersion(*s)
+	}
+	return apu
+}
+
 // SetAutoGrant sets the "auto_grant" field.
 func (apu *AppPolicyUpdate) SetAutoGrant(b bool) *AppPolicyUpdate {
 	apu.mutation.SetAutoGrant(b)
@@ -538,6 +546,14 @@ func (apuo *AppPolicyUpdateOne) AppendRules(tr []*types.PolicyRule) *AppPolicyUp
 // SetVersion sets the "version" field.
 func (apuo *AppPolicyUpdateOne) SetVersion(s string) *AppPolicyUpdateOne {
 	apuo.mutation.SetVersion(s)
+	return apuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (apuo *AppPolicyUpdateOne) SetNillableVersion(s *string) *AppPolicyUpdateOne {
+	if s != nil {
+		apuo.SetVersion(*s)
+	}
 	return apuo
 }
 

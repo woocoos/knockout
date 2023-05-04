@@ -8,7 +8,8 @@ import (
 func RegisterHandlersManual(router *gin.Engine, service *Service) {
 	router.GET("/login/mfaqr.png", func(c *gin.Context) {
 		var req struct {
-			UserID int `form:"userId" binding:"required"`
+			UserID int    `form:"userId" binding:"required"`
+			Secret string `form:"secret"`
 		}
 		if err := c.ShouldBind(&req); err != nil {
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -16,7 +17,7 @@ func RegisterHandlersManual(router *gin.Engine, service *Service) {
 		if req.UserID < 0 {
 			c.AbortWithStatus(http.StatusBadRequest)
 		}
-		bs, err := service.MfaQRCode(c, req.UserID)
+		bs, err := service.MfaQRCode(c, req.UserID, req.Secret)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return

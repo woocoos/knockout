@@ -116,7 +116,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
-		{Name: "version", Type: field.TypeString},
+		{Name: "version", Type: field.TypeString, Default: "1"},
 		{Name: "auto_grant", Type: field.TypeBool, Default: false},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},

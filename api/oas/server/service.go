@@ -245,7 +245,7 @@ func (s *Service) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (r
 		CallbackUrl: CallBackUrlMFA,
 		StateToken:  createStateToken(sid),
 	}
-	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
+	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.ID, Cnf.Duration("auth.stateTokenTTL"))
 	return
 }
 
@@ -353,7 +353,7 @@ func parseStateToken(token string) (id string, err error) {
 }
 
 // MfaQRCode generate a QR code for MFA, the code is a png image
-func (s *Service) MfaQRCode(ctx *gin.Context, userID int) ([]byte, error) {
+func (s *Service) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte, error) {
 	uorg, err := s.GetUserRootOrg(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -368,10 +368,13 @@ func (s *Service) MfaQRCode(ctx *gin.Context, userID int) ([]byte, error) {
 		return nil, err
 	}
 	issuer = strings.ReplaceAll(issuer, ":", "-")
+	if secret == "" {
+		secret = profile.MfaSecret
+	}
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
 		AccountName: profile.Edges.User.PrincipalName,
-		Secret:      []byte(profile.MfaSecret),
+		Secret:      []byte(secret),
 	})
 	if err != nil {
 		return nil, err

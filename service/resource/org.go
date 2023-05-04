@@ -420,3 +420,44 @@ func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error)
 	}
 	return s.Client.OrgUser.Query().Where(orguser.IDIn(ouIds...)).Select(orguser.FieldUserID).Ints(ctx)
 }
+
+// EnableMFA 启用用户的MFA验证
+func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if usr == nil {
+		return nil, fmt.Errorf("user not found")
+	}
+	sec := GeneralMFASecret()
+	err = client.UserLoginProfile.UpdateOneID(userID).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Mfa{
+		Account: usr.PrincipalName,
+		Secret:  sec,
+	}, nil
+}
+
+func (s *Service) DisableMFA(ctx context.Context, userID int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if usr == nil {
+		return fmt.Errorf("user not found")
+	}
+	return client.UserLoginProfile.UpdateOneID(userID).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
+}

@@ -445,7 +445,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	if err != nil {
 		return err
 	}
-	p, err := client.Permission.Query().Where(permission.ID(permissionID), permission.OrgID(orgID)).Only(ctx)
+	p, err := client.Permission.Query().Where(permission.ID(permissionID), permission.OrgID(orgID)).WithOrgPolicy().Only(ctx)
 	if err != nil {
 		return err
 	}
@@ -455,7 +455,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	if err != nil {
 		log.Error(err)
 	}
-	_, err = client.Permission.Delete().Where(permission.ID(pid)).Exec(ctx)
+	_, err = client.Permission.Delete().Where(permission.ID(permissionID), permission.OrgID(orgID)).Exec(ctx)
 	return err
 }
 

@@ -110,6 +110,8 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultVersion holds the default value on creation for the "version" field.
+	DefaultVersion string
 	// DefaultAutoGrant holds the default value on creation for the "auto_grant" field.
 	DefaultAutoGrant bool
 	// DefaultID holds the default value on creation for the "id" field.

@@ -147,7 +147,6 @@ type ComplexityRoot struct {
 		Status    func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
-		Version   func(childComplexity int) int
 	}
 
 	AppPolicyConnection struct {
@@ -208,12 +207,19 @@ type ComplexityRoot struct {
 		Topic     func(childComplexity int) int
 	}
 
+	Mfa struct {
+		Account       func(childComplexity int) int
+		Secret        func(childComplexity int) int
+		StateToken    func(childComplexity int) int
+		StateTokenTTL func(childComplexity int) int
+	}
+
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
-		AssignOrganizationAppRole   func(childComplexity int, orgID int, appPolicyID int) int
+		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
@@ -238,7 +244,9 @@ type ComplexityRoot struct {
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
+		DisableMfa                  func(childComplexity int, userID int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
+		EnableMfa                   func(childComplexity int, userID int) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
@@ -253,6 +261,7 @@ type ComplexityRoot struct {
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
+		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
@@ -396,17 +405,20 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppPolicyAssignedToOrgs func(childComplexity int, policyID int) int
-		AppRoleAssignedToOrgs   func(childComplexity int, roleID int) int
+		AppPolicyAssignedToOrgs func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
+		AppResources            func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
 		Nodes                   func(childComplexity int, ids []string) int
+		OrgAppResources         func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		OrgGroups               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgPolicyReferences     func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		OrgRoleUsers            func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -1084,13 +1096,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicy.UpdatedBy(childComplexity), true
 
-	case "AppPolicy.version":
-		if e.complexity.AppPolicy.Version == nil {
-			break
-		}
-
-		return e.complexity.AppPolicy.Version(childComplexity), true
-
 	case "AppPolicyConnection.edges":
 		if e.complexity.AppPolicyConnection.Edges == nil {
 			break
@@ -1350,6 +1355,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Message.Topic(childComplexity), true
 
+	case "Mfa.account":
+		if e.complexity.Mfa.Account == nil {
+			break
+		}
+
+		return e.complexity.Mfa.Account(childComplexity), true
+
+	case "Mfa.secret":
+		if e.complexity.Mfa.Secret == nil {
+			break
+		}
+
+		return e.complexity.Mfa.Secret(childComplexity), true
+
+	case "Mfa.stateToken":
+		if e.complexity.Mfa.StateToken == nil {
+			break
+		}
+
+		return e.complexity.Mfa.StateToken(childComplexity), true
+
+	case "Mfa.stateTokenTTL":
+		if e.complexity.Mfa.StateTokenTTL == nil {
+			break
+		}
+
+		return e.complexity.Mfa.StateTokenTTL(childComplexity), true
+
 	case "Mutation.allotOrganizationUser":
 		if e.complexity.Mutation.AllotOrganizationUser == nil {
 			break
@@ -1408,7 +1441,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignOrganizationAppRole(childComplexity, args["orgID"].(int), args["appPolicyID"].(int)), true
+		return e.complexity.Mutation.AssignOrganizationAppRole(childComplexity, args["orgID"].(int), args["appRoleID"].(int)), true
 
 	case "Mutation.assignRoleUser":
 		if e.complexity.Mutation.AssignRoleUser == nil {
@@ -1698,6 +1731,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUserIdentity(childComplexity, args["id"].(int)), true
 
+	case "Mutation.disableMFA":
+		if e.complexity.Mutation.DisableMfa == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_disableMFA_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DisableMfa(childComplexity, args["userID"].(int)), true
+
 	case "Mutation.enableDirectory":
 		if e.complexity.Mutation.EnableDirectory == nil {
 			break
@@ -1709,6 +1754,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EnableDirectory(childComplexity, args["input"].(model.EnableDirectoryInput)), true
+
+	case "Mutation.enableMFA":
+		if e.complexity.Mutation.EnableMfa == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_enableMFA_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EnableMfa(childComplexity, args["userID"].(int)), true
 
 	case "Mutation.grant":
 		if e.complexity.Mutation.Grant == nil {
@@ -1877,6 +1934,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppPolicy(childComplexity, args["policyID"].(int), args["input"].(ent.UpdateAppPolicyInput)), true
+
+	case "Mutation.updateAppRes":
+		if e.complexity.Mutation.UpdateAppRes == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppRes_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppRes(childComplexity, args["appResID"].(int), args["input"].(ent.UpdateAppResInput)), true
 
 	case "Mutation.updateAppRole":
 		if e.complexity.Mutation.UpdateAppRole == nil {
@@ -2629,7 +2698,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.AppPolicyAssignedToOrgs(childComplexity, args["policyID"].(int)), true
+		return e.complexity.Query.AppPolicyAssignedToOrgs(childComplexity, args["policyID"].(int), args["where"].(*ent.OrgWhereInput)), true
+
+	case "Query.appResources":
+		if e.complexity.Query.AppResources == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppResources(childComplexity, args["appID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppResOrder), args["where"].(*ent.AppResWhereInput)), true
 
 	case "Query.appRoleAssignedToOrgs":
 		if e.complexity.Query.AppRoleAssignedToOrgs == nil {
@@ -2641,7 +2722,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.AppRoleAssignedToOrgs(childComplexity, args["roleID"].(int)), true
+		return e.complexity.Query.AppRoleAssignedToOrgs(childComplexity, args["roleID"].(int), args["where"].(*ent.OrgWhereInput)), true
 
 	case "Query.apps":
 		if e.complexity.Query.Apps == nil {
@@ -2690,6 +2771,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]string)), true
+
+	case "Query.orgAppResources":
+		if e.complexity.Query.OrgAppResources == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgAppResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgAppResources(childComplexity, args["appID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppResOrder), args["where"].(*ent.AppResWhereInput)), true
 
 	case "Query.orgGroups":
 		if e.complexity.Query.OrgGroups == nil {
@@ -2750,6 +2843,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
+
+	case "Query.userGroups":
+		if e.complexity.Query.UserGroups == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userGroups_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -3925,8 +4030,6 @@ type AppPolicy implements Node {
   comments: String
   """策略规则"""
   rules: [PolicyRule]!
-  """版本号"""
-  version: String!
   """标识是否自动授予到账户"""
   autoGrant: Boolean!
   """状态"""
@@ -4061,20 +4164,6 @@ input AppPolicyWhereInput {
   commentsNotNil: Boolean
   commentsEqualFold: String
   commentsContainsFold: String
-  """version field predicates"""
-  version: String
-  versionNEQ: String
-  versionIn: [String!]
-  versionNotIn: [String!]
-  versionGT: String
-  versionGTE: String
-  versionLT: String
-  versionLTE: String
-  versionContains: String
-  versionHasPrefix: String
-  versionHasSuffix: String
-  versionEqualFold: String
-  versionContainsFold: String
   """auto_grant field predicates"""
   autoGrant: Boolean
   autoGrantNEQ: Boolean
@@ -4769,8 +4858,6 @@ input CreateAppPolicyInput {
   comments: String
   """策略规则"""
   rules: [PolicyRuleInput]!
-  """版本号"""
-  version: String!
   """标识是否自动授予到账户"""
   autoGrant: Boolean
   """状态"""
@@ -6176,8 +6263,6 @@ input UpdateAppPolicyInput {
   """策略规则"""
   rules: [PolicyRuleInput]
   appendRules: [PolicyRuleInput]
-  """版本号"""
-  version: String
   """标识是否自动授予到账户"""
   autoGrant: Boolean
   """状态"""
@@ -6194,10 +6279,6 @@ Input was generated by ent.
 input UpdateAppResInput {
   """资源名称"""
   name: String
-  """资源类型名称,如数据库表名"""
-  typeName: String
-  """应用资源表达式"""
-  arnPattern: String
 }
 """
 UpdateAppRoleInput is used for update AppRole object.
@@ -6369,15 +6450,6 @@ input UpdateUserLoginProfileInput {
   clearPasswordReset: Boolean
   """是否开启设备认证"""
   verifyDevice: Boolean
-  """是否开启多因素验证"""
-  mfaEnabled: Boolean
-  clearMfaEnabled: Boolean
-  """多因素验证密钥BASE32"""
-  mfaSecret: String
-  clearMfaSecret: Boolean
-  """多因素验证状态"""
-  mfaStatus: UserLoginProfileSimpleStatus
-  clearMfaStatus: Boolean
 }
 """
 UpdateUserPasswordInput is used for update UserPassword object.
@@ -7339,6 +7411,13 @@ input GrantInput {
     principal: GID!
     orgScope: ID!
     policyID: ID!
+}
+
+type Mfa{
+    secret: String!
+    account: String!
+    stateToken: String
+    stateTokenTTL: Int
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -7372,9 +7451,9 @@ input GrantInput {
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
     """应用角色授权的组织列表"""
-    appRoleAssignedToOrgs(roleID:ID!):[Org]!
+    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org]!
     """应用策略授权的组织列表"""
-    appPolicyAssignedToOrgs(policyID:ID!):[Org]!
+    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org]!
     """权限策略引用列表"""
     orgPolicyReferences(
         policyID:ID!
@@ -7385,6 +7464,36 @@ input GrantInput {
         orderBy: PermissionOrder
         where: PermissionWhereInput
     ):PermissionConnection!
+    """获取应用资源模板"""
+    appResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """获取组织应用资源模板"""
+    orgAppResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """用户加入的用户组"""
+    userGroups(
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -7469,7 +7578,7 @@ input GrantInput {
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
     """分配应用角色到组织"""
-    assignOrganizationAppRole(orgID:ID!,appPolicyID:ID!): Boolean!
+    assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """取消分配到组织应用角色"""
     revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
@@ -7508,6 +7617,12 @@ input GrantInput {
         """组织内的授权ID"""
         permissionID:ID!
     ): Boolean!
+    """启用MFA"""
+    enableMFA(userID:ID!):Mfa!
+    """禁用MFA"""
+    disableMFA(userID:ID!):Boolean!
+    """修改资源名称"""
+    updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
 }
 `, BuiltIn: false},
 	{Name: "../subscription.graphql", Input: `type Subscription {

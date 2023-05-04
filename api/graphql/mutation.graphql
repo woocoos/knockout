@@ -81,7 +81,7 @@ type Mutation {
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
     """分配应用角色到组织"""
-    assignOrganizationAppRole(orgID:ID!,appPolicyID:ID!): Boolean!
+    assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """取消分配到组织应用角色"""
     revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
@@ -120,4 +120,10 @@ type Mutation {
         """组织内的授权ID"""
         permissionID:ID!
     ): Boolean!
+    """启用MFA"""
+    enableMFA(userID:ID!):Mfa!
+    """禁用MFA"""
+    disableMFA(userID:ID!):Boolean!
+    """修改资源名称"""
+    updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
 }

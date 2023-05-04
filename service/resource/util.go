@@ -37,7 +37,7 @@ func SaltSecret(ori, salt string) string {
 
 // GeneralMFASecret gen a secret for google authenticator
 func GeneralMFASecret() string {
-	randomBytes := make([]byte, 10)
+	randomBytes := make([]byte, 20)
 	_, err := rand.Read(randomBytes)
 	if err != nil {
 		panic(err)

@@ -121,6 +121,14 @@ func (apc *AppPolicyCreate) SetVersion(s string) *AppPolicyCreate {
 	return apc
 }
 
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (apc *AppPolicyCreate) SetNillableVersion(s *string) *AppPolicyCreate {
+	if s != nil {
+		apc.SetVersion(*s)
+	}
+	return apc
+}
+
 // SetAutoGrant sets the "auto_grant" field.
 func (apc *AppPolicyCreate) SetAutoGrant(b bool) *AppPolicyCreate {
 	apc.mutation.SetAutoGrant(b)
@@ -241,6 +249,10 @@ func (apc *AppPolicyCreate) defaults() error {
 		}
 		v := apppolicy.DefaultCreatedAt()
 		apc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := apc.mutation.Version(); !ok {
+		v := apppolicy.DefaultVersion
+		apc.mutation.SetVersion(v)
 	}
 	if _, ok := apc.mutation.AutoGrant(); !ok {
 		v := apppolicy.DefaultAutoGrant

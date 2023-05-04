@@ -54,6 +54,13 @@ type Message struct {
 	SentAt time.Time `json:"sentAt"`
 }
 
+type Mfa struct {
+	Secret        string  `json:"secret"`
+	Account       string  `json:"account"`
+	StateToken    *string `json:"stateToken"`
+	StateTokenTTL *int    `json:"stateTokenTTL"`
+}
+
 // Ordering options for OrgRoleUser connections
 type OrgRoleUserOrder struct {
 	// The ordering direction.

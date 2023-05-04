@@ -44,10 +44,13 @@ func (UserLoginProfile) Fields() []ent.Field {
 		field.Enum("set_kind").Values("keep", "customer", "auto").Comment("设置密码:keep-保持不变,customer-客户自行设置,auto-自动生成"),
 		field.Bool("password_reset").Optional().Comment("下次登陆时需要重置密码"),
 		field.Bool("verify_device").Comment("是否开启设备认证"),
-		field.Bool("mfa_enabled").Optional().Comment("是否开启多因素验证"),
-		field.String("mfa_secret").Optional().MaxLen(100).Comment("多因素验证密钥BASE32").Sensitive(),
+		field.Bool("mfa_enabled").Optional().Comment("是否开启多因素验证").
+			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
+		field.String("mfa_secret").Optional().MaxLen(100).Comment("多因素验证密钥BASE32").Sensitive().
+			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
 		field.Enum("mfa_status").Optional().
-			GoType(typex.SimpleStatus("")).Comment("多因素验证状态"),
+			GoType(typex.SimpleStatus("")).Comment("多因素验证状态").
+			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
 	}
 }
 

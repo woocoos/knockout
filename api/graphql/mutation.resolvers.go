@@ -197,8 +197,8 @@ func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool,
 }
 
 // AssignOrganizationAppRole is the resolver for the assignOrganizationAppRole field.
-func (r *mutationResolver) AssignOrganizationAppRole(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
-	err := r.Resource.AssignOrganizationAppRole(ctx, orgID, appPolicyID)
+func (r *mutationResolver) AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error) {
+	err := r.Resource.AssignOrganizationAppRole(ctx, orgID, appRoleID)
 	return err == nil, err
 }
 
@@ -296,6 +296,22 @@ func (r *mutationResolver) UpdatePermission(ctx context.Context, permissionID in
 func (r *mutationResolver) Revoke(ctx context.Context, orgID int, permissionID int) (bool, error) {
 	err := r.Resource.Revoke(ctx, orgID, permissionID)
 	return err == nil, err
+}
+
+// EnableMfa is the resolver for the enableMFA field.
+func (r *mutationResolver) EnableMfa(ctx context.Context, userID int) (*model.Mfa, error) {
+	return r.Resource.EnableMFA(ctx, userID)
+}
+
+// DisableMfa is the resolver for the disableMFA field.
+func (r *mutationResolver) DisableMfa(ctx context.Context, userID int) (bool, error) {
+	err := r.Resource.DisableMFA(ctx, userID)
+	return err == nil, err
+}
+
+// UpdateAppRes is the resolver for the updateAppRes field.
+func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error) {
+	return ent.FromContext(ctx).AppRes.UpdateOneID(appResID).SetInput(input).Save(ctx)
 }
 
 // Mutation returns generated1.MutationResolver implementation.

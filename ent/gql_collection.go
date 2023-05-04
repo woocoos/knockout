@@ -964,11 +964,6 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				selectedFields = append(selectedFields, apppolicy.FieldRules)
 				fieldSeen[apppolicy.FieldRules] = struct{}{}
 			}
-		case "version":
-			if _, ok := fieldSeen[apppolicy.FieldVersion]; !ok {
-				selectedFields = append(selectedFields, apppolicy.FieldVersion)
-				fieldSeen[apppolicy.FieldVersion] = struct{}{}
-			}
 		case "autoGrant":
 			if _, ok := fieldSeen[apppolicy.FieldAutoGrant]; !ok {
 				selectedFields = append(selectedFields, apppolicy.FieldAutoGrant)

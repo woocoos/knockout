@@ -37,8 +37,8 @@ func (AppRes) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
 		field.String("name").Comment("资源名称"),
-		field.String("type_name").Comment("资源类型名称,如数据库表名"),
-		field.String("arn_pattern").Comment("应用资源表达式"),
+		field.String("type_name").Comment("资源类型名称,如数据库表名").Annotations(entgql.Skip(entgql.SkipMutationUpdateInput)),
+		field.String("arn_pattern").Comment("应用资源表达式").Annotations(entgql.Skip(entgql.SkipMutationUpdateInput)),
 	}
 }
 

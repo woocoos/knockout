@@ -422,7 +422,6 @@ type CreateAppPolicyInput struct {
 	Name      string
 	Comments  *string
 	Rules     []*types.PolicyRule
-	Version   string
 	AutoGrant *bool
 	Status    *typex.SimpleStatus
 	AppID     *int
@@ -438,7 +437,6 @@ func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	if v := i.Rules; v != nil {
 		m.SetRules(v)
 	}
-	m.SetVersion(i.Version)
 	if v := i.AutoGrant; v != nil {
 		m.SetAutoGrant(*v)
 	}
@@ -466,7 +464,6 @@ type UpdateAppPolicyInput struct {
 	Comments      *string
 	Rules         []*types.PolicyRule
 	AppendRules   []*types.PolicyRule
-	Version       *string
 	AutoGrant     *bool
 	ClearStatus   bool
 	Status        *typex.SimpleStatus
@@ -491,9 +488,6 @@ func (i *UpdateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	}
 	if i.AppendRules != nil {
 		m.AppendRules(i.Rules)
-	}
-	if v := i.Version; v != nil {
-		m.SetVersion(*v)
 	}
 	if v := i.AutoGrant; v != nil {
 		m.SetAutoGrant(*v)
@@ -553,21 +547,13 @@ func (c *AppResCreate) SetInput(i CreateAppResInput) *AppResCreate {
 
 // UpdateAppResInput represents a mutation input for updating appresslice.
 type UpdateAppResInput struct {
-	Name       *string
-	TypeName   *string
-	ArnPattern *string
+	Name *string
 }
 
 // Mutate applies the UpdateAppResInput on the AppResMutation builder.
 func (i *UpdateAppResInput) Mutate(m *AppResMutation) {
 	if v := i.Name; v != nil {
 		m.SetName(*v)
-	}
-	if v := i.TypeName; v != nil {
-		m.SetTypeName(*v)
-	}
-	if v := i.ArnPattern; v != nil {
-		m.SetArnPattern(*v)
 	}
 }
 
@@ -1399,12 +1385,6 @@ type UpdateUserLoginProfileInput struct {
 	ClearPasswordReset bool
 	PasswordReset      *bool
 	VerifyDevice       *bool
-	ClearMfaEnabled    bool
-	MfaEnabled         *bool
-	ClearMfaSecret     bool
-	MfaSecret          *string
-	ClearMfaStatus     bool
-	MfaStatus          *typex.SimpleStatus
 }
 
 // Mutate applies the UpdateUserLoginProfileInput on the UserLoginProfileMutation builder.
@@ -1426,24 +1406,6 @@ func (i *UpdateUserLoginProfileInput) Mutate(m *UserLoginProfileMutation) {
 	}
 	if v := i.VerifyDevice; v != nil {
 		m.SetVerifyDevice(*v)
-	}
-	if i.ClearMfaEnabled {
-		m.ClearMfaEnabled()
-	}
-	if v := i.MfaEnabled; v != nil {
-		m.SetMfaEnabled(*v)
-	}
-	if i.ClearMfaSecret {
-		m.ClearMfaSecret()
-	}
-	if v := i.MfaSecret; v != nil {
-		m.SetMfaSecret(*v)
-	}
-	if i.ClearMfaStatus {
-		m.ClearMfaStatus()
-	}
-	if v := i.MfaStatus; v != nil {
-		m.SetMfaStatus(*v)
 	}
 }
 

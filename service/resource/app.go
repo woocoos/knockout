@@ -89,13 +89,11 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	}
 	// Name更新需同步更新policy中的引用
 	if aa.Name != *input.Name {
-		oac := aa.Edges.App.Code + ":" + aa.Name
-		nac := aa.Edges.App.Code + ":" + *input.Name
 		appid := aa.Edges.App.ID
 
 		// 更新AppPolicy
 		aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
-			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+oac+"\""))
+			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aa.Name+"\""))
 		}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
 		if err != nil {
 			return nil, err
@@ -109,7 +107,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 				if rule.Actions == nil {
 					continue
 				}
-				rule.Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
+				rule.Actions = UpdateSliceElement[string](rule.Actions, *input.Name, aa.Name)
 				//prs[i].Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
 			}
 			err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
@@ -118,6 +116,8 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			}
 		}
 
+		oac := aa.Edges.App.Code + ":" + aa.Name
+		nac := aa.Edges.App.Code + ":" + *input.Name
 		// 更新OrgPolicy
 		ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
 			selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+oac+"\""))
@@ -163,12 +163,11 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		return fmt.Errorf("action not exist")
 	}
 
-	aac := aa.Edges.App.Code + ":" + aa.Name
 	appid := aa.Edges.App.ID
 
 	// 更新AppPolicy
 	aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
-		selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aac+"\""))
+		selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aa.Name+"\""))
 	}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
 	if err != nil {
 		return err
@@ -182,7 +181,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 			if rule.Actions == nil {
 				continue
 			}
-			rule.Actions = RemoveSliceElement[string](rule.Actions, aac)
+			rule.Actions = RemoveSliceElement[string](rule.Actions, aa.Name)
 			//prs[i].Actions = RemoveSliceElement[string](rule.Actions, aac)
 		}
 		err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
@@ -191,6 +190,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		}
 	}
 
+	aac := aa.Edges.App.Code + ":" + aa.Name
 	// 更新OrgPolicy
 	ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
 		selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+aac+"\""))
