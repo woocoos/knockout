@@ -124,6 +124,8 @@ type Mutation {
     enableMFA(userID:ID!):Mfa!
     """禁用MFA"""
     disableMFA(userID:ID!):Boolean!
+    """发送MFA至用户邮箱"""
+    sendMFAToUserByEmail(userID:ID!):Boolean!
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
 }

@@ -34,7 +34,7 @@ import (
 // region    ************************** generated!.gotpl **************************
 
 type OrgRoleResolver interface {
-	IsSystemRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
+	IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
@@ -9536,8 +9536,8 @@ func (ec *executionContext) fieldContext_OrgRole_comments(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _OrgRole_isSystemRole(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRole) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_OrgRole_isSystemRole(ctx, field)
+func (ec *executionContext) _OrgRole_isAppRole(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRole) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRole_isAppRole(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -9550,7 +9550,7 @@ func (ec *executionContext) _OrgRole_isSystemRole(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OrgRole().IsSystemRole(rctx, obj)
+		return ec.resolvers.OrgRole().IsAppRole(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9567,7 +9567,7 @@ func (ec *executionContext) _OrgRole_isSystemRole(ctx context.Context, field gra
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_OrgRole_isSystemRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_OrgRole_isAppRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "OrgRole",
 		Field:      field,
@@ -9779,8 +9779,8 @@ func (ec *executionContext) fieldContext_OrgRoleEdge_node(ctx context.Context, f
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
-			case "isSystemRole":
-				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
+			case "isAppRole":
+				return ec.fieldContext_OrgRole_isAppRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},
@@ -10784,8 +10784,8 @@ func (ec *executionContext) fieldContext_Permission_role(ctx context.Context, fi
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
-			case "isSystemRole":
-				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
+			case "isAppRole":
+				return ec.fieldContext_OrgRole_isAppRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},
@@ -35633,7 +35633,7 @@ func (ec *executionContext) _OrgRole(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._OrgRole_comments(ctx, field, obj)
 
-		case "isSystemRole":
+		case "isAppRole":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -35642,7 +35642,7 @@ func (ec *executionContext) _OrgRole(ctx context.Context, sel ast.SelectionSet, 
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._OrgRole_isSystemRole(ctx, field, obj)
+				res = ec._OrgRole_isAppRole(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

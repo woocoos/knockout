@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"github.com/alicebob/miniredis/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -30,6 +31,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -221,6 +223,44 @@ func (ts *loginFlowSuite) Test_Logout() {
 	res := httptest.NewRecorder()
 	ts.server.Router().ServeHTTP(res, req)
 
+	ts.Equal(res.Code, 200)
+}
+
+func (ts *loginFlowSuite) Test_BindMfaFlow() {
+	// 绑定mfa前置数据
+	req := httptest.NewRequest("POST", "/mfa/bind-prepare", nil)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Equal(res.Code, 200)
+
+	var bp map[string]any
+	err := json.Unmarshal([]byte(res.Body.String()), &bp)
+	ts.Require().NoError(err)
+
+	// 绑定mfa
+	pwd := GeneratePassCode(bp["secret"].(string))
+	payload := strings.NewReader(`{
+		"stateToken": "` + bp["stateToken"].(string) + `",
+		"otpToken": "` + pwd + `"
+	}`)
+	req = httptest.NewRequest("POST", "/mfa/bind", payload)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("Content-Type", "application/json")
+	res = httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Equal(res.Code, 200)
+
+	// 解绑mfa
+	pwd = GeneratePassCode(bp["secret"].(string))
+	payload = strings.NewReader(`{
+		"otpToken": "` + pwd + `"
+	}`)
+	req = httptest.NewRequest("POST", "/mfa/unbind", payload)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("Content-Type", "application/json")
+	res = httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
 	ts.Equal(res.Code, 200)
 }
 

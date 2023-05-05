@@ -6,12 +6,11 @@ package graphql
 
 import (
 	"context"
-
 	"github.com/woocoos/knockout/ent"
 )
 
-// IsSystemRole is the resolver for the isSystemRole field.
-func (r *orgRoleResolver) IsSystemRole(ctx context.Context, obj *ent.OrgRole) (bool, error) {
+// IsAppRole is the resolver for the isAppRole field.
+func (r *orgRoleResolver) IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error) {
 	return obj.AppRoleID > 0, nil
 }
 

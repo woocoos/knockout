@@ -163,7 +163,7 @@ func initApp(client *ent.Tx) {
 			{
 				Effect:    "allow",
 				Actions:   []string{ac + ":*"},
-				Resources: []string{"*"},
+				Resources: []string{ac + ":*"},
 			},
 		}))
 		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").

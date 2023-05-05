@@ -256,6 +256,7 @@ type ComplexityRoot struct {
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		RevokeOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
+		SendMFAToUserByEmail        func(childComplexity int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
@@ -336,16 +337,16 @@ type ComplexityRoot struct {
 	}
 
 	OrgRole struct {
-		Comments     func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		CreatedBy    func(childComplexity int) int
-		ID           func(childComplexity int) int
-		IsSystemRole func(childComplexity int) int
-		Kind         func(childComplexity int) int
-		Name         func(childComplexity int) int
-		OrgID        func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		UpdatedBy    func(childComplexity int) int
+		Comments  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		IsAppRole func(childComplexity int) int
+		Kind      func(childComplexity int) int
+		Name      func(childComplexity int) int
+		OrgID     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
 	}
 
 	OrgRoleConnection struct {
@@ -1873,6 +1874,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RevokeRoleUser(childComplexity, args["roleID"].(int), args["userID"].(int)), true
 
+	case "Mutation.sendMFAToUserByEmail":
+		if e.complexity.Mutation.SendMFAToUserByEmail == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_sendMFAToUserByEmail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SendMFAToUserByEmail(childComplexity, args["userID"].(int)), true
+
 	case "Mutation.updateApp":
 		if e.complexity.Mutation.UpdateApp == nil {
 			break
@@ -2394,12 +2407,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgRole.ID(childComplexity), true
 
-	case "OrgRole.isSystemRole":
-		if e.complexity.OrgRole.IsSystemRole == nil {
+	case "OrgRole.isAppRole":
+		if e.complexity.OrgRole.IsAppRole == nil {
 			break
 		}
 
-		return e.complexity.OrgRole.IsSystemRole(childComplexity), true
+		return e.complexity.OrgRole.IsAppRole(childComplexity), true
 
 	case "OrgRole.kind":
 		if e.complexity.OrgRole.Kind == nil {
@@ -7413,7 +7426,7 @@ type Mfa{
 
 extend type OrgRole {
     """是否系统角色"""
-    isSystemRole: Boolean!
+    isAppRole: Boolean!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -7617,6 +7630,8 @@ extend type OrgRole {
     enableMFA(userID:ID!):Mfa!
     """禁用MFA"""
     disableMFA(userID:ID!):Boolean!
+    """发送MFA至用户邮箱"""
+    sendMFAToUserByEmail(userID:ID!):Boolean!
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
 }

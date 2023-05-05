@@ -63,5 +63,5 @@ type Mfa{
 
 extend type OrgRole {
     """是否系统角色"""
-    isSystemRole: Boolean!
+    isAppRole: Boolean!
 }

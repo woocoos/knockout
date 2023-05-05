@@ -309,6 +309,11 @@ func (r *mutationResolver) DisableMfa(ctx context.Context, userID int) (bool, er
 	return err == nil, err
 }
 
+// SendMFAToUserByEmail is the resolver for the sendMFAToUserByEmail field.
+func (r *mutationResolver) SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error) {
+	panic(fmt.Errorf("not implemented: SendMFAToUserByEmail - sendMFAToUserByEmail"))
+}
+
 // UpdateAppRes is the resolver for the updateAppRes field.
 func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error) {
 	return ent.FromContext(ctx).AppRes.UpdateOneID(appResID).SetInput(input).Save(ctx)
