@@ -2,6 +2,14 @@
 
 package oas
 
+type BindMfaRequest struct {
+	Body BindMfaRequestBody
+}
+type BindMfaRequestBody struct {
+	OtpToken   string `binding:"required" json:"otpToken"`
+	StateToken string `binding:"required" json:"stateToken"`
+}
+
 type CaptchaRequest struct {
 	Body CaptchaRequestBody
 }
@@ -25,6 +33,13 @@ type ResetPasswordRequest struct {
 type ResetPasswordRequestBody struct {
 	NewPassword string `binding:"required" json:"newPassword"`
 	StateToken  string `binding:"required" json:"stateToken"`
+}
+
+type UnBindMfaRequest struct {
+	Body UnBindMfaRequestBody
+}
+type UnBindMfaRequestBody struct {
+	OtpToken string `binding:"required" json:"otpToken"`
 }
 
 type VerifyFactorRequest struct {

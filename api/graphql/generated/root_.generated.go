@@ -208,10 +208,8 @@ type ComplexityRoot struct {
 	}
 
 	Mfa struct {
-		Account       func(childComplexity int) int
-		Secret        func(childComplexity int) int
-		StateToken    func(childComplexity int) int
-		StateTokenTTL func(childComplexity int) int
+		Account func(childComplexity int) int
+		Secret  func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -1368,20 +1366,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mfa.Secret(childComplexity), true
-
-	case "Mfa.stateToken":
-		if e.complexity.Mfa.StateToken == nil {
-			break
-		}
-
-		return e.complexity.Mfa.StateToken(childComplexity), true
-
-	case "Mfa.stateTokenTTL":
-		if e.complexity.Mfa.StateTokenTTL == nil {
-			break
-		}
-
-		return e.complexity.Mfa.StateTokenTTL(childComplexity), true
 
 	case "Mutation.allotOrganizationUser":
 		if e.complexity.Mutation.AllotOrganizationUser == nil {
@@ -7416,8 +7400,6 @@ input GrantInput {
 type Mfa{
     secret: String!
     account: String!
-    stateToken: String
-    stateTokenTTL: Int
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""

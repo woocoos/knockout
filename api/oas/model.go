@@ -21,6 +21,13 @@ type LoginResponse struct {
 	User         *User  `json:"user,omitempty"`
 }
 
+type Mfa struct {
+	PrincipalName string  `json:"principalName,omitempty"`
+	Secret        string  `json:"secret,omitempty"`
+	StateToken    string  `json:"stateToken,omitempty"`
+	StateTokenTTL float64 `json:"stateTokenTTL,omitempty"`
+}
+
 type User struct {
 	DisplayName string `json:"displayName,omitempty"`
 	DomainId    int    `json:"domainId,omitempty"`

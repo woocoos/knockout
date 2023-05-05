@@ -59,6 +59,4 @@ input GrantInput {
 type Mfa{
     secret: String!
     account: String!
-    stateToken: String
-    stateTokenTTL: Int
 }

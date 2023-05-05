@@ -4,7 +4,9 @@ import (
 	"ariga.io/entcache"
 	"bytes"
 	"context"
+	"encoding/base32"
 	"errors"
+	"fmt"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -14,6 +16,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/woocoos/entco/ecx"
+	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
@@ -371,10 +374,14 @@ func (s *Service) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte
 	if secret == "" {
 		secret = profile.MfaSecret
 	}
+	secByte, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(secret)
+	if err != nil {
+		return nil, err
+	}
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
 		AccountName: profile.Edges.User.PrincipalName,
-		Secret:      []byte(secret),
+		Secret:      secByte,
 	})
 	if err != nil {
 		return nil, err
@@ -386,6 +393,69 @@ func (s *Service) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte
 	}
 	err = png.Encode(&buf, img)
 	return buf.Bytes(), err
+}
+
+func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	pn, err := s.DB.User.Query().Where(user.ID(uid)).Select(user.FieldPrincipalName).String(ctx)
+	if err != nil {
+		return nil, err
+	}
+	sid := uuid.New().String()
+	stateToken := createStateToken(sid)
+	val := make(map[string]string)
+	val["uid"] = strconv.Itoa(uid)
+	val["secret"] = resource.GeneralMFASecret()
+	err = s.Cache.Set(ctx, mfaCachePrefix+sid, val, Cnf.Duration("auth.stateTokenTTL"))
+	if err != nil {
+		return nil, err
+	}
+	return &oas.Mfa{
+		PrincipalName: pn,
+		Secret:        val["secret"],
+		StateToken:    stateToken,
+		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+	}, nil
+}
+
+func (s *Service) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	id, err := parseStateToken(req.Body.StateToken)
+	if err != nil {
+		return false, err
+	}
+	//
+	var val map[string]string
+	if err = s.Cache.Get(ctx, mfaCachePrefix+id, &val); err != nil {
+		return false, err
+	}
+	if val["uid"] != strconv.Itoa(uid) {
+		return false, fmt.Errorf("invalid user")
+	}
+	if !totp.Validate(req.Body.OtpToken, val["secret"]) {
+		return false, errors.New("invalid code")
+	}
+	err = s.DB.UserLoginProfile.UpdateOneID(uid).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
+	return err == nil, err
+}
+
+func (s *Service) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	up, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	if !totp.Validate(req.Body.OtpToken, up.MfaSecret) {
+		return false, errors.New("invalid code")
+	}
+	err = s.DB.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
+	return err == nil, err
 }
 
 func (s *Service) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {

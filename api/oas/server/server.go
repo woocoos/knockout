@@ -12,11 +12,41 @@ import (
 
 // RegisterHandlers creates http.Handler with routing matching OpenAPI spec.
 func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
+	router.POST("/mfa/bind", wrapBindMfa(si))
+	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
+	router.POST("/mfa/unbind", wrapUnBindMfa(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
+}
+
+func wrapBindMfa(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.BindMfaRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.BindMfa(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapBindMfaPrepare(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		resp, err := si.BindMfaPrepare(c)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
 }
 
 func wrapCaptcha(si oas.Server) func(c *gin.Context) {
@@ -69,6 +99,22 @@ func wrapResetPassword(si oas.Server) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.ResetPassword(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapUnBindMfa(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.UnBindMfaRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.UnBindMfa(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

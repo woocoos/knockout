@@ -4844,10 +4844,6 @@ func (ec *executionContext) fieldContext_Mutation_enableMFA(ctx context.Context,
 				return ec.fieldContext_Mfa_secret(ctx, field)
 			case "account":
 				return ec.fieldContext_Mfa_account(ctx, field)
-			case "stateToken":
-				return ec.fieldContext_Mfa_stateToken(ctx, field)
-			case "stateTokenTTL":
-				return ec.fieldContext_Mfa_stateTokenTTL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mfa", field.Name)
 		},

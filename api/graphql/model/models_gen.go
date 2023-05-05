@@ -55,10 +55,8 @@ type Message struct {
 }
 
 type Mfa struct {
-	Secret        string  `json:"secret"`
-	Account       string  `json:"account"`
-	StateToken    *string `json:"stateToken"`
-	StateTokenTTL *int    `json:"stateTokenTTL"`
+	Secret  string `json:"secret"`
+	Account string `json:"account"`
 }
 
 // Ordering options for OrgRoleUser connections

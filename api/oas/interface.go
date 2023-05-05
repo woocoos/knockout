@@ -10,6 +10,10 @@ import (
 
 // Server is the server API for  service.
 type Server interface {
+	// (POST /mfa/bind)
+	BindMfa(*gin.Context, *BindMfaRequest) (bool, error)
+	// (POST /mfa/bind-prepare)
+	BindMfaPrepare(*gin.Context) (*Mfa, error)
 	// (GET /captcha)
 	Captcha(*gin.Context, *CaptchaRequest) ([]byte, error)
 	// (POST /login/auth)
@@ -18,11 +22,23 @@ type Server interface {
 	Logout(*gin.Context) error
 	// (POST /login/reset-password)
 	ResetPassword(*gin.Context, *ResetPasswordRequest) (*LoginResponse, error)
+	// (POST /mfa/unbind)
+	UnBindMfa(*gin.Context, *UnBindMfaRequest) (bool, error)
 	// (POST /login/verify-factor)
 	VerifyFactor(*gin.Context, *VerifyFactorRequest) (*LoginResponse, error)
 }
 
 type UnimplementedServer struct {
+}
+
+func (UnimplementedServer) BindMfa(c *gin.Context, req *BindMfaRequest) (_ bool, err error) {
+	err = fmt.Errorf("method BindMfa not implemented")
+	return
+}
+
+func (UnimplementedServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error) {
+	err = fmt.Errorf("method BindMfaPrepare not implemented")
+	return
 }
 
 func (UnimplementedServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ []byte, err error) {
@@ -42,6 +58,11 @@ func (UnimplementedServer) Logout(c *gin.Context) (err error) {
 
 func (UnimplementedServer) ResetPassword(c *gin.Context, req *ResetPasswordRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method ResetPassword not implemented")
+	return
+}
+
+func (UnimplementedServer) UnBindMfa(c *gin.Context, req *UnBindMfaRequest) (_ bool, err error) {
+	err = fmt.Errorf("method UnBindMfa not implemented")
 	return
 }
 

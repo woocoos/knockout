@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
+	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"strconv"
 	"strings"
@@ -459,5 +460,5 @@ func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 	if usr == nil {
 		return fmt.Errorf("user not found")
 	}
-	return client.UserLoginProfile.UpdateOneID(userID).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
+	return client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
 }

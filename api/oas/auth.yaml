@@ -154,6 +154,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /mfa/bind-prepare:
+    post:
+      description: Use this api to get the temporary MFA secret key.
+      operationId: bindMfaPrepare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+              required:
+      responses:
+        '200':
+          description: complete the mfa bind flow. return mfa info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mfa'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /mfa/bind:
+    post:
+      description: Verify a one-time password (OTP) value to binding MFA.
+      operationId: bindMfa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                otpToken:
+                  type: string
+              required:
+                - stateToken
+                - otpToken
+      responses:
+        '200':
+          description: complete the mfa bind flow
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /mfa/unbind:
+    post:
+      description: Verify a one-time password (OTP) value to unBind MFA.
+      operationId: unBindMfa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otpToken:
+                  type: string
+              required:
+                - otpToken
+      responses:
+        '200':
+          description: complete the mfa bind flow
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   responses:
@@ -188,6 +257,19 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/User'
+    Mfa:
+      type: object
+      description: when complete login accessToken,expiresAt,refreshToken will be filled
+      properties:
+        principalName:
+          type: string
+        secret:
+          type: string
+        stateToken:
+          type: string
+          description: when need MFA or Change PWD. use the state token to request callback_url
+        stateTokenTTL:
+          type: number
     User:
       type: object
       properties:

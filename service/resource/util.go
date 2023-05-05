@@ -42,7 +42,7 @@ func GeneralMFASecret() string {
 	if err != nil {
 		panic(err)
 	}
-	secret := base32.StdEncoding.EncodeToString(randomBytes)
+	secret := base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(randomBytes)
 	return secret
 }
 
