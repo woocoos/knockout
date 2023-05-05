@@ -6,9 +6,13 @@ package graphql
 
 import (
 	"context"
-
 	"github.com/woocoos/knockout/ent"
 )
+
+// IsSystemRole is the resolver for the isSystemRole field.
+func (r *orgRoleResolver) IsSystemRole(ctx context.Context, obj *ent.OrgRole) (bool, error) {
+	return obj.AppRoleID > 0, nil
+}
 
 // LoginProfile is the resolver for the loginProfile field.
 func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error {

@@ -4315,6 +4315,8 @@ func (ec *executionContext) fieldContext_Mutation_createRole(ctx context.Context
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
+			case "isSystemRole":
+				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},
@@ -4387,6 +4389,8 @@ func (ec *executionContext) fieldContext_Mutation_updateRole(ctx context.Context
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
+			case "isSystemRole":
+				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},

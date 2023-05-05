@@ -60,3 +60,8 @@ type Mfa{
     secret: String!
     account: String!
 }
+
+extend type OrgRole {
+    """是否系统角色"""
+    isSystemRole: Boolean!
+}

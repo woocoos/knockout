@@ -33,6 +33,7 @@ type Config struct {
 
 type ResolverRoot interface {
 	Mutation() MutationResolver
+	OrgRole() OrgRoleResolver
 	Query() QueryResolver
 	Subscription() SubscriptionResolver
 	CreateUserInput() CreateUserInputResolver
@@ -335,15 +336,16 @@ type ComplexityRoot struct {
 	}
 
 	OrgRole struct {
-		Comments  func(childComplexity int) int
-		CreatedAt func(childComplexity int) int
-		CreatedBy func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Kind      func(childComplexity int) int
-		Name      func(childComplexity int) int
-		OrgID     func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		UpdatedBy func(childComplexity int) int
+		Comments     func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		ID           func(childComplexity int) int
+		IsSystemRole func(childComplexity int) int
+		Kind         func(childComplexity int) int
+		Name         func(childComplexity int) int
+		OrgID        func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
 	}
 
 	OrgRoleConnection struct {
@@ -2391,6 +2393,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgRole.ID(childComplexity), true
+
+	case "OrgRole.isSystemRole":
+		if e.complexity.OrgRole.IsSystemRole == nil {
+			break
+		}
+
+		return e.complexity.OrgRole.IsSystemRole(childComplexity), true
 
 	case "OrgRole.kind":
 		if e.complexity.OrgRole.Kind == nil {
@@ -7400,6 +7409,10 @@ input GrantInput {
 type Mfa{
     secret: String!
     account: String!
+}
+
+extend type OrgRole {
+    isSystemRole: Boolean!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""

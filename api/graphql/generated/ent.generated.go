@@ -33,6 +33,9 @@ import (
 
 // region    ************************** generated!.gotpl **************************
 
+type OrgRoleResolver interface {
+	IsSystemRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
+}
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
 	Nodes(ctx context.Context, ids []string) ([]ent.Noder, error)
@@ -9533,6 +9536,50 @@ func (ec *executionContext) fieldContext_OrgRole_comments(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _OrgRole_isSystemRole(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRole) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgRole_isSystemRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.OrgRole().IsSystemRole(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgRole_isSystemRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgRole",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _OrgRoleConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.OrgRoleConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_OrgRoleConnection_edges(ctx, field)
 	if err != nil {
@@ -9732,6 +9779,8 @@ func (ec *executionContext) fieldContext_OrgRoleEdge_node(ctx context.Context, f
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
+			case "isSystemRole":
+				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},
@@ -10735,6 +10784,8 @@ func (ec *executionContext) fieldContext_Permission_role(ctx context.Context, fi
 				return ec.fieldContext_OrgRole_name(ctx, field)
 			case "comments":
 				return ec.fieldContext_OrgRole_comments(ctx, field)
+			case "isSystemRole":
+				return ec.fieldContext_OrgRole_isSystemRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgRole", field.Name)
 		},
@@ -35536,21 +35587,21 @@ func (ec *executionContext) _OrgRole(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._OrgRole_id(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "createdBy":
 
 			out.Values[i] = ec._OrgRole_createdBy(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "createdAt":
 
 			out.Values[i] = ec._OrgRole_createdAt(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "updatedBy":
 
@@ -35569,19 +35620,39 @@ func (ec *executionContext) _OrgRole(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._OrgRole_kind(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "name":
 
 			out.Values[i] = ec._OrgRole_name(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "comments":
 
 			out.Values[i] = ec._OrgRole_comments(ctx, field, obj)
 
+		case "isSystemRole":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._OrgRole_isSystemRole(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

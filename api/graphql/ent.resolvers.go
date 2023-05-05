@@ -49,6 +49,9 @@ func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], fi
 		ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
 }
 
+// OrgRole returns generated.OrgRoleResolver implementation.
+func (r *Resolver) OrgRole() generated.OrgRoleResolver { return &orgRoleResolver{r} }
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
@@ -57,5 +60,6 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 	return &createUserInputResolver{r}
 }
 
+type orgRoleResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type createUserInputResolver struct{ *Resolver }
