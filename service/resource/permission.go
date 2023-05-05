@@ -246,7 +246,7 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 	if err != nil {
 		return err
 	}
-	ouId, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(userID)).Select(orguser.FieldUserID).Int(ctx)
+	ouId, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(userID)).Select(orguser.FieldID).Int(ctx)
 	if err != nil {
 		return err
 	}
