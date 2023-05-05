@@ -149,7 +149,7 @@ func (uiu *UserIdentityUpdate) Mutation() *UserIdentityMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (uiu *UserIdentityUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, UserIdentityMutation](ctx, uiu.sqlSave, uiu.mutation, uiu.hooks)
+	return withHooks(ctx, uiu.sqlSave, uiu.mutation, uiu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -390,7 +390,7 @@ func (uiuo *UserIdentityUpdateOne) Select(field string, fields ...string) *UserI
 
 // Save executes the query and returns the updated UserIdentity entity.
 func (uiuo *UserIdentityUpdateOne) Save(ctx context.Context) (*UserIdentity, error) {
-	return withHooks[*UserIdentity, UserIdentityMutation](ctx, uiuo.sqlSave, uiuo.mutation, uiuo.hooks)
+	return withHooks(ctx, uiuo.sqlSave, uiuo.mutation, uiuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

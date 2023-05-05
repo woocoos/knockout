@@ -215,7 +215,7 @@ func (oru *OrgRoleUpdate) RemoveOrgRoleUser(o ...*OrgRoleUser) *OrgRoleUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (oru *OrgRoleUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrgRoleMutation](ctx, oru.sqlSave, oru.mutation, oru.hooks)
+	return withHooks(ctx, oru.sqlSave, oru.mutation, oru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -618,7 +618,7 @@ func (oruo *OrgRoleUpdateOne) Select(field string, fields ...string) *OrgRoleUpd
 
 // Save executes the query and returns the updated OrgRole entity.
 func (oruo *OrgRoleUpdateOne) Save(ctx context.Context) (*OrgRole, error) {
-	return withHooks[*OrgRole, OrgRoleMutation](ctx, oruo.sqlSave, oruo.mutation, oruo.hooks)
+	return withHooks(ctx, oruo.sqlSave, oruo.mutation, oruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

@@ -147,7 +147,7 @@ func (upc *UserPasswordCreate) Save(ctx context.Context) (*UserPassword, error) 
 	if err := upc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*UserPassword, UserPasswordMutation](ctx, upc.sqlSave, upc.mutation, upc.hooks)
+	return withHooks(ctx, upc.sqlSave, upc.mutation, upc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

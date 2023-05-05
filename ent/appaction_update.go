@@ -157,7 +157,7 @@ func (aau *AppActionUpdate) RemoveMenus(a ...*AppMenu) *AppActionUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (aau *AppActionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppActionMutation](ctx, aau.sqlSave, aau.mutation, aau.hooks)
+	return withHooks(ctx, aau.sqlSave, aau.mutation, aau.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -450,7 +450,7 @@ func (aauo *AppActionUpdateOne) Select(field string, fields ...string) *AppActio
 
 // Save executes the query and returns the updated AppAction entity.
 func (aauo *AppActionUpdateOne) Save(ctx context.Context) (*AppAction, error) {
-	return withHooks[*AppAction, AppActionMutation](ctx, aauo.sqlSave, aauo.mutation, aauo.hooks)
+	return withHooks(ctx, aauo.sqlSave, aauo.mutation, aauo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

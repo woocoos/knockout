@@ -216,7 +216,7 @@ func (apc *AppPolicyCreate) Save(ctx context.Context) (*AppPolicy, error) {
 	if err := apc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppPolicy, AppPolicyMutation](ctx, apc.sqlSave, apc.mutation, apc.hooks)
+	return withHooks(ctx, apc.sqlSave, apc.mutation, apc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -185,7 +185,7 @@ func (opc *OrgPolicyCreate) Save(ctx context.Context) (*OrgPolicy, error) {
 	if err := opc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*OrgPolicy, OrgPolicyMutation](ctx, opc.sqlSave, opc.mutation, opc.hooks)
+	return withHooks(ctx, opc.sqlSave, opc.mutation, opc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

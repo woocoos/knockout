@@ -27,7 +27,7 @@ func (arpd *AppRolePolicyDelete) Where(ps ...predicate.AppRolePolicy) *AppRolePo
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (arpd *AppRolePolicyDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppRolePolicyMutation](ctx, arpd.sqlExec, arpd.mutation, arpd.hooks)
+	return withHooks(ctx, arpd.sqlExec, arpd.mutation, arpd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -27,7 +27,7 @@ func (apd *AppPolicyDelete) Where(ps ...predicate.AppPolicy) *AppPolicyDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (apd *AppPolicyDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppPolicyMutation](ctx, apd.sqlExec, apd.mutation, apd.hooks)
+	return withHooks(ctx, apd.sqlExec, apd.mutation, apd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

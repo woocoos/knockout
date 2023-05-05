@@ -27,7 +27,7 @@ func (upd *UserPasswordDelete) Where(ps ...predicate.UserPassword) *UserPassword
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (upd *UserPasswordDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, UserPasswordMutation](ctx, upd.sqlExec, upd.mutation, upd.hooks)
+	return withHooks(ctx, upd.sqlExec, upd.mutation, upd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

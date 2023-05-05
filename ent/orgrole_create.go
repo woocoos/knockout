@@ -178,7 +178,7 @@ func (orc *OrgRoleCreate) Save(ctx context.Context) (*OrgRole, error) {
 	if err := orc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*OrgRole, OrgRoleMutation](ctx, orc.sqlSave, orc.mutation, orc.hooks)
+	return withHooks(ctx, orc.sqlSave, orc.mutation, orc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

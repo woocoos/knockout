@@ -110,7 +110,7 @@ func (oruc *OrgRoleUserCreate) Save(ctx context.Context) (*OrgRoleUser, error) {
 	if err := oruc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*OrgRoleUser, OrgRoleUserMutation](ctx, oruc.sqlSave, oruc.mutation, oruc.hooks)
+	return withHooks(ctx, oruc.sqlSave, oruc.mutation, oruc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

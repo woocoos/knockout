@@ -245,7 +245,7 @@ func (apu *AppPolicyUpdate) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppPolicyU
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (apu *AppPolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppPolicyMutation](ctx, apu.sqlSave, apu.mutation, apu.hooks)
+	return withHooks(ctx, apu.sqlSave, apu.mutation, apu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -683,7 +683,7 @@ func (apuo *AppPolicyUpdateOne) Select(field string, fields ...string) *AppPolic
 
 // Save executes the query and returns the updated AppPolicy entity.
 func (apuo *AppPolicyUpdateOne) Save(ctx context.Context) (*AppPolicy, error) {
-	return withHooks[*AppPolicy, AppPolicyMutation](ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
+	return withHooks(ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

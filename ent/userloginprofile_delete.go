@@ -27,7 +27,7 @@ func (ulpd *UserLoginProfileDelete) Where(ps ...predicate.UserLoginProfile) *Use
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (ulpd *UserLoginProfileDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, UserLoginProfileMutation](ctx, ulpd.sqlExec, ulpd.mutation, ulpd.hooks)
+	return withHooks(ctx, ulpd.sqlExec, ulpd.mutation, ulpd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

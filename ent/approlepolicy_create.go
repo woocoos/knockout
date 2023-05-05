@@ -128,7 +128,7 @@ func (arpc *AppRolePolicyCreate) Save(ctx context.Context) (*AppRolePolicy, erro
 	if err := arpc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppRolePolicy, AppRolePolicyMutation](ctx, arpc.sqlSave, arpc.mutation, arpc.hooks)
+	return withHooks(ctx, arpc.sqlSave, arpc.mutation, arpc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

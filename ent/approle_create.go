@@ -194,7 +194,7 @@ func (arc *AppRoleCreate) Save(ctx context.Context) (*AppRole, error) {
 	if err := arc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppRole, AppRoleMutation](ctx, arc.sqlSave, arc.mutation, arc.hooks)
+	return withHooks(ctx, arc.sqlSave, arc.mutation, arc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

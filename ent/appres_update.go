@@ -100,7 +100,7 @@ func (aru *AppResUpdate) Mutation() *AppResMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (aru *AppResUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppResMutation](ctx, aru.sqlSave, aru.mutation, aru.hooks)
+	return withHooks(ctx, aru.sqlSave, aru.mutation, aru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -263,7 +263,7 @@ func (aruo *AppResUpdateOne) Select(field string, fields ...string) *AppResUpdat
 
 // Save executes the query and returns the updated AppRes entity.
 func (aruo *AppResUpdateOne) Save(ctx context.Context) (*AppRes, error) {
-	return withHooks[*AppRes, AppResMutation](ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
+	return withHooks(ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

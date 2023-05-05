@@ -132,7 +132,7 @@ func (arc *AppResCreate) Save(ctx context.Context) (*AppRes, error) {
 	if err := arc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppRes, AppResMutation](ctx, arc.sqlSave, arc.mutation, arc.hooks)
+	return withHooks(ctx, arc.sqlSave, arc.mutation, arc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

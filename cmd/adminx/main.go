@@ -27,6 +27,7 @@ import (
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/api/graphql/generated"
+	"github.com/woocoos/knockout/cmd/internal/otel"
 	"github.com/woocoos/knockout/ent"
 	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/service/resource"
@@ -40,13 +41,7 @@ var (
 
 func main() {
 	app := woocoo.New()
-	//if app.AppConfiguration().IsSet("otel") {
-	//	otelCnf := app.AppConfiguration().Sub("otel")
-	//	otelcfg := telemetry.NewConfig(otelCnf,
-	//		telemetry.WithPropagator(b3.New()),
-	//	)
-	//	defer otelcfg.Shutdown()
-	//}
+	otelStop := otel.Apply(app.AppConfiguration())
 
 	err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake"))
 	if err != nil {
@@ -71,6 +66,7 @@ func main() {
 	defer func() {
 		portalClient.Close()
 		casbinClient.Close()
+		otelStop()
 	}()
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
@@ -112,6 +108,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 	if cnf.String("entcache.level") == "context" {
 		// 启用针对http request的缓存
 		useContextCache(gqlSrv)
+		useSimplePagination(gqlSrv)
 	}
 	// mutation事务
 	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
@@ -141,6 +138,22 @@ func useContextCache(server *handler.Server) {
 	server.AroundResponses(func(ctx context.Context, next gqlgen.ResponseHandler) *gqlgen.Response {
 		if op := gqlgen.GetOperationContext(ctx).Operation; op != nil && op.Operation == ast.Query {
 			ctx = entcache.NewContext(ctx)
+		}
+		return next(ctx)
+	})
+}
+
+func useSimplePagination(server *handler.Server) {
+	server.AroundResponses(func(ctx context.Context, next gqlgen.ResponseHandler) *gqlgen.Response {
+		gctx, _ := gql.FromIncomingContext(ctx)
+		if gctx != nil {
+			sp, err := ent.NewSimplePagination(gctx.Query("p"), gctx.Query("c"))
+			if err != nil {
+				return gqlgen.ErrorResponse(ctx, "pagination error:%v", err)
+			}
+			if sp != nil {
+				ctx = ent.WithSimplePagination(ctx, sp)
+			}
 		}
 		return next(ctx)
 	})

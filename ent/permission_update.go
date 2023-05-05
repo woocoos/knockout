@@ -143,7 +143,7 @@ func (pu *PermissionUpdate) Mutation() *PermissionMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *PermissionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, PermissionMutation](ctx, pu.sqlSave, pu.mutation, pu.hooks)
+	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -376,7 +376,7 @@ func (puo *PermissionUpdateOne) Select(field string, fields ...string) *Permissi
 
 // Save executes the query and returns the updated Permission entity.
 func (puo *PermissionUpdateOne) Save(ctx context.Context) (*Permission, error) {
-	return withHooks[*Permission, PermissionMutation](ctx, puo.sqlSave, puo.mutation, puo.hooks)
+	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

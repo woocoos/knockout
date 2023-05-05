@@ -175,7 +175,7 @@ func (ouu *OrgUserUpdate) RemoveOrgRoles(o ...*OrgRole) *OrgUserUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ouu *OrgUserUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrgUserMutation](ctx, ouu.sqlSave, ouu.mutation, ouu.hooks)
+	return withHooks(ctx, ouu.sqlSave, ouu.mutation, ouu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -524,7 +524,7 @@ func (ouuo *OrgUserUpdateOne) Select(field string, fields ...string) *OrgUserUpd
 
 // Save executes the query and returns the updated OrgUser entity.
 func (ouuo *OrgUserUpdateOne) Save(ctx context.Context) (*OrgUser, error) {
-	return withHooks[*OrgUser, OrgUserMutation](ctx, ouuo.sqlSave, ouuo.mutation, ouuo.hooks)
+	return withHooks(ctx, ouuo.sqlSave, ouuo.mutation, ouuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

@@ -118,7 +118,7 @@ func (oruu *OrgRoleUserUpdate) ClearOrgUser() *OrgRoleUserUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (oruu *OrgRoleUserUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrgRoleUserMutation](ctx, oruu.sqlSave, oruu.mutation, oruu.hooks)
+	return withHooks(ctx, oruu.sqlSave, oruu.mutation, oruu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -360,7 +360,7 @@ func (oruuo *OrgRoleUserUpdateOne) Select(field string, fields ...string) *OrgRo
 
 // Save executes the query and returns the updated OrgRoleUser entity.
 func (oruuo *OrgRoleUserUpdateOne) Save(ctx context.Context) (*OrgRoleUser, error) {
-	return withHooks[*OrgRoleUser, OrgRoleUserMutation](ctx, oruuo.sqlSave, oruuo.mutation, oruuo.hooks)
+	return withHooks(ctx, oruuo.sqlSave, oruuo.mutation, oruuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

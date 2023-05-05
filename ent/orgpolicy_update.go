@@ -213,7 +213,7 @@ func (opu *OrgPolicyUpdate) RemovePermissions(p ...*Permission) *OrgPolicyUpdate
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (opu *OrgPolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrgPolicyMutation](ctx, opu.sqlSave, opu.mutation, opu.hooks)
+	return withHooks(ctx, opu.sqlSave, opu.mutation, opu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -557,7 +557,7 @@ func (opuo *OrgPolicyUpdateOne) Select(field string, fields ...string) *OrgPolic
 
 // Save executes the query and returns the updated OrgPolicy entity.
 func (opuo *OrgPolicyUpdateOne) Save(ctx context.Context) (*OrgPolicy, error) {
-	return withHooks[*OrgPolicy, OrgPolicyMutation](ctx, opuo.sqlSave, opuo.mutation, opuo.hooks)
+	return withHooks(ctx, opuo.sqlSave, opuo.mutation, opuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

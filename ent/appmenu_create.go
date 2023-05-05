@@ -180,7 +180,7 @@ func (amc *AppMenuCreate) Save(ctx context.Context) (*AppMenu, error) {
 	if err := amc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppMenu, AppMenuMutation](ctx, amc.sqlSave, amc.mutation, amc.hooks)
+	return withHooks(ctx, amc.sqlSave, amc.mutation, amc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

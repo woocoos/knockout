@@ -25,6 +25,9 @@ resolver:
 # Optional: set to skip running `go mod tidy` when generating server code
 skip_mod_tidy: true
 
+# Optional: turn on to exclude the gqlgen version in the generated file notice. No effect if `omit_gqlgen_file_notice` is true.
+omit_gqlgen_version_in_file_notice: true
+
 # gqlgen will search for any type names in the schema in the generated
 # ent package. If they match it will use them, otherwise it will new ones.
 autobind:

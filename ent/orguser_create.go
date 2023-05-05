@@ -146,7 +146,7 @@ func (ouc *OrgUserCreate) Save(ctx context.Context) (*OrgUser, error) {
 	if err := ouc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*OrgUser, OrgUserMutation](ctx, ouc.sqlSave, ouc.mutation, ouc.hooks)
+	return withHooks(ctx, ouc.sqlSave, ouc.mutation, ouc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

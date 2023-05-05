@@ -27,7 +27,7 @@ func (ard *AppRoleDelete) Where(ps ...predicate.AppRole) *AppRoleDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (ard *AppRoleDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppRoleMutation](ctx, ard.sqlExec, ard.mutation, ard.hooks)
+	return withHooks(ctx, ard.sqlExec, ard.mutation, ard.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -162,7 +162,7 @@ func (aac *AppActionCreate) Save(ctx context.Context) (*AppAction, error) {
 	if err := aac.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*AppAction, AppActionMutation](ctx, aac.sqlSave, aac.mutation, aac.hooks)
+	return withHooks(ctx, aac.sqlSave, aac.mutation, aac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -406,7 +406,7 @@ func (oc *OrgCreate) Save(ctx context.Context) (*Org, error) {
 	if err := oc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*Org, OrgMutation](ctx, oc.sqlSave, oc.mutation, oc.hooks)
+	return withHooks(ctx, oc.sqlSave, oc.mutation, oc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -135,7 +135,7 @@ func (upu *UserPasswordUpdate) Mutation() *UserPasswordMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (upu *UserPasswordUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, UserPasswordMutation](ctx, upu.sqlSave, upu.mutation, upu.hooks)
+	return withHooks(ctx, upu.sqlSave, upu.mutation, upu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -364,7 +364,7 @@ func (upuo *UserPasswordUpdateOne) Select(field string, fields ...string) *UserP
 
 // Save executes the query and returns the updated UserPassword entity.
 func (upuo *UserPasswordUpdateOne) Save(ctx context.Context) (*UserPassword, error) {
-	return withHooks[*UserPassword, UserPasswordMutation](ctx, upuo.sqlSave, upuo.mutation, upuo.hooks)
+	return withHooks(ctx, upuo.sqlSave, upuo.mutation, upuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

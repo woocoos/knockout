@@ -229,7 +229,7 @@ func (udu *UserDeviceUpdate) Mutation() *UserDeviceMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (udu *UserDeviceUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, UserDeviceMutation](ctx, udu.sqlSave, udu.mutation, udu.hooks)
+	return withHooks(ctx, udu.sqlSave, udu.mutation, udu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -599,7 +599,7 @@ func (uduo *UserDeviceUpdateOne) Select(field string, fields ...string) *UserDev
 
 // Save executes the query and returns the updated UserDevice entity.
 func (uduo *UserDeviceUpdateOne) Save(ctx context.Context) (*UserDevice, error) {
-	return withHooks[*UserDevice, UserDeviceMutation](ctx, uduo.sqlSave, uduo.mutation, uduo.hooks)
+	return withHooks(ctx, uduo.sqlSave, uduo.mutation, uduo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

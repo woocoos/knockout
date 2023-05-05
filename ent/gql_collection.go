@@ -510,7 +510,7 @@ type appPaginateArgs struct {
 	opts          []AppPaginateOption
 }
 
-func newAppPaginateArgs(rv map[string]interface{}) *appPaginateArgs {
+func newAppPaginateArgs(rv map[string]any) *appPaginateArgs {
 	args := &appPaginateArgs{}
 	if rv == nil {
 		return args
@@ -529,7 +529,7 @@ func newAppPaginateArgs(rv map[string]interface{}) *appPaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppOrder{Field: &AppOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -665,7 +665,7 @@ type appactionPaginateArgs struct {
 	opts          []AppActionPaginateOption
 }
 
-func newAppActionPaginateArgs(rv map[string]interface{}) *appactionPaginateArgs {
+func newAppActionPaginateArgs(rv map[string]any) *appactionPaginateArgs {
 	args := &appactionPaginateArgs{}
 	if rv == nil {
 		return args
@@ -684,7 +684,7 @@ func newAppActionPaginateArgs(rv map[string]interface{}) *appactionPaginateArgs 
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppActionOrder{Field: &AppActionOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -832,7 +832,7 @@ type appmenuPaginateArgs struct {
 	opts          []AppMenuPaginateOption
 }
 
-func newAppMenuPaginateArgs(rv map[string]interface{}) *appmenuPaginateArgs {
+func newAppMenuPaginateArgs(rv map[string]any) *appmenuPaginateArgs {
 	args := &appmenuPaginateArgs{}
 	if rv == nil {
 		return args
@@ -851,7 +851,7 @@ func newAppMenuPaginateArgs(rv map[string]interface{}) *appmenuPaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppMenuOrder{Field: &AppMenuOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -992,7 +992,7 @@ type apppolicyPaginateArgs struct {
 	opts          []AppPolicyPaginateOption
 }
 
-func newAppPolicyPaginateArgs(rv map[string]interface{}) *apppolicyPaginateArgs {
+func newAppPolicyPaginateArgs(rv map[string]any) *apppolicyPaginateArgs {
 	args := &apppolicyPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1011,7 +1011,7 @@ func newAppPolicyPaginateArgs(rv map[string]interface{}) *apppolicyPaginateArgs 
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppPolicyOrder{Field: &AppPolicyOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -1130,7 +1130,7 @@ type appresPaginateArgs struct {
 	opts          []AppResPaginateOption
 }
 
-func newAppResPaginateArgs(rv map[string]interface{}) *appresPaginateArgs {
+func newAppResPaginateArgs(rv map[string]any) *appresPaginateArgs {
 	args := &appresPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1149,7 +1149,7 @@ func newAppResPaginateArgs(rv map[string]interface{}) *appresPaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppResOrder{Field: &AppResOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -1285,7 +1285,7 @@ type approlePaginateArgs struct {
 	opts          []AppRolePaginateOption
 }
 
-func newAppRolePaginateArgs(rv map[string]interface{}) *approlePaginateArgs {
+func newAppRolePaginateArgs(rv map[string]any) *approlePaginateArgs {
 	args := &approlePaginateArgs{}
 	if rv == nil {
 		return args
@@ -1304,7 +1304,7 @@ func newAppRolePaginateArgs(rv map[string]interface{}) *approlePaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &AppRoleOrder{Field: &AppRoleOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -1838,7 +1838,7 @@ type orgPaginateArgs struct {
 	opts          []OrgPaginateOption
 }
 
-func newOrgPaginateArgs(rv map[string]interface{}) *orgPaginateArgs {
+func newOrgPaginateArgs(rv map[string]any) *orgPaginateArgs {
 	args := &orgPaginateArgs{}
 	if rv == nil {
 		return args
@@ -1857,7 +1857,7 @@ func newOrgPaginateArgs(rv map[string]interface{}) *orgPaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &OrgOrder{Field: &OrgOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -1993,7 +1993,7 @@ type orgpolicyPaginateArgs struct {
 	opts          []OrgPolicyPaginateOption
 }
 
-func newOrgPolicyPaginateArgs(rv map[string]interface{}) *orgpolicyPaginateArgs {
+func newOrgPolicyPaginateArgs(rv map[string]any) *orgpolicyPaginateArgs {
 	args := &orgpolicyPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2012,7 +2012,7 @@ func newOrgPolicyPaginateArgs(rv map[string]interface{}) *orgpolicyPaginateArgs 
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &OrgPolicyOrder{Field: &OrgPolicyOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -2117,7 +2117,7 @@ type orgrolePaginateArgs struct {
 	opts          []OrgRolePaginateOption
 }
 
-func newOrgRolePaginateArgs(rv map[string]interface{}) *orgrolePaginateArgs {
+func newOrgRolePaginateArgs(rv map[string]any) *orgrolePaginateArgs {
 	args := &orgrolePaginateArgs{}
 	if rv == nil {
 		return args
@@ -2136,7 +2136,7 @@ func newOrgRolePaginateArgs(rv map[string]interface{}) *orgrolePaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &OrgRoleOrder{Field: &OrgRoleOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -2317,7 +2317,7 @@ type permissionPaginateArgs struct {
 	opts          []PermissionPaginateOption
 }
 
-func newPermissionPaginateArgs(rv map[string]interface{}) *permissionPaginateArgs {
+func newPermissionPaginateArgs(rv map[string]any) *permissionPaginateArgs {
 	args := &permissionPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2336,7 +2336,7 @@ func newPermissionPaginateArgs(rv map[string]interface{}) *permissionPaginateArg
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &PermissionOrder{Field: &PermissionOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -2589,7 +2589,7 @@ type userPaginateArgs struct {
 	opts          []UserPaginateOption
 }
 
-func newUserPaginateArgs(rv map[string]interface{}) *userPaginateArgs {
+func newUserPaginateArgs(rv map[string]any) *userPaginateArgs {
 	args := &userPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2608,7 +2608,7 @@ func newUserPaginateArgs(rv map[string]interface{}) *userPaginateArgs {
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &UserOrder{Field: &UserOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -2752,7 +2752,7 @@ type userdevicePaginateArgs struct {
 	opts          []UserDevicePaginateOption
 }
 
-func newUserDevicePaginateArgs(rv map[string]interface{}) *userdevicePaginateArgs {
+func newUserDevicePaginateArgs(rv map[string]any) *userdevicePaginateArgs {
 	args := &userdevicePaginateArgs{}
 	if rv == nil {
 		return args
@@ -2771,7 +2771,7 @@ func newUserDevicePaginateArgs(rv map[string]interface{}) *userdevicePaginateArg
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &UserDeviceOrder{Field: &UserDeviceOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -2895,7 +2895,7 @@ type useridentityPaginateArgs struct {
 	opts          []UserIdentityPaginateOption
 }
 
-func newUserIdentityPaginateArgs(rv map[string]interface{}) *useridentityPaginateArgs {
+func newUserIdentityPaginateArgs(rv map[string]any) *useridentityPaginateArgs {
 	args := &useridentityPaginateArgs{}
 	if rv == nil {
 		return args
@@ -2914,7 +2914,7 @@ func newUserIdentityPaginateArgs(rv map[string]interface{}) *useridentityPaginat
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &UserIdentityOrder{Field: &UserIdentityOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -3058,7 +3058,7 @@ type userloginprofilePaginateArgs struct {
 	opts          []UserLoginProfilePaginateOption
 }
 
-func newUserLoginProfilePaginateArgs(rv map[string]interface{}) *userloginprofilePaginateArgs {
+func newUserLoginProfilePaginateArgs(rv map[string]any) *userloginprofilePaginateArgs {
 	args := &userloginprofilePaginateArgs{}
 	if rv == nil {
 		return args
@@ -3077,7 +3077,7 @@ func newUserLoginProfilePaginateArgs(rv map[string]interface{}) *userloginprofil
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &UserLoginProfileOrder{Field: &UserLoginProfileOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -3191,7 +3191,7 @@ type userpasswordPaginateArgs struct {
 	opts          []UserPasswordPaginateOption
 }
 
-func newUserPasswordPaginateArgs(rv map[string]interface{}) *userpasswordPaginateArgs {
+func newUserPasswordPaginateArgs(rv map[string]any) *userpasswordPaginateArgs {
 	args := &userpasswordPaginateArgs{}
 	if rv == nil {
 		return args
@@ -3210,7 +3210,7 @@ func newUserPasswordPaginateArgs(rv map[string]interface{}) *userpasswordPaginat
 	}
 	if v, ok := rv[orderByField]; ok {
 		switch v := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			var (
 				err1, err2 error
 				order      = &UserPasswordOrder{Field: &UserPasswordOrderField{}, Direction: entgql.OrderDirectionAsc}
@@ -3247,35 +3247,18 @@ const (
 	whereField     = "where"
 )
 
-func fieldArgs(ctx context.Context, whereInput interface{}, path ...string) map[string]interface{} {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
+func fieldArgs(ctx context.Context, whereInput any, path ...string) map[string]any {
+	field := collectedField(ctx, path...)
+	if field == nil || field.Arguments == nil {
 		return nil
 	}
 	oc := graphql.GetOperationContext(ctx)
-	for _, name := range path {
-		var field *graphql.CollectedField
-		for _, f := range graphql.CollectFields(oc, fc.Field.Selections, nil) {
-			if f.Alias == name {
-				field = &f
-				break
-			}
-		}
-		if field == nil {
-			return nil
-		}
-		cf, err := fc.Child(ctx, *field)
-		if err != nil {
-			args := field.ArgumentMap(oc.Variables)
-			return unmarshalArgs(ctx, whereInput, args)
-		}
-		fc = cf
-	}
-	return fc.Args
+	args := field.ArgumentMap(oc.Variables)
+	return unmarshalArgs(ctx, whereInput, args)
 }
 
 // unmarshalArgs allows extracting the field arguments from their raw representation.
-func unmarshalArgs(ctx context.Context, whereInput interface{}, args map[string]interface{}) map[string]interface{} {
+func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map[string]any {
 	for _, k := range []string{firstField, lastField} {
 		v, ok := args[k]
 		if !ok {

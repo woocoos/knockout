@@ -27,7 +27,7 @@ func (pd *PermissionDelete) Where(ps ...predicate.Permission) *PermissionDelete 
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (pd *PermissionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, PermissionMutation](ctx, pd.sqlExec, pd.mutation, pd.hooks)
+	return withHooks(ctx, pd.sqlExec, pd.mutation, pd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -110,7 +110,7 @@ func (oac *OrgAppCreate) Save(ctx context.Context) (*OrgApp, error) {
 	if err := oac.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*OrgApp, OrgAppMutation](ctx, oac.sqlSave, oac.mutation, oac.hooks)
+	return withHooks(ctx, oac.sqlSave, oac.mutation, oac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

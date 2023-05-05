@@ -155,7 +155,7 @@ func (uic *UserIdentityCreate) Save(ctx context.Context) (*UserIdentity, error) 
 	if err := uic.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*UserIdentity, UserIdentityMutation](ctx, uic.sqlSave, uic.mutation, uic.hooks)
+	return withHooks(ctx, uic.sqlSave, uic.mutation, uic.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

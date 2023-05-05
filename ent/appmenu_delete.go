@@ -27,7 +27,7 @@ func (amd *AppMenuDelete) Where(ps ...predicate.AppMenu) *AppMenuDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (amd *AppMenuDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppMenuMutation](ctx, amd.sqlExec, amd.mutation, amd.hooks)
+	return withHooks(ctx, amd.sqlExec, amd.mutation, amd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -27,7 +27,7 @@ func (aad *AppActionDelete) Where(ps ...predicate.AppAction) *AppActionDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (aad *AppActionDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppActionMutation](ctx, aad.sqlExec, aad.mutation, aad.hooks)
+	return withHooks(ctx, aad.sqlExec, aad.mutation, aad.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -379,7 +379,7 @@ func (ac *AppCreate) Save(ctx context.Context) (*App, error) {
 	if err := ac.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*App, AppMutation](ctx, ac.sqlSave, ac.mutation, ac.hooks)
+	return withHooks(ctx, ac.sqlSave, ac.mutation, ac.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

@@ -143,7 +143,7 @@ func (arpu *AppRolePolicyUpdate) ClearPolicy() *AppRolePolicyUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (arpu *AppRolePolicyUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppRolePolicyMutation](ctx, arpu.sqlSave, arpu.mutation, arpu.hooks)
+	return withHooks(ctx, arpu.sqlSave, arpu.mutation, arpu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -416,7 +416,7 @@ func (arpuo *AppRolePolicyUpdateOne) Select(field string, fields ...string) *App
 
 // Save executes the query and returns the updated AppRolePolicy entity.
 func (arpuo *AppRolePolicyUpdateOne) Save(ctx context.Context) (*AppRolePolicy, error) {
-	return withHooks[*AppRolePolicy, AppRolePolicyMutation](ctx, arpuo.sqlSave, arpuo.mutation, arpuo.hooks)
+	return withHooks(ctx, arpuo.sqlSave, arpuo.mutation, arpuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

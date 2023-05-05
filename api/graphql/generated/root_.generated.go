@@ -7412,6 +7412,7 @@ type Mfa{
 }
 
 extend type OrgRole {
+    """是否系统角色"""
     isSystemRole: Boolean!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {

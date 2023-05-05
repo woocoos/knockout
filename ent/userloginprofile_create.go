@@ -217,7 +217,7 @@ func (ulpc *UserLoginProfileCreate) Save(ctx context.Context) (*UserLoginProfile
 	if err := ulpc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*UserLoginProfile, UserLoginProfileMutation](ctx, ulpc.sqlSave, ulpc.mutation, ulpc.hooks)
+	return withHooks(ctx, ulpc.sqlSave, ulpc.mutation, ulpc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

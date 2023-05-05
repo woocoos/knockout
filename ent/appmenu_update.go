@@ -186,7 +186,7 @@ func (amu *AppMenuUpdate) ClearAction() *AppMenuUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (amu *AppMenuUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppMenuMutation](ctx, amu.sqlSave, amu.mutation, amu.hooks)
+	return withHooks(ctx, amu.sqlSave, amu.mutation, amu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -494,7 +494,7 @@ func (amuo *AppMenuUpdateOne) Select(field string, fields ...string) *AppMenuUpd
 
 // Save executes the query and returns the updated AppMenu entity.
 func (amuo *AppMenuUpdateOne) Save(ctx context.Context) (*AppMenu, error) {
-	return withHooks[*AppMenu, AppMenuMutation](ctx, amuo.sqlSave, amuo.mutation, amuo.hooks)
+	return withHooks(ctx, amuo.sqlSave, amuo.mutation, amuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

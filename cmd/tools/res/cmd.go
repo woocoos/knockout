@@ -249,8 +249,8 @@ func checkResAnnotation(sch *load.Schema) (has bool, err error, fn arnFieldFunc)
 		has = true
 		fn = func(name string) bool {
 			for _, res := range ann.Resources {
-				// exclude tenant_id and org_id
-				if res == "tenant_id" || res == ann.TenantField {
+				// exclude tenant_id
+				if res == schemax.FieldTenantID || res == ann.TenantField {
 					continue
 				}
 				if res == name {

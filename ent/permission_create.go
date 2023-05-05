@@ -207,7 +207,7 @@ func (pc *PermissionCreate) Save(ctx context.Context) (*Permission, error) {
 	if err := pc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*Permission, PermissionMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
+	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

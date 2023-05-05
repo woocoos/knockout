@@ -211,7 +211,7 @@ func (udc *UserDeviceCreate) Save(ctx context.Context) (*UserDevice, error) {
 	if err := udc.defaults(); err != nil {
 		return nil, err
 	}
-	return withHooks[*UserDevice, UserDeviceMutation](ctx, udc.sqlSave, udc.mutation, udc.hooks)
+	return withHooks(ctx, udc.sqlSave, udc.mutation, udc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.

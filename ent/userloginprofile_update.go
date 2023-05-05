@@ -235,7 +235,7 @@ func (ulpu *UserLoginProfileUpdate) Mutation() *UserLoginProfileMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ulpu *UserLoginProfileUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, UserLoginProfileMutation](ctx, ulpu.sqlSave, ulpu.mutation, ulpu.hooks)
+	return withHooks(ctx, ulpu.sqlSave, ulpu.mutation, ulpu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -594,7 +594,7 @@ func (ulpuo *UserLoginProfileUpdateOne) Select(field string, fields ...string) *
 
 // Save executes the query and returns the updated UserLoginProfile entity.
 func (ulpuo *UserLoginProfileUpdateOne) Save(ctx context.Context) (*UserLoginProfile, error) {
-	return withHooks[*UserLoginProfile, UserLoginProfileMutation](ctx, ulpuo.sqlSave, ulpuo.mutation, ulpuo.hooks)
+	return withHooks(ctx, ulpuo.sqlSave, ulpuo.mutation, ulpuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

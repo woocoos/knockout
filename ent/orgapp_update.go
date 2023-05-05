@@ -118,7 +118,7 @@ func (oau *OrgAppUpdate) ClearOrg() *OrgAppUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (oau *OrgAppUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, OrgAppMutation](ctx, oau.sqlSave, oau.mutation, oau.hooks)
+	return withHooks(ctx, oau.sqlSave, oau.mutation, oau.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -360,7 +360,7 @@ func (oauo *OrgAppUpdateOne) Select(field string, fields ...string) *OrgAppUpdat
 
 // Save executes the query and returns the updated OrgApp entity.
 func (oauo *OrgAppUpdateOne) Save(ctx context.Context) (*OrgApp, error) {
-	return withHooks[*OrgApp, OrgAppMutation](ctx, oauo.sqlSave, oauo.mutation, oauo.hooks)
+	return withHooks(ctx, oauo.sqlSave, oauo.mutation, oauo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

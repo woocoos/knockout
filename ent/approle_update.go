@@ -210,7 +210,7 @@ func (aru *AppRoleUpdate) RemoveAppRolePolicy(a ...*AppRolePolicy) *AppRoleUpdat
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (aru *AppRoleUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppRoleMutation](ctx, aru.sqlSave, aru.mutation, aru.hooks)
+	return withHooks(ctx, aru.sqlSave, aru.mutation, aru.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -589,7 +589,7 @@ func (aruo *AppRoleUpdateOne) Select(field string, fields ...string) *AppRoleUpd
 
 // Save executes the query and returns the updated AppRole entity.
 func (aruo *AppRoleUpdateOne) Save(ctx context.Context) (*AppRole, error) {
-	return withHooks[*AppRole, AppRoleMutation](ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
+	return withHooks(ctx, aruo.sqlSave, aruo.mutation, aruo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

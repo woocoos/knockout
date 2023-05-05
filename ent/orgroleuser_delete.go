@@ -27,7 +27,7 @@ func (orud *OrgRoleUserDelete) Where(ps ...predicate.OrgRoleUser) *OrgRoleUserDe
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (orud *OrgRoleUserDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, OrgRoleUserMutation](ctx, orud.sqlExec, orud.mutation, orud.hooks)
+	return withHooks(ctx, orud.sqlExec, orud.mutation, orud.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

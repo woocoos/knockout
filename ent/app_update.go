@@ -595,7 +595,7 @@ func (au *AppUpdate) RemoveOrgApp(o ...*OrgApp) *AppUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *AppUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, AppMutation](ctx, au.sqlSave, au.mutation, au.hooks)
+	return withHooks(ctx, au.sqlSave, au.mutation, au.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -1682,7 +1682,7 @@ func (auo *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
 
 // Save executes the query and returns the updated App entity.
 func (auo *AppUpdateOne) Save(ctx context.Context) (*App, error) {
-	return withHooks[*App, AppMutation](ctx, auo.sqlSave, auo.mutation, auo.hooks)
+	return withHooks(ctx, auo.sqlSave, auo.mutation, auo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

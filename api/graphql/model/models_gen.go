@@ -24,9 +24,9 @@ type AssignRoleUserInput struct {
 	OrgRoleID int `json:"orgRoleID"`
 	UserID    int `json:"userID"`
 	// 生效开始时间
-	StartAt *time.Time `json:"startAt"`
+	StartAt *time.Time `json:"startAt,omitempty"`
 	// 生效结束时间
-	EndAt *time.Time `json:"endAt"`
+	EndAt *time.Time `json:"endAt,omitempty"`
 }
 
 type EnableDirectoryInput struct {
