@@ -45,12 +45,12 @@ func (UserLoginProfile) Fields() []ent.Field {
 		field.Bool("password_reset").Optional().Comment("下次登陆时需要重置密码"),
 		field.Bool("verify_device").Comment("是否开启设备认证"),
 		field.Bool("mfa_enabled").Optional().Comment("是否开启多因素验证").
-			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
+			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("mfa_secret").Optional().MaxLen(100).Comment("多因素验证密钥BASE32").Sensitive().
-			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
+			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Enum("mfa_status").Optional().
 			GoType(typex.SimpleStatus("")).Comment("多因素验证状态").
-			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationUpdateInput)),
+			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 	}
 }
 

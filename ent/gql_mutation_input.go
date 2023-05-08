@@ -1341,9 +1341,6 @@ type CreateUserLoginProfileInput struct {
 	SetKind       userloginprofile.SetKind
 	PasswordReset *bool
 	VerifyDevice  bool
-	MfaEnabled    *bool
-	MfaSecret     *string
-	MfaStatus     *typex.SimpleStatus
 	UserID        *int
 }
 
@@ -1357,15 +1354,6 @@ func (i *CreateUserLoginProfileInput) Mutate(m *UserLoginProfileMutation) {
 		m.SetPasswordReset(*v)
 	}
 	m.SetVerifyDevice(i.VerifyDevice)
-	if v := i.MfaEnabled; v != nil {
-		m.SetMfaEnabled(*v)
-	}
-	if v := i.MfaSecret; v != nil {
-		m.SetMfaSecret(*v)
-	}
-	if v := i.MfaStatus; v != nil {
-		m.SetMfaStatus(*v)
-	}
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)
 	}

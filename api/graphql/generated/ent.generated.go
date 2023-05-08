@@ -22706,7 +22706,7 @@ func (ec *executionContext) unmarshalInputCreateUserLoginProfileInput(ctx contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"canLogin", "setKind", "passwordReset", "verifyDevice", "mfaEnabled", "mfaSecret", "mfaStatus", "userID"}
+	fieldsInOrder := [...]string{"canLogin", "setKind", "passwordReset", "verifyDevice", "userID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22742,30 +22742,6 @@ func (ec *executionContext) unmarshalInputCreateUserLoginProfileInput(ctx contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDevice"))
 			it.VerifyDevice, err = ec.unmarshalNBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "mfaEnabled":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabled"))
-			it.MfaEnabled, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "mfaSecret":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaSecret"))
-			it.MfaSecret, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "mfaStatus":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatus"))
-			it.MfaStatus, err = ec.unmarshalOUserLoginProfileSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋentcoᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -46,7 +46,7 @@ web:
                 exclude:
                   - "/login/auth"
                   - "/login/mfaqr.png"
-                  - "/login/verifyFactor"
+                  - "/login/verify-factor"
                   - "/login/reset-password"
                   - "/captcha"
                 <<: *jwt

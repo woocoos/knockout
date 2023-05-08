@@ -1471,12 +1471,6 @@ input CreateUserLoginProfileInput {
   passwordReset: Boolean
   """是否开启设备认证"""
   verifyDevice: Boolean!
-  """是否开启多因素验证"""
-  mfaEnabled: Boolean
-  """多因素验证密钥BASE32"""
-  mfaSecret: String
-  """多因素验证状态"""
-  mfaStatus: UserLoginProfileSimpleStatus
   userID: ID
 }
 """
