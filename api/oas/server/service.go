@@ -413,7 +413,23 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	secByte, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(val["secret"])
+	if err != nil {
+		return nil, err
+	}
+	uorg, err := s.GetUserRootOrg(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	issuer := uorg.Domain
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      issuer,
+		AccountName: pn,
+		Secret:      secByte,
+	})
 	return &oas.Mfa{
+		QrCodeUri:     key.String(),
 		PrincipalName: pn,
 		Secret:        val["secret"],
 		StateToken:    stateToken,

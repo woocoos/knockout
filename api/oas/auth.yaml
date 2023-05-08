@@ -265,6 +265,8 @@ components:
           type: string
         secret:
           type: string
+        qrCodeUri:
+            type: string
         stateToken:
           type: string
           description: when need MFA or Change PWD. use the state token to request callback_url

@@ -23,6 +23,7 @@ type LoginResponse struct {
 
 type Mfa struct {
 	PrincipalName string  `json:"principalName,omitempty"`
+	QrCodeUri     string  `json:"qrCodeUri,omitempty"`
 	Secret        string  `json:"secret,omitempty"`
 	StateToken    string  `json:"stateToken,omitempty"`
 	StateTokenTTL float64 `json:"stateTokenTTL,omitempty"`
