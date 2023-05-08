@@ -17,13 +17,12 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tsingsun/woocoo v0.2.5
-	github.com/tsingsun/woocoo/cmd/woco v0.0.0-20230505034326-dbe1c13581e5
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230505034326-dbe1c13581e5
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230505034326-dbe1c13581e5
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230505074155-6034307ae4c3
+	github.com/woocoos/entco v0.0.0-20230508080006-a7c01afcb8e7
 	go.opentelemetry.io/contrib/propagators/b3 v1.16.1
 	golang.org/x/sync v0.1.0
 )
@@ -33,24 +32,17 @@ require (
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
-	github.com/getkin/kin-openapi v0.115.0 // indirect
-	github.com/go-openapi/jsonpointer v0.19.5 // indirect
-	github.com/go-openapi/swag v0.19.5 // indirect
+	github.com/go-test/deep v1.0.8 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
-	github.com/iancoleman/strcase v0.2.0 // indirect
-	github.com/invopop/yaml v0.1.0 // indirect
 	github.com/jhump/protoreflect v1.10.1 // indirect
-	github.com/josharian/intern v1.0.0 // indirect
 	github.com/knadh/koanf/maps v0.1.1 // indirect
 	github.com/knadh/koanf/parsers/yaml v0.1.0 // indirect
 	github.com/knadh/koanf/providers/confmap v0.1.0 // indirect
 	github.com/knadh/koanf/providers/file v0.1.0 // indirect
 	github.com/knadh/koanf/providers/rawbytes v0.1.0 // indirect
 	github.com/knadh/koanf/v2 v2.0.1 // indirect
-	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
-	github.com/perimeterx/marshmallow v1.1.4 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/redis/go-redis/v9 v9.0.4 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
@@ -71,7 +63,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.15.1 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (

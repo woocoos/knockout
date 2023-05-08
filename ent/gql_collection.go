@@ -124,7 +124,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.MenusColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, app.MenusColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -208,7 +208,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.ActionsColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, app.ActionsColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -292,7 +292,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.ResourcesColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, app.ResourcesColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -306,7 +306,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&AppRoleClient{config: a.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppRole")...); err != nil {
 				return err
 			}
 			a.WithNamedRoles(alias, func(wq *AppRoleQuery) {
@@ -318,7 +318,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&AppPolicyClient{config: a.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppPolicy")...); err != nil {
 				return err
 			}
 			a.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
@@ -404,7 +404,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(app.OrgsPrimaryKey[1], limit, pager.orderExpr(query))
+				modify := limitRows(ctx, app.OrgsPrimaryKey[1], limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -582,7 +582,7 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppClient{config: aa.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
 				return err
 			}
 			aa.withApp = query
@@ -596,7 +596,7 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppMenuClient{config: aa.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppMenu")...); err != nil {
 				return err
 			}
 			aa.WithNamedMenus(alias, func(wq *AppMenuQuery) {
@@ -737,7 +737,7 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
 				return err
 			}
 			am.withApp = query
@@ -751,7 +751,7 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppActionClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppAction")...); err != nil {
 				return err
 			}
 			am.withAction = query
@@ -904,7 +904,7 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppClient{config: ap.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
 				return err
 			}
 			ap.withApp = query
@@ -918,7 +918,7 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppRoleClient{config: ap.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppRole")...); err != nil {
 				return err
 			}
 			ap.WithNamedRoles(alias, func(wq *AppRoleQuery) {
@@ -1064,7 +1064,7 @@ func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.Operatio
 				path  = append(path, alias)
 				query = (&AppClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
 				return err
 			}
 			ar.withApp = query
@@ -1202,7 +1202,7 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
 				return err
 			}
 			ar.withApp = query
@@ -1216,7 +1216,7 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppPolicyClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppPolicy")...); err != nil {
 				return err
 			}
 			ar.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
@@ -1357,7 +1357,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&OrgClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
 				return err
 			}
 			o.withParent = query
@@ -1371,7 +1371,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&OrgClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
 				return err
 			}
 			o.WithNamedChildren(alias, func(wq *OrgQuery) {
@@ -1383,7 +1383,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&UserClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			o.withOwner = query
@@ -1471,7 +1471,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.UsersPrimaryKey[0], limit, pager.orderExpr(query))
+				modify := limitRows(ctx, org.UsersPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1555,7 +1555,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.PermissionsColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, org.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1639,7 +1639,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.PoliciesColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, org.PoliciesColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1727,7 +1727,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(org.AppsPrimaryKey[0], limit, pager.orderExpr(query))
+				modify := limitRows(ctx, org.AppsPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -1910,7 +1910,7 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&OrgClient{config: op.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
 				return err
 			}
 			op.withOrg = query
@@ -1924,7 +1924,7 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&PermissionClient{config: op.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
 				return err
 			}
 			op.WithNamedPermissions(alias, func(wq *PermissionQuery) {
@@ -2189,7 +2189,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
 				return err
 			}
 			pe.withOrg = query
@@ -2203,7 +2203,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			pe.withUser = query
@@ -2217,7 +2217,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgRoleClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OrgRole")...); err != nil {
 				return err
 			}
 			pe.withRole = query
@@ -2231,7 +2231,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgPolicyClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OrgPolicy")...); err != nil {
 				return err
 			}
 			pe.withOrgPolicy = query
@@ -2389,7 +2389,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserIdentityClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserIdentity")...); err != nil {
 				return err
 			}
 			u.WithNamedIdentities(alias, func(wq *UserIdentityQuery) {
@@ -2401,7 +2401,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserLoginProfileClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserLoginProfile")...); err != nil {
 				return err
 			}
 			u.withLoginProfile = query
@@ -2411,7 +2411,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserDeviceClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserDevice")...); err != nil {
 				return err
 			}
 			u.WithNamedDevices(alias, func(wq *UserDeviceQuery) {
@@ -2493,7 +2493,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(user.PermissionsColumn, limit, pager.orderExpr(query))
+				modify := limitRows(ctx, user.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
 				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
@@ -2661,7 +2661,7 @@ func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserClient{config: ud.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			ud.withUser = query
@@ -2824,7 +2824,7 @@ func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&UserClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			ui.withUser = query
@@ -2967,7 +2967,7 @@ func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graph
 				path  = append(path, alias)
 				query = (&UserClient{config: ulp.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			ulp.withUser = query
@@ -3130,7 +3130,7 @@ func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&UserClient{config: up.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, satisfies...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
 				return err
 			}
 			up.withUser = query
@@ -3288,7 +3288,16 @@ func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map
 	return args
 }
 
-func limitRows(partitionBy string, limit int, orderBy ...sql.Querier) func(s *sql.Selector) {
+func limitRows(ctx context.Context, partitionBy string, limit int, first, last *int, orderBy ...sql.Querier) func(s *sql.Selector) {
+	offset := 0
+	if sp, ok := SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			offset = (sp.PageIndex - sp.CurrentIndex - 1) * *first
+		}
+		if last != nil {
+			offset = (sp.CurrentIndex - sp.PageIndex - 1) * *last
+		}
+	}
 	return func(s *sql.Selector) {
 		d := sql.Dialect(s.Dialect())
 		s.SetDistinct(false)
@@ -3304,10 +3313,17 @@ func limitRows(partitionBy string, limit int, orderBy ...sql.Querier) func(s *sq
 					From(d.Table("src_query")),
 			)
 		t := d.Table("limited_query").As(s.TableName())
-		*s = *d.Select(s.UnqualifiedColumns()...).
-			From(t).
-			Where(sql.LTE(t.C("row_number"), limit)).
-			Prefix(with)
+		if offset != 0 {
+			*s = *d.Select(s.UnqualifiedColumns()...).
+				From(t).
+				Where(sql.GT(t.C("row_number"), offset)).Limit(limit).
+				Prefix(with)
+		} else {
+			*s = *d.Select(s.UnqualifiedColumns()...).
+				From(t).
+				Where(sql.LTE(t.C("row_number"), limit)).
+				Prefix(with)
+		}
 	}
 }
 
