@@ -33,6 +33,10 @@ import (
 
 // region    ************************** generated!.gotpl **************************
 
+type OrgPolicyResolver interface {
+	IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error)
+	IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int) (bool, error)
+}
 type OrgRoleResolver interface {
 	IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
 }
@@ -52,6 +56,9 @@ type QueryResolver interface {
 	AppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
 	OrgAppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
 	UserGroups(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
+}
+type UserResolver interface {
+	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
 }
 
 type CreateUserInputResolver interface {
@@ -300,6 +307,36 @@ func (ec *executionContext) field_App_resources_args(ctx context.Context, rawArg
 		}
 	}
 	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_OrgPolicy_isGrantRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["roleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["roleID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_OrgPolicy_isGrantUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg0
 	return args, nil
 }
 
@@ -1302,6 +1339,21 @@ func (ec *executionContext) field_Query_users_args(ctx context.Context, rawArgs 
 		}
 	}
 	args["where"] = arg5
+	return args, nil
+}
+
+func (ec *executionContext) field_User_isAssignOrgRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgRoleID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgRoleID"] = arg0
 	return args, nil
 }
 
@@ -7750,6 +7802,8 @@ func (ec *executionContext) fieldContext_Org_owner(ctx context.Context, field gr
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -8896,6 +8950,116 @@ func (ec *executionContext) fieldContext_OrgPolicy_permissions(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _OrgPolicy_isGrantRole(ctx context.Context, field graphql.CollectedField, obj *ent.OrgPolicy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.OrgPolicy().IsGrantRole(rctx, obj, fc.Args["roleID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgPolicy_isGrantRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgPolicy",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_OrgPolicy_isGrantRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgPolicy_isGrantUser(ctx context.Context, field graphql.CollectedField, obj *ent.OrgPolicy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.OrgPolicy().IsGrantUser(rctx, obj, fc.Args["userID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgPolicy_isGrantUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgPolicy",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_OrgPolicy_isGrantUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _OrgPolicyConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.OrgPolicyConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_OrgPolicyConnection_edges(ctx, field)
 	if err != nil {
@@ -9101,6 +9265,10 @@ func (ec *executionContext) fieldContext_OrgPolicyEdge_node(ctx context.Context,
 				return ec.fieldContext_OrgPolicy_org(ctx, field)
 			case "permissions":
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			case "isGrantRole":
+				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+			case "isGrantUser":
+				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
 		},
@@ -10723,6 +10891,8 @@ func (ec *executionContext) fieldContext_Permission_user(ctx context.Context, fi
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -10856,6 +11026,10 @@ func (ec *executionContext) fieldContext_Permission_orgPolicy(ctx context.Contex
 				return ec.fieldContext_OrgPolicy_org(ctx, field)
 			case "permissions":
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			case "isGrantRole":
+				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+			case "isGrantUser":
+				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
 		},
@@ -13174,6 +13348,61 @@ func (ec *executionContext) fieldContext_User_permissions(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _User_isAssignOrgRole(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_isAssignOrgRole(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().IsAssignOrgRole(rctx, obj, fc.Args["orgRoleID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_isAssignOrgRole(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_User_isAssignOrgRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _UserConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.UserConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_UserConnection_edges(ctx, field)
 	if err != nil {
@@ -13979,6 +14208,8 @@ func (ec *executionContext) fieldContext_UserDevice_user(ctx context.Context, fi
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -14060,6 +14291,8 @@ func (ec *executionContext) fieldContext_UserEdge_node(ctx context.Context, fiel
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -14607,6 +14840,8 @@ func (ec *executionContext) fieldContext_UserIdentity_user(ctx context.Context, 
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -15277,6 +15512,8 @@ func (ec *executionContext) fieldContext_UserLoginProfile_user(ctx context.Conte
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -15698,6 +15935,8 @@ func (ec *executionContext) fieldContext_UserPassword_user(ctx context.Context, 
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -35466,6 +35705,46 @@ func (ec *executionContext) _OrgPolicy(ctx context.Context, sel ast.SelectionSet
 				return innerFunc(ctx)
 
 			})
+		case "isGrantRole":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._OrgPolicy_isGrantRole(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "isGrantUser":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._OrgPolicy_isGrantUser(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -36526,6 +36805,26 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_permissions(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
+		case "isAssignOrgRole":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_isAssignOrgRole(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

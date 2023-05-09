@@ -1817,6 +1817,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1909,6 +1911,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2111,6 +2115,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4126,6 +4132,10 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationPolicy(ctx c
 				return ec.fieldContext_OrgPolicy_org(ctx, field)
 			case "permissions":
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			case "isGrantRole":
+				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+			case "isGrantUser":
+				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
 		},
@@ -4204,6 +4214,10 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganizationPolicy(ctx c
 				return ec.fieldContext_OrgPolicy_org(ctx, field)
 			case "permissions":
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			case "isGrantRole":
+				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+			case "isGrantUser":
+				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
 		},

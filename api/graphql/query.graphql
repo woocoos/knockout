@@ -73,4 +73,6 @@ extend type Query {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ):OrgRoleConnection!
+    """用户继承用户组的权限策略"""
+    userExtendGroupPolicies:Permission
 }

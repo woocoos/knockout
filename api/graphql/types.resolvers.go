@@ -6,13 +6,66 @@ package graphql
 
 import (
 	"context"
+	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/orguser"
 
+	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/permission"
 )
+
+// IsGrantRole is the resolver for the isGrantRole field.
+func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	exist, err := r.Client.Permission.Query().Where(
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.RoleID(roleID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}
+
+// IsGrantUser is the resolver for the isGrantUser field.
+func (r *orgPolicyResolver) IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	exist, err := r.Client.Permission.Query().Where(
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+		permission.UserID(userID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}
 
 // IsAppRole is the resolver for the isAppRole field.
 func (r *orgRoleResolver) IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error) {
 	return obj.AppRoleID > 0, nil
+}
+
+// IsAssignOrgRole is the resolver for the isAssignOrgRole field.
+func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	ouid, err := r.Client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
+	if err != nil {
+		return false, err
+	}
+	exist, err := r.Client.OrgRoleUser.Query().Where(orgroleuser.OrgUserID(ouid), orgroleuser.OrgRoleID(orgRoleID)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
 }
 
 // LoginProfile is the resolver for the loginProfile field.

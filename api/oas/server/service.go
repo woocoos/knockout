@@ -145,12 +145,12 @@ func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.Login
 		return nil, errors.New("user not allowed to login")
 	}
 
-	if profile.PasswordReset {
-		return s.resetPasswordPrepare(ctx, profile)
-	}
-
 	if profile.MfaEnabled {
 		return s.mfaPrepare(ctx, profile)
+	}
+
+	if profile.PasswordReset {
+		return s.resetPasswordPrepare(ctx, profile)
 	}
 
 	_ = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
@@ -178,6 +178,11 @@ func (s *Service) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (
 			return nil, errors.New("invalid code")
 		}
 	}
+
+	if profile.PasswordReset {
+		return s.resetPasswordPrepare(ctx, profile)
+	}
+
 	// no need use transaction
 	err = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, profile.UserID)

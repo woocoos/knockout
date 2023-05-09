@@ -33,9 +33,11 @@ type Config struct {
 
 type ResolverRoot interface {
 	Mutation() MutationResolver
+	OrgPolicy() OrgPolicyResolver
 	OrgRole() OrgRoleResolver
 	Query() QueryResolver
 	Subscription() SubscriptionResolver
+	User() UserResolver
 	CreateUserInput() CreateUserInputResolver
 }
 
@@ -316,6 +318,8 @@ type ComplexityRoot struct {
 		CreatedAt   func(childComplexity int) int
 		CreatedBy   func(childComplexity int) int
 		ID          func(childComplexity int) int
+		IsGrantRole func(childComplexity int, roleID int) int
+		IsGrantUser func(childComplexity int, userID int) int
 		Name        func(childComplexity int) int
 		Org         func(childComplexity int) int
 		OrgID       func(childComplexity int) int
@@ -428,25 +432,26 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Comments      func(childComplexity int) int
-		CreatedAt     func(childComplexity int) int
-		CreatedBy     func(childComplexity int) int
-		CreationType  func(childComplexity int) int
-		DeletedAt     func(childComplexity int) int
-		Devices       func(childComplexity int) int
-		DisplayName   func(childComplexity int) int
-		Email         func(childComplexity int) int
-		ID            func(childComplexity int) int
-		Identities    func(childComplexity int) int
-		LoginProfile  func(childComplexity int) int
-		Mobile        func(childComplexity int) int
-		Permissions   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		PrincipalName func(childComplexity int) int
-		RegisterIP    func(childComplexity int) int
-		Status        func(childComplexity int) int
-		UpdatedAt     func(childComplexity int) int
-		UpdatedBy     func(childComplexity int) int
-		UserType      func(childComplexity int) int
+		Comments        func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		CreatedBy       func(childComplexity int) int
+		CreationType    func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
+		Devices         func(childComplexity int) int
+		DisplayName     func(childComplexity int) int
+		Email           func(childComplexity int) int
+		ID              func(childComplexity int) int
+		Identities      func(childComplexity int) int
+		IsAssignOrgRole func(childComplexity int, orgRoleID int) int
+		LoginProfile    func(childComplexity int) int
+		Mobile          func(childComplexity int) int
+		Permissions     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		PrincipalName   func(childComplexity int) int
+		RegisterIP      func(childComplexity int) int
+		Status          func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		UpdatedBy       func(childComplexity int) int
+		UserType        func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -2295,6 +2300,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgPolicy.ID(childComplexity), true
 
+	case "OrgPolicy.isGrantRole":
+		if e.complexity.OrgPolicy.IsGrantRole == nil {
+			break
+		}
+
+		args, err := ec.field_OrgPolicy_isGrantRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.OrgPolicy.IsGrantRole(childComplexity, args["roleID"].(int)), true
+
+	case "OrgPolicy.isGrantUser":
+		if e.complexity.OrgPolicy.IsGrantUser == nil {
+			break
+		}
+
+		args, err := ec.field_OrgPolicy_isGrantUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.OrgPolicy.IsGrantUser(childComplexity, args["userID"].(int)), true
+
 	case "OrgPolicy.name":
 		if e.complexity.OrgPolicy.Name == nil {
 			break
@@ -2950,6 +2979,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Identities(childComplexity), true
+
+	case "User.isAssignOrgRole":
+		if e.complexity.User.IsAssignOrgRole == nil {
+			break
+		}
+
+		args, err := ec.field_User_isAssignOrgRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.IsAssignOrgRole(childComplexity, args["orgRoleID"].(int)), true
 
 	case "User.loginProfile":
 		if e.complexity.User.LoginProfile == nil {
@@ -7421,6 +7462,18 @@ type Mfa{
 extend type OrgRole {
     """是否系统角色"""
     isAppRole: Boolean!
+}
+
+extend type OrgPolicy {
+    """是否授权role"""
+    isGrantRole(roleID:ID!): Boolean!
+    """是否授权user"""
+    isGrantUser(userID:ID!): Boolean!
+}
+
+extend type User {
+    """是否分配role"""
+    isAssignOrgRole(orgRoleID:ID!): Boolean!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""

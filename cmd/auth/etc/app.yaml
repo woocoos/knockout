@@ -86,5 +86,5 @@ cache:
       ttl: 100s
 
 entcache:
-  level: db
-  ttl: 5m
+  level: context
+#  ttl: 5m # level: db时有效
