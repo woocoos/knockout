@@ -3395,6 +3395,8 @@ type AppMenuMutation struct {
 	addparent_id    *int
 	kind            *appmenu.Kind
 	name            *string
+	icon            *string
+	route           *string
 	comments        *string
 	display_sort    *int32
 	adddisplay_sort *int32
@@ -3900,6 +3902,104 @@ func (m *AppMenuMutation) ResetName() {
 	m.name = nil
 }
 
+// SetIcon sets the "icon" field.
+func (m *AppMenuMutation) SetIcon(s string) {
+	m.icon = &s
+}
+
+// Icon returns the value of the "icon" field in the mutation.
+func (m *AppMenuMutation) Icon() (r string, exists bool) {
+	v := m.icon
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIcon returns the old "icon" field's value of the AppMenu entity.
+// If the AppMenu object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMenuMutation) OldIcon(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIcon is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIcon requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIcon: %w", err)
+	}
+	return oldValue.Icon, nil
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (m *AppMenuMutation) ClearIcon() {
+	m.icon = nil
+	m.clearedFields[appmenu.FieldIcon] = struct{}{}
+}
+
+// IconCleared returns if the "icon" field was cleared in this mutation.
+func (m *AppMenuMutation) IconCleared() bool {
+	_, ok := m.clearedFields[appmenu.FieldIcon]
+	return ok
+}
+
+// ResetIcon resets all changes to the "icon" field.
+func (m *AppMenuMutation) ResetIcon() {
+	m.icon = nil
+	delete(m.clearedFields, appmenu.FieldIcon)
+}
+
+// SetRoute sets the "route" field.
+func (m *AppMenuMutation) SetRoute(s string) {
+	m.route = &s
+}
+
+// Route returns the value of the "route" field in the mutation.
+func (m *AppMenuMutation) Route() (r string, exists bool) {
+	v := m.route
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRoute returns the old "route" field's value of the AppMenu entity.
+// If the AppMenu object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMenuMutation) OldRoute(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRoute is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRoute requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRoute: %w", err)
+	}
+	return oldValue.Route, nil
+}
+
+// ClearRoute clears the value of the "route" field.
+func (m *AppMenuMutation) ClearRoute() {
+	m.route = nil
+	m.clearedFields[appmenu.FieldRoute] = struct{}{}
+}
+
+// RouteCleared returns if the "route" field was cleared in this mutation.
+func (m *AppMenuMutation) RouteCleared() bool {
+	_, ok := m.clearedFields[appmenu.FieldRoute]
+	return ok
+}
+
+// ResetRoute resets all changes to the "route" field.
+func (m *AppMenuMutation) ResetRoute() {
+	m.route = nil
+	delete(m.clearedFields, appmenu.FieldRoute)
+}
+
 // SetActionID sets the "action_id" field.
 func (m *AppMenuMutation) SetActionID(i int) {
 	m.action = &i
@@ -4154,7 +4254,7 @@ func (m *AppMenuMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMenuMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 13)
 	if m.created_by != nil {
 		fields = append(fields, appmenu.FieldCreatedBy)
 	}
@@ -4178,6 +4278,12 @@ func (m *AppMenuMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, appmenu.FieldName)
+	}
+	if m.icon != nil {
+		fields = append(fields, appmenu.FieldIcon)
+	}
+	if m.route != nil {
+		fields = append(fields, appmenu.FieldRoute)
 	}
 	if m.action != nil {
 		fields = append(fields, appmenu.FieldActionID)
@@ -4212,6 +4318,10 @@ func (m *AppMenuMutation) Field(name string) (ent.Value, bool) {
 		return m.Kind()
 	case appmenu.FieldName:
 		return m.Name()
+	case appmenu.FieldIcon:
+		return m.Icon()
+	case appmenu.FieldRoute:
+		return m.Route()
 	case appmenu.FieldActionID:
 		return m.ActionID()
 	case appmenu.FieldComments:
@@ -4243,6 +4353,10 @@ func (m *AppMenuMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldKind(ctx)
 	case appmenu.FieldName:
 		return m.OldName(ctx)
+	case appmenu.FieldIcon:
+		return m.OldIcon(ctx)
+	case appmenu.FieldRoute:
+		return m.OldRoute(ctx)
 	case appmenu.FieldActionID:
 		return m.OldActionID(ctx)
 	case appmenu.FieldComments:
@@ -4313,6 +4427,20 @@ func (m *AppMenuMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case appmenu.FieldIcon:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIcon(v)
+		return nil
+	case appmenu.FieldRoute:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRoute(v)
 		return nil
 	case appmenu.FieldActionID:
 		v, ok := value.(int)
@@ -4425,6 +4553,12 @@ func (m *AppMenuMutation) ClearedFields() []string {
 	if m.FieldCleared(appmenu.FieldAppID) {
 		fields = append(fields, appmenu.FieldAppID)
 	}
+	if m.FieldCleared(appmenu.FieldIcon) {
+		fields = append(fields, appmenu.FieldIcon)
+	}
+	if m.FieldCleared(appmenu.FieldRoute) {
+		fields = append(fields, appmenu.FieldRoute)
+	}
 	if m.FieldCleared(appmenu.FieldActionID) {
 		fields = append(fields, appmenu.FieldActionID)
 	}
@@ -4456,6 +4590,12 @@ func (m *AppMenuMutation) ClearField(name string) error {
 		return nil
 	case appmenu.FieldAppID:
 		m.ClearAppID()
+		return nil
+	case appmenu.FieldIcon:
+		m.ClearIcon()
+		return nil
+	case appmenu.FieldRoute:
+		m.ClearRoute()
 		return nil
 	case appmenu.FieldActionID:
 		m.ClearActionID()
@@ -4497,6 +4637,12 @@ func (m *AppMenuMutation) ResetField(name string) error {
 		return nil
 	case appmenu.FieldName:
 		m.ResetName()
+		return nil
+	case appmenu.FieldIcon:
+		m.ResetIcon()
+		return nil
+	case appmenu.FieldRoute:
+		m.ResetRoute()
 		return nil
 	case appmenu.FieldActionID:
 		m.ResetActionID()

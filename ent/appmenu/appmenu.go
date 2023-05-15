@@ -34,6 +34,10 @@ const (
 	FieldKind = "kind"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldIcon holds the string denoting the icon field in the database.
+	FieldIcon = "icon"
+	// FieldRoute holds the string denoting the route field in the database.
+	FieldRoute = "route"
 	// FieldActionID holds the string denoting the action_id field in the database.
 	FieldActionID = "action_id"
 	// FieldComments holds the string denoting the comments field in the database.
@@ -73,6 +77,8 @@ var Columns = []string{
 	FieldParentID,
 	FieldKind,
 	FieldName,
+	FieldIcon,
+	FieldRoute,
 	FieldActionID,
 	FieldComments,
 	FieldDisplaySort,
@@ -170,6 +176,16 @@ func ByKind(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByIcon orders the results by the icon field.
+func ByIcon(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIcon, opts...).ToFunc()
+}
+
+// ByRoute orders the results by the route field.
+func ByRoute(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRoute, opts...).ToFunc()
 }
 
 // ByActionID orders the results by the action_id field.

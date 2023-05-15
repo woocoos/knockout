@@ -2,7 +2,6 @@ package security
 
 import (
 	"errors"
-	"fmt"
 	"github.com/tsingsun/woocoo/pkg/authz"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -48,7 +47,7 @@ func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalK
 		_, err := authorizer.Enforcer.AddPoliciesEx(pls)
 		return err
 	}
-	return fmt.Errorf("all policies has grant")
+	return nil
 }
 
 func GrantByPermission(permission *ent.Permission, domain string) error {
@@ -70,11 +69,12 @@ func RevokePolicy(rules []*types.PolicyRule, principal, domain string, perm perm
 	role := principal
 	switch perm {
 	case permission.PrincipalKindUser:
+		// 需判断没有授权策略时才允许移除,暂时不移除
 		role = "r_" + principal
-		_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(principal, role, domain)
-		if err != nil {
-			return err
-		}
+		//_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(principal, role, domain)
+		//if err != nil {
+		//	return err
+		//}
 	case permission.PrincipalKindRole:
 	default:
 		return errors.New("invalid principal kind")

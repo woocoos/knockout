@@ -165,7 +165,7 @@ func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input 
 
 // UpdateAppMenu is the resolver for the updateAppMenu field.
 func (r *mutationResolver) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
-	return ent.FromContext(ctx).AppMenu.UpdateOneID(menuID).SetInput(input).Save(ctx)
+	return r.Resource.UpdateAppMenu(ctx, menuID, input)
 }
 
 // MoveAppMenu is the resolver for the moveAppMenu field.
@@ -176,7 +176,7 @@ func (r *mutationResolver) MoveAppMenu(ctx context.Context, sourceID int, target
 
 // DeleteAppMenu is the resolver for the deleteAppMenu field.
 func (r *mutationResolver) DeleteAppMenu(ctx context.Context, menuID int) (bool, error) {
-	err := ent.FromContext(ctx).AppMenu.DeleteOneID(menuID).Exec(ctx)
+	err := r.Resource.DeleteAppMenu(ctx, menuID)
 	return err == nil, err
 }
 

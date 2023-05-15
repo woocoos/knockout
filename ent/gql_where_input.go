@@ -1581,13 +1581,39 @@ type AppMenuWhereInput struct {
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
 
-	// "action_id" field predicates.
-	ActionID       *int  `json:"actionID,omitempty"`
-	ActionIDNEQ    *int  `json:"actionIDNEQ,omitempty"`
-	ActionIDIn     []int `json:"actionIDIn,omitempty"`
-	ActionIDNotIn  []int `json:"actionIDNotIn,omitempty"`
-	ActionIDIsNil  bool  `json:"actionIDIsNil,omitempty"`
-	ActionIDNotNil bool  `json:"actionIDNotNil,omitempty"`
+	// "icon" field predicates.
+	Icon             *string  `json:"icon,omitempty"`
+	IconNEQ          *string  `json:"iconNEQ,omitempty"`
+	IconIn           []string `json:"iconIn,omitempty"`
+	IconNotIn        []string `json:"iconNotIn,omitempty"`
+	IconGT           *string  `json:"iconGT,omitempty"`
+	IconGTE          *string  `json:"iconGTE,omitempty"`
+	IconLT           *string  `json:"iconLT,omitempty"`
+	IconLTE          *string  `json:"iconLTE,omitempty"`
+	IconContains     *string  `json:"iconContains,omitempty"`
+	IconHasPrefix    *string  `json:"iconHasPrefix,omitempty"`
+	IconHasSuffix    *string  `json:"iconHasSuffix,omitempty"`
+	IconIsNil        bool     `json:"iconIsNil,omitempty"`
+	IconNotNil       bool     `json:"iconNotNil,omitempty"`
+	IconEqualFold    *string  `json:"iconEqualFold,omitempty"`
+	IconContainsFold *string  `json:"iconContainsFold,omitempty"`
+
+	// "route" field predicates.
+	Route             *string  `json:"route,omitempty"`
+	RouteNEQ          *string  `json:"routeNEQ,omitempty"`
+	RouteIn           []string `json:"routeIn,omitempty"`
+	RouteNotIn        []string `json:"routeNotIn,omitempty"`
+	RouteGT           *string  `json:"routeGT,omitempty"`
+	RouteGTE          *string  `json:"routeGTE,omitempty"`
+	RouteLT           *string  `json:"routeLT,omitempty"`
+	RouteLTE          *string  `json:"routeLTE,omitempty"`
+	RouteContains     *string  `json:"routeContains,omitempty"`
+	RouteHasPrefix    *string  `json:"routeHasPrefix,omitempty"`
+	RouteHasSuffix    *string  `json:"routeHasSuffix,omitempty"`
+	RouteIsNil        bool     `json:"routeIsNil,omitempty"`
+	RouteNotNil       bool     `json:"routeNotNil,omitempty"`
+	RouteEqualFold    *string  `json:"routeEqualFold,omitempty"`
+	RouteContainsFold *string  `json:"routeContainsFold,omitempty"`
 
 	// "app" edge predicates.
 	HasApp     *bool            `json:"hasApp,omitempty"`
@@ -1894,23 +1920,95 @@ func (i *AppMenuWhereInput) P() (predicate.AppMenu, error) {
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, appmenu.NameContainsFold(*i.NameContainsFold))
 	}
-	if i.ActionID != nil {
-		predicates = append(predicates, appmenu.ActionIDEQ(*i.ActionID))
+	if i.Icon != nil {
+		predicates = append(predicates, appmenu.IconEQ(*i.Icon))
 	}
-	if i.ActionIDNEQ != nil {
-		predicates = append(predicates, appmenu.ActionIDNEQ(*i.ActionIDNEQ))
+	if i.IconNEQ != nil {
+		predicates = append(predicates, appmenu.IconNEQ(*i.IconNEQ))
 	}
-	if len(i.ActionIDIn) > 0 {
-		predicates = append(predicates, appmenu.ActionIDIn(i.ActionIDIn...))
+	if len(i.IconIn) > 0 {
+		predicates = append(predicates, appmenu.IconIn(i.IconIn...))
 	}
-	if len(i.ActionIDNotIn) > 0 {
-		predicates = append(predicates, appmenu.ActionIDNotIn(i.ActionIDNotIn...))
+	if len(i.IconNotIn) > 0 {
+		predicates = append(predicates, appmenu.IconNotIn(i.IconNotIn...))
 	}
-	if i.ActionIDIsNil {
-		predicates = append(predicates, appmenu.ActionIDIsNil())
+	if i.IconGT != nil {
+		predicates = append(predicates, appmenu.IconGT(*i.IconGT))
 	}
-	if i.ActionIDNotNil {
-		predicates = append(predicates, appmenu.ActionIDNotNil())
+	if i.IconGTE != nil {
+		predicates = append(predicates, appmenu.IconGTE(*i.IconGTE))
+	}
+	if i.IconLT != nil {
+		predicates = append(predicates, appmenu.IconLT(*i.IconLT))
+	}
+	if i.IconLTE != nil {
+		predicates = append(predicates, appmenu.IconLTE(*i.IconLTE))
+	}
+	if i.IconContains != nil {
+		predicates = append(predicates, appmenu.IconContains(*i.IconContains))
+	}
+	if i.IconHasPrefix != nil {
+		predicates = append(predicates, appmenu.IconHasPrefix(*i.IconHasPrefix))
+	}
+	if i.IconHasSuffix != nil {
+		predicates = append(predicates, appmenu.IconHasSuffix(*i.IconHasSuffix))
+	}
+	if i.IconIsNil {
+		predicates = append(predicates, appmenu.IconIsNil())
+	}
+	if i.IconNotNil {
+		predicates = append(predicates, appmenu.IconNotNil())
+	}
+	if i.IconEqualFold != nil {
+		predicates = append(predicates, appmenu.IconEqualFold(*i.IconEqualFold))
+	}
+	if i.IconContainsFold != nil {
+		predicates = append(predicates, appmenu.IconContainsFold(*i.IconContainsFold))
+	}
+	if i.Route != nil {
+		predicates = append(predicates, appmenu.RouteEQ(*i.Route))
+	}
+	if i.RouteNEQ != nil {
+		predicates = append(predicates, appmenu.RouteNEQ(*i.RouteNEQ))
+	}
+	if len(i.RouteIn) > 0 {
+		predicates = append(predicates, appmenu.RouteIn(i.RouteIn...))
+	}
+	if len(i.RouteNotIn) > 0 {
+		predicates = append(predicates, appmenu.RouteNotIn(i.RouteNotIn...))
+	}
+	if i.RouteGT != nil {
+		predicates = append(predicates, appmenu.RouteGT(*i.RouteGT))
+	}
+	if i.RouteGTE != nil {
+		predicates = append(predicates, appmenu.RouteGTE(*i.RouteGTE))
+	}
+	if i.RouteLT != nil {
+		predicates = append(predicates, appmenu.RouteLT(*i.RouteLT))
+	}
+	if i.RouteLTE != nil {
+		predicates = append(predicates, appmenu.RouteLTE(*i.RouteLTE))
+	}
+	if i.RouteContains != nil {
+		predicates = append(predicates, appmenu.RouteContains(*i.RouteContains))
+	}
+	if i.RouteHasPrefix != nil {
+		predicates = append(predicates, appmenu.RouteHasPrefix(*i.RouteHasPrefix))
+	}
+	if i.RouteHasSuffix != nil {
+		predicates = append(predicates, appmenu.RouteHasSuffix(*i.RouteHasSuffix))
+	}
+	if i.RouteIsNil {
+		predicates = append(predicates, appmenu.RouteIsNil())
+	}
+	if i.RouteNotNil {
+		predicates = append(predicates, appmenu.RouteNotNil())
+	}
+	if i.RouteEqualFold != nil {
+		predicates = append(predicates, appmenu.RouteEqualFold(*i.RouteEqualFold))
+	}
+	if i.RouteContainsFold != nil {
+		predicates = append(predicates, appmenu.RouteContainsFold(*i.RouteContainsFold))
 	}
 
 	if i.HasApp != nil {

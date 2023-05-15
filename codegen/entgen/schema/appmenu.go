@@ -38,7 +38,10 @@ func (AppMenu) Fields() []ent.Field {
 		field.Int("parent_id").Comment("父级ID"),
 		field.Enum("kind").Values("dir", "menu").Comment("目录,菜单项"),
 		field.String("name").Comment("菜单名称"),
-		field.Int("action_id").Optional().Nillable().Comment("操作ID"),
+		field.String("icon").Optional().Comment("菜单图标"),
+		field.String("route").Optional().Comment("菜单路由"),
+		field.Int("action_id").Optional().Nillable().Comment("操作ID").
+			Annotations(entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Int32("display_sort").Optional().

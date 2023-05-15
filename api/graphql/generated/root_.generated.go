@@ -118,9 +118,11 @@ type ComplexityRoot struct {
 		CreatedBy   func(childComplexity int) int
 		DisplaySort func(childComplexity int) int
 		ID          func(childComplexity int) int
+		Icon        func(childComplexity int) int
 		Kind        func(childComplexity int) int
 		Name        func(childComplexity int) int
 		ParentID    func(childComplexity int) int
+		Route       func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
 	}
@@ -423,6 +425,7 @@ type ComplexityRoot struct {
 		OrgRoleUsers            func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
@@ -941,6 +944,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppMenu.ID(childComplexity), true
 
+	case "AppMenu.icon":
+		if e.complexity.AppMenu.Icon == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Icon(childComplexity), true
+
 	case "AppMenu.kind":
 		if e.complexity.AppMenu.Kind == nil {
 			break
@@ -961,6 +971,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppMenu.ParentID(childComplexity), true
+
+	case "AppMenu.route":
+		if e.complexity.AppMenu.Route == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Route(childComplexity), true
 
 	case "AppMenu.updatedAt":
 		if e.complexity.AppMenu.UpdatedAt == nil {
@@ -2879,6 +2896,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.userExtendGroupPolicies":
+		if e.complexity.Query.UserExtendGroupPolicies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userExtendGroupPolicies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserExtendGroupPolicies(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+
 	case "Query.userGroups":
 		if e.complexity.Query.UserGroups == nil {
 			break
@@ -3904,6 +3933,10 @@ type AppMenu implements Node {
   kind: AppMenuKind!
   """菜单名称"""
   name: String!
+  """菜单图标"""
+  icon: String
+  """菜单路由"""
+  route: String
   """操作ID"""
   actionID: ID
   """备注"""
@@ -4038,13 +4071,38 @@ input AppMenuWhereInput {
   nameHasSuffix: String
   nameEqualFold: String
   nameContainsFold: String
-  """action_id field predicates"""
-  actionID: ID
-  actionIDNEQ: ID
-  actionIDIn: [ID!]
-  actionIDNotIn: [ID!]
-  actionIDIsNil: Boolean
-  actionIDNotNil: Boolean
+  """icon field predicates"""
+  icon: String
+  iconNEQ: String
+  iconIn: [String!]
+  iconNotIn: [String!]
+  iconGT: String
+  iconGTE: String
+  iconLT: String
+  iconLTE: String
+  iconContains: String
+  iconHasPrefix: String
+  iconHasSuffix: String
+  iconIsNil: Boolean
+  iconNotNil: Boolean
+  iconEqualFold: String
+  iconContainsFold: String
+  """route field predicates"""
+  route: String
+  routeNEQ: String
+  routeIn: [String!]
+  routeNotIn: [String!]
+  routeGT: String
+  routeGTE: String
+  routeLT: String
+  routeLTE: String
+  routeContains: String
+  routeHasPrefix: String
+  routeHasSuffix: String
+  routeIsNil: Boolean
+  routeNotNil: Boolean
+  routeEqualFold: String
+  routeContainsFold: String
   """app edge predicates"""
   hasApp: Boolean
   hasAppWith: [AppWhereInput!]
@@ -4889,6 +4947,10 @@ input CreateAppMenuInput {
   kind: AppMenuKind!
   """菜单名称"""
   name: String!
+  """菜单图标"""
+  icon: String
+  """菜单路由"""
+  route: String
   """备注"""
   comments: String
   appID: ID
@@ -6285,6 +6347,12 @@ input UpdateAppMenuInput {
   kind: AppMenuKind
   """菜单名称"""
   name: String
+  """菜单图标"""
+  icon: String
+  clearIcon: Boolean
+  """菜单路由"""
+  route: String
+  clearRoute: Boolean
   """备注"""
   comments: String
   clearComments: Boolean
@@ -6341,9 +6409,6 @@ UpdateOrgInput is used for update Org object.
 Input was generated by ent.
 """
 input UpdateOrgInput {
-  """默认域名"""
-  domain: String
-  clearDomain: Boolean
   """组织名称"""
   name: String
   """简介"""
@@ -7550,6 +7615,16 @@ extend type User {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ):OrgRoleConnection!
+    """用户继承用户组的权限策略"""
+    userExtendGroupPolicies(
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

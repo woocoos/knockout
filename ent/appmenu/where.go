@@ -90,6 +90,16 @@ func Name(v string) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldEQ(FieldName, v))
 }
 
+// Icon applies equality check predicate on the "icon" field. It's identical to IconEQ.
+func Icon(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEQ(FieldIcon, v))
+}
+
+// Route applies equality check predicate on the "route" field. It's identical to RouteEQ.
+func Route(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEQ(FieldRoute, v))
+}
+
 // ActionID applies equality check predicate on the "action_id" field. It's identical to ActionIDEQ.
 func ActionID(v int) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldEQ(FieldActionID, v))
@@ -438,6 +448,156 @@ func NameEqualFold(v string) predicate.AppMenu {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldContainsFold(FieldName, v))
+}
+
+// IconEQ applies the EQ predicate on the "icon" field.
+func IconEQ(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEQ(FieldIcon, v))
+}
+
+// IconNEQ applies the NEQ predicate on the "icon" field.
+func IconNEQ(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNEQ(FieldIcon, v))
+}
+
+// IconIn applies the In predicate on the "icon" field.
+func IconIn(vs ...string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIn(FieldIcon, vs...))
+}
+
+// IconNotIn applies the NotIn predicate on the "icon" field.
+func IconNotIn(vs ...string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotIn(FieldIcon, vs...))
+}
+
+// IconGT applies the GT predicate on the "icon" field.
+func IconGT(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldGT(FieldIcon, v))
+}
+
+// IconGTE applies the GTE predicate on the "icon" field.
+func IconGTE(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldGTE(FieldIcon, v))
+}
+
+// IconLT applies the LT predicate on the "icon" field.
+func IconLT(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldLT(FieldIcon, v))
+}
+
+// IconLTE applies the LTE predicate on the "icon" field.
+func IconLTE(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldLTE(FieldIcon, v))
+}
+
+// IconContains applies the Contains predicate on the "icon" field.
+func IconContains(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldContains(FieldIcon, v))
+}
+
+// IconHasPrefix applies the HasPrefix predicate on the "icon" field.
+func IconHasPrefix(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldHasPrefix(FieldIcon, v))
+}
+
+// IconHasSuffix applies the HasSuffix predicate on the "icon" field.
+func IconHasSuffix(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldHasSuffix(FieldIcon, v))
+}
+
+// IconIsNil applies the IsNil predicate on the "icon" field.
+func IconIsNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIsNull(FieldIcon))
+}
+
+// IconNotNil applies the NotNil predicate on the "icon" field.
+func IconNotNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotNull(FieldIcon))
+}
+
+// IconEqualFold applies the EqualFold predicate on the "icon" field.
+func IconEqualFold(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEqualFold(FieldIcon, v))
+}
+
+// IconContainsFold applies the ContainsFold predicate on the "icon" field.
+func IconContainsFold(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldContainsFold(FieldIcon, v))
+}
+
+// RouteEQ applies the EQ predicate on the "route" field.
+func RouteEQ(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEQ(FieldRoute, v))
+}
+
+// RouteNEQ applies the NEQ predicate on the "route" field.
+func RouteNEQ(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNEQ(FieldRoute, v))
+}
+
+// RouteIn applies the In predicate on the "route" field.
+func RouteIn(vs ...string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIn(FieldRoute, vs...))
+}
+
+// RouteNotIn applies the NotIn predicate on the "route" field.
+func RouteNotIn(vs ...string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotIn(FieldRoute, vs...))
+}
+
+// RouteGT applies the GT predicate on the "route" field.
+func RouteGT(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldGT(FieldRoute, v))
+}
+
+// RouteGTE applies the GTE predicate on the "route" field.
+func RouteGTE(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldGTE(FieldRoute, v))
+}
+
+// RouteLT applies the LT predicate on the "route" field.
+func RouteLT(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldLT(FieldRoute, v))
+}
+
+// RouteLTE applies the LTE predicate on the "route" field.
+func RouteLTE(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldLTE(FieldRoute, v))
+}
+
+// RouteContains applies the Contains predicate on the "route" field.
+func RouteContains(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldContains(FieldRoute, v))
+}
+
+// RouteHasPrefix applies the HasPrefix predicate on the "route" field.
+func RouteHasPrefix(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldHasPrefix(FieldRoute, v))
+}
+
+// RouteHasSuffix applies the HasSuffix predicate on the "route" field.
+func RouteHasSuffix(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldHasSuffix(FieldRoute, v))
+}
+
+// RouteIsNil applies the IsNil predicate on the "route" field.
+func RouteIsNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIsNull(FieldRoute))
+}
+
+// RouteNotNil applies the NotNil predicate on the "route" field.
+func RouteNotNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotNull(FieldRoute))
+}
+
+// RouteEqualFold applies the EqualFold predicate on the "route" field.
+func RouteEqualFold(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldEqualFold(FieldRoute, v))
+}
+
+// RouteContainsFold applies the ContainsFold predicate on the "route" field.
+func RouteContainsFold(v string) predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldContainsFold(FieldRoute, v))
 }
 
 // ActionIDEQ applies the EQ predicate on the "action_id" field.

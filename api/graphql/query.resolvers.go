@@ -130,3 +130,14 @@ func (r *queryResolver) UserGroups(ctx context.Context, userID int, after *entgq
 	return r.Client.OrgRole.Query().Where(orgrole.HasOrgUsersWith(orguser.OrgID(tid), orguser.UserID(userID)), orgrole.KindIn(orgrole.KindGroup)).
 		Paginate(ctx, after, first, before, last, ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
+
+// UserExtendGroupPolicies is the resolver for the userExtendGroupPolicies field.
+func (r *queryResolver) UserExtendGroupPolicies(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.Permission.Query().Where(permission.OrgID(tid), permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.HasRoleWith(orgrole.HasOrgUsersWith(orguser.UserID(userID), orguser.OrgID(tid)))).
+		Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
+}

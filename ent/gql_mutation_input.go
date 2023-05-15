@@ -342,6 +342,8 @@ type CreateAppMenuInput struct {
 	ParentID int
 	Kind     appmenu.Kind
 	Name     string
+	Icon     *string
+	Route    *string
 	Comments *string
 	AppID    *int
 	ActionID *int
@@ -352,6 +354,12 @@ func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
 	m.SetParentID(i.ParentID)
 	m.SetKind(i.Kind)
 	m.SetName(i.Name)
+	if v := i.Icon; v != nil {
+		m.SetIcon(*v)
+	}
+	if v := i.Route; v != nil {
+		m.SetRoute(*v)
+	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
@@ -374,6 +382,10 @@ type UpdateAppMenuInput struct {
 	ParentID      *int
 	Kind          *appmenu.Kind
 	Name          *string
+	ClearIcon     bool
+	Icon          *string
+	ClearRoute    bool
+	Route         *string
 	ClearComments bool
 	Comments      *string
 	ClearAction   bool
@@ -390,6 +402,18 @@ func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
 	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
+	}
+	if i.ClearIcon {
+		m.ClearIcon()
+	}
+	if v := i.Icon; v != nil {
+		m.SetIcon(*v)
+	}
+	if i.ClearRoute {
+		m.ClearRoute()
+	}
+	if v := i.Route; v != nil {
+		m.SetRoute(*v)
 	}
 	if i.ClearComments {
 		m.ClearComments()
@@ -709,8 +733,6 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 
 // UpdateOrgInput represents a mutation input for updating orgs.
 type UpdateOrgInput struct {
-	ClearDomain            bool
-	Domain                 *string
 	Name                   *string
 	ClearProfile           bool
 	Profile                *string
@@ -745,12 +767,6 @@ type UpdateOrgInput struct {
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
 func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
-	if i.ClearDomain {
-		m.ClearDomain()
-	}
-	if v := i.Domain; v != nil {
-		m.SetDomain(*v)
-	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}

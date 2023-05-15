@@ -219,7 +219,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 	return nil
 }
 
-// CreateAppMenus
+// CreateAppMenus 创建应用菜单，如果有route项，则相应创建action
 func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -239,9 +239,71 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 			}
 		}
 		builders[i] = client.AppMenu.Create().SetInput(*menu).SetAppID(appID)
+		// 创建action
+		if menu.Route != nil {
+			aac := menu.Comments
+			if aac == nil {
+				aac = &menu.Name
+			}
+			aa, err := client.AppAction.Create().SetAppID(appID).SetName(*menu.Route).SetKind(appaction.KindRestful).SetMethod(appaction.MethodRead).SetComments(*aac).Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+			builders[i].SetActionID(aa.ID)
+		}
 	}
 	ams, err := client.AppMenu.CreateBulk(builders...).Save(ctx)
 	return ams, err
+}
+
+// UpdateAppMenu 更新应用菜单，如果更新了route，则更新action
+func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
+	client := ent.FromContext(ctx)
+	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 更新route更新关联的action name
+	var build *ent.AppMenuUpdateOne
+	build = client.AppMenu.UpdateOneID(menuID).SetInput(input)
+	if input.Route != nil {
+		if am.ActionID != nil {
+			_, err = s.UpdateAppAction(ctx, *am.ActionID, ent.UpdateAppActionInput{Name: input.Route})
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			aac := &am.Comments
+			if aac == nil {
+				aac = &am.Name
+			}
+			aas, err := s.CreateAppActions(ctx, am.AppID, []*ent.CreateAppActionInput{
+				{Name: *input.Route, Comments: aac, Kind: appaction.KindRestful, Method: appaction.MethodRead},
+			})
+			if err != nil {
+				return nil, err
+			}
+			build.SetActionID(aas[0].ID)
+		}
+	}
+	return build.Save(ctx)
+}
+
+// DeleteAppMenu 删除应用菜单，删除关联的action
+func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
+	client := ent.FromContext(ctx)
+	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if am.ActionID != nil {
+		// 删除action
+		err = s.DeleteAppAction(ctx, *am.ActionID)
+		if err != nil {
+			return err
+		}
+	}
+	return client.AppMenu.DeleteOneID(menuID).Exec(ctx)
 }
 
 // MoveAppMenu

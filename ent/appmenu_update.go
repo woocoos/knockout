@@ -101,6 +101,46 @@ func (amu *AppMenuUpdate) SetName(s string) *AppMenuUpdate {
 	return amu
 }
 
+// SetIcon sets the "icon" field.
+func (amu *AppMenuUpdate) SetIcon(s string) *AppMenuUpdate {
+	amu.mutation.SetIcon(s)
+	return amu
+}
+
+// SetNillableIcon sets the "icon" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableIcon(s *string) *AppMenuUpdate {
+	if s != nil {
+		amu.SetIcon(*s)
+	}
+	return amu
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (amu *AppMenuUpdate) ClearIcon() *AppMenuUpdate {
+	amu.mutation.ClearIcon()
+	return amu
+}
+
+// SetRoute sets the "route" field.
+func (amu *AppMenuUpdate) SetRoute(s string) *AppMenuUpdate {
+	amu.mutation.SetRoute(s)
+	return amu
+}
+
+// SetNillableRoute sets the "route" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableRoute(s *string) *AppMenuUpdate {
+	if s != nil {
+		amu.SetRoute(*s)
+	}
+	return amu
+}
+
+// ClearRoute clears the value of the "route" field.
+func (amu *AppMenuUpdate) ClearRoute() *AppMenuUpdate {
+	amu.mutation.ClearRoute()
+	return amu
+}
+
 // SetActionID sets the "action_id" field.
 func (amu *AppMenuUpdate) SetActionID(i int) *AppMenuUpdate {
 	amu.mutation.SetActionID(i)
@@ -260,6 +300,18 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := amu.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 	}
+	if value, ok := amu.mutation.Icon(); ok {
+		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
+	}
+	if amu.mutation.IconCleared() {
+		_spec.ClearField(appmenu.FieldIcon, field.TypeString)
+	}
+	if value, ok := amu.mutation.Route(); ok {
+		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
+	}
+	if amu.mutation.RouteCleared() {
+		_spec.ClearField(appmenu.FieldRoute, field.TypeString)
+	}
 	if value, ok := amu.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 	}
@@ -393,6 +445,46 @@ func (amuo *AppMenuUpdateOne) SetKind(a appmenu.Kind) *AppMenuUpdateOne {
 // SetName sets the "name" field.
 func (amuo *AppMenuUpdateOne) SetName(s string) *AppMenuUpdateOne {
 	amuo.mutation.SetName(s)
+	return amuo
+}
+
+// SetIcon sets the "icon" field.
+func (amuo *AppMenuUpdateOne) SetIcon(s string) *AppMenuUpdateOne {
+	amuo.mutation.SetIcon(s)
+	return amuo
+}
+
+// SetNillableIcon sets the "icon" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableIcon(s *string) *AppMenuUpdateOne {
+	if s != nil {
+		amuo.SetIcon(*s)
+	}
+	return amuo
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (amuo *AppMenuUpdateOne) ClearIcon() *AppMenuUpdateOne {
+	amuo.mutation.ClearIcon()
+	return amuo
+}
+
+// SetRoute sets the "route" field.
+func (amuo *AppMenuUpdateOne) SetRoute(s string) *AppMenuUpdateOne {
+	amuo.mutation.SetRoute(s)
+	return amuo
+}
+
+// SetNillableRoute sets the "route" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableRoute(s *string) *AppMenuUpdateOne {
+	if s != nil {
+		amuo.SetRoute(*s)
+	}
+	return amuo
+}
+
+// ClearRoute clears the value of the "route" field.
+func (amuo *AppMenuUpdateOne) ClearRoute() *AppMenuUpdateOne {
+	amuo.mutation.ClearRoute()
 	return amuo
 }
 
@@ -584,6 +676,18 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 	}
 	if value, ok := amuo.mutation.Name(); ok {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
+	}
+	if value, ok := amuo.mutation.Icon(); ok {
+		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
+	}
+	if amuo.mutation.IconCleared() {
+		_spec.ClearField(appmenu.FieldIcon, field.TypeString)
+	}
+	if value, ok := amuo.mutation.Route(); ok {
+		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
+	}
+	if amuo.mutation.RouteCleared() {
+		_spec.ClearField(appmenu.FieldRoute, field.TypeString)
 	}
 	if value, ok := amuo.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)

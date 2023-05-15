@@ -390,7 +390,10 @@ func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input en
 		return nil, err
 	}
 	data, err := client.OrgPolicy.UpdateOneID(id).Where(orgpolicy.OrgID(tid)).SetInput(input).Save(ctx)
-	return data, err
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) error {
@@ -398,6 +401,14 @@ func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return err
+	}
+	// 存在引用，不能删除
+	has, err := client.Permission.Query().Where(permission.OrgID(tid), permission.OrgPolicyID(orgPolicyID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("policy has be referenced，not allowed to delete")
 	}
 	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
 }

@@ -799,6 +799,16 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				selectedFields = append(selectedFields, appmenu.FieldName)
 				fieldSeen[appmenu.FieldName] = struct{}{}
 			}
+		case "icon":
+			if _, ok := fieldSeen[appmenu.FieldIcon]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldIcon)
+				fieldSeen[appmenu.FieldIcon] = struct{}{}
+			}
+		case "route":
+			if _, ok := fieldSeen[appmenu.FieldRoute]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldRoute)
+				fieldSeen[appmenu.FieldRoute] = struct{}{}
+			}
 		case "actionID":
 			if _, ok := fieldSeen[appmenu.FieldActionID]; !ok {
 				selectedFields = append(selectedFields, appmenu.FieldActionID)

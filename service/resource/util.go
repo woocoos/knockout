@@ -67,3 +67,26 @@ func UpdateSliceElement[T int | int64 | string | float32 | float64](a []T, newEl
 	}
 	return a
 }
+
+// DiffArrays 查找两数组新增及删除的元素: a:新数组  b:旧数组
+func DiffArrays[T int | int64 | string | float32 | float64](a []T, b []T) ([]T, []T) {
+	var added, removed []T
+	hash := make(map[T]bool)
+	for _, num := range a {
+		hash[num] = true
+	}
+	// 删除的元素
+	for _, num := range b {
+		if _, ok := hash[num]; !ok {
+			removed = append(removed, num)
+		} else {
+			// 如果元素存在，则删除该元素
+			delete(hash, num)
+		}
+	}
+	// 新增的元素
+	for num := range hash {
+		added = append(added, num)
+	}
+	return added, removed
+}

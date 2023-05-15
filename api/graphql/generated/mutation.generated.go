@@ -3256,6 +3256,10 @@ func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Con
 				return ec.fieldContext_AppMenu_kind(ctx, field)
 			case "name":
 				return ec.fieldContext_AppMenu_name(ctx, field)
+			case "icon":
+				return ec.fieldContext_AppMenu_icon(ctx, field)
+			case "route":
+				return ec.fieldContext_AppMenu_route(ctx, field)
 			case "actionID":
 				return ec.fieldContext_AppMenu_actionID(ctx, field)
 			case "comments":
@@ -3338,6 +3342,10 @@ func (ec *executionContext) fieldContext_Mutation_updateAppMenu(ctx context.Cont
 				return ec.fieldContext_AppMenu_kind(ctx, field)
 			case "name":
 				return ec.fieldContext_AppMenu_name(ctx, field)
+			case "icon":
+				return ec.fieldContext_AppMenu_icon(ctx, field)
+			case "route":
+				return ec.fieldContext_AppMenu_route(ctx, field)
 			case "actionID":
 				return ec.fieldContext_AppMenu_actionID(ctx, field)
 			case "comments":

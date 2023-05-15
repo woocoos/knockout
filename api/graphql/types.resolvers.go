@@ -6,11 +6,11 @@ package graphql
 
 import (
 	"context"
-	"github.com/woocoos/knockout/ent/orgroleuser"
-	"github.com/woocoos/knockout/ent/orguser"
 
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 )
 

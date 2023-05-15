@@ -104,6 +104,34 @@ func (amc *AppMenuCreate) SetName(s string) *AppMenuCreate {
 	return amc
 }
 
+// SetIcon sets the "icon" field.
+func (amc *AppMenuCreate) SetIcon(s string) *AppMenuCreate {
+	amc.mutation.SetIcon(s)
+	return amc
+}
+
+// SetNillableIcon sets the "icon" field if the given value is not nil.
+func (amc *AppMenuCreate) SetNillableIcon(s *string) *AppMenuCreate {
+	if s != nil {
+		amc.SetIcon(*s)
+	}
+	return amc
+}
+
+// SetRoute sets the "route" field.
+func (amc *AppMenuCreate) SetRoute(s string) *AppMenuCreate {
+	amc.mutation.SetRoute(s)
+	return amc
+}
+
+// SetNillableRoute sets the "route" field if the given value is not nil.
+func (amc *AppMenuCreate) SetNillableRoute(s *string) *AppMenuCreate {
+	if s != nil {
+		amc.SetRoute(*s)
+	}
+	return amc
+}
+
 // SetActionID sets the "action_id" field.
 func (amc *AppMenuCreate) SetActionID(i int) *AppMenuCreate {
 	amc.mutation.SetActionID(i)
@@ -307,6 +335,14 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_spec.SetField(appmenu.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
+	if value, ok := amc.mutation.Icon(); ok {
+		_spec.SetField(appmenu.FieldIcon, field.TypeString, value)
+		_node.Icon = value
+	}
+	if value, ok := amc.mutation.Route(); ok {
+		_spec.SetField(appmenu.FieldRoute, field.TypeString, value)
+		_node.Route = value
+	}
 	if value, ok := amc.mutation.Comments(); ok {
 		_spec.SetField(appmenu.FieldComments, field.TypeString, value)
 		_node.Comments = value
@@ -482,6 +518,42 @@ func (u *AppMenuUpsert) SetName(v string) *AppMenuUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *AppMenuUpsert) UpdateName() *AppMenuUpsert {
 	u.SetExcluded(appmenu.FieldName)
+	return u
+}
+
+// SetIcon sets the "icon" field.
+func (u *AppMenuUpsert) SetIcon(v string) *AppMenuUpsert {
+	u.Set(appmenu.FieldIcon, v)
+	return u
+}
+
+// UpdateIcon sets the "icon" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateIcon() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldIcon)
+	return u
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (u *AppMenuUpsert) ClearIcon() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldIcon)
+	return u
+}
+
+// SetRoute sets the "route" field.
+func (u *AppMenuUpsert) SetRoute(v string) *AppMenuUpsert {
+	u.Set(appmenu.FieldRoute, v)
+	return u
+}
+
+// UpdateRoute sets the "route" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateRoute() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldRoute)
+	return u
+}
+
+// ClearRoute clears the value of the "route" field.
+func (u *AppMenuUpsert) ClearRoute() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldRoute)
 	return u
 }
 
@@ -697,6 +769,48 @@ func (u *AppMenuUpsertOne) SetName(v string) *AppMenuUpsertOne {
 func (u *AppMenuUpsertOne) UpdateName() *AppMenuUpsertOne {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetIcon sets the "icon" field.
+func (u *AppMenuUpsertOne) SetIcon(v string) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetIcon(v)
+	})
+}
+
+// UpdateIcon sets the "icon" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateIcon() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateIcon()
+	})
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (u *AppMenuUpsertOne) ClearIcon() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearIcon()
+	})
+}
+
+// SetRoute sets the "route" field.
+func (u *AppMenuUpsertOne) SetRoute(v string) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetRoute(v)
+	})
+}
+
+// UpdateRoute sets the "route" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateRoute() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateRoute()
+	})
+}
+
+// ClearRoute clears the value of the "route" field.
+func (u *AppMenuUpsertOne) ClearRoute() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearRoute()
 	})
 }
 
@@ -1084,6 +1198,48 @@ func (u *AppMenuUpsertBulk) SetName(v string) *AppMenuUpsertBulk {
 func (u *AppMenuUpsertBulk) UpdateName() *AppMenuUpsertBulk {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetIcon sets the "icon" field.
+func (u *AppMenuUpsertBulk) SetIcon(v string) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetIcon(v)
+	})
+}
+
+// UpdateIcon sets the "icon" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateIcon() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateIcon()
+	})
+}
+
+// ClearIcon clears the value of the "icon" field.
+func (u *AppMenuUpsertBulk) ClearIcon() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearIcon()
+	})
+}
+
+// SetRoute sets the "route" field.
+func (u *AppMenuUpsertBulk) SetRoute(v string) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetRoute(v)
+	})
+}
+
+// UpdateRoute sets the "route" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateRoute() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateRoute()
+	})
+}
+
+// ClearRoute clears the value of the "route" field.
+func (u *AppMenuUpsertBulk) ClearRoute() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearRoute()
 	})
 }
 

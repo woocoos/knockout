@@ -35,6 +35,10 @@ type AppMenu struct {
 	Kind appmenu.Kind `json:"kind,omitempty"`
 	// 菜单名称
 	Name string `json:"name,omitempty"`
+	// 菜单图标
+	Icon string `json:"icon,omitempty"`
+	// 菜单路由
+	Route string `json:"route,omitempty"`
 	// 操作ID
 	ActionID *int `json:"action_id,omitempty"`
 	// 备注
@@ -93,7 +97,7 @@ func (*AppMenu) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case appmenu.FieldID, appmenu.FieldCreatedBy, appmenu.FieldUpdatedBy, appmenu.FieldAppID, appmenu.FieldParentID, appmenu.FieldActionID, appmenu.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case appmenu.FieldKind, appmenu.FieldName, appmenu.FieldComments:
+		case appmenu.FieldKind, appmenu.FieldName, appmenu.FieldIcon, appmenu.FieldRoute, appmenu.FieldComments:
 			values[i] = new(sql.NullString)
 		case appmenu.FieldCreatedAt, appmenu.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -165,6 +169,18 @@ func (am *AppMenu) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				am.Name = value.String
+			}
+		case appmenu.FieldIcon:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field icon", values[i])
+			} else if value.Valid {
+				am.Icon = value.String
+			}
+		case appmenu.FieldRoute:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field route", values[i])
+			} else if value.Valid {
+				am.Route = value.String
 			}
 		case appmenu.FieldActionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -254,6 +270,12 @@ func (am *AppMenu) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(am.Name)
+	builder.WriteString(", ")
+	builder.WriteString("icon=")
+	builder.WriteString(am.Icon)
+	builder.WriteString(", ")
+	builder.WriteString("route=")
+	builder.WriteString(am.Route)
 	builder.WriteString(", ")
 	if v := am.ActionID; v != nil {
 		builder.WriteString("action_id=")
