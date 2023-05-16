@@ -20,13 +20,16 @@ import (
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/security"
 	"strconv"
+	"strings"
 	"time"
 )
 
 const ArnSplit = authorization.ArnSplit
+const SplitPolicyEffect = "&&"
 
 // AssignOrganizationApp 分配应用到根组织下. 如: 新账户创建时, 根账户分配已有应用给子账户(需要验证根用户是否该应用权限,可在外层验证).
 func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID int) error {
@@ -450,11 +453,35 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 		return err
 	}
 
-	pid := getPrincipalID(p)
-	err = security.RevokePolicy(p.Edges.OrgPolicy.Rules, strconv.Itoa(pid), domain, p.PrincipalKind)
-	if err != nil {
-		log.Error(err)
+	// 判断actions、resources是否存在主体其他授权的policy
+	var ops []*ent.OrgPolicy
+	wheres := []predicate.Permission{
+		permission.PrincipalKindEQ(p.PrincipalKind),
+		permission.OrgID(orgID),
 	}
+	if p.PrincipalKind == permission.PrincipalKindUser {
+		// 用户
+		wheres = append(wheres, permission.UserID(p.UserID))
+	} else if p.PrincipalKind == permission.PrincipalKindRole {
+		// 角色
+		wheres = append(wheres, permission.RoleID(p.RoleID))
+	} else {
+		return fmt.Errorf("error PrincipalKind")
+	}
+	ps, err := client.Permission.Query().Where(wheres...).WithOrgPolicy().All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, p := range ps {
+		ops = append(ops, p.Edges.OrgPolicy)
+	}
+	delActions, delResources := joinPolicyRules(p.Edges.OrgPolicy.Rules)
+	// 同步修改casbin授权信息
+	err = updatePoliciesToCasbin(p.OrgPolicyID, map[string][]*ent.OrgPolicy{strconv.Itoa(getPrincipalID(p)): ops}, domain, p.PrincipalKind, nil, nil, delActions, delResources)
+	if err != nil {
+		return err
+	}
+
 	_, err = client.Permission.Delete().Where(permission.ID(permissionID), permission.OrgID(orgID)).Exec(ctx)
 	return err
 }
@@ -474,4 +501,182 @@ func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, erro
 	c := ent.FromContext(ctx)
 	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
 		Order(ent.Asc(org.FieldPath)).First(ctx)
+}
+
+// updateOrgPolicyRules 更新策略规则
+// 策略rules更新，需根据策略的引用同步更新casbin
+func updateOrgPolicyRules(ctx context.Context, orgPolicyId int, rules []*types.PolicyRule, domain string, orgId int) error {
+	client := ent.FromContext(ctx)
+	// 更新的rules，拼接数据：action&&allow | action&&deny | resource&&allow | resource&&deny
+	naas, nars := joinPolicyRules(rules)
+	// 查询数据库policy
+	op, err := client.OrgPolicy.Query().Where(orgpolicy.ID(orgPolicyId)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	// 旧的actions、resources
+	oaas, oars := joinPolicyRules(op.Rules)
+
+	// 更新policy时,获取 addActions：新增actions、delActions：删除actions、addResources：新增resources、delResources：删除resources
+	addActions, delActions := DiffArrays(naas, oaas)
+	addResources, delResources := DiffArrays(nars, oars)
+
+	// 查询policy授权的users、roles
+	ps, err := client.Permission.Query().Where(permission.OrgPolicyID(orgPolicyId), permission.OrgID(orgId)).All(ctx)
+	if err != nil {
+		return err
+	}
+	var uids, rids []int
+	for _, p := range ps {
+		if p.PrincipalKind == permission.PrincipalKindUser {
+			uids = append(uids, p.UserID)
+		} else if p.PrincipalKind == permission.PrincipalKindRole {
+			rids = append(rids, p.RoleID)
+		}
+	}
+
+	// 查询授权给user的policy
+	ups, err := client.Permission.Query().Where(permission.PrincipalKindEQ(permission.PrincipalKindUser), permission.UserIDIn(uids...), permission.OrgID(orgId)).WithOrgPolicy().All(ctx)
+	if err != nil {
+		return err
+	}
+	uops := make(map[string][]*ent.OrgPolicy)
+	// 根据用户授权分组
+	for _, p := range ups {
+		if uops[strconv.Itoa(p.UserID)] == nil {
+			uops[strconv.Itoa(p.UserID)] = []*ent.OrgPolicy{
+				p.Edges.OrgPolicy,
+			}
+		} else {
+			uops[strconv.Itoa(p.UserID)] = append(uops[strconv.Itoa(p.UserID)], p.Edges.OrgPolicy)
+		}
+	}
+	// 更新权限
+	err = updatePoliciesToCasbin(orgPolicyId, uops, domain, permission.PrincipalKindUser, addActions, addResources, delActions, delResources)
+	if err != nil {
+		return err
+	}
+
+	// 查询授权给role的policy
+	rps, err := client.Permission.Query().Where(permission.PrincipalKindEQ(permission.PrincipalKindRole), permission.RoleIDIn(rids...), permission.OrgID(orgId)).WithOrgPolicy().All(ctx)
+	if err != nil {
+		return err
+	}
+	rops := make(map[string][]*ent.OrgPolicy)
+	// 根据用户授权分组
+	for _, p := range rps {
+		if rops[strconv.Itoa(p.RoleID)] == nil {
+			rops[strconv.Itoa(p.RoleID)] = []*ent.OrgPolicy{
+				p.Edges.OrgPolicy,
+			}
+		} else {
+			rops[strconv.Itoa(p.RoleID)] = append(rops[strconv.Itoa(p.RoleID)], p.Edges.OrgPolicy)
+		}
+	}
+	// 更新权限
+	err = updatePoliciesToCasbin(orgPolicyId, rops, domain, permission.PrincipalKindRole, addActions, addResources, delActions, delResources)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// updatePoliciesToCasbin
+func updatePoliciesToCasbin(exOrgPolicyId int, orgPolicies map[string][]*ent.OrgPolicy, domain string, principalKind permission.PrincipalKind, addActions []string, addResources []string, delActions []string, delResources []string) error {
+	// 根据用户授权的policy来判断需要移除的actions及resources
+	for principal, uop := range orgPolicies {
+		var otherPolicyActions, otherPolicyResources []string
+		for _, p := range uop {
+			// 过滤当前policy id
+			if p.ID == exOrgPolicyId {
+				continue
+			}
+			for _, rule := range p.Rules {
+				// actions
+				for _, action := range rule.Actions {
+					otherPolicyActions = append(otherPolicyActions, action+SplitPolicyEffect+rule.Effect.String())
+				}
+				// resource
+				for _, res := range rule.Actions {
+					otherPolicyResources = append(otherPolicyResources, res+SplitPolicyEffect+rule.Effect.String())
+				}
+			}
+		}
+		// 移除的actions与用户其他策略的actions对比，不存在其他策略则删除
+		actuallyDelActions, _ := DiffArrays(delActions, otherPolicyActions)
+		// 移除的resources与用户其他策略的resources对比，不存在其他策略则删除
+		actuallyDelResources, _ := DiffArrays(delResources, otherPolicyResources)
+
+		var addPolicyRule []*types.PolicyRule
+		var delPolicyRule []*types.PolicyRule
+		splitAddAllowActions, splitAddDenyActions := splitPolicyRules(addActions)
+		splitAddAllowResources, splitAddDenyResources := splitPolicyRules(addResources)
+		splitDelAllowActions, splitDelDenyActions := splitPolicyRules(actuallyDelActions)
+		splitDelAllowResources, splitDelDenyResources := splitPolicyRules(actuallyDelResources)
+		addAllowRule := types.PolicyRule{
+			Effect:    types.PolicyEffectAllow,
+			Actions:   splitAddAllowActions,
+			Resources: splitAddAllowResources,
+		}
+		addDenyRule := types.PolicyRule{
+			Effect:    types.PolicyEffectDeny,
+			Actions:   splitAddDenyActions,
+			Resources: splitAddDenyResources,
+		}
+		addPolicyRule = append(addPolicyRule, &addAllowRule)
+		addPolicyRule = append(addPolicyRule, &addDenyRule)
+		// 新增的授权
+		err := security.GrantPolicy(addPolicyRule, principal, domain, principalKind)
+		if err != nil {
+			return err
+		}
+		delAllowRule := types.PolicyRule{
+			Effect:    types.PolicyEffectAllow,
+			Actions:   splitDelAllowActions,
+			Resources: splitDelAllowResources,
+		}
+		delDenyRule := types.PolicyRule{
+			Effect:    types.PolicyEffectDeny,
+			Actions:   splitDelDenyActions,
+			Resources: splitDelDenyResources,
+		}
+		delPolicyRule = append(delPolicyRule, &delAllowRule)
+		delPolicyRule = append(delPolicyRule, &delDenyRule)
+		// 删除的授权
+		err = security.RevokePolicy(delPolicyRule, principal, domain, principalKind)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// joinPolicyRules actions与resources拼接Effect
+// 返回值：拼接后的actions、resources
+func joinPolicyRules(rules []*types.PolicyRule) ([]string, []string) {
+	var aas, ars []string
+	for _, rule := range rules {
+		for _, action := range rule.Actions {
+			aas = append(aas, action+SplitPolicyEffect+rule.Effect.String())
+		}
+		for _, res := range rule.Resources {
+			ars = append(ars, res+SplitPolicyEffect+rule.Effect.String())
+		}
+	}
+	return aas, ars
+}
+
+// 截取actions或者resources
+// 返回值：截取后返回allows、denies
+func splitPolicyRules(data []string) ([]string, []string) {
+	var allows, denies []string
+	for _, res := range data {
+		parts := strings.SplitN(res, SplitPolicyEffect, 2)
+		if parts[1] == types.PolicyEffectAllow.String() {
+			allows = append(allows, parts[0])
+		} else if parts[1] == types.PolicyEffectDeny.String() {
+			denies = append(denies, parts[0])
+		}
+	}
+	return allows, denies
 }

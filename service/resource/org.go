@@ -389,6 +389,19 @@ func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input en
 	if err != nil {
 		return nil, err
 	}
+	domain, err := s.GetOrgDomain(ctx, tid)
+	if err != nil {
+		return nil, err
+	}
+
+	// rules不为空，则同步修改casbin授权信息
+	if input.Rules != nil {
+		err := updateOrgPolicyRules(ctx, id, input.Rules, domain, tid)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	data, err := client.OrgPolicy.UpdateOneID(id).Where(orgpolicy.OrgID(tid)).SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
