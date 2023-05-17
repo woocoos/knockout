@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
@@ -486,9 +487,72 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	return err
 }
 
+// GetUserPermissions 获取用户的全部权限
+// appcode 不传则获取所有
+func (s *Service) GetUserPermissions(ctx context.Context, appCode *string) ([]*ent.AppAction, error) {
+	client := s.Client
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	domain, err := s.GetOrgDomain(ctx, tid)
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 根据appcode分组
+	grantActions := make(map[string][]string)
+	// 拥有全部权限的app
+	fulGrantApps := make(map[string]*string)
+	ups := security.GetUserPermissions(uid, domain)
+	for _, p := range ups {
+		parts := strings.Split(p[2], ArnSplit)
+		if len(parts) > 2 {
+			continue
+		}
+		ac := parts[0]
+		// 如果传appcode，则只返回该应用相关权限
+		if appCode != nil && *appCode != ac {
+			continue
+		}
+		// 标记app所有授权
+		if parts[1] == "*" {
+			fulGrantApps[ac] = &parts[1]
+			continue
+		}
+		if grantActions[ac] == nil {
+			grantActions[ac] = []string{
+				parts[1],
+			}
+		} else {
+			grantActions[ac] = append(grantActions[ac], parts[1])
+		}
+	}
+	userActions := make([]*ent.AppAction, 0)
+	for appcode, actions := range grantActions {
+		if fulGrantApps[appcode] != nil {
+			// 拥有全部权限
+			aas, err := client.AppAction.Query().Where(appaction.HasAppWith(app.Code(appcode))).All(ctx)
+			if err != nil {
+				return nil, err
+			}
+			userActions = append(userActions, aas...)
+		} else {
+			// actions 去重
+			newActions := RemoveDuplicateElement(actions)
+			aas, err := client.AppAction.Query().Where(appaction.NameIn(newActions...), appaction.HasAppWith(app.Code(appcode))).All(ctx)
+			if err != nil {
+				return nil, err
+			}
+			userActions = append(userActions, aas...)
+		}
+	}
+	return userActions, nil
+}
+
 // GetOrgDomain 获取组织域名.orgID为根组织.
 func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
-	c := ent.FromContext(ctx)
+	c := s.Client
 	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
 	if orgr.Domain == "" {
 		return "", fmt.Errorf("organization %d domain is empty", orgID)
@@ -498,7 +562,7 @@ func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
 
 // GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
 func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
-	c := ent.FromContext(ctx)
+	c := s.Client
 	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
 		Order(ent.Asc(org.FieldPath)).First(ctx)
 }

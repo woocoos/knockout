@@ -141,3 +141,13 @@ func (r *queryResolver) UserExtendGroupPolicies(ctx context.Context, userID int,
 		permission.HasRoleWith(orgrole.HasOrgUsersWith(orguser.UserID(userID), orguser.OrgID(tid)))).
 		Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
 }
+
+// UserMenus is the resolver for the userMenus field.
+func (r *queryResolver) UserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
+	return r.Resource.GetUserMenus(ctx, appCode)
+}
+
+// UserPermissions is the resolver for the userPermissions field.
+func (r *queryResolver) UserPermissions(ctx context.Context, appCode *string) ([]*ent.AppAction, error) {
+	return r.Resource.GetUserPermissions(ctx, appCode)
+}

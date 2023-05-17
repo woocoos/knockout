@@ -83,4 +83,8 @@ extend type Query {
         orderBy: PermissionOrder
         where: PermissionWhereInput
     ):PermissionConnection!
+    """用户菜单"""
+    userMenus(appCode:String!):[AppMenu]!
+    """获取用户所有权限"""
+    userPermissions(appCode:String):[AppAction]!
 }

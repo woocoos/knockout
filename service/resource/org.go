@@ -8,6 +8,9 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -485,4 +488,49 @@ func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 		return fmt.Errorf("user not found")
 	}
 	return client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
+}
+
+func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
+	ams, err := s.Client.AppMenu.Query().Where(appmenu.HasAppWith(app.Code(appCode))).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 获取用户在当前app的所有权限
+	ups, err := s.GetUserPermissions(ctx, &appCode)
+	if err != nil {
+		return nil, err
+	}
+	// 找出路由权限
+	ras := make(map[int]*ent.AppAction)
+	for _, a := range ups {
+		if a.Kind == appaction.KindRestful && a.Method == appaction.MethodRead {
+			ras[a.ID] = a
+		}
+	}
+	// 找出用户授权的菜单
+	ums := make([]*ent.AppMenu, 0)
+	for _, m := range ams {
+		if ras[*m.ActionID] != nil {
+			ums = append(ums, m)
+		}
+	}
+	// 找出菜单的父节点
+	pms := make([]*ent.AppMenu, 0)
+	findMenuParents(ams, ums, &pms)
+	ums = append(ums, pms...)
+	return ums, nil
+}
+
+func findMenuParents(appMenus, userMenus []*ent.AppMenu, parentMenus *[]*ent.AppMenu) {
+	for _, um := range userMenus {
+		for _, am := range appMenus {
+			if um.ParentID == am.ID {
+				*parentMenus = append(*parentMenus, am)
+				if um.ParentID != 0 {
+					findMenuParents(appMenus, []*ent.AppMenu{am}, parentMenus)
+				}
+				continue
+			}
+		}
+	}
 }

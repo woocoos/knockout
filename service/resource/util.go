@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base32"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 )
 
@@ -89,4 +90,21 @@ func DiffArrays[T int | int64 | string | float32 | float64](a []T, b []T) ([]T, 
 		added = append(added, num)
 	}
 	return added, removed
+}
+
+// RemoveDuplicateElement 去重
+func RemoveDuplicateElement[T int | int64 | string | float32 | float64](arr []T) []T {
+	if arr == nil {
+		return nil
+	}
+	temp := make(map[string]bool)
+	result := make([]T, 0, len(arr))
+	for _, v := range arr {
+		key := fmt.Sprint(v)
+		if _, ok := temp[key]; !ok {
+			temp[key] = true
+			result = append(result, v)
+		}
+	}
+	return result
 }

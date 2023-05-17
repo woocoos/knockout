@@ -427,6 +427,8 @@ type ComplexityRoot struct {
 		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserMenus               func(childComplexity int, appCode string) int
+		UserPermissions         func(childComplexity int, appCode *string) int
 		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -2919,6 +2921,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.userMenus":
+		if e.complexity.Query.UserMenus == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userMenus_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserMenus(childComplexity, args["appCode"].(string)), true
+
+	case "Query.userPermissions":
+		if e.complexity.Query.UserPermissions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userPermissions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserPermissions(childComplexity, args["appCode"].(*string)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -7625,6 +7651,10 @@ extend type User {
         orderBy: PermissionOrder
         where: PermissionWhereInput
     ):PermissionConnection!
+    """用户菜单"""
+    userMenus(appCode:String!):[AppMenu]!
+    """获取用户所有权限"""
+    userPermissions(appCode:String):[AppAction]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

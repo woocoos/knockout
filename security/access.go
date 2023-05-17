@@ -115,3 +115,8 @@ func RevokeGroupForUser(userID, roleID int, domain string) error {
 	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), domain)
 	return err
 }
+
+func GetUserPermissions(userID int, domain string) [][]string {
+	authorizer := authz.DefaultAuthorization
+	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), domain)
+}

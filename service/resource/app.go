@@ -290,9 +290,16 @@ func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.Updat
 	build = client.AppMenu.UpdateOneID(menuID).SetInput(input)
 	if input.Route != nil {
 		if am.ActionID != nil {
-			_, err = s.UpdateAppAction(ctx, *am.ActionID, ent.UpdateAppActionInput{Name: input.Route})
-			if err != nil {
-				return nil, err
+			if *input.Route == "" {
+				err = s.DeleteAppAction(ctx, *am.ActionID)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				_, err = s.UpdateAppAction(ctx, *am.ActionID, ent.UpdateAppActionInput{Name: input.Route})
+				if err != nil {
+					return nil, err
+				}
 			}
 		} else {
 			aac := &am.Comments
