@@ -65,10 +65,6 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	if err != nil {
 		return nil, err
 	}
-	domain, err := s.GetOrgDomain(ctx, tid)
-	if err != nil {
-		return nil, err
-	}
 	aa, err := client.AppAction.Query().WithApp(func(query *ent.AppQuery) {
 		query.Where(app.OwnerOrgID(tid)).Select(app.FieldID, app.FieldCode)
 	}).Where(appaction.ID(actionID)).Select(appaction.FieldName, appaction.FieldAppID).Only(ctx)
@@ -142,7 +138,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 
 			// rules不为空，则同步修改casbin授权信息
 			if prs != nil {
-				err := updateOrgPolicyRules(ctx, policy.ID, prs, domain, tid)
+				err := updateOrgPolicyRules(ctx, policy.ID, prs, tid)
 				if err != nil {
 					return nil, err
 				}
@@ -161,10 +157,6 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return err
-	}
-	domain, err := s.GetOrgDomain(ctx, tid)
 	if err != nil {
 		return err
 	}
@@ -226,7 +218,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 
 		// rules不为空，则同步修改casbin授权信息
 		if prs != nil {
-			err = updateOrgPolicyRules(ctx, policy.ID, prs, domain, tid)
+			err = updateOrgPolicyRules(ctx, policy.ID, prs, tid)
 			if err != nil {
 				return err
 			}

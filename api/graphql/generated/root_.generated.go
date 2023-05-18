@@ -416,6 +416,7 @@ type ComplexityRoot struct {
 		AppResources            func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		CheckPermission         func(childComplexity int, permission string) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
 		Nodes                   func(childComplexity int, ids []string) int
@@ -2789,6 +2790,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Apps(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppOrder), args["where"].(*ent.AppWhereInput)), true
+
+	case "Query.checkPermission":
+		if e.complexity.Query.CheckPermission == nil {
+			break
+		}
+
+		args, err := ec.field_Query_checkPermission_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
 	case "Query.globalID":
 		if e.complexity.Query.GlobalID == nil {
@@ -7655,6 +7668,11 @@ extend type User {
     userMenus(appCode:String!):[AppMenu]!
     """获取用户所有权限"""
     userPermissions(appCode:String):[AppAction]!
+    """检测权限"""
+    checkPermission(
+        """appCode + ":" + action"""
+        permission:String!
+    ):Boolean!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

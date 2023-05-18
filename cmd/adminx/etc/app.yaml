@@ -62,7 +62,7 @@ web:
             - graphql:
                 group: "/graphql"
                 withAuthorization: false
-                appCode: "ad"
+                appCode: "resource"
 
 store:
   portal:

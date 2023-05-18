@@ -15,6 +15,7 @@ import (
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/log"
+	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	webhander "github.com/tsingsun/woocoo/web/handler"
 	"github.com/tsingsun/woocoo/web/handler/authz"
@@ -128,7 +129,15 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 }
 
 func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
-	_, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
+	authorizer, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
+	// 关闭缓存
+	//authorizer.Enforcer.(*casbin.CachedEnforcer).EnableCache(false)
+	authorizer.RequestParser = func(ctx context.Context, id security.Identity, item *security.PermissionItem) []any {
+		gctx := ctx.Value(gin.ContextKey).(*gin.Context)
+		domain := gctx.GetHeader(identity.TenantHeaderKey)
+		p := item.AppCode + ":" + item.Action
+		return []any{id.Name(), domain, p, "read"}
+	}
 	if err != nil {
 		log.Fatal(err)
 	}

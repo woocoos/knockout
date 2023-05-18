@@ -2,6 +2,7 @@ package security
 
 import (
 	"errors"
+	"github.com/casbin/casbin/v2"
 	"github.com/tsingsun/woocoo/pkg/authz"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -14,13 +15,13 @@ import (
 //  1. 将授权信息同步到cashbin中.
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
-func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalKind permission.PrincipalKind) error {
+func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, principalKind permission.PrincipalKind) error {
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch principalKind {
 	case permission.PrincipalKindUser:
 		role = "r_" + principal
-		_, err := authorizer.Enforcer.AddRoleForUserInDomain(principal, role, domain)
+		_, err := authorizer.Enforcer.AddRoleForUserInDomain(principal, role, strconv.Itoa(domain))
 		if err != nil {
 			return err
 		}
@@ -31,13 +32,13 @@ func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalK
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			p := []string{role, domain, action, "read", rule.Effect.String()}
+			p := []string{role, strconv.Itoa(domain), action, "read", rule.Effect.String()}
 			if !authorizer.Enforcer.HasPolicy(p) {
 				pls = append(pls, p)
 			}
 		}
 		for _, resource := range rule.Resources {
-			p := []string{role, domain, resource, "read", rule.Effect.String()}
+			p := []string{role, strconv.Itoa(domain), resource, "read", rule.Effect.String()}
 			if !authorizer.Enforcer.HasPolicy(p) {
 				pls = append(pls, p)
 			}
@@ -45,12 +46,14 @@ func GrantPolicy(rules []*types.PolicyRule, principal, domain string, principalK
 	}
 	if len(pls) > 0 {
 		_, err := authorizer.Enforcer.AddPoliciesEx(pls)
+		// 清除缓存
+		_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 		return err
 	}
 	return nil
 }
 
-func GrantByPermission(permission *ent.Permission, domain string) error {
+func GrantByPermission(permission *ent.Permission, domain int) error {
 	principal := strconv.Itoa(permission.RoleID)
 	switch permission.PrincipalKind {
 	case "user":
@@ -64,7 +67,7 @@ func GrantByPermission(permission *ent.Permission, domain string) error {
 //  1. 将授权信息同步到cashbin中.
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
-func RevokePolicy(rules []*types.PolicyRule, principal, domain string, perm permission.PrincipalKind) error {
+func RevokePolicy(rules []*types.PolicyRule, principal string, domain int, perm permission.PrincipalKind) error {
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch perm {
@@ -82,20 +85,26 @@ func RevokePolicy(rules []*types.PolicyRule, principal, domain string, perm perm
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			pls = append(pls, []string{role, domain, action, "read", rule.Effect.String()})
+			pls = append(pls, []string{role, strconv.Itoa(domain), action, "read", rule.Effect.String()})
 		}
 		for _, resource := range rule.Resources {
-			pls = append(pls, []string{role, domain, resource, "read", rule.Effect.String()})
+			pls = append(pls, []string{role, strconv.Itoa(domain), resource, "read", rule.Effect.String()})
 		}
 	}
+
 	_, err := authorizer.Enforcer.RemovePolicies(pls)
+	if err != nil {
+		return err
+	}
+	// 清除缓存
+	err = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func RevokeByPermission(perm *ent.Permission, domain string) error {
+func RevokeByPermission(perm *ent.Permission, domain int) error {
 	principal := strconv.Itoa(perm.RoleID)
 	switch perm.PrincipalKind {
 	case permission.UserInverseTable:
@@ -104,19 +113,28 @@ func RevokeByPermission(perm *ent.Permission, domain string) error {
 	return RevokePolicy(perm.Edges.OrgPolicy.Rules, principal, domain, perm.PrincipalKind)
 }
 
-func GrantRoleForUser(userID, roleID int, domain string) error {
+func GrantRoleForUser(userID, roleID int, domain int) error {
 	authorizer := authz.DefaultAuthorization
-	_, err := authorizer.Enforcer.AddRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), domain)
+	_, err := authorizer.Enforcer.AddRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
+	// 清除缓存
+	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	return err
 }
 
-func RevokeGroupForUser(userID, roleID int, domain string) error {
+func RevokeGroupForUser(userID, roleID int, domain int) error {
 	authorizer := authz.DefaultAuthorization
-	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), domain)
+	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
+	// 清除缓存
+	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	return err
 }
 
-func GetUserPermissions(userID int, domain string) [][]string {
+func GetUserPermissions(userID int, domain int) [][]string {
 	authorizer := authz.DefaultAuthorization
-	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), domain)
+	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), strconv.Itoa(domain))
+}
+
+func CheckUserPermissions(rvals ...interface{}) (bool, error) {
+	authorizer := authz.DefaultAuthorization
+	return authorizer.Enforcer.Enforce(rvals...)
 }

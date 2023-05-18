@@ -392,14 +392,10 @@ func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input en
 	if err != nil {
 		return nil, err
 	}
-	domain, err := s.GetOrgDomain(ctx, tid)
-	if err != nil {
-		return nil, err
-	}
 
 	// rules不为空，则同步修改casbin授权信息
 	if input.Rules != nil {
-		err := updateOrgPolicyRules(ctx, id, input.Rules, domain, tid)
+		err := updateOrgPolicyRules(ctx, id, input.Rules, tid)
 		if err != nil {
 			return nil, err
 		}
@@ -510,14 +506,27 @@ func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppM
 	// 找出用户授权的菜单
 	ums := make([]*ent.AppMenu, 0)
 	for _, m := range ams {
+		if m.ActionID == nil {
+			continue
+		}
 		if ras[*m.ActionID] != nil {
 			ums = append(ums, m)
 		}
 	}
 	// 找出菜单的父节点
-	pms := make([]*ent.AppMenu, 0)
+	pms := make([]*ent.AppMenu, 0, len(ams))
 	findMenuParents(ams, ums, &pms)
-	ums = append(ums, pms...)
+	// pms 去重
+	temp := make(map[string]bool)
+	result := make([]*ent.AppMenu, 0, len(pms))
+	for _, v := range pms {
+		key := strconv.Itoa(v.ID)
+		if _, ok := temp[key]; !ok {
+			temp[key] = true
+			result = append(result, v)
+		}
+	}
+	ums = append(ums, result...)
 	return ums, nil
 }
 
