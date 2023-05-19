@@ -92,4 +92,6 @@ extend type Query {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
+    """组织策略可授权的appActions"""
+    orgAppActions(appCode:String!):[AppAction]!
 }

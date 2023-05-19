@@ -496,15 +496,9 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	return err
 }
 
-// GetUserPermissions 获取用户的全部权限
-// appcode 不传则获取所有
-func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
+func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
 	client := s.Client
 	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -513,7 +507,7 @@ func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWh
 	grantActions := make(map[string][]string)
 	// 拥有全部权限的app
 	fulGrantApps := make(map[string]*string)
-	ups := security.GetUserPermissions(uid, tid)
+	ups := security.GetUserPermissions(userID, tid)
 	for _, p := range ups {
 		parts := strings.Split(p[2], ArnSplit)
 		if len(parts) > 2 {
@@ -561,6 +555,15 @@ func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWh
 		}
 	}
 	return userActions, nil
+}
+
+// GetUserPermissions 获取用户的全部权限
+func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.GetUserPermissionsByUserID(ctx, uid, where)
 }
 
 func (s *Service) CheckPermission(ctx context.Context, permission string) (bool, error) {

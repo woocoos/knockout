@@ -156,3 +156,20 @@ func (r *queryResolver) UserPermissions(ctx context.Context, where *ent.AppActio
 func (r *queryResolver) CheckPermission(ctx context.Context, permission string) (bool, error) {
 	return r.Resource.CheckPermission(ctx, permission)
 }
+
+// OrgAppActions is the resolver for the orgAppActions field.
+func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string) ([]*ent.AppAction, error) {
+	//获取跟用户ID
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	rootOrg, err := r.Resource.GetRootOrgByUser(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	// 获取根用户所有权限
+	return r.Resource.GetUserPermissionsByUserID(ctx, *rootOrg.OwnerID, &ent.AppActionWhereInput{
+		HasAppWith: []*ent.AppWhereInput{{Code: &appCode}},
+	})
+}

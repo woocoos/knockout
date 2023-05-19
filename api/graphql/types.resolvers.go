@@ -51,6 +51,22 @@ func (r *orgRoleResolver) IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool
 	return obj.AppRoleID > 0, nil
 }
 
+// IsGrantUser is the resolver for the isGrantUser field.
+func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	has, err := r.Client.OrgRoleUser.Query().Where(
+		orgroleuser.OrgRoleID(obj.ID),
+		orgroleuser.HasOrgUserWith(orguser.UserID(userID), orguser.OrgID(tid)),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	return has, nil
+}
+
 // IsAssignOrgRole is the resolver for the isAssignOrgRole field.
 func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
