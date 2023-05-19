@@ -148,8 +148,8 @@ func (r *queryResolver) UserMenus(ctx context.Context, appCode string) ([]*ent.A
 }
 
 // UserPermissions is the resolver for the userPermissions field.
-func (r *queryResolver) UserPermissions(ctx context.Context, appCode *string) ([]*ent.AppAction, error) {
-	return r.Resource.GetUserPermissions(ctx, appCode)
+func (r *queryResolver) UserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
+	return r.Resource.GetUserPermissions(ctx, where)
 }
 
 // CheckPermission is the resolver for the checkPermission field.

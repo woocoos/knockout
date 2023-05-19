@@ -58,7 +58,7 @@ type QueryResolver interface {
 	UserGroups(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 	UserExtendGroupPolicies(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 	UserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error)
-	UserPermissions(ctx context.Context, appCode *string) ([]*ent.AppAction, error)
+	UserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error)
 	CheckPermission(ctx context.Context, permission string) (bool, error)
 }
 type UserResolver interface {
@@ -1388,15 +1388,15 @@ func (ec *executionContext) field_Query_userMenus_args(ctx context.Context, rawA
 func (ec *executionContext) field_Query_userPermissions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["appCode"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+	var arg0 *ent.AppActionWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg0, err = ec.unmarshalOAppActionWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["appCode"] = arg0
+	args["where"] = arg0
 	return args, nil
 }
 
@@ -12680,7 +12680,7 @@ func (ec *executionContext) _Query_userPermissions(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UserPermissions(rctx, fc.Args["appCode"].(*string))
+		return ec.resolvers.Query().UserPermissions(rctx, fc.Args["where"].(*ent.AppActionWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

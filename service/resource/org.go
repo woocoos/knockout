@@ -492,7 +492,11 @@ func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppM
 		return nil, err
 	}
 	// 获取用户在当前app的所有权限
-	ups, err := s.GetUserPermissions(ctx, &appCode)
+	ups, err := s.GetUserPermissions(ctx, &ent.AppActionWhereInput{
+		HasAppWith: []*ent.AppWhereInput{
+			{Code: &appCode},
+		},
+	})
 	if err != nil {
 		return nil, err
 	}

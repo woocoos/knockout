@@ -498,7 +498,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 
 // GetUserPermissions 获取用户的全部权限
 // appcode 不传则获取所有
-func (s *Service) GetUserPermissions(ctx context.Context, appCode *string) ([]*ent.AppAction, error) {
+func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
 	client := s.Client
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -508,6 +508,7 @@ func (s *Service) GetUserPermissions(ctx context.Context, appCode *string) ([]*e
 	if err != nil {
 		return nil, err
 	}
+
 	// 根据appcode分组
 	grantActions := make(map[string][]string)
 	// 拥有全部权限的app
@@ -519,10 +520,6 @@ func (s *Service) GetUserPermissions(ctx context.Context, appCode *string) ([]*e
 			continue
 		}
 		ac := parts[0]
-		// 如果传appcode，则只返回该应用相关权限
-		if appCode != nil && *appCode != ac {
-			continue
-		}
 		// 标记app所有授权
 		if parts[1] == "*" {
 			fulGrantApps[ac] = &parts[1]
@@ -539,16 +536,24 @@ func (s *Service) GetUserPermissions(ctx context.Context, appCode *string) ([]*e
 	userActions := make([]*ent.AppAction, 0)
 	for appcode, actions := range grantActions {
 		if fulGrantApps[appcode] != nil {
-			// 拥有全部权限
-			aas, err := client.AppAction.Query().Where(appaction.HasAppWith(app.Code(appcode))).All(ctx)
+			// 拥有应用全部权限
+			query, err := where.Filter(client.AppAction.Query())
+			if err != nil {
+				return nil, err
+			}
+			aas, err := query.Where(appaction.HasAppWith(app.Code(appcode))).All(ctx)
 			if err != nil {
 				return nil, err
 			}
 			userActions = append(userActions, aas...)
 		} else {
+			query, err := where.Filter(client.AppAction.Query())
+			if err != nil {
+				return nil, err
+			}
 			// actions 去重
 			newActions := RemoveDuplicateElement(actions)
-			aas, err := client.AppAction.Query().Where(appaction.NameIn(newActions...), appaction.HasAppWith(app.Code(appcode))).All(ctx)
+			aas, err := query.Where(appaction.NameIn(newActions...), appaction.HasAppWith(app.Code(appcode))).All(ctx)
 			if err != nil {
 				return nil, err
 			}

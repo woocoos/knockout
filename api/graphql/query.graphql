@@ -86,7 +86,7 @@ extend type Query {
     """用户菜单"""
     userMenus(appCode:String!):[AppMenu]!
     """获取用户所有权限"""
-    userPermissions(appCode:String):[AppAction]!
+    userPermissions(where: AppActionWhereInput):[AppAction]!
     """检测权限"""
     checkPermission(
         """appCode + ":" + action"""

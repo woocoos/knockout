@@ -429,7 +429,7 @@ type ComplexityRoot struct {
 		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMenus               func(childComplexity int, appCode string) int
-		UserPermissions         func(childComplexity int, appCode *string) int
+		UserPermissions         func(childComplexity int, where *ent.AppActionWhereInput) int
 		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -2957,7 +2957,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserPermissions(childComplexity, args["appCode"].(*string)), true
+		return e.complexity.Query.UserPermissions(childComplexity, args["where"].(*ent.AppActionWhereInput)), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -7667,7 +7667,7 @@ extend type User {
     """用户菜单"""
     userMenus(appCode:String!):[AppMenu]!
     """获取用户所有权限"""
-    userPermissions(appCode:String):[AppAction]!
+    userPermissions(where: AppActionWhereInput):[AppAction]!
     """检测权限"""
     checkPermission(
         """appCode + ":" + action"""
