@@ -86,6 +86,8 @@ type Mutation {
     revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
     assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
+    """角色移除策略"""
+    revokeAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""

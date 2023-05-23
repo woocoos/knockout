@@ -32,6 +32,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	AppPolicy() AppPolicyResolver
 	Mutation() MutationResolver
 	OrgPolicy() OrgPolicyResolver
 	OrgRole() OrgRoleResolver
@@ -139,19 +140,20 @@ type ComplexityRoot struct {
 	}
 
 	AppPolicy struct {
-		App       func(childComplexity int) int
-		AppID     func(childComplexity int) int
-		AutoGrant func(childComplexity int) int
-		Comments  func(childComplexity int) int
-		CreatedAt func(childComplexity int) int
-		CreatedBy func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Roles     func(childComplexity int) int
-		Rules     func(childComplexity int) int
-		Status    func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		UpdatedBy func(childComplexity int) int
+		App            func(childComplexity int) int
+		AppID          func(childComplexity int) int
+		AutoGrant      func(childComplexity int) int
+		Comments       func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		CreatedBy      func(childComplexity int) int
+		ID             func(childComplexity int) int
+		IsGrantAppRole func(childComplexity int, appRoleID int) int
+		Name           func(childComplexity int) int
+		Roles          func(childComplexity int) int
+		Rules          func(childComplexity int) int
+		Status         func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+		UpdatedBy      func(childComplexity int) int
 	}
 
 	AppPolicyConnection struct {
@@ -256,6 +258,7 @@ type ComplexityRoot struct {
 		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
 		Revoke                      func(childComplexity int, orgID int, permissionID int) int
+		RevokeAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
 		RevokeOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		RevokeOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
@@ -1082,6 +1085,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicy.ID(childComplexity), true
 
+	case "AppPolicy.isGrantAppRole":
+		if e.complexity.AppPolicy.IsGrantAppRole == nil {
+			break
+		}
+
+		args, err := ec.field_AppPolicy_isGrantAppRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppPolicy.IsGrantAppRole(childComplexity, args["appRoleID"].(int)), true
+
 	case "AppPolicy.name":
 		if e.complexity.AppPolicy.Name == nil {
 			break
@@ -1852,6 +1867,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Revoke(childComplexity, args["orgID"].(int), args["permissionID"].(int)), true
+
+	case "Mutation.revokeAppRolePolicy":
+		if e.complexity.Mutation.RevokeAppRolePolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_revokeAppRolePolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RevokeAppRolePolicy(childComplexity, args["appID"].(int), args["roleID"].(int), args["policyIDs"].([]int)), true
 
 	case "Mutation.revokeOrganizationApp":
 		if e.complexity.Mutation.RevokeOrganizationApp == nil {
@@ -7609,7 +7636,14 @@ extend type User {
 extend type OrgRole {
     """是否分配给user"""
     isGrantUser(userID:ID!): Boolean!
-}`, BuiltIn: false},
+}
+
+extend type AppPolicy {
+    """是否授权role"""
+    isGrantAppRole(appRoleID:ID!): Boolean!
+}
+
+`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
@@ -7704,7 +7738,7 @@ extend type OrgRole {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
-    """组织appActions"""
+    """组织策略可授权的appActions"""
     orgAppActions(appCode:String!):[AppAction]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
@@ -7795,6 +7829,8 @@ extend type OrgRole {
     revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """角色添加策略"""
     assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
+    """角色移除策略"""
+    revokeAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""

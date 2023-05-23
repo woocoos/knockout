@@ -464,9 +464,33 @@ func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int
 	}
 	builders := make([]*ent.AppRolePolicyCreate, len(policyIDs))
 	for i, v := range policyIDs {
-		builders[i] = client.AppRolePolicy.Create().SetAppID(appID).SetRoleID(roleID).SetPolicyID(v)
+		builders[i] = client.AppRolePolicy.Create().SetAppID(appID).SetAppRoleID(roleID).SetAppPolicyID(v)
 	}
 	return client.AppRolePolicy.CreateBulk(builders...).Exec(ctx)
+}
+
+func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) error {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	has, err := client.AppRole.Query().Where(approle.ID(roleID), approle.AppID(appID), approle.HasAppWith(app.OwnerOrgID(tid))).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if !has {
+		return fmt.Errorf("role not exist")
+	}
+	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policyIDs...), apppolicy.AppID(appID)).Count(ctx)
+	if err != nil {
+		return err
+	}
+	if count != len(policyIDs) {
+		return fmt.Errorf("invalid policy in policyIDs")
+	}
+	_, err = client.AppRolePolicy.Delete().Where(approlepolicy.AppID(appID), approlepolicy.AppRoleID(roleID), approlepolicy.AppPolicyIDIn(policyIDs...)).Exec(ctx)
+	return err
 }
 
 // CreateAppPolicy 创建应用策略.
@@ -505,7 +529,13 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 	}
 	builder := client.AppPolicy.UpdateOneID(policyID).SetInput(input)
 	builder.Mutation().SetAppID(apl.AppID)
-	return builder.Save(ctx)
+	ap, err := builder.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 更新orgPolicy及相关授权
+
+	return ap, nil
 }
 
 // DeleteAppPolicy 删除应用策略,该应用必须属于(创建者)该租户才可删除

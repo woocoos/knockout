@@ -82,3 +82,9 @@ extend type OrgRole {
     """是否分配给user"""
     isGrantUser(userID:ID!): Boolean!
 }
+
+extend type AppPolicy {
+    """是否授权role"""
+    isGrantAppRole(appRoleID:ID!): Boolean!
+}
+

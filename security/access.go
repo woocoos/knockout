@@ -134,7 +134,7 @@ func GetUserPermissions(userID int, domain int) [][]string {
 	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), strconv.Itoa(domain))
 }
 
-func CheckUserPermissions(rvals ...interface{}) (bool, error) {
+func CheckUserPermission(rvals ...interface{}) (bool, error) {
 	authorizer := authz.DefaultAuthorization
 	return authorizer.Enforcer.Enforce(rvals...)
 }

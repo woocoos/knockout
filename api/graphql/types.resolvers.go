@@ -9,10 +9,22 @@ import (
 
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 )
+
+// IsGrantAppRole is the resolver for the isGrantAppRole field.
+func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error) {
+	exist, err := r.Client.AppRolePolicy.Query().Where(
+		approlepolicy.AppID(obj.AppID), approlepolicy.AppRoleID(appRoleID), approlepolicy.AppPolicyID(obj.ID),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}
 
 // IsGrantRole is the resolver for the isGrantRole field.
 func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error) {
