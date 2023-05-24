@@ -31,7 +31,7 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 	return apl, nil
 }
 
-// CreateAppActions
+// CreateAppActions 创建应用权限
 func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -534,7 +534,21 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 		return nil, err
 	}
 	// 更新orgPolicy及相关授权
-
+	ops, err := client.OrgPolicy.Query().Where(orgpolicy.AppID(apl.AppID), orgpolicy.AppPolicyID(policyID)).All(ctx)
+	for _, op := range ops {
+		err = appPolicyToOrgPolicy(apl.Edges.App.Code, ap.Rules, op.OrgID)
+		if err != nil {
+			return nil, err
+		}
+		err = updateOrgPolicyRules(ctx, op.ID, ap.Rules, op.OrgID)
+		if err != nil {
+			return nil, err
+		}
+		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(ap.Rules).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return ap, nil
 }
 

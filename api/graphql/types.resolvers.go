@@ -6,7 +6,6 @@ package graphql
 
 import (
 	"context"
-
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -24,6 +23,11 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 		return false, err
 	}
 	return exist, nil
+}
+
+// IsAllowRevokeAppPolicy is the resolver for the isAllowRevokeAppPolicy field.
+func (r *orgResolver) IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error) {
+	return r.Resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)
 }
 
 // IsGrantRole is the resolver for the isGrantRole field.
@@ -79,6 +83,11 @@ func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, use
 	return has, nil
 }
 
+// IsAllowRevoke is the resolver for the isAllowRevoke field.
+func (r *permissionResolver) IsAllowRevoke(ctx context.Context, obj *ent.Permission) (bool, error) {
+	return r.Resource.IsAllowRevokePermission(ctx, obj)
+}
+
 // IsAssignOrgRole is the resolver for the isAssignOrgRole field.
 func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -94,6 +103,11 @@ func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRo
 		return false, err
 	}
 	return exist, nil
+}
+
+// IsAllowRevokeRole is the resolver for the isAllowRevokeRole field.
+func (r *userResolver) IsAllowRevokeRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
+	return r.Resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
 }
 
 // LoginProfile is the resolver for the loginProfile field.

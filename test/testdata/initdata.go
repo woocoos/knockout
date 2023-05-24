@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -127,6 +128,7 @@ func initApp(client *ent.Tx) {
 	oas := make([]*ent.OrgAppCreate, 0)
 	ops := make([]*ent.OrgPolicyCreate, 0)
 	ors := make([]*ent.OrgRoleCreate, 0)
+	ps := make([]*ent.PermissionCreate, 0)
 	for i := 1; i < 2; i++ {
 		ac := "resource"
 		a := client.App.Create().SetID(i).SetName("资源权限管理").SetCode(ac).SetKind(app.KindWeb).
@@ -168,6 +170,8 @@ func initApp(client *ent.Tx) {
 		}))
 		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").
 			SetCreatedBy(1).SetKind(orgrole.KindRole))
+		ps = append(ps, client.Permission.Create().SetID(i).SetOrgID(1).SetOrgPolicyID(i).SetCreatedBy(1).
+			SetPrincipalKind(permission.PrincipalKindRole).SetRoleID(i).SetStatus(typex.SimpleStatusActive))
 	}
 	client.App.CreateBulk(apps...).ExecX(context.Background())
 	client.AppAction.CreateBulk(ras...).ExecX(context.Background())
@@ -178,4 +182,5 @@ func initApp(client *ent.Tx) {
 	client.OrgApp.CreateBulk(oas...).ExecX(context.Background())
 	client.OrgPolicy.CreateBulk(ops...).ExecX(context.Background())
 	client.OrgRole.CreateBulk(ors...).ExecX(context.Background())
+	client.Permission.CreateBulk(ps...).ExecX(context.Background())
 }

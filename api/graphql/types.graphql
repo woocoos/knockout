@@ -76,6 +76,13 @@ extend type OrgPolicy {
 extend type User {
     """是否分配role"""
     isAssignOrgRole(orgRoleID:ID!): Boolean!
+    """是否允许解除角色授权"""
+    isAllowRevokeRole(orgRoleID:ID!):Boolean!
+}
+
+extend type Org {
+    """是否允许解除应用策略"""
+    isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
 }
 
 extend type OrgRole {
@@ -88,3 +95,7 @@ extend type AppPolicy {
     isGrantAppRole(appRoleID:ID!): Boolean!
 }
 
+extend type Permission {
+    """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
+    isAllowRevoke:Boolean!
+}

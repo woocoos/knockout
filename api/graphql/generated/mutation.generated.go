@@ -1337,6 +1337,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -1441,6 +1443,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -1545,6 +1549,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -1649,6 +1655,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -1853,6 +1861,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
+			case "isAllowRevokeRole":
+				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1947,6 +1957,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
+			case "isAllowRevokeRole":
+				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2151,6 +2163,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
+			case "isAllowRevokeRole":
+				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4779,6 +4793,8 @@ func (ec *executionContext) fieldContext_Mutation_grant(ctx context.Context, fie
 				return ec.fieldContext_Permission_role(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_Permission_orgPolicy(ctx, field)
+			case "isAllowRevoke":
+				return ec.fieldContext_Permission_isAllowRevoke(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Permission", field.Name)
 		},
@@ -4867,6 +4883,8 @@ func (ec *executionContext) fieldContext_Mutation_updatePermission(ctx context.C
 				return ec.fieldContext_Permission_role(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_Permission_orgPolicy(ctx, field)
+			case "isAllowRevoke":
+				return ec.fieldContext_Permission_isAllowRevoke(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Permission", field.Name)
 		},

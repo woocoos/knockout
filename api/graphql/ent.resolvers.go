@@ -46,11 +46,17 @@ func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], fi
 // AppPolicy returns generated.AppPolicyResolver implementation.
 func (r *Resolver) AppPolicy() generated.AppPolicyResolver { return &appPolicyResolver{r} }
 
+// Org returns generated.OrgResolver implementation.
+func (r *Resolver) Org() generated.OrgResolver { return &orgResolver{r} }
+
 // OrgPolicy returns generated.OrgPolicyResolver implementation.
 func (r *Resolver) OrgPolicy() generated.OrgPolicyResolver { return &orgPolicyResolver{r} }
 
 // OrgRole returns generated.OrgRoleResolver implementation.
 func (r *Resolver) OrgRole() generated.OrgRoleResolver { return &orgRoleResolver{r} }
+
+// Permission returns generated.PermissionResolver implementation.
+func (r *Resolver) Permission() generated.PermissionResolver { return &permissionResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
@@ -64,8 +70,10 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 }
 
 type appPolicyResolver struct{ *Resolver }
+type orgResolver struct{ *Resolver }
 type orgPolicyResolver struct{ *Resolver }
 type orgRoleResolver struct{ *Resolver }
+type permissionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
 type createUserInputResolver struct{ *Resolver }

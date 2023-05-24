@@ -34,8 +34,10 @@ type Config struct {
 type ResolverRoot interface {
 	AppPolicy() AppPolicyResolver
 	Mutation() MutationResolver
+	Org() OrgResolver
 	OrgPolicy() OrgPolicyResolver
 	OrgRole() OrgRoleResolver
+	Permission() PermissionResolver
 	Query() QueryResolver
 	Subscription() SubscriptionResolver
 	User() UserResolver
@@ -279,31 +281,32 @@ type ComplexityRoot struct {
 	}
 
 	Org struct {
-		Apps        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		Children    func(childComplexity int) int
-		Code        func(childComplexity int) int
-		CountryCode func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		CreatedBy   func(childComplexity int) int
-		DeletedAt   func(childComplexity int) int
-		DisplaySort func(childComplexity int) int
-		Domain      func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Kind        func(childComplexity int) int
-		Name        func(childComplexity int) int
-		Owner       func(childComplexity int) int
-		OwnerID     func(childComplexity int) int
-		Parent      func(childComplexity int) int
-		ParentID    func(childComplexity int) int
-		Path        func(childComplexity int) int
-		Permissions func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		Policies    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgPolicyOrder, where *ent.OrgPolicyWhereInput) int
-		Profile     func(childComplexity int) int
-		Status      func(childComplexity int) int
-		Timezone    func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		UpdatedBy   func(childComplexity int) int
-		Users       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Apps                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		Children               func(childComplexity int) int
+		Code                   func(childComplexity int) int
+		CountryCode            func(childComplexity int) int
+		CreatedAt              func(childComplexity int) int
+		CreatedBy              func(childComplexity int) int
+		DeletedAt              func(childComplexity int) int
+		DisplaySort            func(childComplexity int) int
+		Domain                 func(childComplexity int) int
+		ID                     func(childComplexity int) int
+		IsAllowRevokeAppPolicy func(childComplexity int, appPolicyID int) int
+		Kind                   func(childComplexity int) int
+		Name                   func(childComplexity int) int
+		Owner                  func(childComplexity int) int
+		OwnerID                func(childComplexity int) int
+		Parent                 func(childComplexity int) int
+		ParentID               func(childComplexity int) int
+		Path                   func(childComplexity int) int
+		Permissions            func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		Policies               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgPolicyOrder, where *ent.OrgPolicyWhereInput) int
+		Profile                func(childComplexity int) int
+		Status                 func(childComplexity int) int
+		Timezone               func(childComplexity int) int
+		UpdatedAt              func(childComplexity int) int
+		UpdatedBy              func(childComplexity int) int
+		Users                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	OrgConnection struct {
@@ -382,6 +385,7 @@ type ComplexityRoot struct {
 		CreatedBy     func(childComplexity int) int
 		EndAt         func(childComplexity int) int
 		ID            func(childComplexity int) int
+		IsAllowRevoke func(childComplexity int) int
 		Org           func(childComplexity int) int
 		OrgID         func(childComplexity int) int
 		OrgPolicy     func(childComplexity int) int
@@ -443,26 +447,27 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Comments        func(childComplexity int) int
-		CreatedAt       func(childComplexity int) int
-		CreatedBy       func(childComplexity int) int
-		CreationType    func(childComplexity int) int
-		DeletedAt       func(childComplexity int) int
-		Devices         func(childComplexity int) int
-		DisplayName     func(childComplexity int) int
-		Email           func(childComplexity int) int
-		ID              func(childComplexity int) int
-		Identities      func(childComplexity int) int
-		IsAssignOrgRole func(childComplexity int, orgRoleID int) int
-		LoginProfile    func(childComplexity int) int
-		Mobile          func(childComplexity int) int
-		Permissions     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		PrincipalName   func(childComplexity int) int
-		RegisterIP      func(childComplexity int) int
-		Status          func(childComplexity int) int
-		UpdatedAt       func(childComplexity int) int
-		UpdatedBy       func(childComplexity int) int
-		UserType        func(childComplexity int) int
+		Comments          func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		CreatedBy         func(childComplexity int) int
+		CreationType      func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		Devices           func(childComplexity int) int
+		DisplayName       func(childComplexity int) int
+		Email             func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Identities        func(childComplexity int) int
+		IsAllowRevokeRole func(childComplexity int, orgRoleID int) int
+		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
+		LoginProfile      func(childComplexity int) int
+		Mobile            func(childComplexity int) int
+		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		PrincipalName     func(childComplexity int) int
+		RegisterIP        func(childComplexity int) int
+		Status            func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+		UpdatedBy         func(childComplexity int) int
+		UserType          func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -2159,6 +2164,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.ID(childComplexity), true
 
+	case "Org.isAllowRevokeAppPolicy":
+		if e.complexity.Org.IsAllowRevokeAppPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Org_isAllowRevokeAppPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Org.IsAllowRevokeAppPolicy(childComplexity, args["appPolicyID"].(int)), true
+
 	case "Org.kind":
 		if e.complexity.Org.Kind == nil {
 			break
@@ -2630,6 +2647,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Permission.ID(childComplexity), true
 
+	case "Permission.isAllowRevoke":
+		if e.complexity.Permission.IsAllowRevoke == nil {
+			break
+		}
+
+		return e.complexity.Permission.IsAllowRevoke(childComplexity), true
+
 	case "Permission.org":
 		if e.complexity.Permission.Org == nil {
 			break
@@ -3100,6 +3124,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Identities(childComplexity), true
+
+	case "User.isAllowRevokeRole":
+		if e.complexity.User.IsAllowRevokeRole == nil {
+			break
+		}
+
+		args, err := ec.field_User_isAllowRevokeRole_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.IsAllowRevokeRole(childComplexity, args["orgRoleID"].(int)), true
 
 	case "User.isAssignOrgRole":
 		if e.complexity.User.IsAssignOrgRole == nil {
@@ -7631,6 +7667,13 @@ extend type OrgPolicy {
 extend type User {
     """是否分配role"""
     isAssignOrgRole(orgRoleID:ID!): Boolean!
+    """是否允许解除角色授权"""
+    isAllowRevokeRole(orgRoleID:ID!):Boolean!
+}
+
+extend type Org {
+    """是否允许解除应用策略"""
+    isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
 }
 
 extend type OrgRole {
@@ -7643,7 +7686,10 @@ extend type AppPolicy {
     isGrantAppRole(appRoleID:ID!): Boolean!
 }
 
-`, BuiltIn: false},
+extend type Permission {
+    """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
+    isAllowRevoke:Boolean!
+}`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID

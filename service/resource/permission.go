@@ -36,11 +36,18 @@ const SplitPolicyEffect = "&&"
 // AssignOrganizationApp 分配应用到根组织下. 如: 新账户创建时, 根账户分配已有应用给子账户(需要验证根用户是否该应用权限,可在外层验证).
 func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID int) error {
 	client := ent.FromContext(ctx)
+	// 判断组织是否存在或者是否关联应用
 	if has, err := client.Org.Query().Where(org.ID(orgID), org.KindEQ(org.KindRoot),
 		org.HasAppsWith(app.ID(appID))).Exist(ctx); err != nil {
 		return err
 	} else if has {
 		return fmt.Errorf("org not found or already has app")
+	}
+	// 判断组织是否关联根用户
+	if o, err := client.Org.Query().Where(org.ID(orgID)).Only(ctx); err != nil {
+		return err
+	} else if o.OwnerID == nil {
+		return fmt.Errorf("the organization owner was not found")
 	}
 
 	ap, err := client.App.Query().Where(app.ID(appID)).
@@ -220,7 +227,7 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	if err != nil {
 		return err
 	}
-	op, err := client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.ID).SetAppPolicyID(ap.ID).
+	op, err := client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.AppID).SetAppPolicyID(ap.ID).
 		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Save(ctx)
 	if err != nil {
 		return err
@@ -288,6 +295,11 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 	if err != nil {
 		return err
 	}
+	if isAllow, err := s.IsAllowRevokeOrgRole(ctx, userID, roleID); err != nil {
+		return err
+	} else if !isAllow {
+		return fmt.Errorf("no allow to revoke")
+	}
 	has, err := client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.OrgID(tid), orguser.UserID(userID)),
 		orgroleuser.HasOrgRoleWith(orgrole.OrgID(tid), orgrole.ID(roleID))).Exist(ctx)
 	if err != nil {
@@ -306,6 +318,28 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 	}
 	_, err = client.OrgRoleUser.Delete().Where(orgroleuser.OrgRoleID(roleID), orgroleuser.OrgUserID(ouId)).Exec(ctx)
 	return err
+}
+
+func (s *Service) IsAllowRevokeOrgRole(ctx context.Context, userID int, orgRoleID int) (bool, error) {
+	has, err := s.Client.User.Query().Where(
+		user.ID(userID),
+		user.HasOrgsWith(
+			org.OwnerID(userID),
+			org.HasPermissionsWith(
+				permission.HasRoleWith(
+					orgrole.ID(orgRoleID),
+					orgrole.AppRoleIDNotNil(),
+				),
+			),
+		),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, nil
+	}
+	return true, nil
 }
 
 func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) error {
@@ -330,20 +364,41 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 	}
 	or, err := client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(ar.ID).
 		SetComments(ar.Comments).SetName(ar.Name).Save(ctx)
-	// 分配orgPolicy
-	aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(ar.AppID), apppolicy.HasAppRolePolicyWith(approlepolicy.AppID(ar.AppID), approlepolicy.AppRoleID(appRoleID))).All(ctx)
+	// 查询角色关联的策略
+	aps, err := client.AppPolicy.Query().Where(
+		apppolicy.AppID(ar.AppID),
+		apppolicy.HasAppRolePolicyWith(approlepolicy.AppID(ar.AppID), approlepolicy.AppRoleID(appRoleID)),
+	).All(ctx)
 	if err != nil {
 		return err
 	}
-	opbk := make([]*ent.OrgPolicyCreate, len(aps))
+	// 查询aps已分配给组织的策略
+	apids := make([]int, len(aps))
 	for i, ap := range aps {
+		apids[i] = ap.ID
+	}
+	hasOps, err := client.OrgPolicy.Query().Where(orgpolicy.OrgID(orgID), orgpolicy.AppID(ar.AppID), orgpolicy.AppPolicyIDIn(apids...)).All(ctx)
+	if err != nil {
+		return err
+	}
+	hasOpMap := make(map[int]bool)
+	for _, op := range hasOps {
+		hasOpMap[op.AppPolicyID] = true
+	}
+	// 分配策略给组织
+	opbk := make([]*ent.OrgPolicyCreate, 0)
+	for _, ap := range aps {
+		if hasOpMap[ap.ID] {
+			continue
+		}
 		if err = appPolicyToOrgPolicy(ar.Edges.App.Code, ap.Rules, orgID); err != nil {
 			return err
 		}
-		opbk[i] = client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ar.Edges.App.ID).SetAppPolicyID(ap.ID).
-			SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name)
+		opbk = append(opbk, client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ar.Edges.App.ID).SetAppPolicyID(ap.ID).
+			SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name))
 	}
 	ops, err := client.OrgPolicy.CreateBulk(opbk...).Save(ctx)
+	ops = append(ops, hasOps...)
 	if err != nil {
 		return err
 	}
@@ -463,13 +518,18 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 
 func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) error {
 	client := ent.FromContext(ctx)
-
 	isRoot, err := s.IsRootOrg(ctx, orgID)
 	if err != nil {
 		return err
 	}
 	if !isRoot {
 		return fmt.Errorf("organization %d is not a root organization", orgID)
+	}
+
+	if has, err := s.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
+		return err
+	} else if !has {
+		return fmt.Errorf("no allow to revoke")
 	}
 
 	// 查找对应授权的组织策略
@@ -503,6 +563,25 @@ func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	// 删除orgPolicy
 	_, err = client.OrgPolicy.Delete().Where(orgpolicy.ID(op.ID)).Exec(ctx)
 	return err
+}
+
+// IsAllowRevokeAppPolicy 应用策略是否允许解除授权组织
+// 如果授权组织的应用角色包含该策略，则该策略不允许单独解除授权
+func (s *Service) IsAllowRevokeAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	has, err := s.Client.Permission.Query().Where(
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.OrgID(orgID),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.HasOrgPolicyWith(orgpolicy.AppPolicyID(appPolicyID)),
+		permission.HasRoleWith(orgrole.AppRoleIDNotNil()),
+	).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, nil
+	}
+	return true, nil
 }
 
 func getPrincipalID(perm *ent.Permission) int {
@@ -623,6 +702,11 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	if err != nil {
 		return err
 	}
+	if isAllow, err := s.IsAllowRevokePermission(ctx, p); err != nil {
+		return err
+	} else if !isAllow {
+		return fmt.Errorf("no allow to revoke")
+	}
 
 	// 判断actions、resources是否存在主体其他授权的policy
 	var ops []*ent.OrgPolicy
@@ -655,6 +739,35 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 
 	_, err = client.Permission.Delete().Where(permission.ID(permissionID), permission.OrgID(orgID)).Exec(ctx)
 	return err
+}
+
+func (s *Service) IsAllowRevokePermission(ctx context.Context, p *ent.Permission) (bool, error) {
+	if p.PrincipalKind == permission.PrincipalKindUser {
+		// 根用户不允许revoke
+		has, err := s.Client.Permission.Query().Where(
+			permission.ID(p.ID),
+			permission.HasOrgWith(org.HasOwnerWith(user.ID(p.UserID))),
+		).Exist(ctx)
+		if err != nil {
+			return false, err
+		}
+		if has {
+			return false, err
+		}
+	} else if p.PrincipalKind == permission.PrincipalKindRole {
+		// 系统角色不允许revoke
+		has, err := s.Client.Permission.Query().Where(
+			permission.ID(p.ID),
+			permission.HasRoleWith(orgrole.ID(p.RoleID), orgrole.AppRoleIDNotNil()),
+		).Exist(ctx)
+		if err != nil {
+			return false, err
+		}
+		if has {
+			return false, err
+		}
+	}
+	return true, nil
 }
 
 func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
