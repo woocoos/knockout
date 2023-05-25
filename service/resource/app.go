@@ -544,7 +544,7 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 		if err != nil {
 			return nil, err
 		}
-		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(ap.Rules).Exec(ctx)
+		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(ap.Rules).SetName(ap.Name).SetComments(ap.Comments).Exec(ctx)
 		if err != nil {
 			return nil, err
 		}

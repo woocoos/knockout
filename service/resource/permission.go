@@ -791,7 +791,6 @@ func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, wh
 		// 标记app所有授权
 		if parts[1] == "*" {
 			fulGrantApps[ac] = &parts[1]
-			continue
 		}
 		if grantActions[ac] == nil {
 			grantActions[ac] = []string{

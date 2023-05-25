@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"flag"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -33,6 +34,7 @@ var (
 func main() {
 	flag.Parse()
 	client, err := ent.Open(*name, *dsn, ent.Debug())
+	casbinClient, err := casbinent.Open(*name, *dsn, casbinent.Debug())
 	if err != nil {
 		log.Fatalf("failed connecting to mysql: %v", err)
 	}
@@ -42,17 +44,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	casbinTx, err := casbinClient.Tx(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer func() {
 		if err := recover(); err != nil {
 			tx.Rollback()
+			casbinTx.Rollback()
 			panic(err)
 		} else {
 			tx.Commit()
+			casbinTx.Commit()
 		}
 	}()
 	initUser(tx)
 	initOrg(tx)
-	initApp(tx)
+	initApp(tx, casbinTx)
 }
 
 func initOrg(client *ent.Tx) {
@@ -118,7 +126,7 @@ func initUser(client *ent.Tx) {
 	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
 }
 
-func initApp(client *ent.Tx) {
+func initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 	apps := make([]*ent.AppCreate, 0)
 	ars := make([]*ent.AppRoleCreate, 0)
 	ras := make([]*ent.AppActionCreate, 0)
@@ -129,6 +137,8 @@ func initApp(client *ent.Tx) {
 	ops := make([]*ent.OrgPolicyCreate, 0)
 	ors := make([]*ent.OrgRoleCreate, 0)
 	ps := make([]*ent.PermissionCreate, 0)
+	orus := make([]*ent.OrgRoleUserCreate, 0)
+	casbinRules := make([]*casbinent.CasbinRuleCreate, 0)
 	for i := 1; i < 2; i++ {
 		ac := "resource"
 		a := client.App.Create().SetID(i).SetName("资源权限管理").SetCode(ac).SetKind(app.KindWeb).
@@ -168,10 +178,19 @@ func initApp(client *ent.Tx) {
 				Resources: []string{},
 			},
 		}))
+
 		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").
 			SetCreatedBy(1).SetKind(orgrole.KindRole))
+
 		ps = append(ps, client.Permission.Create().SetID(i).SetOrgID(1).SetOrgPolicyID(i).SetCreatedBy(1).
 			SetPrincipalKind(permission.PrincipalKindRole).SetRoleID(i).SetStatus(typex.SimpleStatusActive))
+
+		orus = append(orus, client.OrgRoleUser.Create().SetID(i).SetCreatedBy(1).SetOrgRoleID(i).SetOrgUserID(1))
+
+		casbinRules = append(casbinRules, casbinClient.CasbinRule.Create().SetPtype("g").
+			SetV0("1").SetV1(strconv.Itoa(i)).SetV2("1"))
+		casbinRules = append(casbinRules, casbinClient.CasbinRule.Create().SetPtype("p").
+			SetV0(strconv.Itoa(i)).SetV1("1").SetV2(ac+":*").SetV3("read").SetV4("allow"))
 	}
 	client.App.CreateBulk(apps...).ExecX(context.Background())
 	client.AppAction.CreateBulk(ras...).ExecX(context.Background())
@@ -183,4 +202,6 @@ func initApp(client *ent.Tx) {
 	client.OrgPolicy.CreateBulk(ops...).ExecX(context.Background())
 	client.OrgRole.CreateBulk(ors...).ExecX(context.Background())
 	client.Permission.CreateBulk(ps...).ExecX(context.Background())
+	client.OrgRoleUser.CreateBulk(orus...).ExecX(context.Background())
+	casbinClient.CasbinRule.CreateBulk(casbinRules...).ExecX(context.Background())
 }
