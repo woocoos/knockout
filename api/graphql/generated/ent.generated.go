@@ -71,6 +71,7 @@ type QueryResolver interface {
 	UserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error)
 	CheckPermission(ctx context.Context, permission string) (bool, error)
 	OrgAppActions(ctx context.Context, appCode string) ([]*ent.AppAction, error)
+	UserRootOrgs(ctx context.Context) ([]*ent.Org, error)
 }
 type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
@@ -13207,6 +13208,104 @@ func (ec *executionContext) fieldContext_Query_orgAppActions(ctx context.Context
 	if fc.Args, err = ec.field_Query_orgAppActions_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_userRootOrgs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userRootOrgs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserRootOrgs(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Org)
+	fc.Result = res
+	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userRootOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Org_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Org_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Org_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Org_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Org_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Org_deletedAt(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Org_parentID(ctx, field)
+			case "domain":
+				return ec.fieldContext_Org_domain(ctx, field)
+			case "code":
+				return ec.fieldContext_Org_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Org_name(ctx, field)
+			case "profile":
+				return ec.fieldContext_Org_profile(ctx, field)
+			case "status":
+				return ec.fieldContext_Org_status(ctx, field)
+			case "path":
+				return ec.fieldContext_Org_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Org_displaySort(ctx, field)
+			case "countryCode":
+				return ec.fieldContext_Org_countryCode(ctx, field)
+			case "timezone":
+				return ec.fieldContext_Org_timezone(ctx, field)
+			case "parent":
+				return ec.fieldContext_Org_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
+			case "users":
+				return ec.fieldContext_Org_users(ctx, field)
+			case "permissions":
+				return ec.fieldContext_Org_permissions(ctx, field)
+			case "policies":
+				return ec.fieldContext_Org_policies(ctx, field)
+			case "apps":
+				return ec.fieldContext_Org_apps(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -38011,6 +38110,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_orgAppActions(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "userRootOrgs":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userRootOrgs(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

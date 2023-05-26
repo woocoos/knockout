@@ -439,6 +439,7 @@ type ComplexityRoot struct {
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMenus               func(childComplexity int, appCode string) int
 		UserPermissions         func(childComplexity int, where *ent.AppActionWhereInput) int
+		UserRootOrgs            func(childComplexity int) int
 		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -3035,6 +3036,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserPermissions(childComplexity, args["where"].(*ent.AppActionWhereInput)), true
+
+	case "Query.userRootOrgs":
+		if e.complexity.Query.UserRootOrgs == nil {
+			break
+		}
+
+		return e.complexity.Query.UserRootOrgs(childComplexity), true
 
 	case "Query.users":
 		if e.complexity.Query.Users == nil {
@@ -7786,6 +7794,8 @@ extend type Permission {
     ):Boolean!
     """组织策略可授权的appActions"""
     orgAppActions(appCode:String!):[AppAction]!
+    """用户加入的root组织"""
+    userRootOrgs:[Org]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

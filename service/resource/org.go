@@ -284,6 +284,14 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 	if has {
 		return fmt.Errorf("user has been referenced")
 	}
+	// 根据角色判断是否被引用
+	has, err = client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.UserID(userID)), orgroleuser.HasOrgRoleWith(orgrole.HasOrgWith(org.ID(tid)))).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("user has been referenced")
+	}
 
 	_, err = client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(tid)).Exec(ctx)
 	if err != nil {

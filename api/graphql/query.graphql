@@ -94,4 +94,6 @@ extend type Query {
     ):Boolean!
     """组织策略可授权的appActions"""
     orgAppActions(appCode:String!):[AppAction]!
+    """用户加入的root组织"""
+    userRootOrgs:[Org]!
 }

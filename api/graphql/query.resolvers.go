@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appres"
@@ -172,4 +173,18 @@ func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string) ([]*e
 	return r.Resource.GetUserPermissionsByUserID(ctx, *rootOrg.OwnerID, &ent.AppActionWhereInput{
 		HasAppWith: []*ent.AppWhereInput{{Code: &appCode}},
 	})
+}
+
+// UserRootOrgs is the resolver for the userRootOrgs field.
+func (r *queryResolver) UserRootOrgs(ctx context.Context) ([]*ent.Org, error) {
+	//获取跟用户ID
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.Org.Query().Where(
+		org.HasOrgUserWith(orguser.UserID(uid)),
+		org.StatusEQ(typex.SimpleStatusActive),
+		org.KindEQ(org.KindRoot),
+	).All(ctx)
 }

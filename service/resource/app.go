@@ -74,14 +74,6 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	if aa == nil {
 		return nil, fmt.Errorf("action not exist")
 	}
-	// 判断应用下action name唯一
-	exist, err := client.AppAction.Query().Where(appaction.Name(*input.Name), appaction.AppID(aa.AppID)).Exist(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if exist {
-		return nil, fmt.Errorf("action %s is exist", *input.Name)
-	}
 	//
 	resaa, err := client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
 	if err != nil {
