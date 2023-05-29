@@ -96,4 +96,13 @@ extend type Query {
     orgAppActions(appCode:String!):[AppAction]!
     """用户加入的root组织"""
     userRootOrgs:[Org]!
+    """组织回收站列表"""
+    orgRecycleUsers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
 }

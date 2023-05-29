@@ -52,7 +52,26 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 
 // CreateRoot 创建组织root
 func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
-	return s.Client.Org.Create().SetInput(input).SetKind(org.KindRoot).Save(ctx)
+	client := ent.FromContext(ctx)
+	o, err := client.Org.Create().SetInput(input).SetKind(org.KindRoot).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 有管理用户则加入组织
+	if input.OwnerID != nil {
+		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if u.UserType != user.UserTypeAccount {
+			return nil, fmt.Errorf("owner must be account")
+		}
+		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return o, nil
 }
 
 // CreateOrganization 创建组织目录,基于根目录创建
@@ -68,13 +87,23 @@ func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInp
 // - 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
 func (s *Service) UpdateOrganization(ctx context.Context, id int, input ent.UpdateOrgInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
+	u := client.User.Query().Where(user.ID(*input.OwnerID)).FirstX(ctx)
 	if input.OwnerID != nil {
-		u := client.User.Query().Where(user.ID(*input.OwnerID)).Select(user.FieldUserType).FirstX(ctx)
 		if u.UserType != user.UserTypeAccount {
 			return nil, fmt.Errorf("owner must be account")
 		}
 	}
-	return client.Org.UpdateOneID(id).SetInput(input).Save(ctx)
+	o, err := client.Org.UpdateOneID(id).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if input.OwnerID != nil {
+		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return o, nil
 }
 
 // DeleteOrganization 删除组织目录
@@ -309,9 +338,8 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 	if err != nil {
 		return err
 	}
-	client.User.Update().Where(user.ID(userID)).ClearIdentities().ClearPasswords().
-		SetDeletedAt(time.Now()).Exec(ctx)
-	return nil
+	return client.User.Update().Where(user.ID(userID)).ClearIdentities().ClearPasswords().
+		SetDeletedAt(time.Now()).SetStatus(typex.SimpleStatusInactive).Exec(ctx)
 }
 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
@@ -554,4 +582,54 @@ func findMenuParents(appMenus, userMenus []*ent.AppMenu, parentMenus *[]*ent.App
 			}
 		}
 	}
+}
+
+// RecoverOrgUser 恢复删除用户
+func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	has, err := client.Org.Query().Where(org.ID(tid), org.StatusEQ(typex.SimpleStatusActive)).Exist(ctx)
+	if !has || err != nil {
+		return nil, fmt.Errorf("organization not exists or inactive")
+	}
+
+	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(typex.SimpleStatusActive).ClearDeletedAt().Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	pn := us.PrincipalName
+	if userInput.PrincipalName != nil {
+		pn = *userInput.PrincipalName
+	}
+	_, err = client.UserIdentity.Create().SetUserID(us.ID).SetCode(pn).SetKind(useridentity.KindName).
+		SetStatus(typex.SimpleStatusActive).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if pwdKind == userloginprofile.SetKindAuto {
+		//TODO 自动生成密码
+	} else if pwdInput != nil {
+		if pwdInput.UserID == nil {
+			pwdInput.UserID = &userID
+		}
+		_, err = s.CreateUserPassword(ctx, pwdInput)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).SetSetKind(pwdKind).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = client.OrgUser.Create().SetOrgID(tid).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return us, nil
 }

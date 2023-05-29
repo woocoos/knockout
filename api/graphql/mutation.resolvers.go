@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
 // EnableDirectory is the resolver for the enableDirectory field.
@@ -323,6 +324,11 @@ func (r *mutationResolver) SendMFAToUserByEmail(ctx context.Context, userID int)
 // UpdateAppRes is the resolver for the updateAppRes field.
 func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error) {
 	return ent.FromContext(ctx).AppRes.UpdateOneID(appResID).SetInput(input).Save(ctx)
+}
+
+// RecoverOrgUser is the resolver for the recoverOrgUser field.
+func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
+	return r.Resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
 }
 
 // Mutation returns generated1.MutationResolver implementation.

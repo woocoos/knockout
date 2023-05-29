@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/entco/schemax"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -185,6 +186,24 @@ func (r *queryResolver) UserRootOrgs(ctx context.Context) ([]*ent.Org, error) {
 	return r.Client.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
+		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
 	).All(ctx)
+}
+
+// OrgRecycleUsers is the resolver for the orgRecycleUsers field.
+func (r *queryResolver) OrgRecycleUsers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	o, err := r.Client.Org.Query().Where(org.ID(tid), org.DomainNotNil(), org.KindEQ(org.KindRoot)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.Client.User.Query().Where(
+		user.PrincipalNameHasSuffix("@"+o.Domain),
+		user.DeletedAtNotNil(),
+		user.StatusEQ(typex.SimpleStatusInactive),
+	).Paginate(schemax.SkipSoftDelete(ctx), after, first, before, last, ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
 }

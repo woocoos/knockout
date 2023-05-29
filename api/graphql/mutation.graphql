@@ -130,4 +130,6 @@ type Mutation {
     sendMFAToUserByEmail(userID:ID!):Boolean!
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
+    """恢复用户"""
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
 }

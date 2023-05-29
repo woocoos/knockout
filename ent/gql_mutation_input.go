@@ -733,6 +733,8 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 
 // UpdateOrgInput represents a mutation input for updating orgs.
 type UpdateOrgInput struct {
+	ClearDomain            bool
+	Domain                 *string
 	Name                   *string
 	ClearProfile           bool
 	Profile                *string
@@ -767,6 +769,12 @@ type UpdateOrgInput struct {
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
 func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
+	if i.ClearDomain {
+		m.ClearDomain()
+	}
+	if v := i.Domain; v != nil {
+		m.SetDomain(*v)
+	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}

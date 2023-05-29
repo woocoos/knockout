@@ -12,6 +12,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -73,6 +74,7 @@ type MutationResolver interface {
 	DisableMfa(ctx context.Context, userID int) (bool, error)
 	SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error)
 	UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error)
+	RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -745,6 +747,48 @@ func (ec *executionContext) field_Mutation_moveOrganization_args(ctx context.Con
 		}
 	}
 	args["action"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_recoverOrgUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg0
+	var arg1 ent.UpdateUserInput
+	if tmp, ok := rawArgs["userInput"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userInput"))
+		arg1, err = ec.unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userInput"] = arg1
+	var arg2 userloginprofile.SetKind
+	if tmp, ok := rawArgs["pwdKind"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdKind"))
+		arg2, err = ec.unmarshalNUserLoginProfileSetKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pwdKind"] = arg2
+	var arg3 *ent.CreateUserPasswordInput
+	if tmp, ok := rawArgs["pwdInput"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdInput"))
+		arg3, err = ec.unmarshalOCreateUserPasswordInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserPasswordInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pwdInput"] = arg3
 	return args, nil
 }
 
@@ -5203,6 +5247,105 @@ func (ec *executionContext) fieldContext_Mutation_updateAppRes(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_recoverOrgUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_recoverOrgUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RecoverOrgUser(rctx, fc.Args["userID"].(int), fc.Args["userInput"].(ent.UpdateUserInput), fc.Args["pwdKind"].(userloginprofile.SetKind), fc.Args["pwdInput"].(*ent.CreateUserPasswordInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_User_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_User_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_User_deletedAt(ctx, field)
+			case "principalName":
+				return ec.fieldContext_User_principalName(ctx, field)
+			case "displayName":
+				return ec.fieldContext_User_displayName(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "mobile":
+				return ec.fieldContext_User_mobile(ctx, field)
+			case "userType":
+				return ec.fieldContext_User_userType(ctx, field)
+			case "creationType":
+				return ec.fieldContext_User_creationType(ctx, field)
+			case "registerIP":
+				return ec.fieldContext_User_registerIP(ctx, field)
+			case "status":
+				return ec.fieldContext_User_status(ctx, field)
+			case "comments":
+				return ec.fieldContext_User_comments(ctx, field)
+			case "identities":
+				return ec.fieldContext_User_identities(ctx, field)
+			case "loginProfile":
+				return ec.fieldContext_User_loginProfile(ctx, field)
+			case "devices":
+				return ec.fieldContext_User_devices(ctx, field)
+			case "permissions":
+				return ec.fieldContext_User_permissions(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
+			case "isAllowRevokeRole":
+				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_recoverOrgUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -5666,6 +5809,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateAppRes(ctx, field)
 			})
 
+		case "recoverOrgUser":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_recoverOrgUser(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
