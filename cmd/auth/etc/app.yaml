@@ -55,7 +55,8 @@ web:
                   - "/forget-pwd/verify-mfa"
                   - "/forget-pwd/reset"
                 <<: *jwt
-
+            - tenant:
+                lookup: "header:X-Tenant-ID,query:X-Tenant-Id" ## browser may be transfer query ID to Id
 grpc:
   server:
     addr: 127.0.0.1:10080

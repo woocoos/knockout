@@ -281,11 +281,6 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
 	usr := s.DB.User.GetX(ctx, uid)
 
-	//orgr, err := s.GetUserRootOrg(ctx, usr.ID)
-	//if err != nil {
-	//	return nil, err
-	//}
-
 	tokenTTL := Cnf.Duration("auth.jwt.tokenTTL")
 	tid, tstr, err := createToken(strconv.Itoa(uid), tokenTTL)
 	if err != nil {
@@ -446,16 +441,21 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if err != nil {
 		return nil, err
 	}
-	uorg, err := s.GetUserRootOrg(ctx, uid)
+	//
+	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	uorg, err := s.DB.Org.Query().Where(org.ID(tid)).Only(ctx)
 	issuer := uorg.Domain
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
 		AccountName: pn,
 		Secret:      secByte,
 	})
+	if err != nil {
+		return nil, err
+	}
 	return &oas.Mfa{
 		QrCodeUri:     key.String(),
 		PrincipalName: pn,
@@ -543,7 +543,7 @@ func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginReques
 		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "mfa"})
 	}
 	if &u.Email != nil {
-		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "email", Value: u.Email})
+		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(u.Email)})
 	}
 	// 生成临时token
 	sid := uuid.New().String()
@@ -586,7 +586,10 @@ func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetReques
 		s.Cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
-	return false, nil
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码

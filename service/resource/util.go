@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"regexp"
 )
 
 // RandomStr generate random string,exclude 0,i,l
@@ -107,4 +108,21 @@ func RemoveDuplicateElement[T int | int64 | string | float32 | float64](arr []T)
 		}
 	}
 	return result
+}
+
+// MaskEmail 邮箱脱敏处理
+func MaskEmail(email string) string {
+	// 使用正则表达式匹配邮箱地址的用户名部分
+	re := regexp.MustCompile(`([^@]+)@`)
+	matches := re.FindStringSubmatch(email)
+	if len(matches) != 2 {
+		return email
+	}
+	// 获取用户名部分
+	un := matches[0]
+	// 保留前三个字符
+	mun := un[:3] + "****"
+	// 替换原始邮箱地址中的用户名部分为脱敏后的用户名
+	maskedEmail := re.ReplaceAllString(email, mun+"@")
+	return maskedEmail
 }
