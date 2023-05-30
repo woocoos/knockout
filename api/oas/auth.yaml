@@ -35,6 +35,9 @@ paths:
                 captcha:
                   type: string
                   description: captcha code,if login fail 3 times, the login profile will demand captcha.
+                captchaId:
+                  type: string
+                  description: captcha id,if login fail 3 times, the login profile will demand captcha.
               required:
                 - username
                 - password
@@ -142,10 +145,9 @@ paths:
         '200':
           description: get captcha successful
           content:
-            image/png:
+            application/json:
               schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/Captcha'
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
@@ -223,6 +225,147 @@ paths:
                 type: boolean
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /forget-pwd/begin:
+    post:
+      description: start the process of forgetting your password by verifying your account.
+      operationId: forgetPwdBegin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                captcha:
+                  type: string
+                captchaId:
+                  type: string
+              required:
+                - username
+                - captcha
+                - captchaId
+      responses:
+        '200':
+          description: return the verify info and stateToken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgetPwdBeginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /forget-pwd/verify-email:
+    post:
+      description: verify the email to reset-password.
+      operationId: forgetPwdVerifyEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                  description: form begin
+                captcha:
+                  description: the email verify code
+                  type: string
+                captchaId:
+                  description: the email verify code
+                  type: string
+              required:
+                - stateToken
+                - captcha
+                - captchaId
+      responses:
+        '200':
+          description: return the verify info and stateToken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgetPwdBeginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /forget-pwd/send-email:
+    post:
+      description: send an email to get the verify code.
+      operationId: forgetPwdSendEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                  description: form begin
+              required:
+                - stateToken
+      responses:
+        '200':
+          description: whether the email is successfully to sent
+          content:
+            application/json:
+              schema:
+                type: string
+                description: return captchaId on success
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /forget-pwd/verify-mfa:
+    post:
+      description: verify the email to reset-password.
+      operationId: forgetPwdVerifyMfa
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                  description: form begin
+                otpToken:
+                  description: the email verify code
+                  type: string
+              required:
+                - stateToken
+                - otpToken
+      responses:
+        '200':
+          description: return the verify info and stateToken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForgetPwdBeginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /forget-pwd/reset:
+    post:
+      description: reset-password.
+      operationId: forgetPwdReset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stateToken:
+                  type: string
+                  description: from verify-mfa or verify-email
+                newPassword:
+                  type: string
+              required:
+                - stateToken
+                - newPassword
+      responses:
+        '200':
+          description: complete the forgetpwd flow
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
 components:
   responses:
@@ -257,6 +400,14 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/User'
+    Captcha:
+      type: object
+      description: when complete login accessToken,expiresAt,refreshToken will be filled
+      properties:
+        captchaId:
+          type: string
+        captchaImage:
+          type: string
     Mfa:
       type: object
       description: when complete login accessToken,expiresAt,refreshToken will be filled
@@ -279,9 +430,16 @@ components:
           type: integer
         displayName:
           type: string
-        domainId:
+        domains:
+          type: array
+          items:
+            $ref: "#/components/schemas/Domain"
+    Domain:
+      type: object
+      properties:
+        id:
           type: integer
-        domainName:
+        name:
           type: string
     ErrorResponse:
       type: object
@@ -298,4 +456,23 @@ components:
         message:
           type: string
         details:
+          type: string
+    ForgetPwdBeginResponse:
+      type: object
+      properties:
+        stateToken:
+          type: string
+        stateTokenTTL:
+          type: number
+        verifies:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForgetPwdVerify'
+    ForgetPwdVerify:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: ["email","mfa"]
+        value:
           type: string

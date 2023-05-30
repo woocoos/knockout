@@ -15,6 +15,11 @@ func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
+	router.POST("/forget-pwd/begin", wrapForgetPwdBegin(si))
+	router.POST("/forget-pwd/reset", wrapForgetPwdReset(si))
+	router.POST("/forget-pwd/send-email", wrapForgetPwdSendEmail(si))
+	router.POST("/forget-pwd/verify-email", wrapForgetPwdVerifyEmail(si))
+	router.POST("/forget-pwd/verify-mfa", wrapForgetPwdVerifyMfa(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
@@ -61,7 +66,87 @@ func wrapCaptcha(si oas.Server) func(c *gin.Context) {
 			c.Error(err)
 			return
 		}
-		c.Data(http.StatusOK, "image/png", resp)
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapForgetPwdBegin(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ForgetPwdBeginRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.ForgetPwdBegin(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapForgetPwdReset(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ForgetPwdResetRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.ForgetPwdReset(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapForgetPwdSendEmail(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ForgetPwdSendEmailRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.ForgetPwdSendEmail(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapForgetPwdVerifyEmail(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ForgetPwdVerifyEmailRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.ForgetPwdVerifyEmail(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapForgetPwdVerifyMfa(si oas.Server) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.ForgetPwdVerifyMfaRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.ForgetPwdVerifyMfa(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
 	}
 }
 

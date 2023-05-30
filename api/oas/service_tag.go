@@ -18,13 +18,55 @@ type CaptchaRequestBody struct {
 	H int `form:"h"`
 }
 
+type ForgetPwdBeginRequest struct {
+	Body ForgetPwdBeginRequestBody
+}
+type ForgetPwdBeginRequestBody struct {
+	Captcha   string `binding:"required" json:"captcha"`
+	CaptchaId string `binding:"required" json:"captchaId"`
+	Username  string `binding:"required" json:"username"`
+}
+
+type ForgetPwdResetRequest struct {
+	Body ForgetPwdResetRequestBody
+}
+type ForgetPwdResetRequestBody struct {
+	NewPassword string `binding:"required" json:"newPassword"`
+	StateToken  string `binding:"required" json:"stateToken"`
+}
+
+type ForgetPwdSendEmailRequest struct {
+	Body ForgetPwdSendEmailRequestBody
+}
+type ForgetPwdSendEmailRequestBody struct {
+	StateToken string `binding:"required" json:"stateToken"`
+}
+
+type ForgetPwdVerifyEmailRequest struct {
+	Body ForgetPwdVerifyEmailRequestBody
+}
+type ForgetPwdVerifyEmailRequestBody struct {
+	Captcha    string `binding:"required" json:"captcha"`
+	CaptchaId  string `binding:"required" json:"captchaId"`
+	StateToken string `binding:"required" json:"stateToken"`
+}
+
+type ForgetPwdVerifyMfaRequest struct {
+	Body ForgetPwdVerifyMfaRequestBody
+}
+type ForgetPwdVerifyMfaRequestBody struct {
+	OtpToken   string `binding:"required" json:"otpToken"`
+	StateToken string `binding:"required" json:"stateToken"`
+}
+
 type LoginRequest struct {
 	Body LoginRequestBody
 }
 type LoginRequestBody struct {
-	Captcha  string `json:"captcha,omitempty"`
-	Password string `binding:"required" json:"password"`
-	Username string `binding:"required" json:"username"`
+	Captcha   string `json:"captcha,omitempty"`
+	CaptchaId string `json:"captchaId,omitempty"`
+	Password  string `binding:"required" json:"password"`
+	Username  string `binding:"required" json:"username"`
 }
 
 type ResetPasswordRequest struct {

@@ -15,7 +15,17 @@ type Server interface {
 	// (POST /mfa/bind-prepare)
 	BindMfaPrepare(*gin.Context) (*Mfa, error)
 	// (GET /captcha)
-	Captcha(*gin.Context, *CaptchaRequest) ([]byte, error)
+	Captcha(*gin.Context, *CaptchaRequest) (*Captcha, error)
+	// (POST /forget-pwd/begin)
+	ForgetPwdBegin(*gin.Context, *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error)
+	// (POST /forget-pwd/reset)
+	ForgetPwdReset(*gin.Context, *ForgetPwdResetRequest) (bool, error)
+	// (POST /forget-pwd/send-email)
+	ForgetPwdSendEmail(*gin.Context, *ForgetPwdSendEmailRequest) (string, error)
+	// (POST /forget-pwd/verify-email)
+	ForgetPwdVerifyEmail(*gin.Context, *ForgetPwdVerifyEmailRequest) (*ForgetPwdBeginResponse, error)
+	// (POST /forget-pwd/verify-mfa)
+	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
 	// (POST /login/auth)
 	Login(*gin.Context, *LoginRequest) (*LoginResponse, error)
 	// (POST /logout)
@@ -41,8 +51,33 @@ func (UnimplementedServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error) {
 	return
 }
 
-func (UnimplementedServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ []byte, err error) {
+func (UnimplementedServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *Captcha, err error) {
 	err = fmt.Errorf("method Captcha not implemented")
+	return
+}
+
+func (UnimplementedServer) ForgetPwdBegin(c *gin.Context, req *ForgetPwdBeginRequest) (_ *ForgetPwdBeginResponse, err error) {
+	err = fmt.Errorf("method ForgetPwdBegin not implemented")
+	return
+}
+
+func (UnimplementedServer) ForgetPwdReset(c *gin.Context, req *ForgetPwdResetRequest) (_ bool, err error) {
+	err = fmt.Errorf("method ForgetPwdReset not implemented")
+	return
+}
+
+func (UnimplementedServer) ForgetPwdSendEmail(c *gin.Context, req *ForgetPwdSendEmailRequest) (_ string, err error) {
+	err = fmt.Errorf("method ForgetPwdSendEmail not implemented")
+	return
+}
+
+func (UnimplementedServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetPwdVerifyEmailRequest) (_ *ForgetPwdBeginResponse, err error) {
+	err = fmt.Errorf("method ForgetPwdVerifyEmail not implemented")
+	return
+}
+
+func (UnimplementedServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
+	err = fmt.Errorf("method ForgetPwdVerifyMfa not implemented")
 	return
 }
 

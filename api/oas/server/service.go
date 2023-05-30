@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base32"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/dchest/captcha"
@@ -40,10 +41,13 @@ var (
 )
 
 var (
-	mfaCachePrefix       = "mfa:"
-	tokenCachePrefix     = "token:"
-	resetCachePrefix     = "reset:"
-	loginFailCachePrefix = "loginfail:"
+	mfaCachePrefix             = "mfa:"
+	tokenCachePrefix           = "token:"
+	resetCachePrefix           = "reset:"
+	loginFailCachePrefix       = "loginfail:"
+	forgetPwdBeginCachePrefix  = "forgetpwdbegin:"
+	forgetPwdEmailCachePrefix  = "forgetpwdemail:"
+	forgetPwdVerifyCachePrefix = "forgetpwdverify:"
 
 	CallBackUrlResetPassword = "/login/reset-password"
 	CallBackUrlMFA           = "/login/verify-factor"
@@ -74,6 +78,8 @@ type Service struct {
 	Cache cache.Cache
 
 	LogoutHandler func(*gin.Context)
+
+	captchaStore captcha.Store
 }
 
 func (s *Service) Apply(cnf *conf.AppConfiguration) error {
@@ -88,11 +94,12 @@ func (s *Service) Apply(cnf *conf.AppConfiguration) error {
 		return err
 	}
 	// Initialize the captcha
-	captcha.SetCustomStore(captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire))
+	s.captchaStore = captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire)
+	captcha.SetCustomStore(s.captchaStore)
 	return nil
 }
 
-func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (res []byte, err error) {
+func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (*oas.Captcha, error) {
 	captchaId := captcha.NewLen(s.CaptchaLength)
 	if req.Body.W == 0 {
 		req.Body.W = captchaWidth
@@ -101,15 +108,21 @@ func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (res []byte
 		req.Body.H = captchaHeight
 	}
 	var buf bytes.Buffer
-	err = captcha.WriteImage(&buf, captchaId, req.Body.W, req.Body.H)
-	return buf.Bytes(), err
+	err := captcha.WriteImage(&buf, captchaId, req.Body.W, req.Body.H)
+	if err != nil {
+		return nil, err
+	}
+	return &oas.Captcha{
+		CaptchaId:    captchaId,
+		CaptchaImage: "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes()),
+	}, err
 }
 
 // Login login
 func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
 	failCount := 0
 	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
-	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.Captcha, req.Body.Captcha) {
+	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
 		ctx.Status(http.StatusBadRequest)
 		return nil, status.ErrCaptchaNotMatch
 	}
@@ -268,10 +281,10 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
 	usr := s.DB.User.GetX(ctx, uid)
 
-	orgr, err := s.GetUserRootOrg(ctx, usr.ID)
-	if err != nil {
-		return nil, err
-	}
+	//orgr, err := s.GetUserRootOrg(ctx, usr.ID)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	tokenTTL := Cnf.Duration("auth.jwt.tokenTTL")
 	tid, tstr, err := createToken(strconv.Itoa(uid), tokenTTL)
@@ -289,6 +302,17 @@ func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, err
 	if err != nil {
 		return nil, err
 	}
+
+	var domains []*oas.Domain
+	err = s.DB.Org.Query().Where(
+		org.HasOrgUserWith(orguser.UserID(uid)),
+		org.StatusEQ(typex.SimpleStatusActive),
+		org.DomainNotNil(),
+		org.KindEQ(org.KindRoot),
+	).Select(org.FieldID, org.FieldName).Scan(ctx, &domains)
+	if err != nil {
+		return nil, err
+	}
 	return &oas.LoginResponse{
 		AccessToken:  tstr,
 		ExpiresIn:    int(tokenTTL.Seconds()),
@@ -296,8 +320,7 @@ func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, err
 		User: &oas.User{
 			ID:          usr.ID,
 			DisplayName: usr.DisplayName,
-			DomainId:    orgr.ID,
-			DomainName:  orgr.Name,
+			Domains:     domains,
 		},
 	}, nil
 }
@@ -502,4 +525,152 @@ func (s *Service) logFailHandler(ctx *gin.Context, uid string, clear bool) (int,
 	count++
 	err = s.Cache.Set(ctx, key, count, s.LoginFailLockTime) // 以账户锁定时间作为过期时间
 	return count, err
+}
+
+// ForgetPwdBegin 忘记密码验证用户账户，开始修改密码流程
+func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginRequest) (*oas.ForgetPwdBeginResponse, error) {
+	// 验证验证码
+	if !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
+		return nil, status.ErrCaptchaNotMatch
+	}
+	// 查询用户
+	u, err := s.DB.User.Query().Where(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))).WithLoginProfile().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	verifies := make([]*oas.ForgetPwdVerify, 0)
+	if u.Edges.LoginProfile.MfaEnabled {
+		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "mfa"})
+	}
+	if &u.Email != nil {
+		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "email", Value: u.Email})
+	}
+	// 生成临时token
+	sid := uuid.New().String()
+	stateToken := createStateToken(sid)
+	err = s.Cache.Set(ctx, forgetPwdBeginCachePrefix+sid, u.ID, Cnf.Duration("auth.stateTokenTTL"))
+	if err != nil {
+		return nil, err
+	}
+	return &oas.ForgetPwdBeginResponse{
+		StateToken:    stateToken,
+		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+		Verifies:      verifies,
+	}, nil
+}
+
+// ForgetPwdReset 忘记密码设置新密码
+func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRequest) (bool, error) {
+	token := req.Body.StateToken
+	id, err := parseStateToken(token)
+	if err != nil {
+		return false, err
+	}
+	var uid int
+	cacheKey := forgetPwdVerifyCachePrefix + id
+	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+		return false, err
+	}
+	//
+	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
+	npwd := resource.SaltSecret(req.Body.NewPassword, pwd.Salt)
+
+	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
+		return s.DB.Tx(ctx)
+	}, func(itx ecx.Transactor) error {
+		tx := itx.(*ent.Tx)
+		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).Exec(ctx)
+		if err != nil {
+			return err
+		}
+		s.Cache.Del(ctx, cacheKey) // lint:ignore
+		return nil
+	})
+	return false, nil
+}
+
+// ForgetPwdSendEmail 忘记密码 发送邮件验证码
+func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
+	token := req.Body.StateToken
+	id, err := parseStateToken(token)
+	if err != nil {
+		return "", err
+	}
+	var uid int
+	cacheKey := forgetPwdBeginCachePrefix + id
+	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+		return "", err
+	}
+
+	captchaId := captcha.NewLen(6)
+	// TODO 后续集成邮件功能时发送captchaId至邮件
+	//digits := s.captchaStore.Get(captchaId, false)
+	return captchaId, nil
+}
+
+// ForgetPwdVerifyEmail 忘记密码 邮件验证身份
+func (s *Service) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerifyEmailRequest) (*oas.ForgetPwdBeginResponse, error) {
+	token := req.Body.StateToken
+	id, err := parseStateToken(token)
+	if err != nil {
+		return nil, err
+	}
+	var uid int
+	cacheKey := forgetPwdBeginCachePrefix + id
+	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+		return nil, err
+	}
+	// 验证验证码
+	if !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
+		return nil, status.ErrCaptchaNotMatch
+	}
+	sid := uuid.New().String()
+	stateToken := createStateToken(sid)
+	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, uid, Cnf.Duration("auth.stateTokenTTL"))
+	if err != nil {
+		return nil, err
+	}
+	s.Cache.Del(ctx, cacheKey)
+	return &oas.ForgetPwdBeginResponse{
+		StateToken:    stateToken,
+		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+	}, nil
+}
+
+// ForgetPwdVerifyMfa 忘记密码 mfa验证身份
+func (s *Service) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyMfaRequest) (*oas.ForgetPwdBeginResponse, error) {
+	token := req.Body.StateToken
+	id, err := parseStateToken(token)
+	if err != nil {
+		return nil, err
+	}
+	var uid int
+	cacheKey := forgetPwdBeginCachePrefix + id
+	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+		return nil, err
+	}
+	profile, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 验证mfa
+	if profile.MfaEnabled {
+		if !totp.Validate(req.Body.OtpToken, profile.MfaSecret) {
+			return nil, errors.New("invalid code")
+		}
+	} else {
+		return nil, fmt.Errorf("the MFA is disabled")
+	}
+	// 生成临时token
+	sid := uuid.New().String()
+	stateToken := createStateToken(sid)
+	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
+	if err != nil {
+		return nil, err
+	}
+	s.Cache.Del(ctx, cacheKey)
+	return &oas.ForgetPwdBeginResponse{
+		StateToken:    stateToken,
+		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+	}, nil
 }

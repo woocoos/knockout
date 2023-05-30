@@ -49,6 +49,11 @@ web:
                   - "/login/verify-factor"
                   - "/login/reset-password"
                   - "/captcha"
+                  - "/forget-pwd/begin"
+                  - "/forget-pwd/verify-email"
+                  - "/forget-pwd/send-email"
+                  - "/forget-pwd/verify-mfa"
+                  - "/forget-pwd/reset"
                 <<: *jwt
 
 grpc:

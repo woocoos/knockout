@@ -2,6 +2,16 @@
 
 package oas
 
+type Captcha struct {
+	CaptchaId    string `json:"captchaId,omitempty"`
+	CaptchaImage string `json:"captchaImage,omitempty"`
+}
+
+type Domain struct {
+	ID   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 type Error struct {
 	Code    int    `json:"code,omitempty"`
 	Details string `json:"details,omitempty"`
@@ -10,6 +20,17 @@ type Error struct {
 
 type ErrorResponse struct {
 	Errors []*Error `json:"errors,omitempty"`
+}
+
+type ForgetPwdBeginResponse struct {
+	StateToken    string             `json:"stateToken,omitempty"`
+	StateTokenTTL float64            `json:"stateTokenTTL,omitempty"`
+	Verifies      []*ForgetPwdVerify `json:"verifies,omitempty"`
+}
+
+type ForgetPwdVerify struct {
+	Kind  string `json:"kind,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 
 type LoginResponse struct {
@@ -30,8 +51,7 @@ type Mfa struct {
 }
 
 type User struct {
-	DisplayName string `json:"displayName,omitempty"`
-	DomainId    int    `json:"domainId,omitempty"`
-	DomainName  string `json:"domainName,omitempty"`
-	ID          int    `json:"id,omitempty"`
+	DisplayName string    `json:"displayName,omitempty"`
+	Domains     []*Domain `json:"domains,omitempty"`
+	ID          int       `json:"id,omitempty"`
 }
