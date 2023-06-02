@@ -13,7 +13,6 @@ import (
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/pkg/authorization"
-	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
@@ -81,7 +80,6 @@ func main() {
 func buildWebServer(cnf *conf.AppConfiguration, ws *server.Service) *web.Server {
 	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
-		identity.RegistryTenantIDMiddleware(),
 		//web.RegisterMiddleware(otelweb.NewMiddleware()),
 	)
 	router := webSrv.Router()

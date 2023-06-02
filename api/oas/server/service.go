@@ -442,7 +442,8 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 		return nil, err
 	}
 	//
-	tid, err := identity.TenantIDFromContext(ctx)
+	tidStr := ctx.GetHeader("X-Tenant-Id")
+	tid, err := strconv.Atoi(tidStr)
 	if err != nil {
 		return nil, err
 	}
