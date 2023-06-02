@@ -5,7 +5,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/woocoos/entco/schemax"
@@ -13,7 +12,7 @@ import (
 
 // FileSource holds the schema definition for the FileSource entity.
 type FileSource struct {
-	ent.Schema
+	//ent.Schema
 }
 
 func (FileSource) Annotations() []schema.Annotation {
@@ -50,7 +49,7 @@ func (FileSource) Fields() []ent.Field {
 // Edges of the FileSource.
 func (FileSource) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("files", File.Type).Ref("source").Comment("来源文件").Annotations(entgql.RelayConnection()),
+		//edge.From("files", File.Type).Ref("source").Comment("来源文件").Annotations(entgql.RelayConnection()),
 	}
 }
 

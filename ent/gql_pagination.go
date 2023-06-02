@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/vektah/gqlparser/v2/gqlerror"
+	"github.com/woocoos/entco/pkg/pagination"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -303,7 +304,7 @@ func (a *AppQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		a.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			a.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -604,7 +605,7 @@ func (aa *AppActionQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		aa.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			aa.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -905,7 +906,7 @@ func (am *AppMenuQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		am.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			am.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -1224,7 +1225,7 @@ func (ap *AppPolicyQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ap.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ap.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -1525,7 +1526,7 @@ func (ar *AppResQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ar.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ar.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -1826,7 +1827,7 @@ func (ar *AppRoleQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ar.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ar.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -2127,7 +2128,7 @@ func (o *OrgQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		o.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			o.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -2446,7 +2447,7 @@ func (op *OrgPolicyQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		op.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			op.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -2747,7 +2748,7 @@ func (or *OrgRoleQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		or.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			or.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -3048,7 +3049,7 @@ func (pe *PermissionQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		pe.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			pe.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -3349,7 +3350,7 @@ func (u *UserQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		u.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			u.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -3650,7 +3651,7 @@ func (ud *UserDeviceQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ud.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ud.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -3951,7 +3952,7 @@ func (ui *UserIdentityQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ui.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ui.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -4252,7 +4253,7 @@ func (ulp *UserLoginProfileQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		ulp.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			ulp.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
@@ -4553,7 +4554,7 @@ func (up *UserPasswordQuery) Paginate(
 	if limit := paginateLimit(first, last); limit != 0 {
 		up.Limit(limit)
 	}
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			up.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}

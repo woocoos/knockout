@@ -41,19 +41,6 @@ type GrantInput struct {
 	PolicyID  int    `json:"policyID"`
 }
 
-// 消息协议
-type Message struct {
-	ID int `json:"id"`
-	// 消息类型
-	Topic string `json:"topic"`
-	// 消息内容
-	Body string `json:"body"`
-	// 消息创建时间
-	CreatedAt time.Time `json:"createdAt"`
-	// 消息发送时间
-	SentAt time.Time `json:"sentAt"`
-}
-
 type Mfa struct {
 	Secret  string `json:"secret"`
 	Account string `json:"account"`

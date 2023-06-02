@@ -10,6 +10,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/woocoos/entco/pkg/pagination"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -3300,7 +3301,7 @@ func unmarshalArgs(ctx context.Context, whereInput any, args map[string]any) map
 
 func limitRows(ctx context.Context, partitionBy string, limit int, first, last *int, orderBy ...sql.Querier) func(s *sql.Selector) {
 	offset := 0
-	if sp, ok := SimplePaginationFromContext(ctx); ok {
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
 			offset = (sp.PageIndex - sp.CurrentIndex - 1) * *first
 		}

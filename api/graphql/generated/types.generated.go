@@ -305,34 +305,38 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
-			it.OrgRoleID, err = ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.OrgRoleID = data
 		case "userID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			it.UserID, err = ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.UserID = data
 		case "startAt":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startAt"))
-			it.StartAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.StartAt = data
 		case "endAt":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endAt"))
-			it.EndAt, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.EndAt = data
 		}
 	}
 
@@ -357,18 +361,20 @@ func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("domain"))
-			it.Domain, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Domain = data
 		case "name":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Name = data
 		}
 	}
 
@@ -393,26 +399,29 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("principal"))
-			it.Principal, err = ec.unmarshalNGID2string(ctx, v)
+			data, err := ec.unmarshalNGID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Principal = data
 		case "orgScope":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgScope"))
-			it.OrgScope, err = ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.OrgScope = data
 		case "policyID":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
-			it.PolicyID, err = ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.PolicyID = data
 		}
 	}
 
@@ -437,34 +446,38 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("effect"))
-			it.Effect, err = ec.unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx, v)
+			data, err := ec.unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Effect = data
 		case "actions":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actions"))
-			it.Actions, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Actions = data
 		case "resources":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resources"))
-			it.Resources, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Resources = data
 		case "conditions":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("conditions"))
-			it.Conditions, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
+			it.Conditions = data
 		}
 	}
 
@@ -568,53 +581,6 @@ func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoo
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNGID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNGID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNGID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNGID2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNGID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNGID2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) marshalNMfa2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐMfa(ctx context.Context, sel ast.SelectionSet, v model.Mfa) graphql.Marshaler {
 	return ec._Mfa(ctx, sel, &v)
 }
@@ -702,22 +668,6 @@ func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknocko
 
 func (ec *executionContext) marshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, sel ast.SelectionSet, v model.TreeAction) graphql.Marshaler {
 	return v
-}
-
-func (ec *executionContext) unmarshalOGID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalID(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOGID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalID(*v)
-	return res
 }
 
 func (ec *executionContext) marshalOPolicyRule2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v *types.PolicyRule) graphql.Marshaler {

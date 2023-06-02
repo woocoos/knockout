@@ -495,7 +495,7 @@ func (s *Service) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, 
 		return false, err
 	}
 	up, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
-	if !totp.Validate(req.Body.OtpToken, up.MfaSecret) {
+	if !totp.Validate(req.Body, up.MfaSecret) {
 		return false, errors.New("invalid code")
 	}
 	err = s.DB.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
@@ -594,7 +594,7 @@ func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetReques
 
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码
 func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
-	token := req.Body.StateToken
+	token := req.Body
 	id, err := parseStateToken(token)
 	if err != nil {
 		return "", err

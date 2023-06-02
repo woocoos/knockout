@@ -16,12 +16,13 @@ import (
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
 func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, principalKind permission.PrincipalKind) error {
+	tenant := strconv.Itoa(domain)
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch principalKind {
 	case permission.PrincipalKindUser:
 		role = "r_" + principal
-		_, err := authorizer.Enforcer.AddRoleForUserInDomain(principal, role, strconv.Itoa(domain))
+		_, err := authorizer.Enforcer.AddRoleForUserInDomain(principal, role, tenant)
 		if err != nil {
 			return err
 		}
@@ -32,13 +33,13 @@ func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, princi
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			p := []string{role, strconv.Itoa(domain), action, "read", rule.Effect.String()}
+			p := []string{role, tenant, action, "read", rule.Effect.String()}
 			if !authorizer.Enforcer.HasPolicy(p) {
 				pls = append(pls, p)
 			}
 		}
 		for _, resource := range rule.Resources {
-			p := []string{role, strconv.Itoa(domain), resource, "read", rule.Effect.String()}
+			p := []string{role, tenant, resource, "read", rule.Effect.String()}
 			if !authorizer.Enforcer.HasPolicy(p) {
 				pls = append(pls, p)
 			}
@@ -68,6 +69,7 @@ func GrantByPermission(permission *ent.Permission, domain int) error {
 //     如果授权主体为用户,则将用户作为特定角色.
 //  2. 将授权信息同步到redis中
 func RevokePolicy(rules []*types.PolicyRule, principal string, domain int, perm permission.PrincipalKind) error {
+	tenant := strconv.Itoa(domain)
 	authorizer := authz.DefaultAuthorization
 	role := principal
 	switch perm {
@@ -85,10 +87,10 @@ func RevokePolicy(rules []*types.PolicyRule, principal string, domain int, perm 
 	pls := make([][]string, 0, len(rules))
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
-			pls = append(pls, []string{role, strconv.Itoa(domain), action, "read", rule.Effect.String()})
+			pls = append(pls, []string{role, tenant, action, "read", rule.Effect.String()})
 		}
 		for _, resource := range rule.Resources {
-			pls = append(pls, []string{role, strconv.Itoa(domain), resource, "read", rule.Effect.String()})
+			pls = append(pls, []string{role, tenant, resource, "read", rule.Effect.String()})
 		}
 	}
 

@@ -5,14 +5,13 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax"
 )
 
 // File holds the schema definition for the File entity.
 type File struct {
-	ent.Schema
+	//ent.Schema
 }
 
 func (File) Annotations() []schema.Annotation {
@@ -47,6 +46,6 @@ func (File) Fields() []ent.Field {
 // Edges of the File.
 func (File) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("source", FileSource.Type).Field("source_id").Unique().Comment("文件来源"),
+		//edge.To("source", FileSource.Type).Field("source_id").Unique().Comment("文件来源"),
 	}
 }

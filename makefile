@@ -36,7 +36,9 @@ gengql:
 gengqlfile:
 	go run codegen/gqlgen/allinone.go
 genoas:
-	go run codegen/oasgen/oasgen.go
+	# go run codegen/oasgen/oasgen.go
+	# go install github.com/tsingsun/woocoo/cmd/woco
+	woco oasgen -c ./codegen/oasgen/config.yaml
 
 .PHONY: cli-gql-actions
 cli-gql-actions:

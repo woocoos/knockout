@@ -1,5 +1,3 @@
-scalar GID
-
 input EnableDirectoryInput {
     """域名"""
     domain: String!

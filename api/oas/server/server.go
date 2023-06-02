@@ -31,7 +31,7 @@ func wrapBindMfa(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.BindMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.BindMfa(c, &req)
@@ -58,7 +58,7 @@ func wrapCaptcha(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.CaptchaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.Captcha(c, &req)
@@ -74,7 +74,7 @@ func wrapForgetPwdBegin(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdBeginRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ForgetPwdBegin(c, &req)
@@ -90,7 +90,7 @@ func wrapForgetPwdReset(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdResetRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ForgetPwdReset(c, &req)
@@ -106,7 +106,7 @@ func wrapForgetPwdSendEmail(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdSendEmailRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ForgetPwdSendEmail(c, &req)
@@ -122,7 +122,7 @@ func wrapForgetPwdVerifyEmail(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdVerifyEmailRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ForgetPwdVerifyEmail(c, &req)
@@ -138,7 +138,7 @@ func wrapForgetPwdVerifyMfa(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdVerifyMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ForgetPwdVerifyMfa(c, &req)
@@ -154,7 +154,7 @@ func wrapLogin(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.LoginRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.Login(c, &req)
@@ -180,7 +180,7 @@ func wrapResetPassword(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ResetPasswordRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.ResetPassword(c, &req)
@@ -196,7 +196,7 @@ func wrapUnBindMfa(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.UnBindMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.UnBindMfa(c, &req)
@@ -212,7 +212,7 @@ func wrapVerifyFactor(si oas.Server) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.VerifyFactorRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
 		resp, err := si.VerifyFactor(c, &req)

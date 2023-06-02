@@ -5,6 +5,7 @@ package oas
 type BindMfaRequest struct {
 	Body BindMfaRequestBody
 }
+
 type BindMfaRequestBody struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
 	StateToken string `binding:"required" json:"stateToken"`
@@ -13,6 +14,7 @@ type BindMfaRequestBody struct {
 type CaptchaRequest struct {
 	Body CaptchaRequestBody
 }
+
 type CaptchaRequestBody struct {
 	W int `form:"w"`
 	H int `form:"h"`
@@ -21,6 +23,7 @@ type CaptchaRequestBody struct {
 type ForgetPwdBeginRequest struct {
 	Body ForgetPwdBeginRequestBody
 }
+
 type ForgetPwdBeginRequestBody struct {
 	Captcha   string `binding:"required" json:"captcha"`
 	CaptchaId string `binding:"required" json:"captchaId"`
@@ -30,21 +33,20 @@ type ForgetPwdBeginRequestBody struct {
 type ForgetPwdResetRequest struct {
 	Body ForgetPwdResetRequestBody
 }
+
 type ForgetPwdResetRequestBody struct {
 	NewPassword string `binding:"required" json:"newPassword"`
 	StateToken  string `binding:"required" json:"stateToken"`
 }
 
 type ForgetPwdSendEmailRequest struct {
-	Body ForgetPwdSendEmailRequestBody
-}
-type ForgetPwdSendEmailRequestBody struct {
-	StateToken string `binding:"required" json:"stateToken"`
+	Body string `binding:"required" json:"stateToken"`
 }
 
 type ForgetPwdVerifyEmailRequest struct {
 	Body ForgetPwdVerifyEmailRequestBody
 }
+
 type ForgetPwdVerifyEmailRequestBody struct {
 	Captcha    string `binding:"required" json:"captcha"`
 	CaptchaId  string `binding:"required" json:"captchaId"`
@@ -54,6 +56,7 @@ type ForgetPwdVerifyEmailRequestBody struct {
 type ForgetPwdVerifyMfaRequest struct {
 	Body ForgetPwdVerifyMfaRequestBody
 }
+
 type ForgetPwdVerifyMfaRequestBody struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
 	StateToken string `binding:"required" json:"stateToken"`
@@ -62,6 +65,7 @@ type ForgetPwdVerifyMfaRequestBody struct {
 type LoginRequest struct {
 	Body LoginRequestBody
 }
+
 type LoginRequestBody struct {
 	Captcha   string `json:"captcha,omitempty"`
 	CaptchaId string `json:"captchaId,omitempty"`
@@ -72,21 +76,20 @@ type LoginRequestBody struct {
 type ResetPasswordRequest struct {
 	Body ResetPasswordRequestBody
 }
+
 type ResetPasswordRequestBody struct {
 	NewPassword string `binding:"required" json:"newPassword"`
 	StateToken  string `binding:"required" json:"stateToken"`
 }
 
 type UnBindMfaRequest struct {
-	Body UnBindMfaRequestBody
-}
-type UnBindMfaRequestBody struct {
-	OtpToken string `binding:"required" json:"otpToken"`
+	Body string `binding:"required" json:"otpToken"`
 }
 
 type VerifyFactorRequest struct {
 	Body VerifyFactorRequestBody
 }
+
 type VerifyFactorRequestBody struct {
 	DeviceId   string `binding:"required" json:"deviceId"`
 	OtpToken   string `binding:"required" json:"otpToken"`
