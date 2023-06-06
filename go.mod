@@ -17,7 +17,7 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.3
 	github.com/tsingsun/woocoo v0.2.7
-	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230601150326-cac95cc509b2
+	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230605013745-3abb7df5c016
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230505034326-dbe1c13581e5
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1

@@ -34,7 +34,7 @@ genent:
 gengql:
 	go run codegen/gqlgen/gqlgen.go
 gengqlfile:
-	go run codegen/gqlgen/allinone.go
+	go run github.com/woocoos/entco/cmd/gqltools
 genoas:
 	# go run codegen/oasgen/oasgen.go
 	# go install github.com/tsingsun/woocoo/cmd/woco

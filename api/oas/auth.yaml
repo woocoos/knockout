@@ -160,13 +160,6 @@ paths:
     post:
       description: Use this api to get the temporary MFA secret key.
       operationId: bindMfaPrepare
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-              required:
       responses:
         '200':
           description: complete the mfa bind flow. return mfa info
@@ -402,7 +395,7 @@ components:
           $ref: '#/components/schemas/User'
     Captcha:
       type: object
-      description: when complete login accessToken,expiresAt,refreshToken will be filled
+      description: captcha info
       properties:
         captchaId:
           type: string
@@ -410,7 +403,7 @@ components:
           type: string
     Mfa:
       type: object
-      description: when complete login accessToken,expiresAt,refreshToken will be filled
+      description: mfa info
       properties:
         principalName:
           type: string
