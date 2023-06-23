@@ -3,7 +3,7 @@ module github.com/woocoos/knockout
 go 1.20
 
 require (
-	ariga.io/entcache v0.1.1-0.20230414114609-164fed2e1c70
+	ariga.io/entcache v0.1.1-0.20230620164151-0eb723a11c40
 	entgo.io/contrib v0.4.5
 	entgo.io/ent v0.12.3
 	github.com/99designs/gqlgen v0.17.31
@@ -16,15 +16,15 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.3
-	github.com/tsingsun/woocoo v0.2.7
-	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230605013745-3abb7df5c016
-	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2-0.20230505034326-dbe1c13581e5
+	github.com/tsingsun/woocoo v0.3.1-0.20230623124021-0c30337ca14f
+	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230622101920-afee0284db7d
+	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230622093715-adcb50dd333b
 	github.com/urfave/cli/v2 v2.25.0
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230601090855-a290bc1f5110
-	go.opentelemetry.io/contrib/propagators/b3 v1.16.1
-	golang.org/x/sync v0.2.0
+	github.com/woocoos/entco v0.0.0-20230622102820-b7f587646300
+	go.opentelemetry.io/contrib/propagators/b3 v1.17.0
+	golang.org/x/sync v0.3.0
 )
 
 require (
@@ -44,24 +44,24 @@ require (
 	github.com/knadh/koanf/providers/rawbytes v0.1.0 // indirect
 	github.com/knadh/koanf/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/redis/go-redis/v9 v9.0.4 // indirect
+	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/yuin/gopher-lua v1.1.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/runtime v0.41.1 // indirect
-	go.opentelemetry.io/otel v1.15.1 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.15.1 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.38.1 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.38.1 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.15.1 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.15.1 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.38.1 // indirect
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.15.1 // indirect
-	go.opentelemetry.io/otel/metric v0.38.1 // indirect
-	go.opentelemetry.io/otel/sdk v1.15.1 // indirect
-	go.opentelemetry.io/otel/sdk/metric v0.38.1 // indirect
-	go.opentelemetry.io/otel/trace v1.15.1 // indirect
+	go.opentelemetry.io/contrib/instrumentation/runtime v0.42.0 // indirect
+	go.opentelemetry.io/otel v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.39.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.39.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.16.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdoutmetric v0.39.0 // indirect
+	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.16.0 // indirect
+	go.opentelemetry.io/otel/metric v1.16.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.16.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v0.39.0 // indirect
+	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	go.opentelemetry.io/proto/otlp v0.19.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
 )
@@ -69,13 +69,13 @@ require (
 require (
 	ariga.io/atlas v0.11.0 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
-	github.com/XSAM/otelsql v0.22.0 // indirect
+	github.com/XSAM/otelsql v0.23.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
-	github.com/casbin/casbin/v2 v2.69.0
+	github.com/casbin/casbin/v2 v2.71.1
 	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -89,7 +89,6 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -100,7 +99,7 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.16.5 // indirect
+	github.com/klauspost/compress v1.16.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect

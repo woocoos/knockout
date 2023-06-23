@@ -1,0 +1,6 @@
+namespace: default
+appName: standalone
+version: 0.0.1
+development: true
+
+

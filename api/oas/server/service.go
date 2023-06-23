@@ -13,7 +13,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
-	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/woocoos/entco/ecx"
@@ -37,10 +36,6 @@ import (
 )
 
 var (
-	Cnf *conf.AppConfiguration
-)
-
-var (
 	mfaCachePrefix             = "mfa:"
 	tokenCachePrefix           = "token:"
 	resetCachePrefix           = "reset:"
@@ -58,24 +53,29 @@ var (
 )
 
 type Options struct {
-	CaptchaCollectNum int             `json:"captchaCollectNum"` // # captcha memory store collect num
-	CaptchaExpire     time.Duration   `json:"captchaExpire"`     // # captcha expire time
-	CaptchaLength     int             `json:"captchaLength"`     // # captcha length
-	CaptchaTimes      int             `json:"captchaTimes"`      // # if login fail times, captcha will force show
-	CaptchaTTL        time.Duration   `json:"captchaTTL"`        // # captcha ttl
-	LoginFailTimes    int             `json:"loginFailTimes"`    // # if login fail times, captcha will force show
-	LoginFailLockTime time.Duration   `json:"loginFailLockTime"` // #  lock time while login upper to max fail times
-	StateTokenTTL     time.Duration   `json:"stateTokenTTL"`     // # state token ttl
-	StateTokenSecret  string          `json:"stateTokenSecret"`  // # state token secret
-	JWT               auth.JWTOptions `json:"jwt"`
+	CaptchaCollectNum int           `json:"captchaCollectNum"` // # captcha memory store collect num
+	CaptchaExpire     time.Duration `json:"captchaExpire"`     // # captcha expire time
+	CaptchaLength     int           `json:"captchaLength"`     // # captcha length
+	CaptchaTimes      int           `json:"captchaTimes"`      // # if login fail times, captcha will force show
+	CaptchaTTL        time.Duration `json:"captchaTTL"`        // # captcha ttl
+	LoginFailTimes    int           `json:"loginFailTimes"`    // # if login fail times, captcha will force show
+	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // #  lock time while login upper to max fail times
+	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // # state token ttl
+	StateTokenSecret  string        `json:"stateTokenSecret"`  // # state token secret
+	JWT               struct {
+		SigningMethod   string        `json:"signingMethod"`
+		SigningKey      string        `json:"signingKey"`
+		TokenTTL        time.Duration `json:"tokenTTL"`
+		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
+	} `json:"jwt"`
 }
 
 // Service is the server API for  service.
 type Service struct {
-	oas.UnimplementedServer
 	Options
 	DB    *ent.Client
 	Cache cache.Cache
+	Cnf   *conf.AppConfiguration
 
 	LogoutHandler func(*gin.Context)
 
@@ -83,12 +83,15 @@ type Service struct {
 }
 
 func (s *Service) Apply(cnf *conf.AppConfiguration) error {
-	s.Options.CaptchaCollectNum = 1000
-	s.Options.CaptchaExpire = time.Minute * 2
-	s.Options.CaptchaLength = 6
-	s.Options.CaptchaTimes = 3
-	s.Options.LoginFailTimes = 10
-	s.Options.LoginFailLockTime = time.Hour * 24
+	s.Options = Options{
+		CaptchaCollectNum: 1000,
+		CaptchaExpire:     time.Minute * 2,
+		CaptchaLength:     6,
+		CaptchaTimes:      3,
+		LoginFailTimes:    10,
+		LoginFailLockTime: time.Hour * 24,
+	}
+	s.Cnf = cnf
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
 	if err != nil {
 		return err
@@ -172,7 +175,7 @@ func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.Login
 
 func (s *Service) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
 	token := req.Body.StateToken
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +211,7 @@ func (s *Service) Logout(ctx *gin.Context) error {
 
 func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
 	token := req.Body.StateToken
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
@@ -219,7 +222,8 @@ func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest)
 		return nil, err
 	}
 
-	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
+	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid),
+		userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
 	npwd := resource.SaltSecret(req.Body.NewPassword, pwd.Salt)
 
 	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
@@ -248,9 +252,9 @@ func (s *Service) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginP
 	sid := uuid.New().String()
 	res = &oas.LoginResponse{
 		CallbackUrl: CallBackUrlResetPassword,
-		StateToken:  createStateToken(sid),
+		StateToken:  createStateToken(sid, s.Options),
 	}
-	err = s.Cache.Set(ctx, resetCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
+	err = s.Cache.Set(ctx, resetCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
 	return
 }
 
@@ -264,9 +268,9 @@ func (s *Service) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (r
 	sid := uuid.New().String()
 	res = &oas.LoginResponse{
 		CallbackUrl: CallBackUrlMFA,
-		StateToken:  createStateToken(sid),
+		StateToken:  createStateToken(sid, s.Options),
 	}
-	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.ID, Cnf.Duration("auth.stateTokenTTL"))
+	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.ID, cache.WithTTL(s.Cnf.Duration("auth.stateTokenTTL")))
 	return
 }
 
@@ -281,19 +285,17 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
 	usr := s.DB.User.GetX(ctx, uid)
 
-	tokenTTL := Cnf.Duration("auth.jwt.tokenTTL")
-	tid, tstr, err := createToken(strconv.Itoa(uid), tokenTTL)
+	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshTokenTTL := Cnf.Duration("auth.jwt.refreshTokenTTL")
-	_, trstr, err := createToken(strconv.Itoa(uid), refreshTokenTTL)
+	_, trstr, err := createToken(strconv.Itoa(uid), s.Options, true)
 	if err != nil {
 		return nil, err
 	}
 
-	err = s.Cache.Set(ctx, tid, uid, tokenTTL)
+	err = s.Cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +312,7 @@ func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, err
 	}
 	return &oas.LoginResponse{
 		AccessToken:  tstr,
-		ExpiresIn:    int(tokenTTL.Seconds()),
+		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
 		User: &oas.User{
 			ID:          usr.ID,
@@ -336,36 +338,40 @@ func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPa
 	return pwd, nil
 }
 
-func createToken(subject string, ttl time.Duration) (tokenID, tokenStr string, err error) {
+func createToken(subject string, opts Options, refresh bool) (tokenID, tokenStr string, err error) {
 	tokenID = tokenCachePrefix + subject + ":" + uuid.New().String()
+	ttl := opts.JWT.TokenTTL
+	if refresh {
+		ttl = opts.JWT.RefreshTokenTTL
+	}
 	claims := jwt.RegisteredClaims{
 		Subject:   subject,
 		ID:        tokenID,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
 	}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod(Cnf.String("auth.jwt.signingMethod")), claims)
-	tokenStr, err = token.SignedString([]byte(Cnf.String("auth.jwt.signingKey")))
+	token := jwt.NewWithClaims(jwt.GetSigningMethod(opts.JWT.SigningMethod), claims)
+	tokenStr, err = token.SignedString([]byte(opts.JWT.SigningKey))
 	return
 }
 
-func createStateToken(id string) string {
+func createStateToken(id string, opts Options) string {
 	claims := jwt.MapClaims{
-		"exp": time.Now().Add(Cnf.Duration("auth.stateTokenTTL")).Unix(),
+		"exp": time.Now().Add(opts.StateTokenTTL).Unix(),
 		"iat": time.Now().Unix(),
 		"jti": id,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(Cnf.String("auth.stateTokenSecret")))
+	tokenString, err := token.SignedString([]byte(opts.StateTokenSecret))
 	if err != nil {
 		panic(err)
 	}
 	return tokenString
 }
 
-func parseStateToken(token string) (id string, err error) {
+func parseStateToken(token string, opts Options) (id string, err error) {
 	tk, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte(Cnf.String("auth.stateTokenSecret")), nil
+		return []byte(opts.StateTokenSecret), nil
 	})
 	if err != nil {
 		return
@@ -428,11 +434,12 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 		return nil, err
 	}
 	sid := uuid.New().String()
-	stateToken := createStateToken(sid)
-	val := make(map[string]string)
-	val["uid"] = strconv.Itoa(uid)
-	val["secret"] = resource.GeneralMFASecret()
-	err = s.Cache.Set(ctx, mfaCachePrefix+sid, val, Cnf.Duration("auth.stateTokenTTL"))
+	stateToken := createStateToken(sid, s.Options)
+	val := map[string]string{
+		"uid":    strconv.Itoa(uid),
+		"secret": resource.GeneralMFASecret(),
+	}
+	err = s.Cache.Set(ctx, mfaCachePrefix+sid, val, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
@@ -462,7 +469,7 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 		PrincipalName: pn,
 		Secret:        val["secret"],
 		StateToken:    stateToken,
-		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
 }
 
@@ -471,7 +478,7 @@ func (s *Service) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	id, err := parseStateToken(req.Body.StateToken)
+	id, err := parseStateToken(req.Body.StateToken, s.Options)
 	if err != nil {
 		return false, err
 	}
@@ -524,7 +531,7 @@ func (s *Service) logFailHandler(ctx *gin.Context, uid string, clear bool) (int,
 		return 0, err
 	}
 	count++
-	err = s.Cache.Set(ctx, key, count, s.LoginFailLockTime) // 以账户锁定时间作为过期时间
+	err = s.Cache.Set(ctx, key, count, cache.WithTTL(s.LoginFailLockTime)) // 以账户锁定时间作为过期时间
 	return count, err
 }
 
@@ -548,14 +555,14 @@ func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginReques
 	}
 	// 生成临时token
 	sid := uuid.New().String()
-	stateToken := createStateToken(sid)
-	err = s.Cache.Set(ctx, forgetPwdBeginCachePrefix+sid, u.ID, Cnf.Duration("auth.stateTokenTTL"))
+	stateToken := createStateToken(sid, s.Options)
+	err = s.Cache.Set(ctx, forgetPwdBeginCachePrefix+sid, u.ID, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
 	return &oas.ForgetPwdBeginResponse{
 		StateToken:    stateToken,
-		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 		Verifies:      verifies,
 	}, nil
 }
@@ -563,7 +570,7 @@ func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginReques
 // ForgetPwdReset 忘记密码设置新密码
 func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRequest) (bool, error) {
 	token := req.Body.StateToken
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return false, err
 	}
@@ -596,7 +603,7 @@ func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetReques
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码
 func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
 	token := req.Body
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return "", err
 	}
@@ -615,7 +622,7 @@ func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEma
 // ForgetPwdVerifyEmail 忘记密码 邮件验证身份
 func (s *Service) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerifyEmailRequest) (*oas.ForgetPwdBeginResponse, error) {
 	token := req.Body.StateToken
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
@@ -629,22 +636,22 @@ func (s *Service) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerif
 		return nil, status.ErrCaptchaNotMatch
 	}
 	sid := uuid.New().String()
-	stateToken := createStateToken(sid)
-	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, uid, Cnf.Duration("auth.stateTokenTTL"))
+	stateToken := createStateToken(sid, s.Options)
+	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, uid, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
 	s.Cache.Del(ctx, cacheKey)
 	return &oas.ForgetPwdBeginResponse{
 		StateToken:    stateToken,
-		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
 }
 
 // ForgetPwdVerifyMfa 忘记密码 mfa验证身份
 func (s *Service) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyMfaRequest) (*oas.ForgetPwdBeginResponse, error) {
 	token := req.Body.StateToken
-	id, err := parseStateToken(token)
+	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
@@ -667,14 +674,14 @@ func (s *Service) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyM
 	}
 	// 生成临时token
 	sid := uuid.New().String()
-	stateToken := createStateToken(sid)
-	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, profile.UserID, Cnf.Duration("auth.stateTokenTTL"))
+	stateToken := createStateToken(sid, s.Options)
+	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
 	s.Cache.Del(ctx, cacheKey)
 	return &oas.ForgetPwdBeginResponse{
 		StateToken:    stateToken,
-		StateTokenTTL: Cnf.Duration("auth.stateTokenTTL").Seconds(),
+		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
 }

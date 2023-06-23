@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/woocoos/entco/schemax"
@@ -12,7 +13,7 @@ import (
 
 // FileSource holds the schema definition for the FileSource entity.
 type FileSource struct {
-	//ent.Schema
+	ent.Schema
 }
 
 func (FileSource) Annotations() []schema.Annotation {
@@ -36,9 +37,8 @@ func (FileSource) Mixin() []ent.Mixin {
 // Fields of the FileSource.
 func (FileSource) Fields() []ent.Field {
 	return []ent.Field{
-		field.Enum("source").NamedValues(
-			"local", "local",
-			"alioss", "alioss",
+		field.Enum("kind").Values(
+			"local", "alioss",
 		).Comment("文件来源"),
 		field.String("endpoint").Optional().Comment("对外服务的访问域名"),
 		field.String("region").MaxLen(100).Optional().Comment("地域，数据存储的物理位置。本地存储为：localhost"),
@@ -49,13 +49,13 @@ func (FileSource) Fields() []ent.Field {
 // Edges of the FileSource.
 func (FileSource) Edges() []ent.Edge {
 	return []ent.Edge{
-		//edge.From("files", File.Type).Ref("source").Comment("来源文件").Annotations(entgql.RelayConnection()),
+		edge.From("files", File.Type).Ref("source").Comment("所有文件").Annotations(entgql.RelayConnection()),
 	}
 }
 
 // Indexes of the FileSource.
 func (FileSource) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("source", "region").Unique(),
+		index.Fields("kind", "endpoint", "region", "bucket").Unique(),
 	}
 }

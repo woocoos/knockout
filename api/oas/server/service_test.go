@@ -41,6 +41,7 @@ import (
 
 var (
 	adminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2N2E4NzQ4MmU5MWY0ZjJlOTIyMGY1MTM3NjE4NWI3ZSIsInN1YiI6IjEiLCJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1MTYyMzkwMjJ9.MzfOsaGAtHj0IIoVDgpfUD1GMtgLTNbY7D_CkEoR9CQ"
+	appCnf     *conf.AppConfiguration
 )
 
 type ServiceSuite struct {
@@ -59,7 +60,7 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 
 	cnf := conf.NewFromBytes(bs, conf.WithBaseDir(test.BaseDir())).AsGlobal()
 	app := woocoo.New(woocoo.WithAppConfiguration(cnf))
-	Cnf = app.AppConfiguration()
+	appCnf = app.AppConfiguration()
 
 	s.server = web.New(web.WithConfiguration(cnf.Sub("web")))
 
@@ -71,7 +72,7 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	s.Service.DB, err = ent.Open(app.AppConfiguration().String("store.test.driverName"), app.AppConfiguration().String("store.test.dsn"), ent.Debug())
 
 	s.redisServer = miniredis.RunT(t)
-	Cnf.Parser().Set("cache.redis.addr", s.redisServer.Addr())
+	appCnf.Parser().Set("cache.redis.addr", s.redisServer.Addr())
 	s.Service.Cache = redisc.NewBuiltIn()
 
 	RegisterHandlersManual(s.server.Router().Engine, s.Service)
@@ -184,7 +185,7 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 func (ts *loginFlowSuite) Test_VerifyFactor() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
-	err := ts.Service.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1, 0)
+	err := ts.Service.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1)
 	ts.Require().NoError(err)
 
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
@@ -215,7 +216,7 @@ func GeneratePassCode(base32string string) string {
 }
 
 func (ts *loginFlowSuite) Test_Logout() {
-	err := ts.Service.Cache.Set(context.Background(), "67a87482e91f4f2e9220f51376185b7e", "1", 0)
+	err := ts.Service.Cache.Set(context.Background(), "67a87482e91f4f2e9220f51376185b7e", "1")
 	ts.Require().NoError(err)
 
 	req := httptest.NewRequest("POST", "/logout", nil)
@@ -266,7 +267,7 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 
 func (ts *loginFlowSuite) Test_ResetPassword() {
 	ts.Require().NoError(ts.Service.Cache.Set(context.Background(),
-		resetCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1, 0))
+		resetCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1))
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
 	}))

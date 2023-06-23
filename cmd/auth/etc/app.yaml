@@ -28,7 +28,7 @@ auth:
     signingMethod: "HS256"
     signingKey: "secret"
     tokenTTL: 1h
-    refreshTokenTTL: 7d
+    refreshTokenTTL: 168h
 
 web:
   server:
@@ -77,8 +77,8 @@ store:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
   redis: &redis
-    type: standalone
-    addr: 127.0.0.1:6379
+    addrs:
+      - 127.0.0.1:6379
     db: 1
 
 

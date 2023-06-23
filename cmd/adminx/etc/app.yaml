@@ -36,12 +36,10 @@ authz:
 
 web:
   server:
-    addr: 127.0.0.1:8080
+    addr: :8080
   engine:
     contextWithFallback: true
     routerGroups:
-      - default:
-          middlewares:
       - graphql:
           basePath: "/graphql"
           # 用于权限判断
@@ -59,10 +57,13 @@ web:
                   - "/graphql" #doc page
             - tenant:
                 lookup: "header:X-Tenant-ID,query:X-Tenant-Id" ## browser may be transfer query ID to Id
+                exclude:
+                  - "/graphql" #doc page
             - graphql:
                 group: "/graphql"
                 withAuthorization: false
                 appCode: "resource"
+            - gzip:
 
 store:
   portal:
