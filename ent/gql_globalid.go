@@ -18,6 +18,8 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -62,6 +64,18 @@ func (ar *AppRes) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given AppRole node.
 func (ar *AppRole) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("%s:%d", approle.Table, ar.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given File node.
+func (f *File) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", file.Table, f.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given FileSource node.
+func (fs *FileSource) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", filesource.Table, fs.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -147,6 +161,10 @@ func GlobalID(tp, id string) (string, error) {
 	case appres.Table:
 		break
 	case approle.Table:
+		break
+	case file.Table:
+		break
+	case filesource.Table:
 		break
 	case org.Table:
 		break

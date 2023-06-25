@@ -200,6 +200,35 @@ func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error
 	return result, err
 }
 
+func (f *File) Source(ctx context.Context) (*FileSource, error) {
+	result, err := f.Edges.SourceOrErr()
+	if IsNotLoaded(err) {
+		result, err = f.QuerySource().Only(ctx)
+	}
+	return result, err
+}
+
+func (fs *FileSource) Files(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *FileOrder, where *FileWhereInput,
+) (*FileConnection, error) {
+	opts := []FilePaginateOption{
+		WithFileOrder(orderBy),
+		WithFileFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := fs.Edges.totalCount[0][alias]
+	if nodes, err := fs.NamedFiles(alias); err == nil || hasTotalCount {
+		pager, err := newFilePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &FileConnection{Edges: []*FileEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return fs.QueryFiles().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (o *Org) Parent(ctx context.Context) (*Org, error) {
 	result, err := o.Edges.ParentOrErr()
 	if IsNotLoaded(err) {

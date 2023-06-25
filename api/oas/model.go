@@ -2,6 +2,8 @@
 
 package oas
 
+import "time"
+
 type Captcha struct {
 	CaptchaId    string `json:"captchaId,omitempty"`
 	CaptchaImage string `json:"captchaImage,omitempty"`
@@ -20,6 +22,13 @@ type Error struct {
 
 type ErrorResponse struct {
 	Errors []*Error `json:"errors,omitempty"`
+}
+
+type FileInfo struct {
+	CreatedAt time.Time `time_format:"2006-01-02T15:04:05Z07:00" json:"createdAt,omitempty"`
+	ID        string    `json:"id,omitempty"`
+	Name      string    `json:"name,omitempty"`
+	Size      int       `json:"size,omitempty"`
 }
 
 type ForgetPwdBeginResponse struct {

@@ -70,8 +70,8 @@ type Options struct {
 	} `json:"jwt"`
 }
 
-// Service is the server API for  service.
-type Service struct {
+// AuthService is the server API for  service.
+type AuthService struct {
 	Options
 	DB    *ent.Client
 	Cache cache.Cache
@@ -82,7 +82,7 @@ type Service struct {
 	captchaStore captcha.Store
 }
 
-func (s *Service) Apply(cnf *conf.AppConfiguration) error {
+func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 	s.Options = Options{
 		CaptchaCollectNum: 1000,
 		CaptchaExpire:     time.Minute * 2,
@@ -102,7 +102,7 @@ func (s *Service) Apply(cnf *conf.AppConfiguration) error {
 	return nil
 }
 
-func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (*oas.Captcha, error) {
+func (s *AuthService) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (*oas.Captcha, error) {
 	captchaId := captcha.NewLen(s.CaptchaLength)
 	if req.Body.W == 0 {
 		req.Body.W = captchaWidth
@@ -122,7 +122,7 @@ func (s *Service) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (*oas.Captc
 }
 
 // Login login
-func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
+func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
 	failCount := 0
 	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
 	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
@@ -173,7 +173,7 @@ func (s *Service) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.Login
 	return s.loginToken(ctx, pwd.UserID)
 }
 
-func (s *Service) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
+func (s *AuthService) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -204,12 +204,12 @@ func (s *Service) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (
 	return s.loginToken(ctx, profile.UserID)
 }
 
-func (s *Service) Logout(ctx *gin.Context) error {
+func (s *AuthService) Logout(ctx *gin.Context) error {
 	s.LogoutHandler(ctx)
 	return nil
 }
 
-func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
+func (s *AuthService) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -248,7 +248,7 @@ func (s *Service) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest)
 	return
 }
 
-func (s *Service) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *AuthService) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
 	sid := uuid.New().String()
 	res = &oas.LoginResponse{
 		CallbackUrl: CallBackUrlResetPassword,
@@ -258,7 +258,7 @@ func (s *Service) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginP
 	return
 }
 
-func (s *Service) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *AuthService) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
 	if !profile.MfaEnabled {
 		return nil, nil
 	}
@@ -282,7 +282,7 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 		SetLastLoginAt(time.Now()).Exec(ctx)
 }
 
-func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
+func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
 	usr := s.DB.User.GetX(ctx, uid)
 
 	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
@@ -322,7 +322,7 @@ func (s *Service) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, err
 	}, nil
 }
 
-func (s *Service) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
+func (s *AuthService) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
 	pwd, err := s.DB.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
@@ -385,7 +385,7 @@ func parseStateToken(token string, opts Options) (id string, err error) {
 }
 
 // MfaQRCode generate a QR code for MFA, the code is a png image
-func (s *Service) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte, error) {
+func (s *AuthService) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte, error) {
 	uorg, err := s.GetUserRootOrg(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -424,7 +424,7 @@ func (s *Service) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte
 	return buf.Bytes(), err
 }
 
-func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
+func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -473,7 +473,7 @@ func (s *Service) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	}, nil
 }
 
-func (s *Service) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, error) {
+func (s *AuthService) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return false, err
@@ -497,7 +497,7 @@ func (s *Service) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, erro
 	return err == nil, err
 }
 
-func (s *Service) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, error) {
+func (s *AuthService) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return false, err
@@ -510,7 +510,7 @@ func (s *Service) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, 
 	return err == nil, err
 }
 
-func (s *Service) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
+func (s *AuthService) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
 	uorg, err = s.DB.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
 		First(ctx)
@@ -520,7 +520,7 @@ func (s *Service) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err 
 	return uorg, nil
 }
 
-func (s *Service) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
+func (s *AuthService) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
 	key := loginFailCachePrefix + uid
 	if clear {
 		return 0, s.Cache.Del(ctx, key)
@@ -536,7 +536,7 @@ func (s *Service) logFailHandler(ctx *gin.Context, uid string, clear bool) (int,
 }
 
 // ForgetPwdBegin 忘记密码验证用户账户，开始修改密码流程
-func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginRequest) (*oas.ForgetPwdBeginResponse, error) {
+func (s *AuthService) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginRequest) (*oas.ForgetPwdBeginResponse, error) {
 	// 验证验证码
 	if !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
 		return nil, status.ErrCaptchaNotMatch
@@ -568,7 +568,7 @@ func (s *Service) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginReques
 }
 
 // ForgetPwdReset 忘记密码设置新密码
-func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRequest) (bool, error) {
+func (s *AuthService) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRequest) (bool, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -601,7 +601,7 @@ func (s *Service) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetReques
 }
 
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码
-func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
+func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
 	token := req.Body
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -620,7 +620,7 @@ func (s *Service) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEma
 }
 
 // ForgetPwdVerifyEmail 忘记密码 邮件验证身份
-func (s *Service) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerifyEmailRequest) (*oas.ForgetPwdBeginResponse, error) {
+func (s *AuthService) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerifyEmailRequest) (*oas.ForgetPwdBeginResponse, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -649,7 +649,7 @@ func (s *Service) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerif
 }
 
 // ForgetPwdVerifyMfa 忘记密码 mfa验证身份
-func (s *Service) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyMfaRequest) (*oas.ForgetPwdBeginResponse, error) {
+func (s *AuthService) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyMfaRequest) (*oas.ForgetPwdBeginResponse, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {

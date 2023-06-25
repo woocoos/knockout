@@ -10,6 +10,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -661,6 +662,98 @@ func (c *AppRoleUpdate) SetInput(i UpdateAppRoleInput) *AppRoleUpdate {
 
 // SetInput applies the change-set in the UpdateAppRoleInput on the AppRoleUpdateOne builder.
 func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateFileSourceInput represents a mutation input for creating filesources.
+type CreateFileSourceInput struct {
+	Kind     filesource.Kind
+	Endpoint *string
+	Region   *string
+	Bucket   *string
+	FileIDs  []int
+}
+
+// Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
+func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
+	m.SetKind(i.Kind)
+	if v := i.Endpoint; v != nil {
+		m.SetEndpoint(*v)
+	}
+	if v := i.Region; v != nil {
+		m.SetRegion(*v)
+	}
+	if v := i.Bucket; v != nil {
+		m.SetBucket(*v)
+	}
+	if v := i.FileIDs; len(v) > 0 {
+		m.AddFileIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateFileSourceInput on the FileSourceCreate builder.
+func (c *FileSourceCreate) SetInput(i CreateFileSourceInput) *FileSourceCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateFileSourceInput represents a mutation input for updating filesources.
+type UpdateFileSourceInput struct {
+	Kind          *filesource.Kind
+	ClearEndpoint bool
+	Endpoint      *string
+	ClearRegion   bool
+	Region        *string
+	ClearBucket   bool
+	Bucket        *string
+	ClearFiles    bool
+	AddFileIDs    []int
+	RemoveFileIDs []int
+}
+
+// Mutate applies the UpdateFileSourceInput on the FileSourceMutation builder.
+func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
+	if i.ClearEndpoint {
+		m.ClearEndpoint()
+	}
+	if v := i.Endpoint; v != nil {
+		m.SetEndpoint(*v)
+	}
+	if i.ClearRegion {
+		m.ClearRegion()
+	}
+	if v := i.Region; v != nil {
+		m.SetRegion(*v)
+	}
+	if i.ClearBucket {
+		m.ClearBucket()
+	}
+	if v := i.Bucket; v != nil {
+		m.SetBucket(*v)
+	}
+	if i.ClearFiles {
+		m.ClearFiles()
+	}
+	if v := i.AddFileIDs; len(v) > 0 {
+		m.AddFileIDs(v...)
+	}
+	if v := i.RemoveFileIDs; len(v) > 0 {
+		m.RemoveFileIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateFileSourceInput on the FileSourceUpdate builder.
+func (c *FileSourceUpdate) SetInput(i UpdateFileSourceInput) *FileSourceUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateFileSourceInput on the FileSourceUpdateOne builder.
+func (c *FileSourceUpdateOne) SetInput(i UpdateFileSourceInput) *FileSourceUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

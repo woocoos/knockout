@@ -21,6 +21,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -54,6 +56,10 @@ type Client struct {
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
+	// File is the client for interacting with the File builders.
+	File *FileClient
+	// FileSource is the client for interacting with the FileSource builders.
+	FileSource *FileSourceClient
 	// Org is the client for interacting with the Org builders.
 	Org *OrgClient
 	// OrgApp is the client for interacting with the OrgApp builders.
@@ -100,6 +106,8 @@ func (c *Client) init() {
 	c.AppRes = NewAppResClient(c.config)
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
+	c.File = NewFileClient(c.config)
+	c.FileSource = NewFileSourceClient(c.config)
 	c.Org = NewOrgClient(c.config)
 	c.OrgApp = NewOrgAppClient(c.config)
 	c.OrgPolicy = NewOrgPolicyClient(c.config)
@@ -201,6 +209,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppRes:           NewAppResClient(cfg),
 		AppRole:          NewAppRoleClient(cfg),
 		AppRolePolicy:    NewAppRolePolicyClient(cfg),
+		File:             NewFileClient(cfg),
+		FileSource:       NewFileSourceClient(cfg),
 		Org:              NewOrgClient(cfg),
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
@@ -239,6 +249,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppRes:           NewAppResClient(cfg),
 		AppRole:          NewAppRoleClient(cfg),
 		AppRolePolicy:    NewAppRolePolicyClient(cfg),
+		File:             NewFileClient(cfg),
+		FileSource:       NewFileSourceClient(cfg),
 		Org:              NewOrgClient(cfg),
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
@@ -281,8 +293,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
-		c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.AppRolePolicy, c.File, c.FileSource, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
+		c.OrgRoleUser, c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
 		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
@@ -294,8 +306,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
-		c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.AppRolePolicy, c.File, c.FileSource, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
+		c.OrgRoleUser, c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
 		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
@@ -319,6 +331,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppRole.mutate(ctx, m)
 	case *AppRolePolicyMutation:
 		return c.AppRolePolicy.mutate(ctx, m)
+	case *FileMutation:
+		return c.File.mutate(ctx, m)
+	case *FileSourceMutation:
+		return c.FileSource.mutate(ctx, m)
 	case *OrgMutation:
 		return c.Org.mutate(ctx, m)
 	case *OrgAppMutation:
@@ -1498,6 +1514,276 @@ func (c *AppRolePolicyClient) mutate(ctx context.Context, m *AppRolePolicyMutati
 		return (&AppRolePolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppRolePolicy mutation op: %q", m.Op())
+	}
+}
+
+// FileClient is a client for the File schema.
+type FileClient struct {
+	config
+}
+
+// NewFileClient returns a client for the File from the given config.
+func NewFileClient(c config) *FileClient {
+	return &FileClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `file.Hooks(f(g(h())))`.
+func (c *FileClient) Use(hooks ...Hook) {
+	c.hooks.File = append(c.hooks.File, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `file.Intercept(f(g(h())))`.
+func (c *FileClient) Intercept(interceptors ...Interceptor) {
+	c.inters.File = append(c.inters.File, interceptors...)
+}
+
+// Create returns a builder for creating a File entity.
+func (c *FileClient) Create() *FileCreate {
+	mutation := newFileMutation(c.config, OpCreate)
+	return &FileCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of File entities.
+func (c *FileClient) CreateBulk(builders ...*FileCreate) *FileCreateBulk {
+	return &FileCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for File.
+func (c *FileClient) Update() *FileUpdate {
+	mutation := newFileMutation(c.config, OpUpdate)
+	return &FileUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FileClient) UpdateOne(f *File) *FileUpdateOne {
+	mutation := newFileMutation(c.config, OpUpdateOne, withFile(f))
+	return &FileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FileClient) UpdateOneID(id int) *FileUpdateOne {
+	mutation := newFileMutation(c.config, OpUpdateOne, withFileID(id))
+	return &FileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for File.
+func (c *FileClient) Delete() *FileDelete {
+	mutation := newFileMutation(c.config, OpDelete)
+	return &FileDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FileClient) DeleteOne(f *File) *FileDeleteOne {
+	return c.DeleteOneID(f.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FileClient) DeleteOneID(id int) *FileDeleteOne {
+	builder := c.Delete().Where(file.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FileDeleteOne{builder}
+}
+
+// Query returns a query builder for File.
+func (c *FileClient) Query() *FileQuery {
+	return &FileQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFile},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a File entity by its id.
+func (c *FileClient) Get(ctx context.Context, id int) (*File, error) {
+	return c.Query().Where(file.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FileClient) GetX(ctx context.Context, id int) *File {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QuerySource queries the source edge of a File.
+func (c *FileClient) QuerySource(f *File) *FileSourceQuery {
+	query := (&FileSourceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(file.Table, file.FieldID, id),
+			sqlgraph.To(filesource.Table, filesource.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, file.SourceTable, file.SourceColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FileClient) Hooks() []Hook {
+	hooks := c.hooks.File
+	return append(hooks[:len(hooks):len(hooks)], file.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *FileClient) Interceptors() []Interceptor {
+	return c.inters.File
+}
+
+func (c *FileClient) mutate(ctx context.Context, m *FileMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FileCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FileUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FileDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown File mutation op: %q", m.Op())
+	}
+}
+
+// FileSourceClient is a client for the FileSource schema.
+type FileSourceClient struct {
+	config
+}
+
+// NewFileSourceClient returns a client for the FileSource from the given config.
+func NewFileSourceClient(c config) *FileSourceClient {
+	return &FileSourceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `filesource.Hooks(f(g(h())))`.
+func (c *FileSourceClient) Use(hooks ...Hook) {
+	c.hooks.FileSource = append(c.hooks.FileSource, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `filesource.Intercept(f(g(h())))`.
+func (c *FileSourceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FileSource = append(c.inters.FileSource, interceptors...)
+}
+
+// Create returns a builder for creating a FileSource entity.
+func (c *FileSourceClient) Create() *FileSourceCreate {
+	mutation := newFileSourceMutation(c.config, OpCreate)
+	return &FileSourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FileSource entities.
+func (c *FileSourceClient) CreateBulk(builders ...*FileSourceCreate) *FileSourceCreateBulk {
+	return &FileSourceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FileSource.
+func (c *FileSourceClient) Update() *FileSourceUpdate {
+	mutation := newFileSourceMutation(c.config, OpUpdate)
+	return &FileSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FileSourceClient) UpdateOne(fs *FileSource) *FileSourceUpdateOne {
+	mutation := newFileSourceMutation(c.config, OpUpdateOne, withFileSource(fs))
+	return &FileSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FileSourceClient) UpdateOneID(id int) *FileSourceUpdateOne {
+	mutation := newFileSourceMutation(c.config, OpUpdateOne, withFileSourceID(id))
+	return &FileSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FileSource.
+func (c *FileSourceClient) Delete() *FileSourceDelete {
+	mutation := newFileSourceMutation(c.config, OpDelete)
+	return &FileSourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FileSourceClient) DeleteOne(fs *FileSource) *FileSourceDeleteOne {
+	return c.DeleteOneID(fs.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FileSourceClient) DeleteOneID(id int) *FileSourceDeleteOne {
+	builder := c.Delete().Where(filesource.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FileSourceDeleteOne{builder}
+}
+
+// Query returns a query builder for FileSource.
+func (c *FileSourceClient) Query() *FileSourceQuery {
+	return &FileSourceQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFileSource},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FileSource entity by its id.
+func (c *FileSourceClient) Get(ctx context.Context, id int) (*FileSource, error) {
+	return c.Query().Where(filesource.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FileSourceClient) GetX(ctx context.Context, id int) *FileSource {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryFiles queries the files edge of a FileSource.
+func (c *FileSourceClient) QueryFiles(fs *FileSource) *FileQuery {
+	query := (&FileClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fs.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(filesource.Table, filesource.FieldID, id),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, filesource.FilesTable, filesource.FilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(fs.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FileSourceClient) Hooks() []Hook {
+	hooks := c.hooks.FileSource
+	return append(hooks[:len(hooks):len(hooks)], filesource.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *FileSourceClient) Interceptors() []Interceptor {
+	return c.inters.FileSource
+}
+
+func (c *FileSourceClient) mutate(ctx context.Context, m *FileSourceMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FileSourceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FileSourceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FileSourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FileSourceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FileSource mutation op: %q", m.Op())
 	}
 }
 
@@ -3526,13 +3812,14 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
-		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
+		FileSource, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission,
+		User, UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, Org, OrgApp,
-		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
+		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
+		FileSource, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission,
+		User, UserDevice, UserIdentity, UserLoginProfile,
+		UserPassword []ent.Interceptor
 	}
 )

@@ -1,18 +1,13 @@
-package auth
+package files
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
-	"github.com/tsingsun/woocoo/pkg/cache"
-	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/log"
-	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/knockout/api/oas/server"
-	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
 )
 
@@ -23,8 +18,7 @@ var (
 type Server struct {
 	Cnf        *conf.AppConfiguration
 	RouteGroup *gin.RouterGroup
-	GrpcSrv    *grpcx.Server
-	service    *server.AuthService
+	Service    *server.FileService
 }
 
 func NewServer(cnf *conf.AppConfiguration) *Server {
@@ -38,30 +32,10 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	} else {
 		portalClient = ent.NewClient(ent.Driver(pd))
 	}
-
-	us := entpb.NewUserService(portalClient)
-	srv := grpcx.New(grpcx.WithConfiguration(cnf.Sub("grpc")), grpcx.WithGracefulStop())
-	entpb.RegisterUserServiceServer(srv.Engine(), us)
-	s.GrpcSrv = srv
-
-	if err := redisc.New(s.Cnf.Sub("cache.redis")).Register(); err != nil {
-		log.Panic(err)
+	s.Service = &server.FileService{
+		DB: portalClient,
 	}
-	s.service = &server.AuthService{
-		DB:    portalClient,
-		Cache: cache.GetCache("redis"),
-	}
-
-	if err := s.service.Apply(cnf); err != nil {
-		log.Fatal(err)
-	}
-
 	return s
-}
-
-func (s *Server) RegisterWebEngine(rg *gin.RouterGroup) {
-	server.RegisterAuthHandlers(rg, s.service)
-	server.RegisterHandlersManual(rg, s.service)
 }
 
 func (s *Server) BuildWebServer() *web.Server {
@@ -70,4 +44,8 @@ func (s *Server) BuildWebServer() *web.Server {
 		web.RegisterMiddleware(otelweb.NewMiddleware()),
 	)
 	return webSrv
+}
+
+func (s *Server) RegisterWebEngine(rg *gin.RouterGroup) {
+	server.RegisterFileHandlers(rg, s.Service)
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/cmd/internal/auth"
+	"github.com/woocoos/knockout/cmd/internal/files"
 	"github.com/woocoos/knockout/cmd/internal/otel"
 	"github.com/woocoos/knockout/cmd/internal/rms"
 )
@@ -14,6 +15,7 @@ import (
 var (
 	rmcConfig  = flag.String("r", "../adminx", "rms etc dir")
 	authConfig = flag.String("a", "../auth", "auth etc dir")
+	fileConfig = flag.String("f", "../files", "files etc dir")
 )
 
 func main() {
@@ -29,11 +31,24 @@ func main() {
 		log.Panic(err)
 	}
 	rmsSvr := rms.NewServer(rmscnf)
-	app.RegisterServer(rmsSvr)
+	rmsEngine := rmsSvr.BuildWebEngine()
 
-	authcnf := conf.New(conf.WithBaseDir(*authConfig), conf.WithGlobal(false)).Load()
-	authSrv := auth.NewServer(&conf.AppConfiguration{Configuration: authcnf})
-	app.RegisterServer(authSrv.WebSrv, authSrv.GrpcSrv)
+	authcnf := &conf.AppConfiguration{
+		Configuration: conf.New(conf.WithBaseDir(*authConfig), conf.WithGlobal(false)).Load(),
+	}
+	authSrv := auth.NewServer(authcnf)
+	authEngine := authSrv.BuildWebServer()
+	authSrv.RegisterWebEngine(authEngine.Router().FindGroup("/").Group)
+
+	filecnf := &conf.AppConfiguration{
+		Configuration: conf.New(conf.WithBaseDir(*fileConfig), conf.WithGlobal(false)).Load(),
+	}
+	fileSrv := files.NewServer(filecnf)
+	fileEngine := fileSrv.BuildWebServer()
+	fileSrv.RegisterWebEngine(fileEngine.Router().FindGroup("/").Group)
+
+	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine)
+
 	if err := app.Run(); err != nil {
 		log.Panic(err)
 	}

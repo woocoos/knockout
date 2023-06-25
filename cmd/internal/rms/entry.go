@@ -53,24 +53,21 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 
 	buildCashbin(s.Cnf, casbinClient)
 
-	s.webSrv = buildWebServer(s.Cnf)
-
 	return s
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	return s.webSrv.Start(ctx)
+	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	s.webSrv.Stop(ctx)
 	portalClient.Close()
 	casbinClient.Close()
 	return nil
 }
 
-func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
-	webSrv := web.New(web.WithConfiguration(cnf.Sub("web")),
+func (s *Server) BuildWebEngine() *web.Server {
+	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
 		web.RegisterMiddleware(gql.New()),
 		web.RegisterMiddleware(otelweb.NewMiddleware()),
@@ -85,7 +82,7 @@ func buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		},
 	}))
 	// gqlserver的中间件处理
-	if cnf.String("entcache.level") == "context" {
+	if s.Cnf.String("entcache.level") == "context" {
 		gqlSrv.AroundResponses(gqlx.ContextCache())
 	}
 	gqlSrv.AroundResponses(gqlx.SimplePagination())

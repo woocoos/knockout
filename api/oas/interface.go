@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Server is the server API for  service.
-type Server interface {
+// AuthServer is the server API for Auth service.
+type AuthServer interface {
 	// (POST /mfa/bind)
 	BindMfa(*gin.Context, *BindMfaRequest) (bool, error)
 	// (POST /mfa/bind-prepare)
@@ -38,70 +38,105 @@ type Server interface {
 	VerifyFactor(*gin.Context, *VerifyFactorRequest) (*LoginResponse, error)
 }
 
-type UnimplementedServer struct {
+// FileServer is the server API for File service.
+type FileServer interface {
+	// (DELETE /files/{fileId})
+	DeleteFile(*gin.Context, *DeleteFileRequest) error
+	// (GET /files/{fileId})
+	GetFile(*gin.Context, *GetFileRequest) (*FileInfo, error)
+	// (GET /files/{fileId}/raw)
+	GetFileRaw(*gin.Context, *GetFileRawRequest) ([]byte, error)
+	// (POST /files)
+	UploadFile(*gin.Context, *UploadFileRequest) (string, error)
 }
 
-func (UnimplementedServer) BindMfa(c *gin.Context, req *BindMfaRequest) (_ bool, err error) {
+type UnimplementedAuthServer struct {
+}
+
+func (UnimplementedAuthServer) BindMfa(c *gin.Context, req *BindMfaRequest) (_ bool, err error) {
 	err = fmt.Errorf("method BindMfa not implemented")
 	return
 }
 
-func (UnimplementedServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error) {
+func (UnimplementedAuthServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error) {
 	err = fmt.Errorf("method BindMfaPrepare not implemented")
 	return
 }
 
-func (UnimplementedServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *Captcha, err error) {
+func (UnimplementedAuthServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *Captcha, err error) {
 	err = fmt.Errorf("method Captcha not implemented")
 	return
 }
 
-func (UnimplementedServer) ForgetPwdBegin(c *gin.Context, req *ForgetPwdBeginRequest) (_ *ForgetPwdBeginResponse, err error) {
+func (UnimplementedAuthServer) ForgetPwdBegin(c *gin.Context, req *ForgetPwdBeginRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdBegin not implemented")
 	return
 }
 
-func (UnimplementedServer) ForgetPwdReset(c *gin.Context, req *ForgetPwdResetRequest) (_ bool, err error) {
+func (UnimplementedAuthServer) ForgetPwdReset(c *gin.Context, req *ForgetPwdResetRequest) (_ bool, err error) {
 	err = fmt.Errorf("method ForgetPwdReset not implemented")
 	return
 }
 
-func (UnimplementedServer) ForgetPwdSendEmail(c *gin.Context, req *ForgetPwdSendEmailRequest) (_ string, err error) {
+func (UnimplementedAuthServer) ForgetPwdSendEmail(c *gin.Context, req *ForgetPwdSendEmailRequest) (_ string, err error) {
 	err = fmt.Errorf("method ForgetPwdSendEmail not implemented")
 	return
 }
 
-func (UnimplementedServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetPwdVerifyEmailRequest) (_ *ForgetPwdBeginResponse, err error) {
+func (UnimplementedAuthServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetPwdVerifyEmailRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdVerifyEmail not implemented")
 	return
 }
 
-func (UnimplementedServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
+func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdVerifyMfa not implemented")
 	return
 }
 
-func (UnimplementedServer) Login(c *gin.Context, req *LoginRequest) (_ *LoginResponse, err error) {
+func (UnimplementedAuthServer) Login(c *gin.Context, req *LoginRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method Login not implemented")
 	return
 }
 
-func (UnimplementedServer) Logout(c *gin.Context) (err error) {
+func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
 	return
 }
 
-func (UnimplementedServer) ResetPassword(c *gin.Context, req *ResetPasswordRequest) (_ *LoginResponse, err error) {
+func (UnimplementedAuthServer) ResetPassword(c *gin.Context, req *ResetPasswordRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method ResetPassword not implemented")
 	return
 }
 
-func (UnimplementedServer) UnBindMfa(c *gin.Context, req *UnBindMfaRequest) (_ bool, err error) {
+func (UnimplementedAuthServer) UnBindMfa(c *gin.Context, req *UnBindMfaRequest) (_ bool, err error) {
 	err = fmt.Errorf("method UnBindMfa not implemented")
 	return
 }
 
-func (UnimplementedServer) VerifyFactor(c *gin.Context, req *VerifyFactorRequest) (_ *LoginResponse, err error) {
+func (UnimplementedAuthServer) VerifyFactor(c *gin.Context, req *VerifyFactorRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method VerifyFactor not implemented")
+	return
+}
+
+type UnimplementedFileServer struct {
+}
+
+func (UnimplementedFileServer) DeleteFile(c *gin.Context, req *DeleteFileRequest) (err error) {
+	err = fmt.Errorf("method DeleteFile not implemented")
+	return
+}
+
+func (UnimplementedFileServer) GetFile(c *gin.Context, req *GetFileRequest) (_ *FileInfo, err error) {
+	err = fmt.Errorf("method GetFile not implemented")
+	return
+}
+
+func (UnimplementedFileServer) GetFileRaw(c *gin.Context, req *GetFileRawRequest) (_ []byte, err error) {
+	err = fmt.Errorf("method GetFileRaw not implemented")
+	return
+}
+
+func (UnimplementedFileServer) UploadFile(c *gin.Context, req *UploadFileRequest) (_ string, err error) {
+	err = fmt.Errorf("method UploadFile not implemented")
 	return
 }

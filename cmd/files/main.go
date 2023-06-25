@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/knockout/cmd/internal/auth"
+	"github.com/tsingsun/woocoo/pkg/log"
+	"github.com/woocoos/entco/pkg/snowflake"
+	"github.com/woocoos/knockout/cmd/internal/files"
 	"github.com/woocoos/knockout/cmd/internal/otel"
-	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/woocoos/knockout/ent/runtime"
@@ -16,10 +16,15 @@ func main() {
 	otelStop := otel.Apply(app.AppConfiguration())
 	defer otelStop()
 
-	authSrv := auth.NewServer(app.AppConfiguration())
-	webEngine := web.New(web.WithConfiguration(app.AppConfiguration().Sub("web")))
+	err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake"))
+	if err != nil {
+		log.Panic(err)
+	}
+
+	authSrv := files.NewServer(app.AppConfiguration())
+	webEngine := authSrv.BuildWebServer()
 	authSrv.RegisterWebEngine(webEngine.Router().FindGroup("/").Group)
-	app.RegisterServer(webEngine, authSrv.GrpcSrv)
+	app.RegisterServer(webEngine)
 	if err := app.Run(); err != nil {
 		log.Panic(err)
 	}

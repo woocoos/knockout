@@ -10,8 +10,8 @@ import (
 	"github.com/woocoos/knockout/api/oas"
 )
 
-// RegisterHandlers creates http.Handler with routing matching OpenAPI spec.
-func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
+// RegisterAuthHandlers creates http.Handler with routing matching OpenAPI spec.
+func RegisterAuthHandlers(router *gin.RouterGroup, si oas.AuthServer) {
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
@@ -27,7 +27,15 @@ func RegisterHandlers(router *gin.RouterGroup, si oas.Server) {
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
 
-func wrapBindMfa(si oas.Server) func(c *gin.Context) {
+// RegisterFileHandlers creates http.Handler with routing matching OpenAPI spec.
+func RegisterFileHandlers(router *gin.RouterGroup, si oas.FileServer) {
+	router.DELETE("/files/:fileId", wrapDeleteFile(si))
+	router.GET("/files/:fileId", wrapGetFile(si))
+	router.GET("/files/:fileId/raw", wrapGetFileRaw(si))
+	router.POST("/files", wrapUploadFile(si))
+}
+
+func wrapBindMfa(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.BindMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -43,7 +51,7 @@ func wrapBindMfa(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapBindMfaPrepare(si oas.Server) func(c *gin.Context) {
+func wrapBindMfaPrepare(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		resp, err := si.BindMfaPrepare(c)
 		if err != nil {
@@ -54,7 +62,7 @@ func wrapBindMfaPrepare(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapCaptcha(si oas.Server) func(c *gin.Context) {
+func wrapCaptcha(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.CaptchaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -70,7 +78,7 @@ func wrapCaptcha(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapForgetPwdBegin(si oas.Server) func(c *gin.Context) {
+func wrapForgetPwdBegin(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdBeginRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -86,7 +94,7 @@ func wrapForgetPwdBegin(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapForgetPwdReset(si oas.Server) func(c *gin.Context) {
+func wrapForgetPwdReset(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdResetRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -102,7 +110,7 @@ func wrapForgetPwdReset(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapForgetPwdSendEmail(si oas.Server) func(c *gin.Context) {
+func wrapForgetPwdSendEmail(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdSendEmailRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -118,7 +126,7 @@ func wrapForgetPwdSendEmail(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapForgetPwdVerifyEmail(si oas.Server) func(c *gin.Context) {
+func wrapForgetPwdVerifyEmail(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdVerifyEmailRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -134,7 +142,7 @@ func wrapForgetPwdVerifyEmail(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapForgetPwdVerifyMfa(si oas.Server) func(c *gin.Context) {
+func wrapForgetPwdVerifyMfa(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdVerifyMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -150,7 +158,7 @@ func wrapForgetPwdVerifyMfa(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapLogin(si oas.Server) func(c *gin.Context) {
+func wrapLogin(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.LoginRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -166,7 +174,7 @@ func wrapLogin(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapLogout(si oas.Server) func(c *gin.Context) {
+func wrapLogout(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		err := si.Logout(c)
 		if err != nil {
@@ -176,7 +184,7 @@ func wrapLogout(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapResetPassword(si oas.Server) func(c *gin.Context) {
+func wrapResetPassword(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ResetPasswordRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -192,7 +200,7 @@ func wrapResetPassword(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapUnBindMfa(si oas.Server) func(c *gin.Context) {
+func wrapUnBindMfa(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.UnBindMfaRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -208,7 +216,7 @@ func wrapUnBindMfa(si oas.Server) func(c *gin.Context) {
 	}
 }
 
-func wrapVerifyFactor(si oas.Server) func(c *gin.Context) {
+func wrapVerifyFactor(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.VerifyFactorRequest
 		if err := c.ShouldBind(&req.Body); err != nil {
@@ -216,6 +224,69 @@ func wrapVerifyFactor(si oas.Server) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.VerifyFactor(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapDeleteFile(si oas.FileServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.DeleteFileRequest
+		if err := c.ShouldBindUri(&req.UriParams); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		err := si.DeleteFile(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+	}
+}
+
+func wrapGetFile(si oas.FileServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.GetFileRequest
+		if err := c.ShouldBindUri(&req.UriParams); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.GetFile(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapGetFileRaw(si oas.FileServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.GetFileRawRequest
+		if err := c.ShouldBindUri(&req.UriParams); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.GetFileRaw(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		c.Data(http.StatusOK, "application/octet-stream", resp)
+	}
+}
+
+func wrapUploadFile(si oas.FileServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.UploadFileRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.UploadFile(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

@@ -20,6 +20,8 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -54,6 +56,12 @@ func (n *AppRes) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *AppRole) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *File) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *FileSource) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Org) IsNode() {}
@@ -204,6 +212,30 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		query := c.AppRole.Query().
 			Where(approle.ID(id))
 		query, err := query.CollectFields(ctx, "AppRole")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case file.Table:
+		query := c.File.Query().
+			Where(file.ID(id))
+		query, err := query.CollectFields(ctx, "File")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case filesource.Table:
+		query := c.FileSource.Query().
+			Where(filesource.ID(id))
+		query, err := query.CollectFields(ctx, "FileSource")
 		if err != nil {
 			return nil, err
 		}
@@ -477,6 +509,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.AppRole.Query().
 			Where(approle.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "AppRole")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case file.Table:
+		query := c.File.Query().
+			Where(file.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "File")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case filesource.Table:
+		query := c.FileSource.Query().
+			Where(filesource.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "FileSource")
 		if err != nil {
 			return nil, err
 		}

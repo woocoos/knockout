@@ -1,0 +1,79 @@
+namespace: default
+appName: file
+version: 0.0.1
+development: true
+# use open telemetry
+#otel:
+#  traceExporter: otlp
+#  otlp:
+#    endpoint: "127.0.0.1:4317"
+#    client:
+#      dialOption:
+#        - timeout: 5s
+
+log:
+  withTraceID: true
+  traceIDKey: "traceId"
+  cores:
+    - level: debug
+      outputPaths:
+        - stdout
+      encoderConfig:
+        timeKey: "@timestamp"
+        messageKey: "message"
+        callerKey: "file"
+  rotate:
+    maxsize: 10
+    maxage: 10
+    maxbackups: 20
+    localtime: true
+
+snowflake:
+  # 机器id
+  node: 1
+  # 时间戳起始时间 北京时间 2023-01-01 00:00:00
+  epoch: 1672531200000
+  # 机器id位数
+  nodeBits: 1
+  # 序列号位数
+  stepBits: 8
+
+web:
+  server:
+    addr: 127.0.0.1:10071
+  engine:
+    routerGroups:
+      - default:
+          middlewares:
+            - accessLog:
+            - recovery:
+            - errorHandle:
+            - jwt:
+                signingMethod: "HS256"
+                signingKey: "secret"
+
+store:
+  portal:
+    driverName: mysql
+    dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+  redis: &redis
+    addrs:
+      - 127.0.0.1:6379
+    db: 1
+
+
+cache:
+  redis:
+    <<: *redis
+    local:
+      size: 1000
+      ttl: 100s
+
+entcache:
+  level: context
+#  ttl: 5m # level: db时有效
+
+files:
+  local:
+    bucket: "tmp"
+    endpoint: "http://127.0.0.1:10071"

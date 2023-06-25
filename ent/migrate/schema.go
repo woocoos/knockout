@@ -228,6 +228,67 @@ var (
 			},
 		},
 	}
+	// FileColumns holds the columns for the "file" table.
+	FileColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "path", Type: field.TypeString},
+		{Name: "size", Type: field.TypeInt, Nullable: true},
+		{Name: "mine_type", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "md5", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+	}
+	// FileTable holds the schema information for the "file" table.
+	FileTable = &schema.Table{
+		Name:       "file",
+		Columns:    FileColumns,
+		PrimaryKey: []*schema.Column{FileColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "file_file_source_files",
+				Columns:    []*schema.Column{FileColumns[11]},
+				RefColumns: []*schema.Column{FileSourceColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "file_tenant_id_source_id_path",
+				Unique:  true,
+				Columns: []*schema.Column{FileColumns[6], FileColumns[11], FileColumns[7]},
+			},
+		},
+	}
+	// FileSourceColumns holds the columns for the "file_source" table.
+	FileSourceColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "alioss"}},
+		{Name: "endpoint", Type: field.TypeString, Nullable: true},
+		{Name: "region", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "bucket", Type: field.TypeString, Nullable: true, Size: 100},
+	}
+	// FileSourceTable holds the schema information for the "file_source" table.
+	FileSourceTable = &schema.Table{
+		Name:       "file_source",
+		Columns:    FileSourceColumns,
+		PrimaryKey: []*schema.Column{FileSourceColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "filesource_kind_endpoint_region_bucket",
+				Unique:  true,
+				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[6], FileSourceColumns[7], FileSourceColumns[8]},
+			},
+		},
+	}
 	// OrgColumns holds the columns for the "org" table.
 	OrgColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -642,6 +703,8 @@ var (
 		AppResTable,
 		AppRoleTable,
 		AppRolePolicyTable,
+		FileTable,
+		FileSourceTable,
 		OrgTable,
 		OrgAppTable,
 		OrgPolicyTable,
@@ -686,6 +749,13 @@ func init() {
 	AppRolePolicyTable.ForeignKeys[1].RefTable = AppPolicyTable
 	AppRolePolicyTable.Annotation = &entsql.Annotation{
 		Table: "app_role_policy",
+	}
+	FileTable.ForeignKeys[0].RefTable = FileSourceTable
+	FileTable.Annotation = &entsql.Annotation{
+		Table: "file",
+	}
+	FileSourceTable.Annotation = &entsql.Annotation{
+		Table: "file_source",
 	}
 	OrgTable.ForeignKeys[0].RefTable = OrgTable
 	OrgTable.ForeignKeys[1].RefTable = UserTable

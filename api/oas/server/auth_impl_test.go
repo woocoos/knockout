@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/cache/redisc"
@@ -17,6 +18,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
+	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
@@ -45,7 +47,8 @@ var (
 )
 
 type ServiceSuite struct {
-	Service     *Service
+	AuthService *AuthService
+	FileService *FileService
 	redisServer *miniredis.Miniredis
 
 	server *web.Server
@@ -62,26 +65,39 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	app := woocoo.New(woocoo.WithAppConfiguration(cnf))
 	appCnf = app.AppConfiguration()
 
+	assert.NoError(t, snowflake.SetDefaultNode(appCnf.Sub("snowflake")))
 	s.server = web.New(web.WithConfiguration(cnf.Sub("web")))
 
-	s.Service = &Service{}
-	err = s.Service.Apply(app.AppConfiguration())
+	s.AuthService = &AuthService{}
+	err = s.AuthService.Apply(app.AppConfiguration())
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.Service.DB, err = ent.Open(app.AppConfiguration().String("store.test.driverName"), app.AppConfiguration().String("store.test.dsn"), ent.Debug())
+	s.AuthService.DB, err = ent.Open(app.AppConfiguration().String("store.test.driverName"), app.AppConfiguration().String("store.test.dsn"), ent.Debug())
 
 	s.redisServer = miniredis.RunT(t)
 	appCnf.Parser().Set("cache.redis.addr", s.redisServer.Addr())
-	s.Service.Cache = redisc.NewBuiltIn()
+	s.AuthService.Cache = redisc.NewBuiltIn()
 
-	RegisterHandlersManual(s.server.Router().Engine, s.Service)
-	RegisterHandlers(&s.server.Router().RouterGroup, s.Service)
+	s.FileService = &FileService{
+		DB:      s.AuthService.DB,
+		baseDir: appCnf.Abs(appCnf.String("files.local.bucket")),
+	}
+
+	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)
+	RegisterAuthHandlers(&s.server.Router().RouterGroup, s.AuthService)
+	RegisterFileHandlers(&s.server.Router().RouterGroup, s.FileService)
 	jwtmdl, ok := s.server.HandlerManager().Get("jwt")
 	if !ok {
 		t.Fail()
 	}
-	s.Service.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
+	s.AuthService.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
+
+	err = s.AuthService.DB.Schema.Create(context.Background(),
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+		migrate.WithForeignKeys(false))
+	assert.NoError(t, err)
 }
 
 type loginFlowSuite struct {
@@ -100,43 +116,38 @@ func TestLoginFlow(t *testing.T) {
 
 func (ts *loginFlowSuite) SetupSuite() {
 	ts.redisServer.FlushAll()
-	err := ts.Service.DB.Schema.Create(context.Background(),
-		migrate.WithDropIndex(true),
-		migrate.WithDropColumn(true),
-		migrate.WithForeignKeys(false))
-	ts.Require().NoError(err)
-	db := ts.Service.DB
+	db := ts.AuthService.DB
 	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").SetStatus(typex.SimpleStatusActive).
 		SetDisplayName("admin").SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).SetRegisterIP("")
-	_, err = db.User.CreateBulk(
+	_, err := db.User.CreateBulk(
 		adm,
 	).Save(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.Service.DB.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
+	err = ts.AuthService.DB.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
 		SetPassword("9b1063951d443cfac15cc879efb4054f4f4fd599e1b1a9aee67b0301e19e40fe").SetScene(userpassword.SceneLogin).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.Service.DB.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
+	err = ts.AuthService.DB.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
 		SetMfaEnabled(true).SetMfaSecret("UWZLIIUMPX53NYXB").SetCanLogin(true).
 		SetMfaStatus(typex.SimpleStatusActive).SetVerifyDevice(true).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.Service.DB.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
+	err = ts.AuthService.DB.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
 		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).SetParentID(0).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.Service.DB.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
+	err = ts.AuthService.DB.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
 		SetDisplayName("admin").Exec(context.Background())
 	ts.Require().NoError(err)
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
+	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
@@ -145,7 +156,7 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
+	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
@@ -155,26 +166,26 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 
 func (ts *loginFlowSuite) Test_AuthFail() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	for i := 0; i < ts.Service.CaptchaTimes-1; i++ {
-		res, err := ts.Service.Login(ctx, &oas.LoginRequest{
+	for i := 0; i < ts.AuthService.CaptchaTimes-1; i++ {
+		res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 			Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 		})
 		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 		ts.Nil(res)
 	}
-	res, err := ts.Service.Login(ctx, &oas.LoginRequest{
+	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 	})
 	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 	ts.Equal(res.CallbackUrl, "/captcha")
-	for i := ts.Service.CaptchaTimes; i < ts.Service.LoginFailTimes; i++ {
-		res, err := ts.Service.Login(ctx, &oas.LoginRequest{
+	for i := ts.AuthService.CaptchaTimes; i < ts.AuthService.LoginFailTimes; i++ {
+		res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 			Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: ""},
 		})
 		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
-	res, err = ts.Service.Login(ctx, &oas.LoginRequest{
+	res, err = ts.AuthService.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
 	})
 	// TODO 验证码准确性测试
@@ -185,12 +196,12 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 func (ts *loginFlowSuite) Test_VerifyFactor() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
-	err := ts.Service.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1)
+	err := ts.AuthService.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1)
 	ts.Require().NoError(err)
 
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
 	time.Sleep(1 * time.Second)
-	res, err := ts.Service.VerifyFactor(ctx, &oas.VerifyFactorRequest{
+	res, err := ts.AuthService.VerifyFactor(ctx, &oas.VerifyFactorRequest{
 		Body: oas.VerifyFactorRequestBody{
 			OtpToken:   pwd,
 			StateToken: adminToken,
@@ -216,7 +227,7 @@ func GeneratePassCode(base32string string) string {
 }
 
 func (ts *loginFlowSuite) Test_Logout() {
-	err := ts.Service.Cache.Set(context.Background(), "67a87482e91f4f2e9220f51376185b7e", "1")
+	err := ts.AuthService.Cache.Set(context.Background(), "67a87482e91f4f2e9220f51376185b7e", "1")
 	ts.Require().NoError(err)
 
 	req := httptest.NewRequest("POST", "/logout", nil)
@@ -266,7 +277,7 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 }
 
 func (ts *loginFlowSuite) Test_ResetPassword() {
-	ts.Require().NoError(ts.Service.Cache.Set(context.Background(),
+	ts.Require().NoError(ts.AuthService.Cache.Set(context.Background(),
 		resetCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1))
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
@@ -274,7 +285,7 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil).WithContext(ctx)
 	//ctx = context.WithValue(ctx, gin.ContextKey, gctx)
-	res, err := ts.Service.ResetPassword(gctx, &oas.ResetPasswordRequest{
+	res, err := ts.AuthService.ResetPassword(gctx, &oas.ResetPasswordRequest{
 		Body: oas.ResetPasswordRequestBody{
 			NewPassword: "234567",
 			StateToken:  adminToken,
@@ -282,7 +293,7 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	})
 	ts.Require().NoError(err)
 	ts.False(ts.redisServer.Exists(resetCachePrefix + "123456"))
-	pwd := ts.Service.DB.UserPassword.Query().Where(userpassword.UserID(1),
+	pwd := ts.AuthService.DB.UserPassword.Query().Where(userpassword.UserID(1),
 		userpassword.SceneEQ(userpassword.SceneLogin),
 	).OnlyX(context.Background())
 

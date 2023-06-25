@@ -15,6 +15,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -273,6 +275,60 @@ func (f TraverseAppRolePolicy) Traverse(ctx context.Context, q ent.Query) error 
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppRolePolicyQuery", q)
+}
+
+// The FileFunc type is an adapter to allow the use of ordinary function as a Querier.
+type FileFunc func(context.Context, *ent.FileQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f FileFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.FileQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FileQuery", q)
+}
+
+// The TraverseFile type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseFile func(context.Context, *ent.FileQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseFile) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseFile) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FileQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.FileQuery", q)
+}
+
+// The FileSourceFunc type is an adapter to allow the use of ordinary function as a Querier.
+type FileSourceFunc func(context.Context, *ent.FileSourceQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f FileSourceFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.FileSourceQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FileSourceQuery", q)
+}
+
+// The TraverseFileSource type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseFileSource func(context.Context, *ent.FileSourceQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseFileSource) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseFileSource) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FileSourceQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.FileSourceQuery", q)
 }
 
 // The OrgFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -616,6 +672,10 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.OrderOption]{typ: ent.TypeAppRole, tq: q}, nil
 	case *ent.AppRolePolicyQuery:
 		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.OrderOption]{typ: ent.TypeAppRolePolicy, tq: q}, nil
+	case *ent.FileQuery:
+		return &query[*ent.FileQuery, predicate.File, file.OrderOption]{typ: ent.TypeFile, tq: q}, nil
+	case *ent.FileSourceQuery:
+		return &query[*ent.FileSourceQuery, predicate.FileSource, filesource.OrderOption]{typ: ent.TypeFileSource, tq: q}, nil
 	case *ent.OrgQuery:
 		return &query[*ent.OrgQuery, predicate.Org, org.OrderOption]{typ: ent.TypeOrg, tq: q}, nil
 	case *ent.OrgAppQuery:

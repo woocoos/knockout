@@ -208,6 +208,45 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 	}
 
+	File struct {
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Md5       func(childComplexity int) int
+		MineType  func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Path      func(childComplexity int) int
+		Size      func(childComplexity int) int
+		Source    func(childComplexity int) int
+		SourceID  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	FileConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	FileEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	FileSource struct {
+		Bucket    func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		Endpoint  func(childComplexity int) int
+		Files     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileOrder, where *ent.FileWhereInput) int
+		ID        func(childComplexity int) int
+		Kind      func(childComplexity int) int
+		Region    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
 	Mfa struct {
 		Account func(childComplexity int) int
 		Secret  func(childComplexity int) int
@@ -1358,6 +1397,200 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppRole.UpdatedBy(childComplexity), true
+
+	case "File.createdAt":
+		if e.complexity.File.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.File.CreatedAt(childComplexity), true
+
+	case "File.createdBy":
+		if e.complexity.File.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.File.CreatedBy(childComplexity), true
+
+	case "File.id":
+		if e.complexity.File.ID == nil {
+			break
+		}
+
+		return e.complexity.File.ID(childComplexity), true
+
+	case "File.md5":
+		if e.complexity.File.Md5 == nil {
+			break
+		}
+
+		return e.complexity.File.Md5(childComplexity), true
+
+	case "File.mineType":
+		if e.complexity.File.MineType == nil {
+			break
+		}
+
+		return e.complexity.File.MineType(childComplexity), true
+
+	case "File.name":
+		if e.complexity.File.Name == nil {
+			break
+		}
+
+		return e.complexity.File.Name(childComplexity), true
+
+	case "File.path":
+		if e.complexity.File.Path == nil {
+			break
+		}
+
+		return e.complexity.File.Path(childComplexity), true
+
+	case "File.size":
+		if e.complexity.File.Size == nil {
+			break
+		}
+
+		return e.complexity.File.Size(childComplexity), true
+
+	case "File.source":
+		if e.complexity.File.Source == nil {
+			break
+		}
+
+		return e.complexity.File.Source(childComplexity), true
+
+	case "File.sourceID":
+		if e.complexity.File.SourceID == nil {
+			break
+		}
+
+		return e.complexity.File.SourceID(childComplexity), true
+
+	case "File.updatedAt":
+		if e.complexity.File.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.File.UpdatedAt(childComplexity), true
+
+	case "File.updatedBy":
+		if e.complexity.File.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.File.UpdatedBy(childComplexity), true
+
+	case "FileConnection.edges":
+		if e.complexity.FileConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FileConnection.Edges(childComplexity), true
+
+	case "FileConnection.pageInfo":
+		if e.complexity.FileConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FileConnection.PageInfo(childComplexity), true
+
+	case "FileConnection.totalCount":
+		if e.complexity.FileConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.FileConnection.TotalCount(childComplexity), true
+
+	case "FileEdge.cursor":
+		if e.complexity.FileEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FileEdge.Cursor(childComplexity), true
+
+	case "FileEdge.node":
+		if e.complexity.FileEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FileEdge.Node(childComplexity), true
+
+	case "FileSource.bucket":
+		if e.complexity.FileSource.Bucket == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Bucket(childComplexity), true
+
+	case "FileSource.createdAt":
+		if e.complexity.FileSource.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.FileSource.CreatedAt(childComplexity), true
+
+	case "FileSource.createdBy":
+		if e.complexity.FileSource.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.FileSource.CreatedBy(childComplexity), true
+
+	case "FileSource.endpoint":
+		if e.complexity.FileSource.Endpoint == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Endpoint(childComplexity), true
+
+	case "FileSource.files":
+		if e.complexity.FileSource.Files == nil {
+			break
+		}
+
+		args, err := ec.field_FileSource_files_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.FileSource.Files(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileOrder), args["where"].(*ent.FileWhereInput)), true
+
+	case "FileSource.id":
+		if e.complexity.FileSource.ID == nil {
+			break
+		}
+
+		return e.complexity.FileSource.ID(childComplexity), true
+
+	case "FileSource.kind":
+		if e.complexity.FileSource.Kind == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Kind(childComplexity), true
+
+	case "FileSource.region":
+		if e.complexity.FileSource.Region == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Region(childComplexity), true
+
+	case "FileSource.updatedAt":
+		if e.complexity.FileSource.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.FileSource.UpdatedAt(childComplexity), true
+
+	case "FileSource.updatedBy":
+		if e.complexity.FileSource.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.FileSource.UpdatedBy(childComplexity), true
 
 	case "Mfa.account":
 		if e.complexity.Mfa.Account == nil {
@@ -3611,6 +3844,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppPolicyInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
+		ec.unmarshalInputCreateFileSourceInput,
 		ec.unmarshalInputCreateOrgInput,
 		ec.unmarshalInputCreateOrgPolicyInput,
 		ec.unmarshalInputCreateOrgRoleInput,
@@ -3621,6 +3855,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserLoginProfileInput,
 		ec.unmarshalInputCreateUserPasswordInput,
 		ec.unmarshalInputEnableDirectoryInput,
+		ec.unmarshalInputFileOrder,
+		ec.unmarshalInputFileSourceOrder,
+		ec.unmarshalInputFileSourceWhereInput,
+		ec.unmarshalInputFileWhereInput,
 		ec.unmarshalInputGrantInput,
 		ec.unmarshalInputOrgOrder,
 		ec.unmarshalInputOrgPolicyOrder,
@@ -3641,6 +3879,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppPolicyInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
+		ec.unmarshalInputUpdateFileSourceInput,
 		ec.unmarshalInputUpdateOrgInput,
 		ec.unmarshalInputUpdateOrgPolicyInput,
 		ec.unmarshalInputUpdateOrgRoleInput,
@@ -5094,6 +5333,21 @@ input CreateAppRoleInput {
   appID: ID
 }
 """
+CreateFileSourceInput is used for create FileSource object.
+Input was generated by ent.
+"""
+input CreateFileSourceInput {
+  """文件来源"""
+  kind: FileSourceKind!
+  """对外服务的访问域名"""
+  endpoint: String
+  """地域，数据存储的物理位置。本地存储为：localhost"""
+  region: String
+  """文件存储空间。本地存储为：assets"""
+  bucket: String
+  fileIDs: [ID!]
+}
+"""
 CreateOrgInput is used for create Org object.
 Input was generated by ent.
 """
@@ -5246,6 +5500,323 @@ Define a Relay Cursor type:
 https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
+type File implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """文件名称"""
+  name: String!
+  """文件来源"""
+  sourceID: ID!
+  """文件相对路径"""
+  path: String!
+  """文件大小，单位为B"""
+  size: Int
+  """媒体类型，如：image/png"""
+  mineType: String
+  """md5值"""
+  md5: String
+  """文件来源"""
+  source: FileSource!
+}
+"""A connection to a list of items."""
+type FileConnection {
+  """A list of edges."""
+  edges: [FileEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type FileEdge {
+  """The item at the end of the edge."""
+  node: File
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for File connections"""
+input FileOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order Files."""
+  field: FileOrderField!
+}
+"""Properties by which File connections can be ordered."""
+enum FileOrderField {
+  createdAt
+}
+type FileSource implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """文件来源"""
+  kind: FileSourceKind!
+  """对外服务的访问域名"""
+  endpoint: String
+  """地域，数据存储的物理位置。本地存储为：localhost"""
+  region: String
+  """文件存储空间。本地存储为：assets"""
+  bucket: String
+  files(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for Files returned from the connection."""
+    orderBy: FileOrder
+
+    """Filtering options for Files returned from the connection."""
+    where: FileWhereInput
+  ): FileConnection!
+}
+"""FileSourceKind is enum for the field kind"""
+enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
+  local
+  alioss
+}
+"""Ordering options for FileSource connections"""
+input FileSourceOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order FileSources."""
+  field: FileSourceOrderField!
+}
+"""Properties by which FileSource connections can be ordered."""
+enum FileSourceOrderField {
+  createdAt
+}
+"""
+FileSourceWhereInput is used for filtering FileSource objects.
+Input was generated by ent.
+"""
+input FileSourceWhereInput {
+  not: FileSourceWhereInput
+  and: [FileSourceWhereInput!]
+  or: [FileSourceWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """kind field predicates"""
+  kind: FileSourceKind
+  kindNEQ: FileSourceKind
+  kindIn: [FileSourceKind!]
+  kindNotIn: [FileSourceKind!]
+  """endpoint field predicates"""
+  endpoint: String
+  endpointNEQ: String
+  endpointIn: [String!]
+  endpointNotIn: [String!]
+  endpointGT: String
+  endpointGTE: String
+  endpointLT: String
+  endpointLTE: String
+  endpointContains: String
+  endpointHasPrefix: String
+  endpointHasSuffix: String
+  endpointIsNil: Boolean
+  endpointNotNil: Boolean
+  endpointEqualFold: String
+  endpointContainsFold: String
+  """region field predicates"""
+  region: String
+  regionNEQ: String
+  regionIn: [String!]
+  regionNotIn: [String!]
+  regionGT: String
+  regionGTE: String
+  regionLT: String
+  regionLTE: String
+  regionContains: String
+  regionHasPrefix: String
+  regionHasSuffix: String
+  regionIsNil: Boolean
+  regionNotNil: Boolean
+  regionEqualFold: String
+  regionContainsFold: String
+  """bucket field predicates"""
+  bucket: String
+  bucketNEQ: String
+  bucketIn: [String!]
+  bucketNotIn: [String!]
+  bucketGT: String
+  bucketGTE: String
+  bucketLT: String
+  bucketLTE: String
+  bucketContains: String
+  bucketHasPrefix: String
+  bucketHasSuffix: String
+  bucketIsNil: Boolean
+  bucketNotNil: Boolean
+  bucketEqualFold: String
+  bucketContainsFold: String
+  """files edge predicates"""
+  hasFiles: Boolean
+  hasFilesWith: [FileWhereInput!]
+}
+"""
+FileWhereInput is used for filtering File objects.
+Input was generated by ent.
+"""
+input FileWhereInput {
+  not: FileWhereInput
+  and: [FileWhereInput!]
+  or: [FileWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """name field predicates"""
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """source_id field predicates"""
+  sourceID: ID
+  sourceIDNEQ: ID
+  sourceIDIn: [ID!]
+  sourceIDNotIn: [ID!]
+  """path field predicates"""
+  path: String
+  pathNEQ: String
+  pathIn: [String!]
+  pathNotIn: [String!]
+  pathGT: String
+  pathGTE: String
+  pathLT: String
+  pathLTE: String
+  pathContains: String
+  pathHasPrefix: String
+  pathHasSuffix: String
+  pathEqualFold: String
+  pathContainsFold: String
+  """size field predicates"""
+  size: Int
+  sizeNEQ: Int
+  sizeIn: [Int!]
+  sizeNotIn: [Int!]
+  sizeGT: Int
+  sizeGTE: Int
+  sizeLT: Int
+  sizeLTE: Int
+  sizeIsNil: Boolean
+  sizeNotNil: Boolean
+  """source edge predicates"""
+  hasSource: Boolean
+  hasSourceWith: [FileSourceWhereInput!]
+}
 """An object with an Global ID,for using in Noder interface."""
 scalar GID
 """
@@ -6496,6 +7067,26 @@ input UpdateAppRoleInput {
   autoGrant: Boolean
   """授权后是否可编辑"""
   editable: Boolean
+}
+"""
+UpdateFileSourceInput is used for update FileSource object.
+Input was generated by ent.
+"""
+input UpdateFileSourceInput {
+  """文件来源"""
+  kind: FileSourceKind
+  """对外服务的访问域名"""
+  endpoint: String
+  clearEndpoint: Boolean
+  """地域，数据存储的物理位置。本地存储为：localhost"""
+  region: String
+  clearRegion: Boolean
+  """文件存储空间。本地存储为：assets"""
+  bucket: String
+  clearBucket: Boolean
+  addFileIDs: [ID!]
+  removeFileIDs: [ID!]
+  clearFiles: Boolean
 }
 """
 UpdateOrgInput is used for update Org object.

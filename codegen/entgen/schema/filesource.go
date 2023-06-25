@@ -19,7 +19,6 @@ type FileSource struct {
 func (FileSource) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "file_source"},
-		entgql.RelayConnection(),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
@@ -49,7 +48,7 @@ func (FileSource) Fields() []ent.Field {
 // Edges of the FileSource.
 func (FileSource) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("files", File.Type).Ref("source").Comment("所有文件").Annotations(entgql.RelayConnection()),
+		edge.To("files", File.Type).Comment("所有文件").Annotations(entgql.RelayConnection()),
 	}
 }
 

@@ -27,6 +27,12 @@ type AppRole func(*sql.Selector)
 // AppRolePolicy is the predicate function for approlepolicy builders.
 type AppRolePolicy func(*sql.Selector)
 
+// File is the predicate function for file builders.
+type File func(*sql.Selector)
+
+// FileSource is the predicate function for filesource builders.
+type FileSource func(*sql.Selector)
+
 // Org is the predicate function for org builders.
 type Org func(*sql.Selector)
 

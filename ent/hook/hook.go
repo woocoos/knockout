@@ -93,6 +93,30 @@ func (f AppRolePolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppRolePolicyMutation", m)
 }
 
+// The FileFunc type is an adapter to allow the use of ordinary
+// function as File mutator.
+type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FileFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FileMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileMutation", m)
+}
+
+// The FileSourceFunc type is an adapter to allow the use of ordinary
+// function as FileSource mutator.
+type FileSourceFunc func(context.Context, *ent.FileSourceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FileSourceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FileSourceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileSourceMutation", m)
+}
+
 // The OrgFunc type is an adapter to allow the use of ordinary
 // function as Org mutator.
 type OrgFunc func(context.Context, *ent.OrgMutation) (ent.Value, error)

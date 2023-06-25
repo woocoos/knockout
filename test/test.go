@@ -19,3 +19,7 @@ func init() {
 func BaseDir() string {
 	return basedir
 }
+
+func Path(ref string) string {
+	return filepath.Join(basedir, ref)
+}

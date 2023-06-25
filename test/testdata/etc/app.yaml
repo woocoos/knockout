@@ -5,11 +5,12 @@ auth:
     signingMethod: "HS256"
     signingKey: "secret"
     tokenTTL: 1h
-    refreshTokenTTL: 7d
+    refreshTokenTTL: 1h
 
 cache:
   redis:
-    type: standalone
+    addrs:
+      - "localhost:6379"
     local:
       size: 1000
       ttl: 100s
@@ -24,10 +25,24 @@ store:
 
 web:
   engine:
-    contextWithFallback: true
     routerGroups:
       - default:
           middlewares:
+            - errorHandle:
             - jwt:
                 tokenStoreKey: redis
                 <<: *jwt
+snowflake:
+  # 机器id
+  node: 1
+  # 时间戳起始时间 北京时间 2023-01-01 00:00:00
+  epoch: 1672531200000
+  # 机器id位数
+  nodeBits: 1
+  # 序列号位数
+  stepBits: 8
+
+files:
+  local:
+    bucket: "tmp"
+    endpoint: "http://localhost:9000"

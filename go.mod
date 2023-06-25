@@ -16,7 +16,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.3
-	github.com/tsingsun/woocoo v0.3.1-0.20230623124021-0c30337ca14f
+	github.com/tsingsun/woocoo v0.3.1-0.20230625020618-99b3d687fca5
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230622101920-afee0284db7d
 	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230622093715-adcb50dd333b
 	github.com/urfave/cli/v2 v2.25.0

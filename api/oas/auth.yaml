@@ -12,11 +12,18 @@ info:
 servers:
   - url: http://localhost:10070
     description: Local server
+tags:
+  - name: auth
+    description: Authentication API
+  - name: file
+    description: File API
 paths:
   /login/auth:
     post:
       summary: Use this API to Login
       description: Use this API to Login
+      tags:
+        - auth
       operationId: login
       requestBody:
         description: Login with username and password
@@ -59,6 +66,8 @@ paths:
   /login/verify-factor:
     post:
       description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
+      tags:
+        - auth
       operationId: verifyFactor
       requestBody:
         content:
@@ -89,6 +98,8 @@ paths:
   /login/reset-password:
     post:
       description: if login profile demand change password. use this API to reset password.
+      tags:
+        - auth
       operationId: resetPassword
       requestBody:
         content:
@@ -115,6 +126,8 @@ paths:
   /logout:
     post:
       description: log out a user
+      tags:
+        - auth
       operationId: logout
       responses:
         default:
@@ -127,6 +140,8 @@ paths:
     get:
       summary: Use this API to get captcha
       description: Use this API to get captcha
+      tags:
+        - auth
       operationId: captcha
       parameters:
         - name: w
@@ -159,6 +174,8 @@ paths:
   /mfa/bind-prepare:
     post:
       description: Use this api to get the temporary MFA secret key.
+      tags:
+        - auth
       operationId: bindMfaPrepare
       responses:
         '200':
@@ -172,6 +189,8 @@ paths:
   /mfa/bind:
     post:
       description: Verify a one-time password (OTP) value to binding MFA.
+      tags:
+        - auth
       operationId: bindMfa
       requestBody:
         content:
@@ -198,6 +217,8 @@ paths:
   /mfa/unbind:
     post:
       description: Verify a one-time password (OTP) value to unBind MFA.
+      tags:
+        - auth
       operationId: unBindMfa
       requestBody:
         content:
@@ -221,6 +242,8 @@ paths:
   /forget-pwd/begin:
     post:
       description: start the process of forgetting your password by verifying your account.
+      tags:
+        - auth
       operationId: forgetPwdBegin
       requestBody:
         content:
@@ -250,6 +273,8 @@ paths:
   /forget-pwd/verify-email:
     post:
       description: verify the email to reset-password.
+      tags:
+        - auth
       operationId: forgetPwdVerifyEmail
       requestBody:
         content:
@@ -282,6 +307,8 @@ paths:
   /forget-pwd/send-email:
     post:
       description: send an email to get the verify code.
+      tags:
+        - auth
       operationId: forgetPwdSendEmail
       requestBody:
         content:
@@ -307,6 +334,8 @@ paths:
   /forget-pwd/verify-mfa:
     post:
       description: verify the email to reset-password.
+      tags:
+        - auth
       operationId: forgetPwdVerifyMfa
       requestBody:
         content:
@@ -335,6 +364,8 @@ paths:
   /forget-pwd/reset:
     post:
       description: reset-password.
+      tags:
+        - auth
       operationId: forgetPwdReset
       requestBody:
         content:
@@ -359,7 +390,93 @@ paths:
                 type: boolean
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-
+  /files:
+    post:
+      description: upload file
+      tags:
+        - file
+      operationId: uploadFile
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                bucket:
+                  type: string
+                  description: the name of bucket
+                key:
+                  type: string
+                  description: the path of file in the bucket
+      responses:
+        '200':
+          description: upload success
+          content:
+            application/json:
+              schema:
+                type: string
+                description: id of the file
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /files/{fileId}:
+    get:
+      description: get file info
+      tags:
+        - file
+      operationId: getFile
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 文件信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      description: delete file
+      tags:
+        - file
+      operationId: deleteFile
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: delete success
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /files/{fileId}/raw:
+    get:
+      description: get file
+      tags:
+        - file
+      operationId: getFileRaw
+      parameters:
+        - in: path
+          name: fileId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: get file raw data
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 components:
   responses:
     UnauthorizedError:
@@ -469,3 +586,15 @@ components:
           enum: ["email","mfa"]
         value:
           type: string
+    FileInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        size:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time

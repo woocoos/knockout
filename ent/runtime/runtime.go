@@ -13,6 +13,8 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -206,6 +208,50 @@ func init() {
 	approlepolicyDescCreatedAt := approlepolicyMixinFields1[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
+	fileMixin := schema.File{}.Mixin()
+	fileMixinHooks1 := fileMixin[1].Hooks()
+	file.Hooks[0] = fileMixinHooks1[0]
+	fileMixinFields0 := fileMixin[0].Fields()
+	_ = fileMixinFields0
+	fileMixinFields1 := fileMixin[1].Fields()
+	_ = fileMixinFields1
+	fileFields := schema.File{}.Fields()
+	_ = fileFields
+	// fileDescCreatedAt is the schema descriptor for created_at field.
+	fileDescCreatedAt := fileMixinFields1[1].Descriptor()
+	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
+	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
+	// fileDescMineType is the schema descriptor for mine_type field.
+	fileDescMineType := fileFields[5].Descriptor()
+	// file.MineTypeValidator is a validator for the "mine_type" field. It is called by the builders before save.
+	file.MineTypeValidator = fileDescMineType.Validators[0].(func(string) error)
+	// fileDescMd5 is the schema descriptor for md5 field.
+	fileDescMd5 := fileFields[6].Descriptor()
+	// file.Md5Validator is a validator for the "md5" field. It is called by the builders before save.
+	file.Md5Validator = fileDescMd5.Validators[0].(func(string) error)
+	// fileDescID is the schema descriptor for id field.
+	fileDescID := fileMixinFields0[0].Descriptor()
+	// file.DefaultID holds the default value on creation for the id field.
+	file.DefaultID = fileDescID.Default.(func() int)
+	filesourceMixin := schema.FileSource{}.Mixin()
+	filesourceMixinHooks1 := filesourceMixin[1].Hooks()
+	filesource.Hooks[0] = filesourceMixinHooks1[0]
+	filesourceMixinFields1 := filesourceMixin[1].Fields()
+	_ = filesourceMixinFields1
+	filesourceFields := schema.FileSource{}.Fields()
+	_ = filesourceFields
+	// filesourceDescCreatedAt is the schema descriptor for created_at field.
+	filesourceDescCreatedAt := filesourceMixinFields1[1].Descriptor()
+	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
+	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
+	// filesourceDescRegion is the schema descriptor for region field.
+	filesourceDescRegion := filesourceFields[2].Descriptor()
+	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
+	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
+	// filesourceDescBucket is the schema descriptor for bucket field.
+	filesourceDescBucket := filesourceFields[3].Descriptor()
+	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
+	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
 	orgMixin := schema.Org{}.Mixin()
 	orgMixinHooks1 := orgMixin[1].Hooks()
 	orgMixinHooks2 := orgMixin[2].Hooks()
