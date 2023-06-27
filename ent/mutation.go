@@ -16649,6 +16649,10 @@ type OrgRoleUserMutation struct {
 	clearedorg_role bool
 	org_user        *int
 	clearedorg_user bool
+	user            *int
+	cleareduser     bool
+	org             *int
+	clearedorg      bool
 	done            bool
 	oldValue        func(context.Context) (*OrgRoleUser, error)
 	predicates      []predicate.OrgRoleUser
@@ -17041,6 +17045,78 @@ func (m *OrgRoleUserMutation) ResetOrgUserID() {
 	m.org_user = nil
 }
 
+// SetUserID sets the "user_id" field.
+func (m *OrgRoleUserMutation) SetUserID(i int) {
+	m.user = &i
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *OrgRoleUserMutation) UserID() (r int, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the OrgRoleUser entity.
+// If the OrgRoleUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgRoleUserMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *OrgRoleUserMutation) ResetUserID() {
+	m.user = nil
+}
+
+// SetOrgID sets the "org_id" field.
+func (m *OrgRoleUserMutation) SetOrgID(i int) {
+	m.org = &i
+}
+
+// OrgID returns the value of the "org_id" field in the mutation.
+func (m *OrgRoleUserMutation) OrgID() (r int, exists bool) {
+	v := m.org
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrgID returns the old "org_id" field's value of the OrgRoleUser entity.
+// If the OrgRoleUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgRoleUserMutation) OldOrgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
+	}
+	return oldValue.OrgID, nil
+}
+
+// ResetOrgID resets all changes to the "org_id" field.
+func (m *OrgRoleUserMutation) ResetOrgID() {
+	m.org = nil
+}
+
 // ClearOrgRole clears the "org_role" edge to the OrgRole entity.
 func (m *OrgRoleUserMutation) ClearOrgRole() {
 	m.clearedorg_role = true
@@ -17093,6 +17169,58 @@ func (m *OrgRoleUserMutation) ResetOrgUser() {
 	m.clearedorg_user = false
 }
 
+// ClearUser clears the "user" edge to the User entity.
+func (m *OrgRoleUserMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *OrgRoleUserMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *OrgRoleUserMutation) UserIDs() (ids []int) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *OrgRoleUserMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
+// ClearOrg clears the "org" edge to the Org entity.
+func (m *OrgRoleUserMutation) ClearOrg() {
+	m.clearedorg = true
+}
+
+// OrgCleared reports if the "org" edge to the Org entity was cleared.
+func (m *OrgRoleUserMutation) OrgCleared() bool {
+	return m.clearedorg
+}
+
+// OrgIDs returns the "org" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrgID instead. It exists only for internal usage by the builders.
+func (m *OrgRoleUserMutation) OrgIDs() (ids []int) {
+	if id := m.org; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrg resets all changes to the "org" edge.
+func (m *OrgRoleUserMutation) ResetOrg() {
+	m.org = nil
+	m.clearedorg = false
+}
+
 // Where appends a list predicates to the OrgRoleUserMutation builder.
 func (m *OrgRoleUserMutation) Where(ps ...predicate.OrgRoleUser) {
 	m.predicates = append(m.predicates, ps...)
@@ -17127,7 +17255,7 @@ func (m *OrgRoleUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgRoleUserMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 8)
 	if m.created_by != nil {
 		fields = append(fields, orgroleuser.FieldCreatedBy)
 	}
@@ -17145,6 +17273,12 @@ func (m *OrgRoleUserMutation) Fields() []string {
 	}
 	if m.org_user != nil {
 		fields = append(fields, orgroleuser.FieldOrgUserID)
+	}
+	if m.user != nil {
+		fields = append(fields, orgroleuser.FieldUserID)
+	}
+	if m.org != nil {
+		fields = append(fields, orgroleuser.FieldOrgID)
 	}
 	return fields
 }
@@ -17166,6 +17300,10 @@ func (m *OrgRoleUserMutation) Field(name string) (ent.Value, bool) {
 		return m.OrgRoleID()
 	case orgroleuser.FieldOrgUserID:
 		return m.OrgUserID()
+	case orgroleuser.FieldUserID:
+		return m.UserID()
+	case orgroleuser.FieldOrgID:
+		return m.OrgID()
 	}
 	return nil, false
 }
@@ -17187,6 +17325,10 @@ func (m *OrgRoleUserMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldOrgRoleID(ctx)
 	case orgroleuser.FieldOrgUserID:
 		return m.OldOrgUserID(ctx)
+	case orgroleuser.FieldUserID:
+		return m.OldUserID(ctx)
+	case orgroleuser.FieldOrgID:
+		return m.OldOrgID(ctx)
 	}
 	return nil, fmt.Errorf("unknown OrgRoleUser field %s", name)
 }
@@ -17237,6 +17379,20 @@ func (m *OrgRoleUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOrgUserID(v)
+		return nil
+	case orgroleuser.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case orgroleuser.FieldOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrgID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrgRoleUser field %s", name)
@@ -17347,18 +17503,30 @@ func (m *OrgRoleUserMutation) ResetField(name string) error {
 	case orgroleuser.FieldOrgUserID:
 		m.ResetOrgUserID()
 		return nil
+	case orgroleuser.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case orgroleuser.FieldOrgID:
+		m.ResetOrgID()
+		return nil
 	}
 	return fmt.Errorf("unknown OrgRoleUser field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrgRoleUserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.org_role != nil {
 		edges = append(edges, orgroleuser.EdgeOrgRole)
 	}
 	if m.org_user != nil {
 		edges = append(edges, orgroleuser.EdgeOrgUser)
+	}
+	if m.user != nil {
+		edges = append(edges, orgroleuser.EdgeUser)
+	}
+	if m.org != nil {
+		edges = append(edges, orgroleuser.EdgeOrg)
 	}
 	return edges
 }
@@ -17375,13 +17543,21 @@ func (m *OrgRoleUserMutation) AddedIDs(name string) []ent.Value {
 		if id := m.org_user; id != nil {
 			return []ent.Value{*id}
 		}
+	case orgroleuser.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
+		}
+	case orgroleuser.EdgeOrg:
+		if id := m.org; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrgRoleUserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	return edges
 }
 
@@ -17393,12 +17569,18 @@ func (m *OrgRoleUserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrgRoleUserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.clearedorg_role {
 		edges = append(edges, orgroleuser.EdgeOrgRole)
 	}
 	if m.clearedorg_user {
 		edges = append(edges, orgroleuser.EdgeOrgUser)
+	}
+	if m.cleareduser {
+		edges = append(edges, orgroleuser.EdgeUser)
+	}
+	if m.clearedorg {
+		edges = append(edges, orgroleuser.EdgeOrg)
 	}
 	return edges
 }
@@ -17411,6 +17593,10 @@ func (m *OrgRoleUserMutation) EdgeCleared(name string) bool {
 		return m.clearedorg_role
 	case orgroleuser.EdgeOrgUser:
 		return m.clearedorg_user
+	case orgroleuser.EdgeUser:
+		return m.cleareduser
+	case orgroleuser.EdgeOrg:
+		return m.clearedorg
 	}
 	return false
 }
@@ -17425,6 +17611,12 @@ func (m *OrgRoleUserMutation) ClearEdge(name string) error {
 	case orgroleuser.EdgeOrgUser:
 		m.ClearOrgUser()
 		return nil
+	case orgroleuser.EdgeUser:
+		m.ClearUser()
+		return nil
+	case orgroleuser.EdgeOrg:
+		m.ClearOrg()
+		return nil
 	}
 	return fmt.Errorf("unknown OrgRoleUser unique edge %s", name)
 }
@@ -17438,6 +17630,12 @@ func (m *OrgRoleUserMutation) ResetEdge(name string) error {
 		return nil
 	case orgroleuser.EdgeOrgUser:
 		m.ResetOrgUser()
+		return nil
+	case orgroleuser.EdgeUser:
+		m.ResetUser()
+		return nil
+	case orgroleuser.EdgeOrg:
+		m.ResetOrg()
 		return nil
 	}
 	return fmt.Errorf("unknown OrgRoleUser edge %s", name)

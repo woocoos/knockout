@@ -219,6 +219,7 @@ type ComplexityRoot struct {
 		Size      func(childComplexity int) int
 		Source    func(childComplexity int) int
 		SourceID  func(childComplexity int) int
+		TenantID  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
 	}
@@ -1467,6 +1468,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.File.SourceID(childComplexity), true
+
+	case "File.tenantID":
+		if e.complexity.File.TenantID == nil {
+			break
+		}
+
+		return e.complexity.File.TenantID(childComplexity), true
 
 	case "File.updatedAt":
 		if e.complexity.File.UpdatedAt == nil {
@@ -5510,6 +5518,8 @@ type File implements Node {
   name: String!
   """文件来源"""
   sourceID: ID!
+  """租户ID"""
+  tenantID: Int!
   """文件相对路径"""
   path: String!
   """文件大小，单位为B"""
@@ -5788,6 +5798,15 @@ input FileWhereInput {
   sourceIDNEQ: ID
   sourceIDIn: [ID!]
   sourceIDNotIn: [ID!]
+  """tenant_id field predicates"""
+  tenantID: Int
+  tenantIDNEQ: Int
+  tenantIDIn: [Int!]
+  tenantIDNotIn: [Int!]
+  tenantIDGT: Int
+  tenantIDGTE: Int
+  tenantIDLT: Int
+  tenantIDLTE: Int
   """path field predicates"""
   path: String
   pathNEQ: String
@@ -8279,9 +8298,9 @@ extend type Permission {
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
     """应用角色授权的组织列表"""
-    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org]!
+    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
     """应用策略授权的组织列表"""
-    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org]!
+    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
     """权限策略引用列表"""
     orgPolicyReferences(
         policyID:ID!
@@ -8333,18 +8352,18 @@ extend type Permission {
         where: PermissionWhereInput
     ):PermissionConnection!
     """用户菜单"""
-    userMenus(appCode:String!):[AppMenu]!
+    userMenus(appCode:String!):[AppMenu!]!
     """获取用户所有权限"""
-    userPermissions(where: AppActionWhereInput):[AppAction]!
+    userPermissions(where: AppActionWhereInput):[AppAction!]!
     """检测权限"""
     checkPermission(
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
     """组织策略可授权的appActions"""
-    orgAppActions(appCode:String!):[AppAction]!
+    orgAppActions(appCode:String!):[AppAction!]!
     """用户加入的root组织"""
-    userRootOrgs:[Org]!
+    userRootOrgs:[Org!]!
     """组织回收站列表"""
     orgRecycleUsers(
         after: Cursor

@@ -6840,6 +6840,18 @@ type OrgRoleUserWhereInput struct {
 	OrgUserIDIn    []int `json:"orgUserIDIn,omitempty"`
 	OrgUserIDNotIn []int `json:"orgUserIDNotIn,omitempty"`
 
+	// "user_id" field predicates.
+	UserID      *int  `json:"userID,omitempty"`
+	UserIDNEQ   *int  `json:"userIDNEQ,omitempty"`
+	UserIDIn    []int `json:"userIDIn,omitempty"`
+	UserIDNotIn []int `json:"userIDNotIn,omitempty"`
+
+	// "org_id" field predicates.
+	OrgID      *int  `json:"orgID,omitempty"`
+	OrgIDNEQ   *int  `json:"orgIDNEQ,omitempty"`
+	OrgIDIn    []int `json:"orgIDIn,omitempty"`
+	OrgIDNotIn []int `json:"orgIDNotIn,omitempty"`
+
 	// "org_role" edge predicates.
 	HasOrgRole     *bool                `json:"hasOrgRole,omitempty"`
 	HasOrgRoleWith []*OrgRoleWhereInput `json:"hasOrgRoleWith,omitempty"`
@@ -6847,6 +6859,14 @@ type OrgRoleUserWhereInput struct {
 	// "org_user" edge predicates.
 	HasOrgUser     *bool                `json:"hasOrgUser,omitempty"`
 	HasOrgUserWith []*OrgUserWhereInput `json:"hasOrgUserWith,omitempty"`
+
+	// "user" edge predicates.
+	HasUser     *bool             `json:"hasUser,omitempty"`
+	HasUserWith []*UserWhereInput `json:"hasUserWith,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -7076,6 +7096,30 @@ func (i *OrgRoleUserWhereInput) P() (predicate.OrgRoleUser, error) {
 	if len(i.OrgUserIDNotIn) > 0 {
 		predicates = append(predicates, orgroleuser.OrgUserIDNotIn(i.OrgUserIDNotIn...))
 	}
+	if i.UserID != nil {
+		predicates = append(predicates, orgroleuser.UserIDEQ(*i.UserID))
+	}
+	if i.UserIDNEQ != nil {
+		predicates = append(predicates, orgroleuser.UserIDNEQ(*i.UserIDNEQ))
+	}
+	if len(i.UserIDIn) > 0 {
+		predicates = append(predicates, orgroleuser.UserIDIn(i.UserIDIn...))
+	}
+	if len(i.UserIDNotIn) > 0 {
+		predicates = append(predicates, orgroleuser.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.OrgID != nil {
+		predicates = append(predicates, orgroleuser.OrgIDEQ(*i.OrgID))
+	}
+	if i.OrgIDNEQ != nil {
+		predicates = append(predicates, orgroleuser.OrgIDNEQ(*i.OrgIDNEQ))
+	}
+	if len(i.OrgIDIn) > 0 {
+		predicates = append(predicates, orgroleuser.OrgIDIn(i.OrgIDIn...))
+	}
+	if len(i.OrgIDNotIn) > 0 {
+		predicates = append(predicates, orgroleuser.OrgIDNotIn(i.OrgIDNotIn...))
+	}
 
 	if i.HasOrgRole != nil {
 		p := orgroleuser.HasOrgRole()
@@ -7112,6 +7156,42 @@ func (i *OrgRoleUserWhereInput) P() (predicate.OrgRoleUser, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, orgroleuser.HasOrgUserWith(with...))
+	}
+	if i.HasUser != nil {
+		p := orgroleuser.HasUser()
+		if !*i.HasUser {
+			p = orgroleuser.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasUserWith) > 0 {
+		with := make([]predicate.User, 0, len(i.HasUserWith))
+		for _, w := range i.HasUserWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasUserWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orgroleuser.HasUserWith(with...))
+	}
+	if i.HasOrg != nil {
+		p := orgroleuser.HasOrg()
+		if !*i.HasOrg {
+			p = orgroleuser.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orgroleuser.HasOrgWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

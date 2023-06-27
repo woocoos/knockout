@@ -2661,6 +2661,38 @@ func (c *OrgRoleUserClient) QueryOrgUser(oru *OrgRoleUser) *OrgUserQuery {
 	return query
 }
 
+// QueryUser queries the user edge of a OrgRoleUser.
+func (c *OrgRoleUserClient) QueryUser(oru *OrgRoleUser) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oru.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.UserTable, orgroleuser.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(oru.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrg queries the org edge of a OrgRoleUser.
+func (c *OrgRoleUserClient) QueryOrg(oru *OrgRoleUser) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oru.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgroleuser.Table, orgroleuser.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgroleuser.OrgTable, orgroleuser.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(oru.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OrgRoleUserClient) Hooks() []Hook {
 	hooks := c.hooks.OrgRoleUser

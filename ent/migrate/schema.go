@@ -438,6 +438,8 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "org_role_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "org_user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// OrgRoleUserTable holds the schema information for the "org_role_user" table.
 	OrgRoleUserTable = &schema.Table{
@@ -455,6 +457,18 @@ var (
 				Symbol:     "org_role_user_org_user_org_user",
 				Columns:    []*schema.Column{OrgRoleUserColumns[6]},
 				RefColumns: []*schema.Column{OrgUserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "org_role_user_user_user",
+				Columns:    []*schema.Column{OrgRoleUserColumns[7]},
+				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "org_role_user_org_org",
+				Columns:    []*schema.Column{OrgRoleUserColumns[8]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -777,6 +791,8 @@ func init() {
 	}
 	OrgRoleUserTable.ForeignKeys[0].RefTable = OrgRoleTable
 	OrgRoleUserTable.ForeignKeys[1].RefTable = OrgUserTable
+	OrgRoleUserTable.ForeignKeys[2].RefTable = UserTable
+	OrgRoleUserTable.ForeignKeys[3].RefTable = OrgTable
 	OrgRoleUserTable.Annotation = &entsql.Annotation{
 		Table: "org_role_user",
 	}

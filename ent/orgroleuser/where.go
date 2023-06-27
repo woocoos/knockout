@@ -85,6 +85,16 @@ func OrgUserID(v int) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(sql.FieldEQ(FieldOrgUserID, v))
 }
 
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldUserID, v))
+}
+
+// OrgID applies equality check predicate on the "org_id" field. It's identical to OrgIDEQ.
+func OrgID(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldOrgID, v))
+}
+
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(sql.FieldEQ(FieldCreatedBy, v))
@@ -305,6 +315,46 @@ func OrgUserIDNotIn(vs ...int) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(sql.FieldNotIn(FieldOrgUserID, vs...))
 }
 
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldUserID, v))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNEQ(FieldUserID, v))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldIn(FieldUserID, vs...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// OrgIDEQ applies the EQ predicate on the "org_id" field.
+func OrgIDEQ(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldEQ(FieldOrgID, v))
+}
+
+// OrgIDNEQ applies the NEQ predicate on the "org_id" field.
+func OrgIDNEQ(v int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNEQ(FieldOrgID, v))
+}
+
+// OrgIDIn applies the In predicate on the "org_id" field.
+func OrgIDIn(vs ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldIn(FieldOrgID, vs...))
+}
+
+// OrgIDNotIn applies the NotIn predicate on the "org_id" field.
+func OrgIDNotIn(vs ...int) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(sql.FieldNotIn(FieldOrgID, vs...))
+}
+
 // HasOrgRole applies the HasEdge predicate on the "org_role" edge.
 func HasOrgRole() predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
@@ -343,6 +393,52 @@ func HasOrgUser() predicate.OrgRoleUser {
 func HasOrgUserWith(preds ...predicate.OrgUser) predicate.OrgRoleUser {
 	return predicate.OrgRoleUser(func(s *sql.Selector) {
 		step := newOrgUserStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(func(s *sql.Selector) {
+		step := newUserStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrg applies the HasEdge predicate on the "org" edge.
+func HasOrg() predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
+func HasOrgWith(preds ...predicate.Org) predicate.OrgRoleUser {
+	return predicate.OrgRoleUser(func(s *sql.Selector) {
+		step := newOrgStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -34,6 +34,8 @@ func (OrgRoleUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("org_role_id").Comment("组织角色ID"),
 		field.Int("org_user_id").Comment("组织用户ID"),
+		field.Int("user_id").Comment("用户ID"),
+		field.Int("org_id").Comment("组织ID"),
 	}
 }
 
@@ -42,5 +44,7 @@ func (OrgRoleUser) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("org_role", OrgRole.Type).Unique().Required().Field("org_role_id"),
 		edge.To("org_user", OrgUser.Type).Unique().Required().Field("org_user_id"),
+		edge.To("user", User.Type).Unique().Required().Field("user_id"),
+		edge.To("org", Org.Type).Unique().Required().Field("org_id"),
 	}
 }

@@ -11,9 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/user"
 )
 
 // OrgRoleUserCreate is the builder for creating a OrgRoleUser entity.
@@ -84,6 +86,18 @@ func (oruc *OrgRoleUserCreate) SetOrgUserID(i int) *OrgRoleUserCreate {
 	return oruc
 }
 
+// SetUserID sets the "user_id" field.
+func (oruc *OrgRoleUserCreate) SetUserID(i int) *OrgRoleUserCreate {
+	oruc.mutation.SetUserID(i)
+	return oruc
+}
+
+// SetOrgID sets the "org_id" field.
+func (oruc *OrgRoleUserCreate) SetOrgID(i int) *OrgRoleUserCreate {
+	oruc.mutation.SetOrgID(i)
+	return oruc
+}
+
 // SetID sets the "id" field.
 func (oruc *OrgRoleUserCreate) SetID(i int) *OrgRoleUserCreate {
 	oruc.mutation.SetID(i)
@@ -98,6 +112,16 @@ func (oruc *OrgRoleUserCreate) SetOrgRole(o *OrgRole) *OrgRoleUserCreate {
 // SetOrgUser sets the "org_user" edge to the OrgUser entity.
 func (oruc *OrgRoleUserCreate) SetOrgUser(o *OrgUser) *OrgRoleUserCreate {
 	return oruc.SetOrgUserID(o.ID)
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (oruc *OrgRoleUserCreate) SetUser(u *User) *OrgRoleUserCreate {
+	return oruc.SetUserID(u.ID)
+}
+
+// SetOrg sets the "org" edge to the Org entity.
+func (oruc *OrgRoleUserCreate) SetOrg(o *Org) *OrgRoleUserCreate {
+	return oruc.SetOrgID(o.ID)
 }
 
 // Mutation returns the OrgRoleUserMutation object of the builder.
@@ -161,11 +185,23 @@ func (oruc *OrgRoleUserCreate) check() error {
 	if _, ok := oruc.mutation.OrgUserID(); !ok {
 		return &ValidationError{Name: "org_user_id", err: errors.New(`ent: missing required field "OrgRoleUser.org_user_id"`)}
 	}
+	if _, ok := oruc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrgRoleUser.user_id"`)}
+	}
+	if _, ok := oruc.mutation.OrgID(); !ok {
+		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgRoleUser.org_id"`)}
+	}
 	if _, ok := oruc.mutation.OrgRoleID(); !ok {
 		return &ValidationError{Name: "org_role", err: errors.New(`ent: missing required edge "OrgRoleUser.org_role"`)}
 	}
 	if _, ok := oruc.mutation.OrgUserID(); !ok {
 		return &ValidationError{Name: "org_user", err: errors.New(`ent: missing required edge "OrgRoleUser.org_user"`)}
+	}
+	if _, ok := oruc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgRoleUser.user"`)}
+	}
+	if _, ok := oruc.mutation.OrgID(); !ok {
+		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgRoleUser.org"`)}
 	}
 	return nil
 }
@@ -248,6 +284,40 @@ func (oruc *OrgRoleUserCreate) createSpec() (*OrgRoleUser, *sqlgraph.CreateSpec)
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.OrgUserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oruc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   orgroleuser.UserTable,
+			Columns: []string{orgroleuser.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.UserID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oruc.mutation.OrgIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   orgroleuser.OrgTable,
+			Columns: []string{orgroleuser.OrgColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.OrgID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -365,6 +435,30 @@ func (u *OrgRoleUserUpsert) SetOrgUserID(v int) *OrgRoleUserUpsert {
 // UpdateOrgUserID sets the "org_user_id" field to the value that was provided on create.
 func (u *OrgRoleUserUpsert) UpdateOrgUserID() *OrgRoleUserUpsert {
 	u.SetExcluded(orgroleuser.FieldOrgUserID)
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *OrgRoleUserUpsert) SetUserID(v int) *OrgRoleUserUpsert {
+	u.Set(orgroleuser.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsert) UpdateUserID() *OrgRoleUserUpsert {
+	u.SetExcluded(orgroleuser.FieldUserID)
+	return u
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgRoleUserUpsert) SetOrgID(v int) *OrgRoleUserUpsert {
+	u.Set(orgroleuser.FieldOrgID, v)
+	return u
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsert) UpdateOrgID() *OrgRoleUserUpsert {
+	u.SetExcluded(orgroleuser.FieldOrgID)
 	return u
 }
 
@@ -496,6 +590,34 @@ func (u *OrgRoleUserUpsertOne) SetOrgUserID(v int) *OrgRoleUserUpsertOne {
 func (u *OrgRoleUserUpsertOne) UpdateOrgUserID() *OrgRoleUserUpsertOne {
 	return u.Update(func(s *OrgRoleUserUpsert) {
 		s.UpdateOrgUserID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *OrgRoleUserUpsertOne) SetUserID(v int) *OrgRoleUserUpsertOne {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsertOne) UpdateUserID() *OrgRoleUserUpsertOne {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgRoleUserUpsertOne) SetOrgID(v int) *OrgRoleUserUpsertOne {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsertOne) UpdateOrgID() *OrgRoleUserUpsertOne {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.UpdateOrgID()
 	})
 }
 
@@ -789,6 +911,34 @@ func (u *OrgRoleUserUpsertBulk) SetOrgUserID(v int) *OrgRoleUserUpsertBulk {
 func (u *OrgRoleUserUpsertBulk) UpdateOrgUserID() *OrgRoleUserUpsertBulk {
 	return u.Update(func(s *OrgRoleUserUpsert) {
 		s.UpdateOrgUserID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *OrgRoleUserUpsertBulk) SetUserID(v int) *OrgRoleUserUpsertBulk {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsertBulk) UpdateUserID() *OrgRoleUserUpsertBulk {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetOrgID sets the "org_id" field.
+func (u *OrgRoleUserUpsertBulk) SetOrgID(v int) *OrgRoleUserUpsertBulk {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.SetOrgID(v)
+	})
+}
+
+// UpdateOrgID sets the "org_id" field to the value that was provided on create.
+func (u *OrgRoleUserUpsertBulk) UpdateOrgID() *OrgRoleUserUpsertBulk {
+	return u.Update(func(s *OrgRoleUserUpsert) {
+		s.UpdateOrgID()
 	})
 }
 

@@ -27,10 +27,18 @@ const (
 	FieldOrgRoleID = "org_role_id"
 	// FieldOrgUserID holds the string denoting the org_user_id field in the database.
 	FieldOrgUserID = "org_user_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldOrgID holds the string denoting the org_id field in the database.
+	FieldOrgID = "org_id"
 	// EdgeOrgRole holds the string denoting the org_role edge name in mutations.
 	EdgeOrgRole = "org_role"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
+	// EdgeOrg holds the string denoting the org edge name in mutations.
+	EdgeOrg = "org"
 	// Table holds the table name of the orgroleuser in the database.
 	Table = "org_role_user"
 	// OrgRoleTable is the table that holds the org_role relation/edge.
@@ -47,6 +55,20 @@ const (
 	OrgUserInverseTable = "org_user"
 	// OrgUserColumn is the table column denoting the org_user relation/edge.
 	OrgUserColumn = "org_user_id"
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "org_role_user"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "user"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_id"
+	// OrgTable is the table that holds the org relation/edge.
+	OrgTable = "org_role_user"
+	// OrgInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgInverseTable = "org"
+	// OrgColumn is the table column denoting the org relation/edge.
+	OrgColumn = "org_id"
 )
 
 // Columns holds all SQL columns for orgroleuser fields.
@@ -58,6 +80,8 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldOrgRoleID,
 	FieldOrgUserID,
+	FieldUserID,
+	FieldOrgID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -119,6 +143,16 @@ func ByOrgUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrgUserID, opts...).ToFunc()
 }
 
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+}
+
+// ByOrgID orders the results by the org_id field.
+func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
+}
+
 // ByOrgRoleField orders the results by org_role field.
 func ByOrgRoleField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -130,6 +164,20 @@ func ByOrgRoleField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByOrgUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newOrgUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByOrgField orders the results by org field.
+func ByOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newOrgRoleStep() *sqlgraph.Step {
@@ -144,5 +192,19 @@ func newOrgUserStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OrgUserInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, OrgUserTable, OrgUserColumn),
+	)
+}
+func newUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, UserTable, UserColumn),
+	)
+}
+func newOrgStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
 	)
 }

@@ -185,7 +185,7 @@ func initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 		ps = append(ps, client.Permission.Create().SetID(i).SetOrgID(1).SetOrgPolicyID(i).SetCreatedBy(1).
 			SetPrincipalKind(permission.PrincipalKindRole).SetRoleID(i).SetStatus(typex.SimpleStatusActive))
 
-		orus = append(orus, client.OrgRoleUser.Create().SetID(i).SetCreatedBy(1).SetOrgRoleID(i).SetOrgUserID(1))
+		orus = append(orus, client.OrgRoleUser.Create().SetID(i).SetCreatedBy(1).SetOrgRoleID(i).SetOrgUserID(1).SetUserID(1).SetOrgID(1))
 
 		casbinRules = append(casbinRules, casbinClient.CasbinRule.Create().SetPtype("g").
 			SetV0("1").SetV1(strconv.Itoa(i)).SetV2("1"))

@@ -7564,6 +7564,50 @@ func (ec *executionContext) fieldContext_File_sourceID(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _File_tenantID(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_File_tenantID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TenantID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_File_tenantID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "File",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _File_path(ctx context.Context, field graphql.CollectedField, obj *ent.File) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_File_path(ctx, field)
 	if err != nil {
@@ -7992,6 +8036,8 @@ func (ec *executionContext) fieldContext_FileEdge_node(ctx context.Context, fiel
 				return ec.fieldContext_File_name(ctx, field)
 			case "sourceID":
 				return ec.fieldContext_File_sourceID(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_File_tenantID(ctx, field)
 			case "path":
 				return ec.fieldContext_File_path(ctx, field)
 			case "size":
@@ -13758,7 +13804,7 @@ func (ec *executionContext) _Query_appRoleAssignedToOrgs(ctx context.Context, fi
 	}
 	res := resTmp.([]*ent.Org)
 	fc.Result = res
-	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13867,7 +13913,7 @@ func (ec *executionContext) _Query_appPolicyAssignedToOrgs(ctx context.Context, 
 	}
 	res := resTmp.([]*ent.Org)
 	fc.Result = res
-	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14291,7 +14337,7 @@ func (ec *executionContext) _Query_userMenus(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*ent.AppMenu)
 	fc.Result = res
-	return ec.marshalNAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenu(ctx, field.Selections, res)
+	return ec.marshalNAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_userMenus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14380,7 +14426,7 @@ func (ec *executionContext) _Query_userPermissions(ctx context.Context, field gr
 	}
 	res := resTmp.([]*ent.AppAction)
 	fc.Result = res
-	return ec.marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx, field.Selections, res)
+	return ec.marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_userPermissions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14516,7 +14562,7 @@ func (ec *executionContext) _Query_orgAppActions(ctx context.Context, field grap
 	}
 	res := resTmp.([]*ent.AppAction)
 	fc.Result = res
-	return ec.marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx, field.Selections, res)
+	return ec.marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_orgAppActions(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14597,7 +14643,7 @@ func (ec *executionContext) _Query_userRootOrgs(ctx context.Context, field graph
 	}
 	res := resTmp.([]*ent.Org)
 	fc.Result = res
-	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+	return ec.marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_userRootOrgs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27640,7 +27686,7 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "sourceID", "sourceIDNEQ", "sourceIDIn", "sourceIDNotIn", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathEqualFold", "pathContainsFold", "size", "sizeNEQ", "sizeIn", "sizeNotIn", "sizeGT", "sizeGTE", "sizeLT", "sizeLTE", "sizeIsNil", "sizeNotNil", "hasSource", "hasSourceWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "sourceID", "sourceIDNEQ", "sourceIDIn", "sourceIDNotIn", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "tenantIDGT", "tenantIDGTE", "tenantIDLT", "tenantIDLTE", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathEqualFold", "pathContainsFold", "size", "sizeNEQ", "sizeIn", "sizeNotIn", "sizeGT", "sizeGTE", "sizeLT", "sizeLTE", "sizeIsNil", "sizeNotNil", "hasSource", "hasSourceWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -28223,6 +28269,78 @@ func (ec *executionContext) unmarshalInputFileWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.SourceIDNotIn = data
+		case "tenantID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantID = data
+		case "tenantIDNEQ":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDNEQ = data
+		case "tenantIDIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDIn = data
+		case "tenantIDNotIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDNotIn = data
+		case "tenantIDGT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDGT = data
+		case "tenantIDGTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDGTE = data
+		case "tenantIDLT":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDLT = data
+		case "tenantIDLTE":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDLTE = data
 		case "path":
 			var err error
 
@@ -42210,6 +42328,13 @@ func (ec *executionContext) _File(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "tenantID":
+
+			out.Values[i] = ec._File_tenantID(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		case "path":
 
 			out.Values[i] = ec._File_path(ctx, field, obj)
@@ -44717,6 +44842,60 @@ func (ec *executionContext) marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋkno
 	return ret
 }
 
+func (ec *executionContext) marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.AppAction) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAppAction2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAppAction2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx context.Context, sel ast.SelectionSet, v *ent.AppAction) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AppAction(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNAppActionConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppActionConnection(ctx context.Context, sel ast.SelectionSet, v *ent.AppActionConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -44826,6 +45005,50 @@ func (ec *executionContext) marshalNAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknock
 
 	}
 	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.AppMenu) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAppMenu2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenu(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
 
 	return ret
 }
@@ -45271,7 +45494,7 @@ func (ec *executionContext) marshalNOrderDirection2entgoᚗioᚋcontribᚋentgql
 	return v
 }
 
-func (ec *executionContext) marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx context.Context, sel ast.SelectionSet, v []*ent.Org) graphql.Marshaler {
+func (ec *executionContext) marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Org) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -45295,7 +45518,7 @@ func (ec *executionContext) marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockout�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, sel, v[i])
+			ret[i] = ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -45305,6 +45528,12 @@ func (ec *executionContext) marshalNOrg2ᚕᚖgithubᚗcomᚋwoocoosᚋknockout�
 
 	}
 	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
 
 	return ret
 }
