@@ -5,23 +5,24 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"io"
+	"mime"
+	"os"
+	"path/filepath"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/file"
-	"io"
-	"mime"
-	"os"
-	"path/filepath"
-	"strconv"
 )
 
 var _ oas.FileServer = (*FileService)(nil)
 
 type FileService struct {
-	baseDir string
+	BaseDir string
 	DB      *ent.Client
 }
 
@@ -127,16 +128,17 @@ func (f *FileService) UploadFile(c *gin.Context, r *oas.UploadFileRequest) (fid 
 		return "", err
 	}
 	fingerprint := md5.New()
+	// 落盘
+	if err = os.MkdirAll(filepath.Dir(refname), os.ModePerm); err != nil {
+		return "", err
+	}
 	// 上传文件只能是新建,不允许覆盖
 	out, err := os.OpenFile(refname, os.O_CREATE|os.O_EXCL|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		return "", err
 	}
 	mw := io.MultiWriter(out, fingerprint)
-	// 落盘
-	if err = os.MkdirAll(filepath.Dir(refname), os.ModePerm); err != nil {
-		return "", err
-	}
+
 	size, err := io.Copy(mw, file)
 	if err != nil {
 		return "", err
@@ -175,5 +177,5 @@ func (f *FileService) UploadFile(c *gin.Context, r *oas.UploadFileRequest) (fid 
 }
 
 func (f *FileService) getStorePath(ctx context.Context, tid int, key string) (string, error) {
-	return filepath.Join(f.baseDir, strconv.Itoa(tid), key), nil
+	return filepath.Join(f.BaseDir, strconv.Itoa(tid), key), nil
 }

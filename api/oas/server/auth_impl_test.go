@@ -5,6 +5,13 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
 	"github.com/alicebob/miniredis/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -30,12 +37,6 @@ import (
 	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/status"
 	"github.com/woocoos/knockout/test"
-	"net/http/httptest"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	_ "github.com/woocoos/knockout/ent/runtime"
@@ -81,7 +82,7 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 
 	s.FileService = &FileService{
 		DB:      s.AuthService.DB,
-		baseDir: appCnf.Abs(appCnf.String("files.local.bucket")),
+		BaseDir: appCnf.Abs(appCnf.String("files.local.bucket")),
 	}
 
 	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)
