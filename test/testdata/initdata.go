@@ -1,4 +1,5 @@
-// go:build ignore
+//go:build ignore
+
 package main
 
 import (
@@ -99,9 +100,9 @@ func initUser(client *ent.Tx) {
 	for i := 1; i < 4; i++ {
 		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
 			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
-			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1)
+			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1).SetEmail("user" + strconv.Itoa(i) + "@localhost")
 		if i == 1 {
-			c.SetPrincipalName("admin").SetDisplayName("admin")
+			c.SetPrincipalName("admin").SetDisplayName("admin").SetEmail("admin@localhost")
 		}
 		ub = append(ub, c)
 

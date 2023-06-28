@@ -113,7 +113,7 @@ func wrapForgetPwdReset(si oas.AuthServer) func(c *gin.Context) {
 func wrapForgetPwdSendEmail(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdSendEmailRequest
-		if err := c.ShouldBind(&req.Body); err != nil {
+		if err := c.ShouldBind(&req.StateToken); err != nil {
 			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
@@ -203,7 +203,7 @@ func wrapResetPassword(si oas.AuthServer) func(c *gin.Context) {
 func wrapUnBindMfa(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.UnBindMfaRequest
-		if err := c.ShouldBind(&req.Body); err != nil {
+		if err := c.ShouldBind(&req.OtpToken); err != nil {
 			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}

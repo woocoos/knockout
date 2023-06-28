@@ -503,7 +503,7 @@ func (s *AuthService) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bo
 		return false, err
 	}
 	up, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
-	if !totp.Validate(req.Body, up.MfaSecret) {
+	if !totp.Validate(req.OtpToken, up.MfaSecret) {
 		return false, errors.New("invalid code")
 	}
 	err = s.DB.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
@@ -602,7 +602,7 @@ func (s *AuthService) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRe
 
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码
 func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
-	token := req.Body
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return "", err

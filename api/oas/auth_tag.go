@@ -40,7 +40,7 @@ type ForgetPwdResetRequestBody struct {
 }
 
 type ForgetPwdSendEmailRequest struct {
-	Body string `binding:"required" json:"stateToken"`
+	StateToken string `binding:"required" json:"stateToken"`
 }
 
 type ForgetPwdVerifyEmailRequest struct {
@@ -83,7 +83,7 @@ type ResetPasswordRequestBody struct {
 }
 
 type UnBindMfaRequest struct {
-	Body string `binding:"required" json:"otpToken"`
+	OtpToken string `binding:"required" json:"otpToken"`
 }
 
 type VerifyFactorRequest struct {
