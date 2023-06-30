@@ -1,15 +1,12 @@
-//go:build ignore
-
 package main
 
 import (
-	"github.com/vektah/gqlparser/v2/ast"
-	"log"
-	"os"
-
 	"github.com/99designs/gqlgen/api"
 	"github.com/99designs/gqlgen/codegen/config"
 	"github.com/99designs/gqlgen/plugin/modelgen"
+	"github.com/vektah/gqlparser/v2/ast"
+	"log"
+	"os"
 )
 
 // Defining mutation function
