@@ -28,6 +28,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldKind holds the string denoting the kind field in the database.
 	FieldKind = "kind"
+	// FieldComments holds the string denoting the comments field in the database.
+	FieldComments = "comments"
 	// FieldEndpoint holds the string denoting the endpoint field in the database.
 	FieldEndpoint = "endpoint"
 	// FieldRegion holds the string denoting the region field in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldUpdatedAt,
 	FieldKind,
+	FieldComments,
 	FieldEndpoint,
 	FieldRegion,
 	FieldBucket,
@@ -139,6 +142,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByKind orders the results by the kind field.
 func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
+}
+
+// ByComments orders the results by the comments field.
+func ByComments(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
 // ByEndpoint orders the results by the endpoint field.

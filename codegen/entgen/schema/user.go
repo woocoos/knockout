@@ -83,6 +83,8 @@ func (User) Fields() []ent.Field {
 			),
 		field.String("comments").Optional().Comment("备注").Annotations(
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
+		field.Int("avatar_file_id").Optional().Comment("头像").Annotations(
+			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 	}
 }
 

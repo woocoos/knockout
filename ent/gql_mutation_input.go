@@ -669,6 +669,7 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 // CreateFileSourceInput represents a mutation input for creating filesources.
 type CreateFileSourceInput struct {
 	Kind     filesource.Kind
+	Comments *string
 	Endpoint *string
 	Region   *string
 	Bucket   *string
@@ -678,6 +679,9 @@ type CreateFileSourceInput struct {
 // Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
 func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
 	m.SetKind(i.Kind)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
 	if v := i.Endpoint; v != nil {
 		m.SetEndpoint(*v)
 	}
@@ -701,6 +705,8 @@ func (c *FileSourceCreate) SetInput(i CreateFileSourceInput) *FileSourceCreate {
 // UpdateFileSourceInput represents a mutation input for updating filesources.
 type UpdateFileSourceInput struct {
 	Kind          *filesource.Kind
+	ClearComments bool
+	Comments      *string
 	ClearEndpoint bool
 	Endpoint      *string
 	ClearRegion   bool
@@ -716,6 +722,12 @@ type UpdateFileSourceInput struct {
 func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
 	}
 	if i.ClearEndpoint {
 		m.ClearEndpoint()
@@ -1278,6 +1290,7 @@ type CreateUserInput struct {
 	Mobile         *string
 	Status         *typex.SimpleStatus
 	Comments       *string
+	AvatarFileID   *int
 	IdentityIDs    []int
 	LoginProfileID *int
 	PasswordIDs    []int
@@ -1299,6 +1312,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if v := i.AvatarFileID; v != nil {
+		m.SetAvatarFileID(*v)
 	}
 	if v := i.IdentityIDs; len(v) > 0 {
 		m.AddIdentityIDs(v...)
@@ -1322,14 +1338,16 @@ func (c *UserCreate) SetInput(i CreateUserInput) *UserCreate {
 
 // UpdateUserInput represents a mutation input for updating users.
 type UpdateUserInput struct {
-	PrincipalName *string
-	DisplayName   *string
-	ClearEmail    bool
-	Email         *string
-	ClearMobile   bool
-	Mobile        *string
-	ClearComments bool
-	Comments      *string
+	PrincipalName     *string
+	DisplayName       *string
+	ClearEmail        bool
+	Email             *string
+	ClearMobile       bool
+	Mobile            *string
+	ClearComments     bool
+	Comments          *string
+	ClearAvatarFileID bool
+	AvatarFileID      *int
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -1357,6 +1375,12 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if i.ClearAvatarFileID {
+		m.ClearAvatarFileID()
+	}
+	if v := i.AvatarFileID; v != nil {
+		m.SetAvatarFileID(*v)
 	}
 }
 

@@ -44,6 +44,7 @@ web:
                 tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
+                  - "/login/refresh-token"
                   - "/login/mfaqr.png"
                   - "/login/verify-factor"
                   - "/login/reset-password"

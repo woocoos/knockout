@@ -39,6 +39,8 @@ func (FileSource) Fields() []ent.Field {
 		field.Enum("kind").Values(
 			"local", "alioss",
 		).Comment("文件来源"),
+		field.String("comments").Optional().Comment("备注").
+			Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.String("endpoint").Optional().Comment("对外服务的访问域名"),
 		field.String("region").MaxLen(100).Optional().Comment("地域，数据存储的物理位置。本地存储为：localhost"),
 		field.String("bucket").MaxLen(100).Optional().Comment("文件存储空间。本地存储为：assets"),

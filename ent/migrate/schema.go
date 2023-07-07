@@ -272,6 +272,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "alioss"}},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "endpoint", Type: field.TypeString, Nullable: true},
 		{Name: "region", Type: field.TypeString, Nullable: true, Size: 100},
 		{Name: "bucket", Type: field.TypeString, Nullable: true, Size: 100},
@@ -285,7 +286,7 @@ var (
 			{
 				Name:    "filesource_kind_endpoint_region_bucket",
 				Unique:  true,
-				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[6], FileSourceColumns[7], FileSourceColumns[8]},
+				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[8], FileSourceColumns[9]},
 			},
 		},
 	}
@@ -584,6 +585,7 @@ var (
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{

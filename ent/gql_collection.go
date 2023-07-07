@@ -1626,6 +1626,11 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldKind)
 				fieldSeen[filesource.FieldKind] = struct{}{}
 			}
+		case "comments":
+			if _, ok := fieldSeen[filesource.FieldComments]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldComments)
+				fieldSeen[filesource.FieldComments] = struct{}{}
+			}
 		case "endpoint":
 			if _, ok := fieldSeen[filesource.FieldEndpoint]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldEndpoint)
@@ -2944,6 +2949,11 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			if _, ok := fieldSeen[user.FieldComments]; !ok {
 				selectedFields = append(selectedFields, user.FieldComments)
 				fieldSeen[user.FieldComments] = struct{}{}
+			}
+		case "avatarFileID":
+			if _, ok := fieldSeen[user.FieldAvatarFileID]; !ok {
+				selectedFields = append(selectedFields, user.FieldAvatarFileID)
+				fieldSeen[user.FieldAvatarFileID] = struct{}{}
 			}
 		case "id":
 		case "__typename":

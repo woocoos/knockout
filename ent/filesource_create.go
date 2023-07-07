@@ -77,6 +77,20 @@ func (fsc *FileSourceCreate) SetKind(f filesource.Kind) *FileSourceCreate {
 	return fsc
 }
 
+// SetComments sets the "comments" field.
+func (fsc *FileSourceCreate) SetComments(s string) *FileSourceCreate {
+	fsc.mutation.SetComments(s)
+	return fsc
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (fsc *FileSourceCreate) SetNillableComments(s *string) *FileSourceCreate {
+	if s != nil {
+		fsc.SetComments(*s)
+	}
+	return fsc
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (fsc *FileSourceCreate) SetEndpoint(s string) *FileSourceCreate {
 	fsc.mutation.SetEndpoint(s)
@@ -266,6 +280,10 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
 	}
+	if value, ok := fsc.mutation.Comments(); ok {
+		_spec.SetField(filesource.FieldComments, field.TypeString, value)
+		_node.Comments = value
+	}
 	if value, ok := fsc.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 		_node.Endpoint = value
@@ -397,6 +415,24 @@ func (u *FileSourceUpsert) SetKind(v filesource.Kind) *FileSourceUpsert {
 // UpdateKind sets the "kind" field to the value that was provided on create.
 func (u *FileSourceUpsert) UpdateKind() *FileSourceUpsert {
 	u.SetExcluded(filesource.FieldKind)
+	return u
+}
+
+// SetComments sets the "comments" field.
+func (u *FileSourceUpsert) SetComments(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldComments, v)
+	return u
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateComments() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldComments)
+	return u
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *FileSourceUpsert) ClearComments() *FileSourceUpsert {
+	u.SetNull(filesource.FieldComments)
 	return u
 }
 
@@ -568,6 +604,27 @@ func (u *FileSourceUpsertOne) SetKind(v filesource.Kind) *FileSourceUpsertOne {
 func (u *FileSourceUpsertOne) UpdateKind() *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
 		s.UpdateKind()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *FileSourceUpsertOne) SetComments(v string) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateComments() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *FileSourceUpsertOne) ClearComments() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearComments()
 	})
 }
 
@@ -910,6 +967,27 @@ func (u *FileSourceUpsertBulk) SetKind(v filesource.Kind) *FileSourceUpsertBulk 
 func (u *FileSourceUpsertBulk) UpdateKind() *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
 		s.UpdateKind()
+	})
+}
+
+// SetComments sets the "comments" field.
+func (u *FileSourceUpsertBulk) SetComments(v string) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetComments(v)
+	})
+}
+
+// UpdateComments sets the "comments" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateComments() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateComments()
+	})
+}
+
+// ClearComments clears the value of the "comments" field.
+func (u *FileSourceUpsertBulk) ClearComments() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearComments()
 	})
 }
 

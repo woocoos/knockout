@@ -30,6 +30,8 @@ type AuthServer interface {
 	Login(*gin.Context, *LoginRequest) (*LoginResponse, error)
 	// (POST /logout)
 	Logout(*gin.Context) error
+	// (POST /login/refresh-token)
+	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
 	// (POST /login/reset-password)
 	ResetPassword(*gin.Context, *ResetPasswordRequest) (*LoginResponse, error)
 	// (POST /mfa/unbind)
@@ -100,6 +102,11 @@ func (UnimplementedAuthServer) Login(c *gin.Context, req *LoginRequest) (_ *Logi
 
 func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) RefreshToken(c *gin.Context, req *RefreshTokenRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method RefreshToken not implemented")
 	return
 }
 

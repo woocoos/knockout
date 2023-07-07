@@ -178,6 +178,20 @@ func (uc *UserCreate) SetNillableComments(s *string) *UserCreate {
 	return uc
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uc *UserCreate) SetAvatarFileID(i int) *UserCreate {
+	uc.mutation.SetAvatarFileID(i)
+	return uc
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableAvatarFileID(i *int) *UserCreate {
+	if i != nil {
+		uc.SetAvatarFileID(*i)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(i int) *UserCreate {
 	uc.mutation.SetID(i)
@@ -496,6 +510,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Comments(); ok {
 		_spec.SetField(user.FieldComments, field.TypeString, value)
 		_node.Comments = value
+	}
+	if value, ok := uc.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+		_node.AvatarFileID = value
 	}
 	if nodes := uc.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -857,6 +875,30 @@ func (u *UserUpsert) ClearComments() *UserUpsert {
 	return u
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsert) SetAvatarFileID(v int) *UserUpsert {
+	u.Set(user.FieldAvatarFileID, v)
+	return u
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsert) UpdateAvatarFileID() *UserUpsert {
+	u.SetExcluded(user.FieldAvatarFileID)
+	return u
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsert) AddAvatarFileID(v int) *UserUpsert {
+	u.Add(user.FieldAvatarFileID, v)
+	return u
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsert) ClearAvatarFileID() *UserUpsert {
+	u.SetNull(user.FieldAvatarFileID)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1132,6 +1174,34 @@ func (u *UserUpsertOne) UpdateComments() *UserUpsertOne {
 func (u *UserUpsertOne) ClearComments() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearComments()
+	})
+}
+
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsertOne) SetAvatarFileID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetAvatarFileID(v)
+	})
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsertOne) AddAvatarFileID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.AddAvatarFileID(v)
+	})
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateAvatarFileID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateAvatarFileID()
+	})
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsertOne) ClearAvatarFileID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearAvatarFileID()
 	})
 }
 
@@ -1572,6 +1642,34 @@ func (u *UserUpsertBulk) UpdateComments() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearComments() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearComments()
+	})
+}
+
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsertBulk) SetAvatarFileID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetAvatarFileID(v)
+	})
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsertBulk) AddAvatarFileID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.AddAvatarFileID(v)
+	})
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateAvatarFileID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateAvatarFileID()
+	})
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsertBulk) ClearAvatarFileID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearAvatarFileID()
 	})
 }
 

@@ -10154,6 +10154,7 @@ type FileSourceMutation struct {
 	addupdated_by *int
 	updated_at    *time.Time
 	kind          *filesource.Kind
+	comments      *string
 	endpoint      *string
 	region        *string
 	bucket        *string
@@ -10517,6 +10518,55 @@ func (m *FileSourceMutation) ResetKind() {
 	m.kind = nil
 }
 
+// SetComments sets the "comments" field.
+func (m *FileSourceMutation) SetComments(s string) {
+	m.comments = &s
+}
+
+// Comments returns the value of the "comments" field in the mutation.
+func (m *FileSourceMutation) Comments() (r string, exists bool) {
+	v := m.comments
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldComments returns the old "comments" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldComments(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldComments is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldComments requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldComments: %w", err)
+	}
+	return oldValue.Comments, nil
+}
+
+// ClearComments clears the value of the "comments" field.
+func (m *FileSourceMutation) ClearComments() {
+	m.comments = nil
+	m.clearedFields[filesource.FieldComments] = struct{}{}
+}
+
+// CommentsCleared returns if the "comments" field was cleared in this mutation.
+func (m *FileSourceMutation) CommentsCleared() bool {
+	_, ok := m.clearedFields[filesource.FieldComments]
+	return ok
+}
+
+// ResetComments resets all changes to the "comments" field.
+func (m *FileSourceMutation) ResetComments() {
+	m.comments = nil
+	delete(m.clearedFields, filesource.FieldComments)
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (m *FileSourceMutation) SetEndpoint(s string) {
 	m.endpoint = &s
@@ -10752,7 +10802,7 @@ func (m *FileSourceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileSourceMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_by != nil {
 		fields = append(fields, filesource.FieldCreatedBy)
 	}
@@ -10767,6 +10817,9 @@ func (m *FileSourceMutation) Fields() []string {
 	}
 	if m.kind != nil {
 		fields = append(fields, filesource.FieldKind)
+	}
+	if m.comments != nil {
+		fields = append(fields, filesource.FieldComments)
 	}
 	if m.endpoint != nil {
 		fields = append(fields, filesource.FieldEndpoint)
@@ -10795,6 +10848,8 @@ func (m *FileSourceMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case filesource.FieldKind:
 		return m.Kind()
+	case filesource.FieldComments:
+		return m.Comments()
 	case filesource.FieldEndpoint:
 		return m.Endpoint()
 	case filesource.FieldRegion:
@@ -10820,6 +10875,8 @@ func (m *FileSourceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUpdatedAt(ctx)
 	case filesource.FieldKind:
 		return m.OldKind(ctx)
+	case filesource.FieldComments:
+		return m.OldComments(ctx)
 	case filesource.FieldEndpoint:
 		return m.OldEndpoint(ctx)
 	case filesource.FieldRegion:
@@ -10869,6 +10926,13 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetKind(v)
+		return nil
+	case filesource.FieldComments:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetComments(v)
 		return nil
 	case filesource.FieldEndpoint:
 		v, ok := value.(string)
@@ -10954,6 +11018,9 @@ func (m *FileSourceMutation) ClearedFields() []string {
 	if m.FieldCleared(filesource.FieldUpdatedAt) {
 		fields = append(fields, filesource.FieldUpdatedAt)
 	}
+	if m.FieldCleared(filesource.FieldComments) {
+		fields = append(fields, filesource.FieldComments)
+	}
 	if m.FieldCleared(filesource.FieldEndpoint) {
 		fields = append(fields, filesource.FieldEndpoint)
 	}
@@ -10982,6 +11049,9 @@ func (m *FileSourceMutation) ClearField(name string) error {
 		return nil
 	case filesource.FieldUpdatedAt:
 		m.ClearUpdatedAt()
+		return nil
+	case filesource.FieldComments:
+		m.ClearComments()
 		return nil
 	case filesource.FieldEndpoint:
 		m.ClearEndpoint()
@@ -11014,6 +11084,9 @@ func (m *FileSourceMutation) ResetField(name string) error {
 		return nil
 	case filesource.FieldKind:
 		m.ResetKind()
+		return nil
+	case filesource.FieldComments:
+		m.ResetComments()
 		return nil
 	case filesource.FieldEndpoint:
 		m.ResetEndpoint()
@@ -19987,6 +20060,8 @@ type UserMutation struct {
 	register_ip          *string
 	status               *typex.SimpleStatus
 	comments             *string
+	avatar_file_id       *int
+	addavatar_file_id    *int
 	clearedFields        map[string]struct{}
 	identities           map[int]struct{}
 	removedidentities    map[int]struct{}
@@ -20753,6 +20828,76 @@ func (m *UserMutation) ResetComments() {
 	delete(m.clearedFields, user.FieldComments)
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (m *UserMutation) SetAvatarFileID(i int) {
+	m.avatar_file_id = &i
+	m.addavatar_file_id = nil
+}
+
+// AvatarFileID returns the value of the "avatar_file_id" field in the mutation.
+func (m *UserMutation) AvatarFileID() (r int, exists bool) {
+	v := m.avatar_file_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAvatarFileID returns the old "avatar_file_id" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldAvatarFileID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAvatarFileID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAvatarFileID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAvatarFileID: %w", err)
+	}
+	return oldValue.AvatarFileID, nil
+}
+
+// AddAvatarFileID adds i to the "avatar_file_id" field.
+func (m *UserMutation) AddAvatarFileID(i int) {
+	if m.addavatar_file_id != nil {
+		*m.addavatar_file_id += i
+	} else {
+		m.addavatar_file_id = &i
+	}
+}
+
+// AddedAvatarFileID returns the value that was added to the "avatar_file_id" field in this mutation.
+func (m *UserMutation) AddedAvatarFileID() (r int, exists bool) {
+	v := m.addavatar_file_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (m *UserMutation) ClearAvatarFileID() {
+	m.avatar_file_id = nil
+	m.addavatar_file_id = nil
+	m.clearedFields[user.FieldAvatarFileID] = struct{}{}
+}
+
+// AvatarFileIDCleared returns if the "avatar_file_id" field was cleared in this mutation.
+func (m *UserMutation) AvatarFileIDCleared() bool {
+	_, ok := m.clearedFields[user.FieldAvatarFileID]
+	return ok
+}
+
+// ResetAvatarFileID resets all changes to the "avatar_file_id" field.
+func (m *UserMutation) ResetAvatarFileID() {
+	m.avatar_file_id = nil
+	m.addavatar_file_id = nil
+	delete(m.clearedFields, user.FieldAvatarFileID)
+}
+
 // AddIdentityIDs adds the "identities" edge to the UserIdentity entity by ids.
 func (m *UserMutation) AddIdentityIDs(ids ...int) {
 	if m.identities == nil {
@@ -21150,7 +21295,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.created_by != nil {
 		fields = append(fields, user.FieldCreatedBy)
 	}
@@ -21193,6 +21338,9 @@ func (m *UserMutation) Fields() []string {
 	if m.comments != nil {
 		fields = append(fields, user.FieldComments)
 	}
+	if m.avatar_file_id != nil {
+		fields = append(fields, user.FieldAvatarFileID)
+	}
 	return fields
 }
 
@@ -21229,6 +21377,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Status()
 	case user.FieldComments:
 		return m.Comments()
+	case user.FieldAvatarFileID:
+		return m.AvatarFileID()
 	}
 	return nil, false
 }
@@ -21266,6 +21416,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldStatus(ctx)
 	case user.FieldComments:
 		return m.OldComments(ctx)
+	case user.FieldAvatarFileID:
+		return m.OldAvatarFileID(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -21373,6 +21525,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetComments(v)
 		return nil
+	case user.FieldAvatarFileID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAvatarFileID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -21387,6 +21546,9 @@ func (m *UserMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, user.FieldUpdatedBy)
 	}
+	if m.addavatar_file_id != nil {
+		fields = append(fields, user.FieldAvatarFileID)
+	}
 	return fields
 }
 
@@ -21399,6 +21561,8 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case user.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
+	case user.FieldAvatarFileID:
+		return m.AddedAvatarFileID()
 	}
 	return nil, false
 }
@@ -21421,6 +21585,13 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
+		return nil
+	case user.FieldAvatarFileID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAvatarFileID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
@@ -21450,6 +21621,9 @@ func (m *UserMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(user.FieldComments) {
 		fields = append(fields, user.FieldComments)
+	}
+	if m.FieldCleared(user.FieldAvatarFileID) {
+		fields = append(fields, user.FieldAvatarFileID)
 	}
 	return fields
 }
@@ -21485,6 +21659,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldComments:
 		m.ClearComments()
+		return nil
+	case user.FieldAvatarFileID:
+		m.ClearAvatarFileID()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -21535,6 +21712,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldComments:
 		m.ResetComments()
+		return nil
+	case user.FieldAvatarFileID:
+		m.ResetAvatarFileID()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

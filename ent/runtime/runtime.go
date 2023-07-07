@@ -245,11 +245,11 @@ func init() {
 	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
 	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[2].Descriptor()
+	filesourceDescRegion := filesourceFields[3].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[3].Descriptor()
+	filesourceDescBucket := filesourceFields[4].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
 	orgMixin := schema.Org{}.Mixin()

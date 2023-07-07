@@ -73,6 +73,10 @@ type LoginRequestBody struct {
 	Username  string `binding:"required" json:"username"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `binding:"required" json:"refreshToken"`
+}
+
 type ResetPasswordRequest struct {
 	Body ResetPasswordRequestBody
 }

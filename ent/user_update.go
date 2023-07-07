@@ -213,6 +213,33 @@ func (uu *UserUpdate) ClearComments() *UserUpdate {
 	return uu
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uu *UserUpdate) SetAvatarFileID(i int) *UserUpdate {
+	uu.mutation.ResetAvatarFileID()
+	uu.mutation.SetAvatarFileID(i)
+	return uu
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableAvatarFileID(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetAvatarFileID(*i)
+	}
+	return uu
+}
+
+// AddAvatarFileID adds i to the "avatar_file_id" field.
+func (uu *UserUpdate) AddAvatarFileID(i int) *UserUpdate {
+	uu.mutation.AddAvatarFileID(i)
+	return uu
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (uu *UserUpdate) ClearAvatarFileID() *UserUpdate {
+	uu.mutation.ClearAvatarFileID()
+	return uu
+}
+
 // AddIdentityIDs adds the "identities" edge to the UserIdentity entity by IDs.
 func (uu *UserUpdate) AddIdentityIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddIdentityIDs(ids...)
@@ -592,6 +619,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
+	}
+	if value, ok := uu.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if value, ok := uu.mutation.AddedAvatarFileID(); ok {
+		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if uu.mutation.AvatarFileIDCleared() {
+		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
 	}
 	if uu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1101,6 +1137,33 @@ func (uuo *UserUpdateOne) ClearComments() *UserUpdateOne {
 	return uuo
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uuo *UserUpdateOne) SetAvatarFileID(i int) *UserUpdateOne {
+	uuo.mutation.ResetAvatarFileID()
+	uuo.mutation.SetAvatarFileID(i)
+	return uuo
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableAvatarFileID(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetAvatarFileID(*i)
+	}
+	return uuo
+}
+
+// AddAvatarFileID adds i to the "avatar_file_id" field.
+func (uuo *UserUpdateOne) AddAvatarFileID(i int) *UserUpdateOne {
+	uuo.mutation.AddAvatarFileID(i)
+	return uuo
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (uuo *UserUpdateOne) ClearAvatarFileID() *UserUpdateOne {
+	uuo.mutation.ClearAvatarFileID()
+	return uuo
+}
+
 // AddIdentityIDs adds the "identities" edge to the UserIdentity entity by IDs.
 func (uuo *UserUpdateOne) AddIdentityIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddIdentityIDs(ids...)
@@ -1510,6 +1573,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
+	}
+	if value, ok := uuo.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if value, ok := uuo.mutation.AddedAvatarFileID(); ok {
+		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if uuo.mutation.AvatarFileIDCleared() {
+		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
 	}
 	if uuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{

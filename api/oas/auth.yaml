@@ -63,6 +63,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /login/refresh-token:
+    post:
+      summary: Use this API to refresh token
+      description: Use this API to refresh token
+      tags:
+        - auth
+      operationId: refreshToken
+      requestBody:
+        description: refresh token with refreshToken
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: the refreshToken
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: refresh token successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /login/verify-factor:
     post:
       description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.

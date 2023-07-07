@@ -173,6 +173,35 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 	return s.loginToken(ctx, pwd.UserID)
 }
 
+func (s *AuthService) RefreshToken(ctx *gin.Context, req *oas.RefreshTokenRequest) (*oas.LoginResponse, error) {
+	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
+		return []byte(s.Options.JWT.SigningKey), nil
+	})
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+
+	subject := token.Claims.(*jwt.RegisteredClaims).Subject
+	uid, err := strconv.Atoi(subject)
+	if err != nil {
+		return nil, err
+	}
+
+	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	if err != nil {
+		return nil, err
+	}
+	return &oas.LoginResponse{
+		AccessToken: tstr,
+		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
+	}, nil
+}
+
 func (s *AuthService) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
 	token := req.Body.StateToken
 	id, err := parseStateToken(token, s.Options)
@@ -448,10 +477,8 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if err != nil {
 		return nil, err
 	}
-	//
-	tidStr := ctx.GetHeader("X-Tenant-Id")
-	tid, err := strconv.Atoi(tidStr)
-	if err != nil {
+	var tid int
+	if tid, err = s.tryGetTenantID(ctx); err != nil {
 		return nil, err
 	}
 	uorg, err := s.DB.Org.Query().Where(org.ID(tid)).Only(ctx)
@@ -684,4 +711,13 @@ func (s *AuthService) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVer
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
+}
+
+func (s *AuthService) tryGetTenantID(c *gin.Context) (tid int, err error) {
+	if str := c.GetHeader("X-Tenant-ID"); str != "" {
+		if tid, err = strconv.Atoi(str); err != nil {
+			return 0, err
+		}
+	}
+	return
 }

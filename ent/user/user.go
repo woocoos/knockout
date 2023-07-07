@@ -48,6 +48,8 @@ const (
 	FieldStatus = "status"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
+	// FieldAvatarFileID holds the string denoting the avatar_file_id field in the database.
+	FieldAvatarFileID = "avatar_file_id"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeLoginProfile holds the string denoting the login_profile edge name in mutations.
@@ -130,6 +132,7 @@ var Columns = []string{
 	FieldRegisterIP,
 	FieldStatus,
 	FieldComments,
+	FieldAvatarFileID,
 }
 
 var (
@@ -301,6 +304,11 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByComments orders the results by the comments field.
 func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
+}
+
+// ByAvatarFileID orders the results by the avatar_file_id field.
+func ByAvatarFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatarFileID, opts...).ToFunc()
 }
 
 // ByIdentitiesCount orders the results by identities count.

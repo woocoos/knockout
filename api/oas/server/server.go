@@ -22,6 +22,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si oas.AuthServer) {
 	router.POST("/forget-pwd/verify-mfa", wrapForgetPwdVerifyMfa(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
+	router.POST("/login/refresh-token", wrapRefreshToken(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/mfa/unbind", wrapUnBindMfa(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
@@ -113,7 +114,7 @@ func wrapForgetPwdReset(si oas.AuthServer) func(c *gin.Context) {
 func wrapForgetPwdSendEmail(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ForgetPwdSendEmailRequest
-		if err := c.ShouldBind(&req.StateToken); err != nil {
+		if err := c.ShouldBind(&req); err != nil {
 			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
@@ -184,6 +185,22 @@ func wrapLogout(si oas.AuthServer) func(c *gin.Context) {
 	}
 }
 
+func wrapRefreshToken(si oas.AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.RefreshTokenRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.RefreshToken(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
 func wrapResetPassword(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.ResetPasswordRequest
@@ -203,7 +220,7 @@ func wrapResetPassword(si oas.AuthServer) func(c *gin.Context) {
 func wrapUnBindMfa(si oas.AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req oas.UnBindMfaRequest
-		if err := c.ShouldBind(&req.OtpToken); err != nil {
+		if err := c.ShouldBind(&req); err != nil {
 			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}
