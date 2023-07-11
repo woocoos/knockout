@@ -60,7 +60,8 @@ type Mfa struct {
 }
 
 type User struct {
-	DisplayName string    `json:"displayName,omitempty"`
-	Domains     []*Domain `json:"domains,omitempty"`
-	ID          int       `json:"id,omitempty"`
+	AvatarFileId int       `json:"avatarFileId,omitempty"`
+	DisplayName  string    `json:"displayName,omitempty"`
+	Domains      []*Domain `json:"domains,omitempty"`
+	ID           int       `json:"id,omitempty"`
 }

@@ -344,9 +344,10 @@ func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse,
 		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
 		User: &oas.User{
-			ID:          usr.ID,
-			DisplayName: usr.DisplayName,
-			Domains:     domains,
+			ID:           usr.ID,
+			DisplayName:  usr.DisplayName,
+			AvatarFileId: usr.AvatarFileID,
+			Domains:      domains,
 		},
 	}, nil
 }
