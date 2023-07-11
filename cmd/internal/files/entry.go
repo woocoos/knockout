@@ -34,7 +34,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	}
 	s.Service = &server.FileService{
 		DB:      portalClient,
-		BaseDir: s.Cnf.Abs(s.Cnf.String("files.local.bucket")),
+		BaseDir: s.Cnf.Abs(s.Cnf.String("files.local.baseDir")),
 	}
 	return s
 }

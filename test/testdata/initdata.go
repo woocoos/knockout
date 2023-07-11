@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
@@ -62,6 +63,7 @@ func main() {
 	initUser(tx)
 	initOrg(tx)
 	initApp(tx, casbinTx)
+	initFileSource(tx)
 }
 
 func initOrg(client *ent.Tx) {
@@ -205,4 +207,15 @@ func initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 	client.Permission.CreateBulk(ps...).ExecX(context.Background())
 	client.OrgRoleUser.CreateBulk(orus...).ExecX(context.Background())
 	casbinClient.CasbinRule.CreateBulk(casbinRules...).ExecX(context.Background())
+}
+
+func initFileSource(client *ent.Tx) {
+	fs := make([]*ent.FileSourceCreate, 0)
+	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindLocal).SetComments("用户中心").
+		SetEndpoint("127.0.0.1:10071").SetBucket("ucenter").SetCreatedBy(1)
+	s2 := client.FileSource.Create().SetID(1).SetKind(filesource.KindLocal).SetComments("消息中心").
+		SetEndpoint("127.0.0.1:10071").SetBucket("msgcenter").SetCreatedBy(1)
+	fs = append(fs, s1)
+	fs = append(fs, s2)
+	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
 }

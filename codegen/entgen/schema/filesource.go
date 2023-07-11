@@ -19,6 +19,7 @@ type FileSource struct {
 func (FileSource) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "file_source"},
+		entgql.RelayConnection(),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),

@@ -105,4 +105,13 @@ extend type Query {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """文件来源"""
+    fileSources(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: FileSourceOrder
+        where: FileSourceWhereInput
+    ):FileSourceConnection!
 }

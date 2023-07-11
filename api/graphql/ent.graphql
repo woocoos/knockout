@@ -1384,7 +1384,7 @@ input CreateFileSourceInput {
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间"""
+  """文件存储空间。本地存储为：assets"""
   bucket: String
   fileIDs: [ID!]
 }
@@ -1504,7 +1504,7 @@ input CreateUserInput {
   """备注"""
   comments: String
   """头像"""
-  avatarFileID: Int
+  avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
@@ -1607,7 +1607,7 @@ type FileSource implements Node {
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间"""
+  """文件存储空间。本地存储为：assets"""
   bucket: String
   files(
     """Returns the elements in the list that come after the specified cursor."""
@@ -1628,6 +1628,22 @@ type FileSource implements Node {
     """Filtering options for Files returned from the connection."""
     where: FileWhereInput
   ): FileConnection!
+}
+"""A connection to a list of items."""
+type FileSourceConnection {
+  """A list of edges."""
+  edges: [FileSourceEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type FileSourceEdge {
+  """The item at the end of the edge."""
+  node: FileSource
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 """FileSourceKind is enum for the field kind"""
 enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
@@ -3140,7 +3156,7 @@ input UpdateFileSourceInput {
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
   clearRegion: Boolean
-  """文件存储空间"""
+  """文件存储空间。本地存储为：assets"""
   bucket: String
   clearBucket: Boolean
   addFileIDs: [ID!]
@@ -3287,7 +3303,7 @@ input UpdateUserInput {
   comments: String
   clearComments: Boolean
   """头像"""
-  avatarFileID: Int
+  avatarFileID: ID
   clearAvatarFileID: Boolean
 }
 """
@@ -3346,7 +3362,7 @@ type User implements Node {
   """备注"""
   comments: String
   """头像"""
-  avatarFileID: Int
+  avatarFileID: ID
   """用户身份标识"""
   identities: [UserIdentity!]
   """登陆设置"""

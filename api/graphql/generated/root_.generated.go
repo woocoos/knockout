@@ -237,6 +237,7 @@ type ComplexityRoot struct {
 
 	FileSource struct {
 		Bucket    func(childComplexity int) int
+		Comments  func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
 		Endpoint  func(childComplexity int) int
@@ -246,6 +247,17 @@ type ComplexityRoot struct {
 		Region    func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
+	}
+
+	FileSourceConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	FileSourceEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	Mfa struct {
@@ -267,6 +279,7 @@ type ComplexityRoot struct {
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
+		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
@@ -278,6 +291,7 @@ type ComplexityRoot struct {
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
+		DeleteFileSource            func(childComplexity int, fsID int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
@@ -305,6 +319,7 @@ type ComplexityRoot struct {
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
+		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
@@ -458,6 +473,7 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission         func(childComplexity int, permission string) int
+		FileSources             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
 		Nodes                   func(childComplexity int, ids []string) int
@@ -478,6 +494,7 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
+		AvatarFileID      func(childComplexity int) int
 		Comments          func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
@@ -1532,6 +1549,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.Bucket(childComplexity), true
 
+	case "FileSource.comments":
+		if e.complexity.FileSource.Comments == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Comments(childComplexity), true
+
 	case "FileSource.createdAt":
 		if e.complexity.FileSource.CreatedAt == nil {
 			break
@@ -1599,6 +1623,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileSource.UpdatedBy(childComplexity), true
+
+	case "FileSourceConnection.edges":
+		if e.complexity.FileSourceConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.Edges(childComplexity), true
+
+	case "FileSourceConnection.pageInfo":
+		if e.complexity.FileSourceConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.PageInfo(childComplexity), true
+
+	case "FileSourceConnection.totalCount":
+		if e.complexity.FileSourceConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.TotalCount(childComplexity), true
+
+	case "FileSourceEdge.cursor":
+		if e.complexity.FileSourceEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FileSourceEdge.Cursor(childComplexity), true
+
+	case "FileSourceEdge.node":
+		if e.complexity.FileSourceEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FileSourceEdge.Node(childComplexity), true
 
 	case "Mfa.account":
 		if e.complexity.Mfa.Account == nil {
@@ -1770,6 +1829,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
 
+	case "Mutation.createFileSource":
+		if e.complexity.Mutation.CreateFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFileSource(childComplexity, args["input"].(ent.CreateFileSourceInput)), true
+
 	case "Mutation.createOrganization":
 		if e.complexity.Mutation.CreateOrganization == nil {
 			break
@@ -1901,6 +1972,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
+
+	case "Mutation.deleteFileSource":
+		if e.complexity.Mutation.DeleteFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFileSource(childComplexity, args["fsID"].(int)), true
 
 	case "Mutation.deleteOrganization":
 		if e.complexity.Mutation.DeleteOrganization == nil {
@@ -2225,6 +2308,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
+
+	case "Mutation.updateFileSource":
+		if e.complexity.Mutation.UpdateFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateFileSource(childComplexity, args["fsID"].(int), args["input"].(ent.UpdateFileSourceInput)), true
 
 	case "Mutation.updateLoginProfile":
 		if e.complexity.Mutation.UpdateLoginProfile == nil {
@@ -3077,6 +3172,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
+	case "Query.fileSources":
+		if e.complexity.Query.FileSources == nil {
+			break
+		}
+
+		args, err := ec.field_Query_fileSources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FileSources(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileSourceOrder), args["where"].(*ent.FileSourceWhereInput)), true
+
 	case "Query.globalID":
 		if e.complexity.Query.GlobalID == nil {
 			break
@@ -3275,6 +3382,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+
+	case "User.avatarFileID":
+		if e.complexity.User.AvatarFileID == nil {
+			break
+		}
+
+		return e.complexity.User.AvatarFileID(childComplexity), true
 
 	case "User.comments":
 		if e.complexity.User.Comments == nil {
@@ -5347,6 +5461,8 @@ Input was generated by ent.
 input CreateFileSourceInput {
   """文件来源"""
   kind: FileSourceKind!
+  """备注"""
+  comments: String
   """对外服务的访问域名"""
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
@@ -5470,6 +5586,8 @@ input CreateUserInput {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """头像"""
+  avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
@@ -5566,6 +5684,8 @@ type FileSource implements Node {
   updatedAt: Time
   """文件来源"""
   kind: FileSourceKind!
+  """备注"""
+  comments: String
   """对外服务的访问域名"""
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
@@ -5591,6 +5711,22 @@ type FileSource implements Node {
     """Filtering options for Files returned from the connection."""
     where: FileWhereInput
   ): FileConnection!
+}
+"""A connection to a list of items."""
+type FileSourceConnection {
+  """A list of edges."""
+  edges: [FileSourceEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type FileSourceEdge {
+  """The item at the end of the edge."""
+  node: FileSource
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 """FileSourceKind is enum for the field kind"""
 enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
@@ -7094,6 +7230,9 @@ Input was generated by ent.
 input UpdateFileSourceInput {
   """文件来源"""
   kind: FileSourceKind
+  """备注"""
+  comments: String
+  clearComments: Boolean
   """对外服务的访问域名"""
   endpoint: String
   clearEndpoint: Boolean
@@ -7246,6 +7385,9 @@ input UpdateUserInput {
   """备注"""
   comments: String
   clearComments: Boolean
+  """头像"""
+  avatarFileID: ID
+  clearAvatarFileID: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -7302,6 +7444,8 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """头像"""
+  avatarFileID: ID
   """用户身份标识"""
   identities: [UserIdentity!]
   """登陆设置"""
@@ -8373,6 +8517,15 @@ extend type Permission {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """文件来源"""
+    fileSources(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: FileSourceOrder
+        where: FileSourceWhereInput
+    ):FileSourceConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -8508,6 +8661,12 @@ extend type Permission {
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
     recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
+    """创建文件来源"""
+    createFileSource(input: CreateFileSourceInput!): FileSource!
+    """更新文件来源"""
+    updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
+    """删除文件来源"""
+    deleteFileSource(fsID: ID!): Boolean!
 }
 `, BuiltIn: false},
 }

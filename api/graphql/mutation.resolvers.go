@@ -11,6 +11,7 @@ import (
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
@@ -329,6 +330,30 @@ func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input
 // RecoverOrgUser is the resolver for the recoverOrgUser field.
 func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
 	return r.Resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
+}
+
+// CreateFileSource is the resolver for the createFileSource field.
+func (r *mutationResolver) CreateFileSource(ctx context.Context, input ent.CreateFileSourceInput) (*ent.FileSource, error) {
+	return ent.FromContext(ctx).FileSource.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateFileSource is the resolver for the updateFileSource field.
+func (r *mutationResolver) UpdateFileSource(ctx context.Context, fsID int, input ent.UpdateFileSourceInput) (*ent.FileSource, error) {
+	return ent.FromContext(ctx).FileSource.UpdateOneID(fsID).SetInput(input).Save(ctx)
+}
+
+// DeleteFileSource is the resolver for the deleteFileSource field.
+func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	has, err := client.FileSource.Query().Where(filesource.ID(fsID), filesource.HasFiles()).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("filesource: %d has be referenced, cannot be deleted", fsID)
+	}
+	err = client.FileSource.DeleteOneID(fsID).Exec(ctx)
+	return err == nil, err
 }
 
 // Mutation returns generated1.MutationResolver implementation.
