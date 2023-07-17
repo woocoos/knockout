@@ -2860,6 +2860,22 @@ func (c *OrgUserClient) QueryOrgRoles(ou *OrgUser) *OrgRoleQuery {
 	return query
 }
 
+// QueryOrgRoleUser queries the org_role_user edge of a OrgUser.
+func (c *OrgUserClient) QueryOrgRoleUser(ou *OrgUser) *OrgRoleUserQuery {
+	query := (&OrgRoleUserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ou.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguser.Table, orguser.FieldID, id),
+			sqlgraph.To(orgroleuser.Table, orgroleuser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, orguser.OrgRoleUserTable, orguser.OrgRoleUserColumn),
+		)
+		fromV = sqlgraph.Neighbors(ou.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OrgUserClient) Hooks() []Hook {
 	hooks := c.hooks.OrgUser

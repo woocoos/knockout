@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -135,6 +136,21 @@ func (ouu *OrgUserUpdate) AddOrgRoles(o ...*OrgRole) *OrgUserUpdate {
 	return ouu.AddOrgRoleIDs(ids...)
 }
 
+// AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
+func (ouu *OrgUserUpdate) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
+	ouu.mutation.AddOrgRoleUserIDs(ids...)
+	return ouu
+}
+
+// AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
+func (ouu *OrgUserUpdate) AddOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouu.AddOrgRoleUserIDs(ids...)
+}
+
 // Mutation returns the OrgUserMutation object of the builder.
 func (ouu *OrgUserUpdate) Mutation() *OrgUserMutation {
 	return ouu.mutation
@@ -171,6 +187,27 @@ func (ouu *OrgUserUpdate) RemoveOrgRoles(o ...*OrgRole) *OrgUserUpdate {
 		ids[i] = o[i].ID
 	}
 	return ouu.RemoveOrgRoleIDs(ids...)
+}
+
+// ClearOrgRoleUser clears all "org_role_user" edges to the OrgRoleUser entity.
+func (ouu *OrgUserUpdate) ClearOrgRoleUser() *OrgUserUpdate {
+	ouu.mutation.ClearOrgRoleUser()
+	return ouu
+}
+
+// RemoveOrgRoleUserIDs removes the "org_role_user" edge to OrgRoleUser entities by IDs.
+func (ouu *OrgUserUpdate) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdate {
+	ouu.mutation.RemoveOrgRoleUserIDs(ids...)
+	return ouu
+}
+
+// RemoveOrgRoleUser removes "org_role_user" edges to OrgRoleUser entities.
+func (ouu *OrgUserUpdate) RemoveOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouu.RemoveOrgRoleUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -313,6 +350,10 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
+		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ouu.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !ouu.mutation.OrgRolesCleared() {
@@ -329,6 +370,10 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ouu.mutation.OrgRolesIDs(); len(nodes) > 0 {
@@ -340,6 +385,55 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgRoleUserCreate{config: ouu.config, mutation: newOrgRoleUserMutation(ouu.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouu.mutation.OrgRoleUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouu.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !ouu.mutation.OrgRoleUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouu.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -471,6 +565,21 @@ func (ouuo *OrgUserUpdateOne) AddOrgRoles(o ...*OrgRole) *OrgUserUpdateOne {
 	return ouuo.AddOrgRoleIDs(ids...)
 }
 
+// AddOrgRoleUserIDs adds the "org_role_user" edge to the OrgRoleUser entity by IDs.
+func (ouuo *OrgUserUpdateOne) AddOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
+	ouuo.mutation.AddOrgRoleUserIDs(ids...)
+	return ouuo
+}
+
+// AddOrgRoleUser adds the "org_role_user" edges to the OrgRoleUser entity.
+func (ouuo *OrgUserUpdateOne) AddOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouuo.AddOrgRoleUserIDs(ids...)
+}
+
 // Mutation returns the OrgUserMutation object of the builder.
 func (ouuo *OrgUserUpdateOne) Mutation() *OrgUserMutation {
 	return ouuo.mutation
@@ -507,6 +616,27 @@ func (ouuo *OrgUserUpdateOne) RemoveOrgRoles(o ...*OrgRole) *OrgUserUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return ouuo.RemoveOrgRoleIDs(ids...)
+}
+
+// ClearOrgRoleUser clears all "org_role_user" edges to the OrgRoleUser entity.
+func (ouuo *OrgUserUpdateOne) ClearOrgRoleUser() *OrgUserUpdateOne {
+	ouuo.mutation.ClearOrgRoleUser()
+	return ouuo
+}
+
+// RemoveOrgRoleUserIDs removes the "org_role_user" edge to OrgRoleUser entities by IDs.
+func (ouuo *OrgUserUpdateOne) RemoveOrgRoleUserIDs(ids ...int) *OrgUserUpdateOne {
+	ouuo.mutation.RemoveOrgRoleUserIDs(ids...)
+	return ouuo
+}
+
+// RemoveOrgRoleUser removes "org_role_user" edges to OrgRoleUser entities.
+func (ouuo *OrgUserUpdateOne) RemoveOrgRoleUser(o ...*OrgRoleUser) *OrgUserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return ouuo.RemoveOrgRoleUserIDs(ids...)
 }
 
 // Where appends a list predicates to the OrgUserUpdate builder.
@@ -679,6 +809,10 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
 			},
 		}
+		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ouuo.mutation.RemovedOrgRolesIDs(); len(nodes) > 0 && !ouuo.mutation.OrgRolesCleared() {
@@ -695,6 +829,10 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ouuo.mutation.OrgRolesIDs(); len(nodes) > 0 {
@@ -706,6 +844,55 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(orgrole.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &OrgRoleUserCreate{config: ouuo.config, mutation: newOrgRoleUserMutation(ouuo.config, OpCreate)}
+		_ = createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouuo.mutation.OrgRoleUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouuo.mutation.RemovedOrgRoleUserIDs(); len(nodes) > 0 && !ouuo.mutation.OrgRoleUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouuo.mutation.OrgRoleUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   orguser.OrgRoleUserTable,
+			Columns: []string{orguser.OrgRoleUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgroleuser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
