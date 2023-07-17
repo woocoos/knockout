@@ -49,13 +49,16 @@ type OrgUserEdges struct {
 	User *User `json:"user,omitempty"`
 	// OrgRoles holds the value of the org_roles edge.
 	OrgRoles []*OrgRole `json:"org_roles,omitempty"`
+	// OrgRoleUser holds the value of the org_role_user edge.
+	OrgRoleUser []*OrgRoleUser `json:"org_role_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedOrgRoles map[string][]*OrgRole
+	namedOrgRoles    map[string][]*OrgRole
+	namedOrgRoleUser map[string][]*OrgRoleUser
 }
 
 // OrgOrErr returns the Org value or an error if the edge
@@ -91,6 +94,15 @@ func (e OrgUserEdges) OrgRolesOrErr() ([]*OrgRole, error) {
 		return e.OrgRoles, nil
 	}
 	return nil, &NotLoadedError{edge: "org_roles"}
+}
+
+// OrgRoleUserOrErr returns the OrgRoleUser value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgUserEdges) OrgRoleUserOrErr() ([]*OrgRoleUser, error) {
+	if e.loadedTypes[3] {
+		return e.OrgRoleUser, nil
+	}
+	return nil, &NotLoadedError{edge: "org_role_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -201,6 +213,11 @@ func (ou *OrgUser) QueryOrgRoles() *OrgRoleQuery {
 	return NewOrgUserClient(ou.config).QueryOrgRoles(ou)
 }
 
+// QueryOrgRoleUser queries the "org_role_user" edge of the OrgUser entity.
+func (ou *OrgUser) QueryOrgRoleUser() *OrgRoleUserQuery {
+	return NewOrgUserClient(ou.config).QueryOrgRoleUser(ou)
+}
+
 // Update returns a builder for updating this OrgUser.
 // Note that you need to call OrgUser.Unwrap() before calling this method if this OrgUser
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -272,6 +289,30 @@ func (ou *OrgUser) appendNamedOrgRoles(name string, edges ...*OrgRole) {
 		ou.Edges.namedOrgRoles[name] = []*OrgRole{}
 	} else {
 		ou.Edges.namedOrgRoles[name] = append(ou.Edges.namedOrgRoles[name], edges...)
+	}
+}
+
+// NamedOrgRoleUser returns the OrgRoleUser named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ou *OrgUser) NamedOrgRoleUser(name string) ([]*OrgRoleUser, error) {
+	if ou.Edges.namedOrgRoleUser == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ou.Edges.namedOrgRoleUser[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ou *OrgUser) appendNamedOrgRoleUser(name string, edges ...*OrgRoleUser) {
+	if ou.Edges.namedOrgRoleUser == nil {
+		ou.Edges.namedOrgRoleUser = make(map[string][]*OrgRoleUser)
+	}
+	if len(edges) == 0 {
+		ou.Edges.namedOrgRoleUser[name] = []*OrgRoleUser{}
+	} else {
+		ou.Edges.namedOrgRoleUser[name] = append(ou.Edges.namedOrgRoleUser[name], edges...)
 	}
 }
 

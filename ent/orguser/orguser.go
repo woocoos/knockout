@@ -37,6 +37,8 @@ const (
 	EdgeUser = "user"
 	// EdgeOrgRoles holds the string denoting the org_roles edge name in mutations.
 	EdgeOrgRoles = "org_roles"
+	// EdgeOrgRoleUser holds the string denoting the org_role_user edge name in mutations.
+	EdgeOrgRoleUser = "org_role_user"
 	// Table holds the table name of the orguser in the database.
 	Table = "org_user"
 	// OrgTable is the table that holds the org relation/edge.
@@ -58,6 +60,13 @@ const (
 	// OrgRolesInverseTable is the table name for the OrgRole entity.
 	// It exists in this package in order to avoid circular dependency with the "orgrole" package.
 	OrgRolesInverseTable = "org_role"
+	// OrgRoleUserTable is the table that holds the org_role_user relation/edge.
+	OrgRoleUserTable = "org_role_user"
+	// OrgRoleUserInverseTable is the table name for the OrgRoleUser entity.
+	// It exists in this package in order to avoid circular dependency with the "orgroleuser" package.
+	OrgRoleUserInverseTable = "org_role_user"
+	// OrgRoleUserColumn is the table column denoting the org_role_user relation/edge.
+	OrgRoleUserColumn = "org_user_id"
 )
 
 // Columns holds all SQL columns for orguser fields.
@@ -177,6 +186,20 @@ func ByOrgRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newOrgRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByOrgRoleUserCount orders the results by org_role_user count.
+func ByOrgRoleUserCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgRoleUserStep(), opts...)
+	}
+}
+
+// ByOrgRoleUser orders the results by org_role_user terms.
+func ByOrgRoleUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgRoleUserStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newOrgStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -196,5 +219,12 @@ func newOrgRolesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OrgRolesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, OrgRolesTable, OrgRolesPrimaryKey...),
+	)
+}
+func newOrgRoleUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgRoleUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
 	)
 }
