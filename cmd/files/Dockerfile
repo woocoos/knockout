@@ -27,7 +27,6 @@ RUN go mod download
 
 COPY . .
 COPY cmd/files/etc/app.yaml /app/etc/app.yaml
-COPY cmd/files/etc/indicator.yaml /app/etc/indicator.yaml
 RUN go build -tags=go-json -ldflags="-s -w" -o /app/serve cmd/files/main.go
 
 FROM alpine
