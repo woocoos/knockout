@@ -36,6 +36,8 @@ COPY --from=builder /usr/share/zoneinfo/UTC /usr/share/zoneinfo/UTC
 COPY --from=builder /usr/share/zoneinfo/Asia/Hong_Kong /usr/share/zoneinfo/Asia/Hong_Kong
 ENV TZ Asia/Hong_Kong
 
+EXPOSE 8080
+
 WORKDIR /app
 
 COPY --from=builder /app/serve /app/adminx-serve

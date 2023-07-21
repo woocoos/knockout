@@ -37,6 +37,8 @@ ENV TZ Asia/Hong_Kong
 
 WORKDIR /app
 
+EXPOSE 10071
+
 COPY --from=builder /app/serve /app/files-serve
 COPY --from=builder /app/etc /app/etc
 
