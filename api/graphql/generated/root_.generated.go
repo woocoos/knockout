@@ -58,7 +58,7 @@ type ComplexityRoot struct {
 		CreatedBy            func(childComplexity int) int
 		ID                   func(childComplexity int) int
 		Kind                 func(childComplexity int) int
-		Logo                 func(childComplexity int) int
+		LogoFileID           func(childComplexity int) int
 		Menus                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppMenuOrder, where *ent.AppMenuWhereInput) int
 		Name                 func(childComplexity int) int
 		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
@@ -675,12 +675,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.App.Kind(childComplexity), true
 
-	case "App.logo":
-		if e.complexity.App.Logo == nil {
+	case "App.logoFileID":
+		if e.complexity.App.LogoFileID == nil {
 			break
 		}
 
-		return e.complexity.App.Logo(childComplexity), true
+		return e.complexity.App.LogoFileID(childComplexity), true
 
 	case "App.menus":
 		if e.complexity.App.Menus == nil {
@@ -4107,8 +4107,8 @@ type App implements Node {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标"""
-  logo: String
+  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  logoFileID: Int
   """备注"""
   comments: String
   """状态"""
@@ -4236,6 +4236,7 @@ enum AppActionKind @goModel(model: "github.com/woocoos/knockout/ent/appaction.Ki
   graphql
   rpc
   function
+  route
 }
 """AppActionMethod is enum for the field method"""
 enum AppActionMethod @goModel(model: "github.com/woocoos/knockout/ent/appaction.Method") {
@@ -5279,22 +5280,17 @@ input AppWhereInput {
   refreshTokenValidityLTE: Int
   refreshTokenValidityIsNil: Boolean
   refreshTokenValidityNotNil: Boolean
-  """logo field predicates"""
-  logo: String
-  logoNEQ: String
-  logoIn: [String!]
-  logoNotIn: [String!]
-  logoGT: String
-  logoGTE: String
-  logoLT: String
-  logoLTE: String
-  logoContains: String
-  logoHasPrefix: String
-  logoHasSuffix: String
-  logoIsNil: Boolean
-  logoNotNil: Boolean
-  logoEqualFold: String
-  logoContainsFold: String
+  """logo_file_id field predicates"""
+  logoFileID: Int
+  logoFileIDNEQ: Int
+  logoFileIDIn: [Int!]
+  logoFileIDNotIn: [Int!]
+  logoFileIDGT: Int
+  logoFileIDGTE: Int
+  logoFileIDLT: Int
+  logoFileIDLTE: Int
+  logoFileIDIsNil: Boolean
+  logoFileIDNotNil: Boolean
   """comments field predicates"""
   comments: String
   commentsNEQ: String
@@ -5376,8 +5372,8 @@ input CreateAppInput {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标"""
-  logo: String
+  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  logoFileID: Int
   """备注"""
   comments: String
   """状态"""
@@ -5586,7 +5582,7 @@ input CreateUserInput {
   status: UserSimpleStatus
   """备注"""
   comments: String
-  """头像"""
+  """头像,存储路规则：/ucenter/{tid}/xxx"""
   avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
@@ -7130,9 +7126,9 @@ input UpdateAppInput {
   """refresh_token有效期"""
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
-  """图标"""
-  logo: String
-  clearLogo: Boolean
+  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  logoFileID: Int
+  clearLogoFileID: Boolean
   """备注"""
   comments: String
   clearComments: Boolean
@@ -7385,7 +7381,7 @@ input UpdateUserInput {
   """备注"""
   comments: String
   clearComments: Boolean
-  """头像"""
+  """头像,存储路规则：/ucenter/{tid}/xxx"""
   avatarFileID: ID
   clearAvatarFileID: Boolean
 }
@@ -7444,7 +7440,7 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
-  """头像"""
+  """头像,存储路规则：/ucenter/{tid}/xxx"""
   avatarFileID: ID
   """用户身份标识"""
   identities: [UserIdentity!]

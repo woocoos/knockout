@@ -78,7 +78,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 	gqlSrv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
 		Resolvers: &graphql.Resolver{
 			Client:   portalClient,
-			Resource: &resource.Service{Client: portalClient},
+			Resource: &resource.Service{Client: portalClient, FilePrefixDir: s.Cnf.String("files.prefixDir")},
 		},
 	}))
 	// gqlserver的中间件处理

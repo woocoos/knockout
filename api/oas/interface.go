@@ -16,6 +16,8 @@ type AuthServer interface {
 	BindMfaPrepare(*gin.Context) (*Mfa, error)
 	// (GET /captcha)
 	Captcha(*gin.Context, *CaptchaRequest) (*Captcha, error)
+	// (POST /spm/create)
+	CreateSpm(*gin.Context) (string, error)
 	// (POST /forget-pwd/begin)
 	ForgetPwdBegin(*gin.Context, *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error)
 	// (POST /forget-pwd/reset)
@@ -26,6 +28,8 @@ type AuthServer interface {
 	ForgetPwdVerifyEmail(*gin.Context, *ForgetPwdVerifyEmailRequest) (*ForgetPwdBeginResponse, error)
 	// (POST /forget-pwd/verify-mfa)
 	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
+	// (POST /spm/auth)
+	GetSpmAuth(*gin.Context, *GetSpmAuthRequest) (*LoginResponse, error)
 	// (POST /login/auth)
 	Login(*gin.Context, *LoginRequest) (*LoginResponse, error)
 	// (POST /logout)
@@ -48,8 +52,12 @@ type FileServer interface {
 	GetFile(*gin.Context, *GetFileRequest) (*FileInfo, error)
 	// (GET /files/{fileId}/raw)
 	GetFileRaw(*gin.Context, *GetFileRawRequest) ([]byte, error)
+	// (POST /files/report-ref-count)
+	ReportRefCount(*gin.Context, *ReportRefCountRequest) (bool, error)
 	// (POST /files)
 	UploadFile(*gin.Context, *UploadFileRequest) (string, error)
+	// (POST /files/upload-info)
+	UploadFileInfo(*gin.Context, *UploadFileInfoRequest) (string, error)
 }
 
 type UnimplementedAuthServer struct {
@@ -67,6 +75,11 @@ func (UnimplementedAuthServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error
 
 func (UnimplementedAuthServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *Captcha, err error) {
 	err = fmt.Errorf("method Captcha not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) CreateSpm(c *gin.Context) (_ string, err error) {
+	err = fmt.Errorf("method CreateSpm not implemented")
 	return
 }
 
@@ -92,6 +105,11 @@ func (UnimplementedAuthServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetP
 
 func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdVerifyMfa not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) GetSpmAuth(c *gin.Context, req *GetSpmAuthRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method GetSpmAuth not implemented")
 	return
 }
 
@@ -143,7 +161,17 @@ func (UnimplementedFileServer) GetFileRaw(c *gin.Context, req *GetFileRawRequest
 	return
 }
 
+func (UnimplementedFileServer) ReportRefCount(c *gin.Context, req *ReportRefCountRequest) (_ bool, err error) {
+	err = fmt.Errorf("method ReportRefCount not implemented")
+	return
+}
+
 func (UnimplementedFileServer) UploadFile(c *gin.Context, req *UploadFileRequest) (_ string, err error) {
 	err = fmt.Errorf("method UploadFile not implemented")
+	return
+}
+
+func (UnimplementedFileServer) UploadFileInfo(c *gin.Context, req *UploadFileInfoRequest) (_ string, err error) {
+	err = fmt.Errorf("method UploadFileInfo not implemented")
 	return
 }

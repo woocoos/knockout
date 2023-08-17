@@ -222,11 +222,11 @@ func init() {
 	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
 	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
 	// fileDescMineType is the schema descriptor for mine_type field.
-	fileDescMineType := fileFields[5].Descriptor()
+	fileDescMineType := fileFields[6].Descriptor()
 	// file.MineTypeValidator is a validator for the "mine_type" field. It is called by the builders before save.
 	file.MineTypeValidator = fileDescMineType.Validators[0].(func(string) error)
 	// fileDescMd5 is the schema descriptor for md5 field.
-	fileDescMd5 := fileFields[6].Descriptor()
+	fileDescMd5 := fileFields[7].Descriptor()
 	// file.Md5Validator is a validator for the "md5" field. It is called by the builders before save.
 	file.Md5Validator = fileDescMd5.Validators[0].(func(string) error)
 	// fileDescID is the schema descriptor for id field.

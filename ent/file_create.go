@@ -89,6 +89,20 @@ func (fc *FileCreate) SetTenantID(i int) *FileCreate {
 	return fc
 }
 
+// SetRefCount sets the "ref_count" field.
+func (fc *FileCreate) SetRefCount(i int) *FileCreate {
+	fc.mutation.SetRefCount(i)
+	return fc
+}
+
+// SetNillableRefCount sets the "ref_count" field if the given value is not nil.
+func (fc *FileCreate) SetNillableRefCount(i *int) *FileCreate {
+	if i != nil {
+		fc.SetRefCount(*i)
+	}
+	return fc
+}
+
 // SetPath sets the "path" field.
 func (fc *FileCreate) SetPath(s string) *FileCreate {
 	fc.mutation.SetPath(s)
@@ -300,6 +314,10 @@ func (fc *FileCreate) createSpec() (*File, *sqlgraph.CreateSpec) {
 		_spec.SetField(file.FieldTenantID, field.TypeInt, value)
 		_node.TenantID = value
 	}
+	if value, ok := fc.mutation.RefCount(); ok {
+		_spec.SetField(file.FieldRefCount, field.TypeInt, value)
+		_node.RefCount = value
+	}
 	if value, ok := fc.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
 		_node.Path = value
@@ -466,6 +484,30 @@ func (u *FileUpsert) UpdateTenantID() *FileUpsert {
 // AddTenantID adds v to the "tenant_id" field.
 func (u *FileUpsert) AddTenantID(v int) *FileUpsert {
 	u.Add(file.FieldTenantID, v)
+	return u
+}
+
+// SetRefCount sets the "ref_count" field.
+func (u *FileUpsert) SetRefCount(v int) *FileUpsert {
+	u.Set(file.FieldRefCount, v)
+	return u
+}
+
+// UpdateRefCount sets the "ref_count" field to the value that was provided on create.
+func (u *FileUpsert) UpdateRefCount() *FileUpsert {
+	u.SetExcluded(file.FieldRefCount)
+	return u
+}
+
+// AddRefCount adds v to the "ref_count" field.
+func (u *FileUpsert) AddRefCount(v int) *FileUpsert {
+	u.Add(file.FieldRefCount, v)
+	return u
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (u *FileUpsert) ClearRefCount() *FileUpsert {
+	u.SetNull(file.FieldRefCount)
 	return u
 }
 
@@ -690,6 +732,34 @@ func (u *FileUpsertOne) AddTenantID(v int) *FileUpsertOne {
 func (u *FileUpsertOne) UpdateTenantID() *FileUpsertOne {
 	return u.Update(func(s *FileUpsert) {
 		s.UpdateTenantID()
+	})
+}
+
+// SetRefCount sets the "ref_count" field.
+func (u *FileUpsertOne) SetRefCount(v int) *FileUpsertOne {
+	return u.Update(func(s *FileUpsert) {
+		s.SetRefCount(v)
+	})
+}
+
+// AddRefCount adds v to the "ref_count" field.
+func (u *FileUpsertOne) AddRefCount(v int) *FileUpsertOne {
+	return u.Update(func(s *FileUpsert) {
+		s.AddRefCount(v)
+	})
+}
+
+// UpdateRefCount sets the "ref_count" field to the value that was provided on create.
+func (u *FileUpsertOne) UpdateRefCount() *FileUpsertOne {
+	return u.Update(func(s *FileUpsert) {
+		s.UpdateRefCount()
+	})
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (u *FileUpsertOne) ClearRefCount() *FileUpsertOne {
+	return u.Update(func(s *FileUpsert) {
+		s.ClearRefCount()
 	})
 }
 
@@ -1088,6 +1158,34 @@ func (u *FileUpsertBulk) AddTenantID(v int) *FileUpsertBulk {
 func (u *FileUpsertBulk) UpdateTenantID() *FileUpsertBulk {
 	return u.Update(func(s *FileUpsert) {
 		s.UpdateTenantID()
+	})
+}
+
+// SetRefCount sets the "ref_count" field.
+func (u *FileUpsertBulk) SetRefCount(v int) *FileUpsertBulk {
+	return u.Update(func(s *FileUpsert) {
+		s.SetRefCount(v)
+	})
+}
+
+// AddRefCount adds v to the "ref_count" field.
+func (u *FileUpsertBulk) AddRefCount(v int) *FileUpsertBulk {
+	return u.Update(func(s *FileUpsert) {
+		s.AddRefCount(v)
+	})
+}
+
+// UpdateRefCount sets the "ref_count" field to the value that was provided on create.
+func (u *FileUpsertBulk) UpdateRefCount() *FileUpsertBulk {
+	return u.Update(func(s *FileUpsert) {
+		s.UpdateRefCount()
+	})
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (u *FileUpsertBulk) ClearRefCount() *FileUpsertBulk {
+	return u.Update(func(s *FileUpsert) {
+		s.ClearRefCount()
 	})
 }
 

@@ -31,6 +31,25 @@ type FileInfo struct {
 	Size      int       `json:"size,omitempty"`
 }
 
+type FileInput struct {
+	MineType string `binding:"required" json:"mineType"`
+	Name     string `binding:"required" json:"name"`
+	Path     string `binding:"required" json:"path"`
+	Size     int    `binding:"required" json:"size"`
+}
+
+type FileRefInput struct {
+	FileId int    `binding:"required" json:"fileId"`
+	OpType string `binding:"required" json:"opType"`
+}
+
+type FileSourceInput struct {
+	Bucket   string `binding:"required" json:"bucket"`
+	Endpoint string `binding:"required" json:"endpoint"`
+	Kind     string `binding:"required" json:"kind"`
+	Region   string `binding:"required" json:"region"`
+}
+
 type ForgetPwdBeginResponse struct {
 	StateToken    string             `json:"stateToken,omitempty"`
 	StateTokenTTL float64            `json:"stateTokenTTL,omitempty"`

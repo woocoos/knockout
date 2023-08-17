@@ -28,6 +28,7 @@ log:
 #      dialOption:
 #        - timeout: 5s
 authz:
+  autoSave: true
   watcherOptions:
     options:
       addr: "127.0.0.1:6379"
@@ -81,3 +82,5 @@ snowflake:
 entcache:
   level: context
 #  ttl: 5m # level: db时有效
+files:
+  prefixDir: "/ucenter"  # 相对于存储服务的前缀路径

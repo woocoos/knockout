@@ -44,6 +44,8 @@ var (
 	forgetPwdEmailCachePrefix  = "forgetpwdemail:"
 	forgetPwdVerifyCachePrefix = "forgetpwdverify:"
 
+	spmKeyPrefix = "spm:"
+
 	CallBackUrlResetPassword = "/login/reset-password"
 	CallBackUrlMFA           = "/login/verify-factor"
 	CallBackUrlCaptcha       = "/captcha"
@@ -62,6 +64,7 @@ type Options struct {
 	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // #  lock time while login upper to max fail times
 	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // # state token ttl
 	StateTokenSecret  string        `json:"stateTokenSecret"`  // # state token secret
+	SpmTTL            time.Duration `json:"spmTTL"`            // # spm ttl
 	JWT               struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
@@ -90,6 +93,7 @@ func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 		CaptchaTimes:      3,
 		LoginFailTimes:    10,
 		LoginFailLockTime: time.Hour * 24,
+		SpmTTL:            time.Second * 5,
 	}
 	s.Cnf = cnf
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
@@ -721,4 +725,62 @@ func (s *AuthService) tryGetTenantID(c *gin.Context) (tid int, err error) {
 		}
 	}
 	return
+}
+
+// verifyTenantID 验证登录用户是否加入tid
+func (s *AuthService) verifyTenantID(c *gin.Context, tid int) error {
+	uid, err := identity.UserIDFromContext(c)
+	if err != nil {
+		return err
+	}
+	has, err := s.DB.OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(tid)).Exist(c)
+	if !has {
+		return fmt.Errorf("invaild tenantID")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// CreateSpm 创建spm key
+func (s *AuthService) CreateSpm(ctx *gin.Context) (string, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return "", err
+	}
+	tid, err := s.tryGetTenantID(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.verifyTenantID(ctx, tid)
+	if err != nil {
+		return "", err
+	}
+
+	spm := fmt.Sprintf("%d-%d-%d", tid, uid, time.Now().Unix())
+	key := resource.SHA256(spm)
+	err = s.Cache.Set(ctx, spmKeyPrefix+key, uid, cache.WithTTL(s.Options.SpmTTL))
+	if err != nil {
+		return "", err
+	}
+	return key, nil
+}
+
+// GetSpmAuth 根据spm 获取登录信息
+func (s *AuthService) GetSpmAuth(c *gin.Context, r *oas.GetSpmAuthRequest) (*oas.LoginResponse, error) {
+	var uid int
+	err := s.Cache.Get(c, spmKeyPrefix+r.Spm, &uid)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Del(c, spmKeyPrefix+r.Spm)
+	if err != nil {
+		return nil, err
+	}
+	if uid == 0 {
+		return nil, fmt.Errorf("invaild spm")
+	}
+	return s.loginToken(c, uid)
 }

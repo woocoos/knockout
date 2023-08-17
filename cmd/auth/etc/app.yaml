@@ -24,6 +24,7 @@ auth:
   loginFailLockTime: 10m # login fail lock time
   stateTokenTTL: 20m
   stateTokenSecret: "secret"
+  spmTTL: 5s
   jwt: &jwt
     signingMethod: "HS256"
     signingKey: "secret"
@@ -53,6 +54,7 @@ web:
                   - "/forget-pwd/send-email"
                   - "/forget-pwd/verify-mfa"
                   - "/forget-pwd/reset"
+                  - "/spm/auth"
                 <<: *jwt
 grpc:
   server:

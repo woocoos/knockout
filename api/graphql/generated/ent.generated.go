@@ -2406,8 +2406,8 @@ func (ec *executionContext) fieldContext_App_refreshTokenValidity(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _App_logo(ctx context.Context, field graphql.CollectedField, obj *ent.App) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_App_logo(ctx, field)
+func (ec *executionContext) _App_logoFileID(ctx context.Context, field graphql.CollectedField, obj *ent.App) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_App_logoFileID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2420,7 +2420,7 @@ func (ec *executionContext) _App_logo(ctx context.Context, field graphql.Collect
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Logo, nil
+		return obj.LogoFileID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2429,19 +2429,19 @@ func (ec *executionContext) _App_logo(ctx context.Context, field graphql.Collect
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_App_logo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_App_logoFileID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "App",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3411,8 +3411,8 @@ func (ec *executionContext) fieldContext_AppAction_app(ctx context.Context, fiel
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -3976,8 +3976,8 @@ func (ec *executionContext) fieldContext_AppEdge_node(ctx context.Context, field
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -4701,8 +4701,8 @@ func (ec *executionContext) fieldContext_AppMenu_app(ctx context.Context, field 
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -5600,8 +5600,8 @@ func (ec *executionContext) fieldContext_AppPolicy_app(ctx context.Context, fiel
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -6458,8 +6458,8 @@ func (ec *executionContext) fieldContext_AppRes_app(ctx context.Context, field g
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -7227,8 +7227,8 @@ func (ec *executionContext) fieldContext_AppRole_app(ctx context.Context, field 
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logo":
-				return ec.fieldContext_App_logo(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -23970,7 +23970,7 @@ func (ec *executionContext) unmarshalInputAppWhereInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeEqualFold", "codeContainsFold", "kind", "kindNEQ", "kindIn", "kindNotIn", "redirectURI", "redirectURINEQ", "redirectURIIn", "redirectURINotIn", "redirectURIGT", "redirectURIGTE", "redirectURILT", "redirectURILTE", "redirectURIContains", "redirectURIHasPrefix", "redirectURIHasSuffix", "redirectURIIsNil", "redirectURINotNil", "redirectURIEqualFold", "redirectURIContainsFold", "appKey", "appKeyNEQ", "appKeyIn", "appKeyNotIn", "appKeyGT", "appKeyGTE", "appKeyLT", "appKeyLTE", "appKeyContains", "appKeyHasPrefix", "appKeyHasSuffix", "appKeyIsNil", "appKeyNotNil", "appKeyEqualFold", "appKeyContainsFold", "appSecret", "appSecretNEQ", "appSecretIn", "appSecretNotIn", "appSecretGT", "appSecretGTE", "appSecretLT", "appSecretLTE", "appSecretContains", "appSecretHasPrefix", "appSecretHasSuffix", "appSecretIsNil", "appSecretNotNil", "appSecretEqualFold", "appSecretContainsFold", "scopes", "scopesNEQ", "scopesIn", "scopesNotIn", "scopesGT", "scopesGTE", "scopesLT", "scopesLTE", "scopesContains", "scopesHasPrefix", "scopesHasSuffix", "scopesIsNil", "scopesNotNil", "scopesEqualFold", "scopesContainsFold", "tokenValidity", "tokenValidityNEQ", "tokenValidityIn", "tokenValidityNotIn", "tokenValidityGT", "tokenValidityGTE", "tokenValidityLT", "tokenValidityLTE", "tokenValidityIsNil", "tokenValidityNotNil", "refreshTokenValidity", "refreshTokenValidityNEQ", "refreshTokenValidityIn", "refreshTokenValidityNotIn", "refreshTokenValidityGT", "refreshTokenValidityGTE", "refreshTokenValidityLT", "refreshTokenValidityLTE", "refreshTokenValidityIsNil", "refreshTokenValidityNotNil", "logo", "logoNEQ", "logoIn", "logoNotIn", "logoGT", "logoGTE", "logoLT", "logoLTE", "logoContains", "logoHasPrefix", "logoHasSuffix", "logoIsNil", "logoNotNil", "logoEqualFold", "logoContainsFold", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasMenus", "hasMenusWith", "hasActions", "hasActionsWith", "hasResources", "hasResourcesWith", "hasRoles", "hasRolesWith", "hasPolicies", "hasPoliciesWith", "hasOrgs", "hasOrgsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeEqualFold", "codeContainsFold", "kind", "kindNEQ", "kindIn", "kindNotIn", "redirectURI", "redirectURINEQ", "redirectURIIn", "redirectURINotIn", "redirectURIGT", "redirectURIGTE", "redirectURILT", "redirectURILTE", "redirectURIContains", "redirectURIHasPrefix", "redirectURIHasSuffix", "redirectURIIsNil", "redirectURINotNil", "redirectURIEqualFold", "redirectURIContainsFold", "appKey", "appKeyNEQ", "appKeyIn", "appKeyNotIn", "appKeyGT", "appKeyGTE", "appKeyLT", "appKeyLTE", "appKeyContains", "appKeyHasPrefix", "appKeyHasSuffix", "appKeyIsNil", "appKeyNotNil", "appKeyEqualFold", "appKeyContainsFold", "appSecret", "appSecretNEQ", "appSecretIn", "appSecretNotIn", "appSecretGT", "appSecretGTE", "appSecretLT", "appSecretLTE", "appSecretContains", "appSecretHasPrefix", "appSecretHasSuffix", "appSecretIsNil", "appSecretNotNil", "appSecretEqualFold", "appSecretContainsFold", "scopes", "scopesNEQ", "scopesIn", "scopesNotIn", "scopesGT", "scopesGTE", "scopesLT", "scopesLTE", "scopesContains", "scopesHasPrefix", "scopesHasSuffix", "scopesIsNil", "scopesNotNil", "scopesEqualFold", "scopesContainsFold", "tokenValidity", "tokenValidityNEQ", "tokenValidityIn", "tokenValidityNotIn", "tokenValidityGT", "tokenValidityGTE", "tokenValidityLT", "tokenValidityLTE", "tokenValidityIsNil", "tokenValidityNotNil", "refreshTokenValidity", "refreshTokenValidityNEQ", "refreshTokenValidityIn", "refreshTokenValidityNotIn", "refreshTokenValidityGT", "refreshTokenValidityGTE", "refreshTokenValidityLT", "refreshTokenValidityLTE", "refreshTokenValidityIsNil", "refreshTokenValidityNotNil", "logoFileID", "logoFileIDNEQ", "logoFileIDIn", "logoFileIDNotIn", "logoFileIDGT", "logoFileIDGTE", "logoFileIDLT", "logoFileIDLTE", "logoFileIDIsNil", "logoFileIDNotNil", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasMenus", "hasMenusWith", "hasActions", "hasActionsWith", "hasResources", "hasResourcesWith", "hasRoles", "hasRolesWith", "hasPolicies", "hasPoliciesWith", "hasOrgs", "hasOrgsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25390,141 +25390,96 @@ func (ec *executionContext) unmarshalInputAppWhereInput(ctx context.Context, obj
 				return it, err
 			}
 			it.RefreshTokenValidityNotNil = data
-		case "logo":
+		case "logoFileID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Logo = data
-		case "logoNEQ":
+			it.LogoFileID = data
+		case "logoFileIDNEQ":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoNEQ = data
-		case "logoIn":
+			it.LogoFileIDNEQ = data
+		case "logoFileIDIn":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoIn = data
-		case "logoNotIn":
+			it.LogoFileIDIn = data
+		case "logoFileIDNotIn":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoNotIn = data
-		case "logoGT":
+			it.LogoFileIDNotIn = data
+		case "logoFileIDGT":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoGT = data
-		case "logoGTE":
+			it.LogoFileIDGT = data
+		case "logoFileIDGTE":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoGTE = data
-		case "logoLT":
+			it.LogoFileIDGTE = data
+		case "logoFileIDLT":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoLT = data
-		case "logoLTE":
+			it.LogoFileIDLT = data
+		case "logoFileIDLTE":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoLTE = data
-		case "logoContains":
+			it.LogoFileIDLTE = data
+		case "logoFileIDIsNil":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.LogoContains = data
-		case "logoHasPrefix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.LogoHasPrefix = data
-		case "logoHasSuffix":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.LogoHasSuffix = data
-		case "logoIsNil":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoIsNil"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDIsNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoIsNil = data
-		case "logoNotNil":
+			it.LogoFileIDIsNil = data
+		case "logoFileIDNotNil":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoNotNil"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileIDNotNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.LogoNotNil = data
-		case "logoEqualFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.LogoEqualFold = data
-		case "logoContainsFold":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.LogoContainsFold = data
+			it.LogoFileIDNotNil = data
 		case "comments":
 			var err error
 
@@ -25909,7 +25864,7 @@ func (ec *executionContext) unmarshalInputCreateAppInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "code", "kind", "redirectURI", "appKey", "appSecret", "scopes", "tokenValidity", "refreshTokenValidity", "logo", "comments", "status", "menuIDs", "actionIDs", "resourceIDs", "roleIDs", "policyIDs"}
+	fieldsInOrder := [...]string{"name", "code", "kind", "redirectURI", "appKey", "appSecret", "scopes", "tokenValidity", "refreshTokenValidity", "logoFileID", "comments", "status", "menuIDs", "actionIDs", "resourceIDs", "roleIDs", "policyIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -25997,15 +25952,15 @@ func (ec *executionContext) unmarshalInputCreateAppInput(ctx context.Context, ob
 				return it, err
 			}
 			it.RefreshTokenValidity = data
-		case "logo":
+		case "logoFileID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Logo = data
+			it.LogoFileID = data
 		case "comments":
 			var err error
 
@@ -34667,7 +34622,7 @@ func (ec *executionContext) unmarshalInputUpdateAppInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "kind", "redirectURI", "clearRedirectURI", "appKey", "clearAppKey", "appSecret", "clearAppSecret", "scopes", "clearScopes", "tokenValidity", "clearTokenValidity", "refreshTokenValidity", "clearRefreshTokenValidity", "logo", "clearLogo", "comments", "clearComments", "status", "clearStatus", "addMenuIDs", "removeMenuIDs", "clearMenus", "addActionIDs", "removeActionIDs", "clearActions", "addResourceIDs", "removeResourceIDs", "clearResources", "addRoleIDs", "removeRoleIDs", "clearRoles", "addPolicyIDs", "removePolicyIDs", "clearPolicies"}
+	fieldsInOrder := [...]string{"name", "kind", "redirectURI", "clearRedirectURI", "appKey", "clearAppKey", "appSecret", "clearAppSecret", "scopes", "clearScopes", "tokenValidity", "clearTokenValidity", "refreshTokenValidity", "clearRefreshTokenValidity", "logoFileID", "clearLogoFileID", "comments", "clearComments", "status", "clearStatus", "addMenuIDs", "removeMenuIDs", "clearMenus", "addActionIDs", "removeActionIDs", "clearActions", "addResourceIDs", "removeResourceIDs", "clearResources", "addRoleIDs", "removeRoleIDs", "clearRoles", "addPolicyIDs", "removePolicyIDs", "clearPolicies"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -34800,24 +34755,24 @@ func (ec *executionContext) unmarshalInputUpdateAppInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearRefreshTokenValidity = data
-		case "logo":
+		case "logoFileID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Logo = data
-		case "clearLogo":
+			it.LogoFileID = data
+		case "clearLogoFileID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearLogo"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearLogoFileID"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ClearLogo = data
+			it.ClearLogoFileID = data
 		case "comments":
 			var err error
 
@@ -41729,9 +41684,9 @@ func (ec *executionContext) _App(ctx context.Context, sel ast.SelectionSet, obj 
 
 			out.Values[i] = ec._App_refreshTokenValidity(ctx, field, obj)
 
-		case "logo":
+		case "logoFileID":
 
-			out.Values[i] = ec._App_logo(ctx, field, obj)
+			out.Values[i] = ec._App_logoFileID(ctx, field, obj)
 
 		case "comments":
 

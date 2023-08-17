@@ -25,7 +25,7 @@ var (
 		{Name: "scopes", Type: field.TypeString, Nullable: true, Size: 500},
 		{Name: "token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
-		{Name: "logo", Type: field.TypeString, Nullable: true},
+		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
 		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
@@ -45,7 +45,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc", "function"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc", "function", "route"}},
 		{Name: "method", Type: field.TypeEnum, Enums: []string{"read", "write", "list"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -237,6 +237,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "ref_count", Type: field.TypeInt, Nullable: true},
 		{Name: "path", Type: field.TypeString},
 		{Name: "size", Type: field.TypeInt, Nullable: true},
 		{Name: "mine_type", Type: field.TypeString, Nullable: true, Size: 100},
@@ -251,7 +252,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "file_file_source_files",
-				Columns:    []*schema.Column{FileColumns[11]},
+				Columns:    []*schema.Column{FileColumns[12]},
 				RefColumns: []*schema.Column{FileSourceColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -260,7 +261,7 @@ var (
 			{
 				Name:    "file_tenant_id_source_id_path",
 				Unique:  true,
-				Columns: []*schema.Column{FileColumns[6], FileColumns[11], FileColumns[7]},
+				Columns: []*schema.Column{FileColumns[6], FileColumns[12], FileColumns[8]},
 			},
 		},
 	}

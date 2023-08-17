@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -81,8 +82,9 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	s.AuthService.Cache = redisc.NewBuiltIn()
 
 	s.FileService = &FileService{
-		DB:      s.AuthService.DB,
-		BaseDir: appCnf.Abs(appCnf.String("files.local.baseDir")),
+		DB:       s.AuthService.DB,
+		BaseDir:  appCnf.Abs(appCnf.String("files.local.baseDir")),
+		Endpoint: appCnf.Abs(appCnf.String("files.local.endpoint")),
 	}
 
 	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)
@@ -243,6 +245,7 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 	// 绑定mfa前置数据
 	req := httptest.NewRequest("POST", "/mfa/bind-prepare", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
 	res := httptest.NewRecorder()
 	ts.server.Router().ServeHTTP(res, req)
 	ts.Equal(res.Code, 200)
@@ -274,6 +277,28 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 	req.Header.Set("Content-Type", "application/json")
 	res = httptest.NewRecorder()
 	ts.server.Router().ServeHTTP(res, req)
+	ts.Equal(res.Code, 200)
+}
+
+func (ts *loginFlowSuite) Test_SpmFlow() {
+	// 绑定mfa前置数据
+	req := httptest.NewRequest("POST", "/spm/create", nil)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Equal(res.Code, 200)
+
+	spmKey := res.Body.String()
+	// 获取登录信息
+	payload := strings.NewReader(`{
+		"spm": ` + spmKey + `
+	}`)
+	req = httptest.NewRequest("POST", "/spm/auth", payload)
+	req.Header.Set("Content-Type", "application/json")
+	res = httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	fmt.Println(res.Body.String())
 	ts.Equal(res.Code, 200)
 }
 

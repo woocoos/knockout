@@ -32,6 +32,8 @@ type File struct {
 	SourceID int `json:"source_id,omitempty"`
 	// 租户ID
 	TenantID int `json:"tenant_id,omitempty"`
+	// 业务引用次数
+	RefCount int `json:"ref_count,omitempty"`
 	// 文件相对路径
 	Path string `json:"path,omitempty"`
 	// 文件大小，单位为B
@@ -75,7 +77,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case file.FieldID, file.FieldCreatedBy, file.FieldUpdatedBy, file.FieldSourceID, file.FieldTenantID, file.FieldSize:
+		case file.FieldID, file.FieldCreatedBy, file.FieldUpdatedBy, file.FieldSourceID, file.FieldTenantID, file.FieldRefCount, file.FieldSize:
 			values[i] = new(sql.NullInt64)
 		case file.FieldName, file.FieldPath, file.FieldMineType, file.FieldMd5:
 			values[i] = new(sql.NullString)
@@ -143,6 +145,12 @@ func (f *File) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
 				f.TenantID = int(value.Int64)
+			}
+		case file.FieldRefCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field ref_count", values[i])
+			} else if value.Valid {
+				f.RefCount = int(value.Int64)
 			}
 		case file.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -229,6 +237,9 @@ func (f *File) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
 	builder.WriteString(fmt.Sprintf("%v", f.TenantID))
+	builder.WriteString(", ")
+	builder.WriteString("ref_count=")
+	builder.WriteString(fmt.Sprintf("%v", f.RefCount))
 	builder.WriteString(", ")
 	builder.WriteString("path=")
 	builder.WriteString(f.Path)

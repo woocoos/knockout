@@ -101,6 +101,33 @@ func (fu *FileUpdate) AddTenantID(i int) *FileUpdate {
 	return fu
 }
 
+// SetRefCount sets the "ref_count" field.
+func (fu *FileUpdate) SetRefCount(i int) *FileUpdate {
+	fu.mutation.ResetRefCount()
+	fu.mutation.SetRefCount(i)
+	return fu
+}
+
+// SetNillableRefCount sets the "ref_count" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableRefCount(i *int) *FileUpdate {
+	if i != nil {
+		fu.SetRefCount(*i)
+	}
+	return fu
+}
+
+// AddRefCount adds i to the "ref_count" field.
+func (fu *FileUpdate) AddRefCount(i int) *FileUpdate {
+	fu.mutation.AddRefCount(i)
+	return fu
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (fu *FileUpdate) ClearRefCount() *FileUpdate {
+	fu.mutation.ClearRefCount()
+	return fu
+}
+
 // SetPath sets the "path" field.
 func (fu *FileUpdate) SetPath(s string) *FileUpdate {
 	fu.mutation.SetPath(s)
@@ -271,6 +298,15 @@ func (fu *FileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fu.mutation.AddedTenantID(); ok {
 		_spec.AddField(file.FieldTenantID, field.TypeInt, value)
 	}
+	if value, ok := fu.mutation.RefCount(); ok {
+		_spec.SetField(file.FieldRefCount, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AddedRefCount(); ok {
+		_spec.AddField(file.FieldRefCount, field.TypeInt, value)
+	}
+	if fu.mutation.RefCountCleared() {
+		_spec.ClearField(file.FieldRefCount, field.TypeInt)
+	}
 	if value, ok := fu.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)
 	}
@@ -413,6 +449,33 @@ func (fuo *FileUpdateOne) SetTenantID(i int) *FileUpdateOne {
 // AddTenantID adds i to the "tenant_id" field.
 func (fuo *FileUpdateOne) AddTenantID(i int) *FileUpdateOne {
 	fuo.mutation.AddTenantID(i)
+	return fuo
+}
+
+// SetRefCount sets the "ref_count" field.
+func (fuo *FileUpdateOne) SetRefCount(i int) *FileUpdateOne {
+	fuo.mutation.ResetRefCount()
+	fuo.mutation.SetRefCount(i)
+	return fuo
+}
+
+// SetNillableRefCount sets the "ref_count" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableRefCount(i *int) *FileUpdateOne {
+	if i != nil {
+		fuo.SetRefCount(*i)
+	}
+	return fuo
+}
+
+// AddRefCount adds i to the "ref_count" field.
+func (fuo *FileUpdateOne) AddRefCount(i int) *FileUpdateOne {
+	fuo.mutation.AddRefCount(i)
+	return fuo
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (fuo *FileUpdateOne) ClearRefCount() *FileUpdateOne {
+	fuo.mutation.ClearRefCount()
 	return fuo
 }
 
@@ -615,6 +678,15 @@ func (fuo *FileUpdateOne) sqlSave(ctx context.Context) (_node *File, err error) 
 	}
 	if value, ok := fuo.mutation.AddedTenantID(); ok {
 		_spec.AddField(file.FieldTenantID, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.RefCount(); ok {
+		_spec.SetField(file.FieldRefCount, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AddedRefCount(); ok {
+		_spec.AddField(file.FieldRefCount, field.TypeInt, value)
+	}
+	if fuo.mutation.RefCountCleared() {
+		_spec.ClearField(file.FieldRefCount, field.TypeInt)
 	}
 	if value, ok := fuo.mutation.Path(); ok {
 		_spec.SetField(file.FieldPath, field.TypeString, value)

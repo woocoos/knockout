@@ -220,22 +220,17 @@ type AppWhereInput struct {
 	RefreshTokenValidityIsNil  bool    `json:"refreshTokenValidityIsNil,omitempty"`
 	RefreshTokenValidityNotNil bool    `json:"refreshTokenValidityNotNil,omitempty"`
 
-	// "logo" field predicates.
-	Logo             *string  `json:"logo,omitempty"`
-	LogoNEQ          *string  `json:"logoNEQ,omitempty"`
-	LogoIn           []string `json:"logoIn,omitempty"`
-	LogoNotIn        []string `json:"logoNotIn,omitempty"`
-	LogoGT           *string  `json:"logoGT,omitempty"`
-	LogoGTE          *string  `json:"logoGTE,omitempty"`
-	LogoLT           *string  `json:"logoLT,omitempty"`
-	LogoLTE          *string  `json:"logoLTE,omitempty"`
-	LogoContains     *string  `json:"logoContains,omitempty"`
-	LogoHasPrefix    *string  `json:"logoHasPrefix,omitempty"`
-	LogoHasSuffix    *string  `json:"logoHasSuffix,omitempty"`
-	LogoIsNil        bool     `json:"logoIsNil,omitempty"`
-	LogoNotNil       bool     `json:"logoNotNil,omitempty"`
-	LogoEqualFold    *string  `json:"logoEqualFold,omitempty"`
-	LogoContainsFold *string  `json:"logoContainsFold,omitempty"`
+	// "logo_file_id" field predicates.
+	LogoFileID       *int  `json:"logoFileID,omitempty"`
+	LogoFileIDNEQ    *int  `json:"logoFileIDNEQ,omitempty"`
+	LogoFileIDIn     []int `json:"logoFileIDIn,omitempty"`
+	LogoFileIDNotIn  []int `json:"logoFileIDNotIn,omitempty"`
+	LogoFileIDGT     *int  `json:"logoFileIDGT,omitempty"`
+	LogoFileIDGTE    *int  `json:"logoFileIDGTE,omitempty"`
+	LogoFileIDLT     *int  `json:"logoFileIDLT,omitempty"`
+	LogoFileIDLTE    *int  `json:"logoFileIDLTE,omitempty"`
+	LogoFileIDIsNil  bool  `json:"logoFileIDIsNil,omitempty"`
+	LogoFileIDNotNil bool  `json:"logoFileIDNotNil,omitempty"`
 
 	// "comments" field predicates.
 	Comments             *string  `json:"comments,omitempty"`
@@ -820,50 +815,35 @@ func (i *AppWhereInput) P() (predicate.App, error) {
 	if i.RefreshTokenValidityNotNil {
 		predicates = append(predicates, app.RefreshTokenValidityNotNil())
 	}
-	if i.Logo != nil {
-		predicates = append(predicates, app.LogoEQ(*i.Logo))
+	if i.LogoFileID != nil {
+		predicates = append(predicates, app.LogoFileIDEQ(*i.LogoFileID))
 	}
-	if i.LogoNEQ != nil {
-		predicates = append(predicates, app.LogoNEQ(*i.LogoNEQ))
+	if i.LogoFileIDNEQ != nil {
+		predicates = append(predicates, app.LogoFileIDNEQ(*i.LogoFileIDNEQ))
 	}
-	if len(i.LogoIn) > 0 {
-		predicates = append(predicates, app.LogoIn(i.LogoIn...))
+	if len(i.LogoFileIDIn) > 0 {
+		predicates = append(predicates, app.LogoFileIDIn(i.LogoFileIDIn...))
 	}
-	if len(i.LogoNotIn) > 0 {
-		predicates = append(predicates, app.LogoNotIn(i.LogoNotIn...))
+	if len(i.LogoFileIDNotIn) > 0 {
+		predicates = append(predicates, app.LogoFileIDNotIn(i.LogoFileIDNotIn...))
 	}
-	if i.LogoGT != nil {
-		predicates = append(predicates, app.LogoGT(*i.LogoGT))
+	if i.LogoFileIDGT != nil {
+		predicates = append(predicates, app.LogoFileIDGT(*i.LogoFileIDGT))
 	}
-	if i.LogoGTE != nil {
-		predicates = append(predicates, app.LogoGTE(*i.LogoGTE))
+	if i.LogoFileIDGTE != nil {
+		predicates = append(predicates, app.LogoFileIDGTE(*i.LogoFileIDGTE))
 	}
-	if i.LogoLT != nil {
-		predicates = append(predicates, app.LogoLT(*i.LogoLT))
+	if i.LogoFileIDLT != nil {
+		predicates = append(predicates, app.LogoFileIDLT(*i.LogoFileIDLT))
 	}
-	if i.LogoLTE != nil {
-		predicates = append(predicates, app.LogoLTE(*i.LogoLTE))
+	if i.LogoFileIDLTE != nil {
+		predicates = append(predicates, app.LogoFileIDLTE(*i.LogoFileIDLTE))
 	}
-	if i.LogoContains != nil {
-		predicates = append(predicates, app.LogoContains(*i.LogoContains))
+	if i.LogoFileIDIsNil {
+		predicates = append(predicates, app.LogoFileIDIsNil())
 	}
-	if i.LogoHasPrefix != nil {
-		predicates = append(predicates, app.LogoHasPrefix(*i.LogoHasPrefix))
-	}
-	if i.LogoHasSuffix != nil {
-		predicates = append(predicates, app.LogoHasSuffix(*i.LogoHasSuffix))
-	}
-	if i.LogoIsNil {
-		predicates = append(predicates, app.LogoIsNil())
-	}
-	if i.LogoNotNil {
-		predicates = append(predicates, app.LogoNotNil())
-	}
-	if i.LogoEqualFold != nil {
-		predicates = append(predicates, app.LogoEqualFold(*i.LogoEqualFold))
-	}
-	if i.LogoContainsFold != nil {
-		predicates = append(predicates, app.LogoContainsFold(*i.LogoContainsFold))
+	if i.LogoFileIDNotNil {
+		predicates = append(predicates, app.LogoFileIDNotNil())
 	}
 	if i.Comments != nil {
 		predicates = append(predicates, app.CommentsEQ(*i.Comments))

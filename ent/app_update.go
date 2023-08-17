@@ -229,23 +229,30 @@ func (au *AppUpdate) ClearRefreshTokenValidity() *AppUpdate {
 	return au
 }
 
-// SetLogo sets the "logo" field.
-func (au *AppUpdate) SetLogo(s string) *AppUpdate {
-	au.mutation.SetLogo(s)
+// SetLogoFileID sets the "logo_file_id" field.
+func (au *AppUpdate) SetLogoFileID(i int) *AppUpdate {
+	au.mutation.ResetLogoFileID()
+	au.mutation.SetLogoFileID(i)
 	return au
 }
 
-// SetNillableLogo sets the "logo" field if the given value is not nil.
-func (au *AppUpdate) SetNillableLogo(s *string) *AppUpdate {
-	if s != nil {
-		au.SetLogo(*s)
+// SetNillableLogoFileID sets the "logo_file_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableLogoFileID(i *int) *AppUpdate {
+	if i != nil {
+		au.SetLogoFileID(*i)
 	}
 	return au
 }
 
-// ClearLogo clears the value of the "logo" field.
-func (au *AppUpdate) ClearLogo() *AppUpdate {
-	au.mutation.ClearLogo()
+// AddLogoFileID adds i to the "logo_file_id" field.
+func (au *AppUpdate) AddLogoFileID(i int) *AppUpdate {
+	au.mutation.AddLogoFileID(i)
+	return au
+}
+
+// ClearLogoFileID clears the value of the "logo_file_id" field.
+func (au *AppUpdate) ClearLogoFileID() *AppUpdate {
+	au.mutation.ClearLogoFileID()
 	return au
 }
 
@@ -730,11 +737,14 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
 	}
-	if value, ok := au.mutation.Logo(); ok {
-		_spec.SetField(app.FieldLogo, field.TypeString, value)
+	if value, ok := au.mutation.LogoFileID(); ok {
+		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
 	}
-	if au.mutation.LogoCleared() {
-		_spec.ClearField(app.FieldLogo, field.TypeString)
+	if value, ok := au.mutation.AddedLogoFileID(); ok {
+		_spec.AddField(app.FieldLogoFileID, field.TypeInt, value)
+	}
+	if au.mutation.LogoFileIDCleared() {
+		_spec.ClearField(app.FieldLogoFileID, field.TypeInt)
 	}
 	if value, ok := au.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
@@ -1303,23 +1313,30 @@ func (auo *AppUpdateOne) ClearRefreshTokenValidity() *AppUpdateOne {
 	return auo
 }
 
-// SetLogo sets the "logo" field.
-func (auo *AppUpdateOne) SetLogo(s string) *AppUpdateOne {
-	auo.mutation.SetLogo(s)
+// SetLogoFileID sets the "logo_file_id" field.
+func (auo *AppUpdateOne) SetLogoFileID(i int) *AppUpdateOne {
+	auo.mutation.ResetLogoFileID()
+	auo.mutation.SetLogoFileID(i)
 	return auo
 }
 
-// SetNillableLogo sets the "logo" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableLogo(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetLogo(*s)
+// SetNillableLogoFileID sets the "logo_file_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableLogoFileID(i *int) *AppUpdateOne {
+	if i != nil {
+		auo.SetLogoFileID(*i)
 	}
 	return auo
 }
 
-// ClearLogo clears the value of the "logo" field.
-func (auo *AppUpdateOne) ClearLogo() *AppUpdateOne {
-	auo.mutation.ClearLogo()
+// AddLogoFileID adds i to the "logo_file_id" field.
+func (auo *AppUpdateOne) AddLogoFileID(i int) *AppUpdateOne {
+	auo.mutation.AddLogoFileID(i)
+	return auo
+}
+
+// ClearLogoFileID clears the value of the "logo_file_id" field.
+func (auo *AppUpdateOne) ClearLogoFileID() *AppUpdateOne {
+	auo.mutation.ClearLogoFileID()
 	return auo
 }
 
@@ -1834,11 +1851,14 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
 	}
-	if value, ok := auo.mutation.Logo(); ok {
-		_spec.SetField(app.FieldLogo, field.TypeString, value)
+	if value, ok := auo.mutation.LogoFileID(); ok {
+		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
 	}
-	if auo.mutation.LogoCleared() {
-		_spec.ClearField(app.FieldLogo, field.TypeString)
+	if value, ok := auo.mutation.AddedLogoFileID(); ok {
+		_spec.AddField(app.FieldLogoFileID, field.TypeInt, value)
+	}
+	if auo.mutation.LogoFileIDCleared() {
+		_spec.ClearField(app.FieldLogoFileID, field.TypeInt)
 	}
 	if value, ok := auo.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)

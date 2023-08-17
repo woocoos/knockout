@@ -31,6 +31,8 @@ web:
             - errorHandle:
             - jwt:
                 tokenStoreKey: redis
+                exclude:
+                  - "/spm/auth"
                 <<: *jwt
 snowflake:
   # 机器id

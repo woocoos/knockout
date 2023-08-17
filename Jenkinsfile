@@ -3,7 +3,6 @@ pipeline{
     environment {
         // Necessary to enable Docker buildkit features such as --ssh
         DOCKER_BUILDKIT = "1"
-        REGISTRY_SERVER = "registry.hycapital.hk"
         ADMINX_IMAGE_NAME = "woocoos/adminx"
         FILES_IMAGE_NAME = "woocoos/files"
         AUTH_IMAGE_NAME = "woocoos/auth"
@@ -33,7 +32,7 @@ pipeline{
                             tagName = "${VERSION}.${env.GitCommitID}"
                         }
 
-                        def image = docker.build("${ADMINX_IMAGE_NAME}:${tagName}","--add-host nexus.hycapital.hk:192.168.0.14 -f cmd/adminx/Dockerfile .")
+                        def image = docker.build("${ADMINX_IMAGE_NAME}:${tagName}","--add-host ${NEXUS_HOST} -f cmd/adminx/Dockerfile .")
                         image.push()
                     }
                     if (tagName) {
@@ -53,7 +52,7 @@ pipeline{
                             tagName = "${VERSION}.${env.GitCommitID}"
                         }
 
-                        def image = docker.build("${FILES_IMAGE_NAME}:${tagName}","--add-host nexus.hycapital.hk:192.168.0.14 -f cmd/files/Dockerfile .")
+                        def image = docker.build("${FILES_IMAGE_NAME}:${tagName}","--add-host ${NEXUS_HOST} -f cmd/files/Dockerfile .")
                         image.push()
                     }
                     if (tagName) {
@@ -73,7 +72,7 @@ pipeline{
                                     tagName = "${VERSION}.${env.GitCommitID}"
                                 }
 
-                                def image = docker.build("${AUTH_IMAGE_NAME}:${tagName}","--add-host nexus.hycapital.hk:192.168.0.14 -f cmd/auth/Dockerfile .")
+                                def image = docker.build("${AUTH_IMAGE_NAME}:${tagName}","--add-host ${NEXUS_HOST} -f cmd/auth/Dockerfile .")
                                 image.push()
                             }
                             if (tagName) {

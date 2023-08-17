@@ -62,6 +62,10 @@ type ForgetPwdVerifyMfaRequestBody struct {
 	StateToken string `binding:"required" json:"stateToken"`
 }
 
+type GetSpmAuthRequest struct {
+	Spm string `binding:"required" json:"spm"`
+}
+
 type LoginRequest struct {
 	Body LoginRequestBody
 }

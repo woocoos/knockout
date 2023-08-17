@@ -480,10 +480,10 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, app.FieldRefreshTokenValidity)
 				fieldSeen[app.FieldRefreshTokenValidity] = struct{}{}
 			}
-		case "logo":
-			if _, ok := fieldSeen[app.FieldLogo]; !ok {
-				selectedFields = append(selectedFields, app.FieldLogo)
-				fieldSeen[app.FieldLogo] = struct{}{}
+		case "logoFileID":
+			if _, ok := fieldSeen[app.FieldLogoFileID]; !ok {
+				selectedFields = append(selectedFields, app.FieldLogoFileID)
+				fieldSeen[app.FieldLogoFileID] = struct{}{}
 			}
 		case "comments":
 			if _, ok := fieldSeen[app.FieldComments]; !ok {

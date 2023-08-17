@@ -92,7 +92,8 @@ type AppMutation struct {
 	addtoken_validity         *int32
 	refresh_token_validity    *int32
 	addrefresh_token_validity *int32
-	logo                      *string
+	logo_file_id              *int
+	addlogo_file_id           *int
 	comments                  *string
 	status                    *typex.SimpleStatus
 	private                   *bool
@@ -884,53 +885,74 @@ func (m *AppMutation) ResetRefreshTokenValidity() {
 	delete(m.clearedFields, app.FieldRefreshTokenValidity)
 }
 
-// SetLogo sets the "logo" field.
-func (m *AppMutation) SetLogo(s string) {
-	m.logo = &s
+// SetLogoFileID sets the "logo_file_id" field.
+func (m *AppMutation) SetLogoFileID(i int) {
+	m.logo_file_id = &i
+	m.addlogo_file_id = nil
 }
 
-// Logo returns the value of the "logo" field in the mutation.
-func (m *AppMutation) Logo() (r string, exists bool) {
-	v := m.logo
+// LogoFileID returns the value of the "logo_file_id" field in the mutation.
+func (m *AppMutation) LogoFileID() (r int, exists bool) {
+	v := m.logo_file_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLogo returns the old "logo" field's value of the App entity.
+// OldLogoFileID returns the old "logo_file_id" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldLogo(ctx context.Context) (v string, err error) {
+func (m *AppMutation) OldLogoFileID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+		return v, errors.New("OldLogoFileID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLogo requires an ID field in the mutation")
+		return v, errors.New("OldLogoFileID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+		return v, fmt.Errorf("querying old value for OldLogoFileID: %w", err)
 	}
-	return oldValue.Logo, nil
+	return oldValue.LogoFileID, nil
 }
 
-// ClearLogo clears the value of the "logo" field.
-func (m *AppMutation) ClearLogo() {
-	m.logo = nil
-	m.clearedFields[app.FieldLogo] = struct{}{}
+// AddLogoFileID adds i to the "logo_file_id" field.
+func (m *AppMutation) AddLogoFileID(i int) {
+	if m.addlogo_file_id != nil {
+		*m.addlogo_file_id += i
+	} else {
+		m.addlogo_file_id = &i
+	}
 }
 
-// LogoCleared returns if the "logo" field was cleared in this mutation.
-func (m *AppMutation) LogoCleared() bool {
-	_, ok := m.clearedFields[app.FieldLogo]
+// AddedLogoFileID returns the value that was added to the "logo_file_id" field in this mutation.
+func (m *AppMutation) AddedLogoFileID() (r int, exists bool) {
+	v := m.addlogo_file_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLogoFileID clears the value of the "logo_file_id" field.
+func (m *AppMutation) ClearLogoFileID() {
+	m.logo_file_id = nil
+	m.addlogo_file_id = nil
+	m.clearedFields[app.FieldLogoFileID] = struct{}{}
+}
+
+// LogoFileIDCleared returns if the "logo_file_id" field was cleared in this mutation.
+func (m *AppMutation) LogoFileIDCleared() bool {
+	_, ok := m.clearedFields[app.FieldLogoFileID]
 	return ok
 }
 
-// ResetLogo resets all changes to the "logo" field.
-func (m *AppMutation) ResetLogo() {
-	m.logo = nil
-	delete(m.clearedFields, app.FieldLogo)
+// ResetLogoFileID resets all changes to the "logo_file_id" field.
+func (m *AppMutation) ResetLogoFileID() {
+	m.logo_file_id = nil
+	m.addlogo_file_id = nil
+	delete(m.clearedFields, app.FieldLogoFileID)
 }
 
 // SetComments sets the "comments" field.
@@ -1602,8 +1624,8 @@ func (m *AppMutation) Fields() []string {
 	if m.refresh_token_validity != nil {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
-	if m.logo != nil {
-		fields = append(fields, app.FieldLogo)
+	if m.logo_file_id != nil {
+		fields = append(fields, app.FieldLogoFileID)
 	}
 	if m.comments != nil {
 		fields = append(fields, app.FieldComments)
@@ -1651,8 +1673,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.TokenValidity()
 	case app.FieldRefreshTokenValidity:
 		return m.RefreshTokenValidity()
-	case app.FieldLogo:
-		return m.Logo()
+	case app.FieldLogoFileID:
+		return m.LogoFileID()
 	case app.FieldComments:
 		return m.Comments()
 	case app.FieldStatus:
@@ -1696,8 +1718,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldTokenValidity(ctx)
 	case app.FieldRefreshTokenValidity:
 		return m.OldRefreshTokenValidity(ctx)
-	case app.FieldLogo:
-		return m.OldLogo(ctx)
+	case app.FieldLogoFileID:
+		return m.OldLogoFileID(ctx)
 	case app.FieldComments:
 		return m.OldComments(ctx)
 	case app.FieldStatus:
@@ -1806,12 +1828,12 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRefreshTokenValidity(v)
 		return nil
-	case app.FieldLogo:
-		v, ok := value.(string)
+	case app.FieldLogoFileID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLogo(v)
+		m.SetLogoFileID(v)
 		return nil
 	case app.FieldComments:
 		v, ok := value.(string)
@@ -1861,6 +1883,9 @@ func (m *AppMutation) AddedFields() []string {
 	if m.addrefresh_token_validity != nil {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
+	if m.addlogo_file_id != nil {
+		fields = append(fields, app.FieldLogoFileID)
+	}
 	if m.addowner_org_id != nil {
 		fields = append(fields, app.FieldOwnerOrgID)
 	}
@@ -1880,6 +1905,8 @@ func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedTokenValidity()
 	case app.FieldRefreshTokenValidity:
 		return m.AddedRefreshTokenValidity()
+	case app.FieldLogoFileID:
+		return m.AddedLogoFileID()
 	case app.FieldOwnerOrgID:
 		return m.AddedOwnerOrgID()
 	}
@@ -1918,6 +1945,13 @@ func (m *AppMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRefreshTokenValidity(v)
+		return nil
+	case app.FieldLogoFileID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLogoFileID(v)
 		return nil
 	case app.FieldOwnerOrgID:
 		v, ok := value.(int)
@@ -1958,8 +1992,8 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldRefreshTokenValidity) {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
-	if m.FieldCleared(app.FieldLogo) {
-		fields = append(fields, app.FieldLogo)
+	if m.FieldCleared(app.FieldLogoFileID) {
+		fields = append(fields, app.FieldLogoFileID)
 	}
 	if m.FieldCleared(app.FieldComments) {
 		fields = append(fields, app.FieldComments)
@@ -2011,8 +2045,8 @@ func (m *AppMutation) ClearField(name string) error {
 	case app.FieldRefreshTokenValidity:
 		m.ClearRefreshTokenValidity()
 		return nil
-	case app.FieldLogo:
-		m.ClearLogo()
+	case app.FieldLogoFileID:
+		m.ClearLogoFileID()
 		return nil
 	case app.FieldComments:
 		m.ClearComments()
@@ -2073,8 +2107,8 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldRefreshTokenValidity:
 		m.ResetRefreshTokenValidity()
 		return nil
-	case app.FieldLogo:
-		m.ResetLogo()
+	case app.FieldLogoFileID:
+		m.ResetLogoFileID()
 		return nil
 	case app.FieldComments:
 		m.ResetComments()
@@ -8996,6 +9030,8 @@ type FileMutation struct {
 	name          *string
 	tenant_id     *int
 	addtenant_id  *int
+	ref_count     *int
+	addref_count  *int
 	_path         *string
 	size          *int
 	addsize       *int
@@ -9452,6 +9488,76 @@ func (m *FileMutation) ResetTenantID() {
 	m.addtenant_id = nil
 }
 
+// SetRefCount sets the "ref_count" field.
+func (m *FileMutation) SetRefCount(i int) {
+	m.ref_count = &i
+	m.addref_count = nil
+}
+
+// RefCount returns the value of the "ref_count" field in the mutation.
+func (m *FileMutation) RefCount() (r int, exists bool) {
+	v := m.ref_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRefCount returns the old "ref_count" field's value of the File entity.
+// If the File object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileMutation) OldRefCount(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRefCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRefCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRefCount: %w", err)
+	}
+	return oldValue.RefCount, nil
+}
+
+// AddRefCount adds i to the "ref_count" field.
+func (m *FileMutation) AddRefCount(i int) {
+	if m.addref_count != nil {
+		*m.addref_count += i
+	} else {
+		m.addref_count = &i
+	}
+}
+
+// AddedRefCount returns the value that was added to the "ref_count" field in this mutation.
+func (m *FileMutation) AddedRefCount() (r int, exists bool) {
+	v := m.addref_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRefCount clears the value of the "ref_count" field.
+func (m *FileMutation) ClearRefCount() {
+	m.ref_count = nil
+	m.addref_count = nil
+	m.clearedFields[file.FieldRefCount] = struct{}{}
+}
+
+// RefCountCleared returns if the "ref_count" field was cleared in this mutation.
+func (m *FileMutation) RefCountCleared() bool {
+	_, ok := m.clearedFields[file.FieldRefCount]
+	return ok
+}
+
+// ResetRefCount resets all changes to the "ref_count" field.
+func (m *FileMutation) ResetRefCount() {
+	m.ref_count = nil
+	m.addref_count = nil
+	delete(m.clearedFields, file.FieldRefCount)
+}
+
 // SetPath sets the "path" field.
 func (m *FileMutation) SetPath(s string) {
 	m._path = &s
@@ -9716,7 +9822,7 @@ func (m *FileMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_by != nil {
 		fields = append(fields, file.FieldCreatedBy)
 	}
@@ -9737,6 +9843,9 @@ func (m *FileMutation) Fields() []string {
 	}
 	if m.tenant_id != nil {
 		fields = append(fields, file.FieldTenantID)
+	}
+	if m.ref_count != nil {
+		fields = append(fields, file.FieldRefCount)
 	}
 	if m._path != nil {
 		fields = append(fields, file.FieldPath)
@@ -9772,6 +9881,8 @@ func (m *FileMutation) Field(name string) (ent.Value, bool) {
 		return m.SourceID()
 	case file.FieldTenantID:
 		return m.TenantID()
+	case file.FieldRefCount:
+		return m.RefCount()
 	case file.FieldPath:
 		return m.Path()
 	case file.FieldSize:
@@ -9803,6 +9914,8 @@ func (m *FileMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSourceID(ctx)
 	case file.FieldTenantID:
 		return m.OldTenantID(ctx)
+	case file.FieldRefCount:
+		return m.OldRefCount(ctx)
 	case file.FieldPath:
 		return m.OldPath(ctx)
 	case file.FieldSize:
@@ -9869,6 +9982,13 @@ func (m *FileMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTenantID(v)
 		return nil
+	case file.FieldRefCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRefCount(v)
+		return nil
 	case file.FieldPath:
 		v, ok := value.(string)
 		if !ok {
@@ -9914,6 +10034,9 @@ func (m *FileMutation) AddedFields() []string {
 	if m.addtenant_id != nil {
 		fields = append(fields, file.FieldTenantID)
 	}
+	if m.addref_count != nil {
+		fields = append(fields, file.FieldRefCount)
+	}
 	if m.addsize != nil {
 		fields = append(fields, file.FieldSize)
 	}
@@ -9931,6 +10054,8 @@ func (m *FileMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedBy()
 	case file.FieldTenantID:
 		return m.AddedTenantID()
+	case file.FieldRefCount:
+		return m.AddedRefCount()
 	case file.FieldSize:
 		return m.AddedSize()
 	}
@@ -9963,6 +10088,13 @@ func (m *FileMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddTenantID(v)
 		return nil
+	case file.FieldRefCount:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRefCount(v)
+		return nil
 	case file.FieldSize:
 		v, ok := value.(int)
 		if !ok {
@@ -9983,6 +10115,9 @@ func (m *FileMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(file.FieldUpdatedAt) {
 		fields = append(fields, file.FieldUpdatedAt)
+	}
+	if m.FieldCleared(file.FieldRefCount) {
+		fields = append(fields, file.FieldRefCount)
 	}
 	if m.FieldCleared(file.FieldSize) {
 		fields = append(fields, file.FieldSize)
@@ -10012,6 +10147,9 @@ func (m *FileMutation) ClearField(name string) error {
 		return nil
 	case file.FieldUpdatedAt:
 		m.ClearUpdatedAt()
+		return nil
+	case file.FieldRefCount:
+		m.ClearRefCount()
 		return nil
 	case file.FieldSize:
 		m.ClearSize()
@@ -10050,6 +10188,9 @@ func (m *FileMutation) ResetField(name string) error {
 		return nil
 	case file.FieldTenantID:
 		m.ResetTenantID()
+		return nil
+	case file.FieldRefCount:
+		m.ResetRefCount()
 		return nil
 	case file.FieldPath:
 		m.ResetPath()

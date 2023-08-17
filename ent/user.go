@@ -47,7 +47,7 @@ type User struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
-	// 头像
+	// 头像,存储路规则：/ucenter/{tid}/xxx
 	AvatarFileID int `json:"avatar_file_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
