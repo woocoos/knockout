@@ -44,7 +44,7 @@ type App struct {
 	TokenValidity int32 `json:"token_validity,omitempty"`
 	// refresh_token有效期
 	RefreshTokenValidity int32 `json:"refresh_token_validity,omitempty"`
-	// 图标,存储路规则：/ucenter/{tid}/xxx
+	// 图标,存储路规则：/{appcode}/{tid}/xxx
 	LogoFileID int `json:"logo_file_id,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`

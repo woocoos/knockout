@@ -4107,7 +4107,7 @@ type App implements Node {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
   logoFileID: Int
   """备注"""
   comments: String
@@ -5372,7 +5372,7 @@ input CreateAppInput {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
   logoFileID: Int
   """备注"""
   comments: String
@@ -5582,7 +5582,7 @@ input CreateUserInput {
   status: UserSimpleStatus
   """备注"""
   comments: String
-  """头像,存储路规则：/ucenter/{tid}/xxx"""
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
   avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
@@ -7126,7 +7126,7 @@ input UpdateAppInput {
   """refresh_token有效期"""
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
-  """图标,存储路规则：/ucenter/{tid}/xxx"""
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
   logoFileID: Int
   clearLogoFileID: Boolean
   """备注"""
@@ -7381,7 +7381,7 @@ input UpdateUserInput {
   """备注"""
   comments: String
   clearComments: Boolean
-  """头像,存储路规则：/ucenter/{tid}/xxx"""
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
   avatarFileID: ID
   clearAvatarFileID: Boolean
 }
@@ -7440,7 +7440,7 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
-  """头像,存储路规则：/ucenter/{tid}/xxx"""
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
   avatarFileID: ID
   """用户身份标识"""
   identities: [UserIdentity!]

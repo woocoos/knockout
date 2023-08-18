@@ -53,7 +53,7 @@ func (App) Fields() []ent.Field {
 		field.String("scopes").MaxLen(500).Optional().Comment("权限范围"),
 		field.Int32("token_validity").Optional().Comment("token有效期"),
 		field.Int32("refresh_token_validity").Optional().Comment("refresh_token有效期"),
-		field.Int("logo_file_id").Optional().Comment("图标,存储路规则：/ucenter/{tid}/xxx"),
+		field.Int("logo_file_id").Optional().Comment("图标,存储路规则：/{appcode}/{tid}/xxx"),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
 		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").

@@ -83,4 +83,4 @@ entcache:
   level: context
 #  ttl: 5m # level: db时有效
 files:
-  prefixDir: "/ucenter"  # 相对于存储服务的前缀路径
+  prefixDir: "/resource"  # 相对于存储服务的前缀路径
