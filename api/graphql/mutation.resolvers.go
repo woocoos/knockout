@@ -8,12 +8,16 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/woocoos/entco/pkg/snowflake"
+	"github.com/woocoos/entco/schemax/typex"
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/service/resource"
 )
 
 // EnableDirectory is the resolver for the enableDirectory field.
@@ -353,6 +357,37 @@ func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool
 		return false, fmt.Errorf("filesource: %d has be referenced, cannot be deleted", fsID)
 	}
 	err = client.FileSource.DeleteOneID(fsID).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateOauthClient is the resolver for the createOauthClient field.
+func (r *mutationResolver) CreateOauthClient(ctx context.Context, input ent.CreateOauthClientInput) (*ent.OauthClient, error) {
+	clientId := snowflake.New().String()
+	clientSecret := resource.RandomStr(32)
+	return ent.FromContext(ctx).OauthClient.Create().SetInput(input).SetClientID(clientId).SetClientSecret(clientSecret).Save(ctx)
+}
+
+// EnableOauthClient is the resolver for the enableOauthClient field.
+func (r *mutationResolver) EnableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error) {
+	return ent.FromContext(ctx).OauthClient.UpdateOneID(id).SetStatus(typex.SimpleStatusActive).Save(ctx)
+}
+
+// DisableOauthClient is the resolver for the disableOauthClient field.
+func (r *mutationResolver) DisableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error) {
+	return ent.FromContext(ctx).OauthClient.UpdateOneID(id).SetStatus(typex.SimpleStatusInactive).Save(ctx)
+}
+
+// DeleteOauthClient is the resolver for the deleteOauthClient field.
+func (r *mutationResolver) DeleteOauthClient(ctx context.Context, id int) (bool, error) {
+	client := ent.FromContext(ctx)
+	oc, err := client.OauthClient.Query().Where(oauthclient.ID(id)).Only(ctx)
+	if err != nil {
+		return false, err
+	}
+	if oc.Status == typex.SimpleStatusActive {
+		return false, fmt.Errorf("the active status cannot be deleted")
+	}
+	err = client.OauthClient.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
 }
 

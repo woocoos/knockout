@@ -90,6 +90,21 @@ type ResetPasswordRequestBody struct {
 	StateToken  string `binding:"required" json:"stateToken"`
 }
 
+type TokenRequest struct {
+	Body TokenRequestBody
+}
+
+type TokenRequestBody struct {
+	GrantType    string `binding:"required" form:"grant_type"`
+	ClientID     string `binding:"required" form:"client_id"`
+	ClientSecret string `binding:"required" form:"client_secret"`
+}
+
+type TokenResponse struct {
+	AccessToken string `json:"accessToken,omitempty"`
+	ExpiresIn   int    `json:"expiresIn,omitempty"`
+}
+
 type UnBindMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
 }

@@ -38,6 +38,8 @@ type AuthServer interface {
 	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
 	// (POST /login/reset-password)
 	ResetPassword(*gin.Context, *ResetPasswordRequest) (*LoginResponse, error)
+	// (GET /token)
+	Token(*gin.Context, *TokenRequest) (*TokenResponse, error)
 	// (POST /mfa/unbind)
 	UnBindMfa(*gin.Context, *UnBindMfaRequest) (bool, error)
 	// (POST /login/verify-factor)
@@ -130,6 +132,11 @@ func (UnimplementedAuthServer) RefreshToken(c *gin.Context, req *RefreshTokenReq
 
 func (UnimplementedAuthServer) ResetPassword(c *gin.Context, req *ResetPasswordRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method ResetPassword not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) Token(c *gin.Context, req *TokenRequest) (_ *TokenResponse, err error) {
+	err = fmt.Errorf("method Token not implemented")
 	return
 }
 

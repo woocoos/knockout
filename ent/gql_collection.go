@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -1710,6 +1711,159 @@ func newFileSourcePaginateArgs(rv map[string]any) *filesourcePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (oc *OauthClientQuery) CollectFields(ctx context.Context, satisfies ...string) (*OauthClientQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return oc, nil
+	}
+	if err := oc.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return oc, nil
+}
+
+func (oc *OauthClientQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(oauthclient.Columns))
+		selectedFields = []string{oauthclient.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "user":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: oc.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+				return err
+			}
+			oc.withUser = query
+			if _, ok := fieldSeen[oauthclient.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldUserID)
+				fieldSeen[oauthclient.FieldUserID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[oauthclient.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldCreatedBy)
+				fieldSeen[oauthclient.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[oauthclient.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldCreatedAt)
+				fieldSeen[oauthclient.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[oauthclient.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldUpdatedBy)
+				fieldSeen[oauthclient.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[oauthclient.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldUpdatedAt)
+				fieldSeen[oauthclient.FieldUpdatedAt] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[oauthclient.FieldName]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldName)
+				fieldSeen[oauthclient.FieldName] = struct{}{}
+			}
+		case "clientID":
+			if _, ok := fieldSeen[oauthclient.FieldClientID]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldClientID)
+				fieldSeen[oauthclient.FieldClientID] = struct{}{}
+			}
+		case "clientSecret":
+			if _, ok := fieldSeen[oauthclient.FieldClientSecret]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldClientSecret)
+				fieldSeen[oauthclient.FieldClientSecret] = struct{}{}
+			}
+		case "grantTypes":
+			if _, ok := fieldSeen[oauthclient.FieldGrantTypes]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldGrantTypes)
+				fieldSeen[oauthclient.FieldGrantTypes] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[oauthclient.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldUserID)
+				fieldSeen[oauthclient.FieldUserID] = struct{}{}
+			}
+		case "lastAuthAt":
+			if _, ok := fieldSeen[oauthclient.FieldLastAuthAt]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldLastAuthAt)
+				fieldSeen[oauthclient.FieldLastAuthAt] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[oauthclient.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, oauthclient.FieldStatus)
+				fieldSeen[oauthclient.FieldStatus] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		oc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type oauthclientPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []OauthClientPaginateOption
+}
+
+func newOauthClientPaginateArgs(rv map[string]any) *oauthclientPaginateArgs {
+	args := &oauthclientPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &OauthClientOrder{Field: &OauthClientOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithOauthClientOrder(order))
+			}
+		case *OauthClientOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithOauthClientOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*OauthClientWhereInput); ok {
+		args.opts = append(args.opts, WithOauthClientFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (o *OrgQuery) CollectFields(ctx context.Context, satisfies ...string) (*OrgQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -2878,6 +3032,18 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				query = pager.applyOrder(query)
 			}
 			u.WithNamedPermissions(alias, func(wq *PermissionQuery) {
+				*wq = *query
+			})
+		case "oauthClients":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OauthClientClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OauthClient")...); err != nil {
+				return err
+			}
+			u.WithNamedOauthClients(alias, func(wq *OauthClientQuery) {
 				*wq = *query
 			})
 		case "createdBy":

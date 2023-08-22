@@ -78,6 +78,10 @@ type MutationResolver interface {
 	CreateFileSource(ctx context.Context, input ent.CreateFileSourceInput) (*ent.FileSource, error)
 	UpdateFileSource(ctx context.Context, fsID int, input ent.UpdateFileSourceInput) (*ent.FileSource, error)
 	DeleteFileSource(ctx context.Context, fsID int) (bool, error)
+	CreateOauthClient(ctx context.Context, input ent.CreateOauthClientInput) (*ent.OauthClient, error)
+	EnableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
+	DisableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
+	DeleteOauthClient(ctx context.Context, id int) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -384,6 +388,21 @@ func (ec *executionContext) field_Mutation_createFileSource_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateOauthClientInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateOauthClientInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOauthClientInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createOrganizationAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -582,6 +601,21 @@ func (ec *executionContext) field_Mutation_deleteFileSource_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -672,6 +706,21 @@ func (ec *executionContext) field_Mutation_disableMFA_args(ctx context.Context, 
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_disableOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_enableDirectory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -699,6 +748,21 @@ func (ec *executionContext) field_Mutation_enableMFA_args(ctx context.Context, r
 		}
 	}
 	args["userID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_enableOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1962,6 +2026,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "oauthClients":
+				return ec.fieldContext_User_oauthClients(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -2060,6 +2126,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "oauthClients":
+				return ec.fieldContext_User_oauthClients(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -2268,6 +2336,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "oauthClients":
+				return ec.fieldContext_User_oauthClients(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -5389,6 +5459,8 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_devices(ctx, field)
 			case "permissions":
 				return ec.fieldContext_User_permissions(ctx, field)
+			case "oauthClients":
+				return ec.fieldContext_User_oauthClients(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -5618,6 +5690,310 @@ func (ec *executionContext) fieldContext_Mutation_deleteFileSource(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteFileSource_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createOauthClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createOauthClient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateOauthClient(rctx, fc.Args["input"].(ent.CreateOauthClientInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OauthClient)
+	fc.Result = res
+	return ec.marshalNOauthClient2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOauthClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createOauthClient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OauthClient_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OauthClient_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OauthClient_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OauthClient_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OauthClient_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_OauthClient_name(ctx, field)
+			case "clientID":
+				return ec.fieldContext_OauthClient_clientID(ctx, field)
+			case "clientSecret":
+				return ec.fieldContext_OauthClient_clientSecret(ctx, field)
+			case "grantTypes":
+				return ec.fieldContext_OauthClient_grantTypes(ctx, field)
+			case "userID":
+				return ec.fieldContext_OauthClient_userID(ctx, field)
+			case "lastAuthAt":
+				return ec.fieldContext_OauthClient_lastAuthAt(ctx, field)
+			case "status":
+				return ec.fieldContext_OauthClient_status(ctx, field)
+			case "user":
+				return ec.fieldContext_OauthClient_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OauthClient", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createOauthClient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_enableOauthClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_enableOauthClient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EnableOauthClient(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OauthClient)
+	fc.Result = res
+	return ec.marshalNOauthClient2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOauthClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_enableOauthClient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OauthClient_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OauthClient_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OauthClient_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OauthClient_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OauthClient_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_OauthClient_name(ctx, field)
+			case "clientID":
+				return ec.fieldContext_OauthClient_clientID(ctx, field)
+			case "clientSecret":
+				return ec.fieldContext_OauthClient_clientSecret(ctx, field)
+			case "grantTypes":
+				return ec.fieldContext_OauthClient_grantTypes(ctx, field)
+			case "userID":
+				return ec.fieldContext_OauthClient_userID(ctx, field)
+			case "lastAuthAt":
+				return ec.fieldContext_OauthClient_lastAuthAt(ctx, field)
+			case "status":
+				return ec.fieldContext_OauthClient_status(ctx, field)
+			case "user":
+				return ec.fieldContext_OauthClient_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OauthClient", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_enableOauthClient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_disableOauthClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_disableOauthClient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DisableOauthClient(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OauthClient)
+	fc.Result = res
+	return ec.marshalNOauthClient2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOauthClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_disableOauthClient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OauthClient_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OauthClient_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OauthClient_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OauthClient_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OauthClient_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_OauthClient_name(ctx, field)
+			case "clientID":
+				return ec.fieldContext_OauthClient_clientID(ctx, field)
+			case "clientSecret":
+				return ec.fieldContext_OauthClient_clientSecret(ctx, field)
+			case "grantTypes":
+				return ec.fieldContext_OauthClient_grantTypes(ctx, field)
+			case "userID":
+				return ec.fieldContext_OauthClient_userID(ctx, field)
+			case "lastAuthAt":
+				return ec.fieldContext_OauthClient_lastAuthAt(ctx, field)
+			case "status":
+				return ec.fieldContext_OauthClient_status(ctx, field)
+			case "user":
+				return ec.fieldContext_OauthClient_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OauthClient", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_disableOauthClient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteOauthClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteOauthClient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteOauthClient(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteOauthClient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteOauthClient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -6118,6 +6494,42 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteFileSource(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createOauthClient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createOauthClient(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "enableOauthClient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_enableOauthClient(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "disableOauthClient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_disableOauthClient(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteOauthClient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteOauthClient(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {

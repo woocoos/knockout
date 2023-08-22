@@ -171,6 +171,42 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
+  /token:
+    get:
+      tags:
+        - auth
+      operationId: token
+      parameters:
+        - name: grant_type
+          in: query
+          description: grant type
+          required: true
+          schema:
+            type: string
+            enum: [ "client_credentials" ]
+        - name: client_id
+          in: query
+          description: client id
+          required: true
+          schema:
+            type: string
+        - name: client_secret
+          in: query
+          description: client secret
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_token:
+                    type: string
+                  expires_in:
+                    type: integer
   /captcha:
     get:
       summary: Use this API to get captcha

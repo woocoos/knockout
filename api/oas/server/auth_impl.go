@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
@@ -783,4 +784,36 @@ func (s *AuthService) GetSpmAuth(c *gin.Context, r *oas.GetSpmAuthRequest) (*oas
 		return nil, fmt.Errorf("invaild spm")
 	}
 	return s.loginToken(c, uid)
+}
+
+// Token oauth获取accessToken
+func (s *AuthService) Token(c *gin.Context, r *oas.TokenRequest) (*oas.TokenResponse, error) {
+	oc, err := s.DB.OauthClient.Query().Where(
+		oauthclient.GrantTypesEQ(oauthclient.GrantTypes(r.Body.GrantType)),
+		oauthclient.ClientID(r.Body.ClientID),
+		oauthclient.ClientSecret(r.Body.ClientSecret),
+		oauthclient.StatusEQ(typex.SimpleStatusActive),
+	).Only(c)
+	if err != nil {
+		return nil, fmt.Errorf("the clientID or clientSecret is incorrect or the status is not active")
+	}
+
+	tid, tstr, err := createToken(strconv.Itoa(oc.UserID), s.Options, false)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Set(c, tid, oc.UserID, cache.WithTTL(s.Options.JWT.TokenTTL))
+	if err != nil {
+		return nil, err
+	}
+	// 更新认证时间
+	err = s.DB.OauthClient.Update().Where(oauthclient.ID(oc.ID)).
+		SetLastAuthAt(time.Now()).SetUpdatedBy(oc.UpdatedBy).Exec(c)
+	if err != nil {
+		return nil, err
+	}
+	return &oas.TokenResponse{
+		AccessToken: tstr,
+		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
+	}, nil
 }

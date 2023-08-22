@@ -55,6 +55,7 @@ web:
                   - "/forget-pwd/verify-mfa"
                   - "/forget-pwd/reset"
                   - "/spm/auth"
+                  - "/token"
                 <<: *jwt
 grpc:
   server:

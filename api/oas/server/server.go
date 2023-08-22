@@ -26,6 +26,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si oas.AuthServer) {
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/refresh-token", wrapRefreshToken(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
+	router.GET("/token", wrapToken(si))
 	router.POST("/mfa/unbind", wrapUnBindMfa(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
@@ -240,6 +241,22 @@ func wrapResetPassword(si oas.AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.ResetPassword(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapToken(si oas.AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req oas.TokenRequest
+		if err := c.ShouldBind(&req.Body); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.Token(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

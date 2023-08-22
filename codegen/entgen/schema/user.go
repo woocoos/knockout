@@ -105,5 +105,7 @@ func (User) Edges() []ent.Edge {
 		edge.From("permissions", Permission.Type).Ref("user").Comment("用户权限").
 			Annotations(entgql.RelayConnection(), entproto.Skip(),
 				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
+		edge.To("oauth_clients", OauthClient.Type).Comment("用户AccessKey").
+			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 	}
 }

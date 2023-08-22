@@ -33,7 +33,7 @@ type FileSource struct {
 	Endpoint string `json:"endpoint,omitempty"`
 	// 地域，数据存储的物理位置。本地存储为：localhost
 	Region string `json:"region,omitempty"`
-	// 文件存储空间。本地存储为：assets
+	// 文件存储空间。本地存储为：local
 	Bucket string `json:"bucket,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileSourceQuery when eager-loading is set.

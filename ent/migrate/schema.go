@@ -291,6 +291,35 @@ var (
 			},
 		},
 	}
+	// OauthClientColumns holds the columns for the "oauth_client" table.
+	OauthClientColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "name", Type: field.TypeString, Size: 100},
+		{Name: "client_id", Type: field.TypeString, Unique: true, Size: 40},
+		{Name: "client_secret", Type: field.TypeString, Size: 40},
+		{Name: "grant_types", Type: field.TypeEnum, Enums: []string{"client_credentials"}},
+		{Name: "last_auth_at", Type: field.TypeTime, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// OauthClientTable holds the schema information for the "oauth_client" table.
+	OauthClientTable = &schema.Table{
+		Name:       "oauth_client",
+		Columns:    OauthClientColumns,
+		PrimaryKey: []*schema.Column{OauthClientColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "oauth_client_user_oauth_clients",
+				Columns:    []*schema.Column{OauthClientColumns[11]},
+				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// OrgColumns holds the columns for the "org" table.
 	OrgColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -722,6 +751,7 @@ var (
 		AppRolePolicyTable,
 		FileTable,
 		FileSourceTable,
+		OauthClientTable,
 		OrgTable,
 		OrgAppTable,
 		OrgPolicyTable,
@@ -773,6 +803,10 @@ func init() {
 	}
 	FileSourceTable.Annotation = &entsql.Annotation{
 		Table: "file_source",
+	}
+	OauthClientTable.ForeignKeys[0].RefTable = UserTable
+	OauthClientTable.Annotation = &entsql.Annotation{
+		Table: "oauth_client",
 	}
 	OrgTable.ForeignKeys[0].RefTable = OrgTable
 	OrgTable.ForeignKeys[1].RefTable = UserTable

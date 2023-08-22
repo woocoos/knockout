@@ -84,7 +84,7 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	s.FileService = &FileService{
 		DB:       s.AuthService.DB,
 		BaseDir:  appCnf.Abs(appCnf.String("files.local.baseDir")),
-		Endpoint: appCnf.Abs(appCnf.String("files.local.endpoint")),
+		Endpoint: appCnf.String("files.local.endpoint"),
 	}
 
 	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)

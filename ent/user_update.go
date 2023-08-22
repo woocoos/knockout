@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -334,6 +335,21 @@ func (uu *UserUpdate) AddPermissions(p ...*Permission) *UserUpdate {
 	return uu.AddPermissionIDs(ids...)
 }
 
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uu *UserUpdate) AddOauthClientIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddOauthClientIDs(ids...)
+	return uu
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uu *UserUpdate) AddOauthClients(o ...*OauthClient) *UserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uu.AddOauthClientIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (uu *UserUpdate) AddOrgUserIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddOrgUserIDs(ids...)
@@ -463,6 +479,27 @@ func (uu *UserUpdate) RemovePermissions(p ...*Permission) *UserUpdate {
 		ids[i] = p[i].ID
 	}
 	return uu.RemovePermissionIDs(ids...)
+}
+
+// ClearOauthClients clears all "oauth_clients" edges to the OauthClient entity.
+func (uu *UserUpdate) ClearOauthClients() *UserUpdate {
+	uu.mutation.ClearOauthClients()
+	return uu
+}
+
+// RemoveOauthClientIDs removes the "oauth_clients" edge to OauthClient entities by IDs.
+func (uu *UserUpdate) RemoveOauthClientIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveOauthClientIDs(ids...)
+	return uu
+}
+
+// RemoveOauthClients removes "oauth_clients" edges to OauthClient entities.
+func (uu *UserUpdate) RemoveOauthClients(o ...*OauthClient) *UserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uu.RemoveOauthClientIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -895,6 +932,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedOauthClientsIDs(); len(nodes) > 0 && !uu.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1258,6 +1340,21 @@ func (uuo *UserUpdateOne) AddPermissions(p ...*Permission) *UserUpdateOne {
 	return uuo.AddPermissionIDs(ids...)
 }
 
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uuo *UserUpdateOne) AddOauthClientIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddOauthClientIDs(ids...)
+	return uuo
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uuo *UserUpdateOne) AddOauthClients(o ...*OauthClient) *UserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uuo.AddOauthClientIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (uuo *UserUpdateOne) AddOrgUserIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddOrgUserIDs(ids...)
@@ -1387,6 +1484,27 @@ func (uuo *UserUpdateOne) RemovePermissions(p ...*Permission) *UserUpdateOne {
 		ids[i] = p[i].ID
 	}
 	return uuo.RemovePermissionIDs(ids...)
+}
+
+// ClearOauthClients clears all "oauth_clients" edges to the OauthClient entity.
+func (uuo *UserUpdateOne) ClearOauthClients() *UserUpdateOne {
+	uuo.mutation.ClearOauthClients()
+	return uuo
+}
+
+// RemoveOauthClientIDs removes the "oauth_clients" edge to OauthClient entities by IDs.
+func (uuo *UserUpdateOne) RemoveOauthClientIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveOauthClientIDs(ids...)
+	return uuo
+}
+
+// RemoveOauthClients removes "oauth_clients" edges to OauthClient entities.
+func (uuo *UserUpdateOne) RemoveOauthClients(o ...*OauthClient) *UserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uuo.RemoveOauthClientIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1842,6 +1960,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedOauthClientsIDs(); len(nodes) > 0 && !uuo.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

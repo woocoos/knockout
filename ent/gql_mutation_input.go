@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -770,6 +771,58 @@ func (c *FileSourceUpdateOne) SetInput(i UpdateFileSourceInput) *FileSourceUpdat
 	return c
 }
 
+// CreateOauthClientInput represents a mutation input for creating oauthclients.
+type CreateOauthClientInput struct {
+	Name       string
+	GrantTypes oauthclient.GrantTypes
+	UserID     int
+}
+
+// Mutate applies the CreateOauthClientInput on the OauthClientMutation builder.
+func (i *CreateOauthClientInput) Mutate(m *OauthClientMutation) {
+	m.SetName(i.Name)
+	m.SetGrantTypes(i.GrantTypes)
+	m.SetUserID(i.UserID)
+}
+
+// SetInput applies the change-set in the CreateOauthClientInput on the OauthClientCreate builder.
+func (c *OauthClientCreate) SetInput(i CreateOauthClientInput) *OauthClientCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateOauthClientInput represents a mutation input for updating oauthclients.
+type UpdateOauthClientInput struct {
+	Name       *string
+	GrantTypes *oauthclient.GrantTypes
+	UserID     *int
+}
+
+// Mutate applies the UpdateOauthClientInput on the OauthClientMutation builder.
+func (i *UpdateOauthClientInput) Mutate(m *OauthClientMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.GrantTypes; v != nil {
+		m.SetGrantTypes(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateOauthClientInput on the OauthClientUpdate builder.
+func (c *OauthClientUpdate) SetInput(i UpdateOauthClientInput) *OauthClientUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateOauthClientInput on the OauthClientUpdateOne builder.
+func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
 	Domain           *string
@@ -1295,6 +1348,7 @@ type CreateUserInput struct {
 	LoginProfileID *int
 	PasswordIDs    []int
 	DeviceIDs      []int
+	OauthClientIDs []int
 }
 
 // Mutate applies the CreateUserInput on the UserMutation builder.
@@ -1327,6 +1381,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.DeviceIDs; len(v) > 0 {
 		m.AddDeviceIDs(v...)
+	}
+	if v := i.OauthClientIDs; len(v) > 0 {
+		m.AddOauthClientIDs(v...)
 	}
 }
 

@@ -33,6 +33,9 @@ type File func(*sql.Selector)
 // FileSource is the predicate function for filesource builders.
 type FileSource func(*sql.Selector)
 
+// OauthClient is the predicate function for oauthclient builders.
+type OauthClient func(*sql.Selector)
+
 // Org is the predicate function for org builders.
 type Org func(*sql.Selector)
 

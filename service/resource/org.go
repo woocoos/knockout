@@ -683,6 +683,7 @@ func (s *Service) validateFilePath(ctx context.Context, path string) error {
 	if err != nil {
 		return err
 	}
+	path = filepath.Join(path)
 	p := strings.TrimPrefix(path, "/")
 	prefixPath := filepath.Join(s.FilePrefixDir, strconv.Itoa(tid))
 	if !strings.HasPrefix(p, strings.TrimPrefix(prefixPath, "/")) {

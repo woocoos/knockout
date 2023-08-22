@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -329,6 +330,33 @@ func (f TraverseFileSource) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.FileSourceQuery", q)
+}
+
+// The OauthClientFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OauthClientFunc func(context.Context, *ent.OauthClientQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f OauthClientFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OauthClientQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OauthClientQuery", q)
+}
+
+// The TraverseOauthClient type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOauthClient func(context.Context, *ent.OauthClientQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseOauthClient) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseOauthClient) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OauthClientQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.OauthClientQuery", q)
 }
 
 // The OrgFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -676,6 +704,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.FileQuery, predicate.File, file.OrderOption]{typ: ent.TypeFile, tq: q}, nil
 	case *ent.FileSourceQuery:
 		return &query[*ent.FileSourceQuery, predicate.FileSource, filesource.OrderOption]{typ: ent.TypeFileSource, tq: q}, nil
+	case *ent.OauthClientQuery:
+		return &query[*ent.OauthClientQuery, predicate.OauthClient, oauthclient.OrderOption]{typ: ent.TypeOauthClient, tq: q}, nil
 	case *ent.OrgQuery:
 		return &query[*ent.OrgQuery, predicate.Org, org.OrderOption]{typ: ent.TypeOrg, tq: q}, nil
 	case *ent.OrgAppQuery:

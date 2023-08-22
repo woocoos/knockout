@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -25,25 +26,27 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx                  *QueryContext
-	order                []user.OrderOption
-	inters               []Interceptor
-	predicates           []predicate.User
-	withIdentities       *UserIdentityQuery
-	withLoginProfile     *UserLoginProfileQuery
-	withPasswords        *UserPasswordQuery
-	withDevices          *UserDeviceQuery
-	withOrgs             *OrgQuery
-	withPermissions      *PermissionQuery
-	withOrgUser          *OrgUserQuery
-	modifiers            []func(*sql.Selector)
-	loadTotal            []func(context.Context, []*User) error
-	withNamedIdentities  map[string]*UserIdentityQuery
-	withNamedPasswords   map[string]*UserPasswordQuery
-	withNamedDevices     map[string]*UserDeviceQuery
-	withNamedOrgs        map[string]*OrgQuery
-	withNamedPermissions map[string]*PermissionQuery
-	withNamedOrgUser     map[string]*OrgUserQuery
+	ctx                   *QueryContext
+	order                 []user.OrderOption
+	inters                []Interceptor
+	predicates            []predicate.User
+	withIdentities        *UserIdentityQuery
+	withLoginProfile      *UserLoginProfileQuery
+	withPasswords         *UserPasswordQuery
+	withDevices           *UserDeviceQuery
+	withOrgs              *OrgQuery
+	withPermissions       *PermissionQuery
+	withOauthClients      *OauthClientQuery
+	withOrgUser           *OrgUserQuery
+	modifiers             []func(*sql.Selector)
+	loadTotal             []func(context.Context, []*User) error
+	withNamedIdentities   map[string]*UserIdentityQuery
+	withNamedPasswords    map[string]*UserPasswordQuery
+	withNamedDevices      map[string]*UserDeviceQuery
+	withNamedOrgs         map[string]*OrgQuery
+	withNamedPermissions  map[string]*PermissionQuery
+	withNamedOauthClients map[string]*OauthClientQuery
+	withNamedOrgUser      map[string]*OrgUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -205,6 +208,28 @@ func (uq *UserQuery) QueryPermissions() *PermissionQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(permission.Table, permission.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, user.PermissionsTable, user.PermissionsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOauthClients chains the current query on the "oauth_clients" edge.
+func (uq *UserQuery) QueryOauthClients() *OauthClientQuery {
+	query := (&OauthClientClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(oauthclient.Table, oauthclient.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthClientsTable, user.OauthClientsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -432,6 +457,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withDevices:      uq.withDevices.Clone(),
 		withOrgs:         uq.withOrgs.Clone(),
 		withPermissions:  uq.withPermissions.Clone(),
+		withOauthClients: uq.withOauthClients.Clone(),
 		withOrgUser:      uq.withOrgUser.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
@@ -502,6 +528,17 @@ func (uq *UserQuery) WithPermissions(opts ...func(*PermissionQuery)) *UserQuery 
 		opt(query)
 	}
 	uq.withPermissions = query
+	return uq
+}
+
+// WithOauthClients tells the query-builder to eager-load the nodes that are connected to
+// the "oauth_clients" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithOauthClients(opts ...func(*OauthClientQuery)) *UserQuery {
+	query := (&OauthClientClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withOauthClients = query
 	return uq
 }
 
@@ -594,13 +631,14 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [8]bool{
 			uq.withIdentities != nil,
 			uq.withLoginProfile != nil,
 			uq.withPasswords != nil,
 			uq.withDevices != nil,
 			uq.withOrgs != nil,
 			uq.withPermissions != nil,
+			uq.withOauthClients != nil,
 			uq.withOrgUser != nil,
 		}
 	)
@@ -666,6 +704,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
+	if query := uq.withOauthClients; query != nil {
+		if err := uq.loadOauthClients(ctx, query, nodes,
+			func(n *User) { n.Edges.OauthClients = []*OauthClient{} },
+			func(n *User, e *OauthClient) { n.Edges.OauthClients = append(n.Edges.OauthClients, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := uq.withOrgUser; query != nil {
 		if err := uq.loadOrgUser(ctx, query, nodes,
 			func(n *User) { n.Edges.OrgUser = []*OrgUser{} },
@@ -705,6 +750,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadPermissions(ctx, query, nodes,
 			func(n *User) { n.appendNamedPermissions(name) },
 			func(n *User, e *Permission) { n.appendNamedPermissions(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedOauthClients {
+		if err := uq.loadOauthClients(ctx, query, nodes,
+			func(n *User) { n.appendNamedOauthClients(name) },
+			func(n *User, e *OauthClient) { n.appendNamedOauthClients(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -931,6 +983,36 @@ func (uq *UserQuery) loadPermissions(ctx context.Context, query *PermissionQuery
 	}
 	return nil
 }
+func (uq *UserQuery) loadOauthClients(ctx context.Context, query *OauthClientQuery, nodes []*User, init func(*User), assign func(*User, *OauthClient)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(oauthclient.FieldUserID)
+	}
+	query.Where(predicate.OauthClient(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.OauthClientsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.UserID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (uq *UserQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*User, init func(*User), assign func(*User, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
@@ -1113,6 +1195,20 @@ func (uq *UserQuery) WithNamedPermissions(name string, opts ...func(*PermissionQ
 		uq.withNamedPermissions = make(map[string]*PermissionQuery)
 	}
 	uq.withNamedPermissions[name] = query
+	return uq
+}
+
+// WithNamedOauthClients tells the query-builder to eager-load the nodes that are connected to the "oauth_clients"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedOauthClients(name string, opts ...func(*OauthClientQuery)) *UserQuery {
+	query := (&OauthClientClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedOauthClients == nil {
+		uq.withNamedOauthClients = make(map[string]*OauthClientQuery)
+	}
+	uq.withNamedOauthClients[name] = query
 	return uq
 }
 

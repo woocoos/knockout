@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -298,6 +299,21 @@ func (uc *UserCreate) AddPermissions(p ...*Permission) *UserCreate {
 		ids[i] = p[i].ID
 	}
 	return uc.AddPermissionIDs(ids...)
+}
+
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uc *UserCreate) AddOauthClientIDs(ids ...int) *UserCreate {
+	uc.mutation.AddOauthClientIDs(ids...)
+	return uc
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uc *UserCreate) AddOauthClients(o ...*OauthClient) *UserCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uc.AddOauthClientIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -608,6 +624,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

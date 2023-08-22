@@ -280,6 +280,7 @@ type ComplexityRoot struct {
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
+		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
@@ -292,14 +293,17 @@ type ComplexityRoot struct {
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
 		DeleteFileSource            func(childComplexity int, fsID int) int
+		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
 		DisableMfa                  func(childComplexity int, userID int) int
+		DisableOauthClient          func(childComplexity int, id int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		EnableMfa                   func(childComplexity int, userID int) int
+		EnableOauthClient           func(childComplexity int, id int) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
@@ -326,6 +330,22 @@ type ComplexityRoot struct {
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
+	}
+
+	OauthClient struct {
+		ClientID     func(childComplexity int) int
+		ClientSecret func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		GrantTypes   func(childComplexity int) int
+		ID           func(childComplexity int) int
+		LastAuthAt   func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Status       func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+		User         func(childComplexity int) int
+		UserID       func(childComplexity int) int
 	}
 
 	Org struct {
@@ -509,6 +529,7 @@ type ComplexityRoot struct {
 		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
 		LoginProfile      func(childComplexity int) int
 		Mobile            func(childComplexity int) int
+		OauthClients      func(childComplexity int) int
 		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName     func(childComplexity int) int
 		RegisterIP        func(childComplexity int) int
@@ -1841,6 +1862,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateFileSource(childComplexity, args["input"].(ent.CreateFileSourceInput)), true
 
+	case "Mutation.createOauthClient":
+		if e.complexity.Mutation.CreateOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateOauthClient(childComplexity, args["input"].(ent.CreateOauthClientInput)), true
+
 	case "Mutation.createOrganization":
 		if e.complexity.Mutation.CreateOrganization == nil {
 			break
@@ -1985,6 +2018,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteFileSource(childComplexity, args["fsID"].(int)), true
 
+	case "Mutation.deleteOauthClient":
+		if e.complexity.Mutation.DeleteOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteOauthClient(childComplexity, args["id"].(int)), true
+
 	case "Mutation.deleteOrganization":
 		if e.complexity.Mutation.DeleteOrganization == nil {
 			break
@@ -2057,6 +2102,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DisableMfa(childComplexity, args["userID"].(int)), true
 
+	case "Mutation.disableOauthClient":
+		if e.complexity.Mutation.DisableOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_disableOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DisableOauthClient(childComplexity, args["id"].(int)), true
+
 	case "Mutation.enableDirectory":
 		if e.complexity.Mutation.EnableDirectory == nil {
 			break
@@ -2080,6 +2137,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EnableMfa(childComplexity, args["userID"].(int)), true
+
+	case "Mutation.enableOauthClient":
+		if e.complexity.Mutation.EnableOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_enableOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EnableOauthClient(childComplexity, args["id"].(int)), true
 
 	case "Mutation.grant":
 		if e.complexity.Mutation.Grant == nil {
@@ -2392,6 +2461,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput)), true
+
+	case "OauthClient.clientID":
+		if e.complexity.OauthClient.ClientID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ClientID(childComplexity), true
+
+	case "OauthClient.clientSecret":
+		if e.complexity.OauthClient.ClientSecret == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ClientSecret(childComplexity), true
+
+	case "OauthClient.createdAt":
+		if e.complexity.OauthClient.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.CreatedAt(childComplexity), true
+
+	case "OauthClient.createdBy":
+		if e.complexity.OauthClient.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.CreatedBy(childComplexity), true
+
+	case "OauthClient.grantTypes":
+		if e.complexity.OauthClient.GrantTypes == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.GrantTypes(childComplexity), true
+
+	case "OauthClient.id":
+		if e.complexity.OauthClient.ID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ID(childComplexity), true
+
+	case "OauthClient.lastAuthAt":
+		if e.complexity.OauthClient.LastAuthAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.LastAuthAt(childComplexity), true
+
+	case "OauthClient.name":
+		if e.complexity.OauthClient.Name == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.Name(childComplexity), true
+
+	case "OauthClient.status":
+		if e.complexity.OauthClient.Status == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.Status(childComplexity), true
+
+	case "OauthClient.updatedAt":
+		if e.complexity.OauthClient.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UpdatedAt(childComplexity), true
+
+	case "OauthClient.updatedBy":
+		if e.complexity.OauthClient.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UpdatedBy(childComplexity), true
+
+	case "OauthClient.user":
+		if e.complexity.OauthClient.User == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.User(childComplexity), true
+
+	case "OauthClient.userID":
+		if e.complexity.OauthClient.UserID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UserID(childComplexity), true
 
 	case "Org.apps":
 		if e.complexity.Org.Apps == nil {
@@ -3498,6 +3658,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Mobile(childComplexity), true
 
+	case "User.oauthClients":
+		if e.complexity.User.OauthClients == nil {
+			break
+		}
+
+		return e.complexity.User.OauthClients(childComplexity), true
+
 	case "User.permissions":
 		if e.complexity.User.Permissions == nil {
 			break
@@ -3967,6 +4134,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateFileSourceInput,
+		ec.unmarshalInputCreateOauthClientInput,
 		ec.unmarshalInputCreateOrgInput,
 		ec.unmarshalInputCreateOrgPolicyInput,
 		ec.unmarshalInputCreateOrgRoleInput,
@@ -3982,6 +4150,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFileSourceWhereInput,
 		ec.unmarshalInputFileWhereInput,
 		ec.unmarshalInputGrantInput,
+		ec.unmarshalInputOauthClientOrder,
+		ec.unmarshalInputOauthClientWhereInput,
 		ec.unmarshalInputOrgOrder,
 		ec.unmarshalInputOrgPolicyOrder,
 		ec.unmarshalInputOrgPolicyWhereInput,
@@ -4002,6 +4172,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
 		ec.unmarshalInputUpdateFileSourceInput,
+		ec.unmarshalInputUpdateOauthClientInput,
 		ec.unmarshalInputUpdateOrgInput,
 		ec.unmarshalInputUpdateOrgPolicyInput,
 		ec.unmarshalInputUpdateOrgRoleInput,
@@ -5463,9 +5634,20 @@ input CreateFileSourceInput {
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   fileIDs: [ID!]
+}
+"""
+CreateOauthClientInput is used for create OauthClient object.
+Input was generated by ent.
+"""
+input CreateOauthClientInput {
+  """名称"""
+  name: String!
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes!
+  userID: ID!
 }
 """
 CreateOrgInput is used for create Org object.
@@ -5588,6 +5770,7 @@ input CreateUserInput {
   loginProfileID: ID
   passwordIDs: [ID!]
   deviceIDs: [ID!]
+  oauthClientIDs: [ID!]
 }
 """
 CreateUserLoginProfileInput is used for create UserLoginProfile object.
@@ -5686,7 +5869,7 @@ type FileSource implements Node {
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   files(
     """Returns the elements in the list that come after the specified cursor."""
@@ -5977,6 +6160,139 @@ Follows the [Relay Global Object Identification Specification](https://relay.dev
 interface Node @goModel(model: "github.com/woocoos/knockout/ent.Noder") {
   """The id of the object."""
   id: ID!
+}
+type OauthClient implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """名称"""
+  name: String!
+  """id"""
+  clientID: String!
+  """密钥"""
+  clientSecret: String!
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes!
+  """关联用户id"""
+  userID: ID!
+  """最后认证时间"""
+  lastAuthAt: Time
+  """状态"""
+  status: OauthClientSimpleStatus!
+  user: User!
+}
+"""OauthClientGrantTypes is enum for the field grant_types"""
+enum OauthClientGrantTypes @goModel(model: "github.com/woocoos/knockout/ent/oauthclient.GrantTypes") {
+  client_credentials
+}
+"""Ordering options for OauthClient connections"""
+input OauthClientOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order OauthClients."""
+  field: OauthClientOrderField!
+}
+"""Properties by which OauthClient connections can be ordered."""
+enum OauthClientOrderField {
+  createdAt
+}
+"""OauthClientSimpleStatus is enum for the field status"""
+enum OauthClientSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+}
+"""
+OauthClientWhereInput is used for filtering OauthClient objects.
+Input was generated by ent.
+"""
+input OauthClientWhereInput {
+  not: OauthClientWhereInput
+  and: [OauthClientWhereInput!]
+  or: [OauthClientWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """name field predicates"""
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """grant_types field predicates"""
+  grantTypes: OauthClientGrantTypes
+  grantTypesNEQ: OauthClientGrantTypes
+  grantTypesIn: [OauthClientGrantTypes!]
+  grantTypesNotIn: [OauthClientGrantTypes!]
+  """user_id field predicates"""
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  """status field predicates"""
+  status: OauthClientSimpleStatus
+  statusNEQ: OauthClientSimpleStatus
+  statusIn: [OauthClientSimpleStatus!]
+  statusNotIn: [OauthClientSimpleStatus!]
+  """user edge predicates"""
+  hasUser: Boolean
+  hasUserWith: [UserWhereInput!]
 }
 """Possible directions in which to order a list of items when provided an ` + "`" + `orderBy` + "`" + ` argument."""
 enum OrderDirection {
@@ -7235,12 +7551,23 @@ input UpdateFileSourceInput {
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
   clearRegion: Boolean
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   clearBucket: Boolean
   addFileIDs: [ID!]
   removeFileIDs: [ID!]
   clearFiles: Boolean
+}
+"""
+UpdateOauthClientInput is used for update OauthClient object.
+Input was generated by ent.
+"""
+input UpdateOauthClientInput {
+  """名称"""
+  name: String
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes
+  userID: ID
 }
 """
 UpdateOrgInput is used for update Org object.
@@ -7467,6 +7794,8 @@ type User implements Node {
     """Filtering options for Permissions returned from the connection."""
     where: PermissionWhereInput
   ): PermissionConnection!
+  """用户AccessKey"""
+  oauthClients: [OauthClient!]
 }
 """A connection to a list of items."""
 type UserConnection {
@@ -8305,6 +8634,9 @@ input UserWhereInput {
   """permissions edge predicates"""
   hasPermissions: Boolean
   hasPermissionsWith: [PermissionWhereInput!]
+  """oauth_clients edge predicates"""
+  hasOauthClients: Boolean
+  hasOauthClientsWith: [OauthClientWhereInput!]
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
@@ -8663,6 +8995,14 @@ extend type Permission {
     updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
     """删除文件来源"""
     deleteFileSource(fsID: ID!): Boolean!
+    """创建用户 AccessKey"""
+    createOauthClient(input: CreateOauthClientInput!): OauthClient!
+    """启用OauthClient"""
+    enableOauthClient(id: ID!): OauthClient!
+    """禁用OauthClient"""
+    disableOauthClient(id: ID!): OauthClient!
+    """删除OauthClient"""
+    deleteOauthClient(id: ID!): Boolean!
 }
 `, BuiltIn: false},
 }

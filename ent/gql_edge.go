@@ -229,6 +229,14 @@ func (fs *FileSource) Files(
 	return fs.QueryFiles().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (oc *OauthClient) User(ctx context.Context) (*User, error) {
+	result, err := oc.Edges.UserOrErr()
+	if IsNotLoaded(err) {
+		result, err = oc.QueryUser().Only(ctx)
+	}
+	return result, err
+}
+
 func (o *Org) Parent(ctx context.Context) (*Org, error) {
 	result, err := o.Edges.ParentOrErr()
 	if IsNotLoaded(err) {
@@ -444,6 +452,18 @@ func (u *User) Permissions(
 		return conn, nil
 	}
 	return u.QueryPermissions().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (u *User) OauthClients(ctx context.Context) (result []*OauthClient, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedOauthClients(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.OauthClientsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryOauthClients().All(ctx)
+	}
+	return result, err
 }
 
 func (ud *UserDevice) User(ctx context.Context) (*User, error) {
