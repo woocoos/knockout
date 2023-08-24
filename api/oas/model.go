@@ -25,14 +25,14 @@ type ErrorResponse struct {
 }
 
 type FileInfo struct {
-	CreatedAt time.Time `time_format:"2006-01-02T15:04:05Z07:00" json:"createdAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
 	ID        string    `json:"id,omitempty"`
 	Name      string    `json:"name,omitempty"`
 	Size      int       `json:"size,omitempty"`
 }
 
 type FileInput struct {
-	MineType string `binding:"required" json:"mineType"`
+	MineType string `binding:"required" json:"mine_type"`
 	Name     string `binding:"required" json:"name"`
 	Path     string `binding:"required" json:"path"`
 	Size     int    `binding:"required" json:"size"`

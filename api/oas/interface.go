@@ -38,7 +38,7 @@ type AuthServer interface {
 	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
 	// (POST /login/reset-password)
 	ResetPassword(*gin.Context, *ResetPasswordRequest) (*LoginResponse, error)
-	// (GET /token)
+	// (POST /token)
 	Token(*gin.Context, *TokenRequest) (*TokenResponse, error)
 	// (POST /mfa/unbind)
 	UnBindMfa(*gin.Context, *UnBindMfaRequest) (bool, error)

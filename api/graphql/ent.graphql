@@ -25,7 +25,7 @@ type App implements Node {
   """refresh_token有效期"""
   refreshTokenValidity: Int
   """图标,存储路规则：/{appcode}/{tid}/xxx"""
-  logoFileID: Int
+  logoFileID: ID
   """备注"""
   comments: String
   """状态"""
@@ -1198,14 +1198,14 @@ input AppWhereInput {
   refreshTokenValidityIsNil: Boolean
   refreshTokenValidityNotNil: Boolean
   """logo_file_id field predicates"""
-  logoFileID: Int
-  logoFileIDNEQ: Int
-  logoFileIDIn: [Int!]
-  logoFileIDNotIn: [Int!]
-  logoFileIDGT: Int
-  logoFileIDGTE: Int
-  logoFileIDLT: Int
-  logoFileIDLTE: Int
+  logoFileID: ID
+  logoFileIDNEQ: ID
+  logoFileIDIn: [ID!]
+  logoFileIDNotIn: [ID!]
+  logoFileIDGT: ID
+  logoFileIDGTE: ID
+  logoFileIDLT: ID
+  logoFileIDLTE: ID
   logoFileIDIsNil: Boolean
   logoFileIDNotNil: Boolean
   """comments field predicates"""
@@ -1290,7 +1290,7 @@ input CreateAppInput {
   """refresh_token有效期"""
   refreshTokenValidity: Int
   """图标,存储路规则：/{appcode}/{tid}/xxx"""
-  logoFileID: Int
+  logoFileID: ID
   """备注"""
   comments: String
   """状态"""
@@ -3189,7 +3189,7 @@ input UpdateAppInput {
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
   """图标,存储路规则：/{appcode}/{tid}/xxx"""
-  logoFileID: Int
+  logoFileID: ID
   clearLogoFileID: Boolean
   """备注"""
   comments: String

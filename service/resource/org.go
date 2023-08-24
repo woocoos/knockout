@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"net/http"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -685,7 +686,7 @@ func (s *Service) validateFilePath(ctx context.Context, path string) error {
 	}
 	path = filepath.Join(path)
 	p := strings.TrimPrefix(path, "/")
-	prefixPath := filepath.Join(s.FilePrefixDir, strconv.Itoa(tid))
+	prefixPath := filepath.Join(s.FileOptions.PrefixDir, strconv.Itoa(tid))
 	if !strings.HasPrefix(p, strings.TrimPrefix(prefixPath, "/")) {
 		return fmt.Errorf("invalid path: %s,must be like:%s/xxx", path, prefixPath)
 	}
@@ -694,6 +695,28 @@ func (s *Service) validateFilePath(ctx context.Context, path string) error {
 
 // filesRefCount 文件引用上报
 func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs []int) error {
-	// TODO 等http客户端完善
-	return nil
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	params := ""
+	for _, v := range newFileIDs {
+		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "plus" },`, v)
+	}
+	for _, v := range oldFileIDs {
+		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "minus" },`, v)
+	}
+	if params == "" {
+		return nil
+	}
+	params = strings.TrimSuffix(params, ",")
+	body := strings.NewReader(fmt.Sprintf(`{ "inputs": [%s] }`, params))
+	req, err := http.NewRequest("POST", s.FileOptions.BaseUrl+"/report-ref-count", body)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("X-Tenant-ID", strconv.Itoa(tid))
+	req.Header.Add("Content-Type", "application/json")
+	_, err = s.HttpClient.Do(req)
+	return err
 }

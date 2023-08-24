@@ -44,7 +44,11 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
 	s.GrpcSrv = srv
 
-	if err := redisc.New(s.Cnf.Sub("cache.redis")).Register(); err != nil {
+	red, err := redisc.New(s.Cnf.Sub("cache.redis"))
+	if err != nil {
+		log.Panic(err)
+	}
+	if err = red.Register(); err != nil {
 		log.Panic(err)
 	}
 	s.service = &server.AuthService{

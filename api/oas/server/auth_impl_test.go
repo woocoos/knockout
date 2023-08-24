@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -79,7 +80,14 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 
 	s.redisServer = miniredis.RunT(t)
 	appCnf.Parser().Set("cache.redis.addr", s.redisServer.Addr())
-	s.AuthService.Cache = redisc.NewBuiltIn()
+	red, err := redisc.New(appCnf.Sub("cache.redis"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = red.Register(); err != nil {
+		t.Fatal(err)
+	}
+	s.AuthService.Cache = cache.GetCache("redis")
 
 	s.FileService = &FileService{
 		DB:       s.AuthService.DB,

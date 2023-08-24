@@ -95,14 +95,14 @@ type TokenRequest struct {
 }
 
 type TokenRequestBody struct {
-	GrantType    string `binding:"required" form:"grant_type"`
 	ClientID     string `binding:"required" form:"client_id"`
 	ClientSecret string `binding:"required" form:"client_secret"`
+	GrantType    string `binding:"required" form:"grant_type"`
 }
 
 type TokenResponse struct {
-	AccessToken string `json:"accessToken,omitempty"`
-	ExpiresIn   int    `json:"expiresIn,omitempty"`
+	AccessToken string `json:"access_token,omitempty"`
+	ExpiresIn   int    `json:"expires_in,omitempty"`
 }
 
 type UnBindMfaRequest struct {

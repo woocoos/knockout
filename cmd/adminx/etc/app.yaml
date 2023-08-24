@@ -70,6 +70,10 @@ store:
   portal:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+  redis: &redis
+    addrs:
+      - 127.0.0.1:6379
+    db: 1
 snowflake:
   # 机器id
   node: 1
@@ -84,3 +88,19 @@ entcache:
 #  ttl: 5m # level: db时有效
 files:
   prefixDir: "/resource"  # 相对于存储服务的前缀路径
+  baseUrl: "http://127.0.0.1:10071"
+
+oauth-with-cache:
+  timeout: 2s
+  oauth2:
+    clientID: 206734260394752
+    clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+    endpoint:
+      tokenURL: http://127.0.0.1:10070/token
+    scopes:
+    cache:
+      type: redis
+      <<: *redis
+      local:
+        size: 1000
+        ttl: 100s

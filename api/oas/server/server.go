@@ -26,7 +26,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si oas.AuthServer) {
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/refresh-token", wrapRefreshToken(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
-	router.GET("/token", wrapToken(si))
+	router.POST("/token", wrapToken(si))
 	router.POST("/mfa/unbind", wrapUnBindMfa(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
