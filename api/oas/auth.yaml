@@ -761,9 +761,27 @@ components:
           type: string
         size:
           type: integer
+        path:
+          type: string
         createdAt:
           type: string
           format: date-time
+        FileSource:
+          $ref: '#/components/schemas/FileSource'
+    FileSource:
+      type: object
+      properties:
+        id:
+          type: integer
+        kind:
+          type: string
+          enum: ["local","alioss"]
+        endpoint:
+          type: string
+        bucket:
+          type: string
+        region:
+          type: string
     FileInput:
       type: object
       properties:

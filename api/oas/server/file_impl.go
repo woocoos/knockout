@@ -115,7 +115,7 @@ func (f *FileService) GetFile(c *gin.Context, r *oas.GetFileRequest) (*oas.FileI
 	if err != nil {
 		return nil, err
 	}
-	fi, err := f.DB.File.Query().Where(file.TenantID(tid), file.ID(fid)).First(c)
+	fi, err := f.DB.File.Query().Where(file.TenantID(tid), file.ID(fid)).WithSource().First(c)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +123,15 @@ func (f *FileService) GetFile(c *gin.Context, r *oas.GetFileRequest) (*oas.FileI
 		ID:        r.UriParams.FileId,
 		Name:      fi.Name,
 		Size:      fi.Size,
+		Path:      fi.Path,
 		CreatedAt: fi.CreatedAt,
+		FileSource: &oas.FileSource{
+			ID:       fi.Edges.Source.ID,
+			Endpoint: fi.Edges.Source.Endpoint,
+			Bucket:   fi.Edges.Source.Bucket,
+			Region:   fi.Edges.Source.Region,
+			Kind:     fi.Edges.Source.Kind.String(),
+		},
 	}, nil
 }
 

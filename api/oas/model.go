@@ -25,10 +25,12 @@ type ErrorResponse struct {
 }
 
 type FileInfo struct {
-	CreatedAt time.Time `json:"createdAt,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
-	ID        string    `json:"id,omitempty"`
-	Name      string    `json:"name,omitempty"`
-	Size      int       `json:"size,omitempty"`
+	FileSource *FileSource `json:"FileSource,omitempty"`
+	CreatedAt  time.Time   `json:"createdAt,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	ID         string      `json:"id,omitempty"`
+	Name       string      `json:"name,omitempty"`
+	Path       string      `json:"path,omitempty"`
+	Size       int         `json:"size,omitempty"`
 }
 
 type FileInput struct {
@@ -41,6 +43,14 @@ type FileInput struct {
 type FileRefInput struct {
 	FileId int    `binding:"required" json:"fileId"`
 	OpType string `binding:"required" json:"opType"`
+}
+
+type FileSource struct {
+	Bucket   string `json:"bucket,omitempty"`
+	Endpoint string `json:"endpoint,omitempty"`
+	ID       int    `json:"id,omitempty"`
+	Kind     string `json:"kind,omitempty"`
+	Region   string `json:"region,omitempty"`
 }
 
 type FileSourceInput struct {
