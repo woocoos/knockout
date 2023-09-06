@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -76,6 +77,12 @@ func (f *File) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given FileSource node.
 func (fs *FileSource) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("%s:%d", filesource.Table, fs.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given OauthClient node.
+func (oc *OauthClient) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("%s:%d", oauthclient.Table, oc.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -165,6 +172,8 @@ func GlobalID(tp, id string) (string, error) {
 	case file.Table:
 		break
 	case filesource.Table:
+		break
+	case oauthclient.Table:
 		break
 	case org.Table:
 		break

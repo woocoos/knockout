@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -62,6 +63,9 @@ func (n *File) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *FileSource) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *OauthClient) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Org) IsNode() {}
@@ -236,6 +240,18 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		query := c.FileSource.Query().
 			Where(filesource.ID(id))
 		query, err := query.CollectFields(ctx, "FileSource")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case oauthclient.Table:
+		query := c.OauthClient.Query().
+			Where(oauthclient.ID(id))
+		query, err := query.CollectFields(ctx, "OauthClient")
 		if err != nil {
 			return nil, err
 		}
@@ -541,6 +557,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.FileSource.Query().
 			Where(filesource.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "FileSource")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case oauthclient.Table:
+		query := c.OauthClient.Query().
+			Where(oauthclient.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "OauthClient")
 		if err != nil {
 			return nil, err
 		}

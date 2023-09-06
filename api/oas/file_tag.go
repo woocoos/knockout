@@ -26,6 +26,10 @@ type GetFileRawRequestUriParams struct {
 	FileId string `binding:"required" uri:"fileId"`
 }
 
+type ReportRefCountRequest struct {
+	Inputs []*FileRefInput `binding:"required" json:"inputs"`
+}
+
 type UploadFileRequest struct {
 	Body UploadFileRequestBody
 }
@@ -33,4 +37,13 @@ type UploadFileRequest struct {
 type UploadFileRequestBody struct {
 	Bucket string `form:"bucket"`
 	Key    string `form:"key"`
+}
+
+type UploadFileInfoRequest struct {
+	Body UploadFileInfoRequestBody
+}
+
+type UploadFileInfoRequestBody struct {
+	File       FileInput       `json:"file"`
+	FileSource FileSourceInput `json:"fileSource"`
 }

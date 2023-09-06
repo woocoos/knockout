@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -21,6 +22,8 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -144,6 +147,17 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	if err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
+	// 验证AvatarFileID key是否正确
+	if input.AvatarFileID != nil {
+		key, err := client.File.Query().Where(file.ID(*input.AvatarFileID)).Select(file.FieldPath).String(ctx)
+		if err != nil {
+			return nil, err
+		}
+		err = s.validateFilePath(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	us, err := client.User.Create().SetInput(input).
 		SetUserType(ut).
@@ -162,6 +176,13 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
 	if err != nil {
 		return nil, err
+	}
+	// 上报文件引用
+	if input.AvatarFileID != nil {
+		err = s.reportFileRefCount(ctx, []int{us.AvatarFileID}, nil)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return us, nil
 }
@@ -348,7 +369,30 @@ func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUs
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
-	return client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
+	// 验证AvatarFileID key是否正确
+	if input.AvatarFileID != nil {
+		key, err := client.File.Query().Where(file.ID(*input.AvatarFileID)).Select(file.FieldPath).String(ctx)
+		if err != nil {
+			return nil, err
+		}
+		err = s.validateFilePath(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+	}
+	ous, err := client.User.Query().Where(user.ID(userID)).Select(user.FieldAvatarFileID).Only(ctx)
+	us, err := client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 上报文件引用
+	if input.AvatarFileID != nil {
+		err = s.reportFileRefCount(ctx, []int{us.AvatarFileID}, []int{ous.AvatarFileID})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return us, nil
 }
 
 func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) error {
@@ -539,7 +583,7 @@ func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppM
 	// 找出路由权限
 	ras := make(map[int]*ent.AppAction)
 	for _, a := range ups {
-		if a.Kind == appaction.KindRestful && a.Method == appaction.MethodRead {
+		if a.Kind == appaction.KindRoute && a.Method == appaction.MethodRead {
 			ras[a.ID] = a
 		}
 	}
@@ -632,4 +676,47 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 		return nil, err
 	}
 	return us, nil
+}
+
+// validateFilePath 验证路径是否符合规则
+func (s *Service) validateFilePath(ctx context.Context, path string) error {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	path = filepath.Join(path)
+	p := strings.TrimPrefix(path, "/")
+	prefixPath := filepath.Join(s.FileOptions.PrefixDir, strconv.Itoa(tid))
+	if !strings.HasPrefix(p, strings.TrimPrefix(prefixPath, "/")) {
+		return fmt.Errorf("invalid path: %s,must be like:%s/xxx", path, prefixPath)
+	}
+	return nil
+}
+
+// filesRefCount 文件引用上报
+func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs []int) error {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	params := ""
+	for _, v := range newFileIDs {
+		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "plus" },`, v)
+	}
+	for _, v := range oldFileIDs {
+		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "minus" },`, v)
+	}
+	if params == "" {
+		return nil
+	}
+	params = strings.TrimSuffix(params, ",")
+	body := strings.NewReader(fmt.Sprintf(`{ "inputs": [%s] }`, params))
+	req, err := http.NewRequest("POST", s.FileOptions.BaseUrl+"/report-ref-count", body)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("X-Tenant-ID", strconv.Itoa(tid))
+	req.Header.Add("Content-Type", "application/json")
+	_, err = s.HttpClient.Do(req)
+	return err
 }

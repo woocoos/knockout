@@ -44,8 +44,8 @@ type App struct {
 	TokenValidity int32 `json:"token_validity,omitempty"`
 	// refresh_token有效期
 	RefreshTokenValidity int32 `json:"refresh_token_validity,omitempty"`
-	// 图标
-	Logo string `json:"logo,omitempty"`
+	// 图标,存储路规则：/{appcode}/{tid}/xxx
+	LogoFileID int `json:"logo_file_id,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
 	// 状态
@@ -161,9 +161,9 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case app.FieldPrivate:
 			values[i] = new(sql.NullBool)
-		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldOwnerOrgID:
+		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldLogoFileID, app.FieldOwnerOrgID:
 			values[i] = new(sql.NullInt64)
-		case app.FieldName, app.FieldCode, app.FieldKind, app.FieldRedirectURI, app.FieldAppKey, app.FieldAppSecret, app.FieldScopes, app.FieldLogo, app.FieldComments, app.FieldStatus:
+		case app.FieldName, app.FieldCode, app.FieldKind, app.FieldRedirectURI, app.FieldAppKey, app.FieldAppSecret, app.FieldScopes, app.FieldComments, app.FieldStatus:
 			values[i] = new(sql.NullString)
 		case app.FieldCreatedAt, app.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -266,11 +266,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.RefreshTokenValidity = int32(value.Int64)
 			}
-		case app.FieldLogo:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field logo", values[i])
+		case app.FieldLogoFileID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field logo_file_id", values[i])
 			} else if value.Valid {
-				a.Logo = value.String
+				a.LogoFileID = int(value.Int64)
 			}
 		case app.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -406,8 +406,8 @@ func (a *App) String() string {
 	builder.WriteString("refresh_token_validity=")
 	builder.WriteString(fmt.Sprintf("%v", a.RefreshTokenValidity))
 	builder.WriteString(", ")
-	builder.WriteString("logo=")
-	builder.WriteString(a.Logo)
+	builder.WriteString("logo_file_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.LogoFileID))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
 	builder.WriteString(a.Comments)

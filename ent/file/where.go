@@ -90,6 +90,11 @@ func TenantID(v int) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldTenantID, v))
 }
 
+// RefCount applies equality check predicate on the "ref_count" field. It's identical to RefCountEQ.
+func RefCount(v int) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldRefCount, v))
+}
+
 // Path applies equality check predicate on the "path" field. It's identical to PathEQ.
 func Path(v string) predicate.File {
 	return predicate.File(sql.FieldEQ(FieldPath, v))
@@ -413,6 +418,56 @@ func TenantIDLT(v int) predicate.File {
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
 func TenantIDLTE(v int) predicate.File {
 	return predicate.File(sql.FieldLTE(FieldTenantID, v))
+}
+
+// RefCountEQ applies the EQ predicate on the "ref_count" field.
+func RefCountEQ(v int) predicate.File {
+	return predicate.File(sql.FieldEQ(FieldRefCount, v))
+}
+
+// RefCountNEQ applies the NEQ predicate on the "ref_count" field.
+func RefCountNEQ(v int) predicate.File {
+	return predicate.File(sql.FieldNEQ(FieldRefCount, v))
+}
+
+// RefCountIn applies the In predicate on the "ref_count" field.
+func RefCountIn(vs ...int) predicate.File {
+	return predicate.File(sql.FieldIn(FieldRefCount, vs...))
+}
+
+// RefCountNotIn applies the NotIn predicate on the "ref_count" field.
+func RefCountNotIn(vs ...int) predicate.File {
+	return predicate.File(sql.FieldNotIn(FieldRefCount, vs...))
+}
+
+// RefCountGT applies the GT predicate on the "ref_count" field.
+func RefCountGT(v int) predicate.File {
+	return predicate.File(sql.FieldGT(FieldRefCount, v))
+}
+
+// RefCountGTE applies the GTE predicate on the "ref_count" field.
+func RefCountGTE(v int) predicate.File {
+	return predicate.File(sql.FieldGTE(FieldRefCount, v))
+}
+
+// RefCountLT applies the LT predicate on the "ref_count" field.
+func RefCountLT(v int) predicate.File {
+	return predicate.File(sql.FieldLT(FieldRefCount, v))
+}
+
+// RefCountLTE applies the LTE predicate on the "ref_count" field.
+func RefCountLTE(v int) predicate.File {
+	return predicate.File(sql.FieldLTE(FieldRefCount, v))
+}
+
+// RefCountIsNil applies the IsNil predicate on the "ref_count" field.
+func RefCountIsNil() predicate.File {
+	return predicate.File(sql.FieldIsNull(FieldRefCount))
+}
+
+// RefCountNotNil applies the NotNil predicate on the "ref_count" field.
+func RefCountNotNil() predicate.File {
+	return predicate.File(sql.FieldNotNull(FieldRefCount))
 }
 
 // PathEQ applies the EQ predicate on the "path" field.

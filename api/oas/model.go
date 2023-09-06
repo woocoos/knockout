@@ -25,10 +25,39 @@ type ErrorResponse struct {
 }
 
 type FileInfo struct {
-	CreatedAt time.Time `time_format:"2006-01-02T15:04:05Z07:00" json:"createdAt,omitempty"`
-	ID        string    `json:"id,omitempty"`
-	Name      string    `json:"name,omitempty"`
-	Size      int       `json:"size,omitempty"`
+	FileSource *FileSource `json:"FileSource,omitempty"`
+	CreatedAt  time.Time   `json:"createdAt,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	ID         string      `json:"id,omitempty"`
+	Name       string      `json:"name,omitempty"`
+	Path       string      `json:"path,omitempty"`
+	Size       int         `json:"size,omitempty"`
+}
+
+type FileInput struct {
+	MineType string `binding:"required" json:"mine_type"`
+	Name     string `binding:"required" json:"name"`
+	Path     string `binding:"required" json:"path"`
+	Size     int    `binding:"required" json:"size"`
+}
+
+type FileRefInput struct {
+	FileId int    `binding:"required" json:"fileId"`
+	OpType string `binding:"required" json:"opType"`
+}
+
+type FileSource struct {
+	Bucket   string `json:"bucket,omitempty"`
+	Endpoint string `json:"endpoint,omitempty"`
+	ID       int    `json:"id,omitempty"`
+	Kind     string `json:"kind,omitempty"`
+	Region   string `json:"region,omitempty"`
+}
+
+type FileSourceInput struct {
+	Bucket   string `binding:"required" json:"bucket"`
+	Endpoint string `binding:"required" json:"endpoint"`
+	Kind     string `binding:"required" json:"kind"`
+	Region   string `binding:"required" json:"region"`
 }
 
 type ForgetPwdBeginResponse struct {
@@ -60,7 +89,8 @@ type Mfa struct {
 }
 
 type User struct {
-	DisplayName string    `json:"displayName,omitempty"`
-	Domains     []*Domain `json:"domains,omitempty"`
-	ID          int       `json:"id,omitempty"`
+	AvatarFileId int       `json:"avatarFileId,omitempty"`
+	DisplayName  string    `json:"displayName,omitempty"`
+	Domains      []*Domain `json:"domains,omitempty"`
+	ID           int       `json:"id,omitempty"`
 }

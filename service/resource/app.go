@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
@@ -23,11 +24,29 @@ import (
 // TODO 应用工作流
 func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
+	// 验证LogoFileID key是否正确
+	if input.LogoFileID != nil {
+		key, err := client.File.Query().Where(file.ID(*input.LogoFileID)).Select(file.FieldPath).String(ctx)
+		if err != nil {
+			return nil, err
+		}
+		err = s.validateFilePath(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	apl := client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).SaveX(ctx)
+	// 上报文件引用
+	if input.LogoFileID != nil {
+		err = s.reportFileRefCount(ctx, []int{apl.LogoFileID}, nil)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return apl, nil
 }
 
@@ -251,7 +270,7 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 			if aac == nil {
 				aac = &menu.Name
 			}
-			aa, err := client.AppAction.Create().SetAppID(appID).SetName(*menu.Route).SetKind(appaction.KindRestful).SetMethod(appaction.MethodRead).SetComments(*aac).Save(ctx)
+			aa, err := client.AppAction.Create().SetAppID(appID).SetName(*menu.Route).SetKind(appaction.KindRoute).SetMethod(appaction.MethodRead).SetComments(*aac).Save(ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -291,7 +310,7 @@ func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.Updat
 				aac = &am.Name
 			}
 			aas, err := s.CreateAppActions(ctx, am.AppID, []*ent.CreateAppActionInput{
-				{Name: *input.Route, Comments: aac, Kind: appaction.KindRestful, Method: appaction.MethodRead},
+				{Name: *input.Route, Comments: aac, Kind: appaction.KindRoute, Method: appaction.MethodRead},
 			})
 			if err != nil {
 				return nil, err
@@ -362,6 +381,17 @@ func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action mode
 // UpdateApp 更新应用
 func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
+	// 验证LogoFileID key是否正确
+	if input.LogoFileID != nil {
+		key, err := client.File.Query().Where(file.ID(*input.LogoFileID)).Select(file.FieldPath).String(ctx)
+		if err != nil {
+			return nil, err
+		}
+		err = s.validateFilePath(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -373,7 +403,20 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 	if !has {
 		return nil, fmt.Errorf("app not exist")
 	}
-	return client.App.UpdateOneID(appID).SetInput(input).Save(ctx)
+
+	oap, err := client.App.Query().Where(app.ID(appID)).Select(app.FieldLogoFileID).Only(ctx)
+	ap, err := client.App.UpdateOneID(appID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 上报文件引用
+	if input.LogoFileID != nil {
+		err = s.reportFileRefCount(ctx, []int{ap.LogoFileID}, []int{oap.LogoFileID})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ap, nil
 }
 
 // DeleteApp 删除应用

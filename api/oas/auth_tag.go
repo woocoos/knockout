@@ -62,6 +62,10 @@ type ForgetPwdVerifyMfaRequestBody struct {
 	StateToken string `binding:"required" json:"stateToken"`
 }
 
+type GetSpmAuthRequest struct {
+	Spm string `binding:"required" json:"spm"`
+}
+
 type LoginRequest struct {
 	Body LoginRequestBody
 }
@@ -73,6 +77,10 @@ type LoginRequestBody struct {
 	Username  string `binding:"required" json:"username"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `binding:"required" json:"refreshToken"`
+}
+
 type ResetPasswordRequest struct {
 	Body ResetPasswordRequestBody
 }
@@ -80,6 +88,21 @@ type ResetPasswordRequest struct {
 type ResetPasswordRequestBody struct {
 	NewPassword string `binding:"required" json:"newPassword"`
 	StateToken  string `binding:"required" json:"stateToken"`
+}
+
+type TokenRequest struct {
+	Body TokenRequestBody
+}
+
+type TokenRequestBody struct {
+	ClientID     string `binding:"required" form:"client_id"`
+	ClientSecret string `binding:"required" form:"client_secret"`
+	GrantType    string `binding:"required" form:"grant_type"`
+}
+
+type TokenResponse struct {
+	AccessToken string `json:"access_token,omitempty"`
+	ExpiresIn   int    `json:"expires_in,omitempty"`
 }
 
 type UnBindMfaRequest struct {

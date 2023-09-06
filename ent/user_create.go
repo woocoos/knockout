@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -178,6 +179,20 @@ func (uc *UserCreate) SetNillableComments(s *string) *UserCreate {
 	return uc
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uc *UserCreate) SetAvatarFileID(i int) *UserCreate {
+	uc.mutation.SetAvatarFileID(i)
+	return uc
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableAvatarFileID(i *int) *UserCreate {
+	if i != nil {
+		uc.SetAvatarFileID(*i)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(i int) *UserCreate {
 	uc.mutation.SetID(i)
@@ -284,6 +299,21 @@ func (uc *UserCreate) AddPermissions(p ...*Permission) *UserCreate {
 		ids[i] = p[i].ID
 	}
 	return uc.AddPermissionIDs(ids...)
+}
+
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uc *UserCreate) AddOauthClientIDs(ids ...int) *UserCreate {
+	uc.mutation.AddOauthClientIDs(ids...)
+	return uc
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uc *UserCreate) AddOauthClients(o ...*OauthClient) *UserCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uc.AddOauthClientIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -497,6 +527,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
+	if value, ok := uc.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+		_node.AvatarFileID = value
+	}
 	if nodes := uc.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -590,6 +624,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -854,6 +904,30 @@ func (u *UserUpsert) UpdateComments() *UserUpsert {
 // ClearComments clears the value of the "comments" field.
 func (u *UserUpsert) ClearComments() *UserUpsert {
 	u.SetNull(user.FieldComments)
+	return u
+}
+
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsert) SetAvatarFileID(v int) *UserUpsert {
+	u.Set(user.FieldAvatarFileID, v)
+	return u
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsert) UpdateAvatarFileID() *UserUpsert {
+	u.SetExcluded(user.FieldAvatarFileID)
+	return u
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsert) AddAvatarFileID(v int) *UserUpsert {
+	u.Add(user.FieldAvatarFileID, v)
+	return u
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsert) ClearAvatarFileID() *UserUpsert {
+	u.SetNull(user.FieldAvatarFileID)
 	return u
 }
 
@@ -1132,6 +1206,34 @@ func (u *UserUpsertOne) UpdateComments() *UserUpsertOne {
 func (u *UserUpsertOne) ClearComments() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearComments()
+	})
+}
+
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsertOne) SetAvatarFileID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetAvatarFileID(v)
+	})
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsertOne) AddAvatarFileID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.AddAvatarFileID(v)
+	})
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateAvatarFileID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateAvatarFileID()
+	})
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsertOne) ClearAvatarFileID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearAvatarFileID()
 	})
 }
 
@@ -1572,6 +1674,34 @@ func (u *UserUpsertBulk) UpdateComments() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearComments() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearComments()
+	})
+}
+
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (u *UserUpsertBulk) SetAvatarFileID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetAvatarFileID(v)
+	})
+}
+
+// AddAvatarFileID adds v to the "avatar_file_id" field.
+func (u *UserUpsertBulk) AddAvatarFileID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.AddAvatarFileID(v)
+	})
+}
+
+// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateAvatarFileID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateAvatarFileID()
+	})
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (u *UserUpsertBulk) ClearAvatarFileID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearAvatarFileID()
 	})
 }
 

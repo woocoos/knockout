@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -213,6 +214,33 @@ func (uu *UserUpdate) ClearComments() *UserUpdate {
 	return uu
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uu *UserUpdate) SetAvatarFileID(i int) *UserUpdate {
+	uu.mutation.ResetAvatarFileID()
+	uu.mutation.SetAvatarFileID(i)
+	return uu
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableAvatarFileID(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetAvatarFileID(*i)
+	}
+	return uu
+}
+
+// AddAvatarFileID adds i to the "avatar_file_id" field.
+func (uu *UserUpdate) AddAvatarFileID(i int) *UserUpdate {
+	uu.mutation.AddAvatarFileID(i)
+	return uu
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (uu *UserUpdate) ClearAvatarFileID() *UserUpdate {
+	uu.mutation.ClearAvatarFileID()
+	return uu
+}
+
 // AddIdentityIDs adds the "identities" edge to the UserIdentity entity by IDs.
 func (uu *UserUpdate) AddIdentityIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddIdentityIDs(ids...)
@@ -305,6 +333,21 @@ func (uu *UserUpdate) AddPermissions(p ...*Permission) *UserUpdate {
 		ids[i] = p[i].ID
 	}
 	return uu.AddPermissionIDs(ids...)
+}
+
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uu *UserUpdate) AddOauthClientIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddOauthClientIDs(ids...)
+	return uu
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uu *UserUpdate) AddOauthClients(o ...*OauthClient) *UserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uu.AddOauthClientIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -436,6 +479,27 @@ func (uu *UserUpdate) RemovePermissions(p ...*Permission) *UserUpdate {
 		ids[i] = p[i].ID
 	}
 	return uu.RemovePermissionIDs(ids...)
+}
+
+// ClearOauthClients clears all "oauth_clients" edges to the OauthClient entity.
+func (uu *UserUpdate) ClearOauthClients() *UserUpdate {
+	uu.mutation.ClearOauthClients()
+	return uu
+}
+
+// RemoveOauthClientIDs removes the "oauth_clients" edge to OauthClient entities by IDs.
+func (uu *UserUpdate) RemoveOauthClientIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveOauthClientIDs(ids...)
+	return uu
+}
+
+// RemoveOauthClients removes "oauth_clients" edges to OauthClient entities.
+func (uu *UserUpdate) RemoveOauthClients(o ...*OauthClient) *UserUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uu.RemoveOauthClientIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -592,6 +656,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
+	}
+	if value, ok := uu.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if value, ok := uu.mutation.AddedAvatarFileID(); ok {
+		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if uu.mutation.AvatarFileIDCleared() {
+		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
 	}
 	if uu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -859,6 +932,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedOauthClientsIDs(); len(nodes) > 0 && !uu.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1101,6 +1219,33 @@ func (uuo *UserUpdateOne) ClearComments() *UserUpdateOne {
 	return uuo
 }
 
+// SetAvatarFileID sets the "avatar_file_id" field.
+func (uuo *UserUpdateOne) SetAvatarFileID(i int) *UserUpdateOne {
+	uuo.mutation.ResetAvatarFileID()
+	uuo.mutation.SetAvatarFileID(i)
+	return uuo
+}
+
+// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableAvatarFileID(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetAvatarFileID(*i)
+	}
+	return uuo
+}
+
+// AddAvatarFileID adds i to the "avatar_file_id" field.
+func (uuo *UserUpdateOne) AddAvatarFileID(i int) *UserUpdateOne {
+	uuo.mutation.AddAvatarFileID(i)
+	return uuo
+}
+
+// ClearAvatarFileID clears the value of the "avatar_file_id" field.
+func (uuo *UserUpdateOne) ClearAvatarFileID() *UserUpdateOne {
+	uuo.mutation.ClearAvatarFileID()
+	return uuo
+}
+
 // AddIdentityIDs adds the "identities" edge to the UserIdentity entity by IDs.
 func (uuo *UserUpdateOne) AddIdentityIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddIdentityIDs(ids...)
@@ -1193,6 +1338,21 @@ func (uuo *UserUpdateOne) AddPermissions(p ...*Permission) *UserUpdateOne {
 		ids[i] = p[i].ID
 	}
 	return uuo.AddPermissionIDs(ids...)
+}
+
+// AddOauthClientIDs adds the "oauth_clients" edge to the OauthClient entity by IDs.
+func (uuo *UserUpdateOne) AddOauthClientIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddOauthClientIDs(ids...)
+	return uuo
+}
+
+// AddOauthClients adds the "oauth_clients" edges to the OauthClient entity.
+func (uuo *UserUpdateOne) AddOauthClients(o ...*OauthClient) *UserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uuo.AddOauthClientIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -1324,6 +1484,27 @@ func (uuo *UserUpdateOne) RemovePermissions(p ...*Permission) *UserUpdateOne {
 		ids[i] = p[i].ID
 	}
 	return uuo.RemovePermissionIDs(ids...)
+}
+
+// ClearOauthClients clears all "oauth_clients" edges to the OauthClient entity.
+func (uuo *UserUpdateOne) ClearOauthClients() *UserUpdateOne {
+	uuo.mutation.ClearOauthClients()
+	return uuo
+}
+
+// RemoveOauthClientIDs removes the "oauth_clients" edge to OauthClient entities by IDs.
+func (uuo *UserUpdateOne) RemoveOauthClientIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveOauthClientIDs(ids...)
+	return uuo
+}
+
+// RemoveOauthClients removes "oauth_clients" edges to OauthClient entities.
+func (uuo *UserUpdateOne) RemoveOauthClients(o ...*OauthClient) *UserUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return uuo.RemoveOauthClientIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1510,6 +1691,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
+	}
+	if value, ok := uuo.mutation.AvatarFileID(); ok {
+		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if value, ok := uuo.mutation.AddedAvatarFileID(); ok {
+		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
+	}
+	if uuo.mutation.AvatarFileIDCleared() {
+		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
 	}
 	if uuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1770,6 +1960,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedOauthClientsIDs(); len(nodes) > 0 && !uuo.mutation.OauthClientsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.OauthClientsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.OauthClientsTable,
+			Columns: []string{user.OauthClientsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

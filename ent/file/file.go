@@ -29,6 +29,8 @@ const (
 	FieldSourceID = "source_id"
 	// FieldTenantID holds the string denoting the tenant_id field in the database.
 	FieldTenantID = "tenant_id"
+	// FieldRefCount holds the string denoting the ref_count field in the database.
+	FieldRefCount = "ref_count"
 	// FieldPath holds the string denoting the path field in the database.
 	FieldPath = "path"
 	// FieldSize holds the string denoting the size field in the database.
@@ -60,6 +62,7 @@ var Columns = []string{
 	FieldName,
 	FieldSourceID,
 	FieldTenantID,
+	FieldRefCount,
 	FieldPath,
 	FieldSize,
 	FieldMineType,
@@ -134,6 +137,11 @@ func BySourceID(opts ...sql.OrderTermOption) OrderOption {
 // ByTenantID orders the results by the tenant_id field.
 func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
+}
+
+// ByRefCount orders the results by the ref_count field.
+func ByRefCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRefCount, opts...).ToFunc()
 }
 
 // ByPath orders the results by the path field.

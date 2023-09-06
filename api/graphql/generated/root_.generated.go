@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"sync/atomic"
 
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
@@ -58,7 +59,7 @@ type ComplexityRoot struct {
 		CreatedBy            func(childComplexity int) int
 		ID                   func(childComplexity int) int
 		Kind                 func(childComplexity int) int
-		Logo                 func(childComplexity int) int
+		LogoFileID           func(childComplexity int) int
 		Menus                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppMenuOrder, where *ent.AppMenuWhereInput) int
 		Name                 func(childComplexity int) int
 		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
@@ -237,6 +238,7 @@ type ComplexityRoot struct {
 
 	FileSource struct {
 		Bucket    func(childComplexity int) int
+		Comments  func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
 		Endpoint  func(childComplexity int) int
@@ -246,6 +248,17 @@ type ComplexityRoot struct {
 		Region    func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
+	}
+
+	FileSourceConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	FileSourceEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	Mfa struct {
@@ -267,6 +280,8 @@ type ComplexityRoot struct {
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
+		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
+		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
@@ -278,14 +293,18 @@ type ComplexityRoot struct {
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
+		DeleteFileSource            func(childComplexity int, fsID int) int
+		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
 		DisableMfa                  func(childComplexity int, userID int) int
+		DisableOauthClient          func(childComplexity int, id int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		EnableMfa                   func(childComplexity int, userID int) int
+		EnableOauthClient           func(childComplexity int, id int) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
@@ -305,12 +324,29 @@ type ComplexityRoot struct {
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
+		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
+	}
+
+	OauthClient struct {
+		ClientID     func(childComplexity int) int
+		ClientSecret func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		GrantTypes   func(childComplexity int) int
+		ID           func(childComplexity int) int
+		LastAuthAt   func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Status       func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+		User         func(childComplexity int) int
+		UserID       func(childComplexity int) int
 	}
 
 	Org struct {
@@ -458,6 +494,7 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission         func(childComplexity int, permission string) int
+		FileSources             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
 		Nodes                   func(childComplexity int, ids []string) int
@@ -478,6 +515,7 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
+		AvatarFileID      func(childComplexity int) int
 		Comments          func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
@@ -492,6 +530,7 @@ type ComplexityRoot struct {
 		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
 		LoginProfile      func(childComplexity int) int
 		Mobile            func(childComplexity int) int
+		OauthClients      func(childComplexity int) int
 		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName     func(childComplexity int) int
 		RegisterIP        func(childComplexity int) int
@@ -586,7 +625,7 @@ func (e *executableSchema) Schema() *ast.Schema {
 }
 
 func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
-	ec := executionContext{nil, e}
+	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
 
@@ -658,12 +697,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.App.Kind(childComplexity), true
 
-	case "App.logo":
-		if e.complexity.App.Logo == nil {
+	case "App.logoFileID":
+		if e.complexity.App.LogoFileID == nil {
 			break
 		}
 
-		return e.complexity.App.Logo(childComplexity), true
+		return e.complexity.App.LogoFileID(childComplexity), true
 
 	case "App.menus":
 		if e.complexity.App.Menus == nil {
@@ -1532,6 +1571,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.Bucket(childComplexity), true
 
+	case "FileSource.comments":
+		if e.complexity.FileSource.Comments == nil {
+			break
+		}
+
+		return e.complexity.FileSource.Comments(childComplexity), true
+
 	case "FileSource.createdAt":
 		if e.complexity.FileSource.CreatedAt == nil {
 			break
@@ -1599,6 +1645,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileSource.UpdatedBy(childComplexity), true
+
+	case "FileSourceConnection.edges":
+		if e.complexity.FileSourceConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.Edges(childComplexity), true
+
+	case "FileSourceConnection.pageInfo":
+		if e.complexity.FileSourceConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.PageInfo(childComplexity), true
+
+	case "FileSourceConnection.totalCount":
+		if e.complexity.FileSourceConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.FileSourceConnection.TotalCount(childComplexity), true
+
+	case "FileSourceEdge.cursor":
+		if e.complexity.FileSourceEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FileSourceEdge.Cursor(childComplexity), true
+
+	case "FileSourceEdge.node":
+		if e.complexity.FileSourceEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FileSourceEdge.Node(childComplexity), true
 
 	case "Mfa.account":
 		if e.complexity.Mfa.Account == nil {
@@ -1770,6 +1851,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
 
+	case "Mutation.createFileSource":
+		if e.complexity.Mutation.CreateFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFileSource(childComplexity, args["input"].(ent.CreateFileSourceInput)), true
+
+	case "Mutation.createOauthClient":
+		if e.complexity.Mutation.CreateOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateOauthClient(childComplexity, args["input"].(ent.CreateOauthClientInput)), true
+
 	case "Mutation.createOrganization":
 		if e.complexity.Mutation.CreateOrganization == nil {
 			break
@@ -1902,6 +2007,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
 
+	case "Mutation.deleteFileSource":
+		if e.complexity.Mutation.DeleteFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFileSource(childComplexity, args["fsID"].(int)), true
+
+	case "Mutation.deleteOauthClient":
+		if e.complexity.Mutation.DeleteOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteOauthClient(childComplexity, args["id"].(int)), true
+
 	case "Mutation.deleteOrganization":
 		if e.complexity.Mutation.DeleteOrganization == nil {
 			break
@@ -1974,6 +2103,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DisableMfa(childComplexity, args["userID"].(int)), true
 
+	case "Mutation.disableOauthClient":
+		if e.complexity.Mutation.DisableOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_disableOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DisableOauthClient(childComplexity, args["id"].(int)), true
+
 	case "Mutation.enableDirectory":
 		if e.complexity.Mutation.EnableDirectory == nil {
 			break
@@ -1997,6 +2138,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EnableMfa(childComplexity, args["userID"].(int)), true
+
+	case "Mutation.enableOauthClient":
+		if e.complexity.Mutation.EnableOauthClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_enableOauthClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EnableOauthClient(childComplexity, args["id"].(int)), true
 
 	case "Mutation.grant":
 		if e.complexity.Mutation.Grant == nil {
@@ -2226,6 +2379,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
 
+	case "Mutation.updateFileSource":
+		if e.complexity.Mutation.UpdateFileSource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateFileSource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateFileSource(childComplexity, args["fsID"].(int), args["input"].(ent.UpdateFileSourceInput)), true
+
 	case "Mutation.updateLoginProfile":
 		if e.complexity.Mutation.UpdateLoginProfile == nil {
 			break
@@ -2297,6 +2462,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput)), true
+
+	case "OauthClient.clientID":
+		if e.complexity.OauthClient.ClientID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ClientID(childComplexity), true
+
+	case "OauthClient.clientSecret":
+		if e.complexity.OauthClient.ClientSecret == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ClientSecret(childComplexity), true
+
+	case "OauthClient.createdAt":
+		if e.complexity.OauthClient.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.CreatedAt(childComplexity), true
+
+	case "OauthClient.createdBy":
+		if e.complexity.OauthClient.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.CreatedBy(childComplexity), true
+
+	case "OauthClient.grantTypes":
+		if e.complexity.OauthClient.GrantTypes == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.GrantTypes(childComplexity), true
+
+	case "OauthClient.id":
+		if e.complexity.OauthClient.ID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.ID(childComplexity), true
+
+	case "OauthClient.lastAuthAt":
+		if e.complexity.OauthClient.LastAuthAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.LastAuthAt(childComplexity), true
+
+	case "OauthClient.name":
+		if e.complexity.OauthClient.Name == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.Name(childComplexity), true
+
+	case "OauthClient.status":
+		if e.complexity.OauthClient.Status == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.Status(childComplexity), true
+
+	case "OauthClient.updatedAt":
+		if e.complexity.OauthClient.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UpdatedAt(childComplexity), true
+
+	case "OauthClient.updatedBy":
+		if e.complexity.OauthClient.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UpdatedBy(childComplexity), true
+
+	case "OauthClient.user":
+		if e.complexity.OauthClient.User == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.User(childComplexity), true
+
+	case "OauthClient.userID":
+		if e.complexity.OauthClient.UserID == nil {
+			break
+		}
+
+		return e.complexity.OauthClient.UserID(childComplexity), true
 
 	case "Org.apps":
 		if e.complexity.Org.Apps == nil {
@@ -3077,6 +3333,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
+	case "Query.fileSources":
+		if e.complexity.Query.FileSources == nil {
+			break
+		}
+
+		args, err := ec.field_Query_fileSources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FileSources(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileSourceOrder), args["where"].(*ent.FileSourceWhereInput)), true
+
 	case "Query.globalID":
 		if e.complexity.Query.GlobalID == nil {
 			break
@@ -3276,6 +3544,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
+	case "User.avatarFileID":
+		if e.complexity.User.AvatarFileID == nil {
+			break
+		}
+
+		return e.complexity.User.AvatarFileID(childComplexity), true
+
 	case "User.comments":
 		if e.complexity.User.Comments == nil {
 			break
@@ -3383,6 +3658,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Mobile(childComplexity), true
+
+	case "User.oauthClients":
+		if e.complexity.User.OauthClients == nil {
+			break
+		}
+
+		return e.complexity.User.OauthClients(childComplexity), true
 
 	case "User.permissions":
 		if e.complexity.User.Permissions == nil {
@@ -3829,7 +4111,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
-	ec := executionContext{rc, e}
+	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAppActionOrder,
 		ec.unmarshalInputAppActionWhereInput,
@@ -3853,6 +4135,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateFileSourceInput,
+		ec.unmarshalInputCreateOauthClientInput,
 		ec.unmarshalInputCreateOrgInput,
 		ec.unmarshalInputCreateOrgPolicyInput,
 		ec.unmarshalInputCreateOrgRoleInput,
@@ -3868,6 +4151,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputFileSourceWhereInput,
 		ec.unmarshalInputFileWhereInput,
 		ec.unmarshalInputGrantInput,
+		ec.unmarshalInputOauthClientOrder,
+		ec.unmarshalInputOauthClientWhereInput,
 		ec.unmarshalInputOrgOrder,
 		ec.unmarshalInputOrgPolicyOrder,
 		ec.unmarshalInputOrgPolicyWhereInput,
@@ -3888,6 +4173,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
 		ec.unmarshalInputUpdateFileSourceInput,
+		ec.unmarshalInputUpdateOauthClientInput,
 		ec.unmarshalInputUpdateOrgInput,
 		ec.unmarshalInputUpdateOrgPolicyInput,
 		ec.unmarshalInputUpdateOrgRoleInput,
@@ -3913,18 +4199,33 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	switch rc.Operation.Operation {
 	case ast.Query:
 		return func(ctx context.Context) *graphql.Response {
-			if !first {
-				return nil
+			var response graphql.Response
+			var data graphql.Marshaler
+			if first {
+				first = false
+				ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
+				data = ec._Query(ctx, rc.Operation.SelectionSet)
+			} else {
+				if atomic.LoadInt32(&ec.pendingDeferred) > 0 {
+					result := <-ec.deferredResults
+					atomic.AddInt32(&ec.pendingDeferred, -1)
+					data = result.Result
+					response.Path = result.Path
+					response.Label = result.Label
+					response.Errors = result.Errors
+				} else {
+					return nil
+				}
 			}
-			first = false
-			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-			data := ec._Query(ctx, rc.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
-
-			return &graphql.Response{
-				Data: buf.Bytes(),
+			response.Data = buf.Bytes()
+			if atomic.LoadInt32(&ec.deferred) > 0 {
+				hasNext := atomic.LoadInt32(&ec.pendingDeferred) > 0
+				response.HasNext = &hasNext
 			}
+
+			return &response
 		}
 	case ast.Mutation:
 		return func(ctx context.Context) *graphql.Response {
@@ -3950,6 +4251,28 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 type executionContext struct {
 	*graphql.OperationContext
 	*executableSchema
+	deferred        int32
+	pendingDeferred int32
+	deferredResults chan graphql.DeferredResult
+}
+
+func (ec *executionContext) processDeferredGroup(dg graphql.DeferredGroup) {
+	atomic.AddInt32(&ec.pendingDeferred, 1)
+	go func() {
+		ctx := graphql.WithFreshResponseContext(dg.Context)
+		dg.FieldSet.Dispatch(ctx)
+		ds := graphql.DeferredResult{
+			Path:   dg.Path,
+			Label:  dg.Label,
+			Result: dg.FieldSet,
+			Errors: graphql.GetErrors(ctx),
+		}
+		// null fields should bubble up
+		if dg.FieldSet.Invalids > 0 {
+			ds.Result = graphql.Null
+		}
+		ec.deferredResults <- ds
+	}()
 }
 
 func (ec *executionContext) introspectSchema() (*introspection.Schema, error) {
@@ -3993,8 +4316,8 @@ type App implements Node {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标"""
-  logo: String
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
+  logoFileID: ID
   """备注"""
   comments: String
   """状态"""
@@ -4122,6 +4445,7 @@ enum AppActionKind @goModel(model: "github.com/woocoos/knockout/ent/appaction.Ki
   graphql
   rpc
   function
+  route
 }
 """AppActionMethod is enum for the field method"""
 enum AppActionMethod @goModel(model: "github.com/woocoos/knockout/ent/appaction.Method") {
@@ -5165,22 +5489,17 @@ input AppWhereInput {
   refreshTokenValidityLTE: Int
   refreshTokenValidityIsNil: Boolean
   refreshTokenValidityNotNil: Boolean
-  """logo field predicates"""
-  logo: String
-  logoNEQ: String
-  logoIn: [String!]
-  logoNotIn: [String!]
-  logoGT: String
-  logoGTE: String
-  logoLT: String
-  logoLTE: String
-  logoContains: String
-  logoHasPrefix: String
-  logoHasSuffix: String
-  logoIsNil: Boolean
-  logoNotNil: Boolean
-  logoEqualFold: String
-  logoContainsFold: String
+  """logo_file_id field predicates"""
+  logoFileID: ID
+  logoFileIDNEQ: ID
+  logoFileIDIn: [ID!]
+  logoFileIDNotIn: [ID!]
+  logoFileIDGT: ID
+  logoFileIDGTE: ID
+  logoFileIDLT: ID
+  logoFileIDLTE: ID
+  logoFileIDIsNil: Boolean
+  logoFileIDNotNil: Boolean
   """comments field predicates"""
   comments: String
   commentsNEQ: String
@@ -5262,8 +5581,8 @@ input CreateAppInput {
   tokenValidity: Int
   """refresh_token有效期"""
   refreshTokenValidity: Int
-  """图标"""
-  logo: String
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
+  logoFileID: ID
   """备注"""
   comments: String
   """状态"""
@@ -5347,13 +5666,26 @@ Input was generated by ent.
 input CreateFileSourceInput {
   """文件来源"""
   kind: FileSourceKind!
+  """备注"""
+  comments: String
   """对外服务的访问域名"""
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   fileIDs: [ID!]
+}
+"""
+CreateOauthClientInput is used for create OauthClient object.
+Input was generated by ent.
+"""
+input CreateOauthClientInput {
+  """名称"""
+  name: String!
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes!
+  userID: ID!
 }
 """
 CreateOrgInput is used for create Org object.
@@ -5470,10 +5802,13 @@ input CreateUserInput {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
+  avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
   deviceIDs: [ID!]
+  oauthClientIDs: [ID!]
 }
 """
 CreateUserLoginProfileInput is used for create UserLoginProfile object.
@@ -5566,11 +5901,13 @@ type FileSource implements Node {
   updatedAt: Time
   """文件来源"""
   kind: FileSourceKind!
+  """备注"""
+  comments: String
   """对外服务的访问域名"""
   endpoint: String
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   files(
     """Returns the elements in the list that come after the specified cursor."""
@@ -5591,6 +5928,22 @@ type FileSource implements Node {
     """Filtering options for Files returned from the connection."""
     where: FileWhereInput
   ): FileConnection!
+}
+"""A connection to a list of items."""
+type FileSourceConnection {
+  """A list of edges."""
+  edges: [FileSourceEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type FileSourceEdge {
+  """The item at the end of the edge."""
+  node: FileSource
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 """FileSourceKind is enum for the field kind"""
 enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
@@ -5845,6 +6198,139 @@ Follows the [Relay Global Object Identification Specification](https://relay.dev
 interface Node @goModel(model: "github.com/woocoos/knockout/ent.Noder") {
   """The id of the object."""
   id: ID!
+}
+type OauthClient implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """名称"""
+  name: String!
+  """id"""
+  clientID: String!
+  """密钥"""
+  clientSecret: String!
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes!
+  """关联用户id"""
+  userID: ID!
+  """最后认证时间"""
+  lastAuthAt: Time
+  """状态"""
+  status: OauthClientSimpleStatus!
+  user: User!
+}
+"""OauthClientGrantTypes is enum for the field grant_types"""
+enum OauthClientGrantTypes @goModel(model: "github.com/woocoos/knockout/ent/oauthclient.GrantTypes") {
+  client_credentials
+}
+"""Ordering options for OauthClient connections"""
+input OauthClientOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order OauthClients."""
+  field: OauthClientOrderField!
+}
+"""Properties by which OauthClient connections can be ordered."""
+enum OauthClientOrderField {
+  createdAt
+}
+"""OauthClientSimpleStatus is enum for the field status"""
+enum OauthClientSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+}
+"""
+OauthClientWhereInput is used for filtering OauthClient objects.
+Input was generated by ent.
+"""
+input OauthClientWhereInput {
+  not: OauthClientWhereInput
+  and: [OauthClientWhereInput!]
+  or: [OauthClientWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """name field predicates"""
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """grant_types field predicates"""
+  grantTypes: OauthClientGrantTypes
+  grantTypesNEQ: OauthClientGrantTypes
+  grantTypesIn: [OauthClientGrantTypes!]
+  grantTypesNotIn: [OauthClientGrantTypes!]
+  """user_id field predicates"""
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  """status field predicates"""
+  status: OauthClientSimpleStatus
+  statusNEQ: OauthClientSimpleStatus
+  statusIn: [OauthClientSimpleStatus!]
+  statusNotIn: [OauthClientSimpleStatus!]
+  """user edge predicates"""
+  hasUser: Boolean
+  hasUserWith: [UserWhereInput!]
 }
 """Possible directions in which to order a list of items when provided an ` + "`" + `orderBy` + "`" + ` argument."""
 enum OrderDirection {
@@ -6994,9 +7480,9 @@ input UpdateAppInput {
   """refresh_token有效期"""
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
-  """图标"""
-  logo: String
-  clearLogo: Boolean
+  """图标,存储路规则：/{appcode}/{tid}/xxx"""
+  logoFileID: ID
+  clearLogoFileID: Boolean
   """备注"""
   comments: String
   clearComments: Boolean
@@ -7094,18 +7580,32 @@ Input was generated by ent.
 input UpdateFileSourceInput {
   """文件来源"""
   kind: FileSourceKind
+  """备注"""
+  comments: String
+  clearComments: Boolean
   """对外服务的访问域名"""
   endpoint: String
   clearEndpoint: Boolean
   """地域，数据存储的物理位置。本地存储为：localhost"""
   region: String
   clearRegion: Boolean
-  """文件存储空间。本地存储为：assets"""
+  """文件存储空间。本地存储为：local"""
   bucket: String
   clearBucket: Boolean
   addFileIDs: [ID!]
   removeFileIDs: [ID!]
   clearFiles: Boolean
+}
+"""
+UpdateOauthClientInput is used for update OauthClient object.
+Input was generated by ent.
+"""
+input UpdateOauthClientInput {
+  """名称"""
+  name: String
+  """授权类型"""
+  grantTypes: OauthClientGrantTypes
+  userID: ID
 }
 """
 UpdateOrgInput is used for update Org object.
@@ -7246,6 +7746,9 @@ input UpdateUserInput {
   """备注"""
   comments: String
   clearComments: Boolean
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
+  avatarFileID: ID
+  clearAvatarFileID: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -7302,6 +7805,8 @@ type User implements Node {
   status: UserSimpleStatus
   """备注"""
   comments: String
+  """头像,存储路规则：/{appcode}/{tid}/xxx"""
+  avatarFileID: ID
   """用户身份标识"""
   identities: [UserIdentity!]
   """登陆设置"""
@@ -7327,6 +7832,8 @@ type User implements Node {
     """Filtering options for Permissions returned from the connection."""
     where: PermissionWhereInput
   ): PermissionConnection!
+  """用户AccessKey"""
+  oauthClients: [OauthClient!]
 }
 """A connection to a list of items."""
 type UserConnection {
@@ -8165,6 +8672,9 @@ input UserWhereInput {
   """permissions edge predicates"""
   hasPermissions: Boolean
   hasPermissionsWith: [PermissionWhereInput!]
+  """oauth_clients edge predicates"""
+  hasOauthClients: Boolean
+  hasOauthClientsWith: [OauthClientWhereInput!]
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
@@ -8373,6 +8883,15 @@ extend type Permission {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """文件来源"""
+    fileSources(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: FileSourceOrder
+        where: FileSourceWhereInput
+    ):FileSourceConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -8508,6 +9027,20 @@ extend type Permission {
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
     recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
+    """创建文件来源"""
+    createFileSource(input: CreateFileSourceInput!): FileSource!
+    """更新文件来源"""
+    updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
+    """删除文件来源"""
+    deleteFileSource(fsID: ID!): Boolean!
+    """创建用户 AccessKey"""
+    createOauthClient(input: CreateOauthClientInput!): OauthClient!
+    """启用OauthClient"""
+    enableOauthClient(id: ID!): OauthClient!
+    """禁用OauthClient"""
+    disableOauthClient(id: ID!): OauthClient!
+    """删除OauthClient"""
+    deleteOauthClient(id: ID!): Boolean!
 }
 `, BuiltIn: false},
 }

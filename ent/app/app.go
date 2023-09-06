@@ -46,8 +46,8 @@ const (
 	FieldTokenValidity = "token_validity"
 	// FieldRefreshTokenValidity holds the string denoting the refresh_token_validity field in the database.
 	FieldRefreshTokenValidity = "refresh_token_validity"
-	// FieldLogo holds the string denoting the logo field in the database.
-	FieldLogo = "logo"
+	// FieldLogoFileID holds the string denoting the logo_file_id field in the database.
+	FieldLogoFileID = "logo_file_id"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -137,7 +137,7 @@ var Columns = []string{
 	FieldScopes,
 	FieldTokenValidity,
 	FieldRefreshTokenValidity,
-	FieldLogo,
+	FieldLogoFileID,
 	FieldComments,
 	FieldStatus,
 	FieldPrivate,
@@ -294,9 +294,9 @@ func ByRefreshTokenValidity(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefreshTokenValidity, opts...).ToFunc()
 }
 
-// ByLogo orders the results by the logo field.
-func ByLogo(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLogo, opts...).ToFunc()
+// ByLogoFileID orders the results by the logo_file_id field.
+func ByLogoFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLogoFileID, opts...).ToFunc()
 }
 
 // ByComments orders the results by the comments field.

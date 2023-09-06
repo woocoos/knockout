@@ -33,8 +33,9 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		portalClient = ent.NewClient(ent.Driver(pd))
 	}
 	s.Service = &server.FileService{
-		DB:      portalClient,
-		BaseDir: s.Cnf.Abs(s.Cnf.String("files.local.bucket")),
+		DB:       portalClient,
+		BaseDir:  s.Cnf.Abs(s.Cnf.String("files.local.baseDir")),
+		Endpoint: s.Cnf.String("files.local.endpoint"),
 	}
 	return s
 }

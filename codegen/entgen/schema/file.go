@@ -36,6 +36,7 @@ func (File) Fields() []ent.Field {
 		field.String("name").Comment("文件名称"),
 		field.Int("source_id").Comment("文件来源"),
 		field.Int("tenant_id").Comment("租户ID"),
+		field.Int("ref_count").Optional().Annotations(entgql.Skip(entgql.SkipAll)).Comment("业务引用次数"),
 		field.String("path").Comment("文件相对路径"),
 		field.Int("size").Optional().Comment("文件大小，单位为B"),
 		field.String("mine_type").MaxLen(100).Optional().Comment("媒体类型，如：image/png").

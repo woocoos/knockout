@@ -75,6 +75,11 @@ func UpdatedAt(v time.Time) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// Comments applies equality check predicate on the "comments" field. It's identical to CommentsEQ.
+func Comments(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldComments, v))
+}
+
 // Endpoint applies equality check predicate on the "endpoint" field. It's identical to EndpointEQ.
 func Endpoint(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldEndpoint, v))
@@ -288,6 +293,81 @@ func KindIn(vs ...Kind) predicate.FileSource {
 // KindNotIn applies the NotIn predicate on the "kind" field.
 func KindNotIn(vs ...Kind) predicate.FileSource {
 	return predicate.FileSource(sql.FieldNotIn(FieldKind, vs...))
+}
+
+// CommentsEQ applies the EQ predicate on the "comments" field.
+func CommentsEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldComments, v))
+}
+
+// CommentsNEQ applies the NEQ predicate on the "comments" field.
+func CommentsNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldComments, v))
+}
+
+// CommentsIn applies the In predicate on the "comments" field.
+func CommentsIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldComments, vs...))
+}
+
+// CommentsNotIn applies the NotIn predicate on the "comments" field.
+func CommentsNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldComments, vs...))
+}
+
+// CommentsGT applies the GT predicate on the "comments" field.
+func CommentsGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldComments, v))
+}
+
+// CommentsGTE applies the GTE predicate on the "comments" field.
+func CommentsGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldComments, v))
+}
+
+// CommentsLT applies the LT predicate on the "comments" field.
+func CommentsLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldComments, v))
+}
+
+// CommentsLTE applies the LTE predicate on the "comments" field.
+func CommentsLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldComments, v))
+}
+
+// CommentsContains applies the Contains predicate on the "comments" field.
+func CommentsContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldComments, v))
+}
+
+// CommentsHasPrefix applies the HasPrefix predicate on the "comments" field.
+func CommentsHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldComments, v))
+}
+
+// CommentsHasSuffix applies the HasSuffix predicate on the "comments" field.
+func CommentsHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldComments, v))
+}
+
+// CommentsIsNil applies the IsNil predicate on the "comments" field.
+func CommentsIsNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldIsNull(FieldComments))
+}
+
+// CommentsNotNil applies the NotNil predicate on the "comments" field.
+func CommentsNotNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotNull(FieldComments))
+}
+
+// CommentsEqualFold applies the EqualFold predicate on the "comments" field.
+func CommentsEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldComments, v))
+}
+
+// CommentsContainsFold applies the ContainsFold predicate on the "comments" field.
+func CommentsContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldComments, v))
 }
 
 // EndpointEQ applies the EQ predicate on the "endpoint" field.

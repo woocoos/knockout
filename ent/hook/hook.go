@@ -117,6 +117,18 @@ func (f FileSourceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FileSourceMutation", m)
 }
 
+// The OauthClientFunc type is an adapter to allow the use of ordinary
+// function as OauthClient mutator.
+type OauthClientFunc func(context.Context, *ent.OauthClientMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OauthClientFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OauthClientMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OauthClientMutation", m)
+}
+
 // The OrgFunc type is an adapter to allow the use of ordinary
 // function as Org mutator.
 type OrgFunc func(context.Context, *ent.OrgMutation) (ent.Value, error)

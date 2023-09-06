@@ -63,6 +63,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /login/refresh-token:
+    post:
+      summary: Use this API to refresh token
+      description: Use this API to refresh token
+      tags:
+        - auth
+      operationId: refreshToken
+      requestBody:
+        description: refresh token with refreshToken
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: the refreshToken
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: refresh token successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /login/verify-factor:
     post:
       description: Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
@@ -136,6 +171,39 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
+  /token:
+    post:
+      tags:
+        - auth
+      operationId: token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum: [ "client_credentials" ]
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+              required:
+                - grant_type
+                - client_id
+                - client_secret
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_token:
+                    type: string
+                  expires_in:
+                    type: integer
   /captcha:
     get:
       summary: Use this API to get captcha
@@ -390,6 +458,47 @@ paths:
                 type: boolean
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /spm/create:
+    post:
+      description: create spm key.
+      tags:
+        - auth
+      operationId: createSpm
+      responses:
+        '200':
+          description: retrun the spm key
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /spm/auth:
+    post:
+      description: get auth data by spm.
+      tags:
+        - auth
+      operationId: getSpmAuth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spm:
+                  type: string
+                  description: the spm key to get auth data
+              required:
+                - spm
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /files:
     post:
       description: upload file
@@ -404,7 +513,7 @@ paths:
               properties:
                 bucket:
                   type: string
-                  description: the name of bucket
+                  description: the name of bucket，value is local
                 key:
                   type: string
                   description: the path of file in the bucket
@@ -416,6 +525,61 @@ paths:
               schema:
                 type: string
                 description: id of the file
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /files/report-ref-count:
+    post:
+      description: number of times that the file is referenced by business
+      tags:
+        - file
+      operationId: reportRefCount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inputs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FileRefInput'
+              required:
+                - inputs
+      responses:
+        '200':
+          description: report reference count success
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /files/upload-info:
+    post:
+      description: upload the file info for oss
+      tags:
+        - file
+      operationId: uploadFileInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  $ref: '#/components/schemas/FileInput'
+                fileSource:
+                  $ref: '#/components/schemas/FileSourceInput'
+              required:
+                - file
+                - fileSource
+      responses:
+        '200':
+          description: upload file info success
+          content:
+            application/json:
+              schema:
+                type: string
         '401':
           $ref: '#/components/responses/UnauthorizedError'
   /files/{fileId}:
@@ -540,6 +704,8 @@ components:
           type: integer
         displayName:
           type: string
+        avatarFileId:
+          type: integer
         domains:
           type: array
           items:
@@ -595,6 +761,69 @@ components:
           type: string
         size:
           type: integer
+        path:
+          type: string
         createdAt:
           type: string
           format: date-time
+        FileSource:
+          $ref: '#/components/schemas/FileSource'
+    FileSource:
+      type: object
+      properties:
+        id:
+          type: integer
+        kind:
+          type: string
+          enum: ["local","alioss"]
+        endpoint:
+          type: string
+        bucket:
+          type: string
+        region:
+          type: string
+    FileInput:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        size:
+          type: integer
+        mine_type:
+          type: string
+      required:
+        - name
+        - path
+        - size
+        - mine_type
+    FileSourceInput:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: [ "local","alioss" ]
+        endpoint:
+          type: string
+        region:
+          type: string
+        bucket:
+          type: string
+      required:
+        - kind
+        - endpoint
+        - region
+        - bucket
+    FileRefInput:
+      type: object
+      properties:
+        fileId:
+          type: integer
+        opType:
+          type: string
+          description: plus or minus the reference count
+          enum: [ "plus","minus" ]
+      required:
+        - fileId
+        - opType

@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
@@ -44,6 +45,8 @@ var (
 	forgetPwdEmailCachePrefix  = "forgetpwdemail:"
 	forgetPwdVerifyCachePrefix = "forgetpwdverify:"
 
+	spmKeyPrefix = "spm:"
+
 	CallBackUrlResetPassword = "/login/reset-password"
 	CallBackUrlMFA           = "/login/verify-factor"
 	CallBackUrlCaptcha       = "/captcha"
@@ -62,6 +65,7 @@ type Options struct {
 	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // #  lock time while login upper to max fail times
 	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // # state token ttl
 	StateTokenSecret  string        `json:"stateTokenSecret"`  // # state token secret
+	SpmTTL            time.Duration `json:"spmTTL"`            // # spm ttl
 	JWT               struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
@@ -90,6 +94,7 @@ func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 		CaptchaTimes:      3,
 		LoginFailTimes:    10,
 		LoginFailLockTime: time.Hour * 24,
+		SpmTTL:            time.Second * 5,
 	}
 	s.Cnf = cnf
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
@@ -171,6 +176,35 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 
 	_ = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, pwd.UserID)
+}
+
+func (s *AuthService) RefreshToken(ctx *gin.Context, req *oas.RefreshTokenRequest) (*oas.LoginResponse, error) {
+	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
+		return []byte(s.Options.JWT.SigningKey), nil
+	})
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+
+	subject := token.Claims.(*jwt.RegisteredClaims).Subject
+	uid, err := strconv.Atoi(subject)
+	if err != nil {
+		return nil, err
+	}
+
+	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	if err != nil {
+		return nil, err
+	}
+	return &oas.LoginResponse{
+		AccessToken: tstr,
+		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
+	}, nil
 }
 
 func (s *AuthService) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
@@ -315,9 +349,10 @@ func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse,
 		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
 		User: &oas.User{
-			ID:          usr.ID,
-			DisplayName: usr.DisplayName,
-			Domains:     domains,
+			ID:           usr.ID,
+			DisplayName:  usr.DisplayName,
+			AvatarFileId: usr.AvatarFileID,
+			Domains:      domains,
 		},
 	}, nil
 }
@@ -448,10 +483,8 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if err != nil {
 		return nil, err
 	}
-	//
-	tidStr := ctx.GetHeader("X-Tenant-Id")
-	tid, err := strconv.Atoi(tidStr)
-	if err != nil {
+	var tid int
+	if tid, err = s.tryGetTenantID(ctx); err != nil {
 		return nil, err
 	}
 	uorg, err := s.DB.Org.Query().Where(org.ID(tid)).Only(ctx)
@@ -683,5 +716,104 @@ func (s *AuthService) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVer
 	return &oas.ForgetPwdBeginResponse{
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
+	}, nil
+}
+
+func (s *AuthService) tryGetTenantID(c *gin.Context) (tid int, err error) {
+	if str := c.GetHeader("X-Tenant-ID"); str != "" {
+		if tid, err = strconv.Atoi(str); err != nil {
+			return 0, err
+		}
+	}
+	return
+}
+
+// verifyTenantID 验证登录用户是否加入tid
+func (s *AuthService) verifyTenantID(c *gin.Context, tid int) error {
+	uid, err := identity.UserIDFromContext(c)
+	if err != nil {
+		return err
+	}
+	has, err := s.DB.OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(tid)).Exist(c)
+	if !has {
+		return fmt.Errorf("invaild tenantID")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// CreateSpm 创建spm key
+func (s *AuthService) CreateSpm(ctx *gin.Context) (string, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return "", err
+	}
+	tid, err := s.tryGetTenantID(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.verifyTenantID(ctx, tid)
+	if err != nil {
+		return "", err
+	}
+
+	spm := fmt.Sprintf("%d-%d-%d", tid, uid, time.Now().Unix())
+	key := resource.SHA256(spm)
+	err = s.Cache.Set(ctx, spmKeyPrefix+key, uid, cache.WithTTL(s.Options.SpmTTL))
+	if err != nil {
+		return "", err
+	}
+	return key, nil
+}
+
+// GetSpmAuth 根据spm 获取登录信息
+func (s *AuthService) GetSpmAuth(c *gin.Context, r *oas.GetSpmAuthRequest) (*oas.LoginResponse, error) {
+	var uid int
+	err := s.Cache.Get(c, spmKeyPrefix+r.Spm, &uid)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Del(c, spmKeyPrefix+r.Spm)
+	if err != nil {
+		return nil, err
+	}
+	if uid == 0 {
+		return nil, fmt.Errorf("invaild spm")
+	}
+	return s.loginToken(c, uid)
+}
+
+// Token oauth获取accessToken
+func (s *AuthService) Token(c *gin.Context, r *oas.TokenRequest) (*oas.TokenResponse, error) {
+	oc, err := s.DB.OauthClient.Query().Where(
+		oauthclient.GrantTypesEQ(oauthclient.GrantTypes(r.Body.GrantType)),
+		oauthclient.ClientID(r.Body.ClientID),
+		oauthclient.ClientSecret(r.Body.ClientSecret),
+		oauthclient.StatusEQ(typex.SimpleStatusActive),
+	).Only(c)
+	if err != nil {
+		return nil, fmt.Errorf("the clientID or clientSecret is incorrect or the status is not active")
+	}
+
+	tid, tstr, err := createToken(strconv.Itoa(oc.UserID), s.Options, false)
+	if err != nil {
+		return nil, err
+	}
+	err = s.Cache.Set(c, tid, oc.UserID, cache.WithTTL(s.Options.JWT.TokenTTL))
+	if err != nil {
+		return nil, err
+	}
+	// 更新认证时间
+	err = s.DB.OauthClient.Update().Where(oauthclient.ID(oc.ID)).
+		SetLastAuthAt(time.Now()).SetUpdatedBy(oc.UpdatedBy).Exec(c)
+	if err != nil {
+		return nil, err
+	}
+	return &oas.TokenResponse{
+		AccessToken: tstr,
+		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
 	}, nil
 }

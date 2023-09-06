@@ -82,6 +82,26 @@ func (fsu *FileSourceUpdate) SetKind(f filesource.Kind) *FileSourceUpdate {
 	return fsu
 }
 
+// SetComments sets the "comments" field.
+func (fsu *FileSourceUpdate) SetComments(s string) *FileSourceUpdate {
+	fsu.mutation.SetComments(s)
+	return fsu
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableComments(s *string) *FileSourceUpdate {
+	if s != nil {
+		fsu.SetComments(*s)
+	}
+	return fsu
+}
+
+// ClearComments clears the value of the "comments" field.
+func (fsu *FileSourceUpdate) ClearComments() *FileSourceUpdate {
+	fsu.mutation.ClearComments()
+	return fsu
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (fsu *FileSourceUpdate) SetEndpoint(s string) *FileSourceUpdate {
 	fsu.mutation.SetEndpoint(s)
@@ -260,6 +280,12 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fsu.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 	}
+	if value, ok := fsu.mutation.Comments(); ok {
+		_spec.SetField(filesource.FieldComments, field.TypeString, value)
+	}
+	if fsu.mutation.CommentsCleared() {
+		_spec.ClearField(filesource.FieldComments, field.TypeString)
+	}
 	if value, ok := fsu.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 	}
@@ -393,6 +419,26 @@ func (fsuo *FileSourceUpdateOne) ClearUpdatedAt() *FileSourceUpdateOne {
 // SetKind sets the "kind" field.
 func (fsuo *FileSourceUpdateOne) SetKind(f filesource.Kind) *FileSourceUpdateOne {
 	fsuo.mutation.SetKind(f)
+	return fsuo
+}
+
+// SetComments sets the "comments" field.
+func (fsuo *FileSourceUpdateOne) SetComments(s string) *FileSourceUpdateOne {
+	fsuo.mutation.SetComments(s)
+	return fsuo
+}
+
+// SetNillableComments sets the "comments" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableComments(s *string) *FileSourceUpdateOne {
+	if s != nil {
+		fsuo.SetComments(*s)
+	}
+	return fsuo
+}
+
+// ClearComments clears the value of the "comments" field.
+func (fsuo *FileSourceUpdateOne) ClearComments() *FileSourceUpdateOne {
+	fsuo.mutation.ClearComments()
 	return fsuo
 }
 
@@ -603,6 +649,12 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	}
 	if value, ok := fsuo.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
+	}
+	if value, ok := fsuo.mutation.Comments(); ok {
+		_spec.SetField(filesource.FieldComments, field.TypeString, value)
+	}
+	if fsuo.mutation.CommentsCleared() {
+		_spec.ClearField(filesource.FieldComments, field.TypeString)
 	}
 	if value, ok := fsuo.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)

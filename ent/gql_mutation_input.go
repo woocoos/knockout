@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -29,7 +30,7 @@ type CreateAppInput struct {
 	Scopes               *string
 	TokenValidity        *int32
 	RefreshTokenValidity *int32
-	Logo                 *string
+	LogoFileID           *int
 	Comments             *string
 	Status               *typex.SimpleStatus
 	MenuIDs              []int
@@ -62,8 +63,8 @@ func (i *CreateAppInput) Mutate(m *AppMutation) {
 	if v := i.RefreshTokenValidity; v != nil {
 		m.SetRefreshTokenValidity(*v)
 	}
-	if v := i.Logo; v != nil {
-		m.SetLogo(*v)
+	if v := i.LogoFileID; v != nil {
+		m.SetLogoFileID(*v)
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -110,8 +111,8 @@ type UpdateAppInput struct {
 	TokenValidity             *int32
 	ClearRefreshTokenValidity bool
 	RefreshTokenValidity      *int32
-	ClearLogo                 bool
-	Logo                      *string
+	ClearLogoFileID           bool
+	LogoFileID                *int
 	ClearComments             bool
 	Comments                  *string
 	ClearStatus               bool
@@ -177,11 +178,11 @@ func (i *UpdateAppInput) Mutate(m *AppMutation) {
 	if v := i.RefreshTokenValidity; v != nil {
 		m.SetRefreshTokenValidity(*v)
 	}
-	if i.ClearLogo {
-		m.ClearLogo()
+	if i.ClearLogoFileID {
+		m.ClearLogoFileID()
 	}
-	if v := i.Logo; v != nil {
-		m.SetLogo(*v)
+	if v := i.LogoFileID; v != nil {
+		m.SetLogoFileID(*v)
 	}
 	if i.ClearComments {
 		m.ClearComments()
@@ -669,6 +670,7 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 // CreateFileSourceInput represents a mutation input for creating filesources.
 type CreateFileSourceInput struct {
 	Kind     filesource.Kind
+	Comments *string
 	Endpoint *string
 	Region   *string
 	Bucket   *string
@@ -678,6 +680,9 @@ type CreateFileSourceInput struct {
 // Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
 func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
 	m.SetKind(i.Kind)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
 	if v := i.Endpoint; v != nil {
 		m.SetEndpoint(*v)
 	}
@@ -701,6 +706,8 @@ func (c *FileSourceCreate) SetInput(i CreateFileSourceInput) *FileSourceCreate {
 // UpdateFileSourceInput represents a mutation input for updating filesources.
 type UpdateFileSourceInput struct {
 	Kind          *filesource.Kind
+	ClearComments bool
+	Comments      *string
 	ClearEndpoint bool
 	Endpoint      *string
 	ClearRegion   bool
@@ -716,6 +723,12 @@ type UpdateFileSourceInput struct {
 func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
 	}
 	if i.ClearEndpoint {
 		m.ClearEndpoint()
@@ -754,6 +767,58 @@ func (c *FileSourceUpdate) SetInput(i UpdateFileSourceInput) *FileSourceUpdate {
 
 // SetInput applies the change-set in the UpdateFileSourceInput on the FileSourceUpdateOne builder.
 func (c *FileSourceUpdateOne) SetInput(i UpdateFileSourceInput) *FileSourceUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateOauthClientInput represents a mutation input for creating oauthclients.
+type CreateOauthClientInput struct {
+	Name       string
+	GrantTypes oauthclient.GrantTypes
+	UserID     int
+}
+
+// Mutate applies the CreateOauthClientInput on the OauthClientMutation builder.
+func (i *CreateOauthClientInput) Mutate(m *OauthClientMutation) {
+	m.SetName(i.Name)
+	m.SetGrantTypes(i.GrantTypes)
+	m.SetUserID(i.UserID)
+}
+
+// SetInput applies the change-set in the CreateOauthClientInput on the OauthClientCreate builder.
+func (c *OauthClientCreate) SetInput(i CreateOauthClientInput) *OauthClientCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateOauthClientInput represents a mutation input for updating oauthclients.
+type UpdateOauthClientInput struct {
+	Name       *string
+	GrantTypes *oauthclient.GrantTypes
+	UserID     *int
+}
+
+// Mutate applies the UpdateOauthClientInput on the OauthClientMutation builder.
+func (i *UpdateOauthClientInput) Mutate(m *OauthClientMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.GrantTypes; v != nil {
+		m.SetGrantTypes(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateOauthClientInput on the OauthClientUpdate builder.
+func (c *OauthClientUpdate) SetInput(i UpdateOauthClientInput) *OauthClientUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateOauthClientInput on the OauthClientUpdateOne builder.
+func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -1278,10 +1343,12 @@ type CreateUserInput struct {
 	Mobile         *string
 	Status         *typex.SimpleStatus
 	Comments       *string
+	AvatarFileID   *int
 	IdentityIDs    []int
 	LoginProfileID *int
 	PasswordIDs    []int
 	DeviceIDs      []int
+	OauthClientIDs []int
 }
 
 // Mutate applies the CreateUserInput on the UserMutation builder.
@@ -1300,6 +1367,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
+	if v := i.AvatarFileID; v != nil {
+		m.SetAvatarFileID(*v)
+	}
 	if v := i.IdentityIDs; len(v) > 0 {
 		m.AddIdentityIDs(v...)
 	}
@@ -1312,6 +1382,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.DeviceIDs; len(v) > 0 {
 		m.AddDeviceIDs(v...)
 	}
+	if v := i.OauthClientIDs; len(v) > 0 {
+		m.AddOauthClientIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateUserInput on the UserCreate builder.
@@ -1322,14 +1395,16 @@ func (c *UserCreate) SetInput(i CreateUserInput) *UserCreate {
 
 // UpdateUserInput represents a mutation input for updating users.
 type UpdateUserInput struct {
-	PrincipalName *string
-	DisplayName   *string
-	ClearEmail    bool
-	Email         *string
-	ClearMobile   bool
-	Mobile        *string
-	ClearComments bool
-	Comments      *string
+	PrincipalName     *string
+	DisplayName       *string
+	ClearEmail        bool
+	Email             *string
+	ClearMobile       bool
+	Mobile            *string
+	ClearComments     bool
+	Comments          *string
+	ClearAvatarFileID bool
+	AvatarFileID      *int
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -1357,6 +1432,12 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if i.ClearAvatarFileID {
+		m.ClearAvatarFileID()
+	}
+	if v := i.AvatarFileID; v != nil {
+		m.SetAvatarFileID(*v)
 	}
 }
 

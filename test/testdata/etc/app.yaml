@@ -31,6 +31,8 @@ web:
             - errorHandle:
             - jwt:
                 tokenStoreKey: redis
+                exclude:
+                  - "/spm/auth"
                 <<: *jwt
 snowflake:
   # 机器id
@@ -44,5 +46,5 @@ snowflake:
 
 files:
   local:
-    bucket: "tmp"
+    baseDir: "tmp"
     endpoint: "http://localhost:9000"

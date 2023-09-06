@@ -25,7 +25,7 @@ var (
 		{Name: "scopes", Type: field.TypeString, Nullable: true, Size: 500},
 		{Name: "token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
-		{Name: "logo", Type: field.TypeString, Nullable: true},
+		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
 		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
@@ -45,7 +45,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc", "function"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"restful", "graphql", "rpc", "function", "route"}},
 		{Name: "method", Type: field.TypeEnum, Enums: []string{"read", "write", "list"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -237,6 +237,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "ref_count", Type: field.TypeInt, Nullable: true},
 		{Name: "path", Type: field.TypeString},
 		{Name: "size", Type: field.TypeInt, Nullable: true},
 		{Name: "mine_type", Type: field.TypeString, Nullable: true, Size: 100},
@@ -251,7 +252,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "file_file_source_files",
-				Columns:    []*schema.Column{FileColumns[11]},
+				Columns:    []*schema.Column{FileColumns[12]},
 				RefColumns: []*schema.Column{FileSourceColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -260,7 +261,7 @@ var (
 			{
 				Name:    "file_tenant_id_source_id_path",
 				Unique:  true,
-				Columns: []*schema.Column{FileColumns[6], FileColumns[11], FileColumns[7]},
+				Columns: []*schema.Column{FileColumns[6], FileColumns[12], FileColumns[8]},
 			},
 		},
 	}
@@ -272,6 +273,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "alioss"}},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "endpoint", Type: field.TypeString, Nullable: true},
 		{Name: "region", Type: field.TypeString, Nullable: true, Size: 100},
 		{Name: "bucket", Type: field.TypeString, Nullable: true, Size: 100},
@@ -285,7 +287,36 @@ var (
 			{
 				Name:    "filesource_kind_endpoint_region_bucket",
 				Unique:  true,
-				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[6], FileSourceColumns[7], FileSourceColumns[8]},
+				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[8], FileSourceColumns[9]},
+			},
+		},
+	}
+	// OauthClientColumns holds the columns for the "oauth_client" table.
+	OauthClientColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "name", Type: field.TypeString, Size: 100},
+		{Name: "client_id", Type: field.TypeString, Unique: true, Size: 40},
+		{Name: "client_secret", Type: field.TypeString, Size: 40},
+		{Name: "grant_types", Type: field.TypeEnum, Enums: []string{"client_credentials"}},
+		{Name: "last_auth_at", Type: field.TypeTime, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// OauthClientTable holds the schema information for the "oauth_client" table.
+	OauthClientTable = &schema.Table{
+		Name:       "oauth_client",
+		Columns:    OauthClientColumns,
+		PrimaryKey: []*schema.Column{OauthClientColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "oauth_client_user_oauth_clients",
+				Columns:    []*schema.Column{OauthClientColumns[11]},
+				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -584,6 +615,7 @@ var (
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{
@@ -719,6 +751,7 @@ var (
 		AppRolePolicyTable,
 		FileTable,
 		FileSourceTable,
+		OauthClientTable,
 		OrgTable,
 		OrgAppTable,
 		OrgPolicyTable,
@@ -770,6 +803,10 @@ func init() {
 	}
 	FileSourceTable.Annotation = &entsql.Annotation{
 		Table: "file_source",
+	}
+	OauthClientTable.ForeignKeys[0].RefTable = UserTable
+	OauthClientTable.Annotation = &entsql.Annotation{
+		Table: "oauth_client",
 	}
 	OrgTable.ForeignKeys[0].RefTable = OrgTable
 	OrgTable.ForeignKeys[1].RefTable = UserTable

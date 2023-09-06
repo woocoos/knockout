@@ -27,11 +27,13 @@ type FileSource struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 文件来源
 	Kind filesource.Kind `json:"kind,omitempty"`
+	// 备注
+	Comments string `json:"comments,omitempty"`
 	// 对外服务的访问域名
 	Endpoint string `json:"endpoint,omitempty"`
 	// 地域，数据存储的物理位置。本地存储为：localhost
 	Region string `json:"region,omitempty"`
-	// 文件存储空间。本地存储为：assets
+	// 文件存储空间。本地存储为：local
 	Bucket string `json:"bucket,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileSourceQuery when eager-loading is set.
@@ -68,7 +70,7 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy:
 			values[i] = new(sql.NullInt64)
-		case filesource.FieldKind, filesource.FieldEndpoint, filesource.FieldRegion, filesource.FieldBucket:
+		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldRegion, filesource.FieldBucket:
 			values[i] = new(sql.NullString)
 		case filesource.FieldCreatedAt, filesource.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -122,6 +124,12 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
 			} else if value.Valid {
 				fs.Kind = filesource.Kind(value.String)
+			}
+		case filesource.FieldComments:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field comments", values[i])
+			} else if value.Valid {
+				fs.Comments = value.String
 			}
 		case filesource.FieldEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -196,6 +204,9 @@ func (fs *FileSource) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("kind=")
 	builder.WriteString(fmt.Sprintf("%v", fs.Kind))
+	builder.WriteString(", ")
+	builder.WriteString("comments=")
+	builder.WriteString(fs.Comments)
 	builder.WriteString(", ")
 	builder.WriteString("endpoint=")
 	builder.WriteString(fs.Endpoint)

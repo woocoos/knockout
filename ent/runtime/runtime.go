@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -222,11 +223,11 @@ func init() {
 	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
 	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
 	// fileDescMineType is the schema descriptor for mine_type field.
-	fileDescMineType := fileFields[5].Descriptor()
+	fileDescMineType := fileFields[6].Descriptor()
 	// file.MineTypeValidator is a validator for the "mine_type" field. It is called by the builders before save.
 	file.MineTypeValidator = fileDescMineType.Validators[0].(func(string) error)
 	// fileDescMd5 is the schema descriptor for md5 field.
-	fileDescMd5 := fileFields[6].Descriptor()
+	fileDescMd5 := fileFields[7].Descriptor()
 	// file.Md5Validator is a validator for the "md5" field. It is called by the builders before save.
 	file.Md5Validator = fileDescMd5.Validators[0].(func(string) error)
 	// fileDescID is the schema descriptor for id field.
@@ -245,13 +246,42 @@ func init() {
 	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
 	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[2].Descriptor()
+	filesourceDescRegion := filesourceFields[3].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[3].Descriptor()
+	filesourceDescBucket := filesourceFields[4].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
+	oauthclientMixin := schema.OauthClient{}.Mixin()
+	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
+	oauthclient.Hooks[0] = oauthclientMixinHooks1[0]
+	oauthclientMixinFields0 := oauthclientMixin[0].Fields()
+	_ = oauthclientMixinFields0
+	oauthclientMixinFields1 := oauthclientMixin[1].Fields()
+	_ = oauthclientMixinFields1
+	oauthclientFields := schema.OauthClient{}.Fields()
+	_ = oauthclientFields
+	// oauthclientDescCreatedAt is the schema descriptor for created_at field.
+	oauthclientDescCreatedAt := oauthclientMixinFields1[1].Descriptor()
+	// oauthclient.DefaultCreatedAt holds the default value on creation for the created_at field.
+	oauthclient.DefaultCreatedAt = oauthclientDescCreatedAt.Default.(func() time.Time)
+	// oauthclientDescName is the schema descriptor for name field.
+	oauthclientDescName := oauthclientFields[0].Descriptor()
+	// oauthclient.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	oauthclient.NameValidator = oauthclientDescName.Validators[0].(func(string) error)
+	// oauthclientDescClientID is the schema descriptor for client_id field.
+	oauthclientDescClientID := oauthclientFields[1].Descriptor()
+	// oauthclient.ClientIDValidator is a validator for the "client_id" field. It is called by the builders before save.
+	oauthclient.ClientIDValidator = oauthclientDescClientID.Validators[0].(func(string) error)
+	// oauthclientDescClientSecret is the schema descriptor for client_secret field.
+	oauthclientDescClientSecret := oauthclientFields[2].Descriptor()
+	// oauthclient.ClientSecretValidator is a validator for the "client_secret" field. It is called by the builders before save.
+	oauthclient.ClientSecretValidator = oauthclientDescClientSecret.Validators[0].(func(string) error)
+	// oauthclientDescID is the schema descriptor for id field.
+	oauthclientDescID := oauthclientMixinFields0[0].Descriptor()
+	// oauthclient.DefaultID holds the default value on creation for the id field.
+	oauthclient.DefaultID = oauthclientDescID.Default.(func() int)
 	orgMixin := schema.Org{}.Mixin()
 	orgMixinHooks1 := orgMixin[1].Hooks()
 	orgMixinHooks2 := orgMixin[2].Hooks()

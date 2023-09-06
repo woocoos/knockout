@@ -47,6 +47,8 @@ type User struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
+	// 头像,存储路规则：/{appcode}/{tid}/xxx
+	AvatarFileID int `json:"avatar_file_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -67,20 +69,23 @@ type UserEdges struct {
 	Orgs []*Org `json:"orgs,omitempty"`
 	// 用户权限
 	Permissions []*Permission `json:"permissions,omitempty"`
+	// 用户AccessKey
+	OauthClients []*OauthClient `json:"oauth_clients,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [8]bool
 	// totalCount holds the count of the edges above.
-	totalCount [4]map[string]int
+	totalCount [5]map[string]int
 
-	namedIdentities  map[string][]*UserIdentity
-	namedPasswords   map[string][]*UserPassword
-	namedDevices     map[string][]*UserDevice
-	namedOrgs        map[string][]*Org
-	namedPermissions map[string][]*Permission
-	namedOrgUser     map[string][]*OrgUser
+	namedIdentities   map[string][]*UserIdentity
+	namedPasswords    map[string][]*UserPassword
+	namedDevices      map[string][]*UserDevice
+	namedOrgs         map[string][]*Org
+	namedPermissions  map[string][]*Permission
+	namedOauthClients map[string][]*OauthClient
+	namedOrgUser      map[string][]*OrgUser
 }
 
 // IdentitiesOrErr returns the Identities value or an error if the edge
@@ -141,10 +146,19 @@ func (e UserEdges) PermissionsOrErr() ([]*Permission, error) {
 	return nil, &NotLoadedError{edge: "permissions"}
 }
 
+// OauthClientsOrErr returns the OauthClients value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) OauthClientsOrErr() ([]*OauthClient, error) {
+	if e.loadedTypes[6] {
+		return e.OauthClients, nil
+	}
+	return nil, &NotLoadedError{edge: "oauth_clients"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -155,7 +169,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy:
+		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy, user.FieldAvatarFileID:
 			values[i] = new(sql.NullInt64)
 		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldEmail, user.FieldMobile, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments:
 			values[i] = new(sql.NullString)
@@ -267,6 +281,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Comments = value.String
 			}
+		case user.FieldAvatarFileID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field avatar_file_id", values[i])
+			} else if value.Valid {
+				u.AvatarFileID = int(value.Int64)
+			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -308,6 +328,11 @@ func (u *User) QueryOrgs() *OrgQuery {
 // QueryPermissions queries the "permissions" edge of the User entity.
 func (u *User) QueryPermissions() *PermissionQuery {
 	return NewUserClient(u.config).QueryPermissions(u)
+}
+
+// QueryOauthClients queries the "oauth_clients" edge of the User entity.
+func (u *User) QueryOauthClients() *OauthClientQuery {
+	return NewUserClient(u.config).QueryOauthClients(u)
 }
 
 // QueryOrgUser queries the "org_user" edge of the User entity.
@@ -381,6 +406,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
 	builder.WriteString(u.Comments)
+	builder.WriteString(", ")
+	builder.WriteString("avatar_file_id=")
+	builder.WriteString(fmt.Sprintf("%v", u.AvatarFileID))
 	builder.WriteByte(')')
 	return builder.String()
 }
@@ -502,6 +530,30 @@ func (u *User) appendNamedPermissions(name string, edges ...*Permission) {
 		u.Edges.namedPermissions[name] = []*Permission{}
 	} else {
 		u.Edges.namedPermissions[name] = append(u.Edges.namedPermissions[name], edges...)
+	}
+}
+
+// NamedOauthClients returns the OauthClients named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedOauthClients(name string) ([]*OauthClient, error) {
+	if u.Edges.namedOauthClients == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedOauthClients[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedOauthClients(name string, edges ...*OauthClient) {
+	if u.Edges.namedOauthClients == nil {
+		u.Edges.namedOauthClients = make(map[string][]*OauthClient)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedOauthClients[name] = []*OauthClient{}
+	} else {
+		u.Edges.namedOauthClients[name] = append(u.Edges.namedOauthClients[name], edges...)
 	}
 }
 

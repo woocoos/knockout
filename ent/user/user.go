@@ -48,6 +48,8 @@ const (
 	FieldStatus = "status"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
+	// FieldAvatarFileID holds the string denoting the avatar_file_id field in the database.
+	FieldAvatarFileID = "avatar_file_id"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeLoginProfile holds the string denoting the login_profile edge name in mutations.
@@ -60,6 +62,8 @@ const (
 	EdgeOrgs = "orgs"
 	// EdgePermissions holds the string denoting the permissions edge name in mutations.
 	EdgePermissions = "permissions"
+	// EdgeOauthClients holds the string denoting the oauth_clients edge name in mutations.
+	EdgeOauthClients = "oauth_clients"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// Table holds the table name of the user in the database.
@@ -104,6 +108,13 @@ const (
 	PermissionsInverseTable = "permission"
 	// PermissionsColumn is the table column denoting the permissions relation/edge.
 	PermissionsColumn = "user_id"
+	// OauthClientsTable is the table that holds the oauth_clients relation/edge.
+	OauthClientsTable = "oauth_client"
+	// OauthClientsInverseTable is the table name for the OauthClient entity.
+	// It exists in this package in order to avoid circular dependency with the "oauthclient" package.
+	OauthClientsInverseTable = "oauth_client"
+	// OauthClientsColumn is the table column denoting the oauth_clients relation/edge.
+	OauthClientsColumn = "user_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -130,6 +141,7 @@ var Columns = []string{
 	FieldRegisterIP,
 	FieldStatus,
 	FieldComments,
+	FieldAvatarFileID,
 }
 
 var (
@@ -303,6 +315,11 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
+// ByAvatarFileID orders the results by the avatar_file_id field.
+func ByAvatarFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatarFileID, opts...).ToFunc()
+}
+
 // ByIdentitiesCount orders the results by identities count.
 func ByIdentitiesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -380,6 +397,20 @@ func ByPermissions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByOauthClientsCount orders the results by oauth_clients count.
+func ByOauthClientsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOauthClientsStep(), opts...)
+	}
+}
+
+// ByOauthClients orders the results by oauth_clients terms.
+func ByOauthClients(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOauthClientsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -433,6 +464,13 @@ func newPermissionsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PermissionsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, PermissionsTable, PermissionsColumn),
+	)
+}
+func newOauthClientsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OauthClientsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, OauthClientsTable, OauthClientsColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

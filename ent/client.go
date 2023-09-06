@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -60,6 +61,8 @@ type Client struct {
 	File *FileClient
 	// FileSource is the client for interacting with the FileSource builders.
 	FileSource *FileSourceClient
+	// OauthClient is the client for interacting with the OauthClient builders.
+	OauthClient *OauthClientClient
 	// Org is the client for interacting with the Org builders.
 	Org *OrgClient
 	// OrgApp is the client for interacting with the OrgApp builders.
@@ -108,6 +111,7 @@ func (c *Client) init() {
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
 	c.File = NewFileClient(c.config)
 	c.FileSource = NewFileSourceClient(c.config)
+	c.OauthClient = NewOauthClientClient(c.config)
 	c.Org = NewOrgClient(c.config)
 	c.OrgApp = NewOrgAppClient(c.config)
 	c.OrgPolicy = NewOrgPolicyClient(c.config)
@@ -211,6 +215,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppRolePolicy:    NewAppRolePolicyClient(cfg),
 		File:             NewFileClient(cfg),
 		FileSource:       NewFileSourceClient(cfg),
+		OauthClient:      NewOauthClientClient(cfg),
 		Org:              NewOrgClient(cfg),
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
@@ -251,6 +256,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppRolePolicy:    NewAppRolePolicyClient(cfg),
 		File:             NewFileClient(cfg),
 		FileSource:       NewFileSourceClient(cfg),
+		OauthClient:      NewOauthClientClient(cfg),
 		Org:              NewOrgClient(cfg),
 		OrgApp:           NewOrgAppClient(cfg),
 		OrgPolicy:        NewOrgPolicyClient(cfg),
@@ -293,9 +299,9 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.File, c.FileSource, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
+		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
+		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -306,9 +312,9 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.File, c.FileSource, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
+		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
+		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -335,6 +341,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.File.mutate(ctx, m)
 	case *FileSourceMutation:
 		return c.FileSource.mutate(ctx, m)
+	case *OauthClientMutation:
+		return c.OauthClient.mutate(ctx, m)
 	case *OrgMutation:
 		return c.Org.mutate(ctx, m)
 	case *OrgAppMutation:
@@ -1784,6 +1792,141 @@ func (c *FileSourceClient) mutate(ctx context.Context, m *FileSourceMutation) (V
 		return (&FileSourceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown FileSource mutation op: %q", m.Op())
+	}
+}
+
+// OauthClientClient is a client for the OauthClient schema.
+type OauthClientClient struct {
+	config
+}
+
+// NewOauthClientClient returns a client for the OauthClient from the given config.
+func NewOauthClientClient(c config) *OauthClientClient {
+	return &OauthClientClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `oauthclient.Hooks(f(g(h())))`.
+func (c *OauthClientClient) Use(hooks ...Hook) {
+	c.hooks.OauthClient = append(c.hooks.OauthClient, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `oauthclient.Intercept(f(g(h())))`.
+func (c *OauthClientClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OauthClient = append(c.inters.OauthClient, interceptors...)
+}
+
+// Create returns a builder for creating a OauthClient entity.
+func (c *OauthClientClient) Create() *OauthClientCreate {
+	mutation := newOauthClientMutation(c.config, OpCreate)
+	return &OauthClientCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OauthClient entities.
+func (c *OauthClientClient) CreateBulk(builders ...*OauthClientCreate) *OauthClientCreateBulk {
+	return &OauthClientCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OauthClient.
+func (c *OauthClientClient) Update() *OauthClientUpdate {
+	mutation := newOauthClientMutation(c.config, OpUpdate)
+	return &OauthClientUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OauthClientClient) UpdateOne(oc *OauthClient) *OauthClientUpdateOne {
+	mutation := newOauthClientMutation(c.config, OpUpdateOne, withOauthClient(oc))
+	return &OauthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OauthClientClient) UpdateOneID(id int) *OauthClientUpdateOne {
+	mutation := newOauthClientMutation(c.config, OpUpdateOne, withOauthClientID(id))
+	return &OauthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OauthClient.
+func (c *OauthClientClient) Delete() *OauthClientDelete {
+	mutation := newOauthClientMutation(c.config, OpDelete)
+	return &OauthClientDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OauthClientClient) DeleteOne(oc *OauthClient) *OauthClientDeleteOne {
+	return c.DeleteOneID(oc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OauthClientClient) DeleteOneID(id int) *OauthClientDeleteOne {
+	builder := c.Delete().Where(oauthclient.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OauthClientDeleteOne{builder}
+}
+
+// Query returns a query builder for OauthClient.
+func (c *OauthClientClient) Query() *OauthClientQuery {
+	return &OauthClientQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOauthClient},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OauthClient entity by its id.
+func (c *OauthClientClient) Get(ctx context.Context, id int) (*OauthClient, error) {
+	return c.Query().Where(oauthclient.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OauthClientClient) GetX(ctx context.Context, id int) *OauthClient {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a OauthClient.
+func (c *OauthClientClient) QueryUser(oc *OauthClient) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(oauthclient.Table, oauthclient.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, oauthclient.UserTable, oauthclient.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(oc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OauthClientClient) Hooks() []Hook {
+	hooks := c.hooks.OauthClient
+	return append(hooks[:len(hooks):len(hooks)], oauthclient.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *OauthClientClient) Interceptors() []Interceptor {
+	return c.inters.OauthClient
+}
+
+func (c *OauthClientClient) mutate(ctx context.Context, m *OauthClientMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OauthClientCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OauthClientUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OauthClientUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OauthClientDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OauthClient mutation op: %q", m.Op())
 	}
 }
 
@@ -3274,6 +3417,22 @@ func (c *UserClient) QueryPermissions(u *User) *PermissionQuery {
 	return query
 }
 
+// QueryOauthClients queries the oauth_clients edge of a User.
+func (c *UserClient) QueryOauthClients(u *User) *OauthClientQuery {
+	query := (&OauthClientClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(oauthclient.Table, oauthclient.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.OauthClientsTable, user.OauthClientsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgUser queries the org_user edge of a User.
 func (c *UserClient) QueryOrgUser(u *User) *OrgUserQuery {
 	query := (&OrgUserClient{config: c.config}).Query()
@@ -3861,13 +4020,14 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 type (
 	hooks struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
-		FileSource, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission,
-		User, UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
+		UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
-		FileSource, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, Permission,
-		User, UserDevice, UserIdentity, UserLoginProfile,
+		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
 		UserPassword []ent.Interceptor
 	}
 )

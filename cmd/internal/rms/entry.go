@@ -8,6 +8,7 @@ import (
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/httpx"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
@@ -75,10 +76,25 @@ func (s *Server) BuildWebEngine() *web.Server {
 		identity.RegistryTenantIDMiddleware(),
 	)
 
+	// 初始化httpx
+	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
+	if err != nil {
+		log.Panic(err)
+	}
+	httpClient, err := cfg.Client(context.Background(), nil)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fileOptions := resource.FileOptions{}
+	err = s.Cnf.Sub("files").Unmarshal(&fileOptions)
+	if err != nil {
+		log.Panic(err)
+	}
 	gqlSrv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
 		Resolvers: &graphql.Resolver{
 			Client:   portalClient,
-			Resource: &resource.Service{Client: portalClient},
+			Resource: &resource.Service{Client: portalClient, HttpClient: httpClient, FileOptions: fileOptions},
 		},
 	}))
 	// gqlserver的中间件处理
