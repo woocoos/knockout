@@ -317,6 +317,7 @@ type ComplexityRoot struct {
 		RevokeOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		RevokeOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
+		SaveOrgUserPreference       func(childComplexity int, input model.OrgUserPreferenceInput) int
 		SendMFAToUserByEmail        func(childComplexity int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
@@ -442,6 +443,31 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	OrgUserPreference struct {
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		ID           func(childComplexity int) int
+		MenuFavorite func(childComplexity int) int
+		MenuRecent   func(childComplexity int) int
+		Org          func(childComplexity int) int
+		OrgID        func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+		User         func(childComplexity int) int
+		UserID       func(childComplexity int) int
+	}
+
+	OrgUserPreferenceConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	OrgUserPreferenceEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	PageInfo struct {
 		EndCursor       func(childComplexity int) int
 		HasNextPage     func(childComplexity int) int
@@ -505,6 +531,7 @@ type ComplexityRoot struct {
 		OrgRecycleUsers         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoleUsers            func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgUserPreference       func(childComplexity int) int
 		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -2295,6 +2322,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RevokeRoleUser(childComplexity, args["roleID"].(int), args["userID"].(int)), true
 
+	case "Mutation.saveOrgUserPreference":
+		if e.complexity.Mutation.SaveOrgUserPreference == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_saveOrgUserPreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SaveOrgUserPreference(childComplexity, args["input"].(model.OrgUserPreferenceInput)), true
+
 	case "Mutation.sendMFAToUserByEmail":
 		if e.complexity.Mutation.SendMFAToUserByEmail == nil {
 			break
@@ -3056,6 +3095,118 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgRoleEdge.Node(childComplexity), true
 
+	case "OrgUserPreference.createdAt":
+		if e.complexity.OrgUserPreference.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.CreatedAt(childComplexity), true
+
+	case "OrgUserPreference.createdBy":
+		if e.complexity.OrgUserPreference.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.CreatedBy(childComplexity), true
+
+	case "OrgUserPreference.id":
+		if e.complexity.OrgUserPreference.ID == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.ID(childComplexity), true
+
+	case "OrgUserPreference.menuFavorite":
+		if e.complexity.OrgUserPreference.MenuFavorite == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.MenuFavorite(childComplexity), true
+
+	case "OrgUserPreference.menuRecent":
+		if e.complexity.OrgUserPreference.MenuRecent == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.MenuRecent(childComplexity), true
+
+	case "OrgUserPreference.org":
+		if e.complexity.OrgUserPreference.Org == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.Org(childComplexity), true
+
+	case "OrgUserPreference.orgID":
+		if e.complexity.OrgUserPreference.OrgID == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.OrgID(childComplexity), true
+
+	case "OrgUserPreference.updatedAt":
+		if e.complexity.OrgUserPreference.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.UpdatedAt(childComplexity), true
+
+	case "OrgUserPreference.updatedBy":
+		if e.complexity.OrgUserPreference.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.UpdatedBy(childComplexity), true
+
+	case "OrgUserPreference.user":
+		if e.complexity.OrgUserPreference.User == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.User(childComplexity), true
+
+	case "OrgUserPreference.userID":
+		if e.complexity.OrgUserPreference.UserID == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.UserID(childComplexity), true
+
+	case "OrgUserPreferenceConnection.edges":
+		if e.complexity.OrgUserPreferenceConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreferenceConnection.Edges(childComplexity), true
+
+	case "OrgUserPreferenceConnection.pageInfo":
+		if e.complexity.OrgUserPreferenceConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreferenceConnection.PageInfo(childComplexity), true
+
+	case "OrgUserPreferenceConnection.totalCount":
+		if e.complexity.OrgUserPreferenceConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreferenceConnection.TotalCount(childComplexity), true
+
+	case "OrgUserPreferenceEdge.cursor":
+		if e.complexity.OrgUserPreferenceEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreferenceEdge.Cursor(childComplexity), true
+
+	case "OrgUserPreferenceEdge.node":
+		if e.complexity.OrgUserPreferenceEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreferenceEdge.Node(childComplexity), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -3464,6 +3615,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgRoles(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.orgUserPreference":
+		if e.complexity.Query.OrgUserPreference == nil {
+			break
+		}
+
+		return e.complexity.Query.OrgUserPreference(childComplexity), true
 
 	case "Query.organizations":
 		if e.complexity.Query.Organizations == nil {
@@ -4140,6 +4298,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateOrgPolicyInput,
 		ec.unmarshalInputCreateOrgRoleInput,
 		ec.unmarshalInputCreateOrgUserInput,
+		ec.unmarshalInputCreateOrgUserPreferenceInput,
 		ec.unmarshalInputCreatePermissionInput,
 		ec.unmarshalInputCreateUserIdentityInput,
 		ec.unmarshalInputCreateUserInput,
@@ -4161,6 +4320,9 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputOrgRoleUserWhereInput,
 		ec.unmarshalInputOrgRoleWhereInput,
 		ec.unmarshalInputOrgUserOrder,
+		ec.unmarshalInputOrgUserPreferenceInput,
+		ec.unmarshalInputOrgUserPreferenceOrder,
+		ec.unmarshalInputOrgUserPreferenceWhereInput,
 		ec.unmarshalInputOrgUserWhereInput,
 		ec.unmarshalInputOrgWhereInput,
 		ec.unmarshalInputPermissionOrder,
@@ -4178,6 +4340,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateOrgPolicyInput,
 		ec.unmarshalInputUpdateOrgRoleInput,
 		ec.unmarshalInputUpdateOrgUserInput,
+		ec.unmarshalInputUpdateOrgUserPreferenceInput,
 		ec.unmarshalInputUpdatePermissionInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
 		ec.unmarshalInputUpdateUserInput,
@@ -5755,6 +5918,16 @@ input CreateOrgUserInput {
   userID: ID!
 }
 """
+CreateOrgUserPreferenceInput is used for create OrgUserPreference object.
+Input was generated by ent.
+"""
+input CreateOrgUserPreferenceInput {
+  """用户收藏菜单"""
+  menuFavorite: [ID!]
+  """用户最近访问菜单"""
+  menuRecent: [ID!]
+}
+"""
 CreatePermissionInput is used for create Permission object.
 Input was generated by ent.
 """
@@ -6861,6 +7034,124 @@ input OrgUserOrder {
 enum OrgUserOrderField {
   createdAt
 }
+type OrgUserPreference implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """用户id"""
+  userID: ID!
+  """组织ID"""
+  orgID: ID!
+  """用户收藏菜单"""
+  menuFavorite: [ID!]
+  """用户最近访问菜单"""
+  menuRecent: [ID!]
+  user: User!
+  org: Org!
+}
+"""A connection to a list of items."""
+type OrgUserPreferenceConnection {
+  """A list of edges."""
+  edges: [OrgUserPreferenceEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type OrgUserPreferenceEdge {
+  """The item at the end of the edge."""
+  node: OrgUserPreference
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+"""Ordering options for OrgUserPreference connections"""
+input OrgUserPreferenceOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order OrgUserPreferences."""
+  field: OrgUserPreferenceOrderField!
+}
+"""Properties by which OrgUserPreference connections can be ordered."""
+enum OrgUserPreferenceOrderField {
+  createdAt
+}
+"""
+OrgUserPreferenceWhereInput is used for filtering OrgUserPreference objects.
+Input was generated by ent.
+"""
+input OrgUserPreferenceWhereInput {
+  not: OrgUserPreferenceWhereInput
+  and: [OrgUserPreferenceWhereInput!]
+  or: [OrgUserPreferenceWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """user_id field predicates"""
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  """org_id field predicates"""
+  orgID: ID
+  orgIDNEQ: ID
+  orgIDIn: [ID!]
+  orgIDNotIn: [ID!]
+  """user edge predicates"""
+  hasUser: Boolean
+  hasUserWith: [UserWhereInput!]
+  """org edge predicates"""
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
+}
 """
 OrgUserWhereInput is used for filtering OrgUser objects.
 Input was generated by ent.
@@ -7394,6 +7685,26 @@ type Query {
     """Filtering options for Apps returned from the connection."""
     where: AppWhereInput
   ): AppConnection!
+  """文件来源"""
+  fileSources(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for FileSources returned from the connection."""
+    orderBy: FileSourceOrder
+
+    """Filtering options for FileSources returned from the connection."""
+    where: FileSourceWhereInput
+  ): FileSourceConnection!
   organizations(
     """Returns the elements in the list that come after the specified cursor."""
     after: Cursor
@@ -7695,6 +8006,20 @@ input UpdateOrgUserInput {
   displayName: String
   orgID: ID
   userID: ID
+}
+"""
+UpdateOrgUserPreferenceInput is used for update OrgUserPreference object.
+Input was generated by ent.
+"""
+input UpdateOrgUserPreferenceInput {
+  """用户收藏菜单"""
+  menuFavorite: [ID!]
+  appendMenuFavorite: [ID!]
+  clearMenuFavorite: Boolean
+  """用户最近访问菜单"""
+  menuRecent: [ID!]
+  appendMenuRecent: [ID!]
+  clearMenuRecent: Boolean
 }
 """
 UpdatePermissionInput is used for update Permission object.
@@ -8775,6 +9100,13 @@ extend type AppPolicy {
 extend type Permission {
     """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
     isAllowRevoke:Boolean!
+}
+
+input OrgUserPreferenceInput {
+    """用户收藏菜单"""
+    menuFavorite: [ID!]
+    """用户最近访问菜单"""
+    menuRecent: [ID!]
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -8883,15 +9215,8 @@ extend type Permission {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
-    """文件来源"""
-    fileSources(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: FileSourceOrder
-        where: FileSourceWhereInput
-    ):FileSourceConnection!
+    """获取组织用户偏好"""
+    orgUserPreference: OrgUserPreference
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -9041,6 +9366,8 @@ extend type Permission {
     disableOauthClient(id: ID!): OauthClient!
     """删除OauthClient"""
     deleteOauthClient(id: ID!): Boolean!
+    """保存组织用户偏好"""
+    saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
 }
 `, BuiltIn: false},
 }

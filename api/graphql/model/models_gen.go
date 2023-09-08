@@ -62,6 +62,13 @@ type OrgUserOrder struct {
 	Field OrgUserOrderField `json:"field"`
 }
 
+type OrgUserPreferenceInput struct {
+	// 用户收藏菜单
+	MenuFavorite []int `json:"menuFavorite,omitempty"`
+	// 用户最近访问菜单
+	MenuRecent []int `json:"menuRecent,omitempty"`
+}
+
 // Properties by which AppRolePolicy connections can be ordered.
 type AppRolePolicyOrderField string
 

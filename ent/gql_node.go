@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -75,6 +76,9 @@ func (n *OrgPolicy) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *OrgRole) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *OrgUserPreference) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Permission) IsNode() {}
@@ -288,6 +292,18 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		query := c.OrgRole.Query().
 			Where(orgrole.ID(id))
 		query, err := query.CollectFields(ctx, "OrgRole")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case orguserpreference.Table:
+		query := c.OrgUserPreference.Query().
+			Where(orguserpreference.ID(id))
+		query, err := query.CollectFields(ctx, "OrgUserPreference")
 		if err != nil {
 			return nil, err
 		}
@@ -621,6 +637,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.OrgRole.Query().
 			Where(orgrole.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "OrgRole")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case orguserpreference.Table:
+		query := c.OrgUserPreference.Query().
+			Where(orguserpreference.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "OrgUserPreference")
 		if err != nil {
 			return nil, err
 		}

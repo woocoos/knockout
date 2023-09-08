@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/httpx"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
@@ -39,6 +41,16 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		portalClient = ent.NewClient(ent.Driver(pd))
 	}
 
+	// 初始化httpx
+	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
+	if err != nil {
+		log.Panic(err)
+	}
+	httpClient, err := cfg.Client(context.Background(), nil)
+	if err != nil {
+		log.Panic(err)
+	}
+
 	us := entpb.NewUserService(portalClient)
 	srv := grpcx.New(grpcx.WithConfiguration(cnf.Sub("grpc")), grpcx.WithGracefulStop())
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
@@ -52,8 +64,9 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		log.Panic(err)
 	}
 	s.service = &server.AuthService{
-		DB:    portalClient,
-		Cache: cache.GetCache("redis"),
+		DB:         portalClient,
+		HttpClient: httpClient,
+		Cache:      cache.GetCache("redis"),
 	}
 
 	if err := s.service.Apply(cnf); err != nil {

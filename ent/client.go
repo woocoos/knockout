@@ -30,6 +30,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -75,6 +76,8 @@ type Client struct {
 	OrgRoleUser *OrgRoleUserClient
 	// OrgUser is the client for interacting with the OrgUser builders.
 	OrgUser *OrgUserClient
+	// OrgUserPreference is the client for interacting with the OrgUserPreference builders.
+	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -118,6 +121,7 @@ func (c *Client) init() {
 	c.OrgRole = NewOrgRoleClient(c.config)
 	c.OrgRoleUser = NewOrgRoleUserClient(c.config)
 	c.OrgUser = NewOrgUserClient(c.config)
+	c.OrgUserPreference = NewOrgUserPreferenceClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
@@ -204,30 +208,31 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		File:             NewFileClient(cfg),
-		FileSource:       NewFileSourceClient(cfg),
-		OauthClient:      NewOauthClientClient(cfg),
-		Org:              NewOrgClient(cfg),
-		OrgApp:           NewOrgAppClient(cfg),
-		OrgPolicy:        NewOrgPolicyClient(cfg),
-		OrgRole:          NewOrgRoleClient(cfg),
-		OrgRoleUser:      NewOrgRoleUserClient(cfg),
-		OrgUser:          NewOrgUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		App:               NewAppClient(cfg),
+		AppAction:         NewAppActionClient(cfg),
+		AppMenu:           NewAppMenuClient(cfg),
+		AppPolicy:         NewAppPolicyClient(cfg),
+		AppRes:            NewAppResClient(cfg),
+		AppRole:           NewAppRoleClient(cfg),
+		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		File:              NewFileClient(cfg),
+		FileSource:        NewFileSourceClient(cfg),
+		OauthClient:       NewOauthClientClient(cfg),
+		Org:               NewOrgClient(cfg),
+		OrgApp:            NewOrgAppClient(cfg),
+		OrgPolicy:         NewOrgPolicyClient(cfg),
+		OrgRole:           NewOrgRoleClient(cfg),
+		OrgRoleUser:       NewOrgRoleUserClient(cfg),
+		OrgUser:           NewOrgUserClient(cfg),
+		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
+		Permission:        NewPermissionClient(cfg),
+		User:              NewUserClient(cfg),
+		UserDevice:        NewUserDeviceClient(cfg),
+		UserIdentity:      NewUserIdentityClient(cfg),
+		UserLoginProfile:  NewUserLoginProfileClient(cfg),
+		UserPassword:      NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -245,30 +250,31 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		File:             NewFileClient(cfg),
-		FileSource:       NewFileSourceClient(cfg),
-		OauthClient:      NewOauthClientClient(cfg),
-		Org:              NewOrgClient(cfg),
-		OrgApp:           NewOrgAppClient(cfg),
-		OrgPolicy:        NewOrgPolicyClient(cfg),
-		OrgRole:          NewOrgRoleClient(cfg),
-		OrgRoleUser:      NewOrgRoleUserClient(cfg),
-		OrgUser:          NewOrgUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		App:               NewAppClient(cfg),
+		AppAction:         NewAppActionClient(cfg),
+		AppMenu:           NewAppMenuClient(cfg),
+		AppPolicy:         NewAppPolicyClient(cfg),
+		AppRes:            NewAppResClient(cfg),
+		AppRole:           NewAppRoleClient(cfg),
+		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		File:              NewFileClient(cfg),
+		FileSource:        NewFileSourceClient(cfg),
+		OauthClient:       NewOauthClientClient(cfg),
+		Org:               NewOrgClient(cfg),
+		OrgApp:            NewOrgAppClient(cfg),
+		OrgPolicy:         NewOrgPolicyClient(cfg),
+		OrgRole:           NewOrgRoleClient(cfg),
+		OrgRoleUser:       NewOrgRoleUserClient(cfg),
+		OrgUser:           NewOrgUserClient(cfg),
+		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
+		Permission:        NewPermissionClient(cfg),
+		User:              NewUserClient(cfg),
+		UserDevice:        NewUserDeviceClient(cfg),
+		UserIdentity:      NewUserIdentityClient(cfg),
+		UserLoginProfile:  NewUserLoginProfileClient(cfg),
+		UserPassword:      NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -300,8 +306,9 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
 		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
-		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
-		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference,
+		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
+		c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -313,8 +320,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
 		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
-		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
-		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference,
+		c.Permission, c.User, c.UserDevice, c.UserIdentity, c.UserLoginProfile,
+		c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -355,6 +363,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgRoleUser.mutate(ctx, m)
 	case *OrgUserMutation:
 		return c.OrgUser.mutate(ctx, m)
+	case *OrgUserPreferenceMutation:
+		return c.OrgUserPreference.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
 	case *UserMutation:
@@ -3045,6 +3055,157 @@ func (c *OrgUserClient) mutate(ctx context.Context, m *OrgUserMutation) (Value, 
 	}
 }
 
+// OrgUserPreferenceClient is a client for the OrgUserPreference schema.
+type OrgUserPreferenceClient struct {
+	config
+}
+
+// NewOrgUserPreferenceClient returns a client for the OrgUserPreference from the given config.
+func NewOrgUserPreferenceClient(c config) *OrgUserPreferenceClient {
+	return &OrgUserPreferenceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `orguserpreference.Hooks(f(g(h())))`.
+func (c *OrgUserPreferenceClient) Use(hooks ...Hook) {
+	c.hooks.OrgUserPreference = append(c.hooks.OrgUserPreference, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `orguserpreference.Intercept(f(g(h())))`.
+func (c *OrgUserPreferenceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgUserPreference = append(c.inters.OrgUserPreference, interceptors...)
+}
+
+// Create returns a builder for creating a OrgUserPreference entity.
+func (c *OrgUserPreferenceClient) Create() *OrgUserPreferenceCreate {
+	mutation := newOrgUserPreferenceMutation(c.config, OpCreate)
+	return &OrgUserPreferenceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrgUserPreference entities.
+func (c *OrgUserPreferenceClient) CreateBulk(builders ...*OrgUserPreferenceCreate) *OrgUserPreferenceCreateBulk {
+	return &OrgUserPreferenceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Update() *OrgUserPreferenceUpdate {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdate)
+	return &OrgUserPreferenceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrgUserPreferenceClient) UpdateOne(oup *OrgUserPreference) *OrgUserPreferenceUpdateOne {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdateOne, withOrgUserPreference(oup))
+	return &OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrgUserPreferenceClient) UpdateOneID(id int) *OrgUserPreferenceUpdateOne {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdateOne, withOrgUserPreferenceID(id))
+	return &OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Delete() *OrgUserPreferenceDelete {
+	mutation := newOrgUserPreferenceMutation(c.config, OpDelete)
+	return &OrgUserPreferenceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrgUserPreferenceClient) DeleteOne(oup *OrgUserPreference) *OrgUserPreferenceDeleteOne {
+	return c.DeleteOneID(oup.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrgUserPreferenceClient) DeleteOneID(id int) *OrgUserPreferenceDeleteOne {
+	builder := c.Delete().Where(orguserpreference.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrgUserPreferenceDeleteOne{builder}
+}
+
+// Query returns a query builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Query() *OrgUserPreferenceQuery {
+	return &OrgUserPreferenceQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOrgUserPreference},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OrgUserPreference entity by its id.
+func (c *OrgUserPreferenceClient) Get(ctx context.Context, id int) (*OrgUserPreference, error) {
+	return c.Query().Where(orguserpreference.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrgUserPreferenceClient) GetX(ctx context.Context, id int) *OrgUserPreference {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a OrgUserPreference.
+func (c *OrgUserPreferenceClient) QueryUser(oup *OrgUserPreference) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oup.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguserpreference.Table, orguserpreference.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.UserTable, orguserpreference.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(oup.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrg queries the org edge of a OrgUserPreference.
+func (c *OrgUserPreferenceClient) QueryOrg(oup *OrgUserPreference) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oup.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguserpreference.Table, orguserpreference.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.OrgTable, orguserpreference.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(oup.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrgUserPreferenceClient) Hooks() []Hook {
+	hooks := c.hooks.OrgUserPreference
+	return append(hooks[:len(hooks):len(hooks)], orguserpreference.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *OrgUserPreferenceClient) Interceptors() []Interceptor {
+	return c.inters.OrgUserPreference
+}
+
+func (c *OrgUserPreferenceClient) mutate(ctx context.Context, m *OrgUserPreferenceMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrgUserPreferenceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrgUserPreferenceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrgUserPreferenceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OrgUserPreference mutation op: %q", m.Op())
+	}
+}
+
 // PermissionClient is a client for the Permission schema.
 type PermissionClient struct {
 	config
@@ -4021,13 +4182,13 @@ type (
 	hooks struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
 		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
-		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Hook
+		OrgUserPreference, Permission, User, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
 		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
-		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Interceptor
+		OrgUserPreference, Permission, User, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )

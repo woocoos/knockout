@@ -338,7 +338,7 @@ func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
 	return client.AppMenu.DeleteOneID(menuID).Exec(ctx)
 }
 
-// MoveAppMenu
+// MoveAppMenu 移动菜单
 func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action model.TreeAction) (err error) {
 	client := ent.FromContext(ctx)
 	tarOrg := client.AppMenu.GetX(ctx, tar)

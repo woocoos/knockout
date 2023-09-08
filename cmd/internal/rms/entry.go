@@ -86,15 +86,15 @@ func (s *Server) BuildWebEngine() *web.Server {
 		log.Panic(err)
 	}
 
-	fileOptions := resource.FileOptions{}
-	err = s.Cnf.Sub("files").Unmarshal(&fileOptions)
+	oasOptions := resource.OASOptions{}
+	err = s.Cnf.Sub("oas").Unmarshal(&oasOptions)
 	if err != nil {
 		log.Panic(err)
 	}
 	gqlSrv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
 		Resolvers: &graphql.Resolver{
 			Client:   portalClient,
-			Resource: &resource.Service{Client: portalClient, HttpClient: httpClient, FileOptions: fileOptions},
+			Resource: &resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions},
 		},
 	}))
 	// gqlserver的中间件处理

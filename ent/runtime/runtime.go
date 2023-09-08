@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -399,6 +400,17 @@ func init() {
 	orguserDescJoinedAt := orguserFields[2].Descriptor()
 	// orguser.DefaultJoinedAt holds the default value on creation for the joined_at field.
 	orguser.DefaultJoinedAt = orguserDescJoinedAt.Default.(func() time.Time)
+	orguserpreferenceMixin := schema.OrgUserPreference{}.Mixin()
+	orguserpreferenceMixinHooks1 := orguserpreferenceMixin[1].Hooks()
+	orguserpreference.Hooks[0] = orguserpreferenceMixinHooks1[0]
+	orguserpreferenceMixinFields1 := orguserpreferenceMixin[1].Fields()
+	_ = orguserpreferenceMixinFields1
+	orguserpreferenceFields := schema.OrgUserPreference{}.Fields()
+	_ = orguserpreferenceFields
+	// orguserpreferenceDescCreatedAt is the schema descriptor for created_at field.
+	orguserpreferenceDescCreatedAt := orguserpreferenceMixinFields1[1].Descriptor()
+	// orguserpreference.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orguserpreference.DefaultCreatedAt = orguserpreferenceDescCreatedAt.Default.(func() time.Time)
 	permissionMixin := schema.Permission{}.Mixin()
 	permissionMixinHooks1 := permissionMixin[1].Hooks()
 	permission.Hooks[0] = permissionMixinHooks1[0]

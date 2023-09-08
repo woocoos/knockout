@@ -44,6 +44,8 @@ type Tx struct {
 	OrgRoleUser *OrgRoleUserClient
 	// OrgUser is the client for interacting with the OrgUser builders.
 	OrgUser *OrgUserClient
+	// OrgUserPreference is the client for interacting with the OrgUserPreference builders.
+	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -203,6 +205,7 @@ func (tx *Tx) init() {
 	tx.OrgRole = NewOrgRoleClient(tx.config)
 	tx.OrgRoleUser = NewOrgRoleUserClient(tx.config)
 	tx.OrgUser = NewOrgUserClient(tx.config)
+	tx.OrgUserPreference = NewOrgUserPreferenceClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)

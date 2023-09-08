@@ -550,6 +550,38 @@ var (
 			},
 		},
 	}
+	// OrgUserPreferenceColumns holds the columns for the "org_user_preference" table.
+	OrgUserPreferenceColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "menu_favorite", Type: field.TypeJSON, Nullable: true},
+		{Name: "menu_recent", Type: field.TypeJSON, Nullable: true},
+		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// OrgUserPreferenceTable holds the schema information for the "org_user_preference" table.
+	OrgUserPreferenceTable = &schema.Table{
+		Name:       "org_user_preference",
+		Columns:    OrgUserPreferenceColumns,
+		PrimaryKey: []*schema.Column{OrgUserPreferenceColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "org_user_preference_user_user",
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[7]},
+				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "org_user_preference_org_org",
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[8]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// PermissionColumns holds the columns for the "permission" table.
 	PermissionColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -758,6 +790,7 @@ var (
 		OrgRoleTable,
 		OrgRoleUserTable,
 		OrgUserTable,
+		OrgUserPreferenceTable,
 		PermissionTable,
 		UserTable,
 		UserDeviceTable,
@@ -837,6 +870,11 @@ func init() {
 	OrgUserTable.ForeignKeys[1].RefTable = UserTable
 	OrgUserTable.Annotation = &entsql.Annotation{
 		Table: "org_user",
+	}
+	OrgUserPreferenceTable.ForeignKeys[0].RefTable = UserTable
+	OrgUserPreferenceTable.ForeignKeys[1].RefTable = OrgTable
+	OrgUserPreferenceTable.Annotation = &entsql.Annotation{
+		Table: "org_user_preference",
 	}
 	PermissionTable.ForeignKeys[0].RefTable = OrgTable
 	PermissionTable.ForeignKeys[1].RefTable = OrgPolicyTable

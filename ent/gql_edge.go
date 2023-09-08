@@ -369,6 +369,22 @@ func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err
 	return result, err
 }
 
+func (oup *OrgUserPreference) User(ctx context.Context) (*User, error) {
+	result, err := oup.Edges.UserOrErr()
+	if IsNotLoaded(err) {
+		result, err = oup.QueryUser().Only(ctx)
+	}
+	return result, err
+}
+
+func (oup *OrgUserPreference) Org(ctx context.Context) (*Org, error) {
+	result, err := oup.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = oup.QueryOrg().Only(ctx)
+	}
+	return result, err
+}
+
 func (pe *Permission) Org(ctx context.Context) (*Org, error) {
 	result, err := pe.Edges.OrgOrErr()
 	if IsNotLoaded(err) {

@@ -30,6 +30,11 @@ func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], fir
 		ent.WithAppFilter(where.Filter))
 }
 
+// FileSources is the resolver for the fileSources field.
+func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
+	return r.Client.FileSource.Query().Paginate(ctx, after, first, before, last, ent.WithFileSourceOrder(orderBy), ent.WithFileSourceFilter(where.Filter))
+}
+
 // Organizations is the resolver for the organizations field.
 func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
 	return r.Client.Org.Query().Paginate(ctx, after, first, before, last,

@@ -24,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -521,6 +522,33 @@ func (f TraverseOrgUser) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.OrgUserQuery", q)
 }
 
+// The OrgUserPreferenceFunc type is an adapter to allow the use of ordinary function as a Querier.
+type OrgUserPreferenceFunc func(context.Context, *ent.OrgUserPreferenceQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f OrgUserPreferenceFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.OrgUserPreferenceQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.OrgUserPreferenceQuery", q)
+}
+
+// The TraverseOrgUserPreference type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseOrgUserPreference func(context.Context, *ent.OrgUserPreferenceQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseOrgUserPreference) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseOrgUserPreference) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.OrgUserPreferenceQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.OrgUserPreferenceQuery", q)
+}
+
 // The PermissionFunc type is an adapter to allow the use of ordinary function as a Querier.
 type PermissionFunc func(context.Context, *ent.PermissionQuery) (ent.Value, error)
 
@@ -718,6 +746,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.OrgRoleUserQuery, predicate.OrgRoleUser, orgroleuser.OrderOption]{typ: ent.TypeOrgRoleUser, tq: q}, nil
 	case *ent.OrgUserQuery:
 		return &query[*ent.OrgUserQuery, predicate.OrgUser, orguser.OrderOption]{typ: ent.TypeOrgUser, tq: q}, nil
+	case *ent.OrgUserPreferenceQuery:
+		return &query[*ent.OrgUserPreferenceQuery, predicate.OrgUserPreference, orguserpreference.OrderOption]{typ: ent.TypeOrgUserPreference, tq: q}, nil
 	case *ent.PermissionQuery:
 		return &query[*ent.PermissionQuery, predicate.Permission, permission.OrderOption]{typ: ent.TypePermission, tq: q}, nil
 	case *ent.UserQuery:

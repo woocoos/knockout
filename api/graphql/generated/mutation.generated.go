@@ -83,6 +83,7 @@ type MutationResolver interface {
 	EnableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
 	DisableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
 	DeleteOauthClient(ctx context.Context, id int) (bool, error)
+	SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -1079,6 +1080,21 @@ func (ec *executionContext) field_Mutation_revoke_args(ctx context.Context, rawA
 		}
 	}
 	args["permissionID"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_saveOrgUserPreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.OrgUserPreferenceInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -6001,6 +6017,85 @@ func (ec *executionContext) fieldContext_Mutation_deleteOauthClient(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_saveOrgUserPreference(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_saveOrgUserPreference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SaveOrgUserPreference(rctx, fc.Args["input"].(model.OrgUserPreferenceInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgUserPreference)
+	fc.Result = res
+	return ec.marshalNOrgUserPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgUserPreference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_saveOrgUserPreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgUserPreference_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgUserPreference_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgUserPreference_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgUserPreference_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgUserPreference_updatedAt(ctx, field)
+			case "userID":
+				return ec.fieldContext_OrgUserPreference_userID(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgUserPreference_orgID(ctx, field)
+			case "menuFavorite":
+				return ec.fieldContext_OrgUserPreference_menuFavorite(ctx, field)
+			case "menuRecent":
+				return ec.fieldContext_OrgUserPreference_menuRecent(ctx, field)
+			case "user":
+				return ec.fieldContext_OrgUserPreference_user(ctx, field)
+			case "org":
+				return ec.fieldContext_OrgUserPreference_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgUserPreference", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_saveOrgUserPreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -6404,6 +6499,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteOauthClient":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteOauthClient(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "saveOrgUserPreference":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_saveOrgUserPreference(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

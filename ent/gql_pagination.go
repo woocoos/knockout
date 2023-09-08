@@ -28,6 +28,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -3761,6 +3762,307 @@ func (or *OrgRole) ToEdge(order *OrgRoleOrder) *OrgRoleEdge {
 	return &OrgRoleEdge{
 		Node:   or,
 		Cursor: order.Field.toCursor(or),
+	}
+}
+
+// OrgUserPreferenceEdge is the edge representation of OrgUserPreference.
+type OrgUserPreferenceEdge struct {
+	Node   *OrgUserPreference `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// OrgUserPreferenceConnection is the connection containing edges to OrgUserPreference.
+type OrgUserPreferenceConnection struct {
+	Edges      []*OrgUserPreferenceEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *OrgUserPreferenceConnection) build(nodes []*OrgUserPreference, pager *orguserpreferencePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *OrgUserPreference
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *OrgUserPreference {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *OrgUserPreference {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*OrgUserPreferenceEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &OrgUserPreferenceEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// OrgUserPreferencePaginateOption enables pagination customization.
+type OrgUserPreferencePaginateOption func(*orguserpreferencePager) error
+
+// WithOrgUserPreferenceOrder configures pagination ordering.
+func WithOrgUserPreferenceOrder(order *OrgUserPreferenceOrder) OrgUserPreferencePaginateOption {
+	if order == nil {
+		order = DefaultOrgUserPreferenceOrder
+	}
+	o := *order
+	return func(pager *orguserpreferencePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultOrgUserPreferenceOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithOrgUserPreferenceFilter configures pagination filter.
+func WithOrgUserPreferenceFilter(filter func(*OrgUserPreferenceQuery) (*OrgUserPreferenceQuery, error)) OrgUserPreferencePaginateOption {
+	return func(pager *orguserpreferencePager) error {
+		if filter == nil {
+			return errors.New("OrgUserPreferenceQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type orguserpreferencePager struct {
+	reverse bool
+	order   *OrgUserPreferenceOrder
+	filter  func(*OrgUserPreferenceQuery) (*OrgUserPreferenceQuery, error)
+}
+
+func newOrgUserPreferencePager(opts []OrgUserPreferencePaginateOption, reverse bool) (*orguserpreferencePager, error) {
+	pager := &orguserpreferencePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultOrgUserPreferenceOrder
+	}
+	return pager, nil
+}
+
+func (p *orguserpreferencePager) applyFilter(query *OrgUserPreferenceQuery) (*OrgUserPreferenceQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *orguserpreferencePager) toCursor(oup *OrgUserPreference) Cursor {
+	return p.order.Field.toCursor(oup)
+}
+
+func (p *orguserpreferencePager) applyCursors(query *OrgUserPreferenceQuery, after, before *Cursor) (*OrgUserPreferenceQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultOrgUserPreferenceOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *orguserpreferencePager) applyOrder(query *OrgUserPreferenceQuery) *OrgUserPreferenceQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultOrgUserPreferenceOrder.Field {
+		query = query.Order(DefaultOrgUserPreferenceOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *orguserpreferencePager) orderExpr(query *OrgUserPreferenceQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultOrgUserPreferenceOrder.Field {
+			b.Comma().Ident(DefaultOrgUserPreferenceOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to OrgUserPreference.
+func (oup *OrgUserPreferenceQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...OrgUserPreferencePaginateOption,
+) (*OrgUserPreferenceConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newOrgUserPreferencePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if oup, err = pager.applyFilter(oup); err != nil {
+		return nil, err
+	}
+	conn := &OrgUserPreferenceConnection{Edges: []*OrgUserPreferenceEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = oup.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if oup, err = pager.applyCursors(oup, after, before); err != nil {
+		return nil, err
+	}
+	if limit := paginateLimit(first, last); limit != 0 {
+		oup.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			oup.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			oup.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := oup.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	oup = pager.applyOrder(oup)
+	nodes, err := oup.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// OrgUserPreferenceOrderFieldCreatedAt orders OrgUserPreference by created_at.
+	OrgUserPreferenceOrderFieldCreatedAt = &OrgUserPreferenceOrderField{
+		Value: func(oup *OrgUserPreference) (ent.Value, error) {
+			return oup.CreatedAt, nil
+		},
+		column: orguserpreference.FieldCreatedAt,
+		toTerm: orguserpreference.ByCreatedAt,
+		toCursor: func(oup *OrgUserPreference) Cursor {
+			return Cursor{
+				ID:    oup.ID,
+				Value: oup.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f OrgUserPreferenceOrderField) String() string {
+	var str string
+	switch f.column {
+	case OrgUserPreferenceOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f OrgUserPreferenceOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *OrgUserPreferenceOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("OrgUserPreferenceOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *OrgUserPreferenceOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid OrgUserPreferenceOrderField", str)
+	}
+	return nil
+}
+
+// OrgUserPreferenceOrderField defines the ordering field of OrgUserPreference.
+type OrgUserPreferenceOrderField struct {
+	// Value extracts the ordering value from the given OrgUserPreference.
+	Value    func(*OrgUserPreference) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) orguserpreference.OrderOption
+	toCursor func(*OrgUserPreference) Cursor
+}
+
+// OrgUserPreferenceOrder defines the ordering of OrgUserPreference.
+type OrgUserPreferenceOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *OrgUserPreferenceOrderField `json:"field"`
+}
+
+// DefaultOrgUserPreferenceOrder is the default ordering of OrgUserPreference.
+var DefaultOrgUserPreferenceOrder = &OrgUserPreferenceOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &OrgUserPreferenceOrderField{
+		Value: func(oup *OrgUserPreference) (ent.Value, error) {
+			return oup.ID, nil
+		},
+		column: orguserpreference.FieldID,
+		toTerm: orguserpreference.ByID,
+		toCursor: func(oup *OrgUserPreference) Cursor {
+			return Cursor{ID: oup.ID}
+		},
+	},
+}
+
+// ToEdge converts OrgUserPreference into OrgUserPreferenceEdge.
+func (oup *OrgUserPreference) ToEdge(order *OrgUserPreferenceOrder) *OrgUserPreferenceEdge {
+	if order == nil {
+		order = DefaultOrgUserPreferenceOrder
+	}
+	return &OrgUserPreferenceEdge{
+		Node:   oup,
+		Cursor: order.Field.toCursor(oup),
 	}
 }
 

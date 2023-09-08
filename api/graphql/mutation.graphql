@@ -146,4 +146,6 @@ type Mutation {
     disableOauthClient(id: ID!): OauthClient!
     """删除OauthClient"""
     deleteOauthClient(id: ID!): Boolean!
+    """保存组织用户偏好"""
+    saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
 }

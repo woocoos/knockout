@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -208,7 +209,22 @@ func (r *queryResolver) OrgRecycleUsers(ctx context.Context, after *entgql.Curso
 	).Paginate(schemax.SkipSoftDelete(ctx), after, first, before, last, ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
 }
 
-// FileSources is the resolver for the fileSources field.
-func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
-	return r.Client.FileSource.Query().Paginate(ctx, after, first, before, last, ent.WithFileSourceOrder(orderBy), ent.WithFileSourceFilter(where.Filter))
+// OrgUserPreference is the resolver for the orgUserPreference field.
+func (r *queryResolver) OrgUserPreference(ctx context.Context) (*ent.OrgUserPreference, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	oup, err := r.Client.OrgUserPreference.Query().Where(orguserpreference.UserID(uid), orguserpreference.OrgID(tid)).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return oup, nil
 }

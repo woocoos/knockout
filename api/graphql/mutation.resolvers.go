@@ -112,7 +112,8 @@ func (r *mutationResolver) ChangePassword(ctx context.Context, oldPwd string, ne
 
 // ResetUserPasswordByEmail is the resolver for the resetUserPasswordByEmail field.
 func (r *mutationResolver) ResetUserPasswordByEmail(ctx context.Context, userID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: ResetUserPasswordByEmail - resetUserPasswordByEmail"))
+	err := r.Resource.ResetUserPasswordByEmail(ctx, userID)
+	return err == nil, err
 }
 
 // CreateApp is the resolver for the createApp field.
@@ -323,7 +324,8 @@ func (r *mutationResolver) DisableMfa(ctx context.Context, userID int) (bool, er
 
 // SendMFAToUserByEmail is the resolver for the sendMFAToUserByEmail field.
 func (r *mutationResolver) SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error) {
-	panic(fmt.Errorf("not implemented: SendMFAToUserByEmail - sendMFAToUserByEmail"))
+	err := r.Resource.SendMFAToUserByEmail(ctx, userID)
+	return err == nil, err
 }
 
 // UpdateAppRes is the resolver for the updateAppRes field.
@@ -389,6 +391,11 @@ func (r *mutationResolver) DeleteOauthClient(ctx context.Context, id int) (bool,
 	}
 	err = client.OauthClient.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
+}
+
+// SaveOrgUserPreference is the resolver for the saveOrgUserPreference field.
+func (r *mutationResolver) SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error) {
+	return r.Resource.SaveOrgUserPreference(ctx, input)
 }
 
 // Mutation returns generated1.MutationResolver implementation.

@@ -201,6 +201,18 @@ func (f OrgUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgUserMutation", m)
 }
 
+// The OrgUserPreferenceFunc type is an adapter to allow the use of ordinary
+// function as OrgUserPreference mutator.
+type OrgUserPreferenceFunc func(context.Context, *ent.OrgUserPreferenceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrgUserPreferenceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgUserPreferenceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgUserPreferenceMutation", m)
+}
+
 // The PermissionFunc type is an adapter to allow the use of ordinary
 // function as Permission mutator.
 type PermissionFunc func(context.Context, *ent.PermissionMutation) (ent.Value, error)

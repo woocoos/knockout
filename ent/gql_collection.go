@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -2691,6 +2692,158 @@ func newOrgRolePaginateArgs(rv map[string]any) *orgrolePaginateArgs {
 	}
 	if v, ok := rv[whereField].(*OrgRoleWhereInput); ok {
 		args.opts = append(args.opts, WithOrgRoleFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (oup *OrgUserPreferenceQuery) CollectFields(ctx context.Context, satisfies ...string) (*OrgUserPreferenceQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return oup, nil
+	}
+	if err := oup.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return oup, nil
+}
+
+func (oup *OrgUserPreferenceQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(orguserpreference.Columns))
+		selectedFields = []string{orguserpreference.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "user":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: oup.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+				return err
+			}
+			oup.withUser = query
+			if _, ok := fieldSeen[orguserpreference.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldUserID)
+				fieldSeen[orguserpreference.FieldUserID] = struct{}{}
+			}
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: oup.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+				return err
+			}
+			oup.withOrg = query
+			if _, ok := fieldSeen[orguserpreference.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldOrgID)
+				fieldSeen[orguserpreference.FieldOrgID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[orguserpreference.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldCreatedBy)
+				fieldSeen[orguserpreference.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[orguserpreference.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldCreatedAt)
+				fieldSeen[orguserpreference.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[orguserpreference.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldUpdatedBy)
+				fieldSeen[orguserpreference.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[orguserpreference.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldUpdatedAt)
+				fieldSeen[orguserpreference.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[orguserpreference.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldUserID)
+				fieldSeen[orguserpreference.FieldUserID] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[orguserpreference.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldOrgID)
+				fieldSeen[orguserpreference.FieldOrgID] = struct{}{}
+			}
+		case "menuFavorite":
+			if _, ok := fieldSeen[orguserpreference.FieldMenuFavorite]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldMenuFavorite)
+				fieldSeen[orguserpreference.FieldMenuFavorite] = struct{}{}
+			}
+		case "menuRecent":
+			if _, ok := fieldSeen[orguserpreference.FieldMenuRecent]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldMenuRecent)
+				fieldSeen[orguserpreference.FieldMenuRecent] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		oup.Select(selectedFields...)
+	}
+	return nil
+}
+
+type orguserpreferencePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []OrgUserPreferencePaginateOption
+}
+
+func newOrgUserPreferencePaginateArgs(rv map[string]any) *orguserpreferencePaginateArgs {
+	args := &orguserpreferencePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &OrgUserPreferenceOrder{Field: &OrgUserPreferenceOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithOrgUserPreferenceOrder(order))
+			}
+		case *OrgUserPreferenceOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithOrgUserPreferenceOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*OrgUserPreferenceWhereInput); ok {
+		args.opts = append(args.opts, WithOrgUserPreferenceFilter(v.Filter))
 	}
 	return args
 }

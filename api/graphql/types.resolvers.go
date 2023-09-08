@@ -13,7 +13,6 @@ import (
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
 // IsGrantAppRole is the resolver for the isGrantAppRole field.
@@ -120,11 +119,6 @@ func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.Cre
 			return err
 		}
 		obj.LoginProfileID = &row.ID
-
-		//TODO 自动生成密码
-		if data.SetKind == userloginprofile.SetKindAuto {
-
-		}
 	}
 	return nil
 }

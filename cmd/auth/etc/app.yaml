@@ -83,7 +83,6 @@ store:
       - 127.0.0.1:6379
     db: 1
 
-
 cache:
   redis:
     <<: *redis
@@ -94,3 +93,22 @@ cache:
 entcache:
   level: context
 #  ttl: 5m # level: db时有效
+
+oas:
+  msgsrv:
+    baseUrl: "http://127.0.0.1:10072"
+
+oauth-with-cache:
+  timeout: 2s
+  oauth2:
+    clientID: 206734260394752
+    clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+    endpoint:
+      tokenURL: http://127.0.0.1:10070/token
+    scopes:
+    cache:
+      type: redis
+      <<: *redis
+      local:
+        size: 1000
+        ttl: 100s

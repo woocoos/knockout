@@ -1255,6 +1255,72 @@ func (c *OrgUserUpdateOne) SetInput(i UpdateOrgUserInput) *OrgUserUpdateOne {
 	return c
 }
 
+// CreateOrgUserPreferenceInput represents a mutation input for creating orguserpreferences.
+type CreateOrgUserPreferenceInput struct {
+	MenuFavorite []int
+	MenuRecent   []int
+}
+
+// Mutate applies the CreateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
+func (i *CreateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
+	if v := i.MenuFavorite; v != nil {
+		m.SetMenuFavorite(v)
+	}
+	if v := i.MenuRecent; v != nil {
+		m.SetMenuRecent(v)
+	}
+}
+
+// SetInput applies the change-set in the CreateOrgUserPreferenceInput on the OrgUserPreferenceCreate builder.
+func (c *OrgUserPreferenceCreate) SetInput(i CreateOrgUserPreferenceInput) *OrgUserPreferenceCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateOrgUserPreferenceInput represents a mutation input for updating orguserpreferences.
+type UpdateOrgUserPreferenceInput struct {
+	ClearMenuFavorite  bool
+	MenuFavorite       []int
+	AppendMenuFavorite []int
+	ClearMenuRecent    bool
+	MenuRecent         []int
+	AppendMenuRecent   []int
+}
+
+// Mutate applies the UpdateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
+func (i *UpdateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
+	if i.ClearMenuFavorite {
+		m.ClearMenuFavorite()
+	}
+	if v := i.MenuFavorite; v != nil {
+		m.SetMenuFavorite(v)
+	}
+	if i.AppendMenuFavorite != nil {
+		m.AppendMenuFavorite(i.MenuFavorite)
+	}
+	if i.ClearMenuRecent {
+		m.ClearMenuRecent()
+	}
+	if v := i.MenuRecent; v != nil {
+		m.SetMenuRecent(v)
+	}
+	if i.AppendMenuRecent != nil {
+		m.AppendMenuRecent(i.MenuRecent)
+	}
+}
+
+// SetInput applies the change-set in the UpdateOrgUserPreferenceInput on the OrgUserPreferenceUpdate builder.
+func (c *OrgUserPreferenceUpdate) SetInput(i UpdateOrgUserPreferenceInput) *OrgUserPreferenceUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateOrgUserPreferenceInput on the OrgUserPreferenceUpdateOne builder.
+func (c *OrgUserPreferenceUpdateOne) SetInput(i UpdateOrgUserPreferenceInput) *OrgUserPreferenceUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreatePermissionInput represents a mutation input for creating permissions.
 type CreatePermissionInput struct {
 	PrincipalKind permission.PrincipalKind

@@ -86,9 +86,13 @@ snowflake:
 entcache:
   level: context
 #  ttl: 5m # level: db时有效
-files:
-  prefixDir: "/resource"  # 相对于存储服务的前缀路径
-  baseUrl: "http://127.0.0.1:10071"
+
+oas:
+  files:
+    prefixDir: "/resource"  # 相对于存储服务的前缀路径
+    baseUrl: "http://127.0.0.1:10071"
+  msgsrv:
+    baseUrl: "http://127.0.0.1:10072"
 
 oauth-with-cache:
   timeout: 2s

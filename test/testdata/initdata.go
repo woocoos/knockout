@@ -64,6 +64,7 @@ func main() {
 	initOrg(tx)
 	initApp(tx, casbinTx)
 	initFileSource(tx)
+	initOauthClient(tx)
 }
 
 func initOrg(client *ent.Tx) {
@@ -215,4 +216,12 @@ func initFileSource(client *ent.Tx) {
 		SetEndpoint("http://127.0.0.1:10071").SetBucket("local").SetCreatedBy(1)
 	fs = append(fs, s1)
 	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
+}
+
+func initOauthClient(client *ent.Tx) {
+	oc := make([]*ent.OauthClientCreate, 0)
+	s1 := client.OauthClient.Create().SetID(1).SetName("系统").SetClientID("206734260394752").SetClientSecret("T2UlqISVFq4DR9InXamj3l74iWdu3Tyr").
+		SetGrantTypes("client_credentials").SetStatus(typex.SimpleStatusActive).SetUserID(1).SetCreatedBy(1)
+	oc = append(oc, s1)
+	client.OauthClient.CreateBulk(oc...).ExecX(context.Background())
 }

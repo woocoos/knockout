@@ -20,6 +20,7 @@ func (FileSource) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "file_source"},
 		entgql.RelayConnection(),
+		entgql.QueryField("fileSources").Description("文件来源"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
