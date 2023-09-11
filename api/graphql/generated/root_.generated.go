@@ -533,6 +533,7 @@ type ComplexityRoot struct {
 		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgUserPreference       func(childComplexity int) int
 		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		UserApps                func(childComplexity int) int
 		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMenus               func(childComplexity int, appCode string) int
@@ -3634,6 +3635,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
+
+	case "Query.userApps":
+		if e.complexity.Query.UserApps == nil {
+			break
+		}
+
+		return e.complexity.Query.UserApps(childComplexity), true
 
 	case "Query.userExtendGroupPolicies":
 		if e.complexity.Query.UserExtendGroupPolicies == nil {
@@ -9217,6 +9225,8 @@ input OrgUserPreferenceInput {
     ):UserConnection!
     """获取组织用户偏好"""
     orgUserPreference: OrgUserPreference
+    """用户授权的应用列表"""
+    userApps: [App!]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

@@ -77,6 +77,7 @@ type QueryResolver interface {
 	UserRootOrgs(ctx context.Context) ([]*ent.Org, error)
 	OrgRecycleUsers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	OrgUserPreference(ctx context.Context) (*ent.OrgUserPreference, error)
+	UserApps(ctx context.Context) ([]*ent.App, error)
 }
 type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
@@ -16706,6 +16707,98 @@ func (ec *executionContext) fieldContext_Query_orgUserPreference(ctx context.Con
 				return ec.fieldContext_OrgUserPreference_org(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgUserPreference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_userApps(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userApps(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserApps(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.App)
+	fc.Result = res
+	return ec.marshalNApp2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userApps(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_App_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_App_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_App_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_App_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_App_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_App_name(ctx, field)
+			case "code":
+				return ec.fieldContext_App_code(ctx, field)
+			case "kind":
+				return ec.fieldContext_App_kind(ctx, field)
+			case "redirectURI":
+				return ec.fieldContext_App_redirectURI(ctx, field)
+			case "appKey":
+				return ec.fieldContext_App_appKey(ctx, field)
+			case "appSecret":
+				return ec.fieldContext_App_appSecret(ctx, field)
+			case "scopes":
+				return ec.fieldContext_App_scopes(ctx, field)
+			case "tokenValidity":
+				return ec.fieldContext_App_tokenValidity(ctx, field)
+			case "refreshTokenValidity":
+				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logoFileID":
+				return ec.fieldContext_App_logoFileID(ctx, field)
+			case "comments":
+				return ec.fieldContext_App_comments(ctx, field)
+			case "status":
+				return ec.fieldContext_App_status(ctx, field)
+			case "menus":
+				return ec.fieldContext_App_menus(ctx, field)
+			case "actions":
+				return ec.fieldContext_App_actions(ctx, field)
+			case "resources":
+				return ec.fieldContext_App_resources(ctx, field)
+			case "roles":
+				return ec.fieldContext_App_roles(ctx, field)
+			case "policies":
+				return ec.fieldContext_App_policies(ctx, field)
+			case "orgs":
+				return ec.fieldContext_App_orgs(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
 	}
 	return fc, nil
@@ -48825,6 +48918,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "userApps":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userApps(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -49687,6 +49802,60 @@ func (ec *executionContext) _UserPassword(ctx context.Context, sel ast.Selection
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) marshalNApp2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.App) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNApp2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐApp(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNApp2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐApp(ctx context.Context, sel ast.SelectionSet, v *ent.App) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._App(ctx, sel, v)
+}
 
 func (ec *executionContext) marshalNAppAction2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppAction(ctx context.Context, sel ast.SelectionSet, v []*ent.AppAction) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))

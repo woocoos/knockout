@@ -839,6 +839,29 @@ func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWh
 	return s.GetUserPermissionsByUserID(ctx, uid, where)
 }
 
+func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 获取appcode
+	acs := make([]string, 0)
+	ups := security.GetUserPermissions(uid, tid)
+	for _, p := range ups {
+		parts := strings.Split(p[2], ArnSplit)
+		if len(parts) > 2 {
+			continue
+		}
+		acs = append(acs, parts[0])
+	}
+	acs = RemoveDuplicateElement(acs)
+	return s.Client.App.Query().Where(app.CodeIn(acs...)).All(ctx)
+}
+
 func (s *Service) CheckPermission(ctx context.Context, permission string) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {

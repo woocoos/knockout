@@ -228,3 +228,8 @@ func (r *queryResolver) OrgUserPreference(ctx context.Context) (*ent.OrgUserPref
 	}
 	return oup, nil
 }
+
+// UserApps is the resolver for the userApps field.
+func (r *queryResolver) UserApps(ctx context.Context) ([]*ent.App, error) {
+	return r.Resource.GetUserApps(ctx)
+}

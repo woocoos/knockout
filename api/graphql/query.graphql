@@ -107,4 +107,6 @@ extend type Query {
     ):UserConnection!
     """获取组织用户偏好"""
     orgUserPreference: OrgUserPreference
+    """用户授权的应用列表"""
+    userApps: [App!]!
 }
