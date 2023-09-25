@@ -43,7 +43,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 func (s *Server) BuildWebServer() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
+		otelweb.RegisterMiddleware(),
 	)
 	return webSrv
 }

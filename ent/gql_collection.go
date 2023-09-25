@@ -13,6 +13,8 @@ import (
 	"github.com/woocoos/entco/pkg/pagination"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -124,7 +126,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppMenu")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, appmenuImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -208,7 +210,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppAction")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, appactionImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -292,7 +294,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "AppRes")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, appresImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -311,7 +313,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&AppRoleClient{config: a.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppRole")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, approleImplementors)...); err != nil {
 				return err
 			}
 			a.WithNamedRoles(alias, func(wq *AppRoleQuery) {
@@ -323,7 +325,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&AppPolicyClient{config: a.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppPolicy")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, apppolicyImplementors)...); err != nil {
 				return err
 			}
 			a.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
@@ -404,7 +406,7 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -415,6 +417,90 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				query = pager.applyOrder(query)
 			}
 			a.WithNamedOrgs(alias, func(wq *OrgQuery) {
+				*wq = *query
+			})
+		case "dicts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppDictClient{config: a.config}).Query()
+			)
+			args := newAppDictPaginateArgs(fieldArgs(ctx, new(AppDictWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newAppDictPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					a.loadTotal = append(a.loadTotal, func(ctx context.Context, nodes []*App) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID int `sql:"app_id"`
+							Count  int `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(app.DictsColumn), ids...))
+						})
+						if err := query.GroupBy(app.DictsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[int]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[6][alias] = n
+						}
+						return nil
+					})
+				} else {
+					a.loadTotal = append(a.loadTotal, func(_ context.Context, nodes []*App) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.Dicts)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[6][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, appdictImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				modify := limitRows(ctx, app.DictsColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
+			} else {
+				query = pager.applyOrder(query)
+			}
+			a.WithNamedDicts(alias, func(wq *AppDictQuery) {
 				*wq = *query
 			})
 		case "createdBy":
@@ -587,7 +673,7 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppClient{config: aa.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 				return err
 			}
 			aa.withApp = query
@@ -601,7 +687,7 @@ func (aa *AppActionQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppMenuClient{config: aa.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppMenu")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appmenuImplementors)...); err != nil {
 				return err
 			}
 			aa.WithNamedMenus(alias, func(wq *AppMenuQuery) {
@@ -716,6 +802,309 @@ func newAppActionPaginateArgs(rv map[string]any) *appactionPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ad *AppDictQuery) CollectFields(ctx context.Context, satisfies ...string) (*AppDictQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ad, nil
+	}
+	if err := ad.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ad, nil
+}
+
+func (ad *AppDictQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(appdict.Columns))
+		selectedFields = []string{appdict.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "app":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppClient{config: ad.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
+				return err
+			}
+			ad.withApp = query
+			if _, ok := fieldSeen[appdict.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldAppID)
+				fieldSeen[appdict.FieldAppID] = struct{}{}
+			}
+		case "items":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppDictItemClient{config: ad.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appdictitemImplementors)...); err != nil {
+				return err
+			}
+			ad.WithNamedItems(alias, func(wq *AppDictItemQuery) {
+				*wq = *query
+			})
+		case "createdBy":
+			if _, ok := fieldSeen[appdict.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldCreatedBy)
+				fieldSeen[appdict.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[appdict.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldCreatedAt)
+				fieldSeen[appdict.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[appdict.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldUpdatedBy)
+				fieldSeen[appdict.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[appdict.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldUpdatedAt)
+				fieldSeen[appdict.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[appdict.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldAppID)
+				fieldSeen[appdict.FieldAppID] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[appdict.FieldCode]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldCode)
+				fieldSeen[appdict.FieldCode] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[appdict.FieldName]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldName)
+				fieldSeen[appdict.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[appdict.FieldComments]; !ok {
+				selectedFields = append(selectedFields, appdict.FieldComments)
+				fieldSeen[appdict.FieldComments] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ad.Select(selectedFields...)
+	}
+	return nil
+}
+
+type appdictPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []AppDictPaginateOption
+}
+
+func newAppDictPaginateArgs(rv map[string]any) *appdictPaginateArgs {
+	args := &appdictPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &AppDictOrder{Field: &AppDictOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithAppDictOrder(order))
+			}
+		case *AppDictOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithAppDictOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*AppDictWhereInput); ok {
+		args.opts = append(args.opts, WithAppDictFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (adi *AppDictItemQuery) CollectFields(ctx context.Context, satisfies ...string) (*AppDictItemQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return adi, nil
+	}
+	if err := adi.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return adi, nil
+}
+
+func (adi *AppDictItemQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(appdictitem.Columns))
+		selectedFields = []string{appdictitem.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "dict":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppDictClient{config: adi.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appdictImplementors)...); err != nil {
+				return err
+			}
+			adi.withDict = query
+			if _, ok := fieldSeen[appdictitem.FieldDictID]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldDictID)
+				fieldSeen[appdictitem.FieldDictID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[appdictitem.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldCreatedBy)
+				fieldSeen[appdictitem.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[appdictitem.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldCreatedAt)
+				fieldSeen[appdictitem.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[appdictitem.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldUpdatedBy)
+				fieldSeen[appdictitem.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[appdictitem.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldUpdatedAt)
+				fieldSeen[appdictitem.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[appdictitem.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldAppID)
+				fieldSeen[appdictitem.FieldAppID] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[appdictitem.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldOrgID)
+				fieldSeen[appdictitem.FieldOrgID] = struct{}{}
+			}
+		case "dictID":
+			if _, ok := fieldSeen[appdictitem.FieldDictID]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldDictID)
+				fieldSeen[appdictitem.FieldDictID] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[appdictitem.FieldCode]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldCode)
+				fieldSeen[appdictitem.FieldCode] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[appdictitem.FieldName]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldName)
+				fieldSeen[appdictitem.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[appdictitem.FieldComments]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldComments)
+				fieldSeen[appdictitem.FieldComments] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[appdictitem.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldDisplaySort)
+				fieldSeen[appdictitem.FieldDisplaySort] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		adi.Select(selectedFields...)
+	}
+	return nil
+}
+
+type appdictitemPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []AppDictItemPaginateOption
+}
+
+func newAppDictItemPaginateArgs(rv map[string]any) *appdictitemPaginateArgs {
+	args := &appdictitemPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &AppDictItemOrder{Field: &AppDictItemOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithAppDictItemOrder(order))
+			}
+		case *AppDictItemOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithAppDictItemOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*AppDictItemWhereInput); ok {
+		args.opts = append(args.opts, WithAppDictItemFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (am *AppMenuQuery) CollectFields(ctx context.Context, satisfies ...string) (*AppMenuQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -742,7 +1131,7 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 				return err
 			}
 			am.withApp = query
@@ -756,7 +1145,7 @@ func (am *AppMenuQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppActionClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppAction")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appactionImplementors)...); err != nil {
 				return err
 			}
 			am.withAction = query
@@ -919,7 +1308,7 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppClient{config: ap.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 				return err
 			}
 			ap.withApp = query
@@ -933,7 +1322,7 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&AppRoleClient{config: ap.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppRole")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, approleImplementors)...); err != nil {
 				return err
 			}
 			ap.WithNamedRoles(alias, func(wq *AppRoleQuery) {
@@ -1079,7 +1468,7 @@ func (ar *AppResQuery) collectField(ctx context.Context, opCtx *graphql.Operatio
 				path  = append(path, alias)
 				query = (&AppClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 				return err
 			}
 			ar.withApp = query
@@ -1217,7 +1606,7 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "App")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 				return err
 			}
 			ar.withApp = query
@@ -1231,7 +1620,7 @@ func (ar *AppRoleQuery) collectField(ctx context.Context, opCtx *graphql.Operati
 				path  = append(path, alias)
 				query = (&AppPolicyClient{config: ar.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "AppPolicy")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, apppolicyImplementors)...); err != nil {
 				return err
 			}
 			ar.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
@@ -1372,7 +1761,7 @@ func (f *FileQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&FileSourceClient{config: f.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "FileSource")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, filesourceImplementors)...); err != nil {
 				return err
 			}
 			f.withSource = query
@@ -1590,7 +1979,7 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "File")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -1738,7 +2127,7 @@ func (oc *OauthClientQuery) collectField(ctx context.Context, opCtx *graphql.Ope
 				path  = append(path, alias)
 				query = (&UserClient{config: oc.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			oc.withUser = query
@@ -1891,7 +2280,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&OrgClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 				return err
 			}
 			o.withParent = query
@@ -1905,7 +2294,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&OrgClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 				return err
 			}
 			o.WithNamedChildren(alias, func(wq *OrgQuery) {
@@ -1917,7 +2306,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				path  = append(path, alias)
 				query = (&UserClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			o.withOwner = query
@@ -2000,7 +2389,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "User")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -2084,7 +2473,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, permissionImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -2168,7 +2557,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "OrgPolicy")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, orgpolicyImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -2256,7 +2645,7 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "App")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -2444,7 +2833,7 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&OrgClient{config: op.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 				return err
 			}
 			op.withOrg = query
@@ -2458,7 +2847,7 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, opCtx *graphql.Opera
 				path  = append(path, alias)
 				query = (&PermissionClient{config: op.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, permissionImplementors)...); err != nil {
 				return err
 			}
 			op.WithNamedPermissions(alias, func(wq *PermissionQuery) {
@@ -2723,7 +3112,7 @@ func (oup *OrgUserPreferenceQuery) collectField(ctx context.Context, opCtx *grap
 				path  = append(path, alias)
 				query = (&UserClient{config: oup.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			oup.withUser = query
@@ -2737,7 +3126,7 @@ func (oup *OrgUserPreferenceQuery) collectField(ctx context.Context, opCtx *grap
 				path  = append(path, alias)
 				query = (&OrgClient{config: oup.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 				return err
 			}
 			oup.withOrg = query
@@ -2875,7 +3264,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "Org")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
 				return err
 			}
 			pe.withOrg = query
@@ -2889,7 +3278,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			pe.withUser = query
@@ -2903,7 +3292,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgRoleClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OrgRole")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgroleImplementors)...); err != nil {
 				return err
 			}
 			pe.withRole = query
@@ -2917,7 +3306,7 @@ func (pe *PermissionQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&OrgPolicyClient{config: pe.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OrgPolicy")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgpolicyImplementors)...); err != nil {
 				return err
 			}
 			pe.withOrgPolicy = query
@@ -3075,7 +3464,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserIdentityClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserIdentity")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, useridentityImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedIdentities(alias, func(wq *UserIdentityQuery) {
@@ -3087,7 +3476,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserLoginProfileClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserLoginProfile")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userloginprofileImplementors)...); err != nil {
 				return err
 			}
 			u.withLoginProfile = query
@@ -3097,7 +3486,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&UserDeviceClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "UserDevice")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userdeviceImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedDevices(alias, func(wq *UserDeviceQuery) {
@@ -3174,7 +3563,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			}
 			path = append(path, edgesField, nodeField)
 			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, "Permission")...); err != nil {
+				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, permissionImplementors)...); err != nil {
 					return err
 				}
 			}
@@ -3193,7 +3582,7 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				path  = append(path, alias)
 				query = (&OauthClientClient{config: u.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "OauthClient")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, oauthclientImplementors)...); err != nil {
 				return err
 			}
 			u.WithNamedOauthClients(alias, func(wq *OauthClientQuery) {
@@ -3364,7 +3753,7 @@ func (ud *UserDeviceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				path  = append(path, alias)
 				query = (&UserClient{config: ud.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			ud.withUser = query
@@ -3527,7 +3916,7 @@ func (ui *UserIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&UserClient{config: ui.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			ui.withUser = query
@@ -3670,7 +4059,7 @@ func (ulp *UserLoginProfileQuery) collectField(ctx context.Context, opCtx *graph
 				path  = append(path, alias)
 				query = (&UserClient{config: ulp.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			ulp.withUser = query
@@ -3833,7 +4222,7 @@ func (up *UserPasswordQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				path  = append(path, alias)
 				query = (&UserClient{config: up.config}).Query()
 			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, "User")...); err != nil {
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
 				return err
 			}
 			up.withUser = query
@@ -4032,14 +4421,15 @@ func limitRows(ctx context.Context, partitionBy string, limit int, first, last *
 
 // mayAddCondition appends another type condition to the satisfies list
 // if condition is enabled (Node/Nodes) and it does not exist in the list.
-func mayAddCondition(satisfies []string, typeCond string) []string {
-	if len(satisfies) == 0 {
-		return satisfies
-	}
-	for _, s := range satisfies {
-		if typeCond == s {
-			return satisfies
+func mayAddCondition(satisfies []string, typeCond []string) []string {
+Cond:
+	for _, c := range typeCond {
+		for _, s := range satisfies {
+			if c == s {
+				continue Cond
+			}
 		}
+		satisfies = append(satisfies, c)
 	}
-	return append(satisfies, typeCond)
+	return satisfies
 }

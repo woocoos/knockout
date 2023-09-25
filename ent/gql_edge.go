@@ -116,6 +116,27 @@ func (a *App) Orgs(
 	return a.QueryOrgs().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (a *App) Dicts(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppDictOrder, where *AppDictWhereInput,
+) (*AppDictConnection, error) {
+	opts := []AppDictPaginateOption{
+		WithAppDictOrder(orderBy),
+		WithAppDictFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
+	if nodes, err := a.NamedDicts(alias); err == nil || hasTotalCount {
+		pager, err := newAppDictPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &AppDictConnection{Edges: []*AppDictEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryDicts().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (aa *AppAction) App(ctx context.Context) (*App, error) {
 	result, err := aa.Edges.AppOrErr()
 	if IsNotLoaded(err) {
@@ -134,6 +155,34 @@ func (aa *AppAction) Menus(ctx context.Context) (result []*AppMenu, err error) {
 		result, err = aa.QueryMenus().All(ctx)
 	}
 	return result, err
+}
+
+func (ad *AppDict) App(ctx context.Context) (*App, error) {
+	result, err := ad.Edges.AppOrErr()
+	if IsNotLoaded(err) {
+		result, err = ad.QueryApp().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ad *AppDict) Items(ctx context.Context) (result []*AppDictItem, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ad.NamedItems(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ad.Edges.ItemsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ad.QueryItems().All(ctx)
+	}
+	return result, err
+}
+
+func (adi *AppDictItem) Dict(ctx context.Context) (*AppDict, error) {
+	result, err := adi.Edges.DictOrErr()
+	if IsNotLoaded(err) {
+		result, err = adi.QueryDict().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (am *AppMenu) App(ctx context.Context) (*App, error) {

@@ -1494,12 +1494,16 @@ func (u *OrgUpsertOne) IDX(ctx context.Context) int {
 // OrgCreateBulk is the builder for creating many Org entities in bulk.
 type OrgCreateBulk struct {
 	config
+	err      error
 	builders []*OrgCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Org entities in the database.
 func (ocb *OrgCreateBulk) Save(ctx context.Context) ([]*Org, error) {
+	if ocb.err != nil {
+		return nil, ocb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ocb.builders))
 	nodes := make([]*Org, len(ocb.builders))
 	mutators := make([]Mutator, len(ocb.builders))
@@ -1984,6 +1988,9 @@ func (u *OrgUpsertBulk) ClearTimezone() *OrgUpsertBulk {
 
 // Exec executes the query.
 func (u *OrgUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgCreateBulk instead", i)

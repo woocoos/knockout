@@ -674,12 +674,16 @@ func (u *UserIdentityUpsertOne) IDX(ctx context.Context) int {
 // UserIdentityCreateBulk is the builder for creating many UserIdentity entities in bulk.
 type UserIdentityCreateBulk struct {
 	config
+	err      error
 	builders []*UserIdentityCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the UserIdentity entities in the database.
 func (uicb *UserIdentityCreateBulk) Save(ctx context.Context) ([]*UserIdentity, error) {
+	if uicb.err != nil {
+		return nil, uicb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(uicb.builders))
 	nodes := make([]*UserIdentity, len(uicb.builders))
 	mutators := make([]Mutator, len(uicb.builders))
@@ -985,6 +989,9 @@ func (u *UserIdentityUpsertBulk) ClearStatus() *UserIdentityUpsertBulk {
 
 // Exec executes the query.
 func (u *UserIdentityUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserIdentityCreateBulk instead", i)

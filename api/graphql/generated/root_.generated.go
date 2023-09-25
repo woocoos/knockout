@@ -57,6 +57,7 @@ type ComplexityRoot struct {
 		Comments             func(childComplexity int) int
 		CreatedAt            func(childComplexity int) int
 		CreatedBy            func(childComplexity int) int
+		Dicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		ID                   func(childComplexity int) int
 		Kind                 func(childComplexity int) int
 		LogoFileID           func(childComplexity int) int
@@ -105,6 +106,47 @@ type ComplexityRoot struct {
 		Edges      func(childComplexity int) int
 		PageInfo   func(childComplexity int) int
 		TotalCount func(childComplexity int) int
+	}
+
+	AppDict struct {
+		App       func(childComplexity int) int
+		AppID     func(childComplexity int) int
+		Code      func(childComplexity int) int
+		Comments  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Items     func(childComplexity int) int
+		Name      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	AppDictConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	AppDictEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	AppDictItem struct {
+		AppID       func(childComplexity int) int
+		Code        func(childComplexity int) int
+		Comments    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		Dict        func(childComplexity int) int
+		DictID      func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		OrgID       func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
 	AppEdge struct {
@@ -277,6 +319,8 @@ type ComplexityRoot struct {
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
+		CreateAppDict               func(childComplexity int, appID int, input ent.CreateAppDictInput) int
+		CreateAppDictItem           func(childComplexity int, dictID int, input ent.CreateAppDictItemInput) int
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
@@ -290,6 +334,8 @@ type ComplexityRoot struct {
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteAppAction             func(childComplexity int, actionID int) int
+		DeleteAppDict               func(childComplexity int, dictID int) int
+		DeleteAppDictItem           func(childComplexity int, itemID int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
@@ -306,6 +352,7 @@ type ComplexityRoot struct {
 		EnableMfa                   func(childComplexity int, userID int) int
 		EnableOauthClient           func(childComplexity int, id int) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
+		MoveAppDictItem             func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) int
@@ -321,6 +368,8 @@ type ComplexityRoot struct {
 		SendMFAToUserByEmail        func(childComplexity int, userID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
+		UpdateAppDict               func(childComplexity int, dictID int, input ent.UpdateAppDictInput) int
+		UpdateAppDictItem           func(childComplexity int, itemID int, input ent.UpdateAppDictItemInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
@@ -711,6 +760,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.App.CreatedBy(childComplexity), true
 
+	case "App.dicts":
+		if e.complexity.App.Dicts == nil {
+			break
+		}
+
+		args, err := ec.field_App_dicts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.App.Dicts(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppDictOrder), args["where"].(*ent.AppDictWhereInput)), true
+
 	case "App.id":
 		if e.complexity.App.ID == nil {
 			break
@@ -977,6 +1038,209 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppConnection.TotalCount(childComplexity), true
+
+	case "AppDict.app":
+		if e.complexity.AppDict.App == nil {
+			break
+		}
+
+		return e.complexity.AppDict.App(childComplexity), true
+
+	case "AppDict.appID":
+		if e.complexity.AppDict.AppID == nil {
+			break
+		}
+
+		return e.complexity.AppDict.AppID(childComplexity), true
+
+	case "AppDict.code":
+		if e.complexity.AppDict.Code == nil {
+			break
+		}
+
+		return e.complexity.AppDict.Code(childComplexity), true
+
+	case "AppDict.comments":
+		if e.complexity.AppDict.Comments == nil {
+			break
+		}
+
+		return e.complexity.AppDict.Comments(childComplexity), true
+
+	case "AppDict.createdAt":
+		if e.complexity.AppDict.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppDict.CreatedAt(childComplexity), true
+
+	case "AppDict.createdBy":
+		if e.complexity.AppDict.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppDict.CreatedBy(childComplexity), true
+
+	case "AppDict.id":
+		if e.complexity.AppDict.ID == nil {
+			break
+		}
+
+		return e.complexity.AppDict.ID(childComplexity), true
+
+	case "AppDict.items":
+		if e.complexity.AppDict.Items == nil {
+			break
+		}
+
+		return e.complexity.AppDict.Items(childComplexity), true
+
+	case "AppDict.name":
+		if e.complexity.AppDict.Name == nil {
+			break
+		}
+
+		return e.complexity.AppDict.Name(childComplexity), true
+
+	case "AppDict.updatedAt":
+		if e.complexity.AppDict.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppDict.UpdatedAt(childComplexity), true
+
+	case "AppDict.updatedBy":
+		if e.complexity.AppDict.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppDict.UpdatedBy(childComplexity), true
+
+	case "AppDictConnection.edges":
+		if e.complexity.AppDictConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.AppDictConnection.Edges(childComplexity), true
+
+	case "AppDictConnection.pageInfo":
+		if e.complexity.AppDictConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.AppDictConnection.PageInfo(childComplexity), true
+
+	case "AppDictConnection.totalCount":
+		if e.complexity.AppDictConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.AppDictConnection.TotalCount(childComplexity), true
+
+	case "AppDictEdge.cursor":
+		if e.complexity.AppDictEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.AppDictEdge.Cursor(childComplexity), true
+
+	case "AppDictEdge.node":
+		if e.complexity.AppDictEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.AppDictEdge.Node(childComplexity), true
+
+	case "AppDictItem.appID":
+		if e.complexity.AppDictItem.AppID == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.AppID(childComplexity), true
+
+	case "AppDictItem.code":
+		if e.complexity.AppDictItem.Code == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.Code(childComplexity), true
+
+	case "AppDictItem.comments":
+		if e.complexity.AppDictItem.Comments == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.Comments(childComplexity), true
+
+	case "AppDictItem.createdAt":
+		if e.complexity.AppDictItem.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.CreatedAt(childComplexity), true
+
+	case "AppDictItem.createdBy":
+		if e.complexity.AppDictItem.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.CreatedBy(childComplexity), true
+
+	case "AppDictItem.dict":
+		if e.complexity.AppDictItem.Dict == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.Dict(childComplexity), true
+
+	case "AppDictItem.dictID":
+		if e.complexity.AppDictItem.DictID == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.DictID(childComplexity), true
+
+	case "AppDictItem.displaySort":
+		if e.complexity.AppDictItem.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.DisplaySort(childComplexity), true
+
+	case "AppDictItem.id":
+		if e.complexity.AppDictItem.ID == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.ID(childComplexity), true
+
+	case "AppDictItem.name":
+		if e.complexity.AppDictItem.Name == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.Name(childComplexity), true
+
+	case "AppDictItem.orgID":
+		if e.complexity.AppDictItem.OrgID == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.OrgID(childComplexity), true
+
+	case "AppDictItem.updatedAt":
+		if e.complexity.AppDictItem.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.UpdatedAt(childComplexity), true
+
+	case "AppDictItem.updatedBy":
+		if e.complexity.AppDictItem.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.UpdatedBy(childComplexity), true
 
 	case "AppEdge.cursor":
 		if e.complexity.AppEdge.Cursor == nil {
@@ -1843,6 +2107,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppActions(childComplexity, args["appID"].(int), args["input"].([]*ent.CreateAppActionInput)), true
 
+	case "Mutation.createAppDict":
+		if e.complexity.Mutation.CreateAppDict == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAppDict_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAppDict(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppDictInput)), true
+
+	case "Mutation.createAppDictItem":
+		if e.complexity.Mutation.CreateAppDictItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAppDictItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAppDictItem(childComplexity, args["dictID"].(int), args["input"].(ent.CreateAppDictItemInput)), true
+
 	case "Mutation.createAppMenus":
 		if e.complexity.Mutation.CreateAppMenus == nil {
 			break
@@ -1998,6 +2286,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAppAction(childComplexity, args["actionID"].(int)), true
+
+	case "Mutation.deleteAppDict":
+		if e.complexity.Mutation.DeleteAppDict == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppDict_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppDict(childComplexity, args["dictID"].(int)), true
+
+	case "Mutation.deleteAppDictItem":
+		if e.complexity.Mutation.DeleteAppDictItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppDictItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppDictItem(childComplexity, args["itemID"].(int)), true
 
 	case "Mutation.deleteAppMenu":
 		if e.complexity.Mutation.DeleteAppMenu == nil {
@@ -2191,6 +2503,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Grant(childComplexity, args["input"].(ent.CreatePermissionInput)), true
 
+	case "Mutation.moveAppDictItem":
+		if e.complexity.Mutation.MoveAppDictItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveAppDictItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveAppDictItem(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
+
 	case "Mutation.moveAppMenu":
 		if e.complexity.Mutation.MoveAppMenu == nil {
 			break
@@ -2370,6 +2694,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppAction(childComplexity, args["actionID"].(int), args["input"].(ent.UpdateAppActionInput)), true
+
+	case "Mutation.updateAppDict":
+		if e.complexity.Mutation.UpdateAppDict == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppDict_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppDict(childComplexity, args["dictID"].(int), args["input"].(ent.UpdateAppDictInput)), true
+
+	case "Mutation.updateAppDictItem":
+		if e.complexity.Mutation.UpdateAppDictItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppDictItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppDictItem(childComplexity, args["itemID"].(int), args["input"].(ent.UpdateAppDictItemInput)), true
 
 	case "Mutation.updateAppMenu":
 		if e.complexity.Mutation.UpdateAppMenu == nil {
@@ -4281,6 +4629,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAppActionOrder,
 		ec.unmarshalInputAppActionWhereInput,
+		ec.unmarshalInputAppDictItemOrder,
+		ec.unmarshalInputAppDictItemWhereInput,
+		ec.unmarshalInputAppDictOrder,
+		ec.unmarshalInputAppDictWhereInput,
 		ec.unmarshalInputAppMenuOrder,
 		ec.unmarshalInputAppMenuWhereInput,
 		ec.unmarshalInputAppOrder,
@@ -4295,6 +4647,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppWhereInput,
 		ec.unmarshalInputAssignRoleUserInput,
 		ec.unmarshalInputCreateAppActionInput,
+		ec.unmarshalInputCreateAppDictInput,
+		ec.unmarshalInputCreateAppDictItemInput,
 		ec.unmarshalInputCreateAppInput,
 		ec.unmarshalInputCreateAppMenuInput,
 		ec.unmarshalInputCreateAppPolicyInput,
@@ -4337,6 +4691,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPermissionWhereInput,
 		ec.unmarshalInputPolicyRuleInput,
 		ec.unmarshalInputUpdateAppActionInput,
+		ec.unmarshalInputUpdateAppDictInput,
+		ec.unmarshalInputUpdateAppDictItemInput,
 		ec.unmarshalInputUpdateAppInput,
 		ec.unmarshalInputUpdateAppMenuInput,
 		ec.unmarshalInputUpdateAppPolicyInput,
@@ -4573,6 +4929,25 @@ type App implements Node {
     """Filtering options for Orgs returned from the connection."""
     where: OrgWhereInput
   ): OrgConnection!
+  dicts(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for AppDicts returned from the connection."""
+    orderBy: AppDictOrder
+
+    """Filtering options for AppDicts returned from the connection."""
+    where: AppDictWhereInput
+  ): AppDictConnection!
 }
 type AppAction implements Node {
   id: ID!
@@ -4738,6 +5113,300 @@ type AppConnection {
   pageInfo: PageInfo!
   """Identifies the total count of items in the connection."""
   totalCount: Int!
+}
+type AppDict implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """所属应用"""
+  appID: ID
+  """用于标识应用资源的唯一代码,尽量简短"""
+  code: String!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
+  app: App
+  items: [AppDictItem!]
+}
+"""A connection to a list of items."""
+type AppDictConnection {
+  """A list of edges."""
+  edges: [AppDictEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type AppDictEdge {
+  """The item at the end of the edge."""
+  node: AppDict
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+type AppDictItem implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """所属应用"""
+  appID: Int
+  """组织ID"""
+  orgID: Int
+  """所属字典"""
+  dictID: ID
+  """用于标识应用资源的唯一代码,尽量简短"""
+  code: String!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
+  displaySort: Int
+  dict: AppDict
+}
+"""Ordering options for AppDictItem connections"""
+input AppDictItemOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order AppDictItems."""
+  field: AppDictItemOrderField!
+}
+"""Properties by which AppDictItem connections can be ordered."""
+enum AppDictItemOrderField {
+  createdAt
+  displaySort
+}
+"""
+AppDictItemWhereInput is used for filtering AppDictItem objects.
+Input was generated by ent.
+"""
+input AppDictItemWhereInput {
+  not: AppDictItemWhereInput
+  and: [AppDictItemWhereInput!]
+  or: [AppDictItemWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """app_id field predicates"""
+  appID: Int
+  appIDNEQ: Int
+  appIDIn: [Int!]
+  appIDNotIn: [Int!]
+  appIDGT: Int
+  appIDGTE: Int
+  appIDLT: Int
+  appIDLTE: Int
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
+  """org_id field predicates"""
+  orgID: Int
+  orgIDNEQ: Int
+  orgIDIn: [Int!]
+  orgIDNotIn: [Int!]
+  orgIDGT: Int
+  orgIDGTE: Int
+  orgIDLT: Int
+  orgIDLTE: Int
+  orgIDIsNil: Boolean
+  orgIDNotNil: Boolean
+  """dict_id field predicates"""
+  dictID: ID
+  dictIDNEQ: ID
+  dictIDIn: [ID!]
+  dictIDNotIn: [ID!]
+  dictIDIsNil: Boolean
+  dictIDNotNil: Boolean
+  """code field predicates"""
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """name field predicates"""
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """dict edge predicates"""
+  hasDict: Boolean
+  hasDictWith: [AppDictWhereInput!]
+}
+"""Ordering options for AppDict connections"""
+input AppDictOrder {
+  """The ordering direction."""
+  direction: OrderDirection! = ASC
+  """The field by which to order AppDicts."""
+  field: AppDictOrderField!
+}
+"""Properties by which AppDict connections can be ordered."""
+enum AppDictOrderField {
+  createdAt
+}
+"""
+AppDictWhereInput is used for filtering AppDict objects.
+Input was generated by ent.
+"""
+input AppDictWhereInput {
+  not: AppDictWhereInput
+  and: [AppDictWhereInput!]
+  or: [AppDictWhereInput!]
+  """id field predicates"""
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """created_by field predicates"""
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """created_at field predicates"""
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """updated_by field predicates"""
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """updated_at field predicates"""
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """app_id field predicates"""
+  appID: ID
+  appIDNEQ: ID
+  appIDIn: [ID!]
+  appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
+  """code field predicates"""
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """name field predicates"""
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """app edge predicates"""
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
+  """items edge predicates"""
+  hasItems: Boolean
+  hasItemsWith: [AppDictItemWhereInput!]
 }
 """An edge in a connection."""
 type AppEdge {
@@ -5712,6 +6381,9 @@ input AppWhereInput {
   """orgs edge predicates"""
   hasOrgs: Boolean
   hasOrgsWith: [OrgWhereInput!]
+  """dicts edge predicates"""
+  hasDicts: Boolean
+  hasDictsWith: [AppDictWhereInput!]
 }
 """
 CreateAppActionInput is used for create AppAction object.
@@ -5728,6 +6400,37 @@ input CreateAppActionInput {
   comments: String
   appID: ID
   menuIDs: [ID!]
+}
+"""
+CreateAppDictInput is used for create AppDict object.
+Input was generated by ent.
+"""
+input CreateAppDictInput {
+  """用于标识应用资源的唯一代码,尽量简短"""
+  code: String!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
+  appID: ID
+  itemIDs: [ID!]
+}
+"""
+CreateAppDictItemInput is used for create AppDictItem object.
+Input was generated by ent.
+"""
+input CreateAppDictItemInput {
+  """所属应用"""
+  appID: Int
+  """组织ID"""
+  orgID: Int
+  """用于标识应用资源的唯一代码,尽量简短"""
+  code: String!
+  """名称"""
+  name: String!
+  """备注"""
+  comments: String
+  dictID: ID
 }
 """
 CreateAppInput is used for create App object.
@@ -5763,6 +6466,7 @@ input CreateAppInput {
   resourceIDs: [ID!]
   roleIDs: [ID!]
   policyIDs: [ID!]
+  dictIDs: [ID!]
 }
 """
 CreateAppMenuInput is used for create AppMenu object.
@@ -6370,7 +7074,7 @@ input FileWhereInput {
   hasSource: Boolean
   hasSourceWith: [FileSourceWhereInput!]
 }
-"""An object with an Global ID,for using in Noder interface."""
+"""An object with a Global ID,for using in Noder interface."""
 scalar GID
 """
 An object with an ID.
@@ -7773,6 +8477,31 @@ input UpdateAppActionInput {
   clearMenus: Boolean
 }
 """
+UpdateAppDictInput is used for update AppDict object.
+Input was generated by ent.
+"""
+input UpdateAppDictInput {
+  """名称"""
+  name: String
+  """备注"""
+  comments: String
+  clearComments: Boolean
+  addItemIDs: [ID!]
+  removeItemIDs: [ID!]
+  clearItems: Boolean
+}
+"""
+UpdateAppDictItemInput is used for update AppDictItem object.
+Input was generated by ent.
+"""
+input UpdateAppDictItemInput {
+  """名称"""
+  name: String
+  """备注"""
+  comments: String
+  clearComments: Boolean
+}
+"""
 UpdateAppInput is used for update App object.
 Input was generated by ent.
 """
@@ -7823,6 +8552,9 @@ input UpdateAppInput {
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
+  addDictIDs: [ID!]
+  removeDictIDs: [ID!]
+  clearDicts: Boolean
 }
 """
 UpdateAppMenuInput is used for update AppMenu object.
@@ -9310,6 +10042,20 @@ input OrgUserPreferenceInput {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
+    """创建应用数据字典"""
+    createAppDict(appID:ID!,input: CreateAppDictInput!): AppDict
+    """更新应用数据字典"""
+    updateAppDict(dictID:ID!,input: UpdateAppDictInput!): AppDict
+    """删除应用数据字典"""
+    deleteAppDict(dictID:ID!): Boolean!
+    """创建应用数据字典项"""
+    createAppDictItem(dictID:ID!,input: CreateAppDictItemInput!): AppDictItem
+    """更新应用数据字典项"""
+    updateAppDictItem(itemID:ID!,input: UpdateAppDictItemInput!): AppDictItem
+    """删除应用数据字典项"""
+    deleteAppDictItem(itemID:ID!): Boolean!
+    """移动节点"""
+    moveAppDictItem(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
     """分配应用角色到组织"""
     assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """取消分配到组织应用角色"""

@@ -12,6 +12,12 @@ type App func(*sql.Selector)
 // AppAction is the predicate function for appaction builders.
 type AppAction func(*sql.Selector)
 
+// AppDict is the predicate function for appdict builders.
+type AppDict func(*sql.Selector)
+
+// AppDictItem is the predicate function for appdictitem builders.
+type AppDictItem func(*sql.Selector)
+
 // AppMenu is the predicate function for appmenu builders.
 type AppMenu func(*sql.Selector)
 

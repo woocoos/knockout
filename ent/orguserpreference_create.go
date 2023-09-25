@@ -610,12 +610,16 @@ func (u *OrgUserPreferenceUpsertOne) IDX(ctx context.Context) int {
 // OrgUserPreferenceCreateBulk is the builder for creating many OrgUserPreference entities in bulk.
 type OrgUserPreferenceCreateBulk struct {
 	config
+	err      error
 	builders []*OrgUserPreferenceCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the OrgUserPreference entities in the database.
 func (oupcb *OrgUserPreferenceCreateBulk) Save(ctx context.Context) ([]*OrgUserPreference, error) {
+	if oupcb.err != nil {
+		return nil, oupcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(oupcb.builders))
 	nodes := make([]*OrgUserPreference, len(oupcb.builders))
 	mutators := make([]Mutator, len(oupcb.builders))
@@ -900,6 +904,9 @@ func (u *OrgUserPreferenceUpsertBulk) ClearMenuRecent() *OrgUserPreferenceUpsert
 
 // Exec executes the query.
 func (u *OrgUserPreferenceUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgUserPreferenceCreateBulk instead", i)

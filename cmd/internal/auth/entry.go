@@ -84,7 +84,7 @@ func (s *Server) RegisterWebEngine(rg *gin.RouterGroup) {
 func (s *Server) BuildWebServer() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
+		otelweb.RegisterMiddleware(),
 	)
 	return webSrv
 }

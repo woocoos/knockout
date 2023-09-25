@@ -689,12 +689,16 @@ func (u *AppActionUpsertOne) IDX(ctx context.Context) int {
 // AppActionCreateBulk is the builder for creating many AppAction entities in bulk.
 type AppActionCreateBulk struct {
 	config
+	err      error
 	builders []*AppActionCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppAction entities in the database.
 func (aacb *AppActionCreateBulk) Save(ctx context.Context) ([]*AppAction, error) {
+	if aacb.err != nil {
+		return nil, aacb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(aacb.builders))
 	nodes := make([]*AppAction, len(aacb.builders))
 	mutators := make([]Mutator, len(aacb.builders))
@@ -986,6 +990,9 @@ func (u *AppActionUpsertBulk) ClearComments() *AppActionUpsertBulk {
 
 // Exec executes the query.
 func (u *AppActionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppActionCreateBulk instead", i)

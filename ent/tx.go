@@ -16,6 +16,10 @@ type Tx struct {
 	App *AppClient
 	// AppAction is the client for interacting with the AppAction builders.
 	AppAction *AppActionClient
+	// AppDict is the client for interacting with the AppDict builders.
+	AppDict *AppDictClient
+	// AppDictItem is the client for interacting with the AppDictItem builders.
+	AppDictItem *AppDictItemClient
 	// AppMenu is the client for interacting with the AppMenu builders.
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
@@ -191,6 +195,8 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.App = NewAppClient(tx.config)
 	tx.AppAction = NewAppActionClient(tx.config)
+	tx.AppDict = NewAppDictClient(tx.config)
+	tx.AppDictItem = NewAppDictItemClient(tx.config)
 	tx.AppMenu = NewAppMenuClient(tx.config)
 	tx.AppPolicy = NewAppPolicyClient(tx.config)
 	tx.AppRes = NewAppResClient(tx.config)

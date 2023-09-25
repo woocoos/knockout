@@ -14,6 +14,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -97,6 +99,8 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			app.Table:               app.ValidColumn,
 			appaction.Table:         appaction.ValidColumn,
+			appdict.Table:           appdict.ValidColumn,
+			appdictitem.Table:       appdictitem.ValidColumn,
 			appmenu.Table:           appmenu.ValidColumn,
 			apppolicy.Table:         apppolicy.ValidColumn,
 			appres.Table:            appres.ValidColumn,

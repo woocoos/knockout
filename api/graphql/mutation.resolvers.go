@@ -203,6 +203,43 @@ func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool,
 	return err == nil, err
 }
 
+// CreateAppDict is the resolver for the createAppDict field.
+func (r *mutationResolver) CreateAppDict(ctx context.Context, appID int, input ent.CreateAppDictInput) (*ent.AppDict, error) {
+	return ent.FromContext(ctx).AppDict.Create().SetAppID(appID).SetInput(input).Save(ctx)
+}
+
+// UpdateAppDict is the resolver for the updateAppDict field.
+func (r *mutationResolver) UpdateAppDict(ctx context.Context, dictID int, input ent.UpdateAppDictInput) (*ent.AppDict, error) {
+	return ent.FromContext(ctx).AppDict.UpdateOneID(dictID).SetInput(input).Save(ctx)
+}
+
+// DeleteAppDict is the resolver for the deleteAppDict field.
+func (r *mutationResolver) DeleteAppDict(ctx context.Context, dictID int) (bool, error) {
+	err := ent.FromContext(ctx).AppDict.DeleteOneID(dictID).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateAppDictItem is the resolver for the createAppDictItem field.
+func (r *mutationResolver) CreateAppDictItem(ctx context.Context, dictID int, input ent.CreateAppDictItemInput) (*ent.AppDictItem, error) {
+	return ent.FromContext(ctx).AppDictItem.Create().SetAppID(dictID).SetInput(input).Save(ctx)
+}
+
+// UpdateAppDictItem is the resolver for the updateAppDictItem field.
+func (r *mutationResolver) UpdateAppDictItem(ctx context.Context, itemID int, input ent.UpdateAppDictItemInput) (*ent.AppDictItem, error) {
+	return ent.FromContext(ctx).AppDictItem.UpdateOneID(itemID).SetInput(input).Save(ctx)
+}
+
+// DeleteAppDictItem is the resolver for the deleteAppDictItem field.
+func (r *mutationResolver) DeleteAppDictItem(ctx context.Context, itemID int) (bool, error) {
+	err := ent.FromContext(ctx).AppDictItem.DeleteOneID(itemID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveAppDictItem is the resolver for the moveAppDictItem field.
+func (r *mutationResolver) MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	panic(fmt.Errorf("not implemented: MoveAppDictItem - moveAppDictItem"))
+}
+
 // AssignOrganizationAppRole is the resolver for the assignOrganizationAppRole field.
 func (r *mutationResolver) AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error) {
 	err := r.Resource.AssignOrganizationAppRole(ctx, orgID, appRoleID)

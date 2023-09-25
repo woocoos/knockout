@@ -73,5 +73,6 @@ func (App) Edges() []ent.Edge {
 		edge.From("orgs", Org.Type).Ref("apps").Comment("使用该应用的组织").
 			Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection(), entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
+		edge.To("dicts", AppDict.Type).Comment("数据字典").Annotations(entgql.RelayConnection()),
 	}
 }

@@ -599,12 +599,16 @@ func (u *AppRolePolicyUpsertOne) IDX(ctx context.Context) int {
 // AppRolePolicyCreateBulk is the builder for creating many AppRolePolicy entities in bulk.
 type AppRolePolicyCreateBulk struct {
 	config
+	err      error
 	builders []*AppRolePolicyCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppRolePolicy entities in the database.
 func (arpcb *AppRolePolicyCreateBulk) Save(ctx context.Context) ([]*AppRolePolicy, error) {
+	if arpcb.err != nil {
+		return nil, arpcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(arpcb.builders))
 	nodes := make([]*AppRolePolicy, len(arpcb.builders))
 	mutators := make([]Mutator, len(arpcb.builders))
@@ -879,6 +883,9 @@ func (u *AppRolePolicyUpsertBulk) UpdateAppID() *AppRolePolicyUpsertBulk {
 
 // Exec executes the query.
 func (u *AppRolePolicyUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppRolePolicyCreateBulk instead", i)

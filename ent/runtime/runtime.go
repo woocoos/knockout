@@ -8,6 +8,8 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/schema"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -111,6 +113,91 @@ func init() {
 	appactionDescID := appactionMixinFields0[0].Descriptor()
 	// appaction.DefaultID holds the default value on creation for the id field.
 	appaction.DefaultID = appactionDescID.Default.(func() int)
+	appdictMixin := schema.AppDict{}.Mixin()
+	appdictMixinHooks1 := appdictMixin[1].Hooks()
+	appdictHooks := schema.AppDict{}.Hooks()
+	appdict.Hooks[0] = appdictMixinHooks1[0]
+	appdict.Hooks[1] = appdictHooks[0]
+	appdictMixinFields1 := appdictMixin[1].Fields()
+	_ = appdictMixinFields1
+	appdictFields := schema.AppDict{}.Fields()
+	_ = appdictFields
+	// appdictDescCreatedAt is the schema descriptor for created_at field.
+	appdictDescCreatedAt := appdictMixinFields1[1].Descriptor()
+	// appdict.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appdict.DefaultCreatedAt = appdictDescCreatedAt.Default.(func() time.Time)
+	// appdictDescCode is the schema descriptor for code field.
+	appdictDescCode := appdictFields[1].Descriptor()
+	// appdict.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	appdict.CodeValidator = func() func(string) error {
+		validators := appdictDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// appdictDescName is the schema descriptor for name field.
+	appdictDescName := appdictFields[2].Descriptor()
+	// appdict.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	appdict.NameValidator = func() func(string) error {
+		validators := appdictDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	appdictitemMixin := schema.AppDictItem{}.Mixin()
+	appdictitemMixinHooks1 := appdictitemMixin[1].Hooks()
+	appdictitemHooks := schema.AppDictItem{}.Hooks()
+	appdictitem.Hooks[0] = appdictitemMixinHooks1[0]
+	appdictitem.Hooks[1] = appdictitemHooks[0]
+	appdictitem.Hooks[2] = appdictitemHooks[1]
+	appdictitemMixinFields1 := appdictitemMixin[1].Fields()
+	_ = appdictitemMixinFields1
+	appdictitemFields := schema.AppDictItem{}.Fields()
+	_ = appdictitemFields
+	// appdictitemDescCreatedAt is the schema descriptor for created_at field.
+	appdictitemDescCreatedAt := appdictitemMixinFields1[1].Descriptor()
+	// appdictitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appdictitem.DefaultCreatedAt = appdictitemDescCreatedAt.Default.(func() time.Time)
+	// appdictitemDescCode is the schema descriptor for code field.
+	appdictitemDescCode := appdictitemFields[3].Descriptor()
+	// appdictitem.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	appdictitem.CodeValidator = func() func(string) error {
+		validators := appdictitemDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// appdictitemDescName is the schema descriptor for name field.
+	appdictitemDescName := appdictitemFields[4].Descriptor()
+	// appdictitem.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	appdictitem.NameValidator = appdictitemDescName.Validators[0].(func(string) error)
 	appmenuMixin := schema.AppMenu{}.Mixin()
 	appmenuMixinHooks1 := appmenuMixin[1].Hooks()
 	appmenuHooks := schema.AppMenu{}.Hooks()
@@ -542,6 +629,6 @@ func init() {
 }
 
 const (
-	Version = "v0.12.3"                                         // Version of ent codegen.
-	Sum     = "h1:N5lO2EOrHpCH5HYfiMOCHYbo+oh5M8GjT0/cx5x6xkk=" // Sum of ent codegen.
+	Version = "v0.12.4"                                         // Version of ent codegen.
+	Sum     = "h1:LddPnAyxls/O7DTXZvUGDj0NZIdGSu317+aoNLJWbD8=" // Sum of ent codegen.
 )

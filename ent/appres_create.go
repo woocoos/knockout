@@ -585,12 +585,16 @@ func (u *AppResUpsertOne) IDX(ctx context.Context) int {
 // AppResCreateBulk is the builder for creating many AppRes entities in bulk.
 type AppResCreateBulk struct {
 	config
+	err      error
 	builders []*AppResCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppRes entities in the database.
 func (arcb *AppResCreateBulk) Save(ctx context.Context) ([]*AppRes, error) {
+	if arcb.err != nil {
+		return nil, arcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(arcb.builders))
 	nodes := make([]*AppRes, len(arcb.builders))
 	mutators := make([]Mutator, len(arcb.builders))
@@ -861,6 +865,9 @@ func (u *AppResUpsertBulk) UpdateArnPattern() *AppResUpsertBulk {
 
 // Exec executes the query.
 func (u *AppResUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppResCreateBulk instead", i)

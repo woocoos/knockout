@@ -10,6 +10,8 @@ import (
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -142,6 +144,60 @@ func (f TraverseAppAction) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppActionQuery", q)
+}
+
+// The AppDictFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AppDictFunc func(context.Context, *ent.AppDictQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AppDictFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AppDictQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AppDictQuery", q)
+}
+
+// The TraverseAppDict type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAppDict func(context.Context, *ent.AppDictQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAppDict) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAppDict) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AppDictQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AppDictQuery", q)
+}
+
+// The AppDictItemFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AppDictItemFunc func(context.Context, *ent.AppDictItemQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AppDictItemFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AppDictItemQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AppDictItemQuery", q)
+}
+
+// The TraverseAppDictItem type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAppDictItem func(context.Context, *ent.AppDictItemQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAppDictItem) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAppDictItem) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AppDictItemQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AppDictItemQuery", q)
 }
 
 // The AppMenuFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -718,6 +774,10 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppQuery, predicate.App, app.OrderOption]{typ: ent.TypeApp, tq: q}, nil
 	case *ent.AppActionQuery:
 		return &query[*ent.AppActionQuery, predicate.AppAction, appaction.OrderOption]{typ: ent.TypeAppAction, tq: q}, nil
+	case *ent.AppDictQuery:
+		return &query[*ent.AppDictQuery, predicate.AppDict, appdict.OrderOption]{typ: ent.TypeAppDict, tq: q}, nil
+	case *ent.AppDictItemQuery:
+		return &query[*ent.AppDictItemQuery, predicate.AppDictItem, appdictitem.OrderOption]{typ: ent.TypeAppDictItem, tq: q}, nil
 	case *ent.AppMenuQuery:
 		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.OrderOption]{typ: ent.TypeAppMenu, tq: q}, nil
 	case *ent.AppPolicyQuery:

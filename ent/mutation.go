@@ -15,6 +15,8 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -50,6 +52,8 @@ const (
 	// Node types.
 	TypeApp               = "App"
 	TypeAppAction         = "AppAction"
+	TypeAppDict           = "AppDict"
+	TypeAppDictItem       = "AppDictItem"
 	TypeAppMenu           = "AppMenu"
 	TypeAppPolicy         = "AppPolicy"
 	TypeAppRes            = "AppRes"
@@ -122,6 +126,9 @@ type AppMutation struct {
 	orgs                      map[int]struct{}
 	removedorgs               map[int]struct{}
 	clearedorgs               bool
+	dicts                     map[int]struct{}
+	removeddicts              map[int]struct{}
+	cleareddicts              bool
 	org_app                   map[int]struct{}
 	removedorg_app            map[int]struct{}
 	clearedorg_app            bool
@@ -1500,6 +1507,60 @@ func (m *AppMutation) ResetOrgs() {
 	m.removedorgs = nil
 }
 
+// AddDictIDs adds the "dicts" edge to the AppDict entity by ids.
+func (m *AppMutation) AddDictIDs(ids ...int) {
+	if m.dicts == nil {
+		m.dicts = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.dicts[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDicts clears the "dicts" edge to the AppDict entity.
+func (m *AppMutation) ClearDicts() {
+	m.cleareddicts = true
+}
+
+// DictsCleared reports if the "dicts" edge to the AppDict entity was cleared.
+func (m *AppMutation) DictsCleared() bool {
+	return m.cleareddicts
+}
+
+// RemoveDictIDs removes the "dicts" edge to the AppDict entity by IDs.
+func (m *AppMutation) RemoveDictIDs(ids ...int) {
+	if m.removeddicts == nil {
+		m.removeddicts = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.dicts, ids[i])
+		m.removeddicts[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDicts returns the removed IDs of the "dicts" edge to the AppDict entity.
+func (m *AppMutation) RemovedDictsIDs() (ids []int) {
+	for id := range m.removeddicts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DictsIDs returns the "dicts" edge IDs in the mutation.
+func (m *AppMutation) DictsIDs() (ids []int) {
+	for id := range m.dicts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDicts resets all changes to the "dicts" edge.
+func (m *AppMutation) ResetDicts() {
+	m.dicts = nil
+	m.cleareddicts = false
+	m.removeddicts = nil
+}
+
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by ids.
 func (m *AppMutation) AddOrgAppIDs(ids ...int) {
 	if m.org_app == nil {
@@ -2132,7 +2193,7 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 8)
 	if m.menus != nil {
 		edges = append(edges, app.EdgeMenus)
 	}
@@ -2150,6 +2211,9 @@ func (m *AppMutation) AddedEdges() []string {
 	}
 	if m.orgs != nil {
 		edges = append(edges, app.EdgeOrgs)
+	}
+	if m.dicts != nil {
+		edges = append(edges, app.EdgeDicts)
 	}
 	if m.org_app != nil {
 		edges = append(edges, app.EdgeOrgApp)
@@ -2197,6 +2261,12 @@ func (m *AppMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeDicts:
+		ids := make([]ent.Value, 0, len(m.dicts))
+		for id := range m.dicts {
+			ids = append(ids, id)
+		}
+		return ids
 	case app.EdgeOrgApp:
 		ids := make([]ent.Value, 0, len(m.org_app))
 		for id := range m.org_app {
@@ -2209,7 +2279,7 @@ func (m *AppMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 8)
 	if m.removedmenus != nil {
 		edges = append(edges, app.EdgeMenus)
 	}
@@ -2227,6 +2297,9 @@ func (m *AppMutation) RemovedEdges() []string {
 	}
 	if m.removedorgs != nil {
 		edges = append(edges, app.EdgeOrgs)
+	}
+	if m.removeddicts != nil {
+		edges = append(edges, app.EdgeDicts)
 	}
 	if m.removedorg_app != nil {
 		edges = append(edges, app.EdgeOrgApp)
@@ -2274,6 +2347,12 @@ func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeDicts:
+		ids := make([]ent.Value, 0, len(m.removeddicts))
+		for id := range m.removeddicts {
+			ids = append(ids, id)
+		}
+		return ids
 	case app.EdgeOrgApp:
 		ids := make([]ent.Value, 0, len(m.removedorg_app))
 		for id := range m.removedorg_app {
@@ -2286,7 +2365,7 @@ func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 8)
 	if m.clearedmenus {
 		edges = append(edges, app.EdgeMenus)
 	}
@@ -2304,6 +2383,9 @@ func (m *AppMutation) ClearedEdges() []string {
 	}
 	if m.clearedorgs {
 		edges = append(edges, app.EdgeOrgs)
+	}
+	if m.cleareddicts {
+		edges = append(edges, app.EdgeDicts)
 	}
 	if m.clearedorg_app {
 		edges = append(edges, app.EdgeOrgApp)
@@ -2327,6 +2409,8 @@ func (m *AppMutation) EdgeCleared(name string) bool {
 		return m.clearedpolicies
 	case app.EdgeOrgs:
 		return m.clearedorgs
+	case app.EdgeDicts:
+		return m.cleareddicts
 	case app.EdgeOrgApp:
 		return m.clearedorg_app
 	}
@@ -2362,6 +2446,9 @@ func (m *AppMutation) ResetEdge(name string) error {
 		return nil
 	case app.EdgeOrgs:
 		m.ResetOrgs()
+		return nil
+	case app.EdgeDicts:
+		m.ResetDicts()
 		return nil
 	case app.EdgeOrgApp:
 		m.ResetOrgApp()
@@ -2921,6 +3008,7 @@ func (m *AppActionMutation) ResetComments() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *AppActionMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[appaction.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -3419,6 +3507,2238 @@ func (m *AppActionMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown AppAction edge %s", name)
+}
+
+// AppDictMutation represents an operation that mutates the AppDict nodes in the graph.
+type AppDictMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	created_by    *int
+	addcreated_by *int
+	created_at    *time.Time
+	updated_by    *int
+	addupdated_by *int
+	updated_at    *time.Time
+	code          *string
+	name          *string
+	comments      *string
+	clearedFields map[string]struct{}
+	app           *int
+	clearedapp    bool
+	items         map[int]struct{}
+	removeditems  map[int]struct{}
+	cleareditems  bool
+	done          bool
+	oldValue      func(context.Context) (*AppDict, error)
+	predicates    []predicate.AppDict
+}
+
+var _ ent.Mutation = (*AppDictMutation)(nil)
+
+// appdictOption allows management of the mutation configuration using functional options.
+type appdictOption func(*AppDictMutation)
+
+// newAppDictMutation creates new mutation for the AppDict entity.
+func newAppDictMutation(c config, op Op, opts ...appdictOption) *AppDictMutation {
+	m := &AppDictMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppDict,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppDictID sets the ID field of the mutation.
+func withAppDictID(id int) appdictOption {
+	return func(m *AppDictMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppDict
+		)
+		m.oldValue = func(ctx context.Context) (*AppDict, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppDict.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppDict sets the old AppDict of the mutation.
+func withAppDict(node *AppDict) appdictOption {
+	return func(m *AppDictMutation) {
+		m.oldValue = func(context.Context) (*AppDict, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppDictMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppDictMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppDict entities.
+func (m *AppDictMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppDictMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppDictMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppDict.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *AppDictMutation) SetCreatedBy(i int) {
+	m.created_by = &i
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *AppDictMutation) CreatedBy() (r int, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldCreatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds i to the "created_by" field.
+func (m *AppDictMutation) AddCreatedBy(i int) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += i
+	} else {
+		m.addcreated_by = &i
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *AppDictMutation) AddedCreatedBy() (r int, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *AppDictMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppDictMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppDictMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppDictMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *AppDictMutation) SetUpdatedBy(i int) {
+	m.updated_by = &i
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *AppDictMutation) UpdatedBy() (r int, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldUpdatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds i to the "updated_by" field.
+func (m *AppDictMutation) AddUpdatedBy(i int) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += i
+	} else {
+		m.addupdated_by = &i
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *AppDictMutation) AddedUpdatedBy() (r int, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *AppDictMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[appdict.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *AppDictMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[appdict.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *AppDictMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, appdict.FieldUpdatedBy)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppDictMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppDictMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *AppDictMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[appdict.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *AppDictMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[appdict.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppDictMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	delete(m.clearedFields, appdict.FieldUpdatedAt)
+}
+
+// SetAppID sets the "app_id" field.
+func (m *AppDictMutation) SetAppID(i int) {
+	m.app = &i
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppDictMutation) AppID() (r int, exists bool) {
+	v := m.app
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldAppID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *AppDictMutation) ClearAppID() {
+	m.app = nil
+	m.clearedFields[appdict.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *AppDictMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[appdict.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppDictMutation) ResetAppID() {
+	m.app = nil
+	delete(m.clearedFields, appdict.FieldAppID)
+}
+
+// SetCode sets the "code" field.
+func (m *AppDictMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *AppDictMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *AppDictMutation) ResetCode() {
+	m.code = nil
+}
+
+// SetName sets the "name" field.
+func (m *AppDictMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *AppDictMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *AppDictMutation) ResetName() {
+	m.name = nil
+}
+
+// SetComments sets the "comments" field.
+func (m *AppDictMutation) SetComments(s string) {
+	m.comments = &s
+}
+
+// Comments returns the value of the "comments" field in the mutation.
+func (m *AppDictMutation) Comments() (r string, exists bool) {
+	v := m.comments
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldComments returns the old "comments" field's value of the AppDict entity.
+// If the AppDict object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictMutation) OldComments(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldComments is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldComments requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldComments: %w", err)
+	}
+	return oldValue.Comments, nil
+}
+
+// ClearComments clears the value of the "comments" field.
+func (m *AppDictMutation) ClearComments() {
+	m.comments = nil
+	m.clearedFields[appdict.FieldComments] = struct{}{}
+}
+
+// CommentsCleared returns if the "comments" field was cleared in this mutation.
+func (m *AppDictMutation) CommentsCleared() bool {
+	_, ok := m.clearedFields[appdict.FieldComments]
+	return ok
+}
+
+// ResetComments resets all changes to the "comments" field.
+func (m *AppDictMutation) ResetComments() {
+	m.comments = nil
+	delete(m.clearedFields, appdict.FieldComments)
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (m *AppDictMutation) ClearApp() {
+	m.clearedapp = true
+	m.clearedFields[appdict.FieldAppID] = struct{}{}
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *AppDictMutation) AppCleared() bool {
+	return m.AppIDCleared() || m.clearedapp
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppID instead. It exists only for internal usage by the builders.
+func (m *AppDictMutation) AppIDs() (ids []int) {
+	if id := m.app; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *AppDictMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+}
+
+// AddItemIDs adds the "items" edge to the AppDictItem entity by ids.
+func (m *AppDictMutation) AddItemIDs(ids ...int) {
+	if m.items == nil {
+		m.items = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.items[ids[i]] = struct{}{}
+	}
+}
+
+// ClearItems clears the "items" edge to the AppDictItem entity.
+func (m *AppDictMutation) ClearItems() {
+	m.cleareditems = true
+}
+
+// ItemsCleared reports if the "items" edge to the AppDictItem entity was cleared.
+func (m *AppDictMutation) ItemsCleared() bool {
+	return m.cleareditems
+}
+
+// RemoveItemIDs removes the "items" edge to the AppDictItem entity by IDs.
+func (m *AppDictMutation) RemoveItemIDs(ids ...int) {
+	if m.removeditems == nil {
+		m.removeditems = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.items, ids[i])
+		m.removeditems[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedItems returns the removed IDs of the "items" edge to the AppDictItem entity.
+func (m *AppDictMutation) RemovedItemsIDs() (ids []int) {
+	for id := range m.removeditems {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ItemsIDs returns the "items" edge IDs in the mutation.
+func (m *AppDictMutation) ItemsIDs() (ids []int) {
+	for id := range m.items {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetItems resets all changes to the "items" edge.
+func (m *AppDictMutation) ResetItems() {
+	m.items = nil
+	m.cleareditems = false
+	m.removeditems = nil
+}
+
+// Where appends a list predicates to the AppDictMutation builder.
+func (m *AppDictMutation) Where(ps ...predicate.AppDict) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AppDictMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AppDictMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppDict, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AppDictMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AppDictMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AppDict).
+func (m *AppDictMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppDictMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.created_by != nil {
+		fields = append(fields, appdict.FieldCreatedBy)
+	}
+	if m.created_at != nil {
+		fields = append(fields, appdict.FieldCreatedAt)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, appdict.FieldUpdatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, appdict.FieldUpdatedAt)
+	}
+	if m.app != nil {
+		fields = append(fields, appdict.FieldAppID)
+	}
+	if m.code != nil {
+		fields = append(fields, appdict.FieldCode)
+	}
+	if m.name != nil {
+		fields = append(fields, appdict.FieldName)
+	}
+	if m.comments != nil {
+		fields = append(fields, appdict.FieldComments)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppDictMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case appdict.FieldCreatedBy:
+		return m.CreatedBy()
+	case appdict.FieldCreatedAt:
+		return m.CreatedAt()
+	case appdict.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case appdict.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case appdict.FieldAppID:
+		return m.AppID()
+	case appdict.FieldCode:
+		return m.Code()
+	case appdict.FieldName:
+		return m.Name()
+	case appdict.FieldComments:
+		return m.Comments()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppDictMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case appdict.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case appdict.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case appdict.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case appdict.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case appdict.FieldAppID:
+		return m.OldAppID(ctx)
+	case appdict.FieldCode:
+		return m.OldCode(ctx)
+	case appdict.FieldName:
+		return m.OldName(ctx)
+	case appdict.FieldComments:
+		return m.OldComments(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppDict field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppDictMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case appdict.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case appdict.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case appdict.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case appdict.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case appdict.FieldAppID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case appdict.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
+	case appdict.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case appdict.FieldComments:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetComments(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppDictMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_by != nil {
+		fields = append(fields, appdict.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, appdict.FieldUpdatedBy)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppDictMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case appdict.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case appdict.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppDictMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case appdict.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case appdict.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppDictMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(appdict.FieldUpdatedBy) {
+		fields = append(fields, appdict.FieldUpdatedBy)
+	}
+	if m.FieldCleared(appdict.FieldUpdatedAt) {
+		fields = append(fields, appdict.FieldUpdatedAt)
+	}
+	if m.FieldCleared(appdict.FieldAppID) {
+		fields = append(fields, appdict.FieldAppID)
+	}
+	if m.FieldCleared(appdict.FieldComments) {
+		fields = append(fields, appdict.FieldComments)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppDictMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppDictMutation) ClearField(name string) error {
+	switch name {
+	case appdict.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case appdict.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case appdict.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case appdict.FieldComments:
+		m.ClearComments()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppDictMutation) ResetField(name string) error {
+	switch name {
+	case appdict.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case appdict.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case appdict.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case appdict.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case appdict.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case appdict.FieldCode:
+		m.ResetCode()
+		return nil
+	case appdict.FieldName:
+		m.ResetName()
+		return nil
+	case appdict.FieldComments:
+		m.ResetComments()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppDictMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.app != nil {
+		edges = append(edges, appdict.EdgeApp)
+	}
+	if m.items != nil {
+		edges = append(edges, appdict.EdgeItems)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppDictMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appdict.EdgeApp:
+		if id := m.app; id != nil {
+			return []ent.Value{*id}
+		}
+	case appdict.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.items))
+		for id := range m.items {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppDictMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removeditems != nil {
+		edges = append(edges, appdict.EdgeItems)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppDictMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case appdict.EdgeItems:
+		ids := make([]ent.Value, 0, len(m.removeditems))
+		for id := range m.removeditems {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppDictMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedapp {
+		edges = append(edges, appdict.EdgeApp)
+	}
+	if m.cleareditems {
+		edges = append(edges, appdict.EdgeItems)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppDictMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appdict.EdgeApp:
+		return m.clearedapp
+	case appdict.EdgeItems:
+		return m.cleareditems
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppDictMutation) ClearEdge(name string) error {
+	switch name {
+	case appdict.EdgeApp:
+		m.ClearApp()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppDictMutation) ResetEdge(name string) error {
+	switch name {
+	case appdict.EdgeApp:
+		m.ResetApp()
+		return nil
+	case appdict.EdgeItems:
+		m.ResetItems()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDict edge %s", name)
+}
+
+// AppDictItemMutation represents an operation that mutates the AppDictItem nodes in the graph.
+type AppDictItemMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	created_by      *int
+	addcreated_by   *int
+	created_at      *time.Time
+	updated_by      *int
+	addupdated_by   *int
+	updated_at      *time.Time
+	app_id          *int
+	addapp_id       *int
+	org_id          *int
+	addorg_id       *int
+	code            *string
+	name            *string
+	comments        *string
+	display_sort    *int32
+	adddisplay_sort *int32
+	clearedFields   map[string]struct{}
+	dict            *int
+	cleareddict     bool
+	done            bool
+	oldValue        func(context.Context) (*AppDictItem, error)
+	predicates      []predicate.AppDictItem
+}
+
+var _ ent.Mutation = (*AppDictItemMutation)(nil)
+
+// appdictitemOption allows management of the mutation configuration using functional options.
+type appdictitemOption func(*AppDictItemMutation)
+
+// newAppDictItemMutation creates new mutation for the AppDictItem entity.
+func newAppDictItemMutation(c config, op Op, opts ...appdictitemOption) *AppDictItemMutation {
+	m := &AppDictItemMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppDictItem,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppDictItemID sets the ID field of the mutation.
+func withAppDictItemID(id int) appdictitemOption {
+	return func(m *AppDictItemMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppDictItem
+		)
+		m.oldValue = func(ctx context.Context) (*AppDictItem, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppDictItem.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppDictItem sets the old AppDictItem of the mutation.
+func withAppDictItem(node *AppDictItem) appdictitemOption {
+	return func(m *AppDictItemMutation) {
+		m.oldValue = func(context.Context) (*AppDictItem, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppDictItemMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppDictItemMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppDictItem entities.
+func (m *AppDictItemMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppDictItemMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppDictItemMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppDictItem.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *AppDictItemMutation) SetCreatedBy(i int) {
+	m.created_by = &i
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *AppDictItemMutation) CreatedBy() (r int, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldCreatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds i to the "created_by" field.
+func (m *AppDictItemMutation) AddCreatedBy(i int) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += i
+	} else {
+		m.addcreated_by = &i
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *AppDictItemMutation) AddedCreatedBy() (r int, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *AppDictItemMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppDictItemMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppDictItemMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppDictItemMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *AppDictItemMutation) SetUpdatedBy(i int) {
+	m.updated_by = &i
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *AppDictItemMutation) UpdatedBy() (r int, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldUpdatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds i to the "updated_by" field.
+func (m *AppDictItemMutation) AddUpdatedBy(i int) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += i
+	} else {
+		m.addupdated_by = &i
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *AppDictItemMutation) AddedUpdatedBy() (r int, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *AppDictItemMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[appdictitem.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *AppDictItemMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *AppDictItemMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, appdictitem.FieldUpdatedBy)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppDictItemMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppDictItemMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *AppDictItemMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[appdictitem.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *AppDictItemMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppDictItemMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	delete(m.clearedFields, appdictitem.FieldUpdatedAt)
+}
+
+// SetAppID sets the "app_id" field.
+func (m *AppDictItemMutation) SetAppID(i int) {
+	m.app_id = &i
+	m.addapp_id = nil
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppDictItemMutation) AppID() (r int, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldAppID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// AddAppID adds i to the "app_id" field.
+func (m *AppDictItemMutation) AddAppID(i int) {
+	if m.addapp_id != nil {
+		*m.addapp_id += i
+	} else {
+		m.addapp_id = &i
+	}
+}
+
+// AddedAppID returns the value that was added to the "app_id" field in this mutation.
+func (m *AppDictItemMutation) AddedAppID() (r int, exists bool) {
+	v := m.addapp_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (m *AppDictItemMutation) ClearAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	m.clearedFields[appdictitem.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *AppDictItemMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldAppID]
+	return ok
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppDictItemMutation) ResetAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+	delete(m.clearedFields, appdictitem.FieldAppID)
+}
+
+// SetOrgID sets the "org_id" field.
+func (m *AppDictItemMutation) SetOrgID(i int) {
+	m.org_id = &i
+	m.addorg_id = nil
+}
+
+// OrgID returns the value of the "org_id" field in the mutation.
+func (m *AppDictItemMutation) OrgID() (r int, exists bool) {
+	v := m.org_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOrgID returns the old "org_id" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldOrgID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOrgID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
+	}
+	return oldValue.OrgID, nil
+}
+
+// AddOrgID adds i to the "org_id" field.
+func (m *AppDictItemMutation) AddOrgID(i int) {
+	if m.addorg_id != nil {
+		*m.addorg_id += i
+	} else {
+		m.addorg_id = &i
+	}
+}
+
+// AddedOrgID returns the value that was added to the "org_id" field in this mutation.
+func (m *AppDictItemMutation) AddedOrgID() (r int, exists bool) {
+	v := m.addorg_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOrgID clears the value of the "org_id" field.
+func (m *AppDictItemMutation) ClearOrgID() {
+	m.org_id = nil
+	m.addorg_id = nil
+	m.clearedFields[appdictitem.FieldOrgID] = struct{}{}
+}
+
+// OrgIDCleared returns if the "org_id" field was cleared in this mutation.
+func (m *AppDictItemMutation) OrgIDCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldOrgID]
+	return ok
+}
+
+// ResetOrgID resets all changes to the "org_id" field.
+func (m *AppDictItemMutation) ResetOrgID() {
+	m.org_id = nil
+	m.addorg_id = nil
+	delete(m.clearedFields, appdictitem.FieldOrgID)
+}
+
+// SetDictID sets the "dict_id" field.
+func (m *AppDictItemMutation) SetDictID(i int) {
+	m.dict = &i
+}
+
+// DictID returns the value of the "dict_id" field in the mutation.
+func (m *AppDictItemMutation) DictID() (r int, exists bool) {
+	v := m.dict
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDictID returns the old "dict_id" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldDictID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDictID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDictID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDictID: %w", err)
+	}
+	return oldValue.DictID, nil
+}
+
+// ClearDictID clears the value of the "dict_id" field.
+func (m *AppDictItemMutation) ClearDictID() {
+	m.dict = nil
+	m.clearedFields[appdictitem.FieldDictID] = struct{}{}
+}
+
+// DictIDCleared returns if the "dict_id" field was cleared in this mutation.
+func (m *AppDictItemMutation) DictIDCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldDictID]
+	return ok
+}
+
+// ResetDictID resets all changes to the "dict_id" field.
+func (m *AppDictItemMutation) ResetDictID() {
+	m.dict = nil
+	delete(m.clearedFields, appdictitem.FieldDictID)
+}
+
+// SetCode sets the "code" field.
+func (m *AppDictItemMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *AppDictItemMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *AppDictItemMutation) ResetCode() {
+	m.code = nil
+}
+
+// SetName sets the "name" field.
+func (m *AppDictItemMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *AppDictItemMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *AppDictItemMutation) ResetName() {
+	m.name = nil
+}
+
+// SetComments sets the "comments" field.
+func (m *AppDictItemMutation) SetComments(s string) {
+	m.comments = &s
+}
+
+// Comments returns the value of the "comments" field in the mutation.
+func (m *AppDictItemMutation) Comments() (r string, exists bool) {
+	v := m.comments
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldComments returns the old "comments" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldComments(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldComments is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldComments requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldComments: %w", err)
+	}
+	return oldValue.Comments, nil
+}
+
+// ClearComments clears the value of the "comments" field.
+func (m *AppDictItemMutation) ClearComments() {
+	m.comments = nil
+	m.clearedFields[appdictitem.FieldComments] = struct{}{}
+}
+
+// CommentsCleared returns if the "comments" field was cleared in this mutation.
+func (m *AppDictItemMutation) CommentsCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldComments]
+	return ok
+}
+
+// ResetComments resets all changes to the "comments" field.
+func (m *AppDictItemMutation) ResetComments() {
+	m.comments = nil
+	delete(m.clearedFields, appdictitem.FieldComments)
+}
+
+// SetDisplaySort sets the "display_sort" field.
+func (m *AppDictItemMutation) SetDisplaySort(i int32) {
+	m.display_sort = &i
+	m.adddisplay_sort = nil
+}
+
+// DisplaySort returns the value of the "display_sort" field in the mutation.
+func (m *AppDictItemMutation) DisplaySort() (r int32, exists bool) {
+	v := m.display_sort
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplaySort returns the old "display_sort" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldDisplaySort(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplaySort is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplaySort requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplaySort: %w", err)
+	}
+	return oldValue.DisplaySort, nil
+}
+
+// AddDisplaySort adds i to the "display_sort" field.
+func (m *AppDictItemMutation) AddDisplaySort(i int32) {
+	if m.adddisplay_sort != nil {
+		*m.adddisplay_sort += i
+	} else {
+		m.adddisplay_sort = &i
+	}
+}
+
+// AddedDisplaySort returns the value that was added to the "display_sort" field in this mutation.
+func (m *AppDictItemMutation) AddedDisplaySort() (r int32, exists bool) {
+	v := m.adddisplay_sort
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDisplaySort clears the value of the "display_sort" field.
+func (m *AppDictItemMutation) ClearDisplaySort() {
+	m.display_sort = nil
+	m.adddisplay_sort = nil
+	m.clearedFields[appdictitem.FieldDisplaySort] = struct{}{}
+}
+
+// DisplaySortCleared returns if the "display_sort" field was cleared in this mutation.
+func (m *AppDictItemMutation) DisplaySortCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldDisplaySort]
+	return ok
+}
+
+// ResetDisplaySort resets all changes to the "display_sort" field.
+func (m *AppDictItemMutation) ResetDisplaySort() {
+	m.display_sort = nil
+	m.adddisplay_sort = nil
+	delete(m.clearedFields, appdictitem.FieldDisplaySort)
+}
+
+// ClearDict clears the "dict" edge to the AppDict entity.
+func (m *AppDictItemMutation) ClearDict() {
+	m.cleareddict = true
+	m.clearedFields[appdictitem.FieldDictID] = struct{}{}
+}
+
+// DictCleared reports if the "dict" edge to the AppDict entity was cleared.
+func (m *AppDictItemMutation) DictCleared() bool {
+	return m.DictIDCleared() || m.cleareddict
+}
+
+// DictIDs returns the "dict" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DictID instead. It exists only for internal usage by the builders.
+func (m *AppDictItemMutation) DictIDs() (ids []int) {
+	if id := m.dict; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDict resets all changes to the "dict" edge.
+func (m *AppDictItemMutation) ResetDict() {
+	m.dict = nil
+	m.cleareddict = false
+}
+
+// Where appends a list predicates to the AppDictItemMutation builder.
+func (m *AppDictItemMutation) Where(ps ...predicate.AppDictItem) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AppDictItemMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AppDictItemMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppDictItem, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AppDictItemMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AppDictItemMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AppDictItem).
+func (m *AppDictItemMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppDictItemMutation) Fields() []string {
+	fields := make([]string, 0, 11)
+	if m.created_by != nil {
+		fields = append(fields, appdictitem.FieldCreatedBy)
+	}
+	if m.created_at != nil {
+		fields = append(fields, appdictitem.FieldCreatedAt)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, appdictitem.FieldUpdatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, appdictitem.FieldUpdatedAt)
+	}
+	if m.app_id != nil {
+		fields = append(fields, appdictitem.FieldAppID)
+	}
+	if m.org_id != nil {
+		fields = append(fields, appdictitem.FieldOrgID)
+	}
+	if m.dict != nil {
+		fields = append(fields, appdictitem.FieldDictID)
+	}
+	if m.code != nil {
+		fields = append(fields, appdictitem.FieldCode)
+	}
+	if m.name != nil {
+		fields = append(fields, appdictitem.FieldName)
+	}
+	if m.comments != nil {
+		fields = append(fields, appdictitem.FieldComments)
+	}
+	if m.display_sort != nil {
+		fields = append(fields, appdictitem.FieldDisplaySort)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppDictItemMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		return m.CreatedBy()
+	case appdictitem.FieldCreatedAt:
+		return m.CreatedAt()
+	case appdictitem.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case appdictitem.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case appdictitem.FieldAppID:
+		return m.AppID()
+	case appdictitem.FieldOrgID:
+		return m.OrgID()
+	case appdictitem.FieldDictID:
+		return m.DictID()
+	case appdictitem.FieldCode:
+		return m.Code()
+	case appdictitem.FieldName:
+		return m.Name()
+	case appdictitem.FieldComments:
+		return m.Comments()
+	case appdictitem.FieldDisplaySort:
+		return m.DisplaySort()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppDictItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case appdictitem.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case appdictitem.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case appdictitem.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case appdictitem.FieldAppID:
+		return m.OldAppID(ctx)
+	case appdictitem.FieldOrgID:
+		return m.OldOrgID(ctx)
+	case appdictitem.FieldDictID:
+		return m.OldDictID(ctx)
+	case appdictitem.FieldCode:
+		return m.OldCode(ctx)
+	case appdictitem.FieldName:
+		return m.OldName(ctx)
+	case appdictitem.FieldComments:
+		return m.OldComments(ctx)
+	case appdictitem.FieldDisplaySort:
+		return m.OldDisplaySort(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppDictItem field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppDictItemMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case appdictitem.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case appdictitem.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case appdictitem.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case appdictitem.FieldAppID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case appdictitem.FieldOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOrgID(v)
+		return nil
+	case appdictitem.FieldDictID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDictID(v)
+		return nil
+	case appdictitem.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
+		return nil
+	case appdictitem.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case appdictitem.FieldComments:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetComments(v)
+		return nil
+	case appdictitem.FieldDisplaySort:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplaySort(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppDictItemMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_by != nil {
+		fields = append(fields, appdictitem.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, appdictitem.FieldUpdatedBy)
+	}
+	if m.addapp_id != nil {
+		fields = append(fields, appdictitem.FieldAppID)
+	}
+	if m.addorg_id != nil {
+		fields = append(fields, appdictitem.FieldOrgID)
+	}
+	if m.adddisplay_sort != nil {
+		fields = append(fields, appdictitem.FieldDisplaySort)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppDictItemMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case appdictitem.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case appdictitem.FieldAppID:
+		return m.AddedAppID()
+	case appdictitem.FieldOrgID:
+		return m.AddedOrgID()
+	case appdictitem.FieldDisplaySort:
+		return m.AddedDisplaySort()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppDictItemMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case appdictitem.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case appdictitem.FieldAppID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppID(v)
+		return nil
+	case appdictitem.FieldOrgID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOrgID(v)
+		return nil
+	case appdictitem.FieldDisplaySort:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDisplaySort(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppDictItemMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(appdictitem.FieldUpdatedBy) {
+		fields = append(fields, appdictitem.FieldUpdatedBy)
+	}
+	if m.FieldCleared(appdictitem.FieldUpdatedAt) {
+		fields = append(fields, appdictitem.FieldUpdatedAt)
+	}
+	if m.FieldCleared(appdictitem.FieldAppID) {
+		fields = append(fields, appdictitem.FieldAppID)
+	}
+	if m.FieldCleared(appdictitem.FieldOrgID) {
+		fields = append(fields, appdictitem.FieldOrgID)
+	}
+	if m.FieldCleared(appdictitem.FieldDictID) {
+		fields = append(fields, appdictitem.FieldDictID)
+	}
+	if m.FieldCleared(appdictitem.FieldComments) {
+		fields = append(fields, appdictitem.FieldComments)
+	}
+	if m.FieldCleared(appdictitem.FieldDisplaySort) {
+		fields = append(fields, appdictitem.FieldDisplaySort)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppDictItemMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppDictItemMutation) ClearField(name string) error {
+	switch name {
+	case appdictitem.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case appdictitem.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case appdictitem.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case appdictitem.FieldOrgID:
+		m.ClearOrgID()
+		return nil
+	case appdictitem.FieldDictID:
+		m.ClearDictID()
+		return nil
+	case appdictitem.FieldComments:
+		m.ClearComments()
+		return nil
+	case appdictitem.FieldDisplaySort:
+		m.ClearDisplaySort()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppDictItemMutation) ResetField(name string) error {
+	switch name {
+	case appdictitem.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case appdictitem.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case appdictitem.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case appdictitem.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case appdictitem.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case appdictitem.FieldOrgID:
+		m.ResetOrgID()
+		return nil
+	case appdictitem.FieldDictID:
+		m.ResetDictID()
+		return nil
+	case appdictitem.FieldCode:
+		m.ResetCode()
+		return nil
+	case appdictitem.FieldName:
+		m.ResetName()
+		return nil
+	case appdictitem.FieldComments:
+		m.ResetComments()
+		return nil
+	case appdictitem.FieldDisplaySort:
+		m.ResetDisplaySort()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppDictItemMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.dict != nil {
+		edges = append(edges, appdictitem.EdgeDict)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppDictItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appdictitem.EdgeDict:
+		if id := m.dict; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppDictItemMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppDictItemMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppDictItemMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.cleareddict {
+		edges = append(edges, appdictitem.EdgeDict)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppDictItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appdictitem.EdgeDict:
+		return m.cleareddict
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppDictItemMutation) ClearEdge(name string) error {
+	switch name {
+	case appdictitem.EdgeDict:
+		m.ClearDict()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppDictItemMutation) ResetEdge(name string) error {
+	switch name {
+	case appdictitem.EdgeDict:
+		m.ResetDict()
+		return nil
+	}
+	return fmt.Errorf("unknown AppDictItem edge %s", name)
 }
 
 // AppMenuMutation represents an operation that mutates the AppMenu nodes in the graph.
@@ -4213,6 +6533,7 @@ func (m *AppMenuMutation) ResetDisplaySort() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *AppMenuMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[appmenu.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -4239,6 +6560,7 @@ func (m *AppMenuMutation) ResetApp() {
 // ClearAction clears the "action" edge to the AppAction entity.
 func (m *AppMenuMutation) ClearAction() {
 	m.clearedaction = true
+	m.clearedFields[appmenu.FieldActionID] = struct{}{}
 }
 
 // ActionCleared reports if the "action" edge to the AppAction entity was cleared.
@@ -5448,6 +7770,7 @@ func (m *AppPolicyMutation) ResetStatus() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *AppPolicyMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[apppolicy.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -6566,6 +8889,7 @@ func (m *AppResMutation) ResetArnPattern() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *AppResMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[appres.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -7515,6 +9839,7 @@ func (m *AppRoleMutation) ResetEditable() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *AppRoleMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[approle.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -8570,6 +10895,7 @@ func (m *AppRolePolicyMutation) SetRoleID(id int) {
 // ClearRole clears the "role" edge to the AppRole entity.
 func (m *AppRolePolicyMutation) ClearRole() {
 	m.clearedrole = true
+	m.clearedFields[approlepolicy.FieldAppRoleID] = struct{}{}
 }
 
 // RoleCleared reports if the "role" edge to the AppRole entity was cleared.
@@ -8609,6 +10935,7 @@ func (m *AppRolePolicyMutation) SetPolicyID(id int) {
 // ClearPolicy clears the "policy" edge to the AppPolicy entity.
 func (m *AppRolePolicyMutation) ClearPolicy() {
 	m.clearedpolicy = true
+	m.clearedFields[approlepolicy.FieldAppPolicyID] = struct{}{}
 }
 
 // PolicyCleared reports if the "policy" edge to the AppPolicy entity was cleared.
@@ -9769,6 +12096,7 @@ func (m *FileMutation) ResetMd5() {
 // ClearSource clears the "source" edge to the FileSource entity.
 func (m *FileMutation) ClearSource() {
 	m.clearedsource = true
+	m.clearedFields[file.FieldSourceID] = struct{}{}
 }
 
 // SourceCleared reports if the "source" edge to the FileSource entity was cleared.
@@ -11939,6 +14267,7 @@ func (m *OauthClientMutation) ResetStatus() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *OauthClientMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[oauthclient.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -13380,6 +15709,7 @@ func (m *OrgMutation) ResetTimezone() {
 // ClearParent clears the "parent" edge to the Org entity.
 func (m *OrgMutation) ClearParent() {
 	m.clearedparent = true
+	m.clearedFields[org.FieldParentID] = struct{}{}
 }
 
 // ParentCleared reports if the "parent" edge to the Org entity was cleared.
@@ -13460,6 +15790,7 @@ func (m *OrgMutation) ResetChildren() {
 // ClearOwner clears the "owner" edge to the User entity.
 func (m *OrgMutation) ClearOwner() {
 	m.clearedowner = true
+	m.clearedFields[org.FieldOwnerID] = struct{}{}
 }
 
 // OwnerCleared reports if the "owner" edge to the User entity was cleared.
@@ -15092,6 +17423,7 @@ func (m *OrgAppMutation) ResetAppID() {
 // ClearApp clears the "app" edge to the App entity.
 func (m *OrgAppMutation) ClearApp() {
 	m.clearedapp = true
+	m.clearedFields[orgapp.FieldAppID] = struct{}{}
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
@@ -15118,6 +17450,7 @@ func (m *OrgAppMutation) ResetApp() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgAppMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orgapp.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -16165,6 +18498,7 @@ func (m *OrgPolicyMutation) ResetRules() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgPolicyMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orgpolicy.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -17307,6 +19641,7 @@ func (m *OrgRoleMutation) ResetComments() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgRoleMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orgrole.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -18393,6 +20728,7 @@ func (m *OrgRoleUserMutation) ResetOrgID() {
 // ClearOrgRole clears the "org_role" edge to the OrgRole entity.
 func (m *OrgRoleUserMutation) ClearOrgRole() {
 	m.clearedorg_role = true
+	m.clearedFields[orgroleuser.FieldOrgRoleID] = struct{}{}
 }
 
 // OrgRoleCleared reports if the "org_role" edge to the OrgRole entity was cleared.
@@ -18419,6 +20755,7 @@ func (m *OrgRoleUserMutation) ResetOrgRole() {
 // ClearOrgUser clears the "org_user" edge to the OrgUser entity.
 func (m *OrgRoleUserMutation) ClearOrgUser() {
 	m.clearedorg_user = true
+	m.clearedFields[orgroleuser.FieldOrgUserID] = struct{}{}
 }
 
 // OrgUserCleared reports if the "org_user" edge to the OrgUser entity was cleared.
@@ -18445,6 +20782,7 @@ func (m *OrgRoleUserMutation) ResetOrgUser() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *OrgRoleUserMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[orgroleuser.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -18471,6 +20809,7 @@ func (m *OrgRoleUserMutation) ResetUser() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgRoleUserMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orgroleuser.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -19406,6 +21745,7 @@ func (m *OrgUserMutation) ResetDisplayName() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgUserMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orguser.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -19432,6 +21772,7 @@ func (m *OrgUserMutation) ResetOrg() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *OrgUserMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[orguser.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -20547,6 +22888,7 @@ func (m *OrgUserPreferenceMutation) ResetMenuRecent() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *OrgUserPreferenceMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[orguserpreference.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -20573,6 +22915,7 @@ func (m *OrgUserPreferenceMutation) ResetUser() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *OrgUserPreferenceMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[orguserpreference.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -21693,6 +24036,7 @@ func (m *PermissionMutation) ResetStatus() {
 // ClearOrg clears the "org" edge to the Org entity.
 func (m *PermissionMutation) ClearOrg() {
 	m.clearedorg = true
+	m.clearedFields[permission.FieldOrgID] = struct{}{}
 }
 
 // OrgCleared reports if the "org" edge to the Org entity was cleared.
@@ -21719,6 +24063,7 @@ func (m *PermissionMutation) ResetOrg() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *PermissionMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[permission.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -21745,6 +24090,7 @@ func (m *PermissionMutation) ResetUser() {
 // ClearRole clears the "role" edge to the OrgRole entity.
 func (m *PermissionMutation) ClearRole() {
 	m.clearedrole = true
+	m.clearedFields[permission.FieldRoleID] = struct{}{}
 }
 
 // RoleCleared reports if the "role" edge to the OrgRole entity was cleared.
@@ -21771,6 +24117,7 @@ func (m *PermissionMutation) ResetRole() {
 // ClearOrgPolicy clears the "org_policy" edge to the OrgPolicy entity.
 func (m *PermissionMutation) ClearOrgPolicy() {
 	m.clearedorg_policy = true
+	m.clearedFields[permission.FieldOrgPolicyID] = struct{}{}
 }
 
 // OrgPolicyCleared reports if the "org_policy" edge to the OrgPolicy entity was cleared.
@@ -25083,6 +27430,7 @@ func (m *UserDeviceMutation) ResetComments() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *UserDeviceMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[userdevice.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -26179,6 +28527,7 @@ func (m *UserIdentityMutation) ResetStatus() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *UserIdentityMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[useridentity.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -27420,6 +29769,7 @@ func (m *UserLoginProfileMutation) ResetMfaStatus() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *UserLoginProfileMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[userloginprofile.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.
@@ -28520,6 +30870,7 @@ func (m *UserPasswordMutation) ResetStatus() {
 // ClearUser clears the "user" edge to the User entity.
 func (m *UserPasswordMutation) ClearUser() {
 	m.cleareduser = true
+	m.clearedFields[userpassword.FieldUserID] = struct{}{}
 }
 
 // UserCleared reports if the "user" edge to the User entity was cleared.

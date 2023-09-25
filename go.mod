@@ -4,9 +4,9 @@ go 1.20
 
 require (
 	ariga.io/entcache v0.1.1-0.20230620164151-0eb723a11c40
-	entgo.io/contrib v0.4.5
-	entgo.io/ent v0.12.3
-	github.com/99designs/gqlgen v0.17.35
+	entgo.io/contrib v0.4.6-0.20230615102013-704944fdc0f6
+	entgo.io/ent v0.12.4
+	github.com/99designs/gqlgen v0.17.38
 	github.com/alicebob/miniredis/v2 v2.30.5
 	github.com/dchest/captcha v1.0.0
 	github.com/gin-gonic/gin v1.9.1
@@ -15,12 +15,12 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tsingsun/woocoo v0.3.1-0.20230817021527-461ec2d3409b
-	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230817021527-461ec2d3409b
-	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230817021527-461ec2d3409b
-	github.com/vektah/gqlparser/v2 v2.5.7
+	github.com/tsingsun/woocoo v0.3.1-0.20230925100652-4d45e9b7847f
+	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230922090437-500dbe1d58de
+	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230925100652-4d45e9b7847f
+	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230622102820-b7f587646300
+	github.com/woocoos/entco v0.0.0-20230925101310-81aebdaf5d6e
 	go.opentelemetry.io/contrib/propagators/b3 v1.17.0
 	golang.org/x/sync v0.3.0
 )
@@ -32,6 +32,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-test/deep v1.0.8 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2 // indirect
+	github.com/hashicorp/go-envparse v0.1.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.3 // indirect
 	github.com/jhump/protoreflect v1.10.1 // indirect
 	github.com/knadh/koanf/maps v0.1.1 // indirect
@@ -71,7 +72,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.11.0 // indirect
+	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/XSAM/otelsql v0.23.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect

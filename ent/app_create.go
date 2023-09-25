@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -354,6 +355,21 @@ func (ac *AppCreate) AddOrgs(o ...*Org) *AppCreate {
 	return ac.AddOrgIDs(ids...)
 }
 
+// AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
+func (ac *AppCreate) AddDictIDs(ids ...int) *AppCreate {
+	ac.mutation.AddDictIDs(ids...)
+	return ac
+}
+
+// AddDicts adds the "dicts" edges to the AppDict entity.
+func (ac *AppCreate) AddDicts(a ...*AppDict) *AppCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddDictIDs(ids...)
+}
+
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
 func (ac *AppCreate) AddOrgAppIDs(ids ...int) *AppCreate {
 	ac.mutation.AddOrgAppIDs(ids...)
@@ -686,6 +702,22 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.DictsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ac.mutation.OrgAppIDs(); len(nodes) > 0 {
@@ -1473,12 +1505,16 @@ func (u *AppUpsertOne) IDX(ctx context.Context) int {
 // AppCreateBulk is the builder for creating many App entities in bulk.
 type AppCreateBulk struct {
 	config
+	err      error
 	builders []*AppCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the App entities in the database.
 func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
+	if acb.err != nil {
+		return nil, acb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(acb.builders))
 	nodes := make([]*App, len(acb.builders))
 	mutators := make([]Mutator, len(acb.builders))
@@ -1994,6 +2030,9 @@ func (u *AppUpsertBulk) ClearOwnerOrgID() *AppUpsertBulk {
 
 // Exec executes the query.
 func (u *AppUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppCreateBulk instead", i)

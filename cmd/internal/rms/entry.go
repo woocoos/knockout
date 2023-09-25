@@ -70,9 +70,9 @@ func (s *Server) Stop(ctx context.Context) error {
 func (s *Server) BuildWebEngine() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(gql.New()),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
-		web.RegisterMiddleware(authz.New()),
+		gql.RegistryMiddleware(),
+		otelweb.RegisterMiddleware(),
+		web.WithMiddlewareNewFunc("authz", authz.Middleware),
 		identity.RegistryTenantIDMiddleware(),
 	)
 

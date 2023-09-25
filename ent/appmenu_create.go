@@ -920,12 +920,16 @@ func (u *AppMenuUpsertOne) IDX(ctx context.Context) int {
 // AppMenuCreateBulk is the builder for creating many AppMenu entities in bulk.
 type AppMenuCreateBulk struct {
 	config
+	err      error
 	builders []*AppMenuCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppMenu entities in the database.
 func (amcb *AppMenuCreateBulk) Save(ctx context.Context) ([]*AppMenu, error) {
+	if amcb.err != nil {
+		return nil, amcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(amcb.builders))
 	nodes := make([]*AppMenu, len(amcb.builders))
 	mutators := make([]Mutator, len(amcb.builders))
@@ -1315,6 +1319,9 @@ func (u *AppMenuUpsertBulk) ClearDisplaySort() *AppMenuUpsertBulk {
 
 // Exec executes the query.
 func (u *AppMenuUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppMenuCreateBulk instead", i)

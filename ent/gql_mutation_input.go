@@ -38,6 +38,7 @@ type CreateAppInput struct {
 	ResourceIDs          []int
 	RoleIDs              []int
 	PolicyIDs            []int
+	DictIDs              []int
 }
 
 // Mutate applies the CreateAppInput on the AppMutation builder.
@@ -87,6 +88,9 @@ func (i *CreateAppInput) Mutate(m *AppMutation) {
 	if v := i.PolicyIDs; len(v) > 0 {
 		m.AddPolicyIDs(v...)
 	}
+	if v := i.DictIDs; len(v) > 0 {
+		m.AddDictIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateAppInput on the AppCreate builder.
@@ -132,6 +136,9 @@ type UpdateAppInput struct {
 	ClearPolicies             bool
 	AddPolicyIDs              []int
 	RemovePolicyIDs           []int
+	ClearDicts                bool
+	AddDictIDs                []int
+	RemoveDictIDs             []int
 }
 
 // Mutate applies the UpdateAppInput on the AppMutation builder.
@@ -241,6 +248,15 @@ func (i *UpdateAppInput) Mutate(m *AppMutation) {
 	if v := i.RemovePolicyIDs; len(v) > 0 {
 		m.RemovePolicyIDs(v...)
 	}
+	if i.ClearDicts {
+		m.ClearDicts()
+	}
+	if v := i.AddDictIDs; len(v) > 0 {
+		m.AddDictIDs(v...)
+	}
+	if v := i.RemoveDictIDs; len(v) > 0 {
+		m.RemoveDictIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the UpdateAppInput on the AppUpdate builder.
@@ -335,6 +351,146 @@ func (c *AppActionUpdate) SetInput(i UpdateAppActionInput) *AppActionUpdate {
 
 // SetInput applies the change-set in the UpdateAppActionInput on the AppActionUpdateOne builder.
 func (c *AppActionUpdateOne) SetInput(i UpdateAppActionInput) *AppActionUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateAppDictInput represents a mutation input for creating appdicts.
+type CreateAppDictInput struct {
+	Code     string
+	Name     string
+	Comments *string
+	AppID    *int
+	ItemIDs  []int
+}
+
+// Mutate applies the CreateAppDictInput on the AppDictMutation builder.
+func (i *CreateAppDictInput) Mutate(m *AppDictMutation) {
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
+	}
+	if v := i.ItemIDs; len(v) > 0 {
+		m.AddItemIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateAppDictInput on the AppDictCreate builder.
+func (c *AppDictCreate) SetInput(i CreateAppDictInput) *AppDictCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateAppDictInput represents a mutation input for updating appdicts.
+type UpdateAppDictInput struct {
+	Name          *string
+	ClearComments bool
+	Comments      *string
+	ClearItems    bool
+	AddItemIDs    []int
+	RemoveItemIDs []int
+}
+
+// Mutate applies the UpdateAppDictInput on the AppDictMutation builder.
+func (i *UpdateAppDictInput) Mutate(m *AppDictMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if i.ClearItems {
+		m.ClearItems()
+	}
+	if v := i.AddItemIDs; len(v) > 0 {
+		m.AddItemIDs(v...)
+	}
+	if v := i.RemoveItemIDs; len(v) > 0 {
+		m.RemoveItemIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAppDictInput on the AppDictUpdate builder.
+func (c *AppDictUpdate) SetInput(i UpdateAppDictInput) *AppDictUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateAppDictInput on the AppDictUpdateOne builder.
+func (c *AppDictUpdateOne) SetInput(i UpdateAppDictInput) *AppDictUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateAppDictItemInput represents a mutation input for creating appdictitems.
+type CreateAppDictItemInput struct {
+	AppID    *int
+	OrgID    *int
+	Code     string
+	Name     string
+	Comments *string
+	DictID   *int
+}
+
+// Mutate applies the CreateAppDictItemInput on the AppDictItemMutation builder.
+func (i *CreateAppDictItemInput) Mutate(m *AppDictItemMutation) {
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.DictID; v != nil {
+		m.SetDictID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateAppDictItemInput on the AppDictItemCreate builder.
+func (c *AppDictItemCreate) SetInput(i CreateAppDictItemInput) *AppDictItemCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateAppDictItemInput represents a mutation input for updating appdictitems.
+type UpdateAppDictItemInput struct {
+	Name          *string
+	ClearComments bool
+	Comments      *string
+}
+
+// Mutate applies the UpdateAppDictItemInput on the AppDictItemMutation builder.
+func (i *UpdateAppDictItemInput) Mutate(m *AppDictItemMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAppDictItemInput on the AppDictItemUpdate builder.
+func (c *AppDictItemUpdate) SetInput(i UpdateAppDictItemInput) *AppDictItemUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateAppDictItemInput on the AppDictItemUpdateOne builder.
+func (c *AppDictItemUpdateOne) SetInput(i UpdateAppDictItemInput) *AppDictItemUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

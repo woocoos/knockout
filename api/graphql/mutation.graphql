@@ -80,6 +80,20 @@ type Mutation {
     updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
     """删除应用角色"""
     deleteAppRole(roleID:ID!): Boolean!
+    """创建应用数据字典"""
+    createAppDict(appID:ID!,input: CreateAppDictInput!): AppDict
+    """更新应用数据字典"""
+    updateAppDict(dictID:ID!,input: UpdateAppDictInput!): AppDict
+    """删除应用数据字典"""
+    deleteAppDict(dictID:ID!): Boolean!
+    """创建应用数据字典项"""
+    createAppDictItem(dictID:ID!,input: CreateAppDictItemInput!): AppDictItem
+    """更新应用数据字典项"""
+    updateAppDictItem(itemID:ID!,input: UpdateAppDictItemInput!): AppDictItem
+    """删除应用数据字典项"""
+    deleteAppDictItem(itemID:ID!): Boolean!
+    """移动节点"""
+    moveAppDictItem(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
     """分配应用角色到组织"""
     assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
     """取消分配到组织应用角色"""

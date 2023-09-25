@@ -16,6 +16,8 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -41,62 +43,110 @@ type Noder interface {
 	IsNode()
 }
 
-// IsNode implements the Node interface check for GQLGen.
-func (n *App) IsNode() {}
+var appImplementors = []string{"App", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *AppAction) IsNode() {}
+func (*App) IsNode() {}
+
+var appactionImplementors = []string{"AppAction", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *AppMenu) IsNode() {}
+func (*AppAction) IsNode() {}
+
+var appdictImplementors = []string{"AppDict", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *AppPolicy) IsNode() {}
+func (*AppDict) IsNode() {}
+
+var appdictitemImplementors = []string{"AppDictItem", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *AppRes) IsNode() {}
+func (*AppDictItem) IsNode() {}
+
+var appmenuImplementors = []string{"AppMenu", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *AppRole) IsNode() {}
+func (*AppMenu) IsNode() {}
+
+var apppolicyImplementors = []string{"AppPolicy", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *File) IsNode() {}
+func (*AppPolicy) IsNode() {}
+
+var appresImplementors = []string{"AppRes", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *FileSource) IsNode() {}
+func (*AppRes) IsNode() {}
+
+var approleImplementors = []string{"AppRole", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *OauthClient) IsNode() {}
+func (*AppRole) IsNode() {}
+
+var fileImplementors = []string{"File", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Org) IsNode() {}
+func (*File) IsNode() {}
+
+var filesourceImplementors = []string{"FileSource", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *OrgPolicy) IsNode() {}
+func (*FileSource) IsNode() {}
+
+var oauthclientImplementors = []string{"OauthClient", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *OrgRole) IsNode() {}
+func (*OauthClient) IsNode() {}
+
+var orgImplementors = []string{"Org", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *OrgUserPreference) IsNode() {}
+func (*Org) IsNode() {}
+
+var orgpolicyImplementors = []string{"OrgPolicy", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Permission) IsNode() {}
+func (*OrgPolicy) IsNode() {}
+
+var orgroleImplementors = []string{"OrgRole", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *User) IsNode() {}
+func (*OrgRole) IsNode() {}
+
+var orguserpreferenceImplementors = []string{"OrgUserPreference", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserDevice) IsNode() {}
+func (*OrgUserPreference) IsNode() {}
+
+var permissionImplementors = []string{"Permission", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserIdentity) IsNode() {}
+func (*Permission) IsNode() {}
+
+var userImplementors = []string{"User", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserLoginProfile) IsNode() {}
+func (*User) IsNode() {}
+
+var userdeviceImplementors = []string{"UserDevice", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *UserPassword) IsNode() {}
+func (*UserDevice) IsNode() {}
+
+var useridentityImplementors = []string{"UserIdentity", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserIdentity) IsNode() {}
+
+var userloginprofileImplementors = []string{"UserLoginProfile", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserLoginProfile) IsNode() {}
+
+var userpasswordImplementors = []string{"UserPassword", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserPassword) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -159,7 +209,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case app.Table:
 		query := c.App.Query().
 			Where(app.ID(id))
-		query, err := query.CollectFields(ctx, "App")
+		query, err := query.CollectFields(ctx, appImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -171,7 +221,31 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case appaction.Table:
 		query := c.AppAction.Query().
 			Where(appaction.ID(id))
-		query, err := query.CollectFields(ctx, "AppAction")
+		query, err := query.CollectFields(ctx, appactionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case appdict.Table:
+		query := c.AppDict.Query().
+			Where(appdict.ID(id))
+		query, err := query.CollectFields(ctx, appdictImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case appdictitem.Table:
+		query := c.AppDictItem.Query().
+			Where(appdictitem.ID(id))
+		query, err := query.CollectFields(ctx, appdictitemImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -183,7 +257,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case appmenu.Table:
 		query := c.AppMenu.Query().
 			Where(appmenu.ID(id))
-		query, err := query.CollectFields(ctx, "AppMenu")
+		query, err := query.CollectFields(ctx, appmenuImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -195,7 +269,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case apppolicy.Table:
 		query := c.AppPolicy.Query().
 			Where(apppolicy.ID(id))
-		query, err := query.CollectFields(ctx, "AppPolicy")
+		query, err := query.CollectFields(ctx, apppolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -207,7 +281,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case appres.Table:
 		query := c.AppRes.Query().
 			Where(appres.ID(id))
-		query, err := query.CollectFields(ctx, "AppRes")
+		query, err := query.CollectFields(ctx, appresImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -219,7 +293,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case approle.Table:
 		query := c.AppRole.Query().
 			Where(approle.ID(id))
-		query, err := query.CollectFields(ctx, "AppRole")
+		query, err := query.CollectFields(ctx, approleImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -231,7 +305,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case file.Table:
 		query := c.File.Query().
 			Where(file.ID(id))
-		query, err := query.CollectFields(ctx, "File")
+		query, err := query.CollectFields(ctx, fileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -243,7 +317,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case filesource.Table:
 		query := c.FileSource.Query().
 			Where(filesource.ID(id))
-		query, err := query.CollectFields(ctx, "FileSource")
+		query, err := query.CollectFields(ctx, filesourceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -255,7 +329,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case oauthclient.Table:
 		query := c.OauthClient.Query().
 			Where(oauthclient.ID(id))
-		query, err := query.CollectFields(ctx, "OauthClient")
+		query, err := query.CollectFields(ctx, oauthclientImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -267,7 +341,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case org.Table:
 		query := c.Org.Query().
 			Where(org.ID(id))
-		query, err := query.CollectFields(ctx, "Org")
+		query, err := query.CollectFields(ctx, orgImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -279,7 +353,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case orgpolicy.Table:
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.ID(id))
-		query, err := query.CollectFields(ctx, "OrgPolicy")
+		query, err := query.CollectFields(ctx, orgpolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -291,7 +365,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case orgrole.Table:
 		query := c.OrgRole.Query().
 			Where(orgrole.ID(id))
-		query, err := query.CollectFields(ctx, "OrgRole")
+		query, err := query.CollectFields(ctx, orgroleImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -303,7 +377,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case orguserpreference.Table:
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.ID(id))
-		query, err := query.CollectFields(ctx, "OrgUserPreference")
+		query, err := query.CollectFields(ctx, orguserpreferenceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -315,7 +389,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case permission.Table:
 		query := c.Permission.Query().
 			Where(permission.ID(id))
-		query, err := query.CollectFields(ctx, "Permission")
+		query, err := query.CollectFields(ctx, permissionImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -327,7 +401,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case user.Table:
 		query := c.User.Query().
 			Where(user.ID(id))
-		query, err := query.CollectFields(ctx, "User")
+		query, err := query.CollectFields(ctx, userImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -339,7 +413,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userdevice.Table:
 		query := c.UserDevice.Query().
 			Where(userdevice.ID(id))
-		query, err := query.CollectFields(ctx, "UserDevice")
+		query, err := query.CollectFields(ctx, userdeviceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -351,7 +425,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case useridentity.Table:
 		query := c.UserIdentity.Query().
 			Where(useridentity.ID(id))
-		query, err := query.CollectFields(ctx, "UserIdentity")
+		query, err := query.CollectFields(ctx, useridentityImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -363,7 +437,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userloginprofile.Table:
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.ID(id))
-		query, err := query.CollectFields(ctx, "UserLoginProfile")
+		query, err := query.CollectFields(ctx, userloginprofileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -375,7 +449,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case userpassword.Table:
 		query := c.UserPassword.Query().
 			Where(userpassword.ID(id))
-		query, err := query.CollectFields(ctx, "UserPassword")
+		query, err := query.CollectFields(ctx, userpasswordImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -460,7 +534,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case app.Table:
 		query := c.App.Query().
 			Where(app.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "App")
+		query, err := query.CollectFields(ctx, appImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -476,7 +550,39 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case appaction.Table:
 		query := c.AppAction.Query().
 			Where(appaction.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "AppAction")
+		query, err := query.CollectFields(ctx, appactionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case appdict.Table:
+		query := c.AppDict.Query().
+			Where(appdict.IDIn(ids...))
+		query, err := query.CollectFields(ctx, appdictImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case appdictitem.Table:
+		query := c.AppDictItem.Query().
+			Where(appdictitem.IDIn(ids...))
+		query, err := query.CollectFields(ctx, appdictitemImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -492,7 +598,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case appmenu.Table:
 		query := c.AppMenu.Query().
 			Where(appmenu.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "AppMenu")
+		query, err := query.CollectFields(ctx, appmenuImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -508,7 +614,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case apppolicy.Table:
 		query := c.AppPolicy.Query().
 			Where(apppolicy.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "AppPolicy")
+		query, err := query.CollectFields(ctx, apppolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -524,7 +630,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case appres.Table:
 		query := c.AppRes.Query().
 			Where(appres.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "AppRes")
+		query, err := query.CollectFields(ctx, appresImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -540,7 +646,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case approle.Table:
 		query := c.AppRole.Query().
 			Where(approle.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "AppRole")
+		query, err := query.CollectFields(ctx, approleImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -556,7 +662,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case file.Table:
 		query := c.File.Query().
 			Where(file.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "File")
+		query, err := query.CollectFields(ctx, fileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -572,7 +678,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case filesource.Table:
 		query := c.FileSource.Query().
 			Where(filesource.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "FileSource")
+		query, err := query.CollectFields(ctx, filesourceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -588,7 +694,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case oauthclient.Table:
 		query := c.OauthClient.Query().
 			Where(oauthclient.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "OauthClient")
+		query, err := query.CollectFields(ctx, oauthclientImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -604,7 +710,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case org.Table:
 		query := c.Org.Query().
 			Where(org.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Org")
+		query, err := query.CollectFields(ctx, orgImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -620,7 +726,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case orgpolicy.Table:
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "OrgPolicy")
+		query, err := query.CollectFields(ctx, orgpolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -636,7 +742,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case orgrole.Table:
 		query := c.OrgRole.Query().
 			Where(orgrole.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "OrgRole")
+		query, err := query.CollectFields(ctx, orgroleImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -652,7 +758,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case orguserpreference.Table:
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "OrgUserPreference")
+		query, err := query.CollectFields(ctx, orguserpreferenceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -668,7 +774,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case permission.Table:
 		query := c.Permission.Query().
 			Where(permission.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Permission")
+		query, err := query.CollectFields(ctx, permissionImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -684,7 +790,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case user.Table:
 		query := c.User.Query().
 			Where(user.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "User")
+		query, err := query.CollectFields(ctx, userImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -700,7 +806,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userdevice.Table:
 		query := c.UserDevice.Query().
 			Where(userdevice.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserDevice")
+		query, err := query.CollectFields(ctx, userdeviceImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -716,7 +822,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case useridentity.Table:
 		query := c.UserIdentity.Query().
 			Where(useridentity.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserIdentity")
+		query, err := query.CollectFields(ctx, useridentityImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -732,7 +838,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userloginprofile.Table:
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserLoginProfile")
+		query, err := query.CollectFields(ctx, userloginprofileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -748,7 +854,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 	case userpassword.Table:
 		query := c.UserPassword.Query().
 			Where(userpassword.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "UserPassword")
+		query, err := query.CollectFields(ctx, userpasswordImplementors...)
 		if err != nil {
 			return nil, err
 		}

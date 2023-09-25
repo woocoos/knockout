@@ -52,6 +52,13 @@ type MutationResolver interface {
 	CreateAppRole(ctx context.Context, appID int, input ent.CreateAppRoleInput) (*ent.AppRole, error)
 	UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error)
 	DeleteAppRole(ctx context.Context, roleID int) (bool, error)
+	CreateAppDict(ctx context.Context, appID int, input ent.CreateAppDictInput) (*ent.AppDict, error)
+	UpdateAppDict(ctx context.Context, dictID int, input ent.UpdateAppDictInput) (*ent.AppDict, error)
+	DeleteAppDict(ctx context.Context, dictID int) (bool, error)
+	CreateAppDictItem(ctx context.Context, dictID int, input ent.CreateAppDictItemInput) (*ent.AppDictItem, error)
+	UpdateAppDictItem(ctx context.Context, itemID int, input ent.UpdateAppDictItemInput) (*ent.AppDictItem, error)
+	DeleteAppDictItem(ctx context.Context, itemID int) (bool, error)
+	MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
 	AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error)
 	RevokeOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error)
 	AssignAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) (bool, error)
@@ -280,6 +287,54 @@ func (ec *executionContext) field_Mutation_createAppActions_args(ctx context.Con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg1, err = ec.unmarshalOCreateAppActionInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppActionInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["dictID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["dictID"] = arg0
+	var arg1 ent.CreateAppDictItemInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNCreateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictItemInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["appID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["appID"] = arg0
+	var arg1 ent.CreateAppDictInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNCreateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -525,6 +580,36 @@ func (ec *executionContext) field_Mutation_deleteAppAction_args(ctx context.Cont
 		}
 	}
 	args["actionID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["itemID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["itemID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["dictID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["dictID"] = arg0
 	return args, nil
 }
 
@@ -780,6 +865,39 @@ func (ec *executionContext) field_Mutation_grant_args(ctx context.Context, rawAr
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sourceID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["targetID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["targetID"] = arg1
+	var arg2 model.TreeAction
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg2
 	return args, nil
 }
 
@@ -1129,6 +1247,54 @@ func (ec *executionContext) field_Mutation_updateAppAction_args(ctx context.Cont
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg1, err = ec.unmarshalNUpdateAppActionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppActionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["itemID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["itemID"] = arg0
+	var arg1 ent.UpdateAppDictItemInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictItemInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["dictID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["dictID"] = arg0
+	var arg1 ent.UpdateAppDictInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2839,6 +3005,8 @@ func (ec *executionContext) fieldContext_Mutation_createApp(ctx context.Context,
 				return ec.fieldContext_App_policies(ctx, field)
 			case "orgs":
 				return ec.fieldContext_App_orgs(ctx, field)
+			case "dicts":
+				return ec.fieldContext_App_dicts(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
@@ -2939,6 +3107,8 @@ func (ec *executionContext) fieldContext_Mutation_updateApp(ctx context.Context,
 				return ec.fieldContext_App_policies(ctx, field)
 			case "orgs":
 				return ec.fieldContext_App_orgs(ctx, field)
+			case "dicts":
+				return ec.fieldContext_App_dicts(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
@@ -3935,6 +4105,483 @@ func (ec *executionContext) fieldContext_Mutation_deleteAppRole(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteAppRole_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createAppDict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAppDict(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAppDict(rctx, fc.Args["appID"].(int), fc.Args["input"].(ent.CreateAppDictInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppDict)
+	fc.Result = res
+	return ec.marshalOAppDict2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDict(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createAppDict(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppDict_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDict_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDict_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDict_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDict_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppDict_appID(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDict_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDict_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDict_comments(ctx, field)
+			case "app":
+				return ec.fieldContext_AppDict_app(ctx, field)
+			case "items":
+				return ec.fieldContext_AppDict_items(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createAppDict_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateAppDict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateAppDict(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAppDict(rctx, fc.Args["dictID"].(int), fc.Args["input"].(ent.UpdateAppDictInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppDict)
+	fc.Result = res
+	return ec.marshalOAppDict2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDict(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateAppDict(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppDict_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDict_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDict_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDict_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDict_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppDict_appID(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDict_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDict_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDict_comments(ctx, field)
+			case "app":
+				return ec.fieldContext_AppDict_app(ctx, field)
+			case "items":
+				return ec.fieldContext_AppDict_items(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateAppDict_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteAppDict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppDict(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAppDict(rctx, fc.Args["dictID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteAppDict(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteAppDict_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createAppDictItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAppDictItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAppDictItem(rctx, fc.Args["dictID"].(int), fc.Args["input"].(ent.CreateAppDictItemInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppDictItem)
+	fc.Result = res
+	return ec.marshalOAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createAppDictItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppDictItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDictItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDictItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppDictItem_appID(ctx, field)
+			case "orgID":
+				return ec.fieldContext_AppDictItem_orgID(ctx, field)
+			case "dictID":
+				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDictItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDictItem_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDictItem_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "dict":
+				return ec.fieldContext_AppDictItem_dict(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createAppDictItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateAppDictItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateAppDictItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAppDictItem(rctx, fc.Args["itemID"].(int), fc.Args["input"].(ent.UpdateAppDictItemInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppDictItem)
+	fc.Result = res
+	return ec.marshalOAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateAppDictItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppDictItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDictItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDictItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppDictItem_appID(ctx, field)
+			case "orgID":
+				return ec.fieldContext_AppDictItem_orgID(ctx, field)
+			case "dictID":
+				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDictItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDictItem_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDictItem_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "dict":
+				return ec.fieldContext_AppDictItem_dict(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateAppDictItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteAppDictItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteAppDictItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteAppDictItem(rctx, fc.Args["itemID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteAppDictItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteAppDictItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_moveAppDictItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_moveAppDictItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MoveAppDictItem(rctx, fc.Args["sourceID"].(int), fc.Args["targetID"].(int), fc.Args["action"].(model.TreeAction))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_moveAppDictItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_moveAppDictItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6303,6 +6950,43 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteAppRole":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteAppRole(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createAppDict":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createAppDict(ctx, field)
+			})
+		case "updateAppDict":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateAppDict(ctx, field)
+			})
+		case "deleteAppDict":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAppDict(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createAppDictItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createAppDictItem(ctx, field)
+			})
+		case "updateAppDictItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateAppDictItem(ctx, field)
+			})
+		case "deleteAppDictItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteAppDictItem(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "moveAppDictItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_moveAppDictItem(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

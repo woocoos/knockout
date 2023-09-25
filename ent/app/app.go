@@ -68,6 +68,8 @@ const (
 	EdgePolicies = "policies"
 	// EdgeOrgs holds the string denoting the orgs edge name in mutations.
 	EdgeOrgs = "orgs"
+	// EdgeDicts holds the string denoting the dicts edge name in mutations.
+	EdgeDicts = "dicts"
 	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
 	EdgeOrgApp = "org_app"
 	// Table holds the table name of the app in the database.
@@ -112,6 +114,13 @@ const (
 	// OrgsInverseTable is the table name for the Org entity.
 	// It exists in this package in order to avoid circular dependency with the "org" package.
 	OrgsInverseTable = "org"
+	// DictsTable is the table that holds the dicts relation/edge.
+	DictsTable = "app_dict"
+	// DictsInverseTable is the table name for the AppDict entity.
+	// It exists in this package in order to avoid circular dependency with the "appdict" package.
+	DictsInverseTable = "app_dict"
+	// DictsColumn is the table column denoting the dicts relation/edge.
+	DictsColumn = "app_id"
 	// OrgAppTable is the table that holds the org_app relation/edge.
 	OrgAppTable = "org_app"
 	// OrgAppInverseTable is the table name for the OrgApp entity.
@@ -403,6 +412,20 @@ func ByOrgs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByDictsCount orders the results by dicts count.
+func ByDictsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDictsStep(), opts...)
+	}
+}
+
+// ByDicts orders the results by dicts terms.
+func ByDicts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDictsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgAppCount orders the results by org_app count.
 func ByOrgAppCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -456,6 +479,13 @@ func newOrgsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OrgsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, OrgsTable, OrgsPrimaryKey...),
+	)
+}
+func newDictsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DictsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DictsTable, DictsColumn),
 	)
 }
 func newOrgAppStep() *sqlgraph.Step {

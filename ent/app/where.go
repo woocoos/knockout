@@ -1239,6 +1239,29 @@ func HasOrgsWith(preds ...predicate.Org) predicate.App {
 	})
 }
 
+// HasDicts applies the HasEdge predicate on the "dicts" edge.
+func HasDicts() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DictsTable, DictsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDictsWith applies the HasEdge predicate on the "dicts" edge with a given conditions (other predicates).
+func HasDictsWith(preds ...predicate.AppDict) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := newDictsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasOrgApp applies the HasEdge predicate on the "org_app" edge.
 func HasOrgApp() predicate.App {
 	return predicate.App(func(s *sql.Selector) {
@@ -1264,32 +1287,15 @@ func HasOrgAppWith(preds ...predicate.OrgApp) predicate.App {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.App) predicate.App {
-	return predicate.App(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.App(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.App) predicate.App {
-	return predicate.App(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.App(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.App) predicate.App {
-	return predicate.App(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.App(sql.NotPredicates(p))
 }

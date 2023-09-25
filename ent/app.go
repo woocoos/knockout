@@ -74,13 +74,15 @@ type AppEdges struct {
 	Policies []*AppPolicy `json:"policies,omitempty"`
 	// 使用该应用的组织
 	Orgs []*Org `json:"orgs,omitempty"`
+	// 数据字典
+	Dicts []*AppDict `json:"dicts,omitempty"`
 	// OrgApp holds the value of the org_app edge.
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [8]bool
 	// totalCount holds the count of the edges above.
-	totalCount [6]map[string]int
+	totalCount [7]map[string]int
 
 	namedMenus     map[string][]*AppMenu
 	namedActions   map[string][]*AppAction
@@ -88,6 +90,7 @@ type AppEdges struct {
 	namedRoles     map[string][]*AppRole
 	namedPolicies  map[string][]*AppPolicy
 	namedOrgs      map[string][]*Org
+	namedDicts     map[string][]*AppDict
 	namedOrgApp    map[string][]*OrgApp
 }
 
@@ -145,10 +148,19 @@ func (e AppEdges) OrgsOrErr() ([]*Org, error) {
 	return nil, &NotLoadedError{edge: "orgs"}
 }
 
+// DictsOrErr returns the Dicts value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) DictsOrErr() ([]*AppDict, error) {
+	if e.loadedTypes[6] {
+		return e.Dicts, nil
+	}
+	return nil, &NotLoadedError{edge: "dicts"}
+}
+
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -337,6 +349,11 @@ func (a *App) QueryPolicies() *AppPolicyQuery {
 // QueryOrgs queries the "orgs" edge of the App entity.
 func (a *App) QueryOrgs() *OrgQuery {
 	return NewAppClient(a.config).QueryOrgs(a)
+}
+
+// QueryDicts queries the "dicts" edge of the App entity.
+func (a *App) QueryDicts() *AppDictQuery {
+	return NewAppClient(a.config).QueryDicts(a)
 }
 
 // QueryOrgApp queries the "org_app" edge of the App entity.
@@ -565,6 +582,30 @@ func (a *App) appendNamedOrgs(name string, edges ...*Org) {
 		a.Edges.namedOrgs[name] = []*Org{}
 	} else {
 		a.Edges.namedOrgs[name] = append(a.Edges.namedOrgs[name], edges...)
+	}
+}
+
+// NamedDicts returns the Dicts named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (a *App) NamedDicts(name string) ([]*AppDict, error) {
+	if a.Edges.namedDicts == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := a.Edges.namedDicts[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (a *App) appendNamedDicts(name string, edges ...*AppDict) {
+	if a.Edges.namedDicts == nil {
+		a.Edges.namedDicts = make(map[string][]*AppDict)
+	}
+	if len(edges) == 0 {
+		a.Edges.namedDicts[name] = []*AppDict{}
+	} else {
+		a.Edges.namedDicts[name] = append(a.Edges.namedDicts[name], edges...)
 	}
 }
 

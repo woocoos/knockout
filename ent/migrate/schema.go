@@ -71,6 +71,68 @@ var (
 			},
 		},
 	}
+	// AppDictColumns holds the columns for the "app_dict" table.
+	AppDictColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "name", Type: field.TypeString, Size: 45},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// AppDictTable holds the schema information for the "app_dict" table.
+	AppDictTable = &schema.Table{
+		Name:       "app_dict",
+		Columns:    AppDictColumns,
+		PrimaryKey: []*schema.Column{AppDictColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_dict_app_dicts",
+				Columns:    []*schema.Column{AppDictColumns[8]},
+				RefColumns: []*schema.Column{AppColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appdict_app_id_code",
+				Unique:  true,
+				Columns: []*schema.Column{AppDictColumns[8], AppDictColumns[5]},
+			},
+		},
+	}
+	// AppDictItemColumns holds the columns for the "app_dict_item" table.
+	AppDictItemColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true},
+		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "name", Type: field.TypeString, Size: 45},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
+		{Name: "dict_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+	}
+	// AppDictItemTable holds the schema information for the "app_dict_item" table.
+	AppDictItemTable = &schema.Table{
+		Name:       "app_dict_item",
+		Columns:    AppDictItemColumns,
+		PrimaryKey: []*schema.Column{AppDictItemColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_dict_item_app_dict_items",
+				Columns:    []*schema.Column{AppDictItemColumns[11]},
+				RefColumns: []*schema.Column{AppDictColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// AppMenuColumns holds the columns for the "app_menu" table.
 	AppMenuColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -776,6 +838,8 @@ var (
 	Tables = []*schema.Table{
 		AppTable,
 		AppActionTable,
+		AppDictTable,
+		AppDictItemTable,
 		AppMenuTable,
 		AppPolicyTable,
 		AppResTable,
@@ -807,6 +871,14 @@ func init() {
 	AppActionTable.ForeignKeys[0].RefTable = AppTable
 	AppActionTable.Annotation = &entsql.Annotation{
 		Table: "app_action",
+	}
+	AppDictTable.ForeignKeys[0].RefTable = AppTable
+	AppDictTable.Annotation = &entsql.Annotation{
+		Table: "app_dict",
+	}
+	AppDictItemTable.ForeignKeys[0].RefTable = AppDictTable
+	AppDictItemTable.Annotation = &entsql.Annotation{
+		Table: "app_dict_item",
 	}
 	AppMenuTable.ForeignKeys[0].RefTable = AppTable
 	AppMenuTable.ForeignKeys[1].RefTable = AppActionTable
