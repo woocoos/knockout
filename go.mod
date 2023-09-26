@@ -20,7 +20,7 @@ require (
 	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230925100652-4d45e9b7847f
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230925101310-81aebdaf5d6e
+	github.com/woocoos/entco v0.0.0-20230926032357-2027544dba9d
 	go.opentelemetry.io/contrib/propagators/b3 v1.17.0
 	golang.org/x/sync v0.3.0
 )
@@ -44,6 +44,7 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect

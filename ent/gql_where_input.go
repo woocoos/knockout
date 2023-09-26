@@ -2004,18 +2004,6 @@ type AppDictItemWhereInput struct {
 	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
 	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
 
-	// "app_id" field predicates.
-	AppID       *int  `json:"appID,omitempty"`
-	AppIDNEQ    *int  `json:"appIDNEQ,omitempty"`
-	AppIDIn     []int `json:"appIDIn,omitempty"`
-	AppIDNotIn  []int `json:"appIDNotIn,omitempty"`
-	AppIDGT     *int  `json:"appIDGT,omitempty"`
-	AppIDGTE    *int  `json:"appIDGTE,omitempty"`
-	AppIDLT     *int  `json:"appIDLT,omitempty"`
-	AppIDLTE    *int  `json:"appIDLTE,omitempty"`
-	AppIDIsNil  bool  `json:"appIDIsNil,omitempty"`
-	AppIDNotNil bool  `json:"appIDNotNil,omitempty"`
-
 	// "org_id" field predicates.
 	OrgID       *int  `json:"orgID,omitempty"`
 	OrgIDNEQ    *int  `json:"orgIDNEQ,omitempty"`
@@ -2065,6 +2053,14 @@ type AppDictItemWhereInput struct {
 	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "status" field predicates.
+	Status       *typex.SimpleStatus  `json:"status,omitempty"`
+	StatusNEQ    *typex.SimpleStatus  `json:"statusNEQ,omitempty"`
+	StatusIn     []typex.SimpleStatus `json:"statusIn,omitempty"`
+	StatusNotIn  []typex.SimpleStatus `json:"statusNotIn,omitempty"`
+	StatusIsNil  bool                 `json:"statusIsNil,omitempty"`
+	StatusNotNil bool                 `json:"statusNotNil,omitempty"`
 
 	// "dict" edge predicates.
 	HasDict     *bool                `json:"hasDict,omitempty"`
@@ -2274,36 +2270,6 @@ func (i *AppDictItemWhereInput) P() (predicate.AppDictItem, error) {
 	if i.UpdatedAtNotNil {
 		predicates = append(predicates, appdictitem.UpdatedAtNotNil())
 	}
-	if i.AppID != nil {
-		predicates = append(predicates, appdictitem.AppIDEQ(*i.AppID))
-	}
-	if i.AppIDNEQ != nil {
-		predicates = append(predicates, appdictitem.AppIDNEQ(*i.AppIDNEQ))
-	}
-	if len(i.AppIDIn) > 0 {
-		predicates = append(predicates, appdictitem.AppIDIn(i.AppIDIn...))
-	}
-	if len(i.AppIDNotIn) > 0 {
-		predicates = append(predicates, appdictitem.AppIDNotIn(i.AppIDNotIn...))
-	}
-	if i.AppIDGT != nil {
-		predicates = append(predicates, appdictitem.AppIDGT(*i.AppIDGT))
-	}
-	if i.AppIDGTE != nil {
-		predicates = append(predicates, appdictitem.AppIDGTE(*i.AppIDGTE))
-	}
-	if i.AppIDLT != nil {
-		predicates = append(predicates, appdictitem.AppIDLT(*i.AppIDLT))
-	}
-	if i.AppIDLTE != nil {
-		predicates = append(predicates, appdictitem.AppIDLTE(*i.AppIDLTE))
-	}
-	if i.AppIDIsNil {
-		predicates = append(predicates, appdictitem.AppIDIsNil())
-	}
-	if i.AppIDNotNil {
-		predicates = append(predicates, appdictitem.AppIDNotNil())
-	}
 	if i.OrgID != nil {
 		predicates = append(predicates, appdictitem.OrgIDEQ(*i.OrgID))
 	}
@@ -2429,6 +2395,24 @@ func (i *AppDictItemWhereInput) P() (predicate.AppDictItem, error) {
 	}
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, appdictitem.NameContainsFold(*i.NameContainsFold))
+	}
+	if i.Status != nil {
+		predicates = append(predicates, appdictitem.StatusEQ(*i.Status))
+	}
+	if i.StatusNEQ != nil {
+		predicates = append(predicates, appdictitem.StatusNEQ(*i.StatusNEQ))
+	}
+	if len(i.StatusIn) > 0 {
+		predicates = append(predicates, appdictitem.StatusIn(i.StatusIn...))
+	}
+	if len(i.StatusNotIn) > 0 {
+		predicates = append(predicates, appdictitem.StatusNotIn(i.StatusNotIn...))
+	}
+	if i.StatusIsNil {
+		predicates = append(predicates, appdictitem.StatusIsNil())
+	}
+	if i.StatusNotNil {
+		predicates = append(predicates, appdictitem.StatusNotNil())
 	}
 
 	if i.HasDict != nil {

@@ -4364,8 +4364,6 @@ func (ec *executionContext) fieldContext_Mutation_createAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppDictItem_appID(ctx, field)
 			case "orgID":
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
@@ -4378,6 +4376,8 @@ func (ec *executionContext) fieldContext_Mutation_createAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppDictItem_status(ctx, field)
 			case "dict":
 				return ec.fieldContext_AppDictItem_dict(ctx, field)
 			}
@@ -4444,8 +4444,6 @@ func (ec *executionContext) fieldContext_Mutation_updateAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppDictItem_appID(ctx, field)
 			case "orgID":
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
@@ -4458,6 +4456,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppDictItem_status(ctx, field)
 			case "dict":
 				return ec.fieldContext_AppDictItem_dict(ctx, field)
 			}

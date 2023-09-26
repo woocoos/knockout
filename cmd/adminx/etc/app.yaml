@@ -35,36 +35,41 @@ authz:
       channel: "/casbin"
   model: "etc/rbac_model.conf"
 
+jwt: &jwt
+  signingMethod: "HS256"
+  signingKey: "secret"
+
 web:
   server:
     addr: :8080
   engine:
-    contextWithFallback: true
     routerGroups:
-      - graphql:
-          basePath: "/graphql"
-          # 用于权限判断
+      - default:
           middlewares:
-#            - otel:
+            - cors:
+                allowOrigins: ['*']
+                allowHeaders: ["*"]
             - accessLog:
                 exclude:
                   - IntrospectionQuery
             - recovery:
             - errorHandle:
-            - jwt:
-                signingMethod: "HS256"
-                signingKey: "secret"
-                exclude:
-                  - "/graphql" #doc page
-            - tenant:
-                lookup: "header:X-Tenant-ID,query:X-Tenant-Id" ## browser may be transfer query ID to Id
-                exclude:
-                  - "/graphql" #doc page
+            - gzip:
+      - graphql:
+          basePath: "/graphql"
+          middlewares:
             - graphql:
                 group: "/graphql"
                 withAuthorization: false
                 appCode: "resource"
-            - gzip:
+                middlewares:
+                  operation:
+                    - tenant:
+                    - jwt: *jwt
+                    - tokenSign: # 利用IDE开发时,可注释
+                header: ## dev mode, remove in production, set the value in your .env.local
+                  X-Tenant-ID: ${TENANT}
+                  Authorization: "${AUTHORIZATION}"
 
 store:
   portal:

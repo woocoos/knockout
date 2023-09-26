@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -75,11 +76,6 @@ func UpdatedAt(v time.Time) predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldEQ(FieldAppID, v))
-}
-
 // OrgID applies equality check predicate on the "org_id" field. It's identical to OrgIDEQ.
 func OrgID(v int) predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldEQ(FieldOrgID, v))
@@ -88,6 +84,11 @@ func OrgID(v int) predicate.AppDictItem {
 // DictID applies equality check predicate on the "dict_id" field. It's identical to DictIDEQ.
 func DictID(v int) predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldEQ(FieldDictID, v))
+}
+
+// RefCode applies equality check predicate on the "ref_code" field. It's identical to RefCodeEQ.
+func RefCode(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldEQ(FieldRefCode, v))
 }
 
 // Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
@@ -290,56 +291,6 @@ func UpdatedAtNotNil() predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldNotNull(FieldUpdatedAt))
 }
 
-// AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldEQ(FieldAppID, v))
-}
-
-// AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldNEQ(FieldAppID, v))
-}
-
-// AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldIn(FieldAppID, vs...))
-}
-
-// AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldNotIn(FieldAppID, vs...))
-}
-
-// AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldGT(FieldAppID, v))
-}
-
-// AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldGTE(FieldAppID, v))
-}
-
-// AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldLT(FieldAppID, v))
-}
-
-// AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldLTE(FieldAppID, v))
-}
-
-// AppIDIsNil applies the IsNil predicate on the "app_id" field.
-func AppIDIsNil() predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldIsNull(FieldAppID))
-}
-
-// AppIDNotNil applies the NotNil predicate on the "app_id" field.
-func AppIDNotNil() predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldNotNull(FieldAppID))
-}
-
 // OrgIDEQ applies the EQ predicate on the "org_id" field.
 func OrgIDEQ(v int) predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldEQ(FieldOrgID, v))
@@ -418,6 +369,71 @@ func DictIDIsNil() predicate.AppDictItem {
 // DictIDNotNil applies the NotNil predicate on the "dict_id" field.
 func DictIDNotNil() predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldNotNull(FieldDictID))
+}
+
+// RefCodeEQ applies the EQ predicate on the "ref_code" field.
+func RefCodeEQ(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldEQ(FieldRefCode, v))
+}
+
+// RefCodeNEQ applies the NEQ predicate on the "ref_code" field.
+func RefCodeNEQ(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldNEQ(FieldRefCode, v))
+}
+
+// RefCodeIn applies the In predicate on the "ref_code" field.
+func RefCodeIn(vs ...string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldIn(FieldRefCode, vs...))
+}
+
+// RefCodeNotIn applies the NotIn predicate on the "ref_code" field.
+func RefCodeNotIn(vs ...string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldNotIn(FieldRefCode, vs...))
+}
+
+// RefCodeGT applies the GT predicate on the "ref_code" field.
+func RefCodeGT(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldGT(FieldRefCode, v))
+}
+
+// RefCodeGTE applies the GTE predicate on the "ref_code" field.
+func RefCodeGTE(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldGTE(FieldRefCode, v))
+}
+
+// RefCodeLT applies the LT predicate on the "ref_code" field.
+func RefCodeLT(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldLT(FieldRefCode, v))
+}
+
+// RefCodeLTE applies the LTE predicate on the "ref_code" field.
+func RefCodeLTE(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldLTE(FieldRefCode, v))
+}
+
+// RefCodeContains applies the Contains predicate on the "ref_code" field.
+func RefCodeContains(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldContains(FieldRefCode, v))
+}
+
+// RefCodeHasPrefix applies the HasPrefix predicate on the "ref_code" field.
+func RefCodeHasPrefix(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldHasPrefix(FieldRefCode, v))
+}
+
+// RefCodeHasSuffix applies the HasSuffix predicate on the "ref_code" field.
+func RefCodeHasSuffix(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldHasSuffix(FieldRefCode, v))
+}
+
+// RefCodeEqualFold applies the EqualFold predicate on the "ref_code" field.
+func RefCodeEqualFold(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldEqualFold(FieldRefCode, v))
+}
+
+// RefCodeContainsFold applies the ContainsFold predicate on the "ref_code" field.
+func RefCodeContainsFold(v string) predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldContainsFold(FieldRefCode, v))
 }
 
 // CodeEQ applies the EQ predicate on the "code" field.
@@ -673,6 +689,46 @@ func DisplaySortIsNil() predicate.AppDictItem {
 // DisplaySortNotNil applies the NotNil predicate on the "display_sort" field.
 func DisplaySortNotNil() predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldNotNull(FieldDisplaySort))
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v typex.SimpleStatus) predicate.AppDictItem {
+	vc := v
+	return predicate.AppDictItem(sql.FieldEQ(FieldStatus, vc))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v typex.SimpleStatus) predicate.AppDictItem {
+	vc := v
+	return predicate.AppDictItem(sql.FieldNEQ(FieldStatus, vc))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...typex.SimpleStatus) predicate.AppDictItem {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppDictItem(sql.FieldIn(FieldStatus, v...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...typex.SimpleStatus) predicate.AppDictItem {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppDictItem(sql.FieldNotIn(FieldStatus, v...))
+}
+
+// StatusIsNil applies the IsNil predicate on the "status" field.
+func StatusIsNil() predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldIsNull(FieldStatus))
+}
+
+// StatusNotNil applies the NotNil predicate on the "status" field.
+func StatusNotNil() predicate.AppDictItem {
+	return predicate.AppDictItem(sql.FieldNotNull(FieldStatus))
 }
 
 // HasDict applies the HasEdge predicate on the "dict" edge.

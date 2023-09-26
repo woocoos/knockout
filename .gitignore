@@ -19,7 +19,7 @@ go.work*
 *.out
 *.log
 test/tmp
-
+*.env.*
 # Dependency directories (remove the comment below to include it)
 # vendor/
 cmd/files/tmp

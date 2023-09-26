@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
 )
@@ -71,20 +72,6 @@ func (adic *AppDictItemCreate) SetNillableUpdatedAt(t *time.Time) *AppDictItemCr
 	return adic
 }
 
-// SetAppID sets the "app_id" field.
-func (adic *AppDictItemCreate) SetAppID(i int) *AppDictItemCreate {
-	adic.mutation.SetAppID(i)
-	return adic
-}
-
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (adic *AppDictItemCreate) SetNillableAppID(i *int) *AppDictItemCreate {
-	if i != nil {
-		adic.SetAppID(*i)
-	}
-	return adic
-}
-
 // SetOrgID sets the "org_id" field.
 func (adic *AppDictItemCreate) SetOrgID(i int) *AppDictItemCreate {
 	adic.mutation.SetOrgID(i)
@@ -110,6 +97,12 @@ func (adic *AppDictItemCreate) SetNillableDictID(i *int) *AppDictItemCreate {
 	if i != nil {
 		adic.SetDictID(*i)
 	}
+	return adic
+}
+
+// SetRefCode sets the "ref_code" field.
+func (adic *AppDictItemCreate) SetRefCode(s string) *AppDictItemCreate {
+	adic.mutation.SetRefCode(s)
 	return adic
 }
 
@@ -149,6 +142,20 @@ func (adic *AppDictItemCreate) SetDisplaySort(i int32) *AppDictItemCreate {
 func (adic *AppDictItemCreate) SetNillableDisplaySort(i *int32) *AppDictItemCreate {
 	if i != nil {
 		adic.SetDisplaySort(*i)
+	}
+	return adic
+}
+
+// SetStatus sets the "status" field.
+func (adic *AppDictItemCreate) SetStatus(ts typex.SimpleStatus) *AppDictItemCreate {
+	adic.mutation.SetStatus(ts)
+	return adic
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (adic *AppDictItemCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppDictItemCreate {
+	if ts != nil {
+		adic.SetStatus(*ts)
 	}
 	return adic
 }
@@ -208,6 +215,10 @@ func (adic *AppDictItemCreate) defaults() error {
 		v := appdictitem.DefaultCreatedAt()
 		adic.mutation.SetCreatedAt(v)
 	}
+	if _, ok := adic.mutation.Status(); !ok {
+		v := appdictitem.DefaultStatus
+		adic.mutation.SetStatus(v)
+	}
 	return nil
 }
 
@@ -218,6 +229,9 @@ func (adic *AppDictItemCreate) check() error {
 	}
 	if _, ok := adic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppDictItem.created_at"`)}
+	}
+	if _, ok := adic.mutation.RefCode(); !ok {
+		return &ValidationError{Name: "ref_code", err: errors.New(`ent: missing required field "AppDictItem.ref_code"`)}
 	}
 	if _, ok := adic.mutation.Code(); !ok {
 		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "AppDictItem.code"`)}
@@ -233,6 +247,11 @@ func (adic *AppDictItemCreate) check() error {
 	if v, ok := adic.mutation.Name(); ok {
 		if err := appdictitem.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.name": %w`, err)}
+		}
+	}
+	if v, ok := adic.mutation.Status(); ok {
+		if err := appdictitem.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.status": %w`, err)}
 		}
 	}
 	return nil
@@ -284,13 +303,13 @@ func (adic *AppDictItemCreate) createSpec() (*AppDictItem, *sqlgraph.CreateSpec)
 		_spec.SetField(appdictitem.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := adic.mutation.AppID(); ok {
-		_spec.SetField(appdictitem.FieldAppID, field.TypeInt, value)
-		_node.AppID = value
-	}
 	if value, ok := adic.mutation.OrgID(); ok {
 		_spec.SetField(appdictitem.FieldOrgID, field.TypeInt, value)
 		_node.OrgID = value
+	}
+	if value, ok := adic.mutation.RefCode(); ok {
+		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
+		_node.RefCode = value
 	}
 	if value, ok := adic.mutation.Code(); ok {
 		_spec.SetField(appdictitem.FieldCode, field.TypeString, value)
@@ -307,6 +326,10 @@ func (adic *AppDictItemCreate) createSpec() (*AppDictItem, *sqlgraph.CreateSpec)
 	if value, ok := adic.mutation.DisplaySort(); ok {
 		_spec.SetField(appdictitem.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
+	}
+	if value, ok := adic.mutation.Status(); ok {
+		_spec.SetField(appdictitem.FieldStatus, field.TypeEnum, value)
+		_node.Status = value
 	}
 	if nodes := adic.mutation.DictIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -419,6 +442,18 @@ func (u *AppDictItemUpsert) ClearUpdatedAt() *AppDictItemUpsert {
 	return u
 }
 
+// SetRefCode sets the "ref_code" field.
+func (u *AppDictItemUpsert) SetRefCode(v string) *AppDictItemUpsert {
+	u.Set(appdictitem.FieldRefCode, v)
+	return u
+}
+
+// UpdateRefCode sets the "ref_code" field to the value that was provided on create.
+func (u *AppDictItemUpsert) UpdateRefCode() *AppDictItemUpsert {
+	u.SetExcluded(appdictitem.FieldRefCode)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *AppDictItemUpsert) SetName(v string) *AppDictItemUpsert {
 	u.Set(appdictitem.FieldName, v)
@@ -473,6 +508,24 @@ func (u *AppDictItemUpsert) ClearDisplaySort() *AppDictItemUpsert {
 	return u
 }
 
+// SetStatus sets the "status" field.
+func (u *AppDictItemUpsert) SetStatus(v typex.SimpleStatus) *AppDictItemUpsert {
+	u.Set(appdictitem.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppDictItemUpsert) UpdateStatus() *AppDictItemUpsert {
+	u.SetExcluded(appdictitem.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppDictItemUpsert) ClearStatus() *AppDictItemUpsert {
+	u.SetNull(appdictitem.FieldStatus)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -495,9 +548,6 @@ func (u *AppDictItemUpsertOne) UpdateNewValues() *AppDictItemUpsertOne {
 		}
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(appdictitem.FieldCreatedAt)
-		}
-		if _, exists := u.create.mutation.AppID(); exists {
-			s.SetIgnore(appdictitem.FieldAppID)
 		}
 		if _, exists := u.create.mutation.OrgID(); exists {
 			s.SetIgnore(appdictitem.FieldOrgID)
@@ -588,6 +638,20 @@ func (u *AppDictItemUpsertOne) ClearUpdatedAt() *AppDictItemUpsertOne {
 	})
 }
 
+// SetRefCode sets the "ref_code" field.
+func (u *AppDictItemUpsertOne) SetRefCode(v string) *AppDictItemUpsertOne {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.SetRefCode(v)
+	})
+}
+
+// UpdateRefCode sets the "ref_code" field to the value that was provided on create.
+func (u *AppDictItemUpsertOne) UpdateRefCode() *AppDictItemUpsertOne {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.UpdateRefCode()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppDictItemUpsertOne) SetName(v string) *AppDictItemUpsertOne {
 	return u.Update(func(s *AppDictItemUpsert) {
@@ -648,6 +712,27 @@ func (u *AppDictItemUpsertOne) UpdateDisplaySort() *AppDictItemUpsertOne {
 func (u *AppDictItemUpsertOne) ClearDisplaySort() *AppDictItemUpsertOne {
 	return u.Update(func(s *AppDictItemUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppDictItemUpsertOne) SetStatus(v typex.SimpleStatus) *AppDictItemUpsertOne {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppDictItemUpsertOne) UpdateStatus() *AppDictItemUpsertOne {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppDictItemUpsertOne) ClearStatus() *AppDictItemUpsertOne {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.ClearStatus()
 	})
 }
 
@@ -839,9 +924,6 @@ func (u *AppDictItemUpsertBulk) UpdateNewValues() *AppDictItemUpsertBulk {
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(appdictitem.FieldCreatedAt)
 			}
-			if _, exists := b.mutation.AppID(); exists {
-				s.SetIgnore(appdictitem.FieldAppID)
-			}
 			if _, exists := b.mutation.OrgID(); exists {
 				s.SetIgnore(appdictitem.FieldOrgID)
 			}
@@ -932,6 +1014,20 @@ func (u *AppDictItemUpsertBulk) ClearUpdatedAt() *AppDictItemUpsertBulk {
 	})
 }
 
+// SetRefCode sets the "ref_code" field.
+func (u *AppDictItemUpsertBulk) SetRefCode(v string) *AppDictItemUpsertBulk {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.SetRefCode(v)
+	})
+}
+
+// UpdateRefCode sets the "ref_code" field to the value that was provided on create.
+func (u *AppDictItemUpsertBulk) UpdateRefCode() *AppDictItemUpsertBulk {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.UpdateRefCode()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppDictItemUpsertBulk) SetName(v string) *AppDictItemUpsertBulk {
 	return u.Update(func(s *AppDictItemUpsert) {
@@ -992,6 +1088,27 @@ func (u *AppDictItemUpsertBulk) UpdateDisplaySort() *AppDictItemUpsertBulk {
 func (u *AppDictItemUpsertBulk) ClearDisplaySort() *AppDictItemUpsertBulk {
 	return u.Update(func(s *AppDictItemUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppDictItemUpsertBulk) SetStatus(v typex.SimpleStatus) *AppDictItemUpsertBulk {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppDictItemUpsertBulk) UpdateStatus() *AppDictItemUpsertBulk {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppDictItemUpsertBulk) ClearStatus() *AppDictItemUpsertBulk {
+	return u.Update(func(s *AppDictItemUpsert) {
+		s.ClearStatus()
 	})
 }
 

@@ -431,19 +431,16 @@ func (c *AppDictUpdateOne) SetInput(i UpdateAppDictInput) *AppDictUpdateOne {
 
 // CreateAppDictItemInput represents a mutation input for creating appdictitems.
 type CreateAppDictItemInput struct {
-	AppID    *int
 	OrgID    *int
 	Code     string
 	Name     string
 	Comments *string
+	Status   *typex.SimpleStatus
 	DictID   *int
 }
 
 // Mutate applies the CreateAppDictItemInput on the AppDictItemMutation builder.
 func (i *CreateAppDictItemInput) Mutate(m *AppDictItemMutation) {
-	if v := i.AppID; v != nil {
-		m.SetAppID(*v)
-	}
 	if v := i.OrgID; v != nil {
 		m.SetOrgID(*v)
 	}
@@ -451,6 +448,9 @@ func (i *CreateAppDictItemInput) Mutate(m *AppDictItemMutation) {
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
 	}
 	if v := i.DictID; v != nil {
 		m.SetDictID(*v)
@@ -468,6 +468,8 @@ type UpdateAppDictItemInput struct {
 	Name          *string
 	ClearComments bool
 	Comments      *string
+	ClearStatus   bool
+	Status        *typex.SimpleStatus
 }
 
 // Mutate applies the UpdateAppDictItemInput on the AppDictItemMutation builder.
@@ -480,6 +482,12 @@ func (i *UpdateAppDictItemInput) Mutate(m *AppDictItemMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
 	}
 }
 

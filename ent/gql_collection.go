@@ -1006,11 +1006,6 @@ func (adi *AppDictItemQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, appdictitem.FieldUpdatedAt)
 				fieldSeen[appdictitem.FieldUpdatedAt] = struct{}{}
 			}
-		case "appID":
-			if _, ok := fieldSeen[appdictitem.FieldAppID]; !ok {
-				selectedFields = append(selectedFields, appdictitem.FieldAppID)
-				fieldSeen[appdictitem.FieldAppID] = struct{}{}
-			}
 		case "orgID":
 			if _, ok := fieldSeen[appdictitem.FieldOrgID]; !ok {
 				selectedFields = append(selectedFields, appdictitem.FieldOrgID)
@@ -1040,6 +1035,11 @@ func (adi *AppDictItemQuery) collectField(ctx context.Context, opCtx *graphql.Op
 			if _, ok := fieldSeen[appdictitem.FieldDisplaySort]; !ok {
 				selectedFields = append(selectedFields, appdictitem.FieldDisplaySort)
 				fieldSeen[appdictitem.FieldDisplaySort] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[appdictitem.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldStatus)
+				fieldSeen[appdictitem.FieldStatus] = struct{}{}
 			}
 		case "id":
 		case "__typename":

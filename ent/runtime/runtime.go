@@ -168,6 +168,9 @@ func init() {
 	appdictitem.Hooks[0] = appdictitemMixinHooks1[0]
 	appdictitem.Hooks[1] = appdictitemHooks[0]
 	appdictitem.Hooks[2] = appdictitemHooks[1]
+	appdictitem.Hooks[3] = appdictitemHooks[2]
+	appdictitem.Hooks[4] = appdictitemHooks[3]
+	appdictitem.Hooks[5] = appdictitemHooks[4]
 	appdictitemMixinFields1 := appdictitemMixin[1].Fields()
 	_ = appdictitemMixinFields1
 	appdictitemFields := schema.AppDictItem{}.Fields()

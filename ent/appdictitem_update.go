@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -75,6 +76,12 @@ func (adiu *AppDictItemUpdate) ClearUpdatedAt() *AppDictItemUpdate {
 	return adiu
 }
 
+// SetRefCode sets the "ref_code" field.
+func (adiu *AppDictItemUpdate) SetRefCode(s string) *AppDictItemUpdate {
+	adiu.mutation.SetRefCode(s)
+	return adiu
+}
+
 // SetName sets the "name" field.
 func (adiu *AppDictItemUpdate) SetName(s string) *AppDictItemUpdate {
 	adiu.mutation.SetName(s)
@@ -128,6 +135,26 @@ func (adiu *AppDictItemUpdate) ClearDisplaySort() *AppDictItemUpdate {
 	return adiu
 }
 
+// SetStatus sets the "status" field.
+func (adiu *AppDictItemUpdate) SetStatus(ts typex.SimpleStatus) *AppDictItemUpdate {
+	adiu.mutation.SetStatus(ts)
+	return adiu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (adiu *AppDictItemUpdate) SetNillableStatus(ts *typex.SimpleStatus) *AppDictItemUpdate {
+	if ts != nil {
+		adiu.SetStatus(*ts)
+	}
+	return adiu
+}
+
+// ClearStatus clears the value of the "status" field.
+func (adiu *AppDictItemUpdate) ClearStatus() *AppDictItemUpdate {
+	adiu.mutation.ClearStatus()
+	return adiu
+}
+
 // Mutation returns the AppDictItemMutation object of the builder.
 func (adiu *AppDictItemUpdate) Mutation() *AppDictItemMutation {
 	return adiu.mutation
@@ -167,6 +194,11 @@ func (adiu *AppDictItemUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.name": %w`, err)}
 		}
 	}
+	if v, ok := adiu.mutation.Status(); ok {
+		if err := appdictitem.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.status": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -197,11 +229,11 @@ func (adiu *AppDictItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if adiu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if adiu.mutation.AppIDCleared() {
-		_spec.ClearField(appdictitem.FieldAppID, field.TypeInt)
-	}
 	if adiu.mutation.OrgIDCleared() {
 		_spec.ClearField(appdictitem.FieldOrgID, field.TypeInt)
+	}
+	if value, ok := adiu.mutation.RefCode(); ok {
+		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 	}
 	if value, ok := adiu.mutation.Name(); ok {
 		_spec.SetField(appdictitem.FieldName, field.TypeString, value)
@@ -220,6 +252,12 @@ func (adiu *AppDictItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if adiu.mutation.DisplaySortCleared() {
 		_spec.ClearField(appdictitem.FieldDisplaySort, field.TypeInt32)
+	}
+	if value, ok := adiu.mutation.Status(); ok {
+		_spec.SetField(appdictitem.FieldStatus, field.TypeEnum, value)
+	}
+	if adiu.mutation.StatusCleared() {
+		_spec.ClearField(appdictitem.FieldStatus, field.TypeEnum)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, adiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -288,6 +326,12 @@ func (adiuo *AppDictItemUpdateOne) ClearUpdatedAt() *AppDictItemUpdateOne {
 	return adiuo
 }
 
+// SetRefCode sets the "ref_code" field.
+func (adiuo *AppDictItemUpdateOne) SetRefCode(s string) *AppDictItemUpdateOne {
+	adiuo.mutation.SetRefCode(s)
+	return adiuo
+}
+
 // SetName sets the "name" field.
 func (adiuo *AppDictItemUpdateOne) SetName(s string) *AppDictItemUpdateOne {
 	adiuo.mutation.SetName(s)
@@ -338,6 +382,26 @@ func (adiuo *AppDictItemUpdateOne) AddDisplaySort(i int32) *AppDictItemUpdateOne
 // ClearDisplaySort clears the value of the "display_sort" field.
 func (adiuo *AppDictItemUpdateOne) ClearDisplaySort() *AppDictItemUpdateOne {
 	adiuo.mutation.ClearDisplaySort()
+	return adiuo
+}
+
+// SetStatus sets the "status" field.
+func (adiuo *AppDictItemUpdateOne) SetStatus(ts typex.SimpleStatus) *AppDictItemUpdateOne {
+	adiuo.mutation.SetStatus(ts)
+	return adiuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (adiuo *AppDictItemUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *AppDictItemUpdateOne {
+	if ts != nil {
+		adiuo.SetStatus(*ts)
+	}
+	return adiuo
+}
+
+// ClearStatus clears the value of the "status" field.
+func (adiuo *AppDictItemUpdateOne) ClearStatus() *AppDictItemUpdateOne {
+	adiuo.mutation.ClearStatus()
 	return adiuo
 }
 
@@ -393,6 +457,11 @@ func (adiuo *AppDictItemUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.name": %w`, err)}
 		}
 	}
+	if v, ok := adiuo.mutation.Status(); ok {
+		if err := appdictitem.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppDictItem.status": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -440,11 +509,11 @@ func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictI
 	if adiuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if adiuo.mutation.AppIDCleared() {
-		_spec.ClearField(appdictitem.FieldAppID, field.TypeInt)
-	}
 	if adiuo.mutation.OrgIDCleared() {
 		_spec.ClearField(appdictitem.FieldOrgID, field.TypeInt)
+	}
+	if value, ok := adiuo.mutation.RefCode(); ok {
+		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 	}
 	if value, ok := adiuo.mutation.Name(); ok {
 		_spec.SetField(appdictitem.FieldName, field.TypeString, value)
@@ -463,6 +532,12 @@ func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictI
 	}
 	if adiuo.mutation.DisplaySortCleared() {
 		_spec.ClearField(appdictitem.FieldDisplaySort, field.TypeInt32)
+	}
+	if value, ok := adiuo.mutation.Status(); ok {
+		_spec.SetField(appdictitem.FieldStatus, field.TypeEnum, value)
+	}
+	if adiuo.mutation.StatusCleared() {
+		_spec.ClearField(appdictitem.FieldStatus, field.TypeEnum)
 	}
 	_node = &AppDictItem{config: adiuo.config}
 	_spec.Assign = _node.assignValues

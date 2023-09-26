@@ -3,11 +3,14 @@
 package appdictitem
 
 import (
+	"fmt"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/woocoos/entco/schemax/typex"
 )
 
 const (
@@ -23,12 +26,12 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldAppID holds the string denoting the app_id field in the database.
-	FieldAppID = "app_id"
 	// FieldOrgID holds the string denoting the org_id field in the database.
 	FieldOrgID = "org_id"
 	// FieldDictID holds the string denoting the dict_id field in the database.
 	FieldDictID = "dict_id"
+	// FieldRefCode holds the string denoting the ref_code field in the database.
+	FieldRefCode = "ref_code"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
 	// FieldName holds the string denoting the name field in the database.
@@ -37,6 +40,8 @@ const (
 	FieldComments = "comments"
 	// FieldDisplaySort holds the string denoting the display_sort field in the database.
 	FieldDisplaySort = "display_sort"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// EdgeDict holds the string denoting the dict edge name in mutations.
 	EdgeDict = "dict"
 	// Table holds the table name of the appdictitem in the database.
@@ -57,13 +62,14 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
-	FieldAppID,
 	FieldOrgID,
 	FieldDictID,
+	FieldRefCode,
 	FieldCode,
 	FieldName,
 	FieldComments,
 	FieldDisplaySort,
+	FieldStatus,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -82,7 +88,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [3]ent.Hook
+	Hooks [6]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
@@ -90,6 +96,18 @@ var (
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
 )
+
+const DefaultStatus typex.SimpleStatus = "inactive"
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s typex.SimpleStatus) error {
+	switch s.String() {
+	case "active", "inactive", "processing", "disabled":
+		return nil
+	default:
+		return fmt.Errorf("appdictitem: invalid enum value for status field: %q", s)
+	}
+}
 
 // OrderOption defines the ordering options for the AppDictItem queries.
 type OrderOption func(*sql.Selector)
@@ -119,11 +137,6 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAppID, opts...).ToFunc()
-}
-
 // ByOrgID orders the results by the org_id field.
 func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
@@ -132,6 +145,11 @@ func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
 // ByDictID orders the results by the dict_id field.
 func ByDictID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDictID, opts...).ToFunc()
+}
+
+// ByRefCode orders the results by the ref_code field.
+func ByRefCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRefCode, opts...).ToFunc()
 }
 
 // ByCode orders the results by the code field.
@@ -154,6 +172,11 @@ func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
 }
 
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
 // ByDictField orders the results by dict field.
 func ByDictField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -167,3 +190,10 @@ func newDictStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, true, DictTable, DictColumn),
 	)
 }
+
+var (
+	// typex.SimpleStatus must implement graphql.Marshaler.
+	_ graphql.Marshaler = (*typex.SimpleStatus)(nil)
+	// typex.SimpleStatus must implement graphql.Unmarshaler.
+	_ graphql.Unmarshaler = (*typex.SimpleStatus)(nil)
+)

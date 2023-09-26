@@ -111,7 +111,7 @@ var (
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
 func StatusValidator(s typex.SimpleStatus) error {
 	switch s.String() {
-	case "active", "inactive", "processing":
+	case "active", "inactive", "processing", "disabled":
 		return nil
 	default:
 		return fmt.Errorf("userdevice: invalid enum value for status field: %q", s)

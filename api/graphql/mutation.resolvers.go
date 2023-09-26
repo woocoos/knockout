@@ -221,7 +221,7 @@ func (r *mutationResolver) DeleteAppDict(ctx context.Context, dictID int) (bool,
 
 // CreateAppDictItem is the resolver for the createAppDictItem field.
 func (r *mutationResolver) CreateAppDictItem(ctx context.Context, dictID int, input ent.CreateAppDictItemInput) (*ent.AppDictItem, error) {
-	return ent.FromContext(ctx).AppDictItem.Create().SetAppID(dictID).SetInput(input).Save(ctx)
+	return ent.FromContext(ctx).AppDictItem.Create().SetDictID(dictID).SetInput(input).Save(ctx)
 }
 
 // UpdateAppDictItem is the resolver for the updateAppDictItem field.

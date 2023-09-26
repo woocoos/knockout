@@ -4519,15 +4519,15 @@ type AppDictItemMutation struct {
 	updated_by      *int
 	addupdated_by   *int
 	updated_at      *time.Time
-	app_id          *int
-	addapp_id       *int
 	org_id          *int
 	addorg_id       *int
+	ref_code        *string
 	code            *string
 	name            *string
 	comments        *string
 	display_sort    *int32
 	adddisplay_sort *int32
+	status          *typex.SimpleStatus
 	clearedFields   map[string]struct{}
 	dict            *int
 	cleareddict     bool
@@ -4851,76 +4851,6 @@ func (m *AppDictItemMutation) ResetUpdatedAt() {
 	delete(m.clearedFields, appdictitem.FieldUpdatedAt)
 }
 
-// SetAppID sets the "app_id" field.
-func (m *AppDictItemMutation) SetAppID(i int) {
-	m.app_id = &i
-	m.addapp_id = nil
-}
-
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *AppDictItemMutation) AppID() (r int, exists bool) {
-	v := m.app_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAppID returns the old "app_id" field's value of the AppDictItem entity.
-// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppDictItemMutation) OldAppID(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
-	}
-	return oldValue.AppID, nil
-}
-
-// AddAppID adds i to the "app_id" field.
-func (m *AppDictItemMutation) AddAppID(i int) {
-	if m.addapp_id != nil {
-		*m.addapp_id += i
-	} else {
-		m.addapp_id = &i
-	}
-}
-
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *AppDictItemMutation) AddedAppID() (r int, exists bool) {
-	v := m.addapp_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearAppID clears the value of the "app_id" field.
-func (m *AppDictItemMutation) ClearAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	m.clearedFields[appdictitem.FieldAppID] = struct{}{}
-}
-
-// AppIDCleared returns if the "app_id" field was cleared in this mutation.
-func (m *AppDictItemMutation) AppIDCleared() bool {
-	_, ok := m.clearedFields[appdictitem.FieldAppID]
-	return ok
-}
-
-// ResetAppID resets all changes to the "app_id" field.
-func (m *AppDictItemMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
-	delete(m.clearedFields, appdictitem.FieldAppID)
-}
-
 // SetOrgID sets the "org_id" field.
 func (m *AppDictItemMutation) SetOrgID(i int) {
 	m.org_id = &i
@@ -5038,6 +4968,42 @@ func (m *AppDictItemMutation) DictIDCleared() bool {
 func (m *AppDictItemMutation) ResetDictID() {
 	m.dict = nil
 	delete(m.clearedFields, appdictitem.FieldDictID)
+}
+
+// SetRefCode sets the "ref_code" field.
+func (m *AppDictItemMutation) SetRefCode(s string) {
+	m.ref_code = &s
+}
+
+// RefCode returns the value of the "ref_code" field in the mutation.
+func (m *AppDictItemMutation) RefCode() (r string, exists bool) {
+	v := m.ref_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRefCode returns the old "ref_code" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldRefCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRefCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRefCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRefCode: %w", err)
+	}
+	return oldValue.RefCode, nil
+}
+
+// ResetRefCode resets all changes to the "ref_code" field.
+func (m *AppDictItemMutation) ResetRefCode() {
+	m.ref_code = nil
 }
 
 // SetCode sets the "code" field.
@@ -5231,6 +5197,55 @@ func (m *AppDictItemMutation) ResetDisplaySort() {
 	delete(m.clearedFields, appdictitem.FieldDisplaySort)
 }
 
+// SetStatus sets the "status" field.
+func (m *AppDictItemMutation) SetStatus(ts typex.SimpleStatus) {
+	m.status = &ts
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *AppDictItemMutation) Status() (r typex.SimpleStatus, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the AppDictItem entity.
+// If the AppDictItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppDictItemMutation) OldStatus(ctx context.Context) (v typex.SimpleStatus, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ClearStatus clears the value of the "status" field.
+func (m *AppDictItemMutation) ClearStatus() {
+	m.status = nil
+	m.clearedFields[appdictitem.FieldStatus] = struct{}{}
+}
+
+// StatusCleared returns if the "status" field was cleared in this mutation.
+func (m *AppDictItemMutation) StatusCleared() bool {
+	_, ok := m.clearedFields[appdictitem.FieldStatus]
+	return ok
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *AppDictItemMutation) ResetStatus() {
+	m.status = nil
+	delete(m.clearedFields, appdictitem.FieldStatus)
+}
+
 // ClearDict clears the "dict" edge to the AppDict entity.
 func (m *AppDictItemMutation) ClearDict() {
 	m.cleareddict = true
@@ -5292,7 +5307,7 @@ func (m *AppDictItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppDictItemMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_by != nil {
 		fields = append(fields, appdictitem.FieldCreatedBy)
 	}
@@ -5305,14 +5320,14 @@ func (m *AppDictItemMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, appdictitem.FieldUpdatedAt)
 	}
-	if m.app_id != nil {
-		fields = append(fields, appdictitem.FieldAppID)
-	}
 	if m.org_id != nil {
 		fields = append(fields, appdictitem.FieldOrgID)
 	}
 	if m.dict != nil {
 		fields = append(fields, appdictitem.FieldDictID)
+	}
+	if m.ref_code != nil {
+		fields = append(fields, appdictitem.FieldRefCode)
 	}
 	if m.code != nil {
 		fields = append(fields, appdictitem.FieldCode)
@@ -5325,6 +5340,9 @@ func (m *AppDictItemMutation) Fields() []string {
 	}
 	if m.display_sort != nil {
 		fields = append(fields, appdictitem.FieldDisplaySort)
+	}
+	if m.status != nil {
+		fields = append(fields, appdictitem.FieldStatus)
 	}
 	return fields
 }
@@ -5342,12 +5360,12 @@ func (m *AppDictItemMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case appdictitem.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case appdictitem.FieldAppID:
-		return m.AppID()
 	case appdictitem.FieldOrgID:
 		return m.OrgID()
 	case appdictitem.FieldDictID:
 		return m.DictID()
+	case appdictitem.FieldRefCode:
+		return m.RefCode()
 	case appdictitem.FieldCode:
 		return m.Code()
 	case appdictitem.FieldName:
@@ -5356,6 +5374,8 @@ func (m *AppDictItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Comments()
 	case appdictitem.FieldDisplaySort:
 		return m.DisplaySort()
+	case appdictitem.FieldStatus:
+		return m.Status()
 	}
 	return nil, false
 }
@@ -5373,12 +5393,12 @@ func (m *AppDictItemMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldUpdatedBy(ctx)
 	case appdictitem.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case appdictitem.FieldAppID:
-		return m.OldAppID(ctx)
 	case appdictitem.FieldOrgID:
 		return m.OldOrgID(ctx)
 	case appdictitem.FieldDictID:
 		return m.OldDictID(ctx)
+	case appdictitem.FieldRefCode:
+		return m.OldRefCode(ctx)
 	case appdictitem.FieldCode:
 		return m.OldCode(ctx)
 	case appdictitem.FieldName:
@@ -5387,6 +5407,8 @@ func (m *AppDictItemMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldComments(ctx)
 	case appdictitem.FieldDisplaySort:
 		return m.OldDisplaySort(ctx)
+	case appdictitem.FieldStatus:
+		return m.OldStatus(ctx)
 	}
 	return nil, fmt.Errorf("unknown AppDictItem field %s", name)
 }
@@ -5424,13 +5446,6 @@ func (m *AppDictItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case appdictitem.FieldAppID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAppID(v)
-		return nil
 	case appdictitem.FieldOrgID:
 		v, ok := value.(int)
 		if !ok {
@@ -5444,6 +5459,13 @@ func (m *AppDictItemMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDictID(v)
+		return nil
+	case appdictitem.FieldRefCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRefCode(v)
 		return nil
 	case appdictitem.FieldCode:
 		v, ok := value.(string)
@@ -5473,6 +5495,13 @@ func (m *AppDictItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDisplaySort(v)
 		return nil
+	case appdictitem.FieldStatus:
+		v, ok := value.(typex.SimpleStatus)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
 	}
 	return fmt.Errorf("unknown AppDictItem field %s", name)
 }
@@ -5486,9 +5515,6 @@ func (m *AppDictItemMutation) AddedFields() []string {
 	}
 	if m.addupdated_by != nil {
 		fields = append(fields, appdictitem.FieldUpdatedBy)
-	}
-	if m.addapp_id != nil {
-		fields = append(fields, appdictitem.FieldAppID)
 	}
 	if m.addorg_id != nil {
 		fields = append(fields, appdictitem.FieldOrgID)
@@ -5508,8 +5534,6 @@ func (m *AppDictItemMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case appdictitem.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case appdictitem.FieldAppID:
-		return m.AddedAppID()
 	case appdictitem.FieldOrgID:
 		return m.AddedOrgID()
 	case appdictitem.FieldDisplaySort:
@@ -5536,13 +5560,6 @@ func (m *AppDictItemMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case appdictitem.FieldAppID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAppID(v)
 		return nil
 	case appdictitem.FieldOrgID:
 		v, ok := value.(int)
@@ -5572,9 +5589,6 @@ func (m *AppDictItemMutation) ClearedFields() []string {
 	if m.FieldCleared(appdictitem.FieldUpdatedAt) {
 		fields = append(fields, appdictitem.FieldUpdatedAt)
 	}
-	if m.FieldCleared(appdictitem.FieldAppID) {
-		fields = append(fields, appdictitem.FieldAppID)
-	}
 	if m.FieldCleared(appdictitem.FieldOrgID) {
 		fields = append(fields, appdictitem.FieldOrgID)
 	}
@@ -5586,6 +5600,9 @@ func (m *AppDictItemMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(appdictitem.FieldDisplaySort) {
 		fields = append(fields, appdictitem.FieldDisplaySort)
+	}
+	if m.FieldCleared(appdictitem.FieldStatus) {
+		fields = append(fields, appdictitem.FieldStatus)
 	}
 	return fields
 }
@@ -5607,9 +5624,6 @@ func (m *AppDictItemMutation) ClearField(name string) error {
 	case appdictitem.FieldUpdatedAt:
 		m.ClearUpdatedAt()
 		return nil
-	case appdictitem.FieldAppID:
-		m.ClearAppID()
-		return nil
 	case appdictitem.FieldOrgID:
 		m.ClearOrgID()
 		return nil
@@ -5621,6 +5635,9 @@ func (m *AppDictItemMutation) ClearField(name string) error {
 		return nil
 	case appdictitem.FieldDisplaySort:
 		m.ClearDisplaySort()
+		return nil
+	case appdictitem.FieldStatus:
+		m.ClearStatus()
 		return nil
 	}
 	return fmt.Errorf("unknown AppDictItem nullable field %s", name)
@@ -5642,14 +5659,14 @@ func (m *AppDictItemMutation) ResetField(name string) error {
 	case appdictitem.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case appdictitem.FieldAppID:
-		m.ResetAppID()
-		return nil
 	case appdictitem.FieldOrgID:
 		m.ResetOrgID()
 		return nil
 	case appdictitem.FieldDictID:
 		m.ResetDictID()
+		return nil
+	case appdictitem.FieldRefCode:
+		m.ResetRefCode()
 		return nil
 	case appdictitem.FieldCode:
 		m.ResetCode()
@@ -5662,6 +5679,9 @@ func (m *AppDictItemMutation) ResetField(name string) error {
 		return nil
 	case appdictitem.FieldDisplaySort:
 		m.ResetDisplaySort()
+		return nil
+	case appdictitem.FieldStatus:
+		m.ResetStatus()
 		return nil
 	}
 	return fmt.Errorf("unknown AppDictItem field %s", name)

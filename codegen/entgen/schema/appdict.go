@@ -24,6 +24,7 @@ type AppDict struct {
 func (AppDict) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app_dict"},
+		entgql.QueryField().Description("数据字典查询"),
 		entgql.RelayConnection(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}

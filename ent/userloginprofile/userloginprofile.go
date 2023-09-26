@@ -130,7 +130,7 @@ func SetKindValidator(sk SetKind) error {
 // MfaStatusValidator is a validator for the "mfa_status" field enum values. It is called by the builders before save.
 func MfaStatusValidator(ms typex.SimpleStatus) error {
 	switch ms.String() {
-	case "active", "inactive", "processing":
+	case "active", "inactive", "processing", "disabled":
 		return nil
 	default:
 		return fmt.Errorf("userloginprofile: invalid enum value for mfa_status field: %q", ms)

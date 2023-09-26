@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
 )
@@ -26,13 +27,13 @@ type AppDictItem struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 所属应用
-	AppID int `json:"app_id,omitempty"`
-	// 组织ID
+	// 组织ID,空为全局字典
 	OrgID int `json:"org_id,omitempty"`
 	// 所属字典
 	DictID int `json:"dict_id,omitempty"`
-	// 用于标识应用资源的唯一代码,尽量简短
+	// 关联代码,由app_code和dict_code组成
+	RefCode string `json:"ref_code,omitempty"`
+	// 字典值唯一编码,生效后不可修改.
 	Code string `json:"code,omitempty"`
 	// 名称
 	Name string `json:"name,omitempty"`
@@ -40,6 +41,8 @@ type AppDictItem struct {
 	Comments string `json:"comments,omitempty"`
 	// DisplaySort holds the value of the "display_sort" field.
 	DisplaySort int32 `json:"display_sort,omitempty"`
+	// 状态
+	Status typex.SimpleStatus `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppDictItemQuery when eager-loading is set.
 	Edges        AppDictItemEdges `json:"edges"`
@@ -75,9 +78,9 @@ func (*AppDictItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appdictitem.FieldID, appdictitem.FieldCreatedBy, appdictitem.FieldUpdatedBy, appdictitem.FieldAppID, appdictitem.FieldOrgID, appdictitem.FieldDictID, appdictitem.FieldDisplaySort:
+		case appdictitem.FieldID, appdictitem.FieldCreatedBy, appdictitem.FieldUpdatedBy, appdictitem.FieldOrgID, appdictitem.FieldDictID, appdictitem.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case appdictitem.FieldCode, appdictitem.FieldName, appdictitem.FieldComments:
+		case appdictitem.FieldRefCode, appdictitem.FieldCode, appdictitem.FieldName, appdictitem.FieldComments, appdictitem.FieldStatus:
 			values[i] = new(sql.NullString)
 		case appdictitem.FieldCreatedAt, appdictitem.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -126,12 +129,6 @@ func (adi *AppDictItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				adi.UpdatedAt = value.Time
 			}
-		case appdictitem.FieldAppID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_id", values[i])
-			} else if value.Valid {
-				adi.AppID = int(value.Int64)
-			}
 		case appdictitem.FieldOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field org_id", values[i])
@@ -143,6 +140,12 @@ func (adi *AppDictItem) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field dict_id", values[i])
 			} else if value.Valid {
 				adi.DictID = int(value.Int64)
+			}
+		case appdictitem.FieldRefCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field ref_code", values[i])
+			} else if value.Valid {
+				adi.RefCode = value.String
 			}
 		case appdictitem.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -167,6 +170,12 @@ func (adi *AppDictItem) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
 			} else if value.Valid {
 				adi.DisplaySort = int32(value.Int64)
+			}
+		case appdictitem.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				adi.Status = typex.SimpleStatus(value.String)
 			}
 		default:
 			adi.selectValues.Set(columns[i], values[i])
@@ -221,14 +230,14 @@ func (adi *AppDictItem) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(adi.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", adi.AppID))
-	builder.WriteString(", ")
 	builder.WriteString("org_id=")
 	builder.WriteString(fmt.Sprintf("%v", adi.OrgID))
 	builder.WriteString(", ")
 	builder.WriteString("dict_id=")
 	builder.WriteString(fmt.Sprintf("%v", adi.DictID))
+	builder.WriteString(", ")
+	builder.WriteString("ref_code=")
+	builder.WriteString(adi.RefCode)
 	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(adi.Code)
@@ -241,6 +250,9 @@ func (adi *AppDictItem) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
 	builder.WriteString(fmt.Sprintf("%v", adi.DisplaySort))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", adi.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }

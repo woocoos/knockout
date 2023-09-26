@@ -134,7 +134,6 @@ type ComplexityRoot struct {
 	}
 
 	AppDictItem struct {
-		AppID       func(childComplexity int) int
 		Code        func(childComplexity int) int
 		Comments    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
@@ -145,6 +144,7 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		Name        func(childComplexity int) int
 		OrgID       func(childComplexity int) int
+		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
 	}
@@ -564,6 +564,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		AppDicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		AppPolicyAssignedToOrgs func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
 		AppResources            func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
@@ -1151,13 +1152,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppDictEdge.Node(childComplexity), true
 
-	case "AppDictItem.appID":
-		if e.complexity.AppDictItem.AppID == nil {
-			break
-		}
-
-		return e.complexity.AppDictItem.AppID(childComplexity), true
-
 	case "AppDictItem.code":
 		if e.complexity.AppDictItem.Code == nil {
 			break
@@ -1227,6 +1221,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppDictItem.OrgID(childComplexity), true
+
+	case "AppDictItem.status":
+		if e.complexity.AppDictItem.Status == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.Status(childComplexity), true
 
 	case "AppDictItem.updatedAt":
 		if e.complexity.AppDictItem.UpdatedAt == nil {
@@ -3773,6 +3774,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
 
+	case "Query.appDicts":
+		if e.complexity.Query.AppDicts == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appDicts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppDicts(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppDictOrder), args["where"].(*ent.AppDictWhereInput)), true
+
 	case "Query.appPolicyAssignedToOrgs":
 		if e.complexity.Query.AppPolicyAssignedToOrgs == nil {
 			break
@@ -5153,19 +5166,19 @@ type AppDictItem implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
-  """所属应用"""
-  appID: Int
-  """组织ID"""
+  """组织ID,空为全局字典"""
   orgID: Int
   """所属字典"""
   dictID: ID
-  """用于标识应用资源的唯一代码,尽量简短"""
+  """字典值唯一编码,生效后不可修改."""
   code: String!
   """名称"""
   name: String!
   """备注"""
   comments: String
   displaySort: Int
+  """状态"""
+  status: AppDictItemSimpleStatus
   dict: AppDict
 }
 """Ordering options for AppDictItem connections"""
@@ -5179,6 +5192,13 @@ input AppDictItemOrder {
 enum AppDictItemOrderField {
   createdAt
   displaySort
+}
+"""AppDictItemSimpleStatus is enum for the field status"""
+enum AppDictItemSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
 }
 """
 AppDictItemWhereInput is used for filtering AppDictItem objects.
@@ -5237,17 +5257,6 @@ input AppDictItemWhereInput {
   updatedAtLTE: Time
   updatedAtIsNil: Boolean
   updatedAtNotNil: Boolean
-  """app_id field predicates"""
-  appID: Int
-  appIDNEQ: Int
-  appIDIn: [Int!]
-  appIDNotIn: [Int!]
-  appIDGT: Int
-  appIDGTE: Int
-  appIDLT: Int
-  appIDLTE: Int
-  appIDIsNil: Boolean
-  appIDNotNil: Boolean
   """org_id field predicates"""
   orgID: Int
   orgIDNEQ: Int
@@ -5294,6 +5303,13 @@ input AppDictItemWhereInput {
   nameHasSuffix: String
   nameEqualFold: String
   nameContainsFold: String
+  """status field predicates"""
+  status: AppDictItemSimpleStatus
+  statusNEQ: AppDictItemSimpleStatus
+  statusIn: [AppDictItemSimpleStatus!]
+  statusNotIn: [AppDictItemSimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
   """dict edge predicates"""
   hasDict: Boolean
   hasDictWith: [AppDictWhereInput!]
@@ -5676,6 +5692,7 @@ enum AppPolicySimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typ
   active
   inactive
   processing
+  disabled
 }
 """
 AppPolicyWhereInput is used for filtering AppPolicy objects.
@@ -6152,6 +6169,7 @@ enum AppSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.Sim
   active
   inactive
   processing
+  disabled
 }
 """
 AppWhereInput is used for filtering App objects.
@@ -6420,16 +6438,16 @@ CreateAppDictItemInput is used for create AppDictItem object.
 Input was generated by ent.
 """
 input CreateAppDictItemInput {
-  """所属应用"""
-  appID: Int
-  """组织ID"""
+  """组织ID,空为全局字典"""
   orgID: Int
-  """用于标识应用资源的唯一代码,尽量简短"""
+  """字典值唯一编码,生效后不可修改."""
   code: String!
   """名称"""
   name: String!
   """备注"""
   comments: String
+  """状态"""
+  status: AppDictItemSimpleStatus
   dictID: ID
 }
 """
@@ -7126,6 +7144,7 @@ enum OauthClientSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/t
   active
   inactive
   processing
+  disabled
 }
 """
 OauthClientWhereInput is used for filtering OauthClient objects.
@@ -7734,6 +7753,7 @@ enum OrgSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.Sim
   active
   inactive
   processing
+  disabled
 }
 """Ordering options for OrgUser connections"""
 input OrgUserOrder {
@@ -8237,6 +8257,7 @@ enum PermissionSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/ty
   active
   inactive
   processing
+  disabled
 }
 """
 PermissionWhereInput is used for filtering Permission objects.
@@ -8397,6 +8418,26 @@ type Query {
     """Filtering options for Apps returned from the connection."""
     where: AppWhereInput
   ): AppConnection!
+  """数据字典查询"""
+  appDicts(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """Ordering options for AppDicts returned from the connection."""
+    orderBy: AppDictOrder
+
+    """Filtering options for AppDicts returned from the connection."""
+    where: AppDictWhereInput
+  ): AppDictConnection!
   """文件来源"""
   fileSources(
     """Returns the elements in the list that come after the specified cursor."""
@@ -8500,6 +8541,9 @@ input UpdateAppDictItemInput {
   """备注"""
   comments: String
   clearComments: Boolean
+  """状态"""
+  status: AppDictItemSimpleStatus
+  clearStatus: Boolean
 }
 """
 UpdateAppInput is used for update App object.
@@ -8951,6 +8995,7 @@ enum UserDeviceSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/ty
   active
   inactive
   processing
+  disabled
 }
 """
 UserDeviceWhereInput is used for filtering UserDevice objects.
@@ -9169,6 +9214,7 @@ enum UserIdentitySimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/
   active
   inactive
   processing
+  disabled
 }
 """
 UserIdentityWhereInput is used for filtering UserIdentity objects.
@@ -9328,6 +9374,7 @@ enum UserLoginProfileSimpleStatus @goModel(model: "github.com/woocoos/entco/sche
   active
   inactive
   processing
+  disabled
 }
 """
 UserLoginProfileWhereInput is used for filtering UserLoginProfile objects.
@@ -9471,6 +9518,7 @@ enum UserPasswordSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/
   active
   inactive
   processing
+  disabled
 }
 """
 UserPasswordWhereInput is used for filtering UserPassword objects.
@@ -9557,6 +9605,7 @@ enum UserSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.Si
   active
   inactive
   processing
+  disabled
 }
 """UserUserType is enum for the field user_type"""
 enum UserUserType @goModel(model: "github.com/woocoos/knockout/ent/user.UserType") {

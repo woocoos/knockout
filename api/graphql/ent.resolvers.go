@@ -30,6 +30,13 @@ func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], fir
 		ent.WithAppFilter(where.Filter))
 }
 
+// AppDicts is the resolver for the appDicts field.
+func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) (*ent.AppDictConnection, error) {
+	return r.Client.AppDict.Query().Paginate(ctx, after, first, before, last,
+		ent.WithAppDictOrder(orderBy),
+		ent.WithAppDictFilter(where.Filter))
+}
+
 // FileSources is the resolver for the fileSources field.
 func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
 	return r.Client.FileSource.Query().Paginate(ctx, after, first, before, last, ent.WithFileSourceOrder(orderBy), ent.WithFileSourceFilter(where.Filter))
