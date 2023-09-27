@@ -7,7 +7,6 @@ package graphql
 import (
 	"context"
 	"fmt"
-
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/entco/schemax/typex"
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
@@ -237,7 +236,8 @@ func (r *mutationResolver) DeleteAppDictItem(ctx context.Context, itemID int) (b
 
 // MoveAppDictItem is the resolver for the moveAppDictItem field.
 func (r *mutationResolver) MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
-	panic(fmt.Errorf("not implemented: MoveAppDictItem - moveAppDictItem"))
+	err := r.Resource.MoveAppDictItem(ctx, sourceID, targetID, action)
+	return err == nil, err
 }
 
 // AssignOrganizationAppRole is the resolver for the assignOrganizationAppRole field.

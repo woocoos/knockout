@@ -10,11 +10,14 @@ import (
 	"strconv"
 
 	"entgo.io/contrib/entgql"
+	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
@@ -232,4 +235,25 @@ func (r *queryResolver) OrgUserPreference(ctx context.Context) (*ent.OrgUserPref
 // UserApps is the resolver for the userApps field.
 func (r *queryResolver) UserApps(ctx context.Context) ([]*ent.App, error) {
 	return r.Resource.GetUserApps(ctx)
+}
+
+// AppDictByRefCode is the resolver for the appDictByRefCode field.
+func (r *queryResolver) AppDictByRefCode(ctx context.Context, refCodes []string) ([]*ent.AppDict, error) {
+	return r.Client.AppDict.Query().Where(
+		appdict.HasItemsWith(
+			appdictitem.RefCodeIn(refCodes...),
+			appdictitem.StatusEQ(typex.SimpleStatusActive),
+		)).
+		WithNamedItems(appdict.EdgeItems, func(query *ent.AppDictItemQuery) {
+			query.Where(appdictitem.StatusEQ(typex.SimpleStatusActive)).
+				Order(appdictitem.ByDisplaySort(sql.OrderAsc()))
+		}).All(ctx)
+}
+
+// AppDictItemByRefCode is the resolver for the appDictItemByRefCode field.
+func (r *queryResolver) AppDictItemByRefCode(ctx context.Context, refCode string) ([]*ent.AppDictItem, error) {
+	return r.Client.AppDictItem.Query().Where(
+		appdictitem.RefCode(refCode),
+		appdictitem.StatusEQ(typex.SimpleStatusActive),
+	).Order(appdictitem.ByDisplaySort(sql.OrderAsc())).All(ctx)
 }

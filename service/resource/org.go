@@ -232,7 +232,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 			},
 			Labels: map[string]string{
 				"receiver":  "email",
-				"alertname": "userPasswordAndPrincipal",
+				"alertname": "UserPasswordAndPrincipal",
 				"tenant":    strconv.Itoa(tid),
 				"timestamp": strconv.Itoa(int(time.Now().Unix())),
 			},

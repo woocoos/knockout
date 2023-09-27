@@ -10,6 +10,7 @@ import (
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
@@ -605,4 +606,26 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return fmt.Errorf("policy not exist")
 	}
 	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
+}
+
+func (s *Service) MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) error {
+	client := ent.FromContext(ctx)
+	target := client.AppDictItem.GetX(ctx, targetID)
+	builder := client.AppDictItem.UpdateOneID(sourceID)
+	var start int32 = 0
+	switch action {
+	case model.TreeActionChild:
+		return fmt.Errorf("the action not support child")
+	case model.TreeActionUp:
+		start = target.DisplaySort
+		builder.SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = target.DisplaySort + 1
+		builder.SetDisplaySort(start)
+	}
+	err := client.AppDictItem.Update().Where(appdictitem.DictID(target.DictID), appdictitem.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return builder.Exec(ctx)
 }

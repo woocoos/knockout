@@ -564,6 +564,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		AppDictByRefCode        func(childComplexity int, refCodes []string) int
+		AppDictItemByRefCode    func(childComplexity int, refCode string) int
 		AppDicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		AppPolicyAssignedToOrgs func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
 		AppResources            func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
@@ -3773,6 +3775,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
+
+	case "Query.appDictByRefCode":
+		if e.complexity.Query.AppDictByRefCode == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appDictByRefCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppDictByRefCode(childComplexity, args["refCodes"].([]string)), true
+
+	case "Query.appDictItemByRefCode":
+		if e.complexity.Query.AppDictItemByRefCode == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appDictItemByRefCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppDictItemByRefCode(childComplexity, args["refCode"].(string)), true
 
 	case "Query.appDicts":
 		if e.complexity.Query.AppDicts == nil {
@@ -10008,6 +10034,16 @@ input OrgUserPreferenceInput {
     orgUserPreference: OrgUserPreference
     """用户授权的应用列表"""
     userApps: [App!]!
+    """根据ref_code获取数据字典"""
+    appDictByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCodes: [String!]!
+    ): [AppDict!]!
+    """根据ref_code获取数据字典值"""
+    appDictItemByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCode: String!
+    ):[AppDictItem!]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
