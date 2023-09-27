@@ -20,7 +20,6 @@ import (
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql"
-	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
 
@@ -91,12 +90,9 @@ func (s *Server) BuildWebEngine() *web.Server {
 	if err != nil {
 		log.Panic(err)
 	}
-	gqlSrv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers: &graphql.Resolver{
-			Client:   portalClient,
-			Resource: &resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions},
-		},
-	}))
+	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
+		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
+	))
 	// gqlserver的中间件处理
 	if s.Cnf.String("entcache.level") == "context" {
 		gqlSrv.AroundResponses(gqlx.ContextCache())

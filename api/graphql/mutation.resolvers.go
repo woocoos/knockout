@@ -21,27 +21,27 @@ import (
 
 // EnableDirectory is the resolver for the enableDirectory field.
 func (r *mutationResolver) EnableDirectory(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
-	return r.Resource.EnableOrganization(ctx, input)
+	return r.resource.EnableOrganization(ctx, input)
 }
 
 // CreateRoot is the resolver for the createRoot field.
 func (r *mutationResolver) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
-	return r.Resource.CreateRoot(ctx, input)
+	return r.resource.CreateRoot(ctx, input)
 }
 
 // CreateOrganization is the resolver for the createOrganization field.
 func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
-	return r.Resource.CreateOrganization(ctx, input)
+	return r.resource.CreateOrganization(ctx, input)
 }
 
 // UpdateOrganization is the resolver for the updateOrganization field.
 func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error) {
-	return r.Resource.UpdateOrganization(ctx, orgID, input)
+	return r.client.Org.UpdateOneID(orgID).SetInput(input).Save(ctx)
 }
 
 // DeleteOrganization is the resolver for the deleteOrganization field.
 func (r *mutationResolver) DeleteOrganization(ctx context.Context, orgID int) (bool, error) {
-	err := r.Resource.DeleteOrganization(ctx, orgID)
+	err := r.resource.DeleteOrganization(ctx, orgID)
 	if err != nil {
 		return false, err
 	}
@@ -50,45 +50,45 @@ func (r *mutationResolver) DeleteOrganization(ctx context.Context, orgID int) (b
 
 // MoveOrganization is the resolver for the moveOrganization field.
 func (r *mutationResolver) MoveOrganization(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
-	err := r.Resource.MoveOrganization(ctx, sourceID, targetID, action)
+	err := r.resource.MoveOrganization(ctx, sourceID, targetID, action)
 	return err == nil, err
 }
 
 // CreateOrganizationAccount is the resolver for the createOrganizationAccount field.
 func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error) {
-	return r.Resource.CreateOrganizationAccount(ctx, rootOrgID, input)
+	return r.resource.CreateOrganizationAccount(ctx, rootOrgID, input)
 }
 
 // CreateOrganizationUser is the resolver for the createOrganizationUser field.
 func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error) {
-	return r.Resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember)
+	return r.resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember)
 }
 
 // AllotOrganizationUser is the resolver for the allotOrganizationUser field.
 func (r *mutationResolver) AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) (bool, error) {
-	err := r.Resource.AllotOrganizationUser(ctx, input)
+	err := r.resource.AllotOrganizationUser(ctx, input)
 	return err == nil, err
 }
 
 // RemoveOrganizationUser is the resolver for the removeOrganizationUser field.
 func (r *mutationResolver) RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error) {
-	err := r.Resource.RemoveOrganizationUser(ctx, orgID, userID)
+	err := r.resource.RemoveOrganizationUser(ctx, orgID, userID)
 	return err == nil, err
 }
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
-	return r.Resource.UpdateUser(ctx, userID, input)
+	return r.resource.UpdateUser(ctx, userID, input)
 }
 
 // UpdateLoginProfile is the resolver for the updateLoginProfile field.
 func (r *mutationResolver) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
-	return r.Resource.UpdateLoginProfile(ctx, userID, input)
+	return r.resource.UpdateLoginProfile(ctx, userID, input)
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, userID int) (bool, error) {
-	err := r.Resource.DeleteOrganizationUser(ctx, userID)
+	err := r.resource.DeleteOrganizationUser(ctx, userID)
 	return err == nil, err
 }
 
@@ -105,84 +105,84 @@ func (r *mutationResolver) DeleteUserIdentity(ctx context.Context, id int) (bool
 
 // ChangePassword is the resolver for the changePassword field.
 func (r *mutationResolver) ChangePassword(ctx context.Context, oldPwd string, newPwd string) (bool, error) {
-	err := r.Resource.ChangePassword(ctx, oldPwd, newPwd)
+	err := r.resource.ChangePassword(ctx, oldPwd, newPwd)
 	return err == nil, err
 }
 
 // ResetUserPasswordByEmail is the resolver for the resetUserPasswordByEmail field.
 func (r *mutationResolver) ResetUserPasswordByEmail(ctx context.Context, userID int) (bool, error) {
-	err := r.Resource.ResetUserPasswordByEmail(ctx, userID)
+	err := r.resource.ResetUserPasswordByEmail(ctx, userID)
 	return err == nil, err
 }
 
 // CreateApp is the resolver for the createApp field.
 func (r *mutationResolver) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
-	return r.Resource.CreateApp(ctx, input)
+	return r.resource.CreateApp(ctx, input)
 }
 
 // UpdateApp is the resolver for the updateApp field.
 func (r *mutationResolver) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error) {
-	return r.Resource.UpdateApp(ctx, appID, input)
+	return r.resource.UpdateApp(ctx, appID, input)
 }
 
 // DeleteApp is the resolver for the deleteApp field.
 func (r *mutationResolver) DeleteApp(ctx context.Context, appID int) (bool, error) {
-	err := r.Resource.DeleteApp(ctx, appID)
+	err := r.resource.DeleteApp(ctx, appID)
 	return err == nil, err
 }
 
 // CreateAppActions is the resolver for the createAppActions field.
 func (r *mutationResolver) CreateAppActions(ctx context.Context, appID int, input []*ent.CreateAppActionInput) ([]*ent.AppAction, error) {
-	return r.Resource.CreateAppActions(ctx, appID, input)
+	return r.resource.CreateAppActions(ctx, appID, input)
 }
 
 // UpdateAppAction is the resolver for the updateAppAction field.
 func (r *mutationResolver) UpdateAppAction(ctx context.Context, actionID int, input ent.UpdateAppActionInput) (*ent.AppAction, error) {
-	//return r.Client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
-	return r.Resource.UpdateAppAction(ctx, actionID, input)
+	//return r.client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
+	return r.resource.UpdateAppAction(ctx, actionID, input)
 }
 
 // DeleteAppAction is the resolver for the deleteAppAction field.
 func (r *mutationResolver) DeleteAppAction(ctx context.Context, actionID int) (bool, error) {
-	err := r.Resource.DeleteAppAction(ctx, actionID)
+	err := r.resource.DeleteAppAction(ctx, actionID)
 	return err == nil, err
 }
 
 // CreateAppPolicy is the resolver for the createAppPolicy field.
 func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
-	return r.Resource.CreateAppPolicy(ctx, appID, input)
+	return r.resource.CreateAppPolicy(ctx, appID, input)
 }
 
 // UpdateAppPolicy is the resolver for the updateAppPolicy field.
 func (r *mutationResolver) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
-	return r.Resource.UpdateAppPolicy(ctx, policyID, input)
+	return r.resource.UpdateAppPolicy(ctx, policyID, input)
 }
 
 // DeleteAppPolicy is the resolver for the deleteAppPolicy field.
 func (r *mutationResolver) DeleteAppPolicy(ctx context.Context, policyID int) (bool, error) {
-	err := r.Resource.DeleteAppPolicy(ctx, policyID)
+	err := r.resource.DeleteAppPolicy(ctx, policyID)
 	return err == nil, err
 }
 
 // CreateAppMenus is the resolver for the createAppMenus field.
 func (r *mutationResolver) CreateAppMenus(ctx context.Context, appID int, input []*ent.CreateAppMenuInput) ([]*ent.AppMenu, error) {
-	return r.Resource.CreateAppMenus(ctx, appID, input)
+	return r.resource.CreateAppMenus(ctx, appID, input)
 }
 
 // UpdateAppMenu is the resolver for the updateAppMenu field.
 func (r *mutationResolver) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
-	return r.Resource.UpdateAppMenu(ctx, menuID, input)
+	return r.resource.UpdateAppMenu(ctx, menuID, input)
 }
 
 // MoveAppMenu is the resolver for the moveAppMenu field.
 func (r *mutationResolver) MoveAppMenu(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
-	err := r.Resource.MoveAppMenu(ctx, sourceID, targetID, action)
+	err := r.resource.MoveAppMenu(ctx, sourceID, targetID, action)
 	return err == nil, err
 }
 
 // DeleteAppMenu is the resolver for the deleteAppMenu field.
 func (r *mutationResolver) DeleteAppMenu(ctx context.Context, menuID int) (bool, error) {
-	err := r.Resource.DeleteAppMenu(ctx, menuID)
+	err := r.resource.DeleteAppMenu(ctx, menuID)
 	return err == nil, err
 }
 
@@ -193,12 +193,12 @@ func (r *mutationResolver) CreateAppRole(ctx context.Context, appID int, input e
 
 // UpdateAppRole is the resolver for the updateAppRole field.
 func (r *mutationResolver) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {
-	return r.Resource.UpdateAppRole(ctx, roleID, input)
+	return r.resource.UpdateAppRole(ctx, roleID, input)
 }
 
 // DeleteAppRole is the resolver for the deleteAppRole field.
 func (r *mutationResolver) DeleteAppRole(ctx context.Context, roleID int) (bool, error) {
-	err := r.Resource.DeleteAppRole(ctx, roleID)
+	err := r.resource.DeleteAppRole(ctx, roleID)
 	return err == nil, err
 }
 
@@ -236,132 +236,132 @@ func (r *mutationResolver) DeleteAppDictItem(ctx context.Context, itemID int) (b
 
 // MoveAppDictItem is the resolver for the moveAppDictItem field.
 func (r *mutationResolver) MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
-	err := r.Resource.MoveAppDictItem(ctx, sourceID, targetID, action)
+	err := r.resource.MoveAppDictItem(ctx, sourceID, targetID, action)
 	return err == nil, err
 }
 
 // AssignOrganizationAppRole is the resolver for the assignOrganizationAppRole field.
 func (r *mutationResolver) AssignOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error) {
-	err := r.Resource.AssignOrganizationAppRole(ctx, orgID, appRoleID)
+	err := r.resource.AssignOrganizationAppRole(ctx, orgID, appRoleID)
 	return err == nil, err
 }
 
 // RevokeOrganizationAppRole is the resolver for the revokeOrganizationAppRole field.
 func (r *mutationResolver) RevokeOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) (bool, error) {
-	err := r.Resource.RevokeOrganizationAppRole(ctx, orgID, appRoleID)
+	err := r.resource.RevokeOrganizationAppRole(ctx, orgID, appRoleID)
 	return err == nil, err
 }
 
 // AssignAppRolePolicy is the resolver for the assignAppRolePolicy field.
 func (r *mutationResolver) AssignAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) (bool, error) {
-	err := r.Resource.AssignAppRolePolicy(ctx, appID, roleID, policyIDs)
+	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, policyIDs)
 	return err == nil, err
 }
 
 // RevokeAppRolePolicy is the resolver for the revokeAppRolePolicy field.
 func (r *mutationResolver) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) (bool, error) {
-	err := r.Resource.RevokeAppRolePolicy(ctx, appID, roleID, policyIDs)
+	err := r.resource.RevokeAppRolePolicy(ctx, appID, roleID, policyIDs)
 	return err == nil, err
 }
 
 // AssignOrganizationApp is the resolver for the assignOrganizationApp field.
 func (r *mutationResolver) AssignOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
-	err := r.Resource.AssignOrganizationApp(ctx, orgID, appID)
+	err := r.resource.AssignOrganizationApp(ctx, orgID, appID)
 	return err == nil, err
 }
 
 // RevokeOrganizationApp is the resolver for the revokeOrganizationApp field.
 func (r *mutationResolver) RevokeOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
-	err := r.Resource.RevokeOrganizationApp(ctx, orgID, appID)
+	err := r.resource.RevokeOrganizationApp(ctx, orgID, appID)
 	return err == nil, err
 }
 
 // AssignOrganizationAppPolicy is the resolver for the assignOrganizationAppPolicy field.
 func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
-	err := r.Resource.AssignOrganizationAppPolicy(ctx, orgID, appPolicyID)
+	err := r.resource.AssignOrganizationAppPolicy(ctx, orgID, appPolicyID)
 	return err == nil, err
 }
 
 // RevokeOrganizationAppPolicy is the resolver for the revokeOrganizationAppPolicy field.
 func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
-	err := r.Resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
+	err := r.resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
 	return err == nil, err
 }
 
 // CreateOrganizationPolicy is the resolver for the createOrganizationPolicy field.
 func (r *mutationResolver) CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error) {
-	return r.Resource.CreateOrganizationPolicy(ctx, input)
+	return r.resource.CreateOrganizationPolicy(ctx, input)
 }
 
 // UpdateOrganizationPolicy is the resolver for the updateOrganizationPolicy field.
 func (r *mutationResolver) UpdateOrganizationPolicy(ctx context.Context, orgPolicyID int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
-	return r.Resource.UpdateOrganizationPolicy(ctx, orgPolicyID, input)
+	return r.resource.UpdateOrganizationPolicy(ctx, orgPolicyID, input)
 }
 
 // DeleteOrganizationPolicy is the resolver for the deleteOrganizationPolicy field.
 func (r *mutationResolver) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) (bool, error) {
-	err := r.Resource.DeleteOrganizationPolicy(ctx, orgPolicyID)
+	err := r.resource.DeleteOrganizationPolicy(ctx, orgPolicyID)
 	return err == nil, err
 }
 
 // CreateRole is the resolver for the createRole field.
 func (r *mutationResolver) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
-	return r.Resource.CreateRole(ctx, input)
+	return r.resource.CreateRole(ctx, input)
 }
 
 // UpdateRole is the resolver for the updateRole field.
 func (r *mutationResolver) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
-	return r.Resource.UpdateRole(ctx, roleID, input)
+	return r.resource.UpdateRole(ctx, roleID, input)
 }
 
 // DeleteRole is the resolver for the deleteRole field.
 func (r *mutationResolver) DeleteRole(ctx context.Context, roleID int) (bool, error) {
-	err := r.Resource.DeleteRole(ctx, roleID)
+	err := r.resource.DeleteRole(ctx, roleID)
 	return err == nil, err
 }
 
 // AssignRoleUser is the resolver for the assignRoleUser field.
 func (r *mutationResolver) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) (bool, error) {
-	err := r.Resource.AssignRoleUser(ctx, input)
+	err := r.resource.AssignRoleUser(ctx, input)
 	return err == nil, err
 }
 
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (r *mutationResolver) RevokeRoleUser(ctx context.Context, roleID int, userID int) (bool, error) {
-	err := r.Resource.RevokeRoleUser(ctx, roleID, userID)
+	err := r.resource.RevokeRoleUser(ctx, roleID, userID)
 	return err == nil, err
 }
 
 // Grant is the resolver for the grant field.
 func (r *mutationResolver) Grant(ctx context.Context, input ent.CreatePermissionInput) (*ent.Permission, error) {
-	return r.Resource.Grant(ctx, input)
+	return r.resource.Grant(ctx, input)
 }
 
 // UpdatePermission is the resolver for the updatePermission field.
 func (r *mutationResolver) UpdatePermission(ctx context.Context, permissionID int, input ent.UpdatePermissionInput) (*ent.Permission, error) {
-	return r.Resource.UpdatePermission(ctx, permissionID, input)
+	return r.resource.UpdatePermission(ctx, permissionID, input)
 }
 
 // Revoke is the resolver for the revoke field.
 func (r *mutationResolver) Revoke(ctx context.Context, orgID int, permissionID int) (bool, error) {
-	err := r.Resource.Revoke(ctx, orgID, permissionID)
+	err := r.resource.Revoke(ctx, orgID, permissionID)
 	return err == nil, err
 }
 
 // EnableMfa is the resolver for the enableMFA field.
 func (r *mutationResolver) EnableMfa(ctx context.Context, userID int) (*model.Mfa, error) {
-	return r.Resource.EnableMFA(ctx, userID)
+	return r.resource.EnableMFA(ctx, userID)
 }
 
 // DisableMfa is the resolver for the disableMFA field.
 func (r *mutationResolver) DisableMfa(ctx context.Context, userID int) (bool, error) {
-	err := r.Resource.DisableMFA(ctx, userID)
+	err := r.resource.DisableMFA(ctx, userID)
 	return err == nil, err
 }
 
 // SendMFAToUserByEmail is the resolver for the sendMFAToUserByEmail field.
 func (r *mutationResolver) SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error) {
-	err := r.Resource.SendMFAToUserByEmail(ctx, userID)
+	err := r.resource.SendMFAToUserByEmail(ctx, userID)
 	return err == nil, err
 }
 
@@ -372,7 +372,7 @@ func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input
 
 // RecoverOrgUser is the resolver for the recoverOrgUser field.
 func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
-	return r.Resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
+	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
 }
 
 // CreateFileSource is the resolver for the createFileSource field.
@@ -432,7 +432,7 @@ func (r *mutationResolver) DeleteOauthClient(ctx context.Context, id int) (bool,
 
 // SaveOrgUserPreference is the resolver for the saveOrgUserPreference field.
 func (r *mutationResolver) SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error) {
-	return r.Resource.SaveOrgUserPreference(ctx, input)
+	return r.resource.SaveOrgUserPreference(ctx, input)
 }
 
 // Mutation returns generated1.MutationResolver implementation.

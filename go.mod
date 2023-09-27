@@ -15,12 +15,12 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tsingsun/woocoo v0.3.1-0.20230925100652-4d45e9b7847f
+	github.com/tsingsun/woocoo v0.4.0
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230922090437-500dbe1d58de
 	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230925100652-4d45e9b7847f
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230926032357-2027544dba9d
+	github.com/woocoos/entco v0.0.0-20230927085820-fd6dc398355e
 	go.opentelemetry.io/contrib/propagators/b3 v1.17.0
 	golang.org/x/sync v0.3.0
 )
@@ -124,7 +124,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30
+	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect; indirectgo

@@ -45,14 +45,18 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 	if exist {
 		return nil, fmt.Errorf("directory service has enable")
 	}
-	bulk := make([]*ent.OrgCreate, 1)
-	bulk[0] = client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
-		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive)
-	os, err := client.Org.CreateBulk(bulk...).Save(ctx)
+	orgd, err := client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
+		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return os[0], err
+	ur := client.User.GetX(ctx, uid)
+	err = client.OrgUser.Create().SetOrgID(orgd.ID).SetUserID(uid).SetDisplayName(ur.DisplayName).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return orgd, err
 }
 
 // CreateRoot 创建组织root
@@ -85,30 +89,6 @@ func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInp
 		return nil, fmt.Errorf("parent id is required")
 	}
 	return s.Client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
-}
-
-// UpdateOrganization 更新组织目录
-//
-// - 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
-func (s *Service) UpdateOrganization(ctx context.Context, id int, input ent.UpdateOrgInput) (*ent.Org, error) {
-	client := ent.FromContext(ctx)
-	u := client.User.Query().Where(user.ID(*input.OwnerID)).FirstX(ctx)
-	if input.OwnerID != nil {
-		if u.UserType != user.UserTypeAccount {
-			return nil, fmt.Errorf("owner must be account")
-		}
-	}
-	o, err := client.Org.UpdateOneID(id).SetInput(input).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if input.OwnerID != nil {
-		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return o, nil
 }
 
 // DeleteOrganization 删除组织目录
