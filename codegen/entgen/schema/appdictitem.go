@@ -59,6 +59,7 @@ func (AppDictItem) Fields() []ent.Field {
 func (AppDictItem) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("dict", AppDict.Type).Ref("items").Unique().Immutable().Field("dict_id"),
+		edge.To("org", Org.Type).Unique().Immutable().Field("org_id"),
 	}
 }
 

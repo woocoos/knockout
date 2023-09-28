@@ -1120,6 +1120,22 @@ func (c *AppDictItemClient) QueryDict(adi *AppDictItem) *AppDictQuery {
 	return query
 }
 
+// QueryOrg queries the org edge of a AppDictItem.
+func (c *AppDictItemClient) QueryOrg(adi *AppDictItem) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := adi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdictitem.Table, appdictitem.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, appdictitem.OrgTable, appdictitem.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(adi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AppDictItemClient) Hooks() []Hook {
 	hooks := c.hooks.AppDictItem

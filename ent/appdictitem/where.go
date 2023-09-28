@@ -311,26 +311,6 @@ func OrgIDNotIn(vs ...int) predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldNotIn(FieldOrgID, vs...))
 }
 
-// OrgIDGT applies the GT predicate on the "org_id" field.
-func OrgIDGT(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldGT(FieldOrgID, v))
-}
-
-// OrgIDGTE applies the GTE predicate on the "org_id" field.
-func OrgIDGTE(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldGTE(FieldOrgID, v))
-}
-
-// OrgIDLT applies the LT predicate on the "org_id" field.
-func OrgIDLT(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldLT(FieldOrgID, v))
-}
-
-// OrgIDLTE applies the LTE predicate on the "org_id" field.
-func OrgIDLTE(v int) predicate.AppDictItem {
-	return predicate.AppDictItem(sql.FieldLTE(FieldOrgID, v))
-}
-
 // OrgIDIsNil applies the IsNil predicate on the "org_id" field.
 func OrgIDIsNil() predicate.AppDictItem {
 	return predicate.AppDictItem(sql.FieldIsNull(FieldOrgID))
@@ -746,6 +726,29 @@ func HasDict() predicate.AppDictItem {
 func HasDictWith(preds ...predicate.AppDict) predicate.AppDictItem {
 	return predicate.AppDictItem(func(s *sql.Selector) {
 		step := newDictStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrg applies the HasEdge predicate on the "org" edge.
+func HasOrg() predicate.AppDictItem {
+	return predicate.AppDictItem(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
+func HasOrgWith(preds ...predicate.Org) predicate.AppDictItem {
+	return predicate.AppDictItem(func(s *sql.Selector) {
+		step := newOrgStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

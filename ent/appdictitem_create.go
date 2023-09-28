@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // AppDictItemCreate is the builder for creating a AppDictItem entity.
@@ -171,6 +172,11 @@ func (adic *AppDictItemCreate) SetDict(a *AppDict) *AppDictItemCreate {
 	return adic.SetDictID(a.ID)
 }
 
+// SetOrg sets the "org" edge to the Org entity.
+func (adic *AppDictItemCreate) SetOrg(o *Org) *AppDictItemCreate {
+	return adic.SetOrgID(o.ID)
+}
+
 // Mutation returns the AppDictItemMutation object of the builder.
 func (adic *AppDictItemCreate) Mutation() *AppDictItemMutation {
 	return adic.mutation
@@ -303,10 +309,6 @@ func (adic *AppDictItemCreate) createSpec() (*AppDictItem, *sqlgraph.CreateSpec)
 		_spec.SetField(appdictitem.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := adic.mutation.OrgID(); ok {
-		_spec.SetField(appdictitem.FieldOrgID, field.TypeInt, value)
-		_node.OrgID = value
-	}
 	if value, ok := adic.mutation.RefCode(); ok {
 		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 		_node.RefCode = value
@@ -346,6 +348,23 @@ func (adic *AppDictItemCreate) createSpec() (*AppDictItem, *sqlgraph.CreateSpec)
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DictID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := adic.mutation.OrgIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   appdictitem.OrgTable,
+			Columns: []string{appdictitem.OrgColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.OrgID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

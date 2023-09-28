@@ -2009,10 +2009,6 @@ type AppDictItemWhereInput struct {
 	OrgIDNEQ    *int  `json:"orgIDNEQ,omitempty"`
 	OrgIDIn     []int `json:"orgIDIn,omitempty"`
 	OrgIDNotIn  []int `json:"orgIDNotIn,omitempty"`
-	OrgIDGT     *int  `json:"orgIDGT,omitempty"`
-	OrgIDGTE    *int  `json:"orgIDGTE,omitempty"`
-	OrgIDLT     *int  `json:"orgIDLT,omitempty"`
-	OrgIDLTE    *int  `json:"orgIDLTE,omitempty"`
 	OrgIDIsNil  bool  `json:"orgIDIsNil,omitempty"`
 	OrgIDNotNil bool  `json:"orgIDNotNil,omitempty"`
 
@@ -2065,6 +2061,10 @@ type AppDictItemWhereInput struct {
 	// "dict" edge predicates.
 	HasDict     *bool                `json:"hasDict,omitempty"`
 	HasDictWith []*AppDictWhereInput `json:"hasDictWith,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -2282,18 +2282,6 @@ func (i *AppDictItemWhereInput) P() (predicate.AppDictItem, error) {
 	if len(i.OrgIDNotIn) > 0 {
 		predicates = append(predicates, appdictitem.OrgIDNotIn(i.OrgIDNotIn...))
 	}
-	if i.OrgIDGT != nil {
-		predicates = append(predicates, appdictitem.OrgIDGT(*i.OrgIDGT))
-	}
-	if i.OrgIDGTE != nil {
-		predicates = append(predicates, appdictitem.OrgIDGTE(*i.OrgIDGTE))
-	}
-	if i.OrgIDLT != nil {
-		predicates = append(predicates, appdictitem.OrgIDLT(*i.OrgIDLT))
-	}
-	if i.OrgIDLTE != nil {
-		predicates = append(predicates, appdictitem.OrgIDLTE(*i.OrgIDLTE))
-	}
 	if i.OrgIDIsNil {
 		predicates = append(predicates, appdictitem.OrgIDIsNil())
 	}
@@ -2432,6 +2420,24 @@ func (i *AppDictItemWhereInput) P() (predicate.AppDictItem, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, appdictitem.HasDictWith(with...))
+	}
+	if i.HasOrg != nil {
+		p := appdictitem.HasOrg()
+		if !*i.HasOrg {
+			p = appdictitem.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, appdictitem.HasOrgWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

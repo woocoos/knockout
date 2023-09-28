@@ -986,6 +986,20 @@ func (adi *AppDictItemQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, appdictitem.FieldDictID)
 				fieldSeen[appdictitem.FieldDictID] = struct{}{}
 			}
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: adi.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			adi.withOrg = query
+			if _, ok := fieldSeen[appdictitem.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldOrgID)
+				fieldSeen[appdictitem.FieldOrgID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[appdictitem.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, appdictitem.FieldCreatedBy)

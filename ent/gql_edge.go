@@ -185,6 +185,14 @@ func (adi *AppDictItem) Dict(ctx context.Context) (*AppDict, error) {
 	return result, MaskNotFound(err)
 }
 
+func (adi *AppDictItem) Org(ctx context.Context) (*Org, error) {
+	result, err := adi.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = adi.QueryOrg().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (am *AppMenu) App(ctx context.Context) (*App, error) {
 	result, err := am.Edges.AppOrErr()
 	if IsNotLoaded(err) {

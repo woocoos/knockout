@@ -431,19 +431,16 @@ func (c *AppDictUpdateOne) SetInput(i UpdateAppDictInput) *AppDictUpdateOne {
 
 // CreateAppDictItemInput represents a mutation input for creating appdictitems.
 type CreateAppDictItemInput struct {
-	OrgID    *int
 	Code     string
 	Name     string
 	Comments *string
 	Status   *typex.SimpleStatus
 	DictID   *int
+	OrgID    *int
 }
 
 // Mutate applies the CreateAppDictItemInput on the AppDictItemMutation builder.
 func (i *CreateAppDictItemInput) Mutate(m *AppDictItemMutation) {
-	if v := i.OrgID; v != nil {
-		m.SetOrgID(*v)
-	}
 	m.SetCode(i.Code)
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
@@ -454,6 +451,9 @@ func (i *CreateAppDictItemInput) Mutate(m *AppDictItemMutation) {
 	}
 	if v := i.DictID; v != nil {
 		m.SetDictID(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
 	}
 }
 

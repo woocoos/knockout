@@ -229,9 +229,6 @@ func (adiu *AppDictItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if adiu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
 	}
-	if adiu.mutation.OrgIDCleared() {
-		_spec.ClearField(appdictitem.FieldOrgID, field.TypeInt)
-	}
 	if value, ok := adiu.mutation.RefCode(); ok {
 		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)
 	}
@@ -508,9 +505,6 @@ func (adiuo *AppDictItemUpdateOne) sqlSave(ctx context.Context) (_node *AppDictI
 	}
 	if adiuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appdictitem.FieldUpdatedAt, field.TypeTime)
-	}
-	if adiuo.mutation.OrgIDCleared() {
-		_spec.ClearField(appdictitem.FieldOrgID, field.TypeInt)
 	}
 	if value, ok := adiuo.mutation.RefCode(); ok {
 		_spec.SetField(appdictitem.FieldRefCode, field.TypeString, value)

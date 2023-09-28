@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -23,6 +24,7 @@ type AppDictItemQuery struct {
 	inters     []Interceptor
 	predicates []predicate.AppDictItem
 	withDict   *AppDictQuery
+	withOrg    *OrgQuery
 	modifiers  []func(*sql.Selector)
 	loadTotal  []func(context.Context, []*AppDictItem) error
 	// intermediate query (i.e. traversal path).
@@ -76,6 +78,28 @@ func (adiq *AppDictItemQuery) QueryDict() *AppDictQuery {
 			sqlgraph.From(appdictitem.Table, appdictitem.FieldID, selector),
 			sqlgraph.To(appdict.Table, appdict.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appdictitem.DictTable, appdictitem.DictColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(adiq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrg chains the current query on the "org" edge.
+func (adiq *AppDictItemQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: adiq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := adiq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := adiq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdictitem.Table, appdictitem.FieldID, selector),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, appdictitem.OrgTable, appdictitem.OrgColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(adiq.driver.Dialect(), step)
 		return fromU, nil
@@ -276,6 +300,7 @@ func (adiq *AppDictItemQuery) Clone() *AppDictItemQuery {
 		inters:     append([]Interceptor{}, adiq.inters...),
 		predicates: append([]predicate.AppDictItem{}, adiq.predicates...),
 		withDict:   adiq.withDict.Clone(),
+		withOrg:    adiq.withOrg.Clone(),
 		// clone intermediate query.
 		sql:  adiq.sql.Clone(),
 		path: adiq.path,
@@ -290,6 +315,17 @@ func (adiq *AppDictItemQuery) WithDict(opts ...func(*AppDictQuery)) *AppDictItem
 		opt(query)
 	}
 	adiq.withDict = query
+	return adiq
+}
+
+// WithOrg tells the query-builder to eager-load the nodes that are connected to
+// the "org" edge. The optional arguments are used to configure the query builder of the edge.
+func (adiq *AppDictItemQuery) WithOrg(opts ...func(*OrgQuery)) *AppDictItemQuery {
+	query := (&OrgClient{config: adiq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	adiq.withOrg = query
 	return adiq
 }
 
@@ -371,8 +407,9 @@ func (adiq *AppDictItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	var (
 		nodes       = []*AppDictItem{}
 		_spec       = adiq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			adiq.withDict != nil,
+			adiq.withOrg != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -399,6 +436,12 @@ func (adiq *AppDictItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	if query := adiq.withDict; query != nil {
 		if err := adiq.loadDict(ctx, query, nodes, nil,
 			func(n *AppDictItem, e *AppDict) { n.Edges.Dict = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := adiq.withOrg; query != nil {
+		if err := adiq.loadOrg(ctx, query, nodes, nil,
+			func(n *AppDictItem, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -439,6 +482,35 @@ func (adiq *AppDictItemQuery) loadDict(ctx context.Context, query *AppDictQuery,
 	}
 	return nil
 }
+func (adiq *AppDictItemQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*AppDictItem, init func(*AppDictItem), assign func(*AppDictItem, *Org)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*AppDictItem)
+	for i := range nodes {
+		fk := nodes[i].OrgID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(org.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (adiq *AppDictItemQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := adiq.querySpec()
@@ -470,6 +542,9 @@ func (adiq *AppDictItemQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if adiq.withDict != nil {
 			_spec.Node.AddColumnOnce(appdictitem.FieldDictID)
+		}
+		if adiq.withOrg != nil {
+			_spec.Node.AddColumnOnce(appdictitem.FieldOrgID)
 		}
 	}
 	if ps := adiq.predicates; len(ps) > 0 {

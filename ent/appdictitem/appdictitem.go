@@ -44,6 +44,8 @@ const (
 	FieldStatus = "status"
 	// EdgeDict holds the string denoting the dict edge name in mutations.
 	EdgeDict = "dict"
+	// EdgeOrg holds the string denoting the org edge name in mutations.
+	EdgeOrg = "org"
 	// Table holds the table name of the appdictitem in the database.
 	Table = "app_dict_item"
 	// DictTable is the table that holds the dict relation/edge.
@@ -53,6 +55,13 @@ const (
 	DictInverseTable = "app_dict"
 	// DictColumn is the table column denoting the dict relation/edge.
 	DictColumn = "dict_id"
+	// OrgTable is the table that holds the org relation/edge.
+	OrgTable = "app_dict_item"
+	// OrgInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgInverseTable = "org"
+	// OrgColumn is the table column denoting the org relation/edge.
+	OrgColumn = "org_id"
 )
 
 // Columns holds all SQL columns for appdictitem fields.
@@ -183,11 +192,25 @@ func ByDictField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newDictStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByOrgField orders the results by org field.
+func ByOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newDictStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DictInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, DictTable, DictColumn),
+	)
+}
+func newOrgStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
 	)
 }
 

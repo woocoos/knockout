@@ -4519,8 +4519,6 @@ type AppDictItemMutation struct {
 	updated_by      *int
 	addupdated_by   *int
 	updated_at      *time.Time
-	org_id          *int
-	addorg_id       *int
 	ref_code        *string
 	code            *string
 	name            *string
@@ -4531,6 +4529,8 @@ type AppDictItemMutation struct {
 	clearedFields   map[string]struct{}
 	dict            *int
 	cleareddict     bool
+	org             *int
+	clearedorg      bool
 	done            bool
 	oldValue        func(context.Context) (*AppDictItem, error)
 	predicates      []predicate.AppDictItem
@@ -4853,13 +4853,12 @@ func (m *AppDictItemMutation) ResetUpdatedAt() {
 
 // SetOrgID sets the "org_id" field.
 func (m *AppDictItemMutation) SetOrgID(i int) {
-	m.org_id = &i
-	m.addorg_id = nil
+	m.org = &i
 }
 
 // OrgID returns the value of the "org_id" field in the mutation.
 func (m *AppDictItemMutation) OrgID() (r int, exists bool) {
-	v := m.org_id
+	v := m.org
 	if v == nil {
 		return
 	}
@@ -4883,28 +4882,9 @@ func (m *AppDictItemMutation) OldOrgID(ctx context.Context) (v int, err error) {
 	return oldValue.OrgID, nil
 }
 
-// AddOrgID adds i to the "org_id" field.
-func (m *AppDictItemMutation) AddOrgID(i int) {
-	if m.addorg_id != nil {
-		*m.addorg_id += i
-	} else {
-		m.addorg_id = &i
-	}
-}
-
-// AddedOrgID returns the value that was added to the "org_id" field in this mutation.
-func (m *AppDictItemMutation) AddedOrgID() (r int, exists bool) {
-	v := m.addorg_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearOrgID clears the value of the "org_id" field.
 func (m *AppDictItemMutation) ClearOrgID() {
-	m.org_id = nil
-	m.addorg_id = nil
+	m.org = nil
 	m.clearedFields[appdictitem.FieldOrgID] = struct{}{}
 }
 
@@ -4916,8 +4896,7 @@ func (m *AppDictItemMutation) OrgIDCleared() bool {
 
 // ResetOrgID resets all changes to the "org_id" field.
 func (m *AppDictItemMutation) ResetOrgID() {
-	m.org_id = nil
-	m.addorg_id = nil
+	m.org = nil
 	delete(m.clearedFields, appdictitem.FieldOrgID)
 }
 
@@ -5273,6 +5252,33 @@ func (m *AppDictItemMutation) ResetDict() {
 	m.cleareddict = false
 }
 
+// ClearOrg clears the "org" edge to the Org entity.
+func (m *AppDictItemMutation) ClearOrg() {
+	m.clearedorg = true
+	m.clearedFields[appdictitem.FieldOrgID] = struct{}{}
+}
+
+// OrgCleared reports if the "org" edge to the Org entity was cleared.
+func (m *AppDictItemMutation) OrgCleared() bool {
+	return m.OrgIDCleared() || m.clearedorg
+}
+
+// OrgIDs returns the "org" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrgID instead. It exists only for internal usage by the builders.
+func (m *AppDictItemMutation) OrgIDs() (ids []int) {
+	if id := m.org; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrg resets all changes to the "org" edge.
+func (m *AppDictItemMutation) ResetOrg() {
+	m.org = nil
+	m.clearedorg = false
+}
+
 // Where appends a list predicates to the AppDictItemMutation builder.
 func (m *AppDictItemMutation) Where(ps ...predicate.AppDictItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -5320,7 +5326,7 @@ func (m *AppDictItemMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, appdictitem.FieldUpdatedAt)
 	}
-	if m.org_id != nil {
+	if m.org != nil {
 		fields = append(fields, appdictitem.FieldOrgID)
 	}
 	if m.dict != nil {
@@ -5516,9 +5522,6 @@ func (m *AppDictItemMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, appdictitem.FieldUpdatedBy)
 	}
-	if m.addorg_id != nil {
-		fields = append(fields, appdictitem.FieldOrgID)
-	}
 	if m.adddisplay_sort != nil {
 		fields = append(fields, appdictitem.FieldDisplaySort)
 	}
@@ -5534,8 +5537,6 @@ func (m *AppDictItemMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case appdictitem.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case appdictitem.FieldOrgID:
-		return m.AddedOrgID()
 	case appdictitem.FieldDisplaySort:
 		return m.AddedDisplaySort()
 	}
@@ -5560,13 +5561,6 @@ func (m *AppDictItemMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case appdictitem.FieldOrgID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddOrgID(v)
 		return nil
 	case appdictitem.FieldDisplaySort:
 		v, ok := value.(int32)
@@ -5689,9 +5683,12 @@ func (m *AppDictItemMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppDictItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.dict != nil {
 		edges = append(edges, appdictitem.EdgeDict)
+	}
+	if m.org != nil {
+		edges = append(edges, appdictitem.EdgeOrg)
 	}
 	return edges
 }
@@ -5704,13 +5701,17 @@ func (m *AppDictItemMutation) AddedIDs(name string) []ent.Value {
 		if id := m.dict; id != nil {
 			return []ent.Value{*id}
 		}
+	case appdictitem.EdgeOrg:
+		if id := m.org; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppDictItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -5722,9 +5723,12 @@ func (m *AppDictItemMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppDictItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.cleareddict {
 		edges = append(edges, appdictitem.EdgeDict)
+	}
+	if m.clearedorg {
+		edges = append(edges, appdictitem.EdgeOrg)
 	}
 	return edges
 }
@@ -5735,6 +5739,8 @@ func (m *AppDictItemMutation) EdgeCleared(name string) bool {
 	switch name {
 	case appdictitem.EdgeDict:
 		return m.cleareddict
+	case appdictitem.EdgeOrg:
+		return m.clearedorg
 	}
 	return false
 }
@@ -5746,6 +5752,9 @@ func (m *AppDictItemMutation) ClearEdge(name string) error {
 	case appdictitem.EdgeDict:
 		m.ClearDict()
 		return nil
+	case appdictitem.EdgeOrg:
+		m.ClearOrg()
+		return nil
 	}
 	return fmt.Errorf("unknown AppDictItem unique edge %s", name)
 }
@@ -5756,6 +5765,9 @@ func (m *AppDictItemMutation) ResetEdge(name string) error {
 	switch name {
 	case appdictitem.EdgeDict:
 		m.ResetDict()
+		return nil
+	case appdictitem.EdgeOrg:
+		m.ResetOrg()
 		return nil
 	}
 	return fmt.Errorf("unknown AppDictItem edge %s", name)

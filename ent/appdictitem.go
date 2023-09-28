@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // AppDictItem is the model entity for the AppDictItem schema.
@@ -53,11 +54,13 @@ type AppDictItem struct {
 type AppDictItemEdges struct {
 	// Dict holds the value of the dict edge.
 	Dict *AppDict `json:"dict,omitempty"`
+	// Org holds the value of the org edge.
+	Org *Org `json:"org,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 }
 
 // DictOrErr returns the Dict value or an error if the edge
@@ -71,6 +74,19 @@ func (e AppDictItemEdges) DictOrErr() (*AppDict, error) {
 		return e.Dict, nil
 	}
 	return nil, &NotLoadedError{edge: "dict"}
+}
+
+// OrgOrErr returns the Org value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppDictItemEdges) OrgOrErr() (*Org, error) {
+	if e.loadedTypes[1] {
+		if e.Org == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: org.Label}
+		}
+		return e.Org, nil
+	}
+	return nil, &NotLoadedError{edge: "org"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -193,6 +209,11 @@ func (adi *AppDictItem) Value(name string) (ent.Value, error) {
 // QueryDict queries the "dict" edge of the AppDictItem entity.
 func (adi *AppDictItem) QueryDict() *AppDictQuery {
 	return NewAppDictItemClient(adi.config).QueryDict(adi)
+}
+
+// QueryOrg queries the "org" edge of the AppDictItem entity.
+func (adi *AppDictItem) QueryOrg() *OrgQuery {
+	return NewAppDictItemClient(adi.config).QueryOrg(adi)
 }
 
 // Update returns a builder for updating this AppDictItem.

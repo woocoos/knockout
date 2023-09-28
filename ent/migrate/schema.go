@@ -111,7 +111,6 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 		{Name: "ref_code", Type: field.TypeString},
 		{Name: "code", Type: field.TypeString, Size: 20},
 		{Name: "name", Type: field.TypeString, Size: 45},
@@ -119,6 +118,7 @@ var (
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "inactive"},
 		{Name: "dict_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppDictItemTable holds the schema information for the "app_dict_item" table.
 	AppDictItemTable = &schema.Table{
@@ -128,8 +128,14 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_dict_item_app_dict_items",
-				Columns:    []*schema.Column{AppDictItemColumns[12]},
+				Columns:    []*schema.Column{AppDictItemColumns[11]},
 				RefColumns: []*schema.Column{AppDictColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_dict_item_org_org",
+				Columns:    []*schema.Column{AppDictItemColumns[12]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -137,7 +143,7 @@ var (
 			{
 				Name:    "appdictitem_ref_code",
 				Unique:  false,
-				Columns: []*schema.Column{AppDictItemColumns[6]},
+				Columns: []*schema.Column{AppDictItemColumns[5]},
 			},
 		},
 	}
@@ -885,6 +891,7 @@ func init() {
 		Table: "app_dict",
 	}
 	AppDictItemTable.ForeignKeys[0].RefTable = AppDictTable
+	AppDictItemTable.ForeignKeys[1].RefTable = OrgTable
 	AppDictItemTable.Annotation = &entsql.Annotation{
 		Table: "app_dict_item",
 	}
