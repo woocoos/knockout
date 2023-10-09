@@ -1,10 +1,10 @@
 package resource
 
 import (
-	"ariga.io/entcache"
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -38,7 +38,7 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 	if err != nil {
 		return nil, err
 	}
-	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Evict(ctx))
+	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}

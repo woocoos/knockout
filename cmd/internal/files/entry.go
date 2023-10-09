@@ -26,7 +26,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		Cnf: cnf,
 	}
 	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd = ecx.BuildEntCacheDriver(s.Cnf, pd)
+	pd, _ = ecx.BuildEntCacheDriver(s.Cnf.Sub("entcache"), pd)
 	if s.Cnf.Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
 	} else {

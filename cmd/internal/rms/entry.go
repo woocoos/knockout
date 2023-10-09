@@ -42,7 +42,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		Cnf: cnf,
 	}
 	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd = ecx.BuildEntCacheDriver(s.Cnf, pd)
+	pd, _ = ecx.BuildEntCacheDriver(s.Cnf.Sub("entcache"), pd)
 	if s.Cnf.Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
 		casbinClient = casbinent.NewClient(casbinent.Driver(pd), casbinent.Debug())
@@ -93,10 +93,6 @@ func (s *Server) BuildWebEngine() *web.Server {
 	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
 		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
 	))
-	// gqlserver的中间件处理
-	if s.Cnf.String("entcache.level") == "context" {
-		gqlSrv.AroundResponses(gqlx.ContextCache())
-	}
 	gqlSrv.AroundResponses(gqlx.SimplePagination())
 	// mutation事务
 	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})

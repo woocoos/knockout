@@ -85,14 +85,14 @@ store:
 
 cache:
   redis:
+    driverName: redis
     <<: *redis
     local:
       size: 1000
       ttl: 100s
 
 entcache:
-  level: db
-  ttl: 1s # level: db时有效
+  hashQueryTTL: 5s
 
 oas:
   msgsrv:

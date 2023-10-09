@@ -26,6 +26,7 @@ func (AppRole) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 

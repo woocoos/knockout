@@ -1,7 +1,6 @@
 package server
 
 import (
-	"ariga.io/entcache"
 	"bytes"
 	"context"
 	"encoding/base32"
@@ -16,6 +15,7 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/entco/schemax/typex"
@@ -378,7 +378,7 @@ func (s *AuthService) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.Us
 	pwd, err := s.DB.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
-	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Evict(ctx))
+	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}

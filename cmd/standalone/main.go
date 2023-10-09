@@ -5,6 +5,7 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/log"
+	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/cmd/internal/auth"
 	"github.com/woocoos/knockout/cmd/internal/files"
@@ -47,7 +48,7 @@ func main() {
 	fileEngine := fileSrv.BuildWebServer()
 	fileSrv.RegisterWebEngine(fileEngine.Router().FindGroup("/").Group)
 
-	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine)
+	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine, ecx.ChangeSet)
 
 	if err := app.Run(); err != nil {
 		log.Panic(err)

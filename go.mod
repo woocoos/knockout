@@ -3,7 +3,6 @@ module github.com/woocoos/knockout
 go 1.20
 
 require (
-	ariga.io/entcache v0.1.1-0.20230620164151-0eb723a11c40
 	entgo.io/contrib v0.4.6-0.20230615102013-704944fdc0f6
 	entgo.io/ent v0.12.4
 	github.com/99designs/gqlgen v0.17.38
@@ -15,12 +14,13 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tsingsun/woocoo v0.4.0
+	github.com/tsingsun/woocoo v0.4.1-0.20231007104131-727c230deab0
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20230922090437-500dbe1d58de
 	github.com/tsingsun/woocoo/contrib/telemetry v0.0.0-20230925100652-4d45e9b7847f
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entco v0.0.0-20230927085820-fd6dc398355e
+	github.com/woocoos/entcache v0.0.0-20231009085009-0e2ea3b3cf40
+	github.com/woocoos/entco v0.0.0-20231009085332-d98430a298be
 	go.opentelemetry.io/contrib/propagators/b3 v1.17.0
 	golang.org/x/sync v0.3.0
 )
@@ -95,7 +95,6 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.3.0
@@ -124,7 +123,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30
+	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect; indirectgo

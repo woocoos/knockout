@@ -40,6 +40,7 @@ func (User) Mixin() []ent.Mixin {
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
 		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
+		schemax.NotifyMixin{},
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"entgo.io/contrib/entproto"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
+	entcachegen "github.com/woocoos/entcache/gen"
 	"github.com/woocoos/entco/genx"
 	"log"
 	"os"
@@ -14,8 +15,9 @@ import (
 
 func main() {
 	ex, err := entgql.NewExtension(
+		genx.WithGqlWithTemplates(),
 		entgql.WithSchemaGenerator(),
-		entgql.WithWhereInputs(true),
+		entgql.WithWhereInputs(true), // 需要放在 WithGqlWithTemplates 之后
 		entgql.WithConfigPath("codegen/gqlgen/gqlgen.yaml"),
 		entgql.WithSchemaPath("api/graphql/ent.graphql"),
 		entgql.WithSchemaHook(genx.ChangeRelayNodeType()),
@@ -32,6 +34,7 @@ func main() {
 		//entc.FeatureNames("privacy", "schema/snapshot"),
 		genx.GlobalID(),
 		genx.SimplePagination(),
+		entcachegen.QueryCache(),
 	}
 	err = entc.Generate("./codegen/entgen/schema", &gen.Config{
 		Package:  "github.com/woocoos/knockout/ent",

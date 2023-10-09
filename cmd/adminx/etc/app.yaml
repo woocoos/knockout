@@ -89,8 +89,7 @@ snowflake:
   # 序列号位数
   stepBits: 8
 entcache:
-  level: db
-  ttl: 3s # level: db时有效
+  hashQueryTTL: 5s
 
 oas:
   files:

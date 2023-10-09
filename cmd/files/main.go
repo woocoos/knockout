@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/log"
+	"github.com/woocoos/entco/ecx"
 	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/knockout/cmd/internal/files"
 	"github.com/woocoos/knockout/cmd/internal/otel"
@@ -24,7 +25,7 @@ func main() {
 	authSrv := files.NewServer(app.AppConfiguration())
 	webEngine := authSrv.BuildWebServer()
 	authSrv.RegisterWebEngine(webEngine.Router().FindGroup("/").Group)
-	app.RegisterServer(webEngine)
+	app.RegisterServer(webEngine, ecx.ChangeSet)
 	if err := app.Run(); err != nil {
 		log.Panic(err)
 	}

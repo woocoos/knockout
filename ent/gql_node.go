@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -213,7 +214,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "App", id))
 		if err != nil {
 			return nil, err
 		}
@@ -225,7 +226,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppAction", id))
 		if err != nil {
 			return nil, err
 		}
@@ -237,7 +238,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppDict", id))
 		if err != nil {
 			return nil, err
 		}
@@ -249,7 +250,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppDictItem", id))
 		if err != nil {
 			return nil, err
 		}
@@ -261,7 +262,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppMenu", id))
 		if err != nil {
 			return nil, err
 		}
@@ -273,7 +274,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppPolicy", id))
 		if err != nil {
 			return nil, err
 		}
@@ -285,7 +286,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppRes", id))
 		if err != nil {
 			return nil, err
 		}
@@ -297,7 +298,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
 		if err != nil {
 			return nil, err
 		}
@@ -309,7 +310,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "File", id))
 		if err != nil {
 			return nil, err
 		}
@@ -321,7 +322,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "FileSource", id))
 		if err != nil {
 			return nil, err
 		}
@@ -333,7 +334,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OauthClient", id))
 		if err != nil {
 			return nil, err
 		}
@@ -345,7 +346,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "Org", id))
 		if err != nil {
 			return nil, err
 		}
@@ -357,7 +358,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgPolicy", id))
 		if err != nil {
 			return nil, err
 		}
@@ -369,7 +370,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgRole", id))
 		if err != nil {
 			return nil, err
 		}
@@ -381,7 +382,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgUserPreference", id))
 		if err != nil {
 			return nil, err
 		}
@@ -393,7 +394,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
 		if err != nil {
 			return nil, err
 		}
@@ -405,7 +406,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "User", id))
 		if err != nil {
 			return nil, err
 		}
@@ -417,7 +418,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserDevice", id))
 		if err != nil {
 			return nil, err
 		}
@@ -429,7 +430,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserIdentity", id))
 		if err != nil {
 			return nil, err
 		}
@@ -441,7 +442,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserLoginProfile", id))
 		if err != nil {
 			return nil, err
 		}
@@ -453,7 +454,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		if err != nil {
 			return nil, err
 		}
-		n, err := query.Only(ctx)
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserPassword", id))
 		if err != nil {
 			return nil, err
 		}

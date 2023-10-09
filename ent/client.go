@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -498,7 +499,7 @@ func (c *AppClient) Query() *AppQuery {
 
 // Get returns a App entity by its id.
 func (c *AppClient) Get(ctx context.Context, id int) (*App, error) {
-	return c.Query().Where(app.ID(id)).Only(ctx)
+	return c.Query().Where(app.ID(id)).Only(entcache.WithEntryKey(ctx, "App", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -760,7 +761,7 @@ func (c *AppActionClient) Query() *AppActionQuery {
 
 // Get returns a AppAction entity by its id.
 func (c *AppActionClient) Get(ctx context.Context, id int) (*AppAction, error) {
-	return c.Query().Where(appaction.ID(id)).Only(ctx)
+	return c.Query().Where(appaction.ID(id)).Only(entcache.WithEntryKey(ctx, "AppAction", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -926,7 +927,7 @@ func (c *AppDictClient) Query() *AppDictQuery {
 
 // Get returns a AppDict entity by its id.
 func (c *AppDictClient) Get(ctx context.Context, id int) (*AppDict, error) {
-	return c.Query().Where(appdict.ID(id)).Only(ctx)
+	return c.Query().Where(appdict.ID(id)).Only(entcache.WithEntryKey(ctx, "AppDict", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1092,7 +1093,7 @@ func (c *AppDictItemClient) Query() *AppDictItemQuery {
 
 // Get returns a AppDictItem entity by its id.
 func (c *AppDictItemClient) Get(ctx context.Context, id int) (*AppDictItem, error) {
-	return c.Query().Where(appdictitem.ID(id)).Only(ctx)
+	return c.Query().Where(appdictitem.ID(id)).Only(entcache.WithEntryKey(ctx, "AppDictItem", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1258,7 +1259,7 @@ func (c *AppMenuClient) Query() *AppMenuQuery {
 
 // Get returns a AppMenu entity by its id.
 func (c *AppMenuClient) Get(ctx context.Context, id int) (*AppMenu, error) {
-	return c.Query().Where(appmenu.ID(id)).Only(ctx)
+	return c.Query().Where(appmenu.ID(id)).Only(entcache.WithEntryKey(ctx, "AppMenu", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1424,7 +1425,7 @@ func (c *AppPolicyClient) Query() *AppPolicyQuery {
 
 // Get returns a AppPolicy entity by its id.
 func (c *AppPolicyClient) Get(ctx context.Context, id int) (*AppPolicy, error) {
-	return c.Query().Where(apppolicy.ID(id)).Only(ctx)
+	return c.Query().Where(apppolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "AppPolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1606,7 +1607,7 @@ func (c *AppResClient) Query() *AppResQuery {
 
 // Get returns a AppRes entity by its id.
 func (c *AppResClient) Get(ctx context.Context, id int) (*AppRes, error) {
-	return c.Query().Where(appres.ID(id)).Only(ctx)
+	return c.Query().Where(appres.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRes", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1756,7 +1757,7 @@ func (c *AppRoleClient) Query() *AppRoleQuery {
 
 // Get returns a AppRole entity by its id.
 func (c *AppRoleClient) Get(ctx context.Context, id int) (*AppRole, error) {
-	return c.Query().Where(approle.ID(id)).Only(ctx)
+	return c.Query().Where(approle.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRole", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1938,7 +1939,7 @@ func (c *AppRolePolicyClient) Query() *AppRolePolicyQuery {
 
 // Get returns a AppRolePolicy entity by its id.
 func (c *AppRolePolicyClient) Get(ctx context.Context, id int) (*AppRolePolicy, error) {
-	return c.Query().Where(approlepolicy.ID(id)).Only(ctx)
+	return c.Query().Where(approlepolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRolePolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2104,7 +2105,7 @@ func (c *FileClient) Query() *FileQuery {
 
 // Get returns a File entity by its id.
 func (c *FileClient) Get(ctx context.Context, id int) (*File, error) {
-	return c.Query().Where(file.ID(id)).Only(ctx)
+	return c.Query().Where(file.ID(id)).Only(entcache.WithEntryKey(ctx, "File", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2254,7 +2255,7 @@ func (c *FileSourceClient) Query() *FileSourceQuery {
 
 // Get returns a FileSource entity by its id.
 func (c *FileSourceClient) Get(ctx context.Context, id int) (*FileSource, error) {
-	return c.Query().Where(filesource.ID(id)).Only(ctx)
+	return c.Query().Where(filesource.ID(id)).Only(entcache.WithEntryKey(ctx, "FileSource", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2404,7 +2405,7 @@ func (c *OauthClientClient) Query() *OauthClientQuery {
 
 // Get returns a OauthClient entity by its id.
 func (c *OauthClientClient) Get(ctx context.Context, id int) (*OauthClient, error) {
-	return c.Query().Where(oauthclient.ID(id)).Only(ctx)
+	return c.Query().Where(oauthclient.ID(id)).Only(entcache.WithEntryKey(ctx, "OauthClient", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2554,7 +2555,7 @@ func (c *OrgClient) Query() *OrgQuery {
 
 // Get returns a Org entity by its id.
 func (c *OrgClient) Get(ctx context.Context, id int) (*Org, error) {
-	return c.Query().Where(org.ID(id)).Only(ctx)
+	return c.Query().Where(org.ID(id)).Only(entcache.WithEntryKey(ctx, "Org", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2849,7 +2850,7 @@ func (c *OrgAppClient) Query() *OrgAppQuery {
 
 // Get returns a OrgApp entity by its id.
 func (c *OrgAppClient) Get(ctx context.Context, id int) (*OrgApp, error) {
-	return c.Query().Where(orgapp.ID(id)).Only(ctx)
+	return c.Query().Where(orgapp.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgApp", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3015,7 +3016,7 @@ func (c *OrgPolicyClient) Query() *OrgPolicyQuery {
 
 // Get returns a OrgPolicy entity by its id.
 func (c *OrgPolicyClient) Get(ctx context.Context, id int) (*OrgPolicy, error) {
-	return c.Query().Where(orgpolicy.ID(id)).Only(ctx)
+	return c.Query().Where(orgpolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgPolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3181,7 +3182,7 @@ func (c *OrgRoleClient) Query() *OrgRoleQuery {
 
 // Get returns a OrgRole entity by its id.
 func (c *OrgRoleClient) Get(ctx context.Context, id int) (*OrgRole, error) {
-	return c.Query().Where(orgrole.ID(id)).Only(ctx)
+	return c.Query().Where(orgrole.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgRole", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3363,7 +3364,7 @@ func (c *OrgRoleUserClient) Query() *OrgRoleUserQuery {
 
 // Get returns a OrgRoleUser entity by its id.
 func (c *OrgRoleUserClient) Get(ctx context.Context, id int) (*OrgRoleUser, error) {
-	return c.Query().Where(orgroleuser.ID(id)).Only(ctx)
+	return c.Query().Where(orgroleuser.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgRoleUser", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3561,7 +3562,7 @@ func (c *OrgUserClient) Query() *OrgUserQuery {
 
 // Get returns a OrgUser entity by its id.
 func (c *OrgUserClient) Get(ctx context.Context, id int) (*OrgUser, error) {
-	return c.Query().Where(orguser.ID(id)).Only(ctx)
+	return c.Query().Where(orguser.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgUser", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3759,7 +3760,7 @@ func (c *OrgUserPreferenceClient) Query() *OrgUserPreferenceQuery {
 
 // Get returns a OrgUserPreference entity by its id.
 func (c *OrgUserPreferenceClient) Get(ctx context.Context, id int) (*OrgUserPreference, error) {
-	return c.Query().Where(orguserpreference.ID(id)).Only(ctx)
+	return c.Query().Where(orguserpreference.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgUserPreference", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3925,7 +3926,7 @@ func (c *PermissionClient) Query() *PermissionQuery {
 
 // Get returns a Permission entity by its id.
 func (c *PermissionClient) Get(ctx context.Context, id int) (*Permission, error) {
-	return c.Query().Where(permission.ID(id)).Only(ctx)
+	return c.Query().Where(permission.ID(id)).Only(entcache.WithEntryKey(ctx, "Permission", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4123,7 +4124,7 @@ func (c *UserClient) Query() *UserQuery {
 
 // Get returns a User entity by its id.
 func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
-	return c.Query().Where(user.ID(id)).Only(ctx)
+	return c.Query().Where(user.ID(id)).Only(entcache.WithEntryKey(ctx, "User", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4386,7 +4387,7 @@ func (c *UserDeviceClient) Query() *UserDeviceQuery {
 
 // Get returns a UserDevice entity by its id.
 func (c *UserDeviceClient) Get(ctx context.Context, id int) (*UserDevice, error) {
-	return c.Query().Where(userdevice.ID(id)).Only(ctx)
+	return c.Query().Where(userdevice.ID(id)).Only(entcache.WithEntryKey(ctx, "UserDevice", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4536,7 +4537,7 @@ func (c *UserIdentityClient) Query() *UserIdentityQuery {
 
 // Get returns a UserIdentity entity by its id.
 func (c *UserIdentityClient) Get(ctx context.Context, id int) (*UserIdentity, error) {
-	return c.Query().Where(useridentity.ID(id)).Only(ctx)
+	return c.Query().Where(useridentity.ID(id)).Only(entcache.WithEntryKey(ctx, "UserIdentity", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4686,7 +4687,7 @@ func (c *UserLoginProfileClient) Query() *UserLoginProfileQuery {
 
 // Get returns a UserLoginProfile entity by its id.
 func (c *UserLoginProfileClient) Get(ctx context.Context, id int) (*UserLoginProfile, error) {
-	return c.Query().Where(userloginprofile.ID(id)).Only(ctx)
+	return c.Query().Where(userloginprofile.ID(id)).Only(entcache.WithEntryKey(ctx, "UserLoginProfile", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4836,7 +4837,7 @@ func (c *UserPasswordClient) Query() *UserPasswordQuery {
 
 // Get returns a UserPassword entity by its id.
 func (c *UserPasswordClient) Get(ctx context.Context, id int) (*UserPassword, error) {
-	return c.Query().Where(userpassword.ID(id)).Only(ctx)
+	return c.Query().Where(userpassword.ID(id)).Only(entcache.WithEntryKey(ctx, "UserPassword", id))
 }
 
 // GetX is like Get, but panics if an error occurs.

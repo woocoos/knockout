@@ -34,7 +34,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 		Cnf: cnf,
 	}
 	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd = ecx.BuildEntCacheDriver(s.Cnf, pd)
+	pd, _ = ecx.BuildEntCacheDriver(s.Cnf.Sub("entcache"), pd)
 	if s.Cnf.Development {
 		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
 	} else {
@@ -56,13 +56,10 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
 	s.GrpcSrv = srv
 
-	red, err := redisc.New(s.Cnf.Sub("cache.redis"))
-	if err != nil {
+	if _, err = redisc.New(s.Cnf.Sub("cache.redis")); err != nil {
 		log.Panic(err)
 	}
-	if err = red.Register(); err != nil {
-		log.Panic(err)
-	}
+
 	s.service = &server.AuthService{
 		DB:         portalClient,
 		HttpClient: httpClient,

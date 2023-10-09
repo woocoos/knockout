@@ -96,7 +96,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [1]ent.Hook
+	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// MfaSecretValidator is a validator for the "mfa_secret" field. It is called by the builders before save.

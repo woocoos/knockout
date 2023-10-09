@@ -98,7 +98,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [1]ent.Hook
+	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultAutoGrant holds the default value on creation for the "auto_grant" field.

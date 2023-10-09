@@ -70,7 +70,7 @@ cache:
       ttl: 100s
 
 entcache:
-  level: context
+  hashQueryTTL: 5s
 #  ttl: 5m # level: db时有效
 
 files:
