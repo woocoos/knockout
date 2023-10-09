@@ -26,6 +26,8 @@ test-db:
 	GOWORK=off go run -mod=mod test/initdb.go
 test-data:
 	GOWORK=off go run -mod=mod test/testdata/initdata.go
+test-apppolicy:
+	GOWORK=off go run -mod=mod test/testdata/initapppolicy.go
 
 .PHONY: gen genent gengql genoas
 gen: genent gengql
