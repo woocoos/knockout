@@ -254,13 +254,8 @@ func (s *Service) assignAppPolicyToRootOwner(ctx context.Context, rootOrgID int,
 	return err
 }
 
-// AssignRoleUser is the resolver for the assignRoleUser field.
-func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
+func (s *Service) assignRoleUserByTid(ctx context.Context, input model.AssignRoleUserInput, tid int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return err
-	}
 	ouid, err := client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(input.UserID)).OnlyID(ctx)
 	if err != nil {
 		return err
@@ -286,6 +281,15 @@ func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUser
 		log.Errorf("grant policy failed,policy is inactive: %w", err)
 	}
 	return err
+}
+
+// AssignRoleUser is the resolver for the assignRoleUser field.
+func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	return s.assignRoleUserByTid(ctx, input, tid)
 }
 
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
@@ -427,7 +431,7 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 	return s.assignAppRoleToRootOwner(ctx, orgID, or.ID)
 }
 
-// assignAppPolicyToRootOwner 给根组织管理者授权策略
+// assignAppRoleToRootOwner 给根组织管理者授权角色
 func (s *Service) assignAppRoleToRootOwner(ctx context.Context, rootOrgID int, orgRoleId int) error {
 	client := ent.FromContext(ctx)
 	rootOrg, err := client.Org.Query().Where(org.ID(rootOrgID)).Only(ctx)
@@ -435,10 +439,10 @@ func (s *Service) assignAppRoleToRootOwner(ctx context.Context, rootOrgID int, o
 		return err
 	}
 	// 给根用户授权策略
-	return s.AssignRoleUser(ctx, model.AssignRoleUserInput{
+	return s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
 		OrgRoleID: orgRoleId,
 		UserID:    *rootOrg.OwnerID,
-	})
+	}, rootOrgID)
 }
 
 func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appRoleID int) error {
@@ -784,7 +788,7 @@ func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, wh
 	ups := security.GetUserPermissions(userID, tid)
 	for _, p := range ups {
 		parts := strings.Split(p[2], ArnSplit)
-		if len(parts) > 2 {
+		if len(parts) != 2 {
 			continue
 		}
 		ac := parts[0]

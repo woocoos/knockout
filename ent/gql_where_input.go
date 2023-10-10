@@ -7833,6 +7833,23 @@ type OrgRoleWhereInput struct {
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
 
+	// "comments" field predicates.
+	Comments             *string  `json:"comments,omitempty"`
+	CommentsNEQ          *string  `json:"commentsNEQ,omitempty"`
+	CommentsIn           []string `json:"commentsIn,omitempty"`
+	CommentsNotIn        []string `json:"commentsNotIn,omitempty"`
+	CommentsGT           *string  `json:"commentsGT,omitempty"`
+	CommentsGTE          *string  `json:"commentsGTE,omitempty"`
+	CommentsLT           *string  `json:"commentsLT,omitempty"`
+	CommentsLTE          *string  `json:"commentsLTE,omitempty"`
+	CommentsContains     *string  `json:"commentsContains,omitempty"`
+	CommentsHasPrefix    *string  `json:"commentsHasPrefix,omitempty"`
+	CommentsHasSuffix    *string  `json:"commentsHasSuffix,omitempty"`
+	CommentsIsNil        bool     `json:"commentsIsNil,omitempty"`
+	CommentsNotNil       bool     `json:"commentsNotNil,omitempty"`
+	CommentsEqualFold    *string  `json:"commentsEqualFold,omitempty"`
+	CommentsContainsFold *string  `json:"commentsContainsFold,omitempty"`
+
 	// "org" edge predicates.
 	HasOrg     *bool            `json:"hasOrg,omitempty"`
 	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
@@ -8109,6 +8126,51 @@ func (i *OrgRoleWhereInput) P() (predicate.OrgRole, error) {
 	}
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, orgrole.NameContainsFold(*i.NameContainsFold))
+	}
+	if i.Comments != nil {
+		predicates = append(predicates, orgrole.CommentsEQ(*i.Comments))
+	}
+	if i.CommentsNEQ != nil {
+		predicates = append(predicates, orgrole.CommentsNEQ(*i.CommentsNEQ))
+	}
+	if len(i.CommentsIn) > 0 {
+		predicates = append(predicates, orgrole.CommentsIn(i.CommentsIn...))
+	}
+	if len(i.CommentsNotIn) > 0 {
+		predicates = append(predicates, orgrole.CommentsNotIn(i.CommentsNotIn...))
+	}
+	if i.CommentsGT != nil {
+		predicates = append(predicates, orgrole.CommentsGT(*i.CommentsGT))
+	}
+	if i.CommentsGTE != nil {
+		predicates = append(predicates, orgrole.CommentsGTE(*i.CommentsGTE))
+	}
+	if i.CommentsLT != nil {
+		predicates = append(predicates, orgrole.CommentsLT(*i.CommentsLT))
+	}
+	if i.CommentsLTE != nil {
+		predicates = append(predicates, orgrole.CommentsLTE(*i.CommentsLTE))
+	}
+	if i.CommentsContains != nil {
+		predicates = append(predicates, orgrole.CommentsContains(*i.CommentsContains))
+	}
+	if i.CommentsHasPrefix != nil {
+		predicates = append(predicates, orgrole.CommentsHasPrefix(*i.CommentsHasPrefix))
+	}
+	if i.CommentsHasSuffix != nil {
+		predicates = append(predicates, orgrole.CommentsHasSuffix(*i.CommentsHasSuffix))
+	}
+	if i.CommentsIsNil {
+		predicates = append(predicates, orgrole.CommentsIsNil())
+	}
+	if i.CommentsNotNil {
+		predicates = append(predicates, orgrole.CommentsNotNil())
+	}
+	if i.CommentsEqualFold != nil {
+		predicates = append(predicates, orgrole.CommentsEqualFold(*i.CommentsEqualFold))
+	}
+	if i.CommentsContainsFold != nil {
+		predicates = append(predicates, orgrole.CommentsContainsFold(*i.CommentsContainsFold))
 	}
 
 	if i.HasOrg != nil {

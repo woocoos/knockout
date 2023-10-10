@@ -2911,6 +2911,22 @@ input OrgRoleWhereInput {
   nameHasSuffix: String
   nameEqualFold: String
   nameContainsFold: String
+  """comments field predicates"""
+  comments: String
+  commentsNEQ: String
+  commentsIn: [String!]
+  commentsNotIn: [String!]
+  commentsGT: String
+  commentsGTE: String
+  commentsLT: String
+  commentsLTE: String
+  commentsContains: String
+  commentsHasPrefix: String
+  commentsHasSuffix: String
+  commentsIsNil: Boolean
+  commentsNotNil: Boolean
+  commentsEqualFold: String
+  commentsContainsFold: String
   """org edge predicates"""
   hasOrg: Boolean
   hasOrgWith: [OrgWhereInput!]

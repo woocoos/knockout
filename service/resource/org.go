@@ -156,9 +156,11 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 		return nil, err
 	}
 
-	_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
-	if err != nil {
-		return nil, err
+	if ut != user.UserTypeAccount {
+		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// 自动生成密码,发送邮件
@@ -456,7 +458,11 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
 	client := ent.FromContext(ctx)
-	return client.UserLoginProfile.UpdateOneID(userID).SetInput(input).Save(ctx)
+	lpID, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Select(userloginprofile.FieldID).Int(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return client.UserLoginProfile.UpdateOneID(lpID).SetInput(input).Save(ctx)
 }
 
 // CreateRole 创建角色或工作组
