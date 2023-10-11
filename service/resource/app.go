@@ -2,11 +2,13 @@ package resource
 
 import (
 	"context"
+	"encoding/json"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
 	"github.com/woocoos/entco/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -569,18 +571,31 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 	if err != nil {
 		return nil, err
 	}
+	apRules, err := json.Marshal(ap.Rules)
+	if err != nil {
+		return nil, err
+	}
 	// 更新orgPolicy及相关授权
 	ops, err := client.OrgPolicy.Query().Where(orgpolicy.AppID(apl.AppID), orgpolicy.AppPolicyID(policyID)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
 	for _, op := range ops {
-		err = appPolicyToOrgPolicy(apl.Edges.App.Code, ap.Rules, op.OrgID)
+		// 深拷贝rules
+		rules := make([]*types.PolicyRule, 0)
+		err = json.Unmarshal(apRules, &rules)
 		if err != nil {
 			return nil, err
 		}
-		err = updateOrgPolicyRules(ctx, op.ID, ap.Rules, op.OrgID)
+		err = appPolicyToOrgPolicy(apl.Edges.App.Code, rules, op.OrgID)
 		if err != nil {
 			return nil, err
 		}
-		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(ap.Rules).SetName(ap.Name).SetComments(ap.Comments).Exec(ctx)
+		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(rules).SetName(ap.Name).SetComments(ap.Comments).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+		err = updateOrgPolicyRules(ctx, op.ID, rules, op.OrgID)
 		if err != nil {
 			return nil, err
 		}
