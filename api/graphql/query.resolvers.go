@@ -257,3 +257,12 @@ func (r *queryResolver) AppDictItemByRefCode(ctx context.Context, refCode string
 		appdictitem.StatusEQ(typex.SimpleStatusActive),
 	).Order(appdictitem.ByDisplaySort(sql.OrderAsc())).All(ctx)
 }
+
+// AppAccess is the resolver for the appAccess field.
+func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, error) {
+	has, err := r.resource.CheckPermission(ctx, appCode+":login")
+	if err != nil {
+		return false, nil
+	}
+	return has, nil
+}

@@ -552,7 +552,7 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.Crea
 }
 
 // UpdateAppPolicy 更新应用策略,该应用必须属于(创建者)该租户才可更新
-// 当应用策略更新时,会被当前最新的策略模板,原有引用该策略的都保持不变
+// 当应用策略更新时,会被当前最新的策略模板,原有引用该策略的都更新
 func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)

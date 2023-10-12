@@ -119,4 +119,6 @@ extend type Query {
         """ref_code规则：<appCode:appDictCode>"""
         refCode: String!
     ):[AppDictItem!]!
+    """检测应用登录授权"""
+    appAccess(appCode:String!):Boolean!
 }

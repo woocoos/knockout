@@ -51,67 +51,17 @@ func initResourcePolicy(client *ent.Tx) {
 		panic(err)
 	}
 	aps := make([]*ent.AppPolicyCreate, 0)
-	// 基础策略
-	KOResBase := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
+	// 应用授权
+	KOResAccess := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"userPermissions", "userMenus", "userRootOrgs", "node",
+				"userPermissions", "userMenus", "userRootOrgs", "node", "login", "/", "orgRoles", "orgGroups", "/user/info",
+				"updateUser", "/user/safety", "changePassword",
 			},
 		},
-	}).SetName("KOResBase").SetComments("资源权限管理基础权限，后台用户必要策略").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResBase)
-	// 工作台
-	KOResConsole := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
-		{
-			Effect: types.PolicyEffectAllow,
-			Actions: []string{
-				"/", "orgRoles", "orgGroups",
-			},
-		},
-	}).SetName("KOResConsole").SetComments("资源权限管理工作台只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResConsole)
-	// 个人中心-基本信息
-	KOResUserInfoRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
-		{
-			Effect: types.PolicyEffectAllow,
-			Actions: []string{
-				"/user/info",
-			},
-		},
-	}).SetName("KOResUserInfoRead").SetComments("资源权限管理基本信息只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResUserInfoRead)
-	KOResUserInfoEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
-		{
-			Effect: types.PolicyEffectAllow,
-			Actions: []string{
-				"updateUser",
-			},
-		},
-	}).SetName("KOResUserInfoEdit").SetComments("资源权限管理基本信息修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResUserInfoEdit)
-	// 个人中心-安全设置
-	KOResUserSafetyRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
-		{
-			Effect: types.PolicyEffectAllow,
-			Actions: []string{
-				"/user/safety",
-			},
-		},
-	}).SetName("KOResUserSafetyRead").SetComments("资源权限管理安全设置只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResUserSafetyRead)
-	KOResUserSafetyEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
-		{
-			Effect: types.PolicyEffectAllow,
-			//Actions: []string{
-			//	"changePassword", "/mfa/bind-prepare", "/mfa/bind", "/mfa/unbind",
-			//},
-			Actions: []string{
-				"changePassword",
-			},
-		},
-	}).SetName("KOResUserSafetyEdit").SetComments("资源权限管理安全设置修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
-	aps = append(aps, KOResUserSafetyEdit)
+	}).SetName("KOResAccess").SetComments("资源权限管理应用授权，拥有该策略允许登录后台").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	aps = append(aps, KOResAccess)
 	// 组织协作-部门管理
 	KOResDepartmentRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -120,7 +70,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/org/departments", "organizations",
 			},
 		},
-	}).SetName("KOResDepartmentRead").SetComments("资源权限管理部门管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDepartmentRead").SetComments("资源权限管理部门管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDepartmentRead)
 	KOResDepartmentEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -129,7 +79,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"createOrganization", "updateOrganization",
 			},
 		},
-	}).SetName("KOResDepartmentEdit").SetComments("资源权限管理部门管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDepartmentEdit").SetComments("资源权限管理部门管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDepartmentEdit)
 	KOResDepartmentDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -138,7 +88,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteOrganization",
 			},
 		},
-	}).SetName("KOResDepartmentDel").SetComments("资源权限管理部门管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDepartmentDel").SetComments("资源权限管理部门管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDepartmentDel)
 	// 组织协作-用户管理
 	KOResOrgUsersRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -148,7 +98,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/org/users", "organizations", "orgRecycleUsers", "userGroups", "orgGroups", "userExtendGroupPolicies",
 			},
 		},
-	}).SetName("KOResOrgUsersRead").SetComments("资源权限管理用户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgUsersRead").SetComments("资源权限管理用户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgUsersRead)
 	KOResOrgUsersEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -159,7 +109,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteOauthClient", "grant", "revoke", "removeOrganizationUser",
 			},
 		},
-	}).SetName("KOResOrgUsersEdit").SetComments("资源权限管理用户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgUsersEdit").SetComments("资源权限管理用户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgUsersEdit)
 	// 组织协作-权限策略
 	KOResOrgPoliciesRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -169,7 +119,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/org/policys", "orgPolicyReferences", "orgAppActions",
 			},
 		},
-	}).SetName("KOResOrgPoliciesRead").SetComments("资源权限管理权限策略只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgPoliciesRead").SetComments("资源权限管理权限策略只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgPoliciesRead)
 	KOResOrgPoliciesEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -178,7 +128,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"updateOrganizationPolicy", "createOrganizationPolicy",
 			},
 		},
-	}).SetName("KOResOrgPoliciesEdit").SetComments("资源权限管理权限策略修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgPoliciesEdit").SetComments("资源权限管理权限策略修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgPoliciesEdit)
 	KOResOrgPoliciesDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -187,7 +137,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteOrganizationPolicy",
 			},
 		},
-	}).SetName("KOResOrgPoliciesDel").SetComments("资源权限管理权限策略删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgPoliciesDel").SetComments("资源权限管理权限策略删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgPoliciesDel)
 	// 组织协作-用户组
 	KOResOrgGroupsRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -197,7 +147,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/org/groups", "orgGroups", "orgRoleUsers",
 			},
 		},
-	}).SetName("KOResOrgGroupsRead").SetComments("资源权限管理用户组只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgGroupsRead").SetComments("资源权限管理用户组只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgGroupsRead)
 	KOResOrgGroupsEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -206,7 +156,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"assignRoleUser", "grant", "createRole", "updateRole", "revokeRoleUser",
 			},
 		},
-	}).SetName("KOResOrgGroupsEdit").SetComments("资源权限管理用户组修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgGroupsEdit").SetComments("资源权限管理用户组修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgGroupsEdit)
 	KOResOrgGroupsDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -215,7 +165,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteRole",
 			},
 		},
-	}).SetName("KOResOrgGroupsDel").SetComments("资源权限管理用户组删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgGroupsDel").SetComments("资源权限管理用户组删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgGroupsDel)
 	// 组织协作-角色
 	KOResOrgRolesRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -225,7 +175,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/org/roles", "orgRoles", "orgRoleUsers",
 			},
 		},
-	}).SetName("KOResOrgRolesRead").SetComments("资源权限管理角色只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgRolesRead").SetComments("资源权限管理角色只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgRolesRead)
 	KOResOrgRolesEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -234,7 +184,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"assignRoleUser", "grant", "createRole", "updateRole", "revokeRoleUser",
 			},
 		},
-	}).SetName("KOResOrgRolesEdit").SetComments("资源权限管理角色修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgRolesEdit").SetComments("资源权限管理角色修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgRolesEdit)
 	KOResOrgRolesDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -243,7 +193,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteRole",
 			},
 		},
-	}).SetName("KOResOrgRolesDel").SetComments("资源权限管理角色删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResOrgRolesDel").SetComments("资源权限管理角色删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResOrgRolesDel)
 	// 系统设置-组织管理
 	KOResSystemOrgRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -254,7 +204,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"orgRecycleUsers", "userGroups", "userExtendGroupPolicies",
 			},
 		},
-	}).SetName("KOResSystemOrgRead").SetComments("资源权限管理组织管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemOrgRead").SetComments("资源权限管理组织管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemOrgRead)
 	KOResSystemOrgEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -266,7 +216,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"enableMFA", "createOauthClient", "enableOauthClient", "disableOauthClient", "deleteOauthClient",
 				"revoke"},
 		},
-	}).SetName("KOResSystemOrgEdit").SetComments("资源权限管理组织管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemOrgEdit").SetComments("资源权限管理组织管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemOrgEdit)
 	// 系统设置-账户管理
 	KOResSystemAccountRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -276,7 +226,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/system/account", "users", "userGroups", "orgGroups",
 			},
 		},
-	}).SetName("KOResSystemAccountRead").SetComments("资源权限管理账户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAccountRead").SetComments("资源权限管理账户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAccountRead)
 	KOResSystemAccountEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -287,7 +237,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"createOrganizationAccount", "resetUserPasswordByEmail",
 			},
 		},
-	}).SetName("KOResSystemAccountEdit").SetComments("资源权限管理账户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAccountEdit").SetComments("资源权限管理账户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAccountEdit)
 	KOResSystemAccountDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -296,7 +246,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteUser",
 			},
 		},
-	}).SetName("KOResSystemAccountDel").SetComments("资源权限管理账户管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAccountDel").SetComments("资源权限管理账户管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAccountDel)
 	// 系统设置-应用管理
 	KOResSystemAppRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -306,7 +256,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/system/app", "apps", "appPolicyAssignedToOrgs", "appRoleAssignedToOrgs",
 			},
 		},
-	}).SetName("KOResSystemAppRead").SetComments("资源权限管理应用管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAppRead").SetComments("资源权限管理应用管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAppRead)
 	KOResSystemAppEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -318,7 +268,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"assignOrganizationAppRole", "updateAppRes",
 			},
 		},
-	}).SetName("KOResSystemAppEdit").SetComments("资源权限管理应用管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAppEdit").SetComments("资源权限管理应用管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAppEdit)
 	KOResSystemAppDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -327,7 +277,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteApp",
 			},
 		},
-	}).SetName("KOResSystemAppDel").SetComments("资源权限管理应用管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResSystemAppDel").SetComments("资源权限管理应用管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemAppDel)
 	// 系统设置-文件来源
 	KOResFileSourceRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -337,7 +287,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/system/file/source", "fileSources",
 			},
 		},
-	}).SetName("KOResFileSourceRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResFileSourceRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResFileSourceRead)
 	KOResFileSourceEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -346,7 +296,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"createFileSource", "updateFileSource",
 			},
 		},
-	}).SetName("KOResFileSourceEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResFileSourceEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResFileSourceEdit)
 	KOResFileSourceDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -355,7 +305,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteFileSource",
 			},
 		},
-	}).SetName("KOResFileSourceDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResFileSourceDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResFileSourceDel)
 	// 系统设置-数据字典
 	KOResDictRead := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
@@ -365,7 +315,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"/dict", "appDicts",
 			},
 		},
-	}).SetName("KOResDictRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDictRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDictRead)
 	KOResDictEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -374,7 +324,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"updateAppDict", "createAppDict", "updateAppDictItem", "createAppDictItem", "deleteAppDictItem", "moveAppDictItem",
 			},
 		},
-	}).SetName("KOResDictEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDictEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDictEdit)
 	KOResDictDel := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
@@ -383,7 +333,7 @@ func initResourcePolicy(client *ent.Tx) {
 				"deleteAppDict",
 			},
 		},
-	}).SetName("KOResDictDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
+	}).SetName("KOResDictDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDictDel)
 	// 创建策略
 	err = client.AppPolicy.CreateBulk(aps...).Exec(context.Background())

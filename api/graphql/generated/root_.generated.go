@@ -565,6 +565,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		AppAccess               func(childComplexity int, appCode string) int
 		AppDictByRefCode        func(childComplexity int, refCodes []string) int
 		AppDictItemByRefCode    func(childComplexity int, refCode string) int
 		AppDicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
@@ -3783,6 +3784,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PolicyRule.Resources(childComplexity), true
+
+	case "Query.appAccess":
+		if e.complexity.Query.AppAccess == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appAccess_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppAccess(childComplexity, args["appCode"].(string)), true
 
 	case "Query.appDictByRefCode":
 		if e.complexity.Query.AppDictByRefCode == nil {
@@ -10067,6 +10080,8 @@ input OrgUserPreferenceInput {
         """ref_code规则：<appCode:appDictCode>"""
         refCode: String!
     ):[AppDictItem!]!
+    """检测应用登录授权"""
+    appAccess(appCode:String!):Boolean!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
