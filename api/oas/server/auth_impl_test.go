@@ -6,7 +6,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/require"
 	"github.com/tsingsun/woocoo/pkg/cache"
+	"github.com/woocoos/entco/pkg/koapp"
+	"github.com/woocoos/knockout/ent/useridentity"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -22,12 +25,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
-	"github.com/woocoos/entco/pkg/snowflake"
 	"github.com/woocoos/entco/schemax/typex"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
@@ -40,13 +41,15 @@ import (
 	"github.com/woocoos/knockout/status"
 	"github.com/woocoos/knockout/test"
 
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
 	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 var (
-	adminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2N2E4NzQ4MmU5MWY0ZjJlOTIyMGY1MTM3NjE4NWI3ZSIsInN1YiI6IjEiLCJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1MTYyMzkwMjJ9.MzfOsaGAtHj0IIoVDgpfUD1GMtgLTNbY7D_CkEoR9CQ"
-	appCnf     *conf.AppConfiguration
+	adminToken    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2N2E4NzQ4MmU5MWY0ZjJlOTIyMGY1MTM3NjE4NWI3ZSIsInN1YiI6IjEiLCJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1MTYyMzkwMjJ9.MzfOsaGAtHj0IIoVDgpfUD1GMtgLTNbY7D_CkEoR9CQ"
+	adminTokenJTI = "67a87482e91f4f2e9220f51376185b7e"
+	appCnf        *conf.AppConfiguration
 )
 
 type ServiceSuite struct {
@@ -58,6 +61,9 @@ type ServiceSuite struct {
 }
 
 func (s *ServiceSuite) SetupSuite(t *testing.T) {
+	s.redisServer = miniredis.RunT(t)
+	require.NoError(t, s.redisServer.Set(adminTokenJTI, "1"))
+
 	file := filepath.Join(test.BaseDir(), "testdata", "etc", "app.yaml")
 	bs, err := os.ReadFile(file)
 	if err != nil {
@@ -65,10 +71,11 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	}
 
 	cnf := conf.NewFromBytes(bs, conf.WithBaseDir(test.BaseDir())).AsGlobal()
-	app := woocoo.New(woocoo.WithAppConfiguration(cnf))
+	cnf.Parser().Set("cache.redis.addrs", []string{s.redisServer.Addr()})
+
+	app := koapp.New(woocoo.WithAppConfiguration(cnf))
 	appCnf = app.AppConfiguration()
 
-	assert.NoError(t, snowflake.SetDefaultNode(appCnf.Sub("snowflake")))
 	s.server = web.New(web.WithConfiguration(cnf.Sub("web")))
 
 	s.AuthService = &AuthService{}
@@ -76,19 +83,11 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	s.AuthService.DB, err = ent.Open(app.AppConfiguration().String("store.test.driverName"), app.AppConfiguration().String("store.test.dsn"), ent.Debug())
-
-	s.redisServer = miniredis.RunT(t)
-	appCnf.Parser().Set("cache.redis.addr", s.redisServer.Addr())
-	red, err := redisc.New(appCnf.Sub("cache.redis"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err = red.Register(); err != nil {
-		t.Fatal(err)
-	}
-	s.AuthService.Cache = cache.GetCache("redis")
-
+	drv := koapp.BuildEntComponents(app.AppConfiguration())["test"]
+	s.AuthService.DB = ent.NewClient(ent.Driver(drv), ent.Debug())
+	//s.AuthService.DB, err = ent.Open(appCnf.String("store.test.driverName"), appCnf.String("store.test.dsn"), ent.Debug())
+	s.AuthService.Cache, err = cache.GetCache("redis")
+	require.NoError(t, err)
 	s.FileService = &FileService{
 		DB:       s.AuthService.DB,
 		BaseDir:  appCnf.Abs(appCnf.String("files.local.baseDir")),
@@ -98,10 +97,8 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)
 	RegisterAuthHandlers(&s.server.Router().RouterGroup, s.AuthService)
 	RegisterFileHandlers(&s.server.Router().RouterGroup, s.FileService)
-	jwtmdl, ok := s.server.HandlerManager().Get("jwt")
-	if !ok {
-		t.Fail()
-	}
+	jwtmdl, ok := s.server.HandlerManager().GetMiddleware(web.GetMiddlewareKey(s.server.Router().RouterGroup.BasePath(), "jwt"))
+	require.True(t, ok)
 	s.AuthService.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
 
 	err = s.AuthService.DB.Schema.Create(context.Background(),
@@ -128,30 +125,34 @@ func TestLoginFlow(t *testing.T) {
 func (ts *loginFlowSuite) SetupSuite() {
 	ts.redisServer.FlushAll()
 	db := ts.AuthService.DB
-	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").SetStatus(typex.SimpleStatusActive).
-		SetDisplayName("admin").SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).SetRegisterIP("")
+	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").
+		SetStatus(typex.SimpleStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
+		SetCreationType(user.CreationTypeManual).SetRegisterIP("")
 	_, err := db.User.CreateBulk(
 		adm,
 	).Save(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.AuthService.DB.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
+	err = db.UserIdentity.Create().SetCreatedBy(1).SetUserID(1).SetCode("admin").
+		SetStatus(typex.SimpleStatusActive).SetKind(useridentity.KindName).Exec(context.Background())
+	ts.Require().NoError(err)
+	err = db.UserPassword.Create().SetCreatedBy(1).SetUserID(1).SetStatus(typex.SimpleStatusActive).SetSalt("123456").
 		SetPassword("9b1063951d443cfac15cc879efb4054f4f4fd599e1b1a9aee67b0301e19e40fe").SetScene(userpassword.SceneLogin).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.AuthService.DB.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
+	err = db.UserLoginProfile.Create().SetCreatedBy(1).SetUserID(1).SetSetKind(userloginprofile.SetKindKeep).
 		SetMfaEnabled(true).SetMfaSecret("UWZLIIUMPX53NYXB").SetCanLogin(true).
 		SetMfaStatus(typex.SimpleStatusActive).SetVerifyDevice(true).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.AuthService.DB.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
+	err = db.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
 		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).SetParentID(0).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = ts.AuthService.DB.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
+	err = db.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
 		SetDisplayName("admin").Exec(context.Background())
 	ts.Require().NoError(err)
 }
@@ -210,6 +211,7 @@ func (ts *loginFlowSuite) Test_VerifyFactor() {
 	err := ts.AuthService.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1)
 	ts.Require().NoError(err)
 
+	ctx.Request = httptest.NewRequest("POST", "/verifyFactor", nil)
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
 	time.Sleep(1 * time.Second)
 	res, err := ts.AuthService.VerifyFactor(ctx, &oas.VerifyFactorRequest{
@@ -256,7 +258,7 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 	req.Header.Set("X-Tenant-ID", "1")
 	res := httptest.NewRecorder()
 	ts.server.Router().ServeHTTP(res, req)
-	ts.Equal(res.Code, 200)
+	ts.Require().Equal(res.Code, 200)
 
 	var bp map[string]any
 	err := json.Unmarshal([]byte(res.Body.String()), &bp)

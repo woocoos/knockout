@@ -5,14 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/cache"
-	"github.com/tsingsun/woocoo/pkg/cache/redisc"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/httpx"
-	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/ecx/oteldriver"
+	"github.com/woocoos/entco/pkg/koapp"
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"
@@ -33,22 +30,21 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	s := &Server{
 		Cnf: cnf,
 	}
-	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd, _ = ecx.BuildEntCacheDriver(s.Cnf.Sub("entcache"), pd)
+	ents := koapp.BuildEntComponents(s.Cnf)
 	if s.Cnf.Development {
-		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
+		portalClient = ent.NewClient(ent.Driver(ents["portal"]), ent.Debug())
 	} else {
-		portalClient = ent.NewClient(ent.Driver(pd))
+		portalClient = ent.NewClient(ent.Driver(ents["portal"]))
 	}
 
 	// 初始化httpx
 	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	httpClient, err := cfg.Client(context.Background(), nil)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 
 	us := entpb.NewUserService(portalClient)
@@ -56,18 +52,16 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	entpb.RegisterUserServiceServer(srv.Engine(), us)
 	s.GrpcSrv = srv
 
-	if _, err = redisc.New(s.Cnf.Sub("cache.redis")); err != nil {
-		log.Panic(err)
-	}
-
 	s.service = &server.AuthService{
 		DB:         portalClient,
 		HttpClient: httpClient,
-		Cache:      cache.GetCache("redis"),
 	}
-
+	s.service.Cache, err = cache.GetCache("redis")
+	if err != nil {
+		panic(err)
+	}
 	if err := s.service.Apply(cnf); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return s

@@ -106,9 +106,4 @@ oauth-with-cache:
     endpoint:
       tokenURL: http://127.0.0.1:10070/token
     scopes:
-    cache:
-      type: redis
-      <<: *redis
-      local:
-        size: 1000
-        ttl: 100s
+    storeKey: redis

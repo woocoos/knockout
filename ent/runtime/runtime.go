@@ -451,7 +451,9 @@ func init() {
 	org.DefaultID = orgDescID.Default.(func() int)
 	orgappMixin := schema.OrgApp{}.Mixin()
 	orgappMixinHooks1 := orgappMixin[1].Hooks()
+	orgappMixinHooks2 := orgappMixin[2].Hooks()
 	orgapp.Hooks[0] = orgappMixinHooks1[0]
+	orgapp.Hooks[1] = orgappMixinHooks2[0]
 	orgappMixinFields1 := orgappMixin[1].Fields()
 	_ = orgappMixinFields1
 	orgappFields := schema.OrgApp{}.Fields()

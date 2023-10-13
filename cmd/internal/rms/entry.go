@@ -14,11 +14,10 @@ import (
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/ecx/oteldriver"
 	"github.com/woocoos/entco/gqlx"
 	"github.com/woocoos/entco/pkg/authorization"
 	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/entco/pkg/koapp"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
@@ -41,16 +40,15 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	s := &Server{
 		Cnf: cnf,
 	}
-	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd, _ = ecx.BuildEntCacheDriver(s.Cnf.Sub("entcache"), pd)
+	ents := koapp.BuildEntComponents(s.Cnf)
+	drv := ents["portal"]
 	if s.Cnf.Development {
-		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
-		casbinClient = casbinent.NewClient(casbinent.Driver(pd), casbinent.Debug())
+		portalClient = ent.NewClient(ent.Driver(drv), ent.Debug())
+		casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
 	} else {
-		portalClient = ent.NewClient(ent.Driver(pd))
-		casbinClient = casbinent.NewClient(casbinent.Driver(pd))
+		portalClient = ent.NewClient(ent.Driver(drv))
+		casbinClient = casbinent.NewClient(casbinent.Driver(drv))
 	}
-
 	buildCashbin(s.Cnf, casbinClient)
 
 	return s

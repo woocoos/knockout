@@ -9,15 +9,6 @@ log:
     - level: debug
       outputPaths:
         - stdout
-      encoderConfig:
-        timeKey: "@timestamp"
-        messageKey: "message"
-        callerKey: "file"
-  rotate:
-    maxsize: 10
-    maxage: 10
-    maxbackups: 20
-    localtime: true
 
 # use open telemetry
 #otel:
@@ -79,15 +70,15 @@ store:
     addrs:
       - 127.0.0.1:6379
     db: 1
-snowflake:
-  # 机器id
-  node: 1
-  # 时间戳起始时间 北京时间 2023-01-01 00:00:00
-  epoch: 1672531200000
-  # 机器id位数
-  nodeBits: 1
-  # 序列号位数
-  stepBits: 8
+
+cache:
+  redis:
+    driverName: adminx
+    <<: *redis
+    local:
+      size: 1000
+      ttl: 100s
+
 entcache:
   hashQueryTTL: 5s
 
@@ -106,9 +97,4 @@ oauth-with-cache:
     endpoint:
       tokenURL: http://127.0.0.1:10070/token
     scopes:
-    cache:
-      type: redis
-      <<: *redis
-      local:
-        size: 1000
-        ttl: 100s
+    storeKey: adminx

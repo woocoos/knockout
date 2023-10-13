@@ -26,6 +26,7 @@ func (OrgApp) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.IntID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 
