@@ -4674,6 +4674,8 @@ func (ec *executionContext) fieldContext_AppDict_items(ctx context.Context, fiel
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
 				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
 			case "code":
 				return ec.fieldContext_AppDictItem_code(ctx, field)
 			case "name":
@@ -5240,6 +5242,50 @@ func (ec *executionContext) fieldContext_AppDictItem_dictID(ctx context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppDictItem_refCode(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppDictItem_refCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RefCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppDictItem_refCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppDictItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -18712,6 +18758,8 @@ func (ec *executionContext) fieldContext_Query_appDictItemByRefCode(ctx context.
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
 				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
 			case "code":
 				return ec.fieldContext_AppDictItem_code(ctx, field)
 			case "name":
@@ -49901,6 +49949,11 @@ func (ec *executionContext) _AppDictItem(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._AppDictItem_orgID(ctx, field, obj)
 		case "dictID":
 			out.Values[i] = ec._AppDictItem_dictID(ctx, field, obj)
+		case "refCode":
+			out.Values[i] = ec._AppDictItem_refCode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "code":
 			out.Values[i] = ec._AppDictItem_code(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

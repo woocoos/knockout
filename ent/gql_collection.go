@@ -1030,6 +1030,11 @@ func (adi *AppDictItemQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, appdictitem.FieldDictID)
 				fieldSeen[appdictitem.FieldDictID] = struct{}{}
 			}
+		case "refCode":
+			if _, ok := fieldSeen[appdictitem.FieldRefCode]; !ok {
+				selectedFields = append(selectedFields, appdictitem.FieldRefCode)
+				fieldSeen[appdictitem.FieldRefCode] = struct{}{}
+			}
 		case "code":
 			if _, ok := fieldSeen[appdictitem.FieldCode]; !ok {
 				selectedFields = append(selectedFields, appdictitem.FieldCode)

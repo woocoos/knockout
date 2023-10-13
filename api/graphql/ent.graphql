@@ -338,6 +338,8 @@ type AppDictItem implements Node {
   orgID: ID
   """所属字典"""
   dictID: ID
+  """关联代码,由app_code和dict_code组成"""
+  refCode: String!
   """字典值唯一编码,生效后不可修改."""
   code: String!
   """名称"""

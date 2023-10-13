@@ -145,6 +145,7 @@ type ComplexityRoot struct {
 		Name        func(childComplexity int) int
 		Org         func(childComplexity int) int
 		OrgID       func(childComplexity int) int
+		RefCode     func(childComplexity int) int
 		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
@@ -1232,6 +1233,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppDictItem.OrgID(childComplexity), true
+
+	case "AppDictItem.refCode":
+		if e.complexity.AppDictItem.RefCode == nil {
+			break
+		}
+
+		return e.complexity.AppDictItem.RefCode(childComplexity), true
 
 	case "AppDictItem.status":
 		if e.complexity.AppDictItem.Status == nil {
@@ -5217,6 +5225,8 @@ type AppDictItem implements Node {
   orgID: ID
   """所属字典"""
   dictID: ID
+  """关联代码,由app_code和dict_code组成"""
+  refCode: String!
   """字典值唯一编码,生效后不可修改."""
   code: String!
   """名称"""

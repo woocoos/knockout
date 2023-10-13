@@ -4368,6 +4368,8 @@ func (ec *executionContext) fieldContext_Mutation_createAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
 				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
 			case "code":
 				return ec.fieldContext_AppDictItem_code(ctx, field)
 			case "name":
@@ -4450,6 +4452,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppDictItem(ctx context.
 				return ec.fieldContext_AppDictItem_orgID(ctx, field)
 			case "dictID":
 				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
 			case "code":
 				return ec.fieldContext_AppDictItem_code(ctx, field)
 			case "name":
