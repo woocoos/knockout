@@ -1,6 +1,6 @@
 module github.com/woocoos/knockout
 
-go 1.20
+go 1.21
 
 require (
 	entgo.io/contrib v0.4.6-0.20230615102013-704944fdc0f6
@@ -14,15 +14,15 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tsingsun/woocoo v0.4.1
+	github.com/tsingsun/woocoo v0.4.2-0.20231015152503-8a4e63e6e2b8
 	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20231012062453-74c77e6e1535
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.0.0-20231012065054-81b26c239c3d
-	github.com/woocoos/entco v0.0.0-20231013025321-77cb3988dee9
+	github.com/woocoos/entco v0.0.0-20231016081026-992c35e77b04
 	go.opentelemetry.io/contrib/propagators/b3 v1.20.0
-	golang.org/x/sync v0.3.0
+	golang.org/x/sync v0.4.0
 )
 
 require (
@@ -63,7 +63,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
-	go.uber.org/zap v1.25.0 // indirect
+	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230711160842-782d3b101e98 // indirect
@@ -126,10 +126,10 @@ require (
 	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect; indirectgo
+	golang.org/x/sys v0.13.0 // indirect; indirectgo
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
-	google.golang.org/grpc v1.58.2
+	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
