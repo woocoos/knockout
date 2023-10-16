@@ -149,6 +149,7 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
 	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
 		ctx.Status(http.StatusBadRequest)
+		s.logFailHandler(ctx, req.Body.Username, false)
 		return nil, status.ErrCaptchaNotMatch
 	}
 	if failCount >= s.LoginFailTimes {

@@ -6,13 +6,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/dchest/captcha"
 	"github.com/stretchr/testify/require"
 	"github.com/tsingsun/woocoo/pkg/cache"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/entco/pkg/koapp"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -168,11 +171,12 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
+	ts.AuthService.Cache.Set(ctx, loginFailCachePrefix+"admin", 0)
 	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
 		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
 	})
 	ts.Require().NoError(err)
-	ts.Contains(res.CallbackUrl, "verifyFactor")
+	ts.Contains(res.CallbackUrl, "/login/verify-factor")
 	ts.NotEmptyf(res.StateToken, "state token should not be empty")
 }
 
@@ -197,8 +201,16 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
+
+	// 生成验证码
+	captchaId := captcha.NewLen(6)
+	digits := ts.AuthService.captchaStore.Get(captchaId, false)
+	captchaCode := ""
+	for _, v := range digits {
+		captchaCode = captchaCode + strconv.Itoa(int(v))
+	}
 	res, err = ts.AuthService.Login(ctx, &oas.LoginRequest{
-		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+		Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId},
 	})
 	// TODO 验证码准确性测试
 	ts.Require().ErrorIs(err, status.ErrLoginFailUpperLimit)
@@ -208,7 +220,7 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 func (ts *loginFlowSuite) Test_VerifyFactor() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
-	err := ts.AuthService.Cache.Set(context.Background(), mfaCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1)
+	err := ts.AuthService.Cache.Set(context.Background(), mfaCachePrefix+adminTokenJTI, 1)
 	ts.Require().NoError(err)
 
 	ctx.Request = httptest.NewRequest("POST", "/verifyFactor", nil)
@@ -240,7 +252,7 @@ func GeneratePassCode(base32string string) string {
 }
 
 func (ts *loginFlowSuite) Test_Logout() {
-	err := ts.AuthService.Cache.Set(context.Background(), "67a87482e91f4f2e9220f51376185b7e", "1")
+	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1")
 	ts.Require().NoError(err)
 
 	req := httptest.NewRequest("POST", "/logout", nil)
@@ -251,8 +263,10 @@ func (ts *loginFlowSuite) Test_Logout() {
 	ts.Equal(res.Code, 200)
 }
 
-func (ts *loginFlowSuite) Test_BindMfaFlow() {
+func (ts *loginFlowSuite) Test_ZBindMfaFlow() {
 	// 绑定mfa前置数据
+	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
+	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/mfa/bind-prepare", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
 	req.Header.Set("X-Tenant-ID", "1")
@@ -261,7 +275,7 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 	ts.Require().Equal(res.Code, 200)
 
 	var bp map[string]any
-	err := json.Unmarshal([]byte(res.Body.String()), &bp)
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
 	ts.Require().NoError(err)
 
 	// 绑定mfa
@@ -292,6 +306,8 @@ func (ts *loginFlowSuite) Test_BindMfaFlow() {
 
 func (ts *loginFlowSuite) Test_SpmFlow() {
 	// 绑定mfa前置数据
+	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
+	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/spm/create", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
 	req.Header.Set("X-Tenant-ID", "1")
@@ -314,7 +330,7 @@ func (ts *loginFlowSuite) Test_SpmFlow() {
 
 func (ts *loginFlowSuite) Test_ResetPassword() {
 	ts.Require().NoError(ts.AuthService.Cache.Set(context.Background(),
-		resetCachePrefix+"67a87482e91f4f2e9220f51376185b7e", 1))
+		resetCachePrefix+adminTokenJTI, 1))
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
 	}))
@@ -328,10 +344,10 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 		},
 	})
 	ts.Require().NoError(err)
-	ts.False(ts.redisServer.Exists(resetCachePrefix + "123456"))
+	ts.False(ts.redisServer.Exists(resetCachePrefix + adminTokenJTI))
 	pwd := ts.AuthService.DB.UserPassword.Query().Where(userpassword.UserID(1),
 		userpassword.SceneEQ(userpassword.SceneLogin),
-	).OnlyX(context.Background())
+	).OnlyX(entcache.Skip(context.Background()))
 
 	ts.Equal(pwd.Password, resource.SaltSecret("234567", "123456"))
 	ts.Equal(res.User.ID, 1)
