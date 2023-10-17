@@ -56,8 +56,8 @@ func initResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"userPermissions", "userMenus", "userRootOrgs", "node", "login", "/", "orgRoles", "orgGroups", "/user/info",
-				"updateUser", "/user/safety", "changePassword",
+				"userPermissions", "userMenus", "userRootOrgs", "node", "login", "appAccess", "/", "orgRoles", "orgGroups", "/user/info",
+				"updateUser", "/user/safety", "changePassword", "userApps", "orgUserPreference",
 			},
 		},
 	}).SetName("KOResAccess").SetComments("资源权限管理应用授权，拥有该策略允许登录后台").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
