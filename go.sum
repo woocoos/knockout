@@ -274,8 +274,13 @@ github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2 h1:mfLV
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2/go.mod h1:v6b9mWRshfwNfMFZeC/zWUyVDZpD7OLPlUPQHFADa2c=
 github.com/woocoos/entcache v0.0.0-20231012065054-81b26c239c3d h1:7uSidQ73bfzkQEfQSjj7vj8u5YXb+Mk92B3IA1XA398=
 github.com/woocoos/entcache v0.0.0-20231012065054-81b26c239c3d/go.mod h1:zNKzfOB5I4gHoDDZrrsE/9AWVGm4wfKJkm7DxTl+aNc=
+github.com/woocoos/entcache v0.0.0-20231018091037-8acc7d96a1ce h1:tumAbXe4owDJnbIj4wKKvnlwl/KxVY0ulZwkrU1LiBk=
+github.com/woocoos/entcache v0.0.0-20231018091037-8acc7d96a1ce/go.mod h1:zNKzfOB5I4gHoDDZrrsE/9AWVGm4wfKJkm7DxTl+aNc=
+github.com/woocoos/entcache v0.0.0-20231018132617-2a6c9fb4ee1a/go.mod h1:zNKzfOB5I4gHoDDZrrsE/9AWVGm4wfKJkm7DxTl+aNc=
 github.com/woocoos/entco v0.0.0-20231016081026-992c35e77b04 h1:TFn0EHtfsp1ozWHxOUoXf2M9k/5OBBmNsj+GGriUVxQ=
 github.com/woocoos/entco v0.0.0-20231016081026-992c35e77b04/go.mod h1:L1/n2p8HdtFJsLMuSCVXZnXepvcGqiF6y45BssJn1EE=
+github.com/woocoos/entco v0.0.0-20231018133900-1479dc7c9473 h1:+Acarue/nd2M5vC80KFzX9YVuixYLEe5LJYHMc92HpE=
+github.com/woocoos/entco v0.0.0-20231018133900-1479dc7c9473/go.mod h1:ruXsaYCt0SmH4vL9nJMk+j6+FMq0AKgyLl7AGt0zNXg=
 github.com/yuin/gopher-lua v1.1.0 h1:BojcDhfyDWgU2f2TOzYK/g5p2gxMrku8oupLDqlnSqE=
 github.com/yuin/gopher-lua v1.1.0/go.mod h1:GBR0iDaNXjAgGg9zfCvksxSRnQx76gclCIb7kdAd1Pw=
 github.com/zclconf/go-cty v1.13.1 h1:0a6bRwuiSHtAmqCqNOE+c2oHgepv0ctoxU4FUe43kwc=

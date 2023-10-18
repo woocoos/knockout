@@ -18,7 +18,6 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
-	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
@@ -420,31 +419,6 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 		}
 	}
 	return ap, nil
-}
-
-// DeleteApp 删除应用
-//
-// 该应用没有被关联才可以删除: 1. 没有组织目录关联 2. 没有用户关联
-func (s *Service) DeleteApp(ctx context.Context, appID int) error {
-	client := ent.FromContext(ctx)
-	apl := client.App.GetX(ctx, appID)
-	if apl.Private != true {
-		has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(appID))).Exist(ctx)
-		if err != nil {
-			return err
-		}
-		if has {
-			return fmt.Errorf("app has been associated with org")
-		}
-	} else {
-		client.OrgApp.Delete().Where(orgapp.AppID(appID)).ExecX(ctx)
-	}
-	client.AppAction.Delete().Where(appaction.AppID(appID)).ExecX(ctx)
-	client.AppMenu.Delete().Where(appmenu.AppID(appID)).ExecX(ctx)
-	client.AppPolicy.Delete().Where(apppolicy.AppID(appID)).ExecX(ctx)
-	client.AppRole.Delete().Where(approle.AppID(appID)).ExecX(ctx)
-	client.AppRolePolicy.Delete().Where(approlepolicy.AppID(appID)).ExecX(ctx)
-	return nil
 }
 
 func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {

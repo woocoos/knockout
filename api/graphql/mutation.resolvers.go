@@ -128,7 +128,7 @@ func (r *mutationResolver) UpdateApp(ctx context.Context, appID int, input ent.U
 
 // DeleteApp is the resolver for the deleteApp field.
 func (r *mutationResolver) DeleteApp(ctx context.Context, appID int) (bool, error) {
-	err := r.resource.DeleteApp(ctx, appID)
+	err := r.client.App.DeleteOneID(appID).Exec(ctx)
 	return err == nil, err
 }
 

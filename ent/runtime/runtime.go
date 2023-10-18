@@ -40,8 +40,10 @@ func init() {
 	appMixin := schema.App{}.Mixin()
 	appMixinHooks1 := appMixin[1].Hooks()
 	appMixinHooks2 := appMixin[2].Hooks()
+	appHooks := schema.App{}.Hooks()
 	app.Hooks[0] = appMixinHooks1[0]
 	app.Hooks[1] = appMixinHooks2[0]
+	app.Hooks[2] = appHooks[0]
 	appMixinFields0 := appMixin[0].Fields()
 	_ = appMixinFields0
 	appMixinFields1 := appMixin[1].Fields()

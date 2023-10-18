@@ -12,6 +12,7 @@ win:
 linux:
 	GOOS=linux go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)-linux ./cmd/main.go
 	$(if $(shell command -v upx), upx $(BUILD_NAME)-linux)
+
 ent-new:
 	GOWORK=off go run -mod=mod entgo.io/ent/cmd/ent --target codegen/entgen/schema new $(NAME)
 migration-init:
@@ -22,12 +23,15 @@ migration-lint:
 	atlas migrate lint --dev-url="$(DSN)" --dir="file://ent/migrate/migrations" --latest=$(LATEST)
 migration-apply:
 	atlas migrate apply --dev-url="$(DSN)" --dir="file://ent/migrate/migrations" --latest=$(LATEST)
-test-db:
-	GOWORK=off go run -mod=mod test/initdb.go
-test-data:
-	GOWORK=off go run -mod=mod test/testdata/initdata.go
-test-apppolicy:
-	GOWORK=off go run -mod=mod test/testdata/initapppolicy.go
+
+.PHONY: db db-init db-base db-apppolicy
+db: db-init db-base db-apppolicy
+db-init:
+	GOWORK=off go run -mod=mod script/initdb.go
+db-base:
+	GOWORK=off go run -mod=mod script/initdata.go
+db-apppolicy:
+	GOWORK=off go run -mod=mod script/initapppolicy.go
 
 .PHONY: gen genent gengql genoas
 gen: genent gengql

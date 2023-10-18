@@ -19,8 +19,8 @@ require (
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entcache v0.0.0-20231012065054-81b26c239c3d
-	github.com/woocoos/entco v0.0.0-20231016081026-992c35e77b04
+	github.com/woocoos/entcache v0.0.0-20231018132617-2a6c9fb4ee1a
+	github.com/woocoos/entco v0.0.0-20231018133900-1479dc7c9473
 	go.opentelemetry.io/contrib/propagators/b3 v1.20.0
 	golang.org/x/sync v0.4.0
 )
