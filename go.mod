@@ -14,13 +14,13 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tsingsun/woocoo v0.4.2-0.20231015152503-8a4e63e6e2b8
-	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20231020013458-23888f008da8
-	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2
+	github.com/tsingsun/woocoo v0.4.2
+	github.com/tsingsun/woocoo/contrib/gql v0.0.1
+	github.com/tsingsun/woocoo/contrib/telemetry v0.1.3
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.0.0-20231018132617-2a6c9fb4ee1a
-	github.com/woocoos/knockout-go v0.0.0-20231020015525-efb08e0b38ac
+	github.com/woocoos/knockout-go v0.0.0-20231020084940-1182069a4932
 	go.opentelemetry.io/contrib/propagators/b3 v1.20.0
 	golang.org/x/sync v0.4.0
 )

@@ -9,7 +9,6 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/httpx"
-	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
@@ -76,17 +75,17 @@ func (s *Server) BuildWebEngine() *web.Server {
 	// 初始化httpx
 	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	httpClient, err := cfg.Client(context.Background(), nil)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 
 	oasOptions := resource.OASOptions{}
 	err = s.Cnf.Sub("oas").Unmarshal(&oasOptions)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
 		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
@@ -96,7 +95,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
 
 	if err := gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return webSrv
@@ -105,7 +104,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 	authorizer, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	// 关闭缓存
 	// authorizer.Enforcer.(*casbin.CachedEnforcer).EnableCache(false)
@@ -116,6 +115,6 @@ func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 		return []any{id.Name(), domain, p, "read"}
 	}
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/tsingsun/woocoo/pkg/log"
 	ecx "github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	_ "github.com/woocoos/knockout-go/pkg/snowflake"
@@ -19,6 +18,6 @@ func main() {
 
 	app.RegisterServer(webEngine, ecx.ChangeSet)
 	if err := app.Run(); err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }

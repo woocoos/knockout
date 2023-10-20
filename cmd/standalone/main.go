@@ -5,7 +5,6 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/log"
 	ecx "github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/cmd/internal/auth"
@@ -53,7 +52,7 @@ func main() {
 	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine, ecx.ChangeSet)
 
 	if err := app.Run(); err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }
 
