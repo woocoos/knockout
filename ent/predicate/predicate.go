@@ -12,6 +12,12 @@ type App func(*sql.Selector)
 // AppAction is the predicate function for appaction builders.
 type AppAction func(*sql.Selector)
 
+// AppDict is the predicate function for appdict builders.
+type AppDict func(*sql.Selector)
+
+// AppDictItem is the predicate function for appdictitem builders.
+type AppDictItem func(*sql.Selector)
+
 // AppMenu is the predicate function for appmenu builders.
 type AppMenu func(*sql.Selector)
 
@@ -53,6 +59,9 @@ type OrgRoleUser func(*sql.Selector)
 
 // OrgUser is the predicate function for orguser builders.
 type OrgUser func(*sql.Selector)
+
+// OrgUserPreference is the predicate function for orguserpreference builders.
+type OrgUserPreference func(*sql.Selector)
 
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)

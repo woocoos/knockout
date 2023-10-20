@@ -1,11 +1,11 @@
 package server
 
 import (
-	"ariga.io/entcache"
 	"bytes"
 	"context"
 	"encoding/base32"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dchest/captcha"
@@ -15,9 +15,10 @@ import (
 	"github.com/pquerna/otp/totp"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/pkg/identity"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/entcache"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/oas"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -27,8 +28,8 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/service/resource"
-	"github.com/woocoos/knockout/status"
 	"image/png"
 	"net/http"
 	"strconv"
@@ -74,12 +75,21 @@ type Options struct {
 	} `json:"jwt"`
 }
 
+type OASOptions struct {
+	Msgsrv struct {
+		BaseUrl string `yaml:"baseUrl"`
+	} `yaml:"msgsrv"`
+}
+
 // AuthService is the server API for  service.
 type AuthService struct {
 	Options
 	DB    *ent.Client
 	Cache cache.Cache
 	Cnf   *conf.AppConfiguration
+
+	HttpClient *http.Client
+	OASOptions OASOptions
 
 	LogoutHandler func(*gin.Context)
 
@@ -101,6 +111,13 @@ func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 	if err != nil {
 		return err
 	}
+
+	s.OASOptions = OASOptions{}
+	err = cnf.Sub("oas").Unmarshal(&s.OASOptions)
+	if err != nil {
+		return err
+	}
+
 	// Initialize the captcha
 	s.captchaStore = captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire)
 	captcha.SetCustomStore(s.captchaStore)
@@ -132,6 +149,7 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
 	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
 		ctx.Status(http.StatusBadRequest)
+		s.logFailHandler(ctx, req.Body.Username, false)
 		return nil, status.ErrCaptchaNotMatch
 	}
 	if failCount >= s.LoginFailTimes {
@@ -361,7 +379,7 @@ func (s *AuthService) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.Us
 	pwd, err := s.DB.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
-	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Evict(ctx))
+	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}
@@ -645,10 +663,45 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
 		return "", err
 	}
-
+	// 生成验证码
 	captchaId := captcha.NewLen(6)
-	// TODO 后续集成邮件功能时发送captchaId至邮件
-	//digits := s.captchaStore.Get(captchaId, false)
+	digits := s.captchaStore.Get(captchaId, false)
+	captchaCode := ""
+	for _, v := range digits {
+		captchaCode = captchaCode + strconv.Itoa(int(v))
+	}
+	usr, err := s.DB.User.Get(ctx, uid)
+	if err != nil {
+		return "", err
+	}
+	if usr.Email == "" {
+		return "", fmt.Errorf("email is nil")
+	}
+	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
+	if err != nil {
+		return "", err
+	}
+
+	params := []postAlertsInput{
+		{
+			Annotations: map[string]string{
+				"to":            usr.Email,
+				"displayName":   usr.DisplayName,
+				"captchaCode":   captchaCode,
+				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),
+			},
+			Labels: map[string]string{
+				"receiver":  "email",
+				"alertname": "SendCaptchaCode",
+				"tenant":    strconv.Itoa(uorg.ID),
+				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			},
+		},
+	}
+	err = s.postAlerts(ctx, params)
+	if err != nil {
+		return "", err
+	}
 	return captchaId, nil
 }
 
@@ -816,4 +869,33 @@ func (s *AuthService) Token(c *gin.Context, r *oas.TokenRequest) (*oas.TokenResp
 		AccessToken: tstr,
 		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
 	}, nil
+}
+
+type postAlertsInput struct {
+	Annotations  map[string]string `json:"annotations,omitempty"`
+	StartsAt     time.Time         `json:"startsAt,omitempty"`
+	EndsAt       time.Time         `json:"endsAt,omitempty"`
+	Labels       map[string]string `json:"labels"`
+	GeneratorURL string            `json:"generatorURL,omitempty"`
+}
+
+func (s *AuthService) postAlerts(ctx context.Context, params []postAlertsInput) error {
+	val, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+	body := strings.NewReader(string(val))
+	req, err := http.NewRequest("POST", s.OASOptions.Msgsrv.BaseUrl+"/api/v2/alerts", body)
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := s.HttpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	}
+	return fmt.Errorf(resp.Status)
 }

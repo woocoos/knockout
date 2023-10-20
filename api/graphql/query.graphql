@@ -105,13 +105,20 @@ extend type Query {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
-    """文件来源"""
-    fileSources(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: FileSourceOrder
-        where: FileSourceWhereInput
-    ):FileSourceConnection!
+    """获取组织用户偏好"""
+    orgUserPreference: OrgUserPreference
+    """用户授权的应用列表"""
+    userApps: [App!]!
+    """根据ref_code获取数据字典,用于批量获取"""
+    appDictByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCodes: [String!]!
+    ): [AppDict!]!
+    """根据ref_code获取数据字典值"""
+    appDictItemByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCode: String!
+    ):[AppDictItem!]!
+    """检测应用登录授权"""
+    appAccess(appCode:String!):Boolean!
 }

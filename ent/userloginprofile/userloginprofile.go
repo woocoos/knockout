@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 )
 
 const (
@@ -96,7 +96,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [1]ent.Hook
+	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// MfaSecretValidator is a validator for the "mfa_secret" field. It is called by the builders before save.
@@ -130,7 +130,7 @@ func SetKindValidator(sk SetKind) error {
 // MfaStatusValidator is a validator for the "mfa_status" field enum values. It is called by the builders before save.
 func MfaStatusValidator(ms typex.SimpleStatus) error {
 	switch ms.String() {
-	case "active", "inactive", "processing":
+	case "active", "inactive", "processing", "disabled":
 		return nil
 	default:
 		return fmt.Errorf("userloginprofile: invalid enum value for mfa_status field: %q", ms)

@@ -1,14 +1,25 @@
 package schema
 
 import (
+	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax"
-	"github.com/woocoos/entco/schemax/typex"
+	"fmt"
+	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	gen "github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/hook"
+	"github.com/woocoos/knockout/ent/orgapp"
 )
 
 // App holds the schema definition for the App entity.
@@ -34,6 +45,7 @@ func (App) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 
@@ -73,5 +85,46 @@ func (App) Edges() []ent.Edge {
 		edge.From("orgs", Org.Type).Ref("apps").Comment("使用该应用的组织").
 			Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection(), entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
+		edge.To("dicts", AppDict.Type).Comment("数据字典").Annotations(entgql.RelayConnection()),
+	}
+}
+
+func (App) Hooks() []ent.Hook {
+	return []ent.Hook{
+		hook.On(func(next ent.Mutator) ent.Mutator {
+			return hook.AppFunc(func(ctx context.Context, m *gen.AppMutation) (gen.Value, error) {
+				id, _ := m.ID()
+				client := m.Client()
+				apl, err := client.App.Get(ctx, id)
+				if err != nil {
+					return nil, err
+				}
+				if apl.Private != true {
+					has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(id))).Exist(ctx)
+					if err != nil {
+						return nil, err
+					}
+					if has {
+						return nil, fmt.Errorf("app has been associated with org")
+					}
+				}
+				if _, err = client.AppAction.Delete().Where(appaction.AppID(id)).Exec(ctx); err != nil {
+					return nil, err
+				}
+				if _, err = client.AppMenu.Delete().Where(appmenu.AppID(id)).Exec(ctx); err != nil {
+					return nil, err
+				}
+				if _, err = client.AppPolicy.Delete().Where(apppolicy.AppID(id)).Exec(ctx); err != nil {
+					return nil, err
+				}
+				if _, err = client.AppRole.Delete().Where(approle.AppID(id)).Exec(ctx); err != nil {
+					return nil, err
+				}
+				if _, err = client.AppRolePolicy.Delete().Where(approlepolicy.AppID(id)).Exec(ctx); err != nil {
+					return nil, err
+				}
+				return next.Mutate(ctx, m)
+			})
+		}, ent.OpDeleteOne),
 	}
 }

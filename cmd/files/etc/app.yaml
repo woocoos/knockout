@@ -18,25 +18,6 @@ log:
     - level: debug
       outputPaths:
         - stdout
-      encoderConfig:
-        timeKey: "@timestamp"
-        messageKey: "message"
-        callerKey: "file"
-  rotate:
-    maxsize: 10
-    maxage: 10
-    maxbackups: 20
-    localtime: true
-
-snowflake:
-  # 机器id
-  node: 1
-  # 时间戳起始时间 北京时间 2023-01-01 00:00:00
-  epoch: 1672531200000
-  # 机器id位数
-  nodeBits: 1
-  # 序列号位数
-  stepBits: 8
 
 web:
   server:
@@ -56,21 +37,9 @@ store:
   portal:
     driverName: mysql
     dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
-  redis: &redis
-    addrs:
-      - 127.0.0.1:6379
-    db: 1
-
-
-cache:
-  redis:
-    <<: *redis
-    local:
-      size: 1000
-      ttl: 100s
 
 entcache:
-  level: context
+  hashQueryTTL: 5s
 #  ttl: 5m # level: db时有效
 
 files:

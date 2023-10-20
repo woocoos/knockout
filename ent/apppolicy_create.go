@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
@@ -841,12 +841,16 @@ func (u *AppPolicyUpsertOne) IDX(ctx context.Context) int {
 // AppPolicyCreateBulk is the builder for creating many AppPolicy entities in bulk.
 type AppPolicyCreateBulk struct {
 	config
+	err      error
 	builders []*AppPolicyCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppPolicy entities in the database.
 func (apcb *AppPolicyCreateBulk) Save(ctx context.Context) ([]*AppPolicy, error) {
+	if apcb.err != nil {
+		return nil, apcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(apcb.builders))
 	nodes := make([]*AppPolicy, len(apcb.builders))
 	mutators := make([]Mutator, len(apcb.builders))
@@ -1173,6 +1177,9 @@ func (u *AppPolicyUpsertBulk) ClearStatus() *AppPolicyUpsertBulk {
 
 // Exec executes the query.
 func (u *AppPolicyUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppPolicyCreateBulk instead", i)

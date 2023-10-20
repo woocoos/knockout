@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -733,12 +733,16 @@ func (u *OauthClientUpsertOne) IDX(ctx context.Context) int {
 // OauthClientCreateBulk is the builder for creating many OauthClient entities in bulk.
 type OauthClientCreateBulk struct {
 	config
+	err      error
 	builders []*OauthClientCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the OauthClient entities in the database.
 func (occb *OauthClientCreateBulk) Save(ctx context.Context) ([]*OauthClient, error) {
+	if occb.err != nil {
+		return nil, occb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(occb.builders))
 	nodes := make([]*OauthClient, len(occb.builders))
 	mutators := make([]Mutator, len(occb.builders))
@@ -1047,6 +1051,9 @@ func (u *OauthClientUpsertBulk) UpdateStatus() *OauthClientUpsertBulk {
 
 // Exec executes the query.
 func (u *OauthClientUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OauthClientCreateBulk instead", i)

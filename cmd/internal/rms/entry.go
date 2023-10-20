@@ -9,18 +9,15 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/httpx"
-	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/ecx/oteldriver"
-	"github.com/woocoos/entco/gqlx"
-	"github.com/woocoos/entco/pkg/authorization"
-	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/authorization"
+	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/api/graphql"
-	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
 
@@ -42,16 +39,15 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	s := &Server{
 		Cnf: cnf,
 	}
-	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd = ecx.BuildEntCacheDriver(s.Cnf, pd)
+	ents := koapp.BuildEntComponents(s.Cnf)
+	drv := ents["portal"]
 	if s.Cnf.Development {
-		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
-		casbinClient = casbinent.NewClient(casbinent.Driver(pd), casbinent.Debug())
+		portalClient = ent.NewClient(ent.Driver(drv), ent.Debug())
+		casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
 	} else {
-		portalClient = ent.NewClient(ent.Driver(pd))
-		casbinClient = casbinent.NewClient(casbinent.Driver(pd))
+		portalClient = ent.NewClient(ent.Driver(drv))
+		casbinClient = casbinent.NewClient(casbinent.Driver(drv))
 	}
-
 	buildCashbin(s.Cnf, casbinClient)
 
 	return s
@@ -70,43 +66,36 @@ func (s *Server) Stop(ctx context.Context) error {
 func (s *Server) BuildWebEngine() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(gql.New()),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
-		web.RegisterMiddleware(authz.New()),
-		identity.RegistryTenantIDMiddleware(),
+		gql.RegisterMiddleware(),
+		otelweb.RegisterMiddleware(),
+		web.WithMiddlewareNewFunc("authz", authz.Middleware),
+		middleware.RegisterTenantID(),
 	)
 
 	// 初始化httpx
 	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	httpClient, err := cfg.Client(context.Background(), nil)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 
-	fileOptions := resource.FileOptions{}
-	err = s.Cnf.Sub("files").Unmarshal(&fileOptions)
+	oasOptions := resource.OASOptions{}
+	err = s.Cnf.Sub("oas").Unmarshal(&oasOptions)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
-	gqlSrv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
-		Resolvers: &graphql.Resolver{
-			Client:   portalClient,
-			Resource: &resource.Service{Client: portalClient, HttpClient: httpClient, FileOptions: fileOptions},
-		},
-	}))
-	// gqlserver的中间件处理
-	if s.Cnf.String("entcache.level") == "context" {
-		gqlSrv.AroundResponses(gqlx.ContextCache())
-	}
-	gqlSrv.AroundResponses(gqlx.SimplePagination())
+	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
+		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
+	))
+	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation事务
 	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
 
 	if err := gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return webSrv
@@ -115,7 +104,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 	authorizer, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	// 关闭缓存
 	// authorizer.Enforcer.(*casbin.CachedEnforcer).EnableCache(false)
@@ -126,6 +115,6 @@ func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 		return []any{id.Name(), domain, p, "read"}
 	}
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }

@@ -12,131 +12,131 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
-	"github.com/woocoos/knockout/ent/app"
-	"github.com/woocoos/knockout/ent/appaction"
-	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/apppolicy"
-	"github.com/woocoos/knockout/ent/appres"
-	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/file"
-	"github.com/woocoos/knockout/ent/filesource"
-	"github.com/woocoos/knockout/ent/oauthclient"
-	"github.com/woocoos/knockout/ent/org"
-	"github.com/woocoos/knockout/ent/orgpolicy"
-	"github.com/woocoos/knockout/ent/orgrole"
-	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/ent/userdevice"
-	"github.com/woocoos/knockout/ent/useridentity"
-	"github.com/woocoos/knockout/ent/userloginprofile"
-	"github.com/woocoos/knockout/ent/userpassword"
 )
 
 // GlobalID returns the global identifier for the given App node.
 func (a *App) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", app.Table, a.ID)
+	id := fmt.Sprintf("App:%d", a.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppAction node.
 func (aa *AppAction) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", appaction.Table, aa.ID)
+	id := fmt.Sprintf("AppAction:%d", aa.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given AppDict node.
+func (ad *AppDict) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppDict:%d", ad.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given AppDictItem node.
+func (adi *AppDictItem) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppDictItem:%d", adi.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppMenu node.
 func (am *AppMenu) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", appmenu.Table, am.ID)
+	id := fmt.Sprintf("AppMenu:%d", am.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppPolicy node.
 func (ap *AppPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", apppolicy.Table, ap.ID)
+	id := fmt.Sprintf("AppPolicy:%d", ap.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppRes node.
 func (ar *AppRes) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", appres.Table, ar.ID)
+	id := fmt.Sprintf("AppRes:%d", ar.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given AppRole node.
 func (ar *AppRole) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", approle.Table, ar.ID)
+	id := fmt.Sprintf("AppRole:%d", ar.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given File node.
 func (f *File) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", file.Table, f.ID)
+	id := fmt.Sprintf("File:%d", f.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given FileSource node.
 func (fs *FileSource) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", filesource.Table, fs.ID)
+	id := fmt.Sprintf("FileSource:%d", fs.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OauthClient node.
 func (oc *OauthClient) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", oauthclient.Table, oc.ID)
+	id := fmt.Sprintf("OauthClient:%d", oc.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Org node.
 func (o *Org) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", org.Table, o.ID)
+	id := fmt.Sprintf("Org:%d", o.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OrgPolicy node.
 func (op *OrgPolicy) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", orgpolicy.Table, op.ID)
+	id := fmt.Sprintf("OrgPolicy:%d", op.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given OrgRole node.
 func (or *OrgRole) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", orgrole.Table, or.ID)
+	id := fmt.Sprintf("OrgRole:%d", or.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given OrgUserPreference node.
+func (oup *OrgUserPreference) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("OrgUserPreference:%d", oup.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given Permission node.
 func (pe *Permission) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", permission.Table, pe.ID)
+	id := fmt.Sprintf("Permission:%d", pe.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given User node.
 func (u *User) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", user.Table, u.ID)
+	id := fmt.Sprintf("User:%d", u.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserDevice node.
 func (ud *UserDevice) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", userdevice.Table, ud.ID)
+	id := fmt.Sprintf("UserDevice:%d", ud.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserIdentity node.
 func (ui *UserIdentity) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", useridentity.Table, ui.ID)
+	id := fmt.Sprintf("UserIdentity:%d", ui.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserLoginProfile node.
 func (ulp *UserLoginProfile) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", userloginprofile.Table, ulp.ID)
+	id := fmt.Sprintf("UserLoginProfile:%d", ulp.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
 // GlobalID returns the global identifier for the given UserPassword node.
 func (up *UserPassword) GlobalID(context.Context) (string, error) {
-	id := fmt.Sprintf("%s:%d", userpassword.Table, up.ID)
+	id := fmt.Sprintf("UserPassword:%d", up.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -157,41 +157,47 @@ func FromGlobalID(s string) (*ResolvedGlobal, error) {
 // GlobalID returns the global identifier for the given type and id.
 func GlobalID(tp, id string) (string, error) {
 	switch tp {
-	case app.Table:
+	case "App":
 		break
-	case appaction.Table:
+	case "AppAction":
 		break
-	case appmenu.Table:
+	case "AppDict":
 		break
-	case apppolicy.Table:
+	case "AppDictItem":
 		break
-	case appres.Table:
+	case "AppMenu":
 		break
-	case approle.Table:
+	case "AppPolicy":
 		break
-	case file.Table:
+	case "AppRes":
 		break
-	case filesource.Table:
+	case "AppRole":
 		break
-	case oauthclient.Table:
+	case "File":
 		break
-	case org.Table:
+	case "FileSource":
 		break
-	case orgpolicy.Table:
+	case "OauthClient":
 		break
-	case orgrole.Table:
+	case "Org":
 		break
-	case permission.Table:
+	case "OrgPolicy":
 		break
-	case user.Table:
+	case "OrgRole":
 		break
-	case userdevice.Table:
+	case "OrgUserPreference":
 		break
-	case useridentity.Table:
+	case "Permission":
 		break
-	case userloginprofile.Table:
+	case "User":
 		break
-	case userpassword.Table:
+	case "UserDevice":
+		break
+	case "UserIdentity":
+		break
+	case "UserLoginProfile":
+		break
+	case "UserPassword":
 		break
 	default:
 		return "", fmt.Errorf("invalid type %q", tp)

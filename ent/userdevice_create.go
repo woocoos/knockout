@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
 )
@@ -927,12 +927,16 @@ func (u *UserDeviceUpsertOne) IDX(ctx context.Context) int {
 // UserDeviceCreateBulk is the builder for creating many UserDevice entities in bulk.
 type UserDeviceCreateBulk struct {
 	config
+	err      error
 	builders []*UserDeviceCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the UserDevice entities in the database.
 func (udcb *UserDeviceCreateBulk) Save(ctx context.Context) ([]*UserDevice, error) {
+	if udcb.err != nil {
+		return nil, udcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(udcb.builders))
 	nodes := make([]*UserDevice, len(udcb.builders))
 	mutators := make([]Mutator, len(udcb.builders))
@@ -1322,6 +1326,9 @@ func (u *UserDeviceUpsertBulk) ClearComments() *UserDeviceUpsertBulk {
 
 // Exec executes the query.
 func (u *UserDeviceUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserDeviceCreateBulk instead", i)

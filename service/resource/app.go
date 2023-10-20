@@ -2,20 +2,22 @@ package resource
 
 import (
 	"context"
+	"encoding/json"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
-	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
-	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
@@ -240,7 +242,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 			return err
 		}
 	}
-	client.AppAction.Delete().Where(appaction.ID(actionID)).ExecX(ctx)
+	client.AppAction.DeleteOneID(actionID).ExecX(ctx)
 	return nil
 }
 
@@ -284,7 +286,7 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 // UpdateAppMenu 更新应用菜单，如果更新了route，则更新action
 func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
 	client := ent.FromContext(ctx)
-	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	am, err := client.AppMenu.Get(ctx, menuID)
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +326,7 @@ func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.Updat
 // DeleteAppMenu 删除应用菜单，删除关联的action
 func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
 	client := ent.FromContext(ctx)
-	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	am, err := client.AppMenu.Get(ctx, menuID)
 	if err != nil {
 		return err
 	}
@@ -338,10 +340,13 @@ func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
 	return client.AppMenu.DeleteOneID(menuID).Exec(ctx)
 }
 
-// MoveAppMenu
+// MoveAppMenu 移动菜单
 func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action model.TreeAction) (err error) {
 	client := ent.FromContext(ctx)
-	tarOrg := client.AppMenu.GetX(ctx, tar)
+	tarOrg, err := client.AppMenu.Get(ctx, tar)
+	if err != nil {
+		return
+	}
 	builder := client.AppMenu.UpdateOneID(src)
 	var start int32 = 0
 	var resort = true
@@ -417,31 +422,6 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 		}
 	}
 	return ap, nil
-}
-
-// DeleteApp 删除应用
-//
-// 该应用没有被关联才可以删除: 1. 没有组织目录关联 2. 没有用户关联
-func (s *Service) DeleteApp(ctx context.Context, appID int) error {
-	client := ent.FromContext(ctx)
-	apl := client.App.GetX(ctx, appID)
-	if apl.Private != true {
-		has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(appID))).Exist(ctx)
-		if err != nil {
-			return err
-		}
-		if has {
-			return fmt.Errorf("app has been associated with org")
-		}
-	} else {
-		client.OrgApp.Delete().Where(orgapp.AppID(appID)).ExecX(ctx)
-	}
-	client.AppAction.Delete().Where(appaction.AppID(appID)).ExecX(ctx)
-	client.AppMenu.Delete().Where(appmenu.AppID(appID)).ExecX(ctx)
-	client.AppPolicy.Delete().Where(apppolicy.AppID(appID)).ExecX(ctx)
-	client.AppRole.Delete().Where(approle.AppID(appID)).ExecX(ctx)
-	client.AppRolePolicy.Delete().Where(approlepolicy.AppID(appID)).ExecX(ctx)
-	return nil
 }
 
 func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {
@@ -549,7 +529,7 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.Crea
 }
 
 // UpdateAppPolicy 更新应用策略,该应用必须属于(创建者)该租户才可更新
-// 当应用策略更新时,会被当前最新的策略模板,原有引用该策略的都保持不变
+// 当应用策略更新时,会被当前最新的策略模板,原有引用该策略的都更新
 func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.UpdateAppPolicyInput) (*ent.AppPolicy, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -568,18 +548,31 @@ func (s *Service) UpdateAppPolicy(ctx context.Context, policyID int, input ent.U
 	if err != nil {
 		return nil, err
 	}
+	apRules, err := json.Marshal(ap.Rules)
+	if err != nil {
+		return nil, err
+	}
 	// 更新orgPolicy及相关授权
 	ops, err := client.OrgPolicy.Query().Where(orgpolicy.AppID(apl.AppID), orgpolicy.AppPolicyID(policyID)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
 	for _, op := range ops {
-		err = appPolicyToOrgPolicy(apl.Edges.App.Code, ap.Rules, op.OrgID)
+		// 深拷贝rules
+		rules := make([]*types.PolicyRule, 0)
+		err = json.Unmarshal(apRules, &rules)
 		if err != nil {
 			return nil, err
 		}
-		err = updateOrgPolicyRules(ctx, op.ID, ap.Rules, op.OrgID)
+		err = appPolicyToOrgPolicy(apl.Edges.App.Code, rules, op.OrgID)
 		if err != nil {
 			return nil, err
 		}
-		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(ap.Rules).SetName(ap.Name).SetComments(ap.Comments).Exec(ctx)
+		err = updateOrgPolicyRules(ctx, op.ID, rules, op.OrgID)
+		if err != nil {
+			return nil, err
+		}
+		err = client.OrgPolicy.UpdateOneID(op.ID).SetRules(rules).SetName(ap.Name).SetComments(ap.Comments).Exec(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -605,4 +598,26 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return fmt.Errorf("policy not exist")
 	}
 	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
+}
+
+func (s *Service) MoveAppDictItem(ctx context.Context, sourceID int, targetID int, action model.TreeAction) error {
+	client := ent.FromContext(ctx)
+	target := client.AppDictItem.GetX(ctx, targetID)
+	builder := client.AppDictItem.UpdateOneID(sourceID)
+	var start int32 = 0
+	switch action {
+	case model.TreeActionChild:
+		return fmt.Errorf("the action not support child")
+	case model.TreeActionUp:
+		start = target.DisplaySort
+		builder.SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = target.DisplaySort + 1
+		builder.SetDisplaySort(start)
+	}
+	err := client.AppDictItem.Update().Where(appdictitem.DictID(target.DictID), appdictitem.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return builder.Exec(ctx)
 }

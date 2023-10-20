@@ -97,3 +97,10 @@ extend type Permission {
     """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
     isAllowRevoke:Boolean!
 }
+
+input OrgUserPreferenceInput {
+    """用户收藏菜单"""
+    menuFavorite: [ID!]
+    """用户最近访问菜单"""
+    menuRecent: [ID!]
+}

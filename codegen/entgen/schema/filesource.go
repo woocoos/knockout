@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/woocoos/entco/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax"
 )
 
 // FileSource holds the schema definition for the FileSource entity.
@@ -20,6 +20,7 @@ func (FileSource) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "file_source"},
 		entgql.RelayConnection(),
+		entgql.QueryField("fileSources").Description("文件来源"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
@@ -31,6 +32,7 @@ func (FileSource) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.IntID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 

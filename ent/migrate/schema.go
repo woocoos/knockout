@@ -27,7 +27,7 @@ var (
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "owner_org_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -68,6 +68,82 @@ var (
 				Name:    "appaction_app_id_name",
 				Unique:  true,
 				Columns: []*schema.Column{AppActionColumns[9], AppActionColumns[5]},
+			},
+		},
+	}
+	// AppDictColumns holds the columns for the "app_dict" table.
+	AppDictColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "name", Type: field.TypeString, Size: 45},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// AppDictTable holds the schema information for the "app_dict" table.
+	AppDictTable = &schema.Table{
+		Name:       "app_dict",
+		Columns:    AppDictColumns,
+		PrimaryKey: []*schema.Column{AppDictColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_dict_app_dicts",
+				Columns:    []*schema.Column{AppDictColumns[8]},
+				RefColumns: []*schema.Column{AppColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appdict_app_id_code",
+				Unique:  true,
+				Columns: []*schema.Column{AppDictColumns[8], AppDictColumns[5]},
+			},
+		},
+	}
+	// AppDictItemColumns holds the columns for the "app_dict_item" table.
+	AppDictItemColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "ref_code", Type: field.TypeString},
+		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "name", Type: field.TypeString, Size: 45},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "inactive"},
+		{Name: "dict_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// AppDictItemTable holds the schema information for the "app_dict_item" table.
+	AppDictItemTable = &schema.Table{
+		Name:       "app_dict_item",
+		Columns:    AppDictItemColumns,
+		PrimaryKey: []*schema.Column{AppDictItemColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_dict_item_app_dict_items",
+				Columns:    []*schema.Column{AppDictItemColumns[11]},
+				RefColumns: []*schema.Column{AppDictColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_dict_item_org_org",
+				Columns:    []*schema.Column{AppDictItemColumns[12]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appdictitem_ref_code",
+				Unique:  false,
+				Columns: []*schema.Column{AppDictItemColumns[5]},
 			},
 		},
 	}
@@ -120,7 +196,7 @@ var (
 		{Name: "rules", Type: field.TypeJSON},
 		{Name: "version", Type: field.TypeString, Default: "1"},
 		{Name: "auto_grant", Type: field.TypeBool, Default: false},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppPolicyTable holds the schema information for the "app_policy" table.
@@ -303,7 +379,7 @@ var (
 		{Name: "client_secret", Type: field.TypeString, Size: 40},
 		{Name: "grant_types", Type: field.TypeEnum, Enums: []string{"client_credentials"}},
 		{Name: "last_auth_at", Type: field.TypeTime, Nullable: true},
-		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// OauthClientTable holds the schema information for the "oauth_client" table.
@@ -333,7 +409,7 @@ var (
 		{Name: "code", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "name", Type: field.TypeString, Size: 100},
 		{Name: "profile", Type: field.TypeString, Nullable: true},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "path", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "country_code", Type: field.TypeString, Nullable: true, Size: 10},
@@ -550,6 +626,38 @@ var (
 			},
 		},
 	}
+	// OrgUserPreferenceColumns holds the columns for the "org_user_preference" table.
+	OrgUserPreferenceColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "menu_favorite", Type: field.TypeJSON, Nullable: true},
+		{Name: "menu_recent", Type: field.TypeJSON, Nullable: true},
+		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// OrgUserPreferenceTable holds the schema information for the "org_user_preference" table.
+	OrgUserPreferenceTable = &schema.Table{
+		Name:       "org_user_preference",
+		Columns:    OrgUserPreferenceColumns,
+		PrimaryKey: []*schema.Column{OrgUserPreferenceColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "org_user_preference_user_user",
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[7]},
+				RefColumns: []*schema.Column{UserColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "org_user_preference_org_org",
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[8]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// PermissionColumns holds the columns for the "permission" table.
 	PermissionColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -560,7 +668,7 @@ var (
 		{Name: "principal_kind", Type: field.TypeEnum, Enums: []string{"user", "role"}},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "org_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
@@ -613,7 +721,7 @@ var (
 		{Name: "user_type", Type: field.TypeEnum, Enums: []string{"account", "member"}},
 		{Name: "creation_type", Type: field.TypeEnum, Enums: []string{"invitation", "register", "manual"}},
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -636,7 +744,7 @@ var (
 		{Name: "system_version", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "app_version", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "device_model", Type: field.TypeString, Nullable: true, Size: 45},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
@@ -664,7 +772,7 @@ var (
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"name", "email", "phone", "wechat", "qq"}},
 		{Name: "code", Type: field.TypeString, Nullable: true},
 		{Name: "code_extend", Type: field.TypeString, Nullable: true},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// UserIdentityTable holds the schema information for the "user_identity" table.
@@ -696,7 +804,7 @@ var (
 		{Name: "verify_device", Type: field.TypeBool},
 		{Name: "mfa_enabled", Type: field.TypeBool, Nullable: true},
 		{Name: "mfa_secret", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "mfa_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}},
+		{Name: "mfa_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "user_id", Type: field.TypeInt, Unique: true, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// UserLoginProfileTable holds the schema information for the "user_login_profile" table.
@@ -723,7 +831,7 @@ var (
 		{Name: "scene", Type: field.TypeEnum, Enums: []string{"login"}},
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "salt", Type: field.TypeString, Size: 45},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing"}, Default: "active"},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// UserPasswordTable holds the schema information for the "user_password" table.
@@ -744,6 +852,8 @@ var (
 	Tables = []*schema.Table{
 		AppTable,
 		AppActionTable,
+		AppDictTable,
+		AppDictItemTable,
 		AppMenuTable,
 		AppPolicyTable,
 		AppResTable,
@@ -758,6 +868,7 @@ var (
 		OrgRoleTable,
 		OrgRoleUserTable,
 		OrgUserTable,
+		OrgUserPreferenceTable,
 		PermissionTable,
 		UserTable,
 		UserDeviceTable,
@@ -774,6 +885,15 @@ func init() {
 	AppActionTable.ForeignKeys[0].RefTable = AppTable
 	AppActionTable.Annotation = &entsql.Annotation{
 		Table: "app_action",
+	}
+	AppDictTable.ForeignKeys[0].RefTable = AppTable
+	AppDictTable.Annotation = &entsql.Annotation{
+		Table: "app_dict",
+	}
+	AppDictItemTable.ForeignKeys[0].RefTable = AppDictTable
+	AppDictItemTable.ForeignKeys[1].RefTable = OrgTable
+	AppDictItemTable.Annotation = &entsql.Annotation{
+		Table: "app_dict_item",
 	}
 	AppMenuTable.ForeignKeys[0].RefTable = AppTable
 	AppMenuTable.ForeignKeys[1].RefTable = AppActionTable
@@ -837,6 +957,11 @@ func init() {
 	OrgUserTable.ForeignKeys[1].RefTable = UserTable
 	OrgUserTable.Annotation = &entsql.Annotation{
 		Table: "org_user",
+	}
+	OrgUserPreferenceTable.ForeignKeys[0].RefTable = UserTable
+	OrgUserPreferenceTable.ForeignKeys[1].RefTable = OrgTable
+	OrgUserPreferenceTable.Annotation = &entsql.Annotation{
+		Table: "org_user_preference",
 	}
 	PermissionTable.ForeignKeys[0].RefTable = OrgTable
 	PermissionTable.ForeignKeys[1].RefTable = OrgPolicyTable

@@ -9,6 +9,7 @@ auth:
 
 cache:
   redis:
+    driverName: redis
     addrs:
       - "localhost:6379"
     local:
@@ -22,6 +23,9 @@ store:
   test:
     driverName: sqlite3
     dsn: "file:portal?mode=memory&cache=shared&_fk=1"
+
+entcache:
+  hashQueryTTL: 1s
 
 web:
   engine:
@@ -48,3 +52,7 @@ files:
   local:
     baseDir: "tmp"
     endpoint: "http://localhost:9000"
+
+oas:
+  msgsrv:
+    baseUrl: "http://127.0.0.1:10072"

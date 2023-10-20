@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/woocoos/entco/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax"
 )
 
 // OrgRole holds the schema definition for the OrgRole entity.
@@ -28,6 +28,7 @@ func (OrgRole) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.IntID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 
@@ -38,7 +39,7 @@ func (OrgRole) Fields() []ent.Field {
 		field.Enum("kind").Values("group", "role").Comment("类型,group:组,role:角色"),
 		field.String("name").Comment("名称"),
 		field.Int("app_role_id").Optional().Comment("角色ID,如有表示该角色来源于应用角色").Annotations(entgql.Skip(entgql.SkipAll)),
-		field.String("comments").Optional().Comment("备注").Annotations(entgql.Skip(entgql.SkipWhereInput)),
+		field.String("comments").Optional().Comment("备注"),
 	}
 }
 

@@ -7,18 +7,17 @@ package graphql
 import (
 	"context"
 
-	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
 // IsGrantAppRole is the resolver for the isGrantAppRole field.
 func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error) {
-	exist, err := r.Client.AppRolePolicy.Query().Where(
+	exist, err := r.client.AppRolePolicy.Query().Where(
 		approlepolicy.AppID(obj.AppID), approlepolicy.AppRoleID(appRoleID), approlepolicy.AppPolicyID(obj.ID),
 	).Exist(ctx)
 	if err != nil {
@@ -29,7 +28,7 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 
 // IsAllowRevokeAppPolicy is the resolver for the isAllowRevokeAppPolicy field.
 func (r *orgResolver) IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error) {
-	return r.Resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)
+	return r.resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)
 }
 
 // IsGrantRole is the resolver for the isGrantRole field.
@@ -38,7 +37,7 @@ func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy,
 	if err != nil {
 		return false, err
 	}
-	exist, err := r.Client.Permission.Query().Where(
+	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindRole),
 		permission.RoleID(roleID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
 	).Exist(ctx)
@@ -54,7 +53,7 @@ func (r *orgPolicyResolver) IsGrantUser(ctx context.Context, obj *ent.OrgPolicy,
 	if err != nil {
 		return false, err
 	}
-	exist, err := r.Client.Permission.Query().Where(
+	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindUser),
 		permission.UserID(userID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
 	).Exist(ctx)
@@ -75,7 +74,7 @@ func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, use
 	if err != nil {
 		return false, err
 	}
-	has, err := r.Client.OrgRoleUser.Query().Where(
+	has, err := r.client.OrgRoleUser.Query().Where(
 		orgroleuser.OrgRoleID(obj.ID),
 		orgroleuser.HasOrgUserWith(orguser.UserID(userID), orguser.OrgID(tid)),
 	).Exist(ctx)
@@ -87,7 +86,7 @@ func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, use
 
 // IsAllowRevoke is the resolver for the isAllowRevoke field.
 func (r *permissionResolver) IsAllowRevoke(ctx context.Context, obj *ent.Permission) (bool, error) {
-	return r.Resource.IsAllowRevokePermission(ctx, obj)
+	return r.resource.IsAllowRevokePermission(ctx, obj)
 }
 
 // IsAssignOrgRole is the resolver for the isAssignOrgRole field.
@@ -96,11 +95,11 @@ func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRo
 	if err != nil {
 		return false, err
 	}
-	ouid, err := r.Client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
+	ouid, err := r.client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
 	if err != nil {
 		return false, err
 	}
-	exist, err := r.Client.OrgRoleUser.Query().Where(orgroleuser.OrgUserID(ouid), orgroleuser.OrgRoleID(orgRoleID)).Exist(ctx)
+	exist, err := r.client.OrgRoleUser.Query().Where(orgroleuser.OrgUserID(ouid), orgroleuser.OrgRoleID(orgRoleID)).Exist(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -109,7 +108,7 @@ func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRo
 
 // IsAllowRevokeRole is the resolver for the isAllowRevokeRole field.
 func (r *userResolver) IsAllowRevokeRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
-	return r.Resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
+	return r.resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
 }
 
 // LoginProfile is the resolver for the loginProfile field.
@@ -120,11 +119,6 @@ func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.Cre
 			return err
 		}
 		obj.LoginProfileID = &row.ID
-
-		//TODO 自动生成密码
-		if data.SetKind == userloginprofile.SetKindAuto {
-
-		}
 	}
 	return nil
 }
@@ -132,7 +126,7 @@ func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.Cre
 // Password is the resolver for the password field.
 func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserPasswordInput) error {
 	if data != nil {
-		row, err := r.Resource.CreateUserPassword(ctx, data)
+		row, err := r.resource.CreateUserPassword(ctx, data)
 		if err != nil {
 			return err
 		}

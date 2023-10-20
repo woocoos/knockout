@@ -14,6 +14,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -28,6 +30,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -94,28 +97,31 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			app.Table:              app.ValidColumn,
-			appaction.Table:        appaction.ValidColumn,
-			appmenu.Table:          appmenu.ValidColumn,
-			apppolicy.Table:        apppolicy.ValidColumn,
-			appres.Table:           appres.ValidColumn,
-			approle.Table:          approle.ValidColumn,
-			approlepolicy.Table:    approlepolicy.ValidColumn,
-			file.Table:             file.ValidColumn,
-			filesource.Table:       filesource.ValidColumn,
-			oauthclient.Table:      oauthclient.ValidColumn,
-			org.Table:              org.ValidColumn,
-			orgapp.Table:           orgapp.ValidColumn,
-			orgpolicy.Table:        orgpolicy.ValidColumn,
-			orgrole.Table:          orgrole.ValidColumn,
-			orgroleuser.Table:      orgroleuser.ValidColumn,
-			orguser.Table:          orguser.ValidColumn,
-			permission.Table:       permission.ValidColumn,
-			user.Table:             user.ValidColumn,
-			userdevice.Table:       userdevice.ValidColumn,
-			useridentity.Table:     useridentity.ValidColumn,
-			userloginprofile.Table: userloginprofile.ValidColumn,
-			userpassword.Table:     userpassword.ValidColumn,
+			app.Table:               app.ValidColumn,
+			appaction.Table:         appaction.ValidColumn,
+			appdict.Table:           appdict.ValidColumn,
+			appdictitem.Table:       appdictitem.ValidColumn,
+			appmenu.Table:           appmenu.ValidColumn,
+			apppolicy.Table:         apppolicy.ValidColumn,
+			appres.Table:            appres.ValidColumn,
+			approle.Table:           approle.ValidColumn,
+			approlepolicy.Table:     approlepolicy.ValidColumn,
+			file.Table:              file.ValidColumn,
+			filesource.Table:        filesource.ValidColumn,
+			oauthclient.Table:       oauthclient.ValidColumn,
+			org.Table:               org.ValidColumn,
+			orgapp.Table:            orgapp.ValidColumn,
+			orgpolicy.Table:         orgpolicy.ValidColumn,
+			orgrole.Table:           orgrole.ValidColumn,
+			orgroleuser.Table:       orgroleuser.ValidColumn,
+			orguser.Table:           orguser.ValidColumn,
+			orguserpreference.Table: orguserpreference.ValidColumn,
+			permission.Table:        permission.ValidColumn,
+			user.Table:              user.ValidColumn,
+			userdevice.Table:        userdevice.ValidColumn,
+			useridentity.Table:      useridentity.ValidColumn,
+			userloginprofile.Table:  userloginprofile.ValidColumn,
+			userpassword.Table:      userpassword.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

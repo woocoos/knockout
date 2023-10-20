@@ -33,6 +33,30 @@ func (f AppActionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppActionMutation", m)
 }
 
+// The AppDictFunc type is an adapter to allow the use of ordinary
+// function as AppDict mutator.
+type AppDictFunc func(context.Context, *ent.AppDictMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppDictFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppDictMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppDictMutation", m)
+}
+
+// The AppDictItemFunc type is an adapter to allow the use of ordinary
+// function as AppDictItem mutator.
+type AppDictItemFunc func(context.Context, *ent.AppDictItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppDictItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppDictItemMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppDictItemMutation", m)
+}
+
 // The AppMenuFunc type is an adapter to allow the use of ordinary
 // function as AppMenu mutator.
 type AppMenuFunc func(context.Context, *ent.AppMenuMutation) (ent.Value, error)
@@ -199,6 +223,18 @@ func (f OrgUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgUserMutation", m)
+}
+
+// The OrgUserPreferenceFunc type is an adapter to allow the use of ordinary
+// function as OrgUserPreference mutator.
+type OrgUserPreferenceFunc func(context.Context, *ent.OrgUserPreferenceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f OrgUserPreferenceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.OrgUserPreferenceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrgUserPreferenceMutation", m)
 }
 
 // The PermissionFunc type is an adapter to allow the use of ordinary

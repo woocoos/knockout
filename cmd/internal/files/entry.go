@@ -5,8 +5,7 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/ecx/oteldriver"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/ent"
 )
@@ -25,12 +24,11 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 	s := &Server{
 		Cnf: cnf,
 	}
-	pd := oteldriver.BuildOTELDriver(s.Cnf, "store.portal")
-	pd = ecx.BuildEntCacheDriver(s.Cnf, pd)
+	ents := koapp.BuildEntComponents(s.Cnf)
 	if s.Cnf.Development {
-		portalClient = ent.NewClient(ent.Driver(pd), ent.Debug())
+		portalClient = ent.NewClient(ent.Driver(ents["portal"]), ent.Debug())
 	} else {
-		portalClient = ent.NewClient(ent.Driver(pd))
+		portalClient = ent.NewClient(ent.Driver(ents["portal"]))
 	}
 	s.Service = &server.FileService{
 		DB:       portalClient,
@@ -43,7 +41,7 @@ func NewServer(cnf *conf.AppConfiguration) *Server {
 func (s *Server) BuildWebServer() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		web.RegisterMiddleware(otelweb.NewMiddleware()),
+		otelweb.RegisterMiddleware(),
 	)
 	return webSrv
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/schema"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -22,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -36,7 +39,11 @@ import (
 func init() {
 	appMixin := schema.App{}.Mixin()
 	appMixinHooks1 := appMixin[1].Hooks()
+	appMixinHooks2 := appMixin[2].Hooks()
+	appHooks := schema.App{}.Hooks()
 	app.Hooks[0] = appMixinHooks1[0]
+	app.Hooks[1] = appMixinHooks2[0]
+	app.Hooks[2] = appHooks[0]
 	appMixinFields0 := appMixin[0].Fields()
 	_ = appMixinFields0
 	appMixinFields1 := appMixin[1].Fields()
@@ -91,7 +98,9 @@ func init() {
 	app.DefaultID = appDescID.Default.(func() int)
 	appactionMixin := schema.AppAction{}.Mixin()
 	appactionMixinHooks1 := appactionMixin[1].Hooks()
+	appactionMixinHooks2 := appactionMixin[2].Hooks()
 	appaction.Hooks[0] = appactionMixinHooks1[0]
+	appaction.Hooks[1] = appactionMixinHooks2[0]
 	appactionMixinFields0 := appactionMixin[0].Fields()
 	_ = appactionMixinFields0
 	appactionMixinFields1 := appactionMixin[1].Fields()
@@ -110,11 +119,105 @@ func init() {
 	appactionDescID := appactionMixinFields0[0].Descriptor()
 	// appaction.DefaultID holds the default value on creation for the id field.
 	appaction.DefaultID = appactionDescID.Default.(func() int)
+	appdictMixin := schema.AppDict{}.Mixin()
+	appdictMixinHooks1 := appdictMixin[1].Hooks()
+	appdictMixinHooks2 := appdictMixin[2].Hooks()
+	appdictHooks := schema.AppDict{}.Hooks()
+	appdict.Hooks[0] = appdictMixinHooks1[0]
+	appdict.Hooks[1] = appdictMixinHooks2[0]
+	appdict.Hooks[2] = appdictHooks[0]
+	appdictMixinFields1 := appdictMixin[1].Fields()
+	_ = appdictMixinFields1
+	appdictFields := schema.AppDict{}.Fields()
+	_ = appdictFields
+	// appdictDescCreatedAt is the schema descriptor for created_at field.
+	appdictDescCreatedAt := appdictMixinFields1[1].Descriptor()
+	// appdict.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appdict.DefaultCreatedAt = appdictDescCreatedAt.Default.(func() time.Time)
+	// appdictDescCode is the schema descriptor for code field.
+	appdictDescCode := appdictFields[1].Descriptor()
+	// appdict.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	appdict.CodeValidator = func() func(string) error {
+		validators := appdictDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// appdictDescName is the schema descriptor for name field.
+	appdictDescName := appdictFields[2].Descriptor()
+	// appdict.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	appdict.NameValidator = func() func(string) error {
+		validators := appdictDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	appdictitemMixin := schema.AppDictItem{}.Mixin()
+	appdictitemMixinHooks1 := appdictitemMixin[1].Hooks()
+	appdictitemMixinHooks2 := appdictitemMixin[2].Hooks()
+	appdictitemHooks := schema.AppDictItem{}.Hooks()
+	appdictitem.Hooks[0] = appdictitemMixinHooks1[0]
+	appdictitem.Hooks[1] = appdictitemMixinHooks2[0]
+	appdictitem.Hooks[2] = appdictitemHooks[0]
+	appdictitem.Hooks[3] = appdictitemHooks[1]
+	appdictitem.Hooks[4] = appdictitemHooks[2]
+	appdictitem.Hooks[5] = appdictitemHooks[3]
+	appdictitem.Hooks[6] = appdictitemHooks[4]
+	appdictitemMixinFields1 := appdictitemMixin[1].Fields()
+	_ = appdictitemMixinFields1
+	appdictitemFields := schema.AppDictItem{}.Fields()
+	_ = appdictitemFields
+	// appdictitemDescCreatedAt is the schema descriptor for created_at field.
+	appdictitemDescCreatedAt := appdictitemMixinFields1[1].Descriptor()
+	// appdictitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appdictitem.DefaultCreatedAt = appdictitemDescCreatedAt.Default.(func() time.Time)
+	// appdictitemDescCode is the schema descriptor for code field.
+	appdictitemDescCode := appdictitemFields[3].Descriptor()
+	// appdictitem.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	appdictitem.CodeValidator = func() func(string) error {
+		validators := appdictitemDescCode.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(code string) error {
+			for _, fn := range fns {
+				if err := fn(code); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// appdictitemDescName is the schema descriptor for name field.
+	appdictitemDescName := appdictitemFields[4].Descriptor()
+	// appdictitem.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	appdictitem.NameValidator = appdictitemDescName.Validators[0].(func(string) error)
 	appmenuMixin := schema.AppMenu{}.Mixin()
 	appmenuMixinHooks1 := appmenuMixin[1].Hooks()
+	appmenuMixinHooks2 := appmenuMixin[2].Hooks()
 	appmenuHooks := schema.AppMenu{}.Hooks()
 	appmenu.Hooks[0] = appmenuMixinHooks1[0]
-	appmenu.Hooks[1] = appmenuHooks[0]
+	appmenu.Hooks[1] = appmenuMixinHooks2[0]
+	appmenu.Hooks[2] = appmenuHooks[0]
 	appmenuMixinFields0 := appmenuMixin[0].Fields()
 	_ = appmenuMixinFields0
 	appmenuMixinFields1 := appmenuMixin[1].Fields()
@@ -131,9 +234,11 @@ func init() {
 	appmenu.DefaultID = appmenuDescID.Default.(func() int)
 	apppolicyMixin := schema.AppPolicy{}.Mixin()
 	apppolicyMixinHooks1 := apppolicyMixin[1].Hooks()
+	apppolicyMixinHooks2 := apppolicyMixin[2].Hooks()
 	apppolicyHooks := schema.AppPolicy{}.Hooks()
 	apppolicy.Hooks[0] = apppolicyMixinHooks1[0]
-	apppolicy.Hooks[1] = apppolicyHooks[0]
+	apppolicy.Hooks[1] = apppolicyMixinHooks2[0]
+	apppolicy.Hooks[2] = apppolicyHooks[0]
 	apppolicyMixinFields0 := apppolicyMixin[0].Fields()
 	_ = apppolicyMixinFields0
 	apppolicyMixinFields1 := apppolicyMixin[1].Fields()
@@ -158,7 +263,9 @@ func init() {
 	apppolicy.DefaultID = apppolicyDescID.Default.(func() int)
 	appresMixin := schema.AppRes{}.Mixin()
 	appresMixinHooks1 := appresMixin[1].Hooks()
+	appresMixinHooks2 := appresMixin[2].Hooks()
 	appres.Hooks[0] = appresMixinHooks1[0]
+	appres.Hooks[1] = appresMixinHooks2[0]
 	appresMixinFields0 := appresMixin[0].Fields()
 	_ = appresMixinFields0
 	appresMixinFields1 := appresMixin[1].Fields()
@@ -175,7 +282,9 @@ func init() {
 	appres.DefaultID = appresDescID.Default.(func() int)
 	approleMixin := schema.AppRole{}.Mixin()
 	approleMixinHooks1 := approleMixin[1].Hooks()
+	approleMixinHooks2 := approleMixin[2].Hooks()
 	approle.Hooks[0] = approleMixinHooks1[0]
+	approle.Hooks[1] = approleMixinHooks2[0]
 	approleMixinFields0 := approleMixin[0].Fields()
 	_ = approleMixinFields0
 	approleMixinFields1 := approleMixin[1].Fields()
@@ -200,7 +309,9 @@ func init() {
 	approle.DefaultID = approleDescID.Default.(func() int)
 	approlepolicyMixin := schema.AppRolePolicy{}.Mixin()
 	approlepolicyMixinHooks1 := approlepolicyMixin[1].Hooks()
+	approlepolicyMixinHooks2 := approlepolicyMixin[2].Hooks()
 	approlepolicy.Hooks[0] = approlepolicyMixinHooks1[0]
+	approlepolicy.Hooks[1] = approlepolicyMixinHooks2[0]
 	approlepolicyMixinFields1 := approlepolicyMixin[1].Fields()
 	_ = approlepolicyMixinFields1
 	approlepolicyFields := schema.AppRolePolicy{}.Fields()
@@ -211,7 +322,9 @@ func init() {
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
 	fileMixin := schema.File{}.Mixin()
 	fileMixinHooks1 := fileMixin[1].Hooks()
+	fileMixinHooks2 := fileMixin[2].Hooks()
 	file.Hooks[0] = fileMixinHooks1[0]
+	file.Hooks[1] = fileMixinHooks2[0]
 	fileMixinFields0 := fileMixin[0].Fields()
 	_ = fileMixinFields0
 	fileMixinFields1 := fileMixin[1].Fields()
@@ -236,7 +349,9 @@ func init() {
 	file.DefaultID = fileDescID.Default.(func() int)
 	filesourceMixin := schema.FileSource{}.Mixin()
 	filesourceMixinHooks1 := filesourceMixin[1].Hooks()
+	filesourceMixinHooks2 := filesourceMixin[2].Hooks()
 	filesource.Hooks[0] = filesourceMixinHooks1[0]
+	filesource.Hooks[1] = filesourceMixinHooks2[0]
 	filesourceMixinFields1 := filesourceMixin[1].Fields()
 	_ = filesourceMixinFields1
 	filesourceFields := schema.FileSource{}.Fields()
@@ -255,7 +370,9 @@ func init() {
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()
 	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
+	oauthclientMixinHooks2 := oauthclientMixin[2].Hooks()
 	oauthclient.Hooks[0] = oauthclientMixinHooks1[0]
+	oauthclient.Hooks[1] = oauthclientMixinHooks2[0]
 	oauthclientMixinFields0 := oauthclientMixin[0].Fields()
 	_ = oauthclientMixinFields0
 	oauthclientMixinFields1 := oauthclientMixin[1].Fields()
@@ -285,13 +402,15 @@ func init() {
 	orgMixin := schema.Org{}.Mixin()
 	orgMixinHooks1 := orgMixin[1].Hooks()
 	orgMixinHooks2 := orgMixin[2].Hooks()
+	orgMixinHooks3 := orgMixin[3].Hooks()
 	orgHooks := schema.Org{}.Hooks()
 	org.Hooks[0] = orgMixinHooks1[0]
 	org.Hooks[1] = orgMixinHooks2[0]
-	org.Hooks[2] = orgHooks[0]
-	org.Hooks[3] = orgHooks[1]
-	org.Hooks[4] = orgHooks[2]
-	org.Hooks[5] = orgHooks[3]
+	org.Hooks[2] = orgMixinHooks3[0]
+	org.Hooks[3] = orgHooks[0]
+	org.Hooks[4] = orgHooks[1]
+	org.Hooks[5] = orgHooks[2]
+	org.Hooks[6] = orgHooks[3]
 	orgMixinInters2 := orgMixin[2].Interceptors()
 	org.Interceptors[0] = orgMixinInters2[0]
 	orgMixinFields0 := orgMixin[0].Fields()
@@ -334,7 +453,9 @@ func init() {
 	org.DefaultID = orgDescID.Default.(func() int)
 	orgappMixin := schema.OrgApp{}.Mixin()
 	orgappMixinHooks1 := orgappMixin[1].Hooks()
+	orgappMixinHooks2 := orgappMixin[2].Hooks()
 	orgapp.Hooks[0] = orgappMixinHooks1[0]
+	orgapp.Hooks[1] = orgappMixinHooks2[0]
 	orgappMixinFields1 := orgappMixin[1].Fields()
 	_ = orgappMixinFields1
 	orgappFields := schema.OrgApp{}.Fields()
@@ -345,9 +466,11 @@ func init() {
 	orgapp.DefaultCreatedAt = orgappDescCreatedAt.Default.(func() time.Time)
 	orgpolicyMixin := schema.OrgPolicy{}.Mixin()
 	orgpolicyMixinHooks1 := orgpolicyMixin[1].Hooks()
+	orgpolicyMixinHooks2 := orgpolicyMixin[2].Hooks()
 	orgpolicyHooks := schema.OrgPolicy{}.Hooks()
 	orgpolicy.Hooks[0] = orgpolicyMixinHooks1[0]
-	orgpolicy.Hooks[1] = orgpolicyHooks[0]
+	orgpolicy.Hooks[1] = orgpolicyMixinHooks2[0]
+	orgpolicy.Hooks[2] = orgpolicyHooks[0]
 	orgpolicyMixinFields0 := orgpolicyMixin[0].Fields()
 	_ = orgpolicyMixinFields0
 	orgpolicyMixinFields1 := orgpolicyMixin[1].Fields()
@@ -364,7 +487,9 @@ func init() {
 	orgpolicy.DefaultID = orgpolicyDescID.Default.(func() int)
 	orgroleMixin := schema.OrgRole{}.Mixin()
 	orgroleMixinHooks1 := orgroleMixin[1].Hooks()
+	orgroleMixinHooks2 := orgroleMixin[2].Hooks()
 	orgrole.Hooks[0] = orgroleMixinHooks1[0]
+	orgrole.Hooks[1] = orgroleMixinHooks2[0]
 	orgroleMixinFields1 := orgroleMixin[1].Fields()
 	_ = orgroleMixinFields1
 	orgroleFields := schema.OrgRole{}.Fields()
@@ -386,7 +511,9 @@ func init() {
 	orgroleuser.DefaultCreatedAt = orgroleuserDescCreatedAt.Default.(func() time.Time)
 	orguserMixin := schema.OrgUser{}.Mixin()
 	orguserMixinHooks1 := orguserMixin[1].Hooks()
+	orguserMixinHooks2 := orguserMixin[2].Hooks()
 	orguser.Hooks[0] = orguserMixinHooks1[0]
+	orguser.Hooks[1] = orguserMixinHooks2[0]
 	orguserMixinFields1 := orguserMixin[1].Fields()
 	_ = orguserMixinFields1
 	orguserFields := schema.OrgUser{}.Fields()
@@ -399,9 +526,22 @@ func init() {
 	orguserDescJoinedAt := orguserFields[2].Descriptor()
 	// orguser.DefaultJoinedAt holds the default value on creation for the joined_at field.
 	orguser.DefaultJoinedAt = orguserDescJoinedAt.Default.(func() time.Time)
+	orguserpreferenceMixin := schema.OrgUserPreference{}.Mixin()
+	orguserpreferenceMixinHooks1 := orguserpreferenceMixin[1].Hooks()
+	orguserpreference.Hooks[0] = orguserpreferenceMixinHooks1[0]
+	orguserpreferenceMixinFields1 := orguserpreferenceMixin[1].Fields()
+	_ = orguserpreferenceMixinFields1
+	orguserpreferenceFields := schema.OrgUserPreference{}.Fields()
+	_ = orguserpreferenceFields
+	// orguserpreferenceDescCreatedAt is the schema descriptor for created_at field.
+	orguserpreferenceDescCreatedAt := orguserpreferenceMixinFields1[1].Descriptor()
+	// orguserpreference.DefaultCreatedAt holds the default value on creation for the created_at field.
+	orguserpreference.DefaultCreatedAt = orguserpreferenceDescCreatedAt.Default.(func() time.Time)
 	permissionMixin := schema.Permission{}.Mixin()
 	permissionMixinHooks1 := permissionMixin[1].Hooks()
+	permissionMixinHooks2 := permissionMixin[2].Hooks()
 	permission.Hooks[0] = permissionMixinHooks1[0]
+	permission.Hooks[1] = permissionMixinHooks2[0]
 	permissionMixinFields0 := permissionMixin[0].Fields()
 	_ = permissionMixinFields0
 	permissionMixinFields1 := permissionMixin[1].Fields()
@@ -419,8 +559,10 @@ func init() {
 	userMixin := schema.User{}.Mixin()
 	userMixinHooks1 := userMixin[1].Hooks()
 	userMixinHooks2 := userMixin[2].Hooks()
+	userMixinHooks3 := userMixin[3].Hooks()
 	user.Hooks[0] = userMixinHooks1[0]
 	user.Hooks[1] = userMixinHooks2[0]
+	user.Hooks[2] = userMixinHooks3[0]
 	userMixinInters2 := userMixin[2].Interceptors()
 	user.Interceptors[0] = userMixinInters2[0]
 	userMixinFields0 := userMixin[0].Fields()
@@ -451,7 +593,9 @@ func init() {
 	user.DefaultID = userDescID.Default.(func() int)
 	userdeviceMixin := schema.UserDevice{}.Mixin()
 	userdeviceMixinHooks1 := userdeviceMixin[1].Hooks()
+	userdeviceMixinHooks2 := userdeviceMixin[2].Hooks()
 	userdevice.Hooks[0] = userdeviceMixinHooks1[0]
+	userdevice.Hooks[1] = userdeviceMixinHooks2[0]
 	userdeviceMixinFields1 := userdeviceMixin[1].Fields()
 	_ = userdeviceMixinFields1
 	userdeviceFields := schema.UserDevice{}.Fields()
@@ -486,9 +630,11 @@ func init() {
 	userdevice.DeviceModelValidator = userdeviceDescDeviceModel.Validators[0].(func(string) error)
 	useridentityMixin := schema.UserIdentity{}.Mixin()
 	useridentityMixinHooks1 := useridentityMixin[1].Hooks()
+	useridentityMixinHooks2 := useridentityMixin[2].Hooks()
 	useridentityHooks := schema.UserIdentity{}.Hooks()
 	useridentity.Hooks[0] = useridentityMixinHooks1[0]
-	useridentity.Hooks[1] = useridentityHooks[0]
+	useridentity.Hooks[1] = useridentityMixinHooks2[0]
+	useridentity.Hooks[2] = useridentityHooks[0]
 	useridentityMixinFields1 := useridentityMixin[1].Fields()
 	_ = useridentityMixinFields1
 	useridentityFields := schema.UserIdentity{}.Fields()
@@ -499,7 +645,9 @@ func init() {
 	useridentity.DefaultCreatedAt = useridentityDescCreatedAt.Default.(func() time.Time)
 	userloginprofileMixin := schema.UserLoginProfile{}.Mixin()
 	userloginprofileMixinHooks1 := userloginprofileMixin[1].Hooks()
+	userloginprofileMixinHooks2 := userloginprofileMixin[2].Hooks()
 	userloginprofile.Hooks[0] = userloginprofileMixinHooks1[0]
+	userloginprofile.Hooks[1] = userloginprofileMixinHooks2[0]
 	userloginprofileMixinFields1 := userloginprofileMixin[1].Fields()
 	_ = userloginprofileMixinFields1
 	userloginprofileFields := schema.UserLoginProfile{}.Fields()
@@ -514,7 +662,9 @@ func init() {
 	userloginprofile.MfaSecretValidator = userloginprofileDescMfaSecret.Validators[0].(func(string) error)
 	userpasswordMixin := schema.UserPassword{}.Mixin()
 	userpasswordMixinHooks1 := userpasswordMixin[1].Hooks()
+	userpasswordMixinHooks2 := userpasswordMixin[2].Hooks()
 	userpassword.Hooks[0] = userpasswordMixinHooks1[0]
+	userpassword.Hooks[1] = userpasswordMixinHooks2[0]
 	userpasswordMixinFields1 := userpasswordMixin[1].Fields()
 	_ = userpasswordMixinFields1
 	userpasswordFields := schema.UserPassword{}.Fields()
@@ -530,6 +680,6 @@ func init() {
 }
 
 const (
-	Version = "v0.12.3"                                         // Version of ent codegen.
-	Sum     = "h1:N5lO2EOrHpCH5HYfiMOCHYbo+oh5M8GjT0/cx5x6xkk=" // Sum of ent codegen.
+	Version = "v0.12.4"                                         // Version of ent codegen.
+	Sum     = "h1:LddPnAyxls/O7DTXZvUGDj0NZIdGSu317+aoNLJWbD8=" // Sum of ent codegen.
 )

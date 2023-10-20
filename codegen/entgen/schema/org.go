@@ -9,12 +9,13 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"fmt"
-	"github.com/woocoos/entco/schemax"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/intercept"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
 	"regexp"
 	"strconv"
@@ -42,6 +43,7 @@ func (Org) Mixin() []ent.Mixin {
 		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
 		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
+		schemax.NotifyMixin{},
 	}
 }
 
@@ -154,20 +156,32 @@ func checkDeleteHook() ent.Hook {
 	}
 }
 
+// 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
 func ownerCheckHook() ent.Hook {
 	return func(next ent.Mutator) ent.Mutator {
-		return hook.OrgFunc(func(ctx context.Context, mutation *gen.OrgMutation) (gen.Value, error) {
-			if uid, ok := mutation.OwnerID(); ok {
-				usr, err := mutation.Client().User.Get(ctx, uid)
+		return hook.OrgFunc(func(ctx context.Context, m *gen.OrgMutation) (gen.Value, error) {
+			if uid, ok := m.OwnerID(); ok {
+				usr, err := m.Client().User.Get(ctx, uid)
 				if err != nil {
 					return nil, err
 				}
 				if usr.UserType != user.UserTypeAccount {
 					return nil, fmt.Errorf("owner must be account: %s", usr.DisplayName)
 				}
-				mutation.SetKind(org.KindRoot)
+				m.SetKind(org.KindRoot)
+				if m.Op().Is(ent.OpUpdateOne) {
+					id, _ := m.ID()
+					has, _ := m.Client().OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(id)).Exist(ctx)
+					if !has {
+						err = m.Client().OrgUser.Create().SetOrgID(id).SetUserID(uid).SetDisplayName(usr.DisplayName).
+							Exec(ctx)
+						if err != nil {
+							return nil, err
+						}
+					}
+				}
 			}
-			return next.Mutate(ctx, mutation)
+			return next.Mutate(ctx, m)
 		})
 	}
 }

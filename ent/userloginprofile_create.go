@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
@@ -946,12 +946,16 @@ func (u *UserLoginProfileUpsertOne) IDX(ctx context.Context) int {
 // UserLoginProfileCreateBulk is the builder for creating many UserLoginProfile entities in bulk.
 type UserLoginProfileCreateBulk struct {
 	config
+	err      error
 	builders []*UserLoginProfileCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the UserLoginProfile entities in the database.
 func (ulpcb *UserLoginProfileCreateBulk) Save(ctx context.Context) ([]*UserLoginProfile, error) {
+	if ulpcb.err != nil {
+		return nil, ulpcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ulpcb.builders))
 	nodes := make([]*UserLoginProfile, len(ulpcb.builders))
 	mutators := make([]Mutator, len(ulpcb.builders))
@@ -1355,6 +1359,9 @@ func (u *UserLoginProfileUpsertBulk) ClearMfaStatus() *UserLoginProfileUpsertBul
 
 // Exec executes the query.
 func (u *UserLoginProfileUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserLoginProfileCreateBulk instead", i)

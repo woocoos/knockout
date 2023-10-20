@@ -11,9 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -433,6 +434,21 @@ func (au *AppUpdate) AddOrgs(o ...*Org) *AppUpdate {
 	return au.AddOrgIDs(ids...)
 }
 
+// AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
+func (au *AppUpdate) AddDictIDs(ids ...int) *AppUpdate {
+	au.mutation.AddDictIDs(ids...)
+	return au
+}
+
+// AddDicts adds the "dicts" edges to the AppDict entity.
+func (au *AppUpdate) AddDicts(a ...*AppDict) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddDictIDs(ids...)
+}
+
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
 func (au *AppUpdate) AddOrgAppIDs(ids ...int) *AppUpdate {
 	au.mutation.AddOrgAppIDs(ids...)
@@ -577,6 +593,27 @@ func (au *AppUpdate) RemoveOrgs(o ...*Org) *AppUpdate {
 		ids[i] = o[i].ID
 	}
 	return au.RemoveOrgIDs(ids...)
+}
+
+// ClearDicts clears all "dicts" edges to the AppDict entity.
+func (au *AppUpdate) ClearDicts() *AppUpdate {
+	au.mutation.ClearDicts()
+	return au
+}
+
+// RemoveDictIDs removes the "dicts" edge to AppDict entities by IDs.
+func (au *AppUpdate) RemoveDictIDs(ids ...int) *AppUpdate {
+	au.mutation.RemoveDictIDs(ids...)
+	return au
+}
+
+// RemoveDicts removes "dicts" edges to AppDict entities.
+func (au *AppUpdate) RemoveDicts(a ...*AppDict) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveDictIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
@@ -1055,6 +1092,51 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if au.mutation.DictsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedDictsIDs(); len(nodes) > 0 && !au.mutation.DictsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.DictsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if au.mutation.OrgAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1517,6 +1599,21 @@ func (auo *AppUpdateOne) AddOrgs(o ...*Org) *AppUpdateOne {
 	return auo.AddOrgIDs(ids...)
 }
 
+// AddDictIDs adds the "dicts" edge to the AppDict entity by IDs.
+func (auo *AppUpdateOne) AddDictIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.AddDictIDs(ids...)
+	return auo
+}
+
+// AddDicts adds the "dicts" edges to the AppDict entity.
+func (auo *AppUpdateOne) AddDicts(a ...*AppDict) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddDictIDs(ids...)
+}
+
 // AddOrgAppIDs adds the "org_app" edge to the OrgApp entity by IDs.
 func (auo *AppUpdateOne) AddOrgAppIDs(ids ...int) *AppUpdateOne {
 	auo.mutation.AddOrgAppIDs(ids...)
@@ -1661,6 +1758,27 @@ func (auo *AppUpdateOne) RemoveOrgs(o ...*Org) *AppUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return auo.RemoveOrgIDs(ids...)
+}
+
+// ClearDicts clears all "dicts" edges to the AppDict entity.
+func (auo *AppUpdateOne) ClearDicts() *AppUpdateOne {
+	auo.mutation.ClearDicts()
+	return auo
+}
+
+// RemoveDictIDs removes the "dicts" edge to AppDict entities by IDs.
+func (auo *AppUpdateOne) RemoveDictIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.RemoveDictIDs(ids...)
+	return auo
+}
+
+// RemoveDicts removes "dicts" edges to AppDict entities.
+func (auo *AppUpdateOne) RemoveDicts(a ...*AppDict) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveDictIDs(ids...)
 }
 
 // ClearOrgApp clears all "org_app" edges to the OrgApp entity.
@@ -2167,6 +2285,51 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.DictsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedDictsIDs(); len(nodes) > 0 && !auo.mutation.DictsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.DictsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.DictsTable,
+			Columns: []string{app.DictsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appdict.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if auo.mutation.OrgAppCleared() {

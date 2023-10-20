@@ -1,11 +1,12 @@
 package resource
 
 import (
-	"ariga.io/entcache"
 	"context"
+	"encoding/json"
 	"fmt"
-	"github.com/woocoos/entco/pkg/identity"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/entcache"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -17,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -36,21 +38,25 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 	if err != nil {
 		return nil, err
 	}
-	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Evict(ctx))
+	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}
 	if exist {
 		return nil, fmt.Errorf("directory service has enable")
 	}
-	bulk := make([]*ent.OrgCreate, 1)
-	bulk[0] = client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
-		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive)
-	os, err := client.Org.CreateBulk(bulk...).Save(ctx)
+	orgd, err := client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
+		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return os[0], err
+	ur := client.User.GetX(ctx, uid)
+	err = client.OrgUser.Create().SetOrgID(orgd.ID).SetUserID(uid).SetDisplayName(ur.DisplayName).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return orgd, err
 }
 
 // CreateRoot 创建组织root
@@ -83,30 +89,6 @@ func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInp
 		return nil, fmt.Errorf("parent id is required")
 	}
 	return s.Client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
-}
-
-// UpdateOrganization 更新组织目录
-//
-// - 如果更新的组织目录的管理账号，那么指向的用户必须是账户类型用户
-func (s *Service) UpdateOrganization(ctx context.Context, id int, input ent.UpdateOrgInput) (*ent.Org, error) {
-	client := ent.FromContext(ctx)
-	u := client.User.Query().Where(user.ID(*input.OwnerID)).FirstX(ctx)
-	if input.OwnerID != nil {
-		if u.UserType != user.UserTypeAccount {
-			return nil, fmt.Errorf("owner must be account")
-		}
-	}
-	o, err := client.Org.UpdateOneID(id).SetInput(input).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if input.OwnerID != nil {
-		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return o, nil
 }
 
 // DeleteOrganization 删除组织目录
@@ -167,15 +149,30 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	if err != nil {
 		return nil, err
 	}
+
 	_, err = client.UserIdentity.Create().SetUserID(us.ID).SetCode(input.PrincipalName).SetKind(useridentity.KindName).
 		SetStatus(typex.SimpleStatusActive).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+	if ut != user.UserTypeAccount {
+		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// 自动生成密码,发送邮件
+	ulp, err := us.QueryLoginProfile().Only(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if ulp.SetKind == userloginprofile.SetKindAuto {
+		err = s.generationAndSendUserPwd(ctx, us)
+		if err != nil {
+			return nil, err
+		}
 	}
 	// 上报文件引用
 	if input.AvatarFileID != nil {
@@ -185,6 +182,45 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 		}
 	}
 	return us, nil
+}
+
+// generationAndSendUserPwd 自动生成密码并发邮件给用户
+func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) error {
+	if usr.Email == "" {
+		return fmt.Errorf("email is nil")
+	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	nPwd := RandomStr(6)
+	shaPwd := SHA256(RandomStr(6))
+	// 创建用户密码
+	_, err = s.CreateUserPassword(ctx, &ent.CreateUserPasswordInput{
+		Scene:    userpassword.SceneLogin,
+		Password: &shaPwd,
+		UserID:   &usr.ID,
+	})
+	if err != nil {
+		return err
+	}
+	params := []postAlertsInput{
+		{
+			Annotations: map[string]string{
+				"to":            usr.Email,
+				"displayName":   usr.DisplayName,
+				"principalName": usr.PrincipalName,
+				"password":      nPwd,
+			},
+			Labels: map[string]string{
+				"receiver":  "email",
+				"alertname": "UserPasswordAndPrincipal",
+				"tenant":    strconv.Itoa(tid),
+				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			},
+		},
+	}
+	return s.postAlerts(ctx, params)
 }
 
 func (s *Service) CreateUserPassword(ctx context.Context, input *ent.CreateUserPasswordInput) (pw *ent.UserPassword, err error) {
@@ -422,7 +458,11 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
 	client := ent.FromContext(ctx)
-	return client.UserLoginProfile.UpdateOneID(userID).SetInput(input).Save(ctx)
+	lpID, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Select(userloginprofile.FieldID).Int(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return client.UserLoginProfile.UpdateOneID(lpID).SetInput(input).Save(ctx)
 }
 
 // CreateRole 创建角色或工作组
@@ -655,7 +695,11 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	}
 
 	if pwdKind == userloginprofile.SetKindAuto {
-		//TODO 自动生成密码
+		// 自动生成密码
+		err = s.generationAndSendUserPwd(ctx, us)
+		if err != nil {
+			return nil, err
+		}
 	} else if pwdInput != nil {
 		if pwdInput.UserID == nil {
 			pwdInput.UserID = &userID
@@ -678,6 +722,90 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	return us, nil
 }
 
+func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
+	usr, err := s.Client.User.Query().Where(user.ID(userID)).WithLoginProfile().Only(ctx)
+	if err != nil {
+		return err
+	}
+	if usr.Email == "" {
+		return fmt.Errorf("email is null")
+	}
+	if !usr.Edges.LoginProfile.MfaEnabled {
+		return fmt.Errorf("mfa is disabled")
+	}
+	if usr.Edges.LoginProfile.MfaSecret == "" {
+		return fmt.Errorf("mfa secret is null")
+	}
+
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+	params := []postAlertsInput{
+		{
+			Annotations: map[string]string{
+				"to":          usr.Email,
+				"displayName": usr.DisplayName,
+				"mfaSecret":   usr.Edges.LoginProfile.MfaSecret,
+			},
+			Labels: map[string]string{
+				"receiver":  "email",
+				"alertname": "SendMFAToUser",
+				"tenant":    strconv.Itoa(tid),
+				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			},
+		},
+	}
+	return s.postAlerts(ctx, params)
+}
+
+func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) error {
+	client := ent.FromContext(ctx)
+	usr, err := client.User.Query().Where(user.ID(userID)).WithIdentities().WithPasswords().Only(ctx)
+	if err != nil {
+		return err
+	}
+	if usr.Email == "" {
+		return fmt.Errorf("email is null")
+	}
+
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	slat := ""
+	for _, v := range usr.Edges.Passwords {
+		if v.Scene == userpassword.SceneLogin {
+			slat = v.Salt
+			break
+		}
+	}
+	newPwd := RandomStr(6)
+	// 更新用户密码
+	err = client.UserPassword.UpdateOneID(userID).Where(userpassword.SceneEQ(userpassword.SceneLogin)).SetPassword(SaltSecret(newPwd, slat)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	params := []postAlertsInput{
+		{
+			Annotations: map[string]string{
+				"to":            usr.Email,
+				"displayName":   usr.DisplayName,
+				"principalName": usr.Edges.Identities[0].Code,
+				"password":      newPwd,
+			},
+			Labels: map[string]string{
+				"receiver":  "email",
+				"alertname": "ResetUserPassword",
+				"tenant":    strconv.Itoa(tid),
+				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			},
+		},
+	}
+	return s.postAlerts(ctx, params)
+}
+
 // validateFilePath 验证路径是否符合规则
 func (s *Service) validateFilePath(ctx context.Context, path string) error {
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -686,7 +814,7 @@ func (s *Service) validateFilePath(ctx context.Context, path string) error {
 	}
 	path = filepath.Join(path)
 	p := strings.TrimPrefix(path, "/")
-	prefixPath := filepath.Join(s.FileOptions.PrefixDir, strconv.Itoa(tid))
+	prefixPath := filepath.Join(s.OASOptions.Files.PrefixDir, strconv.Itoa(tid))
 	if !strings.HasPrefix(p, strings.TrimPrefix(prefixPath, "/")) {
 		return fmt.Errorf("invalid path: %s,must be like:%s/xxx", path, prefixPath)
 	}
@@ -711,7 +839,7 @@ func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs
 	}
 	params = strings.TrimSuffix(params, ",")
 	body := strings.NewReader(fmt.Sprintf(`{ "inputs": [%s] }`, params))
-	req, err := http.NewRequest("POST", s.FileOptions.BaseUrl+"/report-ref-count", body)
+	req, err := http.NewRequest("POST", s.OASOptions.Files.BaseUrl+"/files/report-ref-count", body)
 	if err != nil {
 		return err
 	}
@@ -719,4 +847,70 @@ func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs
 	req.Header.Add("Content-Type", "application/json")
 	_, err = s.HttpClient.Do(req)
 	return err
+}
+
+type postAlertsInput struct {
+	Annotations  map[string]string `json:"annotations,omitempty"`
+	StartsAt     time.Time         `json:"startsAt,omitempty"`
+	EndsAt       time.Time         `json:"endsAt,omitempty"`
+	Labels       map[string]string `json:"labels"`
+	GeneratorURL string            `json:"generatorURL,omitempty"`
+}
+
+func (s *Service) postAlerts(ctx context.Context, params []postAlertsInput) error {
+	val, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+	body := strings.NewReader(string(val))
+	req, err := http.NewRequest("POST", s.OASOptions.Msgsrv.BaseUrl+"/api/v2/alerts", body)
+	if err != nil {
+		return err
+	}
+	//req.Header.Add("X-Tenant-ID", strconv.Itoa(tid))
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := s.HttpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	}
+	return fmt.Errorf(resp.Status)
+}
+
+func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	oup, err := client.OrgUserPreference.Query().Where(orguserpreference.UserID(uid), orguserpreference.OrgID(tid)).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			// 未找到则新增
+			create := client.OrgUserPreference.Create().SetUserID(uid).SetOrgID(tid)
+			if input.MenuRecent != nil {
+				create.SetMenuRecent(input.MenuRecent)
+			}
+			if input.MenuFavorite != nil {
+				create.SetMenuFavorite(input.MenuFavorite)
+			}
+			return create.Save(ctx)
+		}
+		return nil, err
+	}
+	// 更新数据
+	update := client.OrgUserPreference.UpdateOneID(oup.ID)
+	if input.MenuRecent != nil {
+		update.SetMenuRecent(input.MenuRecent)
+	}
+	if input.MenuFavorite != nil {
+		update.SetMenuFavorite(input.MenuFavorite)
+	}
+	return update.Save(ctx)
 }

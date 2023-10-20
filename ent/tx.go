@@ -16,6 +16,10 @@ type Tx struct {
 	App *AppClient
 	// AppAction is the client for interacting with the AppAction builders.
 	AppAction *AppActionClient
+	// AppDict is the client for interacting with the AppDict builders.
+	AppDict *AppDictClient
+	// AppDictItem is the client for interacting with the AppDictItem builders.
+	AppDictItem *AppDictItemClient
 	// AppMenu is the client for interacting with the AppMenu builders.
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
@@ -44,6 +48,8 @@ type Tx struct {
 	OrgRoleUser *OrgRoleUserClient
 	// OrgUser is the client for interacting with the OrgUser builders.
 	OrgUser *OrgUserClient
+	// OrgUserPreference is the client for interacting with the OrgUserPreference builders.
+	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -189,6 +195,8 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.App = NewAppClient(tx.config)
 	tx.AppAction = NewAppActionClient(tx.config)
+	tx.AppDict = NewAppDictClient(tx.config)
+	tx.AppDictItem = NewAppDictItemClient(tx.config)
 	tx.AppMenu = NewAppMenuClient(tx.config)
 	tx.AppPolicy = NewAppPolicyClient(tx.config)
 	tx.AppRes = NewAppResClient(tx.config)
@@ -203,6 +211,7 @@ func (tx *Tx) init() {
 	tx.OrgRole = NewOrgRoleClient(tx.config)
 	tx.OrgRoleUser = NewOrgRoleUserClient(tx.config)
 	tx.OrgUser = NewOrgUserClient(tx.config)
+	tx.OrgUserPreference = NewOrgUserPreferenceClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)

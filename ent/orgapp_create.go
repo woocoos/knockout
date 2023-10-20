@@ -535,12 +535,16 @@ func (u *OrgAppUpsertOne) IDX(ctx context.Context) int {
 // OrgAppCreateBulk is the builder for creating many OrgApp entities in bulk.
 type OrgAppCreateBulk struct {
 	config
+	err      error
 	builders []*OrgAppCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the OrgApp entities in the database.
 func (oacb *OrgAppCreateBulk) Save(ctx context.Context) ([]*OrgApp, error) {
+	if oacb.err != nil {
+		return nil, oacb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(oacb.builders))
 	nodes := make([]*OrgApp, len(oacb.builders))
 	mutators := make([]Mutator, len(oacb.builders))
@@ -794,6 +798,9 @@ func (u *OrgAppUpsertBulk) UpdateAppID() *OrgAppUpsertBulk {
 
 // Exec executes the query.
 func (u *OrgAppUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgAppCreateBulk instead", i)

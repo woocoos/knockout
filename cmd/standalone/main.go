@@ -3,13 +3,14 @@ package main
 import (
 	"flag"
 	"github.com/tsingsun/woocoo"
+	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/log"
-	"github.com/woocoos/entco/pkg/snowflake"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/cmd/internal/auth"
 	"github.com/woocoos/knockout/cmd/internal/files"
-	"github.com/woocoos/knockout/cmd/internal/otel"
 	"github.com/woocoos/knockout/cmd/internal/rms"
+	"go.opentelemetry.io/contrib/propagators/b3"
 )
 
 var (
@@ -20,22 +21,22 @@ var (
 
 func main() {
 	flag.Parse()
-	rmsc := conf.New(conf.WithBaseDir(*rmcConfig), conf.WithGlobal(false)).Load()
-	rmscnf := &conf.AppConfiguration{Configuration: rmsc}
 	app := woocoo.New()
-	otelStop := otel.Apply(rmscnf)
+
+	rmscnf := &conf.AppConfiguration{
+		Configuration: conf.New(conf.WithBaseDir(*rmcConfig), conf.WithGlobal(false)).Load(),
+	}
+	otelStop := applyOTEL(rmscnf)
 	defer otelStop()
 
-	err := snowflake.SetDefaultNode(rmscnf.Sub("snowflake"))
-	if err != nil {
-		log.Panic(err)
-	}
+	koapp.BuildCacheComponents(rmscnf)
 	rmsSvr := rms.NewServer(rmscnf)
 	rmsEngine := rmsSvr.BuildWebEngine()
 
 	authcnf := &conf.AppConfiguration{
 		Configuration: conf.New(conf.WithBaseDir(*authConfig), conf.WithGlobal(false)).Load(),
 	}
+	koapp.BuildCacheComponents(authcnf)
 	authSrv := auth.NewServer(authcnf)
 	authEngine := authSrv.BuildWebServer()
 	authSrv.RegisterWebEngine(authEngine.Router().FindGroup("/").Group)
@@ -43,13 +44,28 @@ func main() {
 	filecnf := &conf.AppConfiguration{
 		Configuration: conf.New(conf.WithBaseDir(*fileConfig), conf.WithGlobal(false)).Load(),
 	}
+	koapp.BuildCacheComponents(filecnf)
 	fileSrv := files.NewServer(filecnf)
 	fileEngine := fileSrv.BuildWebServer()
 	fileSrv.RegisterWebEngine(fileEngine.Router().FindGroup("/").Group)
 
-	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine)
+	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine, ecx.ChangeSet)
 
 	if err := app.Run(); err != nil {
-		log.Panic(err)
+		panic(err)
 	}
+}
+
+// Apply 尝试注册otel,如果配置中有otel配置,则注册.并返回关闭函数
+func applyOTEL(cnf *conf.AppConfiguration) func() {
+	if cnf.IsSet("otel") {
+		otelCnf := cnf.Sub("otel")
+		otelcfg := telemetry.NewConfig(otelCnf,
+			telemetry.WithPropagator(b3.New()),
+		)
+		return func() {
+			otelcfg.Shutdown()
+		}
+	}
+	return func() {}
 }

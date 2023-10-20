@@ -1,31 +1,23 @@
 package main
 
 import (
-	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/pkg/log"
-	"github.com/woocoos/entco/pkg/snowflake"
-	"github.com/woocoos/knockout/cmd/internal/files"
-	"github.com/woocoos/knockout/cmd/internal/otel"
-
 	_ "github.com/go-sql-driver/mysql"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/pkg/koapp"
+	_ "github.com/woocoos/knockout-go/pkg/snowflake"
+	"github.com/woocoos/knockout/cmd/internal/files"
 	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 func main() {
-	app := woocoo.New()
-	otelStop := otel.Apply(app.AppConfiguration())
-	defer otelStop()
+	app := koapp.New()
 
-	err := snowflake.SetDefaultNode(app.AppConfiguration().Sub("snowflake"))
-	if err != nil {
-		log.Panic(err)
-	}
+	srv := files.NewServer(app.AppConfiguration())
+	webEngine := srv.BuildWebServer()
+	srv.RegisterWebEngine(webEngine.Router().FindGroup("/").Group)
 
-	authSrv := files.NewServer(app.AppConfiguration())
-	webEngine := authSrv.BuildWebServer()
-	authSrv.RegisterWebEngine(webEngine.Router().FindGroup("/").Group)
-	app.RegisterServer(webEngine)
+	app.RegisterServer(webEngine, ecx.ChangeSet)
 	if err := app.Run(); err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 }

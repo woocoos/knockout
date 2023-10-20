@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -35,6 +36,7 @@ type AppQuery struct {
 	withRoles          *AppRoleQuery
 	withPolicies       *AppPolicyQuery
 	withOrgs           *OrgQuery
+	withDicts          *AppDictQuery
 	withOrgApp         *OrgAppQuery
 	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*App) error
@@ -44,6 +46,7 @@ type AppQuery struct {
 	withNamedRoles     map[string]*AppRoleQuery
 	withNamedPolicies  map[string]*AppPolicyQuery
 	withNamedOrgs      map[string]*OrgQuery
+	withNamedDicts     map[string]*AppDictQuery
 	withNamedOrgApp    map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -206,6 +209,28 @@ func (aq *AppQuery) QueryOrgs() *OrgQuery {
 			sqlgraph.From(app.Table, app.FieldID, selector),
 			sqlgraph.To(org.Table, org.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, app.OrgsTable, app.OrgsPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDicts chains the current query on the "dicts" edge.
+func (aq *AppQuery) QueryDicts() *AppDictQuery {
+	query := (&AppDictClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, selector),
+			sqlgraph.To(appdict.Table, appdict.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.DictsTable, app.DictsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -433,6 +458,7 @@ func (aq *AppQuery) Clone() *AppQuery {
 		withRoles:     aq.withRoles.Clone(),
 		withPolicies:  aq.withPolicies.Clone(),
 		withOrgs:      aq.withOrgs.Clone(),
+		withDicts:     aq.withDicts.Clone(),
 		withOrgApp:    aq.withOrgApp.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
@@ -503,6 +529,17 @@ func (aq *AppQuery) WithOrgs(opts ...func(*OrgQuery)) *AppQuery {
 		opt(query)
 	}
 	aq.withOrgs = query
+	return aq
+}
+
+// WithDicts tells the query-builder to eager-load the nodes that are connected to
+// the "dicts" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithDicts(opts ...func(*AppDictQuery)) *AppQuery {
+	query := (&AppDictClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withDicts = query
 	return aq
 }
 
@@ -595,13 +632,14 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	var (
 		nodes       = []*App{}
 		_spec       = aq.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [8]bool{
 			aq.withMenus != nil,
 			aq.withActions != nil,
 			aq.withResources != nil,
 			aq.withRoles != nil,
 			aq.withPolicies != nil,
 			aq.withOrgs != nil,
+			aq.withDicts != nil,
 			aq.withOrgApp != nil,
 		}
 	)
@@ -668,6 +706,13 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 			return nil, err
 		}
 	}
+	if query := aq.withDicts; query != nil {
+		if err := aq.loadDicts(ctx, query, nodes,
+			func(n *App) { n.Edges.Dicts = []*AppDict{} },
+			func(n *App, e *AppDict) { n.Edges.Dicts = append(n.Edges.Dicts, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := aq.withOrgApp; query != nil {
 		if err := aq.loadOrgApp(ctx, query, nodes,
 			func(n *App) { n.Edges.OrgApp = []*OrgApp{} },
@@ -714,6 +759,13 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 		if err := aq.loadOrgs(ctx, query, nodes,
 			func(n *App) { n.appendNamedOrgs(name) },
 			func(n *App, e *Org) { n.appendNamedOrgs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range aq.withNamedDicts {
+		if err := aq.loadDicts(ctx, query, nodes,
+			func(n *App) { n.appendNamedDicts(name) },
+			func(n *App, e *AppDict) { n.appendNamedDicts(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -943,6 +995,36 @@ func (aq *AppQuery) loadOrgs(ctx context.Context, query *OrgQuery, nodes []*App,
 	}
 	return nil
 }
+func (aq *AppQuery) loadDicts(ctx context.Context, query *AppDictQuery, nodes []*App, init func(*App), assign func(*App, *AppDict)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*App)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appdict.FieldAppID)
+	}
+	query.Where(predicate.AppDict(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(app.DictsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (aq *AppQuery) loadOrgApp(ctx context.Context, query *OrgAppQuery, nodes []*App, init func(*App), assign func(*App, *OrgApp)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*App)
@@ -1139,6 +1221,20 @@ func (aq *AppQuery) WithNamedOrgs(name string, opts ...func(*OrgQuery)) *AppQuer
 		aq.withNamedOrgs = make(map[string]*OrgQuery)
 	}
 	aq.withNamedOrgs[name] = query
+	return aq
+}
+
+// WithNamedDicts tells the query-builder to eager-load the nodes that are connected to the "dicts"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithNamedDicts(name string, opts ...func(*AppDictQuery)) *AppQuery {
+	query := (&AppDictClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if aq.withNamedDicts == nil {
+		aq.withNamedDicts = make(map[string]*AppDictQuery)
+	}
+	aq.withNamedDicts[name] = query
 	return aq
 }
 

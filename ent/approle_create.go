@@ -734,12 +734,16 @@ func (u *AppRoleUpsertOne) IDX(ctx context.Context) int {
 // AppRoleCreateBulk is the builder for creating many AppRole entities in bulk.
 type AppRoleCreateBulk struct {
 	config
+	err      error
 	builders []*AppRoleCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the AppRole entities in the database.
 func (arcb *AppRoleCreateBulk) Save(ctx context.Context) ([]*AppRole, error) {
+	if arcb.err != nil {
+		return nil, arcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(arcb.builders))
 	nodes := make([]*AppRole, len(arcb.builders))
 	mutators := make([]Mutator, len(arcb.builders))
@@ -1031,6 +1035,9 @@ func (u *AppRoleUpsertBulk) UpdateEditable() *AppRoleUpsertBulk {
 
 // Exec executes the query.
 func (u *AppRoleUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the AppRoleCreateBulk instead", i)

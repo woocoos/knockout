@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userpassword"
 )
@@ -665,12 +665,16 @@ func (u *UserPasswordUpsertOne) IDX(ctx context.Context) int {
 // UserPasswordCreateBulk is the builder for creating many UserPassword entities in bulk.
 type UserPasswordCreateBulk struct {
 	config
+	err      error
 	builders []*UserPasswordCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the UserPassword entities in the database.
 func (upcb *UserPasswordCreateBulk) Save(ctx context.Context) ([]*UserPassword, error) {
+	if upcb.err != nil {
+		return nil, upcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(upcb.builders))
 	nodes := make([]*UserPassword, len(upcb.builders))
 	mutators := make([]Mutator, len(upcb.builders))
@@ -969,6 +973,9 @@ func (u *UserPasswordUpsertBulk) ClearStatus() *UserPasswordUpsertBulk {
 
 // Exec executes the query.
 func (u *UserPasswordUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the UserPasswordCreateBulk instead", i)

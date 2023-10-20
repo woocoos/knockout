@@ -429,6 +429,44 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Context, obj interface{}) (model.OrgUserPreferenceInput, error) {
+	var it model.OrgUserPreferenceInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"menuFavorite", "menuRecent"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "menuFavorite":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuFavorite"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MenuFavorite = data
+		case "menuRecent":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuRecent"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MenuRecent = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, obj interface{}) (types.PolicyRule, error) {
 	var it types.PolicyRule
 	asMap := map[string]interface{}{}
@@ -608,6 +646,11 @@ func (ec *executionContext) marshalNMfa2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋa
 		return graphql.Null
 	}
 	return ec._Mfa(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx context.Context, v interface{}) (model.OrgUserPreferenceInput, error) {
+	res, err := ec.unmarshalInputOrgUserPreferenceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx context.Context, v interface{}) (types.PolicyEffect, error) {

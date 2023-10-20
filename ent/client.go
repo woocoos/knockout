@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"reflect"
 
 	"github.com/woocoos/knockout/ent/migrate"
 
@@ -14,8 +15,11 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
@@ -30,6 +34,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -47,6 +52,10 @@ type Client struct {
 	App *AppClient
 	// AppAction is the client for interacting with the AppAction builders.
 	AppAction *AppActionClient
+	// AppDict is the client for interacting with the AppDict builders.
+	AppDict *AppDictClient
+	// AppDictItem is the client for interacting with the AppDictItem builders.
+	AppDictItem *AppDictItemClient
 	// AppMenu is the client for interacting with the AppMenu builders.
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
@@ -75,6 +84,8 @@ type Client struct {
 	OrgRoleUser *OrgRoleUserClient
 	// OrgUser is the client for interacting with the OrgUser builders.
 	OrgUser *OrgUserClient
+	// OrgUserPreference is the client for interacting with the OrgUserPreference builders.
+	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// User is the client for interacting with the User builders.
@@ -104,6 +115,8 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.App = NewAppClient(c.config)
 	c.AppAction = NewAppActionClient(c.config)
+	c.AppDict = NewAppDictClient(c.config)
+	c.AppDictItem = NewAppDictItemClient(c.config)
 	c.AppMenu = NewAppMenuClient(c.config)
 	c.AppPolicy = NewAppPolicyClient(c.config)
 	c.AppRes = NewAppResClient(c.config)
@@ -118,6 +131,7 @@ func (c *Client) init() {
 	c.OrgRole = NewOrgRoleClient(c.config)
 	c.OrgRoleUser = NewOrgRoleUserClient(c.config)
 	c.OrgUser = NewOrgUserClient(c.config)
+	c.OrgUserPreference = NewOrgUserPreferenceClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
@@ -191,11 +205,14 @@ func Open(driverName, dataSourceName string, options ...Option) (*Client, error)
 	}
 }
 
+// ErrTxStarted is returned when trying to start a new transaction from a transactional client.
+var ErrTxStarted = errors.New("ent: cannot start a transaction within a transaction")
+
 // Tx returns a new transactional client. The provided context
 // is used until the transaction is committed or rolled back.
 func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	if _, ok := c.driver.(*txDriver); ok {
-		return nil, errors.New("ent: cannot start a transaction within a transaction")
+		return nil, ErrTxStarted
 	}
 	tx, err := newTx(ctx, c.driver)
 	if err != nil {
@@ -204,30 +221,33 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		File:             NewFileClient(cfg),
-		FileSource:       NewFileSourceClient(cfg),
-		OauthClient:      NewOauthClientClient(cfg),
-		Org:              NewOrgClient(cfg),
-		OrgApp:           NewOrgAppClient(cfg),
-		OrgPolicy:        NewOrgPolicyClient(cfg),
-		OrgRole:          NewOrgRoleClient(cfg),
-		OrgRoleUser:      NewOrgRoleUserClient(cfg),
-		OrgUser:          NewOrgUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		App:               NewAppClient(cfg),
+		AppAction:         NewAppActionClient(cfg),
+		AppDict:           NewAppDictClient(cfg),
+		AppDictItem:       NewAppDictItemClient(cfg),
+		AppMenu:           NewAppMenuClient(cfg),
+		AppPolicy:         NewAppPolicyClient(cfg),
+		AppRes:            NewAppResClient(cfg),
+		AppRole:           NewAppRoleClient(cfg),
+		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		File:              NewFileClient(cfg),
+		FileSource:        NewFileSourceClient(cfg),
+		OauthClient:       NewOauthClientClient(cfg),
+		Org:               NewOrgClient(cfg),
+		OrgApp:            NewOrgAppClient(cfg),
+		OrgPolicy:         NewOrgPolicyClient(cfg),
+		OrgRole:           NewOrgRoleClient(cfg),
+		OrgRoleUser:       NewOrgRoleUserClient(cfg),
+		OrgUser:           NewOrgUserClient(cfg),
+		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
+		Permission:        NewPermissionClient(cfg),
+		User:              NewUserClient(cfg),
+		UserDevice:        NewUserDeviceClient(cfg),
+		UserIdentity:      NewUserIdentityClient(cfg),
+		UserLoginProfile:  NewUserLoginProfileClient(cfg),
+		UserPassword:      NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -245,30 +265,33 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		App:              NewAppClient(cfg),
-		AppAction:        NewAppActionClient(cfg),
-		AppMenu:          NewAppMenuClient(cfg),
-		AppPolicy:        NewAppPolicyClient(cfg),
-		AppRes:           NewAppResClient(cfg),
-		AppRole:          NewAppRoleClient(cfg),
-		AppRolePolicy:    NewAppRolePolicyClient(cfg),
-		File:             NewFileClient(cfg),
-		FileSource:       NewFileSourceClient(cfg),
-		OauthClient:      NewOauthClientClient(cfg),
-		Org:              NewOrgClient(cfg),
-		OrgApp:           NewOrgAppClient(cfg),
-		OrgPolicy:        NewOrgPolicyClient(cfg),
-		OrgRole:          NewOrgRoleClient(cfg),
-		OrgRoleUser:      NewOrgRoleUserClient(cfg),
-		OrgUser:          NewOrgUserClient(cfg),
-		Permission:       NewPermissionClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserIdentity:     NewUserIdentityClient(cfg),
-		UserLoginProfile: NewUserLoginProfileClient(cfg),
-		UserPassword:     NewUserPasswordClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		App:               NewAppClient(cfg),
+		AppAction:         NewAppActionClient(cfg),
+		AppDict:           NewAppDictClient(cfg),
+		AppDictItem:       NewAppDictItemClient(cfg),
+		AppMenu:           NewAppMenuClient(cfg),
+		AppPolicy:         NewAppPolicyClient(cfg),
+		AppRes:            NewAppResClient(cfg),
+		AppRole:           NewAppRoleClient(cfg),
+		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		File:              NewFileClient(cfg),
+		FileSource:        NewFileSourceClient(cfg),
+		OauthClient:       NewOauthClientClient(cfg),
+		Org:               NewOrgClient(cfg),
+		OrgApp:            NewOrgAppClient(cfg),
+		OrgPolicy:         NewOrgPolicyClient(cfg),
+		OrgRole:           NewOrgRoleClient(cfg),
+		OrgRoleUser:       NewOrgRoleUserClient(cfg),
+		OrgUser:           NewOrgUserClient(cfg),
+		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
+		Permission:        NewPermissionClient(cfg),
+		User:              NewUserClient(cfg),
+		UserDevice:        NewUserDeviceClient(cfg),
+		UserIdentity:      NewUserIdentityClient(cfg),
+		UserLoginProfile:  NewUserLoginProfileClient(cfg),
+		UserPassword:      NewUserPasswordClient(cfg),
 	}, nil
 }
 
@@ -298,10 +321,11 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
-		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
-		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
+		c.AppRole, c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org,
+		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
+		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -311,10 +335,11 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.App, c.AppAction, c.AppMenu, c.AppPolicy, c.AppRes, c.AppRole,
-		c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org, c.OrgApp,
-		c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser, c.Permission, c.User,
-		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
+		c.AppRole, c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org,
+		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
+		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -327,6 +352,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.App.mutate(ctx, m)
 	case *AppActionMutation:
 		return c.AppAction.mutate(ctx, m)
+	case *AppDictMutation:
+		return c.AppDict.mutate(ctx, m)
+	case *AppDictItemMutation:
+		return c.AppDictItem.mutate(ctx, m)
 	case *AppMenuMutation:
 		return c.AppMenu.mutate(ctx, m)
 	case *AppPolicyMutation:
@@ -355,6 +384,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgRoleUser.mutate(ctx, m)
 	case *OrgUserMutation:
 		return c.OrgUser.mutate(ctx, m)
+	case *OrgUserPreferenceMutation:
+		return c.OrgUserPreference.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
 	case *UserMutation:
@@ -402,6 +433,21 @@ func (c *AppClient) Create() *AppCreate {
 
 // CreateBulk returns a builder for creating a bulk of App entities.
 func (c *AppClient) CreateBulk(builders ...*AppCreate) *AppCreateBulk {
+	return &AppCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppClient) MapCreateBulk(slice any, setFunc func(*AppCreate, int)) *AppCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppCreateBulk{err: fmt.Errorf("calling to AppClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &AppCreateBulk{config: c.config, builders: builders}
 }
 
@@ -453,7 +499,7 @@ func (c *AppClient) Query() *AppQuery {
 
 // Get returns a App entity by its id.
 func (c *AppClient) Get(ctx context.Context, id int) (*App, error) {
-	return c.Query().Where(app.ID(id)).Only(ctx)
+	return c.Query().Where(app.ID(id)).Only(entcache.WithEntryKey(ctx, "App", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -561,6 +607,22 @@ func (c *AppClient) QueryOrgs(a *App) *OrgQuery {
 	return query
 }
 
+// QueryDicts queries the dicts edge of a App.
+func (c *AppClient) QueryDicts(a *App) *AppDictQuery {
+	query := (&AppDictClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(appdict.Table, appdict.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.DictsTable, app.DictsColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgApp queries the org_app edge of a App.
 func (c *AppClient) QueryOrgApp(a *App) *OrgAppQuery {
 	query := (&OrgAppClient{config: c.config}).Query()
@@ -636,6 +698,21 @@ func (c *AppActionClient) CreateBulk(builders ...*AppActionCreate) *AppActionCre
 	return &AppActionCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppActionClient) MapCreateBulk(slice any, setFunc func(*AppActionCreate, int)) *AppActionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppActionCreateBulk{err: fmt.Errorf("calling to AppActionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppActionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppActionCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppAction.
 func (c *AppActionClient) Update() *AppActionUpdate {
 	mutation := newAppActionMutation(c.config, OpUpdate)
@@ -684,7 +761,7 @@ func (c *AppActionClient) Query() *AppActionQuery {
 
 // Get returns a AppAction entity by its id.
 func (c *AppActionClient) Get(ctx context.Context, id int) (*AppAction, error) {
-	return c.Query().Where(appaction.ID(id)).Only(ctx)
+	return c.Query().Where(appaction.ID(id)).Only(entcache.WithEntryKey(ctx, "AppAction", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -754,6 +831,338 @@ func (c *AppActionClient) mutate(ctx context.Context, m *AppActionMutation) (Val
 	}
 }
 
+// AppDictClient is a client for the AppDict schema.
+type AppDictClient struct {
+	config
+}
+
+// NewAppDictClient returns a client for the AppDict from the given config.
+func NewAppDictClient(c config) *AppDictClient {
+	return &AppDictClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `appdict.Hooks(f(g(h())))`.
+func (c *AppDictClient) Use(hooks ...Hook) {
+	c.hooks.AppDict = append(c.hooks.AppDict, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `appdict.Intercept(f(g(h())))`.
+func (c *AppDictClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppDict = append(c.inters.AppDict, interceptors...)
+}
+
+// Create returns a builder for creating a AppDict entity.
+func (c *AppDictClient) Create() *AppDictCreate {
+	mutation := newAppDictMutation(c.config, OpCreate)
+	return &AppDictCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppDict entities.
+func (c *AppDictClient) CreateBulk(builders ...*AppDictCreate) *AppDictCreateBulk {
+	return &AppDictCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppDictClient) MapCreateBulk(slice any, setFunc func(*AppDictCreate, int)) *AppDictCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppDictCreateBulk{err: fmt.Errorf("calling to AppDictClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppDictCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppDictCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppDict.
+func (c *AppDictClient) Update() *AppDictUpdate {
+	mutation := newAppDictMutation(c.config, OpUpdate)
+	return &AppDictUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppDictClient) UpdateOne(ad *AppDict) *AppDictUpdateOne {
+	mutation := newAppDictMutation(c.config, OpUpdateOne, withAppDict(ad))
+	return &AppDictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppDictClient) UpdateOneID(id int) *AppDictUpdateOne {
+	mutation := newAppDictMutation(c.config, OpUpdateOne, withAppDictID(id))
+	return &AppDictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppDict.
+func (c *AppDictClient) Delete() *AppDictDelete {
+	mutation := newAppDictMutation(c.config, OpDelete)
+	return &AppDictDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppDictClient) DeleteOne(ad *AppDict) *AppDictDeleteOne {
+	return c.DeleteOneID(ad.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppDictClient) DeleteOneID(id int) *AppDictDeleteOne {
+	builder := c.Delete().Where(appdict.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppDictDeleteOne{builder}
+}
+
+// Query returns a query builder for AppDict.
+func (c *AppDictClient) Query() *AppDictQuery {
+	return &AppDictQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppDict},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppDict entity by its id.
+func (c *AppDictClient) Get(ctx context.Context, id int) (*AppDict, error) {
+	return c.Query().Where(appdict.ID(id)).Only(entcache.WithEntryKey(ctx, "AppDict", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppDictClient) GetX(ctx context.Context, id int) *AppDict {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryApp queries the app edge of a AppDict.
+func (c *AppDictClient) QueryApp(ad *AppDict) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ad.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdict.Table, appdict.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appdict.AppTable, appdict.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(ad.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryItems queries the items edge of a AppDict.
+func (c *AppDictClient) QueryItems(ad *AppDict) *AppDictItemQuery {
+	query := (&AppDictItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ad.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdict.Table, appdict.FieldID, id),
+			sqlgraph.To(appdictitem.Table, appdictitem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, appdict.ItemsTable, appdict.ItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ad.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AppDictClient) Hooks() []Hook {
+	hooks := c.hooks.AppDict
+	return append(hooks[:len(hooks):len(hooks)], appdict.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppDictClient) Interceptors() []Interceptor {
+	return c.inters.AppDict
+}
+
+func (c *AppDictClient) mutate(ctx context.Context, m *AppDictMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppDictCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppDictUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppDictUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppDictDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppDict mutation op: %q", m.Op())
+	}
+}
+
+// AppDictItemClient is a client for the AppDictItem schema.
+type AppDictItemClient struct {
+	config
+}
+
+// NewAppDictItemClient returns a client for the AppDictItem from the given config.
+func NewAppDictItemClient(c config) *AppDictItemClient {
+	return &AppDictItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `appdictitem.Hooks(f(g(h())))`.
+func (c *AppDictItemClient) Use(hooks ...Hook) {
+	c.hooks.AppDictItem = append(c.hooks.AppDictItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `appdictitem.Intercept(f(g(h())))`.
+func (c *AppDictItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppDictItem = append(c.inters.AppDictItem, interceptors...)
+}
+
+// Create returns a builder for creating a AppDictItem entity.
+func (c *AppDictItemClient) Create() *AppDictItemCreate {
+	mutation := newAppDictItemMutation(c.config, OpCreate)
+	return &AppDictItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppDictItem entities.
+func (c *AppDictItemClient) CreateBulk(builders ...*AppDictItemCreate) *AppDictItemCreateBulk {
+	return &AppDictItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppDictItemClient) MapCreateBulk(slice any, setFunc func(*AppDictItemCreate, int)) *AppDictItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppDictItemCreateBulk{err: fmt.Errorf("calling to AppDictItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppDictItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppDictItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppDictItem.
+func (c *AppDictItemClient) Update() *AppDictItemUpdate {
+	mutation := newAppDictItemMutation(c.config, OpUpdate)
+	return &AppDictItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppDictItemClient) UpdateOne(adi *AppDictItem) *AppDictItemUpdateOne {
+	mutation := newAppDictItemMutation(c.config, OpUpdateOne, withAppDictItem(adi))
+	return &AppDictItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppDictItemClient) UpdateOneID(id int) *AppDictItemUpdateOne {
+	mutation := newAppDictItemMutation(c.config, OpUpdateOne, withAppDictItemID(id))
+	return &AppDictItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppDictItem.
+func (c *AppDictItemClient) Delete() *AppDictItemDelete {
+	mutation := newAppDictItemMutation(c.config, OpDelete)
+	return &AppDictItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppDictItemClient) DeleteOne(adi *AppDictItem) *AppDictItemDeleteOne {
+	return c.DeleteOneID(adi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppDictItemClient) DeleteOneID(id int) *AppDictItemDeleteOne {
+	builder := c.Delete().Where(appdictitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppDictItemDeleteOne{builder}
+}
+
+// Query returns a query builder for AppDictItem.
+func (c *AppDictItemClient) Query() *AppDictItemQuery {
+	return &AppDictItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppDictItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppDictItem entity by its id.
+func (c *AppDictItemClient) Get(ctx context.Context, id int) (*AppDictItem, error) {
+	return c.Query().Where(appdictitem.ID(id)).Only(entcache.WithEntryKey(ctx, "AppDictItem", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppDictItemClient) GetX(ctx context.Context, id int) *AppDictItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDict queries the dict edge of a AppDictItem.
+func (c *AppDictItemClient) QueryDict(adi *AppDictItem) *AppDictQuery {
+	query := (&AppDictClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := adi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdictitem.Table, appdictitem.FieldID, id),
+			sqlgraph.To(appdict.Table, appdict.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appdictitem.DictTable, appdictitem.DictColumn),
+		)
+		fromV = sqlgraph.Neighbors(adi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrg queries the org edge of a AppDictItem.
+func (c *AppDictItemClient) QueryOrg(adi *AppDictItem) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := adi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appdictitem.Table, appdictitem.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, appdictitem.OrgTable, appdictitem.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(adi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AppDictItemClient) Hooks() []Hook {
+	hooks := c.hooks.AppDictItem
+	return append(hooks[:len(hooks):len(hooks)], appdictitem.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppDictItemClient) Interceptors() []Interceptor {
+	return c.inters.AppDictItem
+}
+
+func (c *AppDictItemClient) mutate(ctx context.Context, m *AppDictItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppDictItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppDictItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppDictItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppDictItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppDictItem mutation op: %q", m.Op())
+	}
+}
+
 // AppMenuClient is a client for the AppMenu schema.
 type AppMenuClient struct {
 	config
@@ -784,6 +1193,21 @@ func (c *AppMenuClient) Create() *AppMenuCreate {
 
 // CreateBulk returns a builder for creating a bulk of AppMenu entities.
 func (c *AppMenuClient) CreateBulk(builders ...*AppMenuCreate) *AppMenuCreateBulk {
+	return &AppMenuCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppMenuClient) MapCreateBulk(slice any, setFunc func(*AppMenuCreate, int)) *AppMenuCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppMenuCreateBulk{err: fmt.Errorf("calling to AppMenuClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppMenuCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &AppMenuCreateBulk{config: c.config, builders: builders}
 }
 
@@ -835,7 +1259,7 @@ func (c *AppMenuClient) Query() *AppMenuQuery {
 
 // Get returns a AppMenu entity by its id.
 func (c *AppMenuClient) Get(ctx context.Context, id int) (*AppMenu, error) {
-	return c.Query().Where(appmenu.ID(id)).Only(ctx)
+	return c.Query().Where(appmenu.ID(id)).Only(entcache.WithEntryKey(ctx, "AppMenu", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -938,6 +1362,21 @@ func (c *AppPolicyClient) CreateBulk(builders ...*AppPolicyCreate) *AppPolicyCre
 	return &AppPolicyCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppPolicyClient) MapCreateBulk(slice any, setFunc func(*AppPolicyCreate, int)) *AppPolicyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppPolicyCreateBulk{err: fmt.Errorf("calling to AppPolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppPolicyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppPolicyCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppPolicy.
 func (c *AppPolicyClient) Update() *AppPolicyUpdate {
 	mutation := newAppPolicyMutation(c.config, OpUpdate)
@@ -986,7 +1425,7 @@ func (c *AppPolicyClient) Query() *AppPolicyQuery {
 
 // Get returns a AppPolicy entity by its id.
 func (c *AppPolicyClient) Get(ctx context.Context, id int) (*AppPolicy, error) {
-	return c.Query().Where(apppolicy.ID(id)).Only(ctx)
+	return c.Query().Where(apppolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "AppPolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1105,6 +1544,21 @@ func (c *AppResClient) CreateBulk(builders ...*AppResCreate) *AppResCreateBulk {
 	return &AppResCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppResClient) MapCreateBulk(slice any, setFunc func(*AppResCreate, int)) *AppResCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppResCreateBulk{err: fmt.Errorf("calling to AppResClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppResCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppResCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppRes.
 func (c *AppResClient) Update() *AppResUpdate {
 	mutation := newAppResMutation(c.config, OpUpdate)
@@ -1153,7 +1607,7 @@ func (c *AppResClient) Query() *AppResQuery {
 
 // Get returns a AppRes entity by its id.
 func (c *AppResClient) Get(ctx context.Context, id int) (*AppRes, error) {
-	return c.Query().Where(appres.ID(id)).Only(ctx)
+	return c.Query().Where(appres.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRes", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1240,6 +1694,21 @@ func (c *AppRoleClient) CreateBulk(builders ...*AppRoleCreate) *AppRoleCreateBul
 	return &AppRoleCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppRoleClient) MapCreateBulk(slice any, setFunc func(*AppRoleCreate, int)) *AppRoleCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppRoleCreateBulk{err: fmt.Errorf("calling to AppRoleClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppRoleCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppRoleCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppRole.
 func (c *AppRoleClient) Update() *AppRoleUpdate {
 	mutation := newAppRoleMutation(c.config, OpUpdate)
@@ -1288,7 +1757,7 @@ func (c *AppRoleClient) Query() *AppRoleQuery {
 
 // Get returns a AppRole entity by its id.
 func (c *AppRoleClient) Get(ctx context.Context, id int) (*AppRole, error) {
-	return c.Query().Where(approle.ID(id)).Only(ctx)
+	return c.Query().Where(approle.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRole", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1407,6 +1876,21 @@ func (c *AppRolePolicyClient) CreateBulk(builders ...*AppRolePolicyCreate) *AppR
 	return &AppRolePolicyCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppRolePolicyClient) MapCreateBulk(slice any, setFunc func(*AppRolePolicyCreate, int)) *AppRolePolicyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppRolePolicyCreateBulk{err: fmt.Errorf("calling to AppRolePolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppRolePolicyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppRolePolicyCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppRolePolicy.
 func (c *AppRolePolicyClient) Update() *AppRolePolicyUpdate {
 	mutation := newAppRolePolicyMutation(c.config, OpUpdate)
@@ -1455,7 +1939,7 @@ func (c *AppRolePolicyClient) Query() *AppRolePolicyQuery {
 
 // Get returns a AppRolePolicy entity by its id.
 func (c *AppRolePolicyClient) Get(ctx context.Context, id int) (*AppRolePolicy, error) {
-	return c.Query().Where(approlepolicy.ID(id)).Only(ctx)
+	return c.Query().Where(approlepolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "AppRolePolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1558,6 +2042,21 @@ func (c *FileClient) CreateBulk(builders ...*FileCreate) *FileCreateBulk {
 	return &FileCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileClient) MapCreateBulk(slice any, setFunc func(*FileCreate, int)) *FileCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileCreateBulk{err: fmt.Errorf("calling to FileClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FileCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for File.
 func (c *FileClient) Update() *FileUpdate {
 	mutation := newFileMutation(c.config, OpUpdate)
@@ -1606,7 +2105,7 @@ func (c *FileClient) Query() *FileQuery {
 
 // Get returns a File entity by its id.
 func (c *FileClient) Get(ctx context.Context, id int) (*File, error) {
-	return c.Query().Where(file.ID(id)).Only(ctx)
+	return c.Query().Where(file.ID(id)).Only(entcache.WithEntryKey(ctx, "File", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1693,6 +2192,21 @@ func (c *FileSourceClient) CreateBulk(builders ...*FileSourceCreate) *FileSource
 	return &FileSourceCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileSourceClient) MapCreateBulk(slice any, setFunc func(*FileSourceCreate, int)) *FileSourceCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileSourceCreateBulk{err: fmt.Errorf("calling to FileSourceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileSourceCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FileSourceCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for FileSource.
 func (c *FileSourceClient) Update() *FileSourceUpdate {
 	mutation := newFileSourceMutation(c.config, OpUpdate)
@@ -1741,7 +2255,7 @@ func (c *FileSourceClient) Query() *FileSourceQuery {
 
 // Get returns a FileSource entity by its id.
 func (c *FileSourceClient) Get(ctx context.Context, id int) (*FileSource, error) {
-	return c.Query().Where(filesource.ID(id)).Only(ctx)
+	return c.Query().Where(filesource.ID(id)).Only(entcache.WithEntryKey(ctx, "FileSource", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1828,6 +2342,21 @@ func (c *OauthClientClient) CreateBulk(builders ...*OauthClientCreate) *OauthCli
 	return &OauthClientCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OauthClientClient) MapCreateBulk(slice any, setFunc func(*OauthClientCreate, int)) *OauthClientCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OauthClientCreateBulk{err: fmt.Errorf("calling to OauthClientClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OauthClientCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OauthClientCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OauthClient.
 func (c *OauthClientClient) Update() *OauthClientUpdate {
 	mutation := newOauthClientMutation(c.config, OpUpdate)
@@ -1876,7 +2405,7 @@ func (c *OauthClientClient) Query() *OauthClientQuery {
 
 // Get returns a OauthClient entity by its id.
 func (c *OauthClientClient) Get(ctx context.Context, id int) (*OauthClient, error) {
-	return c.Query().Where(oauthclient.ID(id)).Only(ctx)
+	return c.Query().Where(oauthclient.ID(id)).Only(entcache.WithEntryKey(ctx, "OauthClient", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -1963,6 +2492,21 @@ func (c *OrgClient) CreateBulk(builders ...*OrgCreate) *OrgCreateBulk {
 	return &OrgCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgClient) MapCreateBulk(slice any, setFunc func(*OrgCreate, int)) *OrgCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgCreateBulk{err: fmt.Errorf("calling to OrgClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for Org.
 func (c *OrgClient) Update() *OrgUpdate {
 	mutation := newOrgMutation(c.config, OpUpdate)
@@ -2011,7 +2555,7 @@ func (c *OrgClient) Query() *OrgQuery {
 
 // Get returns a Org entity by its id.
 func (c *OrgClient) Get(ctx context.Context, id int) (*Org, error) {
-	return c.Query().Where(org.ID(id)).Only(ctx)
+	return c.Query().Where(org.ID(id)).Only(entcache.WithEntryKey(ctx, "Org", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2243,6 +2787,21 @@ func (c *OrgAppClient) CreateBulk(builders ...*OrgAppCreate) *OrgAppCreateBulk {
 	return &OrgAppCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgAppClient) MapCreateBulk(slice any, setFunc func(*OrgAppCreate, int)) *OrgAppCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgAppCreateBulk{err: fmt.Errorf("calling to OrgAppClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgAppCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgAppCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OrgApp.
 func (c *OrgAppClient) Update() *OrgAppUpdate {
 	mutation := newOrgAppMutation(c.config, OpUpdate)
@@ -2291,7 +2850,7 @@ func (c *OrgAppClient) Query() *OrgAppQuery {
 
 // Get returns a OrgApp entity by its id.
 func (c *OrgAppClient) Get(ctx context.Context, id int) (*OrgApp, error) {
-	return c.Query().Where(orgapp.ID(id)).Only(ctx)
+	return c.Query().Where(orgapp.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgApp", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2394,6 +2953,21 @@ func (c *OrgPolicyClient) CreateBulk(builders ...*OrgPolicyCreate) *OrgPolicyCre
 	return &OrgPolicyCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgPolicyClient) MapCreateBulk(slice any, setFunc func(*OrgPolicyCreate, int)) *OrgPolicyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgPolicyCreateBulk{err: fmt.Errorf("calling to OrgPolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgPolicyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgPolicyCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OrgPolicy.
 func (c *OrgPolicyClient) Update() *OrgPolicyUpdate {
 	mutation := newOrgPolicyMutation(c.config, OpUpdate)
@@ -2442,7 +3016,7 @@ func (c *OrgPolicyClient) Query() *OrgPolicyQuery {
 
 // Get returns a OrgPolicy entity by its id.
 func (c *OrgPolicyClient) Get(ctx context.Context, id int) (*OrgPolicy, error) {
-	return c.Query().Where(orgpolicy.ID(id)).Only(ctx)
+	return c.Query().Where(orgpolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgPolicy", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2545,6 +3119,21 @@ func (c *OrgRoleClient) CreateBulk(builders ...*OrgRoleCreate) *OrgRoleCreateBul
 	return &OrgRoleCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgRoleClient) MapCreateBulk(slice any, setFunc func(*OrgRoleCreate, int)) *OrgRoleCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgRoleCreateBulk{err: fmt.Errorf("calling to OrgRoleClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgRoleCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgRoleCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OrgRole.
 func (c *OrgRoleClient) Update() *OrgRoleUpdate {
 	mutation := newOrgRoleMutation(c.config, OpUpdate)
@@ -2593,7 +3182,7 @@ func (c *OrgRoleClient) Query() *OrgRoleQuery {
 
 // Get returns a OrgRole entity by its id.
 func (c *OrgRoleClient) Get(ctx context.Context, id int) (*OrgRole, error) {
-	return c.Query().Where(orgrole.ID(id)).Only(ctx)
+	return c.Query().Where(orgrole.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgRole", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2712,6 +3301,21 @@ func (c *OrgRoleUserClient) CreateBulk(builders ...*OrgRoleUserCreate) *OrgRoleU
 	return &OrgRoleUserCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgRoleUserClient) MapCreateBulk(slice any, setFunc func(*OrgRoleUserCreate, int)) *OrgRoleUserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgRoleUserCreateBulk{err: fmt.Errorf("calling to OrgRoleUserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgRoleUserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgRoleUserCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OrgRoleUser.
 func (c *OrgRoleUserClient) Update() *OrgRoleUserUpdate {
 	mutation := newOrgRoleUserMutation(c.config, OpUpdate)
@@ -2760,7 +3364,7 @@ func (c *OrgRoleUserClient) Query() *OrgRoleUserQuery {
 
 // Get returns a OrgRoleUser entity by its id.
 func (c *OrgRoleUserClient) Get(ctx context.Context, id int) (*OrgRoleUser, error) {
-	return c.Query().Where(orgroleuser.ID(id)).Only(ctx)
+	return c.Query().Where(orgroleuser.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgRoleUser", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -2895,6 +3499,21 @@ func (c *OrgUserClient) CreateBulk(builders ...*OrgUserCreate) *OrgUserCreateBul
 	return &OrgUserCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgUserClient) MapCreateBulk(slice any, setFunc func(*OrgUserCreate, int)) *OrgUserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgUserCreateBulk{err: fmt.Errorf("calling to OrgUserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgUserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgUserCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for OrgUser.
 func (c *OrgUserClient) Update() *OrgUserUpdate {
 	mutation := newOrgUserMutation(c.config, OpUpdate)
@@ -2943,7 +3562,7 @@ func (c *OrgUserClient) Query() *OrgUserQuery {
 
 // Get returns a OrgUser entity by its id.
 func (c *OrgUserClient) Get(ctx context.Context, id int) (*OrgUser, error) {
-	return c.Query().Where(orguser.ID(id)).Only(ctx)
+	return c.Query().Where(orguser.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgUser", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3045,6 +3664,172 @@ func (c *OrgUserClient) mutate(ctx context.Context, m *OrgUserMutation) (Value, 
 	}
 }
 
+// OrgUserPreferenceClient is a client for the OrgUserPreference schema.
+type OrgUserPreferenceClient struct {
+	config
+}
+
+// NewOrgUserPreferenceClient returns a client for the OrgUserPreference from the given config.
+func NewOrgUserPreferenceClient(c config) *OrgUserPreferenceClient {
+	return &OrgUserPreferenceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `orguserpreference.Hooks(f(g(h())))`.
+func (c *OrgUserPreferenceClient) Use(hooks ...Hook) {
+	c.hooks.OrgUserPreference = append(c.hooks.OrgUserPreference, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `orguserpreference.Intercept(f(g(h())))`.
+func (c *OrgUserPreferenceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.OrgUserPreference = append(c.inters.OrgUserPreference, interceptors...)
+}
+
+// Create returns a builder for creating a OrgUserPreference entity.
+func (c *OrgUserPreferenceClient) Create() *OrgUserPreferenceCreate {
+	mutation := newOrgUserPreferenceMutation(c.config, OpCreate)
+	return &OrgUserPreferenceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of OrgUserPreference entities.
+func (c *OrgUserPreferenceClient) CreateBulk(builders ...*OrgUserPreferenceCreate) *OrgUserPreferenceCreateBulk {
+	return &OrgUserPreferenceCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *OrgUserPreferenceClient) MapCreateBulk(slice any, setFunc func(*OrgUserPreferenceCreate, int)) *OrgUserPreferenceCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &OrgUserPreferenceCreateBulk{err: fmt.Errorf("calling to OrgUserPreferenceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*OrgUserPreferenceCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &OrgUserPreferenceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Update() *OrgUserPreferenceUpdate {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdate)
+	return &OrgUserPreferenceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *OrgUserPreferenceClient) UpdateOne(oup *OrgUserPreference) *OrgUserPreferenceUpdateOne {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdateOne, withOrgUserPreference(oup))
+	return &OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *OrgUserPreferenceClient) UpdateOneID(id int) *OrgUserPreferenceUpdateOne {
+	mutation := newOrgUserPreferenceMutation(c.config, OpUpdateOne, withOrgUserPreferenceID(id))
+	return &OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Delete() *OrgUserPreferenceDelete {
+	mutation := newOrgUserPreferenceMutation(c.config, OpDelete)
+	return &OrgUserPreferenceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *OrgUserPreferenceClient) DeleteOne(oup *OrgUserPreference) *OrgUserPreferenceDeleteOne {
+	return c.DeleteOneID(oup.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *OrgUserPreferenceClient) DeleteOneID(id int) *OrgUserPreferenceDeleteOne {
+	builder := c.Delete().Where(orguserpreference.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &OrgUserPreferenceDeleteOne{builder}
+}
+
+// Query returns a query builder for OrgUserPreference.
+func (c *OrgUserPreferenceClient) Query() *OrgUserPreferenceQuery {
+	return &OrgUserPreferenceQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeOrgUserPreference},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a OrgUserPreference entity by its id.
+func (c *OrgUserPreferenceClient) Get(ctx context.Context, id int) (*OrgUserPreference, error) {
+	return c.Query().Where(orguserpreference.ID(id)).Only(entcache.WithEntryKey(ctx, "OrgUserPreference", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *OrgUserPreferenceClient) GetX(ctx context.Context, id int) *OrgUserPreference {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a OrgUserPreference.
+func (c *OrgUserPreferenceClient) QueryUser(oup *OrgUserPreference) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oup.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguserpreference.Table, orguserpreference.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.UserTable, orguserpreference.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(oup.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrg queries the org edge of a OrgUserPreference.
+func (c *OrgUserPreferenceClient) QueryOrg(oup *OrgUserPreference) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := oup.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orguserpreference.Table, orguserpreference.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orguserpreference.OrgTable, orguserpreference.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(oup.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *OrgUserPreferenceClient) Hooks() []Hook {
+	hooks := c.hooks.OrgUserPreference
+	return append(hooks[:len(hooks):len(hooks)], orguserpreference.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *OrgUserPreferenceClient) Interceptors() []Interceptor {
+	return c.inters.OrgUserPreference
+}
+
+func (c *OrgUserPreferenceClient) mutate(ctx context.Context, m *OrgUserPreferenceMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&OrgUserPreferenceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&OrgUserPreferenceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&OrgUserPreferenceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&OrgUserPreferenceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown OrgUserPreference mutation op: %q", m.Op())
+	}
+}
+
 // PermissionClient is a client for the Permission schema.
 type PermissionClient struct {
 	config
@@ -3075,6 +3860,21 @@ func (c *PermissionClient) Create() *PermissionCreate {
 
 // CreateBulk returns a builder for creating a bulk of Permission entities.
 func (c *PermissionClient) CreateBulk(builders ...*PermissionCreate) *PermissionCreateBulk {
+	return &PermissionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PermissionClient) MapCreateBulk(slice any, setFunc func(*PermissionCreate, int)) *PermissionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PermissionCreateBulk{err: fmt.Errorf("calling to PermissionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PermissionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &PermissionCreateBulk{config: c.config, builders: builders}
 }
 
@@ -3126,7 +3926,7 @@ func (c *PermissionClient) Query() *PermissionQuery {
 
 // Get returns a Permission entity by its id.
 func (c *PermissionClient) Get(ctx context.Context, id int) (*Permission, error) {
-	return c.Query().Where(permission.ID(id)).Only(ctx)
+	return c.Query().Where(permission.ID(id)).Only(entcache.WithEntryKey(ctx, "Permission", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3261,6 +4061,21 @@ func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
 	return &UserCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserClient) MapCreateBulk(slice any, setFunc func(*UserCreate, int)) *UserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserCreateBulk{err: fmt.Errorf("calling to UserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for User.
 func (c *UserClient) Update() *UserUpdate {
 	mutation := newUserMutation(c.config, OpUpdate)
@@ -3309,7 +4124,7 @@ func (c *UserClient) Query() *UserQuery {
 
 // Get returns a User entity by its id.
 func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
-	return c.Query().Where(user.ID(id)).Only(ctx)
+	return c.Query().Where(user.ID(id)).Only(entcache.WithEntryKey(ctx, "User", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3509,6 +4324,21 @@ func (c *UserDeviceClient) CreateBulk(builders ...*UserDeviceCreate) *UserDevice
 	return &UserDeviceCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserDeviceClient) MapCreateBulk(slice any, setFunc func(*UserDeviceCreate, int)) *UserDeviceCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserDeviceCreateBulk{err: fmt.Errorf("calling to UserDeviceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserDeviceCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserDeviceCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for UserDevice.
 func (c *UserDeviceClient) Update() *UserDeviceUpdate {
 	mutation := newUserDeviceMutation(c.config, OpUpdate)
@@ -3557,7 +4387,7 @@ func (c *UserDeviceClient) Query() *UserDeviceQuery {
 
 // Get returns a UserDevice entity by its id.
 func (c *UserDeviceClient) Get(ctx context.Context, id int) (*UserDevice, error) {
-	return c.Query().Where(userdevice.ID(id)).Only(ctx)
+	return c.Query().Where(userdevice.ID(id)).Only(entcache.WithEntryKey(ctx, "UserDevice", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3644,6 +4474,21 @@ func (c *UserIdentityClient) CreateBulk(builders ...*UserIdentityCreate) *UserId
 	return &UserIdentityCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserIdentityClient) MapCreateBulk(slice any, setFunc func(*UserIdentityCreate, int)) *UserIdentityCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserIdentityCreateBulk{err: fmt.Errorf("calling to UserIdentityClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserIdentityCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserIdentityCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for UserIdentity.
 func (c *UserIdentityClient) Update() *UserIdentityUpdate {
 	mutation := newUserIdentityMutation(c.config, OpUpdate)
@@ -3692,7 +4537,7 @@ func (c *UserIdentityClient) Query() *UserIdentityQuery {
 
 // Get returns a UserIdentity entity by its id.
 func (c *UserIdentityClient) Get(ctx context.Context, id int) (*UserIdentity, error) {
-	return c.Query().Where(useridentity.ID(id)).Only(ctx)
+	return c.Query().Where(useridentity.ID(id)).Only(entcache.WithEntryKey(ctx, "UserIdentity", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3779,6 +4624,21 @@ func (c *UserLoginProfileClient) CreateBulk(builders ...*UserLoginProfileCreate)
 	return &UserLoginProfileCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserLoginProfileClient) MapCreateBulk(slice any, setFunc func(*UserLoginProfileCreate, int)) *UserLoginProfileCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserLoginProfileCreateBulk{err: fmt.Errorf("calling to UserLoginProfileClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserLoginProfileCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserLoginProfileCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for UserLoginProfile.
 func (c *UserLoginProfileClient) Update() *UserLoginProfileUpdate {
 	mutation := newUserLoginProfileMutation(c.config, OpUpdate)
@@ -3827,7 +4687,7 @@ func (c *UserLoginProfileClient) Query() *UserLoginProfileQuery {
 
 // Get returns a UserLoginProfile entity by its id.
 func (c *UserLoginProfileClient) Get(ctx context.Context, id int) (*UserLoginProfile, error) {
-	return c.Query().Where(userloginprofile.ID(id)).Only(ctx)
+	return c.Query().Where(userloginprofile.ID(id)).Only(entcache.WithEntryKey(ctx, "UserLoginProfile", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -3914,6 +4774,21 @@ func (c *UserPasswordClient) CreateBulk(builders ...*UserPasswordCreate) *UserPa
 	return &UserPasswordCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserPasswordClient) MapCreateBulk(slice any, setFunc func(*UserPasswordCreate, int)) *UserPasswordCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserPasswordCreateBulk{err: fmt.Errorf("calling to UserPasswordClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserPasswordCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserPasswordCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for UserPassword.
 func (c *UserPasswordClient) Update() *UserPasswordUpdate {
 	mutation := newUserPasswordMutation(c.config, OpUpdate)
@@ -3962,7 +4837,7 @@ func (c *UserPasswordClient) Query() *UserPasswordQuery {
 
 // Get returns a UserPassword entity by its id.
 func (c *UserPasswordClient) Get(ctx context.Context, id int) (*UserPassword, error) {
-	return c.Query().Where(userpassword.ID(id)).Only(ctx)
+	return c.Query().Where(userpassword.ID(id)).Only(entcache.WithEntryKey(ctx, "UserPassword", id))
 }
 
 // GetX is like Get, but panics if an error occurs.
@@ -4019,15 +4894,15 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
-		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
-		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Hook
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
+		AppRolePolicy, File, FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole,
+		OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
+		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
-		App, AppAction, AppMenu, AppPolicy, AppRes, AppRole, AppRolePolicy, File,
-		FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
-		Permission, User, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Interceptor
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
+		AppRolePolicy, File, FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole,
+		OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
+		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )

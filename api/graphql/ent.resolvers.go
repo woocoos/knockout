@@ -15,31 +15,43 @@ import (
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
-	return r.Client.NoderEx(ctx, id)
+	return r.client.NoderEx(ctx, id)
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
-	return r.Client.NodersEx(ctx, ids)
+	return r.client.NodersEx(ctx, ids)
 }
 
 // Apps is the resolver for the apps field.默认查询是公共的应用(org_id=0)
 func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) (*ent.AppConnection, error) {
-	return r.Client.App.Query().Where(app.Private(false)).Paginate(ctx, after, first, before, last,
+	return r.client.App.Query().Where(app.Private(false)).Paginate(ctx, after, first, before, last,
 		ent.WithAppOrder(orderBy),
 		ent.WithAppFilter(where.Filter))
 }
 
+// AppDicts is the resolver for the appDicts field.
+func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) (*ent.AppDictConnection, error) {
+	return r.client.AppDict.Query().Paginate(ctx, after, first, before, last,
+		ent.WithAppDictOrder(orderBy),
+		ent.WithAppDictFilter(where.Filter))
+}
+
+// FileSources is the resolver for the fileSources field.
+func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
+	return r.client.FileSource.Query().Paginate(ctx, after, first, before, last, ent.WithFileSourceOrder(orderBy), ent.WithFileSourceFilter(where.Filter))
+}
+
 // Organizations is the resolver for the organizations field.
 func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
-	return r.Client.Org.Query().Paginate(ctx, after, first, before, last,
+	return r.client.Org.Query().Paginate(ctx, after, first, before, last,
 		ent.WithOrgOrder(orderBy),
 		ent.WithOrgFilter(where.Filter))
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
-	return r.Client.User.Query().Paginate(ctx, after, first, before, last,
+	return r.client.User.Query().Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
 }
 

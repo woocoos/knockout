@@ -776,12 +776,16 @@ func (u *OrgPolicyUpsertOne) IDX(ctx context.Context) int {
 // OrgPolicyCreateBulk is the builder for creating many OrgPolicy entities in bulk.
 type OrgPolicyCreateBulk struct {
 	config
+	err      error
 	builders []*OrgPolicyCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the OrgPolicy entities in the database.
 func (opcb *OrgPolicyCreateBulk) Save(ctx context.Context) ([]*OrgPolicy, error) {
+	if opcb.err != nil {
+		return nil, opcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(opcb.builders))
 	nodes := make([]*OrgPolicy, len(opcb.builders))
 	mutators := make([]Mutator, len(opcb.builders))
@@ -1115,6 +1119,9 @@ func (u *OrgPolicyUpsertBulk) UpdateRules() *OrgPolicyUpsertBulk {
 
 // Exec executes the query.
 func (u *OrgPolicyUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OrgPolicyCreateBulk instead", i)
