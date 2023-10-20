@@ -14,10 +14,10 @@ import (
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
-	"github.com/woocoos/entco/gqlx"
-	"github.com/woocoos/entco/pkg/authorization"
-	"github.com/woocoos/entco/pkg/identity"
-	"github.com/woocoos/entco/pkg/koapp"
+	"github.com/woocoos/knockout-go/pkg/authorization"
+	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
@@ -67,10 +67,10 @@ func (s *Server) Stop(ctx context.Context) error {
 func (s *Server) BuildWebEngine() *web.Server {
 	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
 		web.WithGracefulStop(),
-		gql.RegistryMiddleware(),
+		gql.RegisterMiddleware(),
 		otelweb.RegisterMiddleware(),
 		web.WithMiddlewareNewFunc("authz", authz.Middleware),
-		identity.RegistryTenantIDMiddleware(),
+		middleware.RegisterTenantID(),
 	)
 
 	// 初始化httpx
@@ -91,7 +91,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
 		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
 	))
-	gqlSrv.AroundResponses(gqlx.SimplePagination())
+	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation事务
 	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
 

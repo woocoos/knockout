@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"fmt"
-	"github.com/woocoos/entco/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/hook"

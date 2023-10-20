@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/pkg/koapp"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/cmd/internal/auth"
 	"log"
 

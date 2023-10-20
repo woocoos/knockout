@@ -3,6 +3,8 @@ package graphql
 import (
 	"context"
 	"github.com/stretchr/testify/suite"
+	"github.com/tsingsun/woocoo/pkg/gds"
+	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
@@ -55,6 +57,15 @@ func TestGraphqlSuite(t *testing.T) {
 		},
 	}
 	suite.Run(t, s)
+}
+
+func (s *graphqlSuite) TestApp() {
+	s.Run("update", func() {
+		ap, err := s.Client.App.UpdateOneID(1).SetUpdatedBy(1).SetInput(ent.UpdateAppInput{Scopes: gds.Ptr("a")}).
+			Save(context.Background())
+		s.Require().NoError(err)
+		s.NotNil(ap.LogoFileID)
+	})
 }
 
 func (s *graphqlSuite) Test_DeleteApp() {

@@ -5,7 +5,7 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/entco/pkg/koapp"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/ent"
 )

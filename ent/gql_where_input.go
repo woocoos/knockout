@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"

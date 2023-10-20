@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"

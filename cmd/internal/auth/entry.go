@@ -9,7 +9,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/httpx"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	"github.com/tsingsun/woocoo/web"
-	"github.com/woocoos/entco/pkg/koapp"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/oas/server"
 	"github.com/woocoos/knockout/api/proto/entpb"
 	"github.com/woocoos/knockout/ent"

@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"fmt"
-	"github.com/woocoos/entco/schemax"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -94,12 +94,13 @@ func (App) Hooks() []ent.Hook {
 		hook.On(func(next ent.Mutator) ent.Mutator {
 			return hook.AppFunc(func(ctx context.Context, m *gen.AppMutation) (gen.Value, error) {
 				id, _ := m.ID()
-				apl, err := m.Client().App.Get(ctx, id)
+				client := m.Client()
+				apl, err := client.App.Get(ctx, id)
 				if err != nil {
 					return nil, err
 				}
 				if apl.Private != true {
-					has, err := m.Client().OrgApp.Query().Where(orgapp.HasAppWith(app.ID(id))).Exist(ctx)
+					has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(id))).Exist(ctx)
 					if err != nil {
 						return nil, err
 					}
@@ -107,19 +108,19 @@ func (App) Hooks() []ent.Hook {
 						return nil, fmt.Errorf("app has been associated with org")
 					}
 				}
-				if _, err = m.Client().AppAction.Delete().Where(appaction.AppID(id)).Exec(ctx); err != nil {
+				if _, err = client.AppAction.Delete().Where(appaction.AppID(id)).Exec(ctx); err != nil {
 					return nil, err
 				}
-				if _, err = m.Client().AppMenu.Delete().Where(appmenu.AppID(id)).Exec(ctx); err != nil {
+				if _, err = client.AppMenu.Delete().Where(appmenu.AppID(id)).Exec(ctx); err != nil {
 					return nil, err
 				}
-				if _, err = m.Client().AppPolicy.Delete().Where(apppolicy.AppID(id)).Exec(ctx); err != nil {
+				if _, err = client.AppPolicy.Delete().Where(apppolicy.AppID(id)).Exec(ctx); err != nil {
 					return nil, err
 				}
-				if _, err = m.Client().AppRole.Delete().Where(approle.AppID(id)).Exec(ctx); err != nil {
+				if _, err = client.AppRole.Delete().Where(approle.AppID(id)).Exec(ctx); err != nil {
 					return nil, err
 				}
-				if _, err = m.Client().AppRolePolicy.Delete().Where(approlepolicy.AppID(id)).Exec(ctx); err != nil {
+				if _, err = client.AppRolePolicy.Delete().Where(approlepolicy.AppID(id)).Exec(ctx); err != nil {
 					return nil, err
 				}
 				return next.Mutate(ctx, m)

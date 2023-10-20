@@ -5,7 +5,7 @@ import (
 	"github.com/99designs/gqlgen/codegen/config"
 	"github.com/99designs/gqlgen/plugin/modelgen"
 	"github.com/vektah/gqlparser/v2/ast"
-	"github.com/woocoos/entco/genx/gql"
+	"github.com/woocoos/knockout-go/codegen/gqlx"
 	"log"
 	"os"
 )
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	err = api.Generate(cfg, api.ReplacePlugin(&p),
-		api.AddPlugin(gql.NewResolverPlugin(gql.WithRelayNodeEx())),
+		api.AddPlugin(gqlx.NewResolverPlugin(gqlx.WithRelayNodeEx())),
 	)
 
 	if err != nil {

@@ -7,7 +7,7 @@ package graphql
 import (
 	"context"
 
-	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"

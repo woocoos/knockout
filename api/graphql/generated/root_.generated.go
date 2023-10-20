@@ -5252,7 +5252,7 @@ enum AppDictItemOrderField {
   displaySort
 }
 """AppDictItemSimpleStatus is enum for the field status"""
-enum AppDictItemSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum AppDictItemSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -5745,7 +5745,7 @@ enum AppPolicyOrderField {
   createdAt
 }
 """AppPolicySimpleStatus is enum for the field status"""
-enum AppPolicySimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum AppPolicySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -6222,7 +6222,7 @@ input AppRoleWhereInput {
   hasAppRolePolicyWith: [AppRolePolicyWhereInput!]
 }
 """AppSimpleStatus is enum for the field status"""
-enum AppSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum AppSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -7196,7 +7196,7 @@ enum OauthClientOrderField {
   createdAt
 }
 """OauthClientSimpleStatus is enum for the field status"""
-enum OauthClientSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum OauthClientSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -7821,7 +7821,7 @@ input OrgRoleWhereInput {
   hasOrgWith: [OrgWhereInput!]
 }
 """OrgSimpleStatus is enum for the field status"""
-enum OrgSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum OrgSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -8325,7 +8325,7 @@ enum PermissionPrincipalKind @goModel(model: "github.com/woocoos/knockout/ent/pe
   role
 }
 """PermissionSimpleStatus is enum for the field status"""
-enum PermissionSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum PermissionSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -9063,7 +9063,7 @@ enum UserDeviceOrderField {
   createdAt
 }
 """UserDeviceSimpleStatus is enum for the field status"""
-enum UserDeviceSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum UserDeviceSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -9282,7 +9282,7 @@ enum UserIdentityOrderField {
   createdAt
 }
 """UserIdentitySimpleStatus is enum for the field status"""
-enum UserIdentitySimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum UserIdentitySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -9442,7 +9442,7 @@ enum UserLoginProfileSetKind @goModel(model: "github.com/woocoos/knockout/ent/us
   auto
 }
 """UserLoginProfileSimpleStatus is enum for the field mfa_status"""
-enum UserLoginProfileSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum UserLoginProfileSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -9586,7 +9586,7 @@ enum UserPasswordScene @goModel(model: "github.com/woocoos/knockout/ent/userpass
   login
 }
 """UserPasswordSimpleStatus is enum for the field status"""
-enum UserPasswordSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum UserPasswordSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing
@@ -9673,7 +9673,7 @@ input UserPasswordWhereInput {
   hasUserWith: [UserWhereInput!]
 }
 """UserSimpleStatus is enum for the field status"""
-enum UserSimpleStatus @goModel(model: "github.com/woocoos/entco/schemax/typex.SimpleStatus") {
+enum UserSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
   active
   inactive
   processing

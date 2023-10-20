@@ -6,7 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
-	"github.com/woocoos/entco/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -242,7 +242,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 			return err
 		}
 	}
-	client.AppAction.Delete().Where(appaction.ID(actionID)).ExecX(ctx)
+	client.AppAction.DeleteOneID(actionID).ExecX(ctx)
 	return nil
 }
 
@@ -286,7 +286,7 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 // UpdateAppMenu 更新应用菜单，如果更新了route，则更新action
 func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.UpdateAppMenuInput) (*ent.AppMenu, error) {
 	client := ent.FromContext(ctx)
-	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	am, err := client.AppMenu.Get(ctx, menuID)
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +326,7 @@ func (s *Service) UpdateAppMenu(ctx context.Context, menuID int, input ent.Updat
 // DeleteAppMenu 删除应用菜单，删除关联的action
 func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
 	client := ent.FromContext(ctx)
-	am, err := client.AppMenu.Query().Where(appmenu.ID(menuID)).Only(ctx)
+	am, err := client.AppMenu.Get(ctx, menuID)
 	if err != nil {
 		return err
 	}
@@ -343,7 +343,10 @@ func (s *Service) DeleteAppMenu(ctx context.Context, menuID int) error {
 // MoveAppMenu 移动菜单
 func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action model.TreeAction) (err error) {
 	client := ent.FromContext(ctx)
-	tarOrg := client.AppMenu.GetX(ctx, tar)
+	tarOrg, err := client.AppMenu.Get(ctx, tar)
+	if err != nil {
+		return
+	}
 	builder := client.AppMenu.UpdateOneID(src)
 	var start int32 = 0
 	var resort = true

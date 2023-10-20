@@ -15,12 +15,12 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tsingsun/woocoo v0.4.2-0.20231015152503-8a4e63e6e2b8
-	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20231012062453-74c77e6e1535
+	github.com/tsingsun/woocoo/contrib/gql v0.0.0-20231020013458-23888f008da8
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.2
 	github.com/vektah/gqlparser/v2 v2.5.10
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.0.0-20231018132617-2a6c9fb4ee1a
-	github.com/woocoos/entco v0.0.0-20231018133900-1479dc7c9473
+	github.com/woocoos/knockout-go v0.0.0-20231020015525-efb08e0b38ac
 	go.opentelemetry.io/contrib/propagators/b3 v1.20.0
 	golang.org/x/sync v0.4.0
 )

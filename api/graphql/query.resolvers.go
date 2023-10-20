@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
-	"github.com/woocoos/entco/pkg/identity"
-	"github.com/woocoos/entco/schemax"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appdict"

@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"github.com/tsingsun/woocoo/pkg/log"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/pkg/koapp"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/cmd/internal/rms"
 
-	_ "github.com/woocoos/entco/pkg/snowflake"
+	_ "github.com/woocoos/knockout-go/pkg/snowflake"
 )
 
 func main() {

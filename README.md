@@ -1,6 +1,6 @@
 # Knockout
 
-knockout是提供了woocoos服务平台的基础定义及管理功能的核心库.
+knockout是提供了woocoos服务平台的资源管理功能的核心库.
 
 目录结构
 
@@ -26,4 +26,6 @@ knockout是提供了woocoos服务平台的基础定义及管理功能的核心�
 │   ├── testdata        // 测试数据初始化
 │   ├── test.go         // 测试环境初始化
 │   └── initdb.go       // 测试数据库初始化
+├── version             // 应用版本信息
+│   └── info.go         
 ```

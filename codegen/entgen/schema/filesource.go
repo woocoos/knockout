@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/woocoos/entco/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax"
 )
 
 // FileSource holds the schema definition for the FileSource entity.

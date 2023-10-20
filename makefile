@@ -1,16 +1,17 @@
 version := $(shell /bin/date "+%Y-%m-%d %H:%M")
+# must be [adminx, auth, files, standalone]
 BUILD_NAME=adminx
 
 build:
-	go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME) ./cmd/main.go
+	go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)/$(BUILD_NAME) ./cmd/$(BUILD_NAME)/main.go
 mac:
-	GOOS=darwin go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)-darwin ./cmd/main.go
+	GOOS=darwin go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)-darwin ./cmd/$(BUILD_NAME)/main.go
 	$(if $(shell command -v upx), upx $(BUILD_NAME)-darwin)
 win:
-	GOOS=windows go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME).exe ./cmd/main.go
+	GOOS=windows go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)/$(BUILD_NAME).exe ./cmd/$(BUILD_NAME)/main.go
 	$(if $(shell command -v upx), upx $(BUILD_NAME).exe)
 linux:
-	GOOS=linux go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)-linux ./cmd/main.go
+	GOOS=linux go build -ldflags="-s -w" -ldflags="-X 'main.BuildTime=$(version)'" -o ./cmd/$(BUILD_NAME)/$(BUILD_NAME)-linux ./cmd/$(BUILD_NAME)/main.go
 	$(if $(shell command -v upx), upx $(BUILD_NAME)-linux)
 
 ent-new:
@@ -39,8 +40,6 @@ genent:
 	go run codegen/entgen/entc.go
 gengql:
 	go run codegen/gqlgen/gqlgen.go
-gengqlfile:
-	go run github.com/woocoos/entco/cmd/gqltools
 genoas:
 	# go run codegen/oasgen/oasgen.go
 	# go install github.com/tsingsun/woocoo/cmd/woco@main

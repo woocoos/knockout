@@ -8,8 +8,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/woocoos/entco/pkg/snowflake"
-	"github.com/woocoos/entco/schemax/typex"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/snowflake"
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"

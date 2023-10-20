@@ -3,9 +3,9 @@ package main
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/tsingsun/woocoo/pkg/log"
-	"github.com/woocoos/entco/ecx"
-	"github.com/woocoos/entco/pkg/koapp"
-	_ "github.com/woocoos/entco/pkg/snowflake"
+	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/pkg/koapp"
+	_ "github.com/woocoos/knockout-go/pkg/snowflake"
 	"github.com/woocoos/knockout/cmd/internal/files"
 	_ "github.com/woocoos/knockout/ent/runtime"
 )

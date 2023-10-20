@@ -7,7 +7,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/entco/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax"
 )
 
 // OrgApp 组织采用的应用.组织不可自行添加应用.应用需要统一到app中.
