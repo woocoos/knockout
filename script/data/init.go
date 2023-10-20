@@ -160,7 +160,7 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 		apps = append(apps, a)
 
 		ras = append(ras, client.AppAction.Create().SetID(i).SetAppID(i).SetCreatedBy(1).
-			SetName("entry").SetKind(appaction.KindGraphql).SetComments("应用入口").SetMethod(appaction.MethodList),
+			SetName("login").SetKind(appaction.KindFunction).SetComments("登陆授权").SetMethod(appaction.MethodRead),
 		)
 
 		ars = append(ars, client.AppRole.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("管理员").

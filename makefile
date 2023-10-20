@@ -26,7 +26,7 @@ migration-apply:
 	atlas migrate apply --dev-url="$(DSN)" --dir="file://ent/migrate/migrations" --latest=$(LATEST)
 
 .PHONY: db db-init db-base db-apppolicy
-db: db-init db-base db-apppolicy
+db: db-init db-base cli-gql-actions cli-gql-menu db-apppolicy
 db-init:
 	GOWORK=off go run -mod=mod script/initdb.go
 db-base:
@@ -47,4 +47,7 @@ genoas:
 
 .PHONY: cli-gql-actions
 cli-gql-actions:
-	go run cmd/tools/main.go res gql-action -a resource
+	kocli res gql-action -a resource -g codegen/gqlgen/gqlgen.yaml -f codegen/knockout.yaml
+cli-gql-menu:
+	# todo move adminx-ui to project
+	echo "kocli res menu -a resource -d {adminui}/src/components/layout/menu.json -f codegen/knockout.yaml"
