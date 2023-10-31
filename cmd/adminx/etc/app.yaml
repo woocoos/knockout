@@ -9,7 +9,8 @@ log:
     - level: debug
       outputPaths:
         - stdout
-
+  rotate:
+    localtime: true
 # use open telemetry
 #otel:
 #  traceExporter: otlp

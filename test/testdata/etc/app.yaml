@@ -38,21 +38,31 @@ web:
                 exclude:
                   - "/spm/auth"
                 <<: *jwt
-snowflake:
-  # 机器id
-  node: 1
-  # 时间戳起始时间 北京时间 2023-01-01 00:00:00
-  epoch: 1672531200000
-  # 机器id位数
-  nodeBits: 1
-  # 序列号位数
-  stepBits: 8
+
+kosdk:
+  client:
+    timeout: 2s
+    oauth2:
+      clientID: 206734260394752
+      clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+      endpoint:
+        tokenURL: http://127.0.0.1:10070/token
+      scopes:
+      storeKey: redis
+#  signer:
+#    authScheme: "KO-HMAC-SHA1"
+#    authHeaders: [ "timestamp", "nonce" ]
+#    signedLookups:
+#      accessToken: "header:authorization>bearer"
+#      timestamp:
+#      nonce:
+#      url: CanonicalUri
+#    nonceLen: 12
+  plugin:
+    msg:
+      baseUrl: "http://127.0.0.1:10072"
 
 files:
   local:
     baseDir: "tmp"
     endpoint: "http://localhost:9000"
-
-oas:
-  msgsrv:
-    baseUrl: "http://127.0.0.1:10072"

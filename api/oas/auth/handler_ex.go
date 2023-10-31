@@ -1,11 +1,11 @@
-package server
+package auth
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func RegisterHandlersManual(router *gin.RouterGroup, service *AuthService) {
+func RegisterHandlersManual(router *gin.RouterGroup, service *ServerImpl) {
 	router.GET("/login/mfaqr.png", func(c *gin.Context) {
 		var req struct {
 			UserID int    `form:"userId" binding:"required"`

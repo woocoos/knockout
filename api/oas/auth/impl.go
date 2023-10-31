@@ -1,11 +1,10 @@
-package server
+package auth
 
 import (
 	"bytes"
 	"context"
 	"encoding/base32"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dchest/captcha"
@@ -13,13 +12,20 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
+	"github.com/tsingsun/woocoo"
+	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/gds"
+	"github.com/tsingsun/woocoo/web"
+	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
-	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/api"
+	"github.com/woocoos/knockout-go/api/msg"
+	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
-	"github.com/woocoos/knockout/api/oas"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -37,7 +43,7 @@ import (
 	"time"
 )
 
-var (
+const (
 	mfaCachePrefix             = "mfa:"
 	tokenCachePrefix           = "token:"
 	resetCachePrefix           = "reset:"
@@ -48,25 +54,28 @@ var (
 
 	spmKeyPrefix = "spm:"
 
-	CallBackUrlResetPassword = "/login/reset-password"
-	CallBackUrlMFA           = "/login/verify-factor"
-	CallBackUrlCaptcha       = "/captcha"
+	callBackUrlResetPassword = "/login/reset-password"
+	callBackUrlMFA           = "/login/verify-factor"
+	callBackUrlCaptcha       = "/captcha"
 
 	captchaWidth  = 200
 	captchaHeight = 100
 )
 
+// Options is the configuration of AuthServer in the `auth` section.
 type Options struct {
-	CaptchaCollectNum int           `json:"captchaCollectNum"` // # captcha memory store collect num
-	CaptchaExpire     time.Duration `json:"captchaExpire"`     // # captcha expire time
-	CaptchaLength     int           `json:"captchaLength"`     // # captcha length
-	CaptchaTimes      int           `json:"captchaTimes"`      // # if login fail times, captcha will force show
-	CaptchaTTL        time.Duration `json:"captchaTTL"`        // # captcha ttl
-	LoginFailTimes    int           `json:"loginFailTimes"`    // # if login fail times, captcha will force show
-	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // #  lock time while login upper to max fail times
-	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // # state token ttl
-	StateTokenSecret  string        `json:"stateTokenSecret"`  // # state token secret
-	SpmTTL            time.Duration `json:"spmTTL"`            // # spm ttl
+	// the path key of cache config, default `redis`
+	CacheDriverName   string        `json:"cacheDriverName"`
+	CaptchaCollectNum int           `json:"captchaCollectNum"` // captcha memory store collect num
+	CaptchaExpire     time.Duration `json:"captchaExpire"`     // captcha expire time
+	CaptchaLength     int           `json:"captchaLength"`     // captcha length
+	CaptchaTimes      int           `json:"captchaTimes"`      // if login fail times, captcha will force show
+	CaptchaTTL        time.Duration `json:"captchaTTL"`        // captcha ttl
+	LoginFailTimes    int           `json:"loginFailTimes"`    // if login fail times, captcha will force show
+	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // lock time while login upper to max fail times
+	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // state token ttl
+	StateTokenSecret  string        `json:"stateTokenSecret"`  // state token secret
+	SpmTTL            time.Duration `json:"spmTTL"`            // spm ttl
 	JWT               struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
@@ -75,29 +84,66 @@ type Options struct {
 	} `json:"jwt"`
 }
 
-type OASOptions struct {
-	Msgsrv struct {
-		BaseUrl string `yaml:"baseUrl"`
-	} `yaml:"msgsrv"`
-}
-
-// AuthService is the server API for  service.
-type AuthService struct {
+// ServerImpl is the server API for service.
+type ServerImpl struct {
 	Options
-	DB    *ent.Client
-	Cache cache.Cache
-	Cnf   *conf.AppConfiguration
+	db    *ent.Client
+	cache cache.Cache
 
-	HttpClient *http.Client
-	OASOptions OASOptions
+	kosdk *api.SDK
 
 	LogoutHandler func(*gin.Context)
 
 	captchaStore captcha.Store
+
+	webServer *web.Server
 }
 
-func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
+func NewServer(app *woocoo.App) *ServerImpl {
+	var (
+		err error
+	)
+	cnf := app.AppConfiguration()
+	s := &ServerImpl{}
+	ents := koapp.BuildEntComponents(cnf)
+	if cnf.Development {
+		s.db = ent.NewClient(ent.Driver(ents["portal"]), ent.Debug())
+	} else {
+		s.db = ent.NewClient(ent.Driver(ents["portal"]))
+	}
+	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
+		panic(err)
+	}
+	if s.cache, err = cache.GetCache("redis"); err != nil {
+		panic(err)
+	}
+	if err = s.Apply(cnf); err != nil {
+		panic(err)
+	}
+
+	s.buildWebServer(app)
+	app.RegisterServer(s.webServer)
+	return s
+}
+
+func (s *ServerImpl) buildWebServer(app *woocoo.App) *web.Server {
+	s.webServer = web.New(web.WithConfiguration(app.AppConfiguration().Sub("web")),
+		web.WithGracefulStop(),
+		otelweb.RegisterMiddleware(),
+	)
+	// default group is '/'
+	dr := s.webServer.Router().FindGroup("/").Group
+	if mdl, ok := s.webServer.HandlerManager().GetMiddleware("jwt"); ok {
+		s.LogoutHandler = mdl.(*handler.JWTMiddleware).Config.LogoutHandler
+	}
+	RegisterAuthHandlers(dr, s)
+	RegisterHandlersManual(dr, s)
+	return s.webServer
+}
+
+func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 	s.Options = Options{
+		CacheDriverName:   "redis",
 		CaptchaCollectNum: 1000,
 		CaptchaExpire:     time.Minute * 2,
 		CaptchaLength:     6,
@@ -106,14 +152,7 @@ func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 		LoginFailLockTime: time.Hour * 24,
 		SpmTTL:            time.Second * 5,
 	}
-	s.Cnf = cnf
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
-	if err != nil {
-		return err
-	}
-
-	s.OASOptions = OASOptions{}
-	err = cnf.Sub("oas").Unmarshal(&s.OASOptions)
 	if err != nil {
 		return err
 	}
@@ -124,32 +163,41 @@ func (s *AuthService) Apply(cnf *conf.AppConfiguration) error {
 	return nil
 }
 
-func (s *AuthService) Captcha(ctx *gin.Context, req *oas.CaptchaRequest) (*oas.Captcha, error) {
+// Start implements woocoo.Server but do noting in start, the web server has registered by NewServer.
+func (s *ServerImpl) Start(ctx context.Context) error {
+	return nil
+}
+
+func (s *ServerImpl) Stop(ctx context.Context) error {
+	return s.db.Close()
+}
+
+func (s *ServerImpl) Captcha(ctx *gin.Context, req *CaptchaRequest) (*Captcha, error) {
 	captchaId := captcha.NewLen(s.CaptchaLength)
-	if req.Body.W == 0 {
-		req.Body.W = captchaWidth
+	if req.W == nil {
+		req.W = gds.Ptr(captchaWidth)
 	}
-	if req.Body.H == 0 {
-		req.Body.H = captchaHeight
+	if req.H == nil {
+		req.H = gds.Ptr(captchaHeight)
 	}
 	var buf bytes.Buffer
-	err := captcha.WriteImage(&buf, captchaId, req.Body.W, req.Body.H)
+	err := captcha.WriteImage(&buf, captchaId, *req.W, *req.H)
 	if err != nil {
 		return nil, err
 	}
-	return &oas.Captcha{
+	return &Captcha{
 		CaptchaId:    captchaId,
 		CaptchaImage: "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes()),
 	}, err
 }
 
 // Login login
-func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.LoginResponse, err error) {
+func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginResponse, err error) {
 	failCount := 0
-	s.Cache.Get(ctx, loginFailCachePrefix+req.Body.Username, &failCount)
-	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
+	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
+	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 		ctx.Status(http.StatusBadRequest)
-		s.logFailHandler(ctx, req.Body.Username, false)
+		s.logFailHandler(ctx, req.Username, false)
 		return nil, status.ErrCaptchaNotMatch
 	}
 	if failCount >= s.LoginFailTimes {
@@ -161,12 +209,12 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 		if errors.Is(err, status.ErrMismatchPWD) {
 			ctx.Status(http.StatusBadRequest)
 			var errL error
-			failCount, errL = s.logFailHandler(ctx, req.Body.Username, false)
+			failCount, errL = s.logFailHandler(ctx, req.Username, false)
 			if errL != nil {
 				return nil, errors.Join(err, errL)
 			}
 			if failCount >= s.CaptchaTimes {
-				return &oas.LoginResponse{CallbackUrl: CallBackUrlCaptcha}, err
+				return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, err
 			}
 			if failCount >= s.LoginFailTimes {
 				return nil, status.ErrLoginFailUpperLimit
@@ -175,7 +223,7 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 		return nil, err
 	}
 
-	profile, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -192,11 +240,11 @@ func (s *AuthService) Login(ctx *gin.Context, req *oas.LoginRequest) (res *oas.L
 		return s.resetPasswordPrepare(ctx, profile)
 	}
 
-	_ = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
+	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, pwd.UserID)
 }
 
-func (s *AuthService) RefreshToken(ctx *gin.Context, req *oas.RefreshTokenRequest) (*oas.LoginResponse, error) {
+func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*LoginResponse, error) {
 	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
 		return []byte(s.Options.JWT.SigningKey), nil
@@ -215,34 +263,34 @@ func (s *AuthService) RefreshToken(ctx *gin.Context, req *oas.RefreshTokenReques
 	if err != nil {
 		return nil, err
 	}
-	err = s.Cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	err = s.cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
-	return &oas.LoginResponse{
+	return &LoginResponse{
 		AccessToken: tstr,
 		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
 	}, nil
 }
 
-func (s *AuthService) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorRequest) (*oas.LoginResponse, error) {
-	token := req.Body.StateToken
+func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*LoginResponse, error) {
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
 
 	var pid int
-	if err = s.Cache.Get(ctx, mfaCachePrefix+id, &pid); err != nil {
+	if err = s.cache.Get(ctx, mfaCachePrefix+id, &pid); err != nil {
 		return nil, err
 	}
 
-	profile, err := s.DB.UserLoginProfile.Get(ctx, pid)
+	profile, err := s.db.UserLoginProfile.Get(ctx, pid)
 	if err != nil {
 		return nil, err
 	}
 	if profile.MfaEnabled {
-		if !totp.Validate(req.Body.OtpToken, profile.MfaSecret) {
+		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
 			return nil, errors.New("invalid code")
 		}
 	}
@@ -252,17 +300,17 @@ func (s *AuthService) VerifyFactor(ctx *gin.Context, req *oas.VerifyFactorReques
 	}
 
 	// no need use transaction
-	err = updateLastLogin(ctx, s.DB.UserLoginProfile, profile.UserID)
+	err = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, profile.UserID)
 }
 
-func (s *AuthService) Logout(ctx *gin.Context) error {
+func (s *ServerImpl) Logout(ctx *gin.Context) error {
 	s.LogoutHandler(ctx)
 	return nil
 }
 
-func (s *AuthService) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequest) (res *oas.LoginResponse, err error) {
-	token := req.Body.StateToken
+func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) (res *LoginResponse, err error) {
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
@@ -270,17 +318,17 @@ func (s *AuthService) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequ
 
 	var uid int
 	cacheKey := resetCachePrefix + id
-	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
 	}
 
-	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid),
+	pwd := s.db.UserPassword.Query().Where(userpassword.UserID(uid),
 		userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
-	npwd := resource.SaltSecret(req.Body.NewPassword, pwd.Salt)
+	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
 
-	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
-		return s.DB.Tx(ctx)
-	}, func(itx ecx.Transactor) error {
+	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
+		return s.db.Tx(ctx)
+	}, func(itx clientx.Transactor) error {
 		tx := itx.(*ent.Tx)
 		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).Exec(ctx)
 		if err != nil {
@@ -294,23 +342,23 @@ func (s *AuthService) ResetPassword(ctx *gin.Context, req *oas.ResetPasswordRequ
 		if err != nil {
 			return err
 		}
-		s.Cache.Del(ctx, cacheKey) // lint:ignore
+		s.cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
 	return
 }
 
-func (s *AuthService) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *ServerImpl) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *LoginResponse, err error) {
 	sid := uuid.New().String()
-	res = &oas.LoginResponse{
-		CallbackUrl: CallBackUrlResetPassword,
+	res = &LoginResponse{
+		CallbackUrl: callBackUrlResetPassword,
 		StateToken:  createStateToken(sid, s.Options),
 	}
-	err = s.Cache.Set(ctx, resetCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
+	err = s.cache.Set(ctx, resetCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
 	return
 }
 
-func (s *AuthService) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *oas.LoginResponse, err error) {
+func (s *ServerImpl) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *LoginResponse, err error) {
 	if !profile.MfaEnabled {
 		return nil, nil
 	}
@@ -318,11 +366,11 @@ func (s *AuthService) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile
 		return nil, errors.New("mfa not active")
 	}
 	sid := uuid.New().String()
-	res = &oas.LoginResponse{
-		CallbackUrl: CallBackUrlMFA,
+	res = &LoginResponse{
+		CallbackUrl: callBackUrlMFA,
 		StateToken:  createStateToken(sid, s.Options),
 	}
-	err = s.Cache.Set(ctx, mfaCachePrefix+sid, profile.ID, cache.WithTTL(s.Cnf.Duration("auth.stateTokenTTL")))
+	err = s.cache.Set(ctx, mfaCachePrefix+sid, profile.ID, cache.WithTTL(s.StateTokenTTL))
 	return
 }
 
@@ -334,8 +382,8 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 		SetLastLoginAt(time.Now()).Exec(ctx)
 }
 
-func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse, error) {
-	usr := s.DB.User.GetX(ctx, uid)
+func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, error) {
+	usr := s.db.User.GetX(ctx, uid)
 
 	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
 	if err != nil {
@@ -347,13 +395,13 @@ func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse,
 		return nil, err
 	}
 
-	err = s.Cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	err = s.cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
 
-	var domains []*oas.Domain
-	err = s.DB.Org.Query().Where(
+	var domains []*Domain
+	err = s.db.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.DomainNotNil(),
@@ -362,11 +410,11 @@ func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	return &oas.LoginResponse{
+	return &LoginResponse{
 		AccessToken:  tstr,
 		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
-		User: &oas.User{
+		User: &User{
 			ID:           usr.ID,
 			DisplayName:  usr.DisplayName,
 			AvatarFileId: usr.AvatarFileID,
@@ -375,16 +423,16 @@ func (s *AuthService) loginToken(ctx *gin.Context, uid int) (*oas.LoginResponse,
 	}, nil
 }
 
-func (s *AuthService) checkPwd(ctx *gin.Context, req *oas.LoginRequest) (*ent.UserPassword, error) {
-	pwd, err := s.DB.UserPassword.Query().Where(
-		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))),
+func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest) (*ent.UserPassword, error) {
+	pwd, err := s.db.UserPassword.Query().Where(
+		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
 	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}
 
-	given := resource.SaltSecret(req.Body.Password, pwd.Salt)
+	given := resource.SaltSecret(req.Password, pwd.Salt)
 	if given != pwd.Password {
 		return pwd, status.ErrMismatchPWD // return user id
 	}
@@ -438,14 +486,14 @@ func parseStateToken(token string, opts Options) (id string, err error) {
 }
 
 // MfaQRCode generate a QR code for MFA, the code is a png image
-func (s *AuthService) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte, error) {
+func (s *ServerImpl) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]byte, error) {
 	uorg, err := s.GetUserRootOrg(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
 	issuer := uorg.Domain
-	profile, err := s.DB.UserLoginProfile.Query().WithUser(func(query *ent.UserQuery) {
+	profile, err := s.db.UserLoginProfile.Query().WithUser(func(query *ent.UserQuery) {
 		query.Select(user.FieldPrincipalName)
 	}).Select(userloginprofile.FieldUserID, userloginprofile.FieldMfaSecret).Where(userloginprofile.UserID(userID)).
 		Only(ctx)
@@ -477,12 +525,12 @@ func (s *AuthService) MfaQRCode(ctx *gin.Context, userID int, secret string) ([]
 	return buf.Bytes(), err
 }
 
-func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
+func (s *ServerImpl) BindMfaPrepare(ctx *gin.Context) (*Mfa, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	pn, err := s.DB.User.Query().Where(user.ID(uid)).Select(user.FieldPrincipalName).String(ctx)
+	pn, err := s.db.User.Query().Where(user.ID(uid)).Select(user.FieldPrincipalName).String(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -492,7 +540,7 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 		"uid":    strconv.Itoa(uid),
 		"secret": resource.GeneralMFASecret(),
 	}
-	err = s.Cache.Set(ctx, mfaCachePrefix+sid, val, cache.WithTTL(s.Options.StateTokenTTL))
+	err = s.cache.Set(ctx, mfaCachePrefix+sid, val, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
@@ -505,7 +553,7 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if tid, err = s.tryGetTenantID(ctx); err != nil {
 		return nil, err
 	}
-	uorg, err := s.DB.Org.Query().Where(org.ID(tid)).Only(ctx)
+	uorg, err := s.db.Org.Query().Where(org.ID(tid)).Only(ctx)
 	issuer := uorg.Domain
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
@@ -515,7 +563,7 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &oas.Mfa{
+	return &Mfa{
 		QrCodeUri:     key.String(),
 		PrincipalName: pn,
 		Secret:        val["secret"],
@@ -524,45 +572,45 @@ func (s *AuthService) BindMfaPrepare(ctx *gin.Context) (*oas.Mfa, error) {
 	}, nil
 }
 
-func (s *AuthService) BindMfa(ctx *gin.Context, req *oas.BindMfaRequest) (bool, error) {
+func (s *ServerImpl) BindMfa(ctx *gin.Context, req *BindMfaRequest) (bool, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return false, err
 	}
-	id, err := parseStateToken(req.Body.StateToken, s.Options)
+	id, err := parseStateToken(req.StateToken, s.Options)
 	if err != nil {
 		return false, err
 	}
 	//
 	var val map[string]string
-	if err = s.Cache.Get(ctx, mfaCachePrefix+id, &val); err != nil {
+	if err = s.cache.Get(ctx, mfaCachePrefix+id, &val); err != nil {
 		return false, err
 	}
 	if val["uid"] != strconv.Itoa(uid) {
 		return false, fmt.Errorf("invalid user")
 	}
-	if !totp.Validate(req.Body.OtpToken, val["secret"]) {
+	if !totp.Validate(req.OtpToken, val["secret"]) {
 		return false, errors.New("invalid code")
 	}
-	err = s.DB.UserLoginProfile.UpdateOneID(uid).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
+	err = s.db.UserLoginProfile.UpdateOneID(uid).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
 	return err == nil, err
 }
 
-func (s *AuthService) UnBindMfa(ctx *gin.Context, req *oas.UnBindMfaRequest) (bool, error) {
+func (s *ServerImpl) UnBindMfa(ctx *gin.Context, req *UnBindMfaRequest) (bool, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return false, err
 	}
-	up, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	up, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
 	if !totp.Validate(req.OtpToken, up.MfaSecret) {
 		return false, errors.New("invalid code")
 	}
-	err = s.DB.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
+	err = s.db.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
 	return err == nil, err
 }
 
-func (s *AuthService) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
-	uorg, err = s.DB.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+func (s *ServerImpl) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
+	uorg, err = s.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
 		First(ctx)
 	if err != nil {
@@ -571,47 +619,47 @@ func (s *AuthService) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, 
 	return uorg, nil
 }
 
-func (s *AuthService) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
+func (s *ServerImpl) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
 	key := loginFailCachePrefix + uid
 	if clear {
-		return 0, s.Cache.Del(ctx, key)
+		return 0, s.cache.Del(ctx, key)
 	}
 	count := 0
-	err := s.Cache.Get(ctx, key, &count)
-	if err != nil && !s.Cache.IsNotFound(err) {
+	err := s.cache.Get(ctx, key, &count)
+	if err != nil && !s.cache.IsNotFound(err) {
 		return 0, err
 	}
 	count++
-	err = s.Cache.Set(ctx, key, count, cache.WithTTL(s.LoginFailLockTime)) // 以账户锁定时间作为过期时间
+	err = s.cache.Set(ctx, key, count, cache.WithTTL(s.LoginFailLockTime)) // 以账户锁定时间作为过期时间
 	return count, err
 }
 
 // ForgetPwdBegin 忘记密码验证用户账户，开始修改密码流程
-func (s *AuthService) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginRequest) (*oas.ForgetPwdBeginResponse, error) {
+func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error) {
 	// 验证验证码
-	if !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
+	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 		return nil, status.ErrCaptchaNotMatch
 	}
 	// 查询用户
-	u, err := s.DB.User.Query().Where(user.HasIdentitiesWith(useridentity.Code(req.Body.Username))).WithLoginProfile().Only(ctx)
+	u, err := s.db.User.Query().Where(user.HasIdentitiesWith(useridentity.Code(req.Username))).WithLoginProfile().Only(ctx)
 	if err != nil {
 		return nil, err
 	}
-	verifies := make([]*oas.ForgetPwdVerify, 0)
+	verifies := make([]*ForgetPwdVerify, 0)
 	if u.Edges.LoginProfile.MfaEnabled {
-		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "mfa"})
+		verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
 	}
 	if &u.Email != nil {
-		verifies = append(verifies, &oas.ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(u.Email)})
+		verifies = append(verifies, &ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(u.Email)})
 	}
 	// 生成临时token
 	sid := uuid.New().String()
 	stateToken := createStateToken(sid, s.Options)
-	err = s.Cache.Set(ctx, forgetPwdBeginCachePrefix+sid, u.ID, cache.WithTTL(s.Options.StateTokenTTL))
+	err = s.cache.Set(ctx, forgetPwdBeginCachePrefix+sid, u.ID, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
-	return &oas.ForgetPwdBeginResponse{
+	return &ForgetPwdBeginResponse{
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 		Verifies:      verifies,
@@ -619,30 +667,30 @@ func (s *AuthService) ForgetPwdBegin(ctx *gin.Context, req *oas.ForgetPwdBeginRe
 }
 
 // ForgetPwdReset 忘记密码设置新密码
-func (s *AuthService) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRequest) (bool, error) {
-	token := req.Body.StateToken
+func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest) (bool, error) {
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return false, err
 	}
 	var uid int
 	cacheKey := forgetPwdVerifyCachePrefix + id
-	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return false, err
 	}
 	//
-	pwd := s.DB.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
-	npwd := resource.SaltSecret(req.Body.NewPassword, pwd.Salt)
+	pwd := s.db.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
+	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
 
-	err = ecx.WithTx(ctx, func(ctx context.Context) (ecx.Transactor, error) {
-		return s.DB.Tx(ctx)
-	}, func(itx ecx.Transactor) error {
+	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
+		return s.db.Tx(ctx)
+	}, func(itx clientx.Transactor) error {
 		tx := itx.(*ent.Tx)
 		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).Exec(ctx)
 		if err != nil {
 			return err
 		}
-		s.Cache.Del(ctx, cacheKey) // lint:ignore
+		s.cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
 	if err != nil {
@@ -652,7 +700,7 @@ func (s *AuthService) ForgetPwdReset(ctx *gin.Context, req *oas.ForgetPwdResetRe
 }
 
 // ForgetPwdSendEmail 忘记密码 发送邮件验证码
-func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSendEmailRequest) (string, error) {
+func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmailRequest) (string, error) {
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -660,7 +708,7 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 	}
 	var uid int
 	cacheKey := forgetPwdBeginCachePrefix + id
-	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return "", err
 	}
 	// 生成验证码
@@ -670,7 +718,7 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
 	}
-	usr, err := s.DB.User.Get(ctx, uid)
+	usr, err := s.db.User.Get(ctx, uid)
 	if err != nil {
 		return "", err
 	}
@@ -682,7 +730,7 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 		return "", err
 	}
 
-	params := []postAlertsInput{
+	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
 				"to":            usr.Email,
@@ -690,11 +738,13 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 				"captchaCode":   captchaCode,
 				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),
 			},
-			Labels: map[string]string{
-				"receiver":  "email",
-				"alertname": "SendCaptchaCode",
-				"tenant":    strconv.Itoa(uorg.ID),
-				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "SendCaptchaCode",
+					"tenant":    strconv.Itoa(uorg.ID),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
 			},
 		},
 	}
@@ -706,53 +756,53 @@ func (s *AuthService) ForgetPwdSendEmail(ctx *gin.Context, req *oas.ForgetPwdSen
 }
 
 // ForgetPwdVerifyEmail 忘记密码 邮件验证身份
-func (s *AuthService) ForgetPwdVerifyEmail(ctx *gin.Context, req *oas.ForgetPwdVerifyEmailRequest) (*oas.ForgetPwdBeginResponse, error) {
-	token := req.Body.StateToken
+func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerifyEmailRequest) (*ForgetPwdBeginResponse, error) {
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
 	var uid int
 	cacheKey := forgetPwdBeginCachePrefix + id
-	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
 	}
 	// 验证验证码
-	if !captcha.VerifyString(req.Body.CaptchaId, req.Body.Captcha) {
+	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 		return nil, status.ErrCaptchaNotMatch
 	}
 	sid := uuid.New().String()
 	stateToken := createStateToken(sid, s.Options)
-	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, uid, cache.WithTTL(s.Options.StateTokenTTL))
+	err = s.cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, uid, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
-	s.Cache.Del(ctx, cacheKey)
-	return &oas.ForgetPwdBeginResponse{
+	s.cache.Del(ctx, cacheKey)
+	return &ForgetPwdBeginResponse{
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
 }
 
 // ForgetPwdVerifyMfa 忘记密码 mfa验证身份
-func (s *AuthService) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVerifyMfaRequest) (*oas.ForgetPwdBeginResponse, error) {
-	token := req.Body.StateToken
+func (s *ServerImpl) ForgetPwdVerifyMfa(ctx *gin.Context, req *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error) {
+	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
 		return nil, err
 	}
 	var uid int
 	cacheKey := forgetPwdBeginCachePrefix + id
-	if err = s.Cache.Get(ctx, cacheKey, &uid); err != nil {
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
 	}
-	profile, err := s.DB.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
 	// 验证mfa
 	if profile.MfaEnabled {
-		if !totp.Validate(req.Body.OtpToken, profile.MfaSecret) {
+		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
 			return nil, errors.New("invalid code")
 		}
 	} else {
@@ -761,18 +811,18 @@ func (s *AuthService) ForgetPwdVerifyMfa(ctx *gin.Context, req *oas.ForgetPwdVer
 	// 生成临时token
 	sid := uuid.New().String()
 	stateToken := createStateToken(sid, s.Options)
-	err = s.Cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
+	err = s.cache.Set(ctx, forgetPwdVerifyCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
 	if err != nil {
 		return nil, err
 	}
-	s.Cache.Del(ctx, cacheKey)
-	return &oas.ForgetPwdBeginResponse{
+	s.cache.Del(ctx, cacheKey)
+	return &ForgetPwdBeginResponse{
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
 }
 
-func (s *AuthService) tryGetTenantID(c *gin.Context) (tid int, err error) {
+func (s *ServerImpl) tryGetTenantID(c *gin.Context) (tid int, err error) {
 	if str := c.GetHeader("X-Tenant-ID"); str != "" {
 		if tid, err = strconv.Atoi(str); err != nil {
 			return 0, err
@@ -782,12 +832,12 @@ func (s *AuthService) tryGetTenantID(c *gin.Context) (tid int, err error) {
 }
 
 // verifyTenantID 验证登录用户是否加入tid
-func (s *AuthService) verifyTenantID(c *gin.Context, tid int) error {
+func (s *ServerImpl) verifyTenantID(c *gin.Context, tid int) error {
 	uid, err := identity.UserIDFromContext(c)
 	if err != nil {
 		return err
 	}
-	has, err := s.DB.OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(tid)).Exist(c)
+	has, err := s.db.OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(tid)).Exist(c)
 	if !has {
 		return fmt.Errorf("invaild tenantID")
 	}
@@ -798,7 +848,7 @@ func (s *AuthService) verifyTenantID(c *gin.Context, tid int) error {
 }
 
 // CreateSpm 创建spm key
-func (s *AuthService) CreateSpm(ctx *gin.Context) (string, error) {
+func (s *ServerImpl) CreateSpm(ctx *gin.Context) (string, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return "", err
@@ -815,7 +865,7 @@ func (s *AuthService) CreateSpm(ctx *gin.Context) (string, error) {
 
 	spm := fmt.Sprintf("%d-%d-%d", tid, uid, time.Now().Unix())
 	key := resource.SHA256(spm)
-	err = s.Cache.Set(ctx, spmKeyPrefix+key, uid, cache.WithTTL(s.Options.SpmTTL))
+	err = s.cache.Set(ctx, spmKeyPrefix+key, uid, cache.WithTTL(s.Options.SpmTTL))
 	if err != nil {
 		return "", err
 	}
@@ -823,13 +873,13 @@ func (s *AuthService) CreateSpm(ctx *gin.Context) (string, error) {
 }
 
 // GetSpmAuth 根据spm 获取登录信息
-func (s *AuthService) GetSpmAuth(c *gin.Context, r *oas.GetSpmAuthRequest) (*oas.LoginResponse, error) {
+func (s *ServerImpl) GetSpmAuth(c *gin.Context, r *GetSpmAuthRequest) (*LoginResponse, error) {
 	var uid int
-	err := s.Cache.Get(c, spmKeyPrefix+r.Spm, &uid)
+	err := s.cache.Get(c, spmKeyPrefix+r.Spm, &uid)
 	if err != nil {
 		return nil, err
 	}
-	err = s.Cache.Del(c, spmKeyPrefix+r.Spm)
+	err = s.cache.Del(c, spmKeyPrefix+r.Spm)
 	if err != nil {
 		return nil, err
 	}
@@ -840,11 +890,11 @@ func (s *AuthService) GetSpmAuth(c *gin.Context, r *oas.GetSpmAuthRequest) (*oas
 }
 
 // Token oauth获取accessToken
-func (s *AuthService) Token(c *gin.Context, r *oas.TokenRequest) (*oas.TokenResponse, error) {
-	oc, err := s.DB.OauthClient.Query().Where(
-		oauthclient.GrantTypesEQ(oauthclient.GrantTypes(r.Body.GrantType)),
-		oauthclient.ClientID(r.Body.ClientID),
-		oauthclient.ClientSecret(r.Body.ClientSecret),
+func (s *ServerImpl) Token(c *gin.Context, r *TokenRequest) (*TokenResponse, error) {
+	oc, err := s.db.OauthClient.Query().Where(
+		oauthclient.GrantTypesEQ(oauthclient.GrantTypes(r.GrantType)),
+		oauthclient.ClientID(r.ClientID),
+		oauthclient.ClientSecret(r.ClientSecret),
 		oauthclient.StatusEQ(typex.SimpleStatusActive),
 	).Only(c)
 	if err != nil {
@@ -855,47 +905,29 @@ func (s *AuthService) Token(c *gin.Context, r *oas.TokenRequest) (*oas.TokenResp
 	if err != nil {
 		return nil, err
 	}
-	err = s.Cache.Set(c, tid, oc.UserID, cache.WithTTL(s.Options.JWT.TokenTTL))
+	err = s.cache.Set(c, tid, oc.UserID, cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
 	// 更新认证时间
-	err = s.DB.OauthClient.Update().Where(oauthclient.ID(oc.ID)).
+	err = s.db.OauthClient.Update().Where(oauthclient.ID(oc.ID)).
 		SetLastAuthAt(time.Now()).SetUpdatedBy(oc.UpdatedBy).Exec(c)
 	if err != nil {
 		return nil, err
 	}
-	return &oas.TokenResponse{
+	return &TokenResponse{
 		AccessToken: tstr,
 		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
 	}, nil
 }
 
-type postAlertsInput struct {
-	Annotations  map[string]string `json:"annotations,omitempty"`
-	StartsAt     time.Time         `json:"startsAt,omitempty"`
-	EndsAt       time.Time         `json:"endsAt,omitempty"`
-	Labels       map[string]string `json:"labels"`
-	GeneratorURL string            `json:"generatorURL,omitempty"`
-}
+func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) error {
+	_, err := s.kosdk.Msg().AlertAPI.PostAlerts(ctx, &msg.PostAlertsRequest{
+		PostableAlerts: params,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 
-func (s *AuthService) postAlerts(ctx context.Context, params []postAlertsInput) error {
-	val, err := json.Marshal(params)
-	if err != nil {
-		return err
-	}
-	body := strings.NewReader(string(val))
-	req, err := http.NewRequest("POST", s.OASOptions.Msgsrv.BaseUrl+"/api/v2/alerts", body)
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Content-Type", "application/json")
-	resp, err := s.HttpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode == http.StatusOK {
-		return nil
-	}
-	return fmt.Errorf(resp.Status)
 }

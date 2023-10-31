@@ -1,4 +1,4 @@
-package server
+package auth
 
 import (
 	"context"
@@ -6,12 +6,31 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/alicebob/miniredis/v2"
 	"github.com/dchest/captcha"
-	"github.com/stretchr/testify/require"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
+	"github.com/stretchr/testify/suite"
+	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/cache"
+	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/security"
+	"github.com/tsingsun/woocoo/web"
+	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/ent/migrate"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
+	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/service/resource"
+	"github.com/woocoos/knockout/test"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -20,52 +39,36 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alicebob/miniredis/v2"
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/pquerna/otp"
-	"github.com/pquerna/otp/totp"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
-	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/security"
-	"github.com/tsingsun/woocoo/web"
-	"github.com/tsingsun/woocoo/web/handler"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout/api/oas"
-	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/migrate"
-	"github.com/woocoos/knockout/ent/org"
-	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/ent/userloginprofile"
-	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/internal/status"
-	"github.com/woocoos/knockout/service/resource"
-	"github.com/woocoos/knockout/test"
-
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/woocoos/knockout-go/pkg/snowflake"
 	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 var (
 	adminToken    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2N2E4NzQ4MmU5MWY0ZjJlOTIyMGY1MTM3NjE4NWI3ZSIsInN1YiI6IjEiLCJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1MTYyMzkwMjJ9.MzfOsaGAtHj0IIoVDgpfUD1GMtgLTNbY7D_CkEoR9CQ"
 	adminTokenJTI = "67a87482e91f4f2e9220f51376185b7e"
-	appCnf        *conf.AppConfiguration
 )
 
-type ServiceSuite struct {
-	AuthService *AuthService
-	FileService *FileService
+type authSuite struct {
+	suite.Suite
+	AuthServer  *ServerImpl
 	redisServer *miniredis.Miniredis
 
 	server *web.Server
 }
 
-func (s *ServiceSuite) SetupSuite(t *testing.T) {
-	s.redisServer = miniredis.RunT(t)
-	require.NoError(t, s.redisServer.Set(adminTokenJTI, "1"))
+func TestAuthSuite(t *testing.T) {
+	suite.Run(t, &authSuite{})
+}
+
+func (t *authSuite) TestForgetPwdSendEmail() {
+
+}
+
+func (t *authSuite) SetupSuite() {
+	t.redisServer = miniredis.RunT(t.T())
+	t.Require().NoError(t.redisServer.Set(adminTokenJTI, "1"))
 
 	file := filepath.Join(test.BaseDir(), "testdata", "etc", "app.yaml")
 	bs, err := os.ReadFile(file)
@@ -73,61 +76,41 @@ func (s *ServiceSuite) SetupSuite(t *testing.T) {
 		panic(err)
 	}
 
-	cnf := conf.NewFromBytes(bs, conf.WithBaseDir(test.BaseDir())).AsGlobal()
-	cnf.Parser().Set("cache.redis.addrs", []string{s.redisServer.Addr()})
-
+	cnf := conf.NewFromBytes(bs, conf.WithBaseDir(test.BaseDir()))
+	cnf.Parser().Set("cache.redis.addrs", []string{t.redisServer.Addr()})
+	cache.UnRegisterCache("redis")
+	println(t.redisServer.Addr())
 	app := koapp.New(woocoo.WithAppConfiguration(cnf))
-	appCnf = app.AppConfiguration()
+	t.AuthServer = NewServer(app)
+	t.server = t.AuthServer.webServer
 
-	s.server = web.New(web.WithConfiguration(cnf.Sub("web")))
+	jwtmdl, ok := t.server.HandlerManager().GetMiddleware(web.GetMiddlewareKey(t.server.Router().RouterGroup.BasePath(), "jwt"))
+	t.Require().True(ok)
+	t.AuthServer.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
 
-	s.AuthService = &AuthService{}
-	err = s.AuthService.Apply(app.AppConfiguration())
-	if err != nil {
-		t.Fatal(err)
-	}
-	drv := koapp.BuildEntComponents(app.AppConfiguration())["test"]
-	s.AuthService.DB = ent.NewClient(ent.Driver(drv), ent.Debug())
-	//s.AuthService.DB, err = ent.Open(appCnf.String("store.test.driverName"), appCnf.String("store.test.dsn"), ent.Debug())
-	s.AuthService.Cache, err = cache.GetCache("redis")
-	require.NoError(t, err)
-	s.FileService = &FileService{
-		DB:       s.AuthService.DB,
-		BaseDir:  appCnf.Abs(appCnf.String("files.local.baseDir")),
-		Endpoint: appCnf.String("files.local.endpoint"),
-	}
-
-	RegisterHandlersManual(&s.server.Router().RouterGroup, s.AuthService)
-	RegisterAuthHandlers(&s.server.Router().RouterGroup, s.AuthService)
-	RegisterFileHandlers(&s.server.Router().RouterGroup, s.FileService)
-	jwtmdl, ok := s.server.HandlerManager().GetMiddleware(web.GetMiddlewareKey(s.server.Router().RouterGroup.BasePath(), "jwt"))
-	require.True(t, ok)
-	s.AuthService.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
-
-	err = s.AuthService.DB.Schema.Create(context.Background(),
+	err = t.AuthServer.db.Schema.Create(context.Background(),
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),
 		migrate.WithForeignKeys(false))
-	assert.NoError(t, err)
+	t.Require().NoError(err)
 }
 
 type loginFlowSuite struct {
-	suite.Suite
-	*ServiceSuite
+	*authSuite
 }
 
 // loginFlowSuite runs all the tests in the suite.
 func TestLoginFlow(t *testing.T) {
-	service := ServiceSuite{}
-	service.SetupSuite(t)
+	service := authSuite{}
 	suite.Run(t, &loginFlowSuite{
-		ServiceSuite: &service,
+		authSuite: &service,
 	})
 }
 
 func (ts *loginFlowSuite) SetupSuite() {
+	ts.authSuite.SetupSuite()
 	ts.redisServer.FlushAll()
-	db := ts.AuthService.DB
+	db := ts.AuthServer.db
 	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").
 		SetStatus(typex.SimpleStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
 		SetCreationType(user.CreationTypeManual).SetRegisterIP("")
@@ -162,8 +145,8 @@ func (ts *loginFlowSuite) SetupSuite() {
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
-		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
+	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
 	})
 	ts.Require().NoError(err)
 	ts.Require().NotNil(res)
@@ -171,9 +154,9 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	ts.AuthService.Cache.Set(ctx, loginFailCachePrefix+"admin", 0)
-	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
-		Body: oas.LoginRequestBody{Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin"},
+	ts.AuthServer.cache.Set(ctx, loginFailCachePrefix+"admin", 0)
+	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
 	})
 	ts.Require().NoError(err)
 	ts.Contains(res.CallbackUrl, "/login/verify-factor")
@@ -182,21 +165,21 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 
 func (ts *loginFlowSuite) Test_AuthFail() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	for i := 0; i < ts.AuthService.CaptchaTimes-1; i++ {
-		res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
-			Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+	for i := 0; i < ts.AuthServer.CaptchaTimes-1; i++ {
+		res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+			Password: "error", Username: "admin",
 		})
 		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 		ts.Nil(res)
 	}
-	res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
-		Body: oas.LoginRequestBody{Password: "error", Username: "admin"},
+	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+		Password: "error", Username: "admin",
 	})
 	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 	ts.Equal(res.CallbackUrl, "/captcha")
-	for i := ts.AuthService.CaptchaTimes; i < ts.AuthService.LoginFailTimes; i++ {
-		res, err := ts.AuthService.Login(ctx, &oas.LoginRequest{
-			Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: ""},
+	for i := ts.AuthServer.CaptchaTimes; i < ts.AuthServer.LoginFailTimes; i++ {
+		res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+			Password: "error", Username: "admin", Captcha: "",
 		})
 		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
 		ts.Nil(res)
@@ -204,13 +187,13 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 
 	// 生成验证码
 	captchaId := captcha.NewLen(6)
-	digits := ts.AuthService.captchaStore.Get(captchaId, false)
+	digits := ts.AuthServer.captchaStore.Get(captchaId, false)
 	captchaCode := ""
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
 	}
-	res, err = ts.AuthService.Login(ctx, &oas.LoginRequest{
-		Body: oas.LoginRequestBody{Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId},
+	res, err = ts.AuthServer.Login(ctx, &LoginRequest{
+		Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId,
 	})
 	// TODO 验证码准确性测试
 	ts.Require().ErrorIs(err, status.ErrLoginFailUpperLimit)
@@ -220,17 +203,15 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 func (ts *loginFlowSuite) Test_VerifyFactor() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
-	err := ts.AuthService.Cache.Set(context.Background(), mfaCachePrefix+adminTokenJTI, 1)
+	err := ts.AuthServer.cache.Set(context.Background(), mfaCachePrefix+adminTokenJTI, 1)
 	ts.Require().NoError(err)
 
 	ctx.Request = httptest.NewRequest("POST", "/verifyFactor", nil)
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
 	time.Sleep(1 * time.Second)
-	res, err := ts.AuthService.VerifyFactor(ctx, &oas.VerifyFactorRequest{
-		Body: oas.VerifyFactorRequestBody{
-			OtpToken:   pwd,
-			StateToken: adminToken,
-		},
+	res, err := ts.AuthServer.VerifyFactor(ctx, &VerifyFactorRequest{
+		OtpToken:   pwd,
+		StateToken: adminToken,
 	})
 	ts.Require().NoError(err)
 	ts.Equal(res.User.ID, 1)
@@ -252,7 +233,7 @@ func GeneratePassCode(base32string string) string {
 }
 
 func (ts *loginFlowSuite) Test_Logout() {
-	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1")
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1")
 	ts.Require().NoError(err)
 
 	req := httptest.NewRequest("POST", "/logout", nil)
@@ -265,7 +246,7 @@ func (ts *loginFlowSuite) Test_Logout() {
 
 func (ts *loginFlowSuite) Test_ZBindMfaFlow() {
 	// 绑定mfa前置数据
-	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/mfa/bind-prepare", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
@@ -306,7 +287,7 @@ func (ts *loginFlowSuite) Test_ZBindMfaFlow() {
 
 func (ts *loginFlowSuite) Test_SpmFlow() {
 	// 绑定mfa前置数据
-	err := ts.AuthService.Cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/spm/create", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
@@ -329,7 +310,7 @@ func (ts *loginFlowSuite) Test_SpmFlow() {
 }
 
 func (ts *loginFlowSuite) Test_ResetPassword() {
-	ts.Require().NoError(ts.AuthService.Cache.Set(context.Background(),
+	ts.Require().NoError(ts.AuthServer.cache.Set(context.Background(),
 		resetCachePrefix+adminTokenJTI, 1))
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
@@ -337,15 +318,13 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil).WithContext(ctx)
 	//ctx = context.WithValue(ctx, gin.ContextKey, gctx)
-	res, err := ts.AuthService.ResetPassword(gctx, &oas.ResetPasswordRequest{
-		Body: oas.ResetPasswordRequestBody{
-			NewPassword: "234567",
-			StateToken:  adminToken,
-		},
+	res, err := ts.AuthServer.ResetPassword(gctx, &ResetPasswordRequest{
+		NewPassword: "234567",
+		StateToken:  adminToken,
 	})
 	ts.Require().NoError(err)
 	ts.False(ts.redisServer.Exists(resetCachePrefix + adminTokenJTI))
-	pwd := ts.AuthService.DB.UserPassword.Query().Where(userpassword.UserID(1),
+	pwd := ts.AuthServer.db.UserPassword.Query().Where(userpassword.UserID(1),
 		userpassword.SceneEQ(userpassword.SceneLogin),
 	).OnlyX(entcache.Skip(context.Background()))
 

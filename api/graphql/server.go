@@ -1,10 +1,11 @@
-package rms
+package graphql
 
 import (
 	"context"
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/gin-gonic/gin"
+	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -17,39 +18,33 @@ import (
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout-go/pkg/middleware"
-	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/resource"
-
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/woocoos/knockout/ent/runtime"
-)
-
-var (
-	portalClient *ent.Client
-	casbinClient *casbinent.Client
 )
 
 type Server struct {
-	Cnf    *conf.AppConfiguration
-	webSrv *web.Server
+	portalClient *ent.Client
+	casbinClient *casbinent.Client
+	webSrv       *web.Server
 }
 
-func NewServer(cnf *conf.AppConfiguration) *Server {
-	s := &Server{
-		Cnf: cnf,
-	}
-	ents := koapp.BuildEntComponents(s.Cnf)
+func NewServer(app *woocoo.App) *Server {
+	s := &Server{}
+	cnf := app.AppConfiguration()
+	ents := koapp.BuildEntComponents(cnf)
 	drv := ents["portal"]
-	if s.Cnf.Development {
-		portalClient = ent.NewClient(ent.Driver(drv), ent.Debug())
-		casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
+	if cnf.Development {
+		s.portalClient = ent.NewClient(ent.Driver(drv), ent.Debug())
+		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
 	} else {
-		portalClient = ent.NewClient(ent.Driver(drv))
-		casbinClient = casbinent.NewClient(casbinent.Driver(drv))
+		s.portalClient = ent.NewClient(ent.Driver(drv))
+		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv))
 	}
-	buildCashbin(s.Cnf, casbinClient)
+	buildCashbin(cnf, s.casbinClient)
 
+	s.buildWebEngine(app)
+
+	app.RegisterServer(s.webSrv)
 	return s
 }
 
@@ -58,13 +53,14 @@ func (s *Server) Start(ctx context.Context) error {
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	portalClient.Close()
-	casbinClient.Close()
+	s.portalClient.Close()
+	s.casbinClient.Close()
 	return nil
 }
 
-func (s *Server) BuildWebEngine() *web.Server {
-	webSrv := web.New(web.WithConfiguration(s.Cnf.Sub("web")),
+func (s *Server) buildWebEngine(app *woocoo.App) {
+	cnf := app.AppConfiguration()
+	s.webSrv = web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
 		gql.RegisterMiddleware(),
 		otelweb.RegisterMiddleware(),
@@ -73,7 +69,7 @@ func (s *Server) BuildWebEngine() *web.Server {
 	)
 
 	// 初始化httpx
-	cfg, err := httpx.NewClientConfig(s.Cnf.Sub("oauth-with-cache"))
+	cfg, err := httpx.NewClientConfig(cnf.Sub("oauth-with-cache"))
 	if err != nil {
 		panic(err)
 	}
@@ -83,22 +79,20 @@ func (s *Server) BuildWebEngine() *web.Server {
 	}
 
 	oasOptions := resource.OASOptions{}
-	err = s.Cnf.Sub("oas").Unmarshal(&oasOptions)
+	err = cnf.Sub("oas").Unmarshal(&oasOptions)
 	if err != nil {
 		panic(err)
 	}
-	gqlSrv := handler.NewDefaultServer(graphql.NewSchema(graphql.WithClient(portalClient),
-		graphql.WithResource(&resource.Service{Client: portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
+	gqlSrv := handler.NewDefaultServer(NewSchema(WithClient(s.portalClient),
+		WithResource(&resource.Service{Client: s.portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
 	))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
-	// mutation事务
-	gqlSrv.Use(entgql.Transactioner{TxOpener: portalClient})
+	// mutation transaction
+	gqlSrv.Use(entgql.Transactioner{TxOpener: s.portalClient})
 
-	if err := gql.RegisterGraphqlServer(webSrv, gqlSrv); err != nil {
+	if err := gql.RegisterGraphqlServer(s.webSrv, gqlSrv); err != nil {
 		panic(err)
 	}
-
-	return webSrv
 }
 
 func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
@@ -106,7 +100,7 @@ func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 	if err != nil {
 		panic(err)
 	}
-	// 关闭缓存
+
 	// authorizer.Enforcer.(*casbin.CachedEnforcer).EnableCache(false)
 	authorizer.RequestParser = func(ctx context.Context, id security.Identity, item *security.PermissionItem) []any {
 		gctx := ctx.Value(gin.ContextKey).(*gin.Context)

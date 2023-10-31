@@ -5,12 +5,16 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	ecx "github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/koapp"
-	"github.com/woocoos/knockout/cmd/internal/auth"
-	"github.com/woocoos/knockout/cmd/internal/files"
-	"github.com/woocoos/knockout/cmd/internal/rms"
+	"github.com/woocoos/knockout/api/graphql"
+	"github.com/woocoos/knockout/api/oas/auth"
+	"github.com/woocoos/knockout/api/oas/file"
 	"go.opentelemetry.io/contrib/propagators/b3"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/woocoos/knockout-go/pkg/snowflake"
+	_ "github.com/woocoos/knockout/ent/runtime"
 )
 
 var (
@@ -19,6 +23,8 @@ var (
 	fileConfig = flag.String("f", "../files", "files etc dir")
 )
 
+// Notice: reuse the app instance to initial servers,
+// please guarantee the configuration of app no using after NewServer.
 func main() {
 	flag.Parse()
 	app := woocoo.New()
@@ -30,26 +36,24 @@ func main() {
 	defer otelStop()
 
 	koapp.BuildCacheComponents(rmscnf)
-	rmsSvr := rms.NewServer(rmscnf)
-	rmsEngine := rmsSvr.BuildWebEngine()
+	app.AppConfiguration().Configuration = rmscnf.Configuration
+	rmsSvr := graphql.NewServer(app)
 
 	authcnf := &conf.AppConfiguration{
 		Configuration: conf.New(conf.WithBaseDir(*authConfig), conf.WithGlobal(false)).Load(),
 	}
 	koapp.BuildCacheComponents(authcnf)
-	authSrv := auth.NewServer(authcnf)
-	authEngine := authSrv.BuildWebServer()
-	authSrv.RegisterWebEngine(authEngine.Router().FindGroup("/").Group)
+	app.AppConfiguration().Configuration = authcnf.Configuration
+	authSrv := auth.NewServer(app)
 
 	filecnf := &conf.AppConfiguration{
 		Configuration: conf.New(conf.WithBaseDir(*fileConfig), conf.WithGlobal(false)).Load(),
 	}
 	koapp.BuildCacheComponents(filecnf)
-	fileSrv := files.NewServer(filecnf)
-	fileEngine := fileSrv.BuildWebServer()
-	fileSrv.RegisterWebEngine(fileEngine.Router().FindGroup("/").Group)
+	app.AppConfiguration().Configuration = filecnf.Configuration
+	fileSrv := file.NewServer(app)
 
-	app.RegisterServer(rmsEngine, authEngine, authSrv.GrpcSrv, fileEngine, ecx.ChangeSet)
+	app.RegisterServer(rmsSvr, authSrv, fileSrv, clientx.ChangeSet)
 
 	if err := app.Run(); err != nil {
 		panic(err)
