@@ -82,6 +82,14 @@ func (upu *UserPasswordUpdate) SetScene(u userpassword.Scene) *UserPasswordUpdat
 	return upu
 }
 
+// SetNillableScene sets the "scene" field if the given value is not nil.
+func (upu *UserPasswordUpdate) SetNillableScene(u *userpassword.Scene) *UserPasswordUpdate {
+	if u != nil {
+		upu.SetScene(*u)
+	}
+	return upu
+}
+
 // SetPassword sets the "password" field.
 func (upu *UserPasswordUpdate) SetPassword(s string) *UserPasswordUpdate {
 	upu.mutation.SetPassword(s)
@@ -105,6 +113,14 @@ func (upu *UserPasswordUpdate) ClearPassword() *UserPasswordUpdate {
 // SetSalt sets the "salt" field.
 func (upu *UserPasswordUpdate) SetSalt(s string) *UserPasswordUpdate {
 	upu.mutation.SetSalt(s)
+	return upu
+}
+
+// SetNillableSalt sets the "salt" field if the given value is not nil.
+func (upu *UserPasswordUpdate) SetNillableSalt(s *string) *UserPasswordUpdate {
+	if s != nil {
+		upu.SetSalt(*s)
+	}
 	return upu
 }
 
@@ -298,6 +314,14 @@ func (upuo *UserPasswordUpdateOne) SetScene(u userpassword.Scene) *UserPasswordU
 	return upuo
 }
 
+// SetNillableScene sets the "scene" field if the given value is not nil.
+func (upuo *UserPasswordUpdateOne) SetNillableScene(u *userpassword.Scene) *UserPasswordUpdateOne {
+	if u != nil {
+		upuo.SetScene(*u)
+	}
+	return upuo
+}
+
 // SetPassword sets the "password" field.
 func (upuo *UserPasswordUpdateOne) SetPassword(s string) *UserPasswordUpdateOne {
 	upuo.mutation.SetPassword(s)
@@ -321,6 +345,14 @@ func (upuo *UserPasswordUpdateOne) ClearPassword() *UserPasswordUpdateOne {
 // SetSalt sets the "salt" field.
 func (upuo *UserPasswordUpdateOne) SetSalt(s string) *UserPasswordUpdateOne {
 	upuo.mutation.SetSalt(s)
+	return upuo
+}
+
+// SetNillableSalt sets the "salt" field if the given value is not nil.
+func (upuo *UserPasswordUpdateOne) SetNillableSalt(s *string) *UserPasswordUpdateOne {
+	if s != nil {
+		upuo.SetSalt(*s)
+	}
 	return upuo
 }
 

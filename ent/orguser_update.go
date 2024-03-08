@@ -85,9 +85,25 @@ func (ouu *OrgUserUpdate) SetOrgID(i int) *OrgUserUpdate {
 	return ouu
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (ouu *OrgUserUpdate) SetNillableOrgID(i *int) *OrgUserUpdate {
+	if i != nil {
+		ouu.SetOrgID(*i)
+	}
+	return ouu
+}
+
 // SetUserID sets the "user_id" field.
 func (ouu *OrgUserUpdate) SetUserID(i int) *OrgUserUpdate {
 	ouu.mutation.SetUserID(i)
+	return ouu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ouu *OrgUserUpdate) SetNillableUserID(i *int) *OrgUserUpdate {
+	if i != nil {
+		ouu.SetUserID(*i)
+	}
 	return ouu
 }
 
@@ -108,6 +124,14 @@ func (ouu *OrgUserUpdate) SetNillableJoinedAt(t *time.Time) *OrgUserUpdate {
 // SetDisplayName sets the "display_name" field.
 func (ouu *OrgUserUpdate) SetDisplayName(s string) *OrgUserUpdate {
 	ouu.mutation.SetDisplayName(s)
+	return ouu
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (ouu *OrgUserUpdate) SetNillableDisplayName(s *string) *OrgUserUpdate {
+	if s != nil {
+		ouu.SetDisplayName(*s)
+	}
 	return ouu
 }
 
@@ -514,9 +538,25 @@ func (ouuo *OrgUserUpdateOne) SetOrgID(i int) *OrgUserUpdateOne {
 	return ouuo
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (ouuo *OrgUserUpdateOne) SetNillableOrgID(i *int) *OrgUserUpdateOne {
+	if i != nil {
+		ouuo.SetOrgID(*i)
+	}
+	return ouuo
+}
+
 // SetUserID sets the "user_id" field.
 func (ouuo *OrgUserUpdateOne) SetUserID(i int) *OrgUserUpdateOne {
 	ouuo.mutation.SetUserID(i)
+	return ouuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ouuo *OrgUserUpdateOne) SetNillableUserID(i *int) *OrgUserUpdateOne {
+	if i != nil {
+		ouuo.SetUserID(*i)
+	}
 	return ouuo
 }
 
@@ -537,6 +577,14 @@ func (ouuo *OrgUserUpdateOne) SetNillableJoinedAt(t *time.Time) *OrgUserUpdateOn
 // SetDisplayName sets the "display_name" field.
 func (ouuo *OrgUserUpdateOne) SetDisplayName(s string) *OrgUserUpdateOne {
 	ouuo.mutation.SetDisplayName(s)
+	return ouuo
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (ouuo *OrgUserUpdateOne) SetNillableDisplayName(s *string) *OrgUserUpdateOne {
+	if s != nil {
+		ouuo.SetDisplayName(*s)
+	}
 	return ouuo
 }
 

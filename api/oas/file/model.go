@@ -2,7 +2,10 @@
 
 package file
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Error struct {
 	Code    int
@@ -33,20 +36,89 @@ type FileInput struct {
 type FileRefInput struct {
 	FileId int `binding:"required" json:"fileId"`
 	// OpType plus or minus the reference count
-	OpType string `binding:"required" json:"opType"`
+	OpType FileRefInputOpType `binding:"required,oneof=plus minus" json:"opType"`
+}
+
+// FileRefInputOpType defines the type for the FileRefInput.opType enum field.
+type FileRefInputOpType string
+
+// FileRefInputOpType values.
+const (
+	FileRefInputOpTypePlus  FileRefInputOpType = "plus"
+	FileRefInputOpTypeMinus FileRefInputOpType = "minus"
+)
+
+func (ot FileRefInputOpType) String() string {
+	return string(ot)
+}
+
+// FileRefInputOpTypeValidator is a validator for the FileRefInputOpType field enum values.
+func FileRefInputOpTypeValidator(ot FileRefInputOpType) error {
+	switch ot {
+	case FileRefInputOpTypePlus, FileRefInputOpTypeMinus:
+		return nil
+	default:
+		return fmt.Errorf("FileRefInputOpType does not allow the value '%s'", ot)
+	}
 }
 
 type FileSource struct {
-	Bucket   string `json:"bucket,omitempty"`
-	Endpoint string `json:"endpoint,omitempty"`
-	ID       int    `json:"id,omitempty"`
-	Kind     string `json:"kind,omitempty"`
-	Region   string `json:"region,omitempty"`
+	Bucket   string         `json:"bucket,omitempty"`
+	Endpoint string         `json:"endpoint,omitempty"`
+	ID       int            `json:"id,omitempty"`
+	Kind     FileSourceKind `binding:"omitempty,oneof=local alioss" json:"kind,omitempty"`
+	Region   string         `json:"region,omitempty"`
+}
+
+// FileSourceKind defines the type for the FileSource.kind enum field.
+type FileSourceKind string
+
+// FileSourceKind values.
+const (
+	FileSourceKindLocal  FileSourceKind = "local"
+	FileSourceKindAlioss FileSourceKind = "alioss"
+)
+
+func (k FileSourceKind) String() string {
+	return string(k)
+}
+
+// FileSourceKindValidator is a validator for the FileSourceKind field enum values.
+func FileSourceKindValidator(k FileSourceKind) error {
+	switch k {
+	case FileSourceKindLocal, FileSourceKindAlioss:
+		return nil
+	default:
+		return fmt.Errorf("FileSourceKind does not allow the value '%s'", k)
+	}
 }
 
 type FileSourceInput struct {
-	Bucket   string `binding:"required" json:"bucket"`
-	Endpoint string `binding:"required" json:"endpoint"`
-	Kind     string `binding:"required" json:"kind"`
-	Region   string `binding:"required" json:"region"`
+	Bucket   string              `binding:"required" json:"bucket"`
+	Endpoint string              `binding:"required" json:"endpoint"`
+	Kind     FileSourceInputKind `binding:"required,oneof=local alioss" json:"kind"`
+	Region   string              `binding:"required" json:"region"`
+}
+
+// FileSourceInputKind defines the type for the FileSourceInput.kind enum field.
+type FileSourceInputKind string
+
+// FileSourceInputKind values.
+const (
+	FileSourceInputKindLocal  FileSourceInputKind = "local"
+	FileSourceInputKindAlioss FileSourceInputKind = "alioss"
+)
+
+func (k FileSourceInputKind) String() string {
+	return string(k)
+}
+
+// FileSourceInputKindValidator is a validator for the FileSourceInputKind field enum values.
+func FileSourceInputKindValidator(k FileSourceInputKind) error {
+	switch k {
+	case FileSourceInputKindLocal, FileSourceInputKindAlioss:
+		return nil
+	default:
+		return fmt.Errorf("FileSourceInputKind does not allow the value '%s'", k)
+	}
 }

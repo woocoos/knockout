@@ -83,6 +83,14 @@ func (oupu *OrgUserPreferenceUpdate) SetUserID(i int) *OrgUserPreferenceUpdate {
 	return oupu
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (oupu *OrgUserPreferenceUpdate) SetNillableUserID(i *int) *OrgUserPreferenceUpdate {
+	if i != nil {
+		oupu.SetUserID(*i)
+	}
+	return oupu
+}
+
 // SetMenuFavorite sets the "menu_favorite" field.
 func (oupu *OrgUserPreferenceUpdate) SetMenuFavorite(i []int) *OrgUserPreferenceUpdate {
 	oupu.mutation.SetMenuFavorite(i)
@@ -321,6 +329,14 @@ func (oupuo *OrgUserPreferenceUpdateOne) ClearUpdatedAt() *OrgUserPreferenceUpda
 // SetUserID sets the "user_id" field.
 func (oupuo *OrgUserPreferenceUpdateOne) SetUserID(i int) *OrgUserPreferenceUpdateOne {
 	oupuo.mutation.SetUserID(i)
+	return oupuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (oupuo *OrgUserPreferenceUpdateOne) SetNillableUserID(i *int) *OrgUserPreferenceUpdateOne {
+	if i != nil {
+		oupuo.SetUserID(*i)
+	}
 	return oupuo
 }
 

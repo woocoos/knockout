@@ -10,7 +10,6 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/app"
 )
 
 // Node is the resolver for the node field.
@@ -24,35 +23,43 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 }
 
 // Apps is the resolver for the apps field.默认查询是公共的应用(org_id=0)
-func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) (*ent.AppConnection, error) {
-	return r.client.App.Query().Where(app.Private(false)).Paginate(ctx, after, first, before, last,
+func (r *queryResolver) Apps(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int],
+	last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) (*ent.AppConnection, error) {
+	return r.client.App.Query().Paginate(ctx, after, first, before, last,
 		ent.WithAppOrder(orderBy),
 		ent.WithAppFilter(where.Filter))
 }
 
 // AppDicts is the resolver for the appDicts field.
-func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) (*ent.AppDictConnection, error) {
+func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int],
+	last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) (*ent.AppDictConnection, error) {
 	return r.client.AppDict.Query().Paginate(ctx, after, first, before, last,
 		ent.WithAppDictOrder(orderBy),
 		ent.WithAppDictFilter(where.Filter))
 }
 
 // FileSources is the resolver for the fileSources field.
-func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
-	return r.client.FileSource.Query().Paginate(ctx, after, first, before, last, ent.WithFileSourceOrder(orderBy), ent.WithFileSourceFilter(where.Filter))
+func (r *queryResolver) FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int],
+	last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error) {
+	return r.client.FileSource.Query().Paginate(ctx, after, first, before, last,
+		ent.WithFileSourceOrder(orderBy),
+		ent.WithFileSourceFilter(where.Filter))
 }
 
 // Organizations is the resolver for the organizations field.
-func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
+func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int],
+	last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error) {
 	return r.client.Org.Query().Paginate(ctx, after, first, before, last,
 		ent.WithOrgOrder(orderBy),
 		ent.WithOrgFilter(where.Filter))
 }
 
 // Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int],
+	last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
 	return r.client.User.Query().Paginate(ctx, after, first, before, last,
-		ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
+		ent.WithUserOrder(orderBy),
+		ent.WithUserFilter(where.Filter))
 }
 
 // AppPolicy returns generated.AppPolicyResolver implementation.

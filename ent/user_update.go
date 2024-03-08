@@ -110,9 +110,25 @@ func (uu *UserUpdate) SetPrincipalName(s string) *UserUpdate {
 	return uu
 }
 
+// SetNillablePrincipalName sets the "principal_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePrincipalName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetPrincipalName(*s)
+	}
+	return uu
+}
+
 // SetDisplayName sets the "display_name" field.
 func (uu *UserUpdate) SetDisplayName(s string) *UserUpdate {
 	uu.mutation.SetDisplayName(s)
+	return uu
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableDisplayName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetDisplayName(*s)
+	}
 	return uu
 }
 
@@ -162,15 +178,39 @@ func (uu *UserUpdate) SetUserType(ut user.UserType) *UserUpdate {
 	return uu
 }
 
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableUserType(ut *user.UserType) *UserUpdate {
+	if ut != nil {
+		uu.SetUserType(*ut)
+	}
+	return uu
+}
+
 // SetCreationType sets the "creation_type" field.
 func (uu *UserUpdate) SetCreationType(ut user.CreationType) *UserUpdate {
 	uu.mutation.SetCreationType(ut)
 	return uu
 }
 
+// SetNillableCreationType sets the "creation_type" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableCreationType(ut *user.CreationType) *UserUpdate {
+	if ut != nil {
+		uu.SetCreationType(*ut)
+	}
+	return uu
+}
+
 // SetRegisterIP sets the "register_ip" field.
 func (uu *UserUpdate) SetRegisterIP(s string) *UserUpdate {
 	uu.mutation.SetRegisterIP(s)
+	return uu
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableRegisterIP(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetRegisterIP(*s)
+	}
 	return uu
 }
 
@@ -1115,9 +1155,25 @@ func (uuo *UserUpdateOne) SetPrincipalName(s string) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillablePrincipalName sets the "principal_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePrincipalName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetPrincipalName(*s)
+	}
+	return uuo
+}
+
 // SetDisplayName sets the "display_name" field.
 func (uuo *UserUpdateOne) SetDisplayName(s string) *UserUpdateOne {
 	uuo.mutation.SetDisplayName(s)
+	return uuo
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableDisplayName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetDisplayName(*s)
+	}
 	return uuo
 }
 
@@ -1167,15 +1223,39 @@ func (uuo *UserUpdateOne) SetUserType(ut user.UserType) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableUserType(ut *user.UserType) *UserUpdateOne {
+	if ut != nil {
+		uuo.SetUserType(*ut)
+	}
+	return uuo
+}
+
 // SetCreationType sets the "creation_type" field.
 func (uuo *UserUpdateOne) SetCreationType(ut user.CreationType) *UserUpdateOne {
 	uuo.mutation.SetCreationType(ut)
 	return uuo
 }
 
+// SetNillableCreationType sets the "creation_type" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableCreationType(ut *user.CreationType) *UserUpdateOne {
+	if ut != nil {
+		uuo.SetCreationType(*ut)
+	}
+	return uuo
+}
+
 // SetRegisterIP sets the "register_ip" field.
 func (uuo *UserUpdateOne) SetRegisterIP(s string) *UserUpdateOne {
 	uuo.mutation.SetRegisterIP(s)
+	return uuo
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableRegisterIP(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetRegisterIP(*s)
+	}
 	return uuo
 }
 

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: File API
+  title: File service API
   version: 0.0.1
   description: |
     This API is used to access the file service.
@@ -15,9 +15,9 @@ tags:
   - name: file
     description: File API
 paths:
-  /files:
+  /file:
     post:
-      description: upload file
+      description: Upload file by html form. return false if existed.
       tags:
         - file
       operationId: uploadFile
@@ -43,39 +43,12 @@ paths:
                 description: id of the file
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /files/report-ref-count:
+  /file/info:
     post:
-      description: number of times that the file is referenced by business
+      description: upload the file meta data for oss
       tags:
         - file
-      operationId: reportRefCount
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                inputs:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/FileRefInput'
-              required:
-                - inputs
-      responses:
-        '200':
-          description: report reference count success
-          content:
-            application/json:
-              schema:
-                type: boolean
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /files/upload-info:
-    post:
-      description: upload the file info for oss
-      tags:
-        - file
-      operationId: uploadFileInfo
+      operationId: postFileMeta
       requestBody:
         content:
           application/json:
@@ -98,7 +71,6 @@ paths:
                 type: string
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /files/{fileId}:
     get:
       description: get file info
       tags:
@@ -112,7 +84,7 @@ paths:
             type: string
       responses:
         '200':
-          description: 文件信息
+          description: file info
           content:
             application/json:
               schema:
@@ -135,12 +107,13 @@ paths:
           description: delete success
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /files/{fileId}/raw:
+  /raw/*path:
     get:
-      description: get file
+      description: get file raw data.
       tags:
         - file
       operationId: getFileRaw
+      x-go-codegen-ignore: true
       parameters:
         - in: path
           name: fileId
@@ -205,14 +178,16 @@ components:
           format: date-time
         FileSource:
           $ref: '#/components/schemas/FileSource'
+    SourceKind:
+      type: string
+      enum: [ "local","alioss" ]
     FileSource:
       type: object
       properties:
         id:
           type: integer
         kind:
-          type: string
-          enum: [ "local","alioss" ]
+          $ref: '#/components/schemas/SourceKind'
         endpoint:
           type: string
         bucket:
@@ -239,8 +214,7 @@ components:
       type: object
       properties:
         kind:
-          type: string
-          enum: [ "local","alioss" ]
+          $ref: '#/components/schemas/SourceKind'
         endpoint:
           type: string
         region:
@@ -252,15 +226,3 @@ components:
         - endpoint
         - region
         - bucket
-    FileRefInput:
-      type: object
-      properties:
-        fileId:
-          type: integer
-        opType:
-          type: string
-          description: plus or minus the reference count
-          enum: [ "plus","minus" ]
-      required:
-        - fileId
-        - opType

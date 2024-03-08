@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"github.com/alicebob/miniredis/v2"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -154,4 +156,16 @@ func (t *fileSuite) Test_Delete() {
 
 	t.Equal(200, resp.StatusCode)
 	t.NoFileExists(test.Path("tmp/1000/tmp/suite.yaml"))
+}
+
+func TestPathMatch(t *testing.T) {
+	c, router := gin.CreateTestContext(httptest.NewRecorder())
+	router.GET("/:bucket/*path", func(c *gin.Context) {
+		t.Log(c.Param("path"))
+		c.JSON(200, "ok")
+	})
+	r := httptest.NewRequest("GET", "/abc/bcd", nil)
+	c.Request = r
+	router.ServeHTTP(c.Writer, c.Request)
+	assert.Equal(t, 200, c.Writer.Status())
 }

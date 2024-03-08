@@ -4,18 +4,15 @@ import (
 	"context"
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/gin-gonic/gin"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/httpx"
-	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
-	"github.com/woocoos/knockout-go/pkg/authorization"
-	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/ent"
@@ -66,6 +63,7 @@ func (s *Server) buildWebEngine(app *woocoo.App) {
 		otelweb.RegisterMiddleware(),
 		web.WithMiddlewareNewFunc("authz", authz.Middleware),
 		middleware.RegisterTenantID(),
+		middleware.RegisterTokenSigner(),
 	)
 
 	// 初始化httpx
@@ -96,18 +94,7 @@ func (s *Server) buildWebEngine(app *woocoo.App) {
 }
 
 func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
-	authorizer, err := authorization.SetAuthorization(cnf.Sub("authz"), client)
-	if err != nil {
-		panic(err)
-	}
-
-	// authorizer.Enforcer.(*casbin.CachedEnforcer).EnableCache(false)
-	authorizer.RequestParser = func(ctx context.Context, id security.Identity, item *security.PermissionItem) []any {
-		gctx := ctx.Value(gin.ContextKey).(*gin.Context)
-		domain := gctx.GetHeader(identity.TenantHeaderKey)
-		p := item.AppCode + ":" + item.Action
-		return []any{id.Name(), domain, p, "read"}
-	}
+	err := casbin.SetAuthorizer(cnf.Sub("authz"), client)
 	if err != nil {
 		panic(err)
 	}

@@ -169,11 +169,14 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
+  /sts:
+
   /token:
     post:
       tags:
         - auth
       operationId: token
+      description: return access token for oauth2 flow
       requestBody:
         content:
           application/x-www-form-urlencoded:

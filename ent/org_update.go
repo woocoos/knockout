@@ -197,6 +197,14 @@ func (ou *OrgUpdate) SetName(s string) *OrgUpdate {
 	return ou
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ou *OrgUpdate) SetNillableName(s *string) *OrgUpdate {
+	if s != nil {
+		ou.SetName(*s)
+	}
+	return ou
+}
+
 // SetProfile sets the "profile" field.
 func (ou *OrgUpdate) SetProfile(s string) *OrgUpdate {
 	ou.mutation.SetProfile(s)
@@ -1419,6 +1427,14 @@ func (ouo *OrgUpdateOne) ClearCode() *OrgUpdateOne {
 // SetName sets the "name" field.
 func (ouo *OrgUpdateOne) SetName(s string) *OrgUpdateOne {
 	ouo.mutation.SetName(s)
+	return ouo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ouo *OrgUpdateOne) SetNillableName(s *string) *OrgUpdateOne {
+	if s != nil {
+		ouo.SetName(*s)
+	}
 	return ouo
 }
 

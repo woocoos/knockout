@@ -303,8 +303,6 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 		}
 		switch k {
 		case "orgRoleID":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
 			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
@@ -312,8 +310,6 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 			}
 			it.OrgRoleID = data
 		case "userID":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
 			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
@@ -321,8 +317,6 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 			}
 			it.UserID = data
 		case "startAt":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startAt"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
@@ -330,8 +324,6 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 			}
 			it.StartAt = data
 		case "endAt":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endAt"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
 			if err != nil {
@@ -359,8 +351,6 @@ func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Conte
 		}
 		switch k {
 		case "domain":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("domain"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
@@ -368,8 +358,6 @@ func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Conte
 			}
 			it.Domain = data
 		case "name":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
@@ -397,8 +385,6 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 		}
 		switch k {
 		case "principal":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("principal"))
 			data, err := ec.unmarshalNGID2string(ctx, v)
 			if err != nil {
@@ -406,8 +392,6 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 			}
 			it.Principal = data
 		case "orgScope":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgScope"))
 			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
@@ -415,8 +399,6 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 			}
 			it.OrgScope = data
 		case "policyID":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
 			data, err := ec.unmarshalNID2int(ctx, v)
 			if err != nil {
@@ -444,8 +426,6 @@ func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Con
 		}
 		switch k {
 		case "menuFavorite":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuFavorite"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
@@ -453,8 +433,6 @@ func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Con
 			}
 			it.MenuFavorite = data
 		case "menuRecent":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuRecent"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
@@ -482,8 +460,6 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 		}
 		switch k {
 		case "effect":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("effect"))
 			data, err := ec.unmarshalNPolicyEffect2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyEffect(ctx, v)
 			if err != nil {
@@ -491,8 +467,6 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 			}
 			it.Effect = data
 		case "actions":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actions"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -500,8 +474,6 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 			}
 			it.Actions = data
 		case "resources":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resources"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -509,8 +481,6 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 			}
 			it.Resources = data
 		case "conditions":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("conditions"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {

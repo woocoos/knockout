@@ -82,6 +82,14 @@ func (fsu *FileSourceUpdate) SetKind(f filesource.Kind) *FileSourceUpdate {
 	return fsu
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableKind(f *filesource.Kind) *FileSourceUpdate {
+	if f != nil {
+		fsu.SetKind(*f)
+	}
+	return fsu
+}
+
 // SetComments sets the "comments" field.
 func (fsu *FileSourceUpdate) SetComments(s string) *FileSourceUpdate {
 	fsu.mutation.SetComments(s)
@@ -419,6 +427,14 @@ func (fsuo *FileSourceUpdateOne) ClearUpdatedAt() *FileSourceUpdateOne {
 // SetKind sets the "kind" field.
 func (fsuo *FileSourceUpdateOne) SetKind(f filesource.Kind) *FileSourceUpdateOne {
 	fsuo.mutation.SetKind(f)
+	return fsuo
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableKind(f *filesource.Kind) *FileSourceUpdateOne {
+	if f != nil {
+		fsuo.SetKind(*f)
+	}
 	return fsuo
 }
 

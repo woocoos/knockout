@@ -82,9 +82,25 @@ func (adiu *AppDictItemUpdate) SetRefCode(s string) *AppDictItemUpdate {
 	return adiu
 }
 
+// SetNillableRefCode sets the "ref_code" field if the given value is not nil.
+func (adiu *AppDictItemUpdate) SetNillableRefCode(s *string) *AppDictItemUpdate {
+	if s != nil {
+		adiu.SetRefCode(*s)
+	}
+	return adiu
+}
+
 // SetName sets the "name" field.
 func (adiu *AppDictItemUpdate) SetName(s string) *AppDictItemUpdate {
 	adiu.mutation.SetName(s)
+	return adiu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (adiu *AppDictItemUpdate) SetNillableName(s *string) *AppDictItemUpdate {
+	if s != nil {
+		adiu.SetName(*s)
+	}
 	return adiu
 }
 
@@ -329,9 +345,25 @@ func (adiuo *AppDictItemUpdateOne) SetRefCode(s string) *AppDictItemUpdateOne {
 	return adiuo
 }
 
+// SetNillableRefCode sets the "ref_code" field if the given value is not nil.
+func (adiuo *AppDictItemUpdateOne) SetNillableRefCode(s *string) *AppDictItemUpdateOne {
+	if s != nil {
+		adiuo.SetRefCode(*s)
+	}
+	return adiuo
+}
+
 // SetName sets the "name" field.
 func (adiuo *AppDictItemUpdateOne) SetName(s string) *AppDictItemUpdateOne {
 	adiuo.mutation.SetName(s)
+	return adiuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (adiuo *AppDictItemUpdateOne) SetNillableName(s *string) *AppDictItemUpdateOne {
+	if s != nil {
+		adiuo.SetName(*s)
+	}
 	return adiuo
 }
 

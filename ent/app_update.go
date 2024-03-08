@@ -90,9 +90,25 @@ func (au *AppUpdate) SetName(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (au *AppUpdate) SetNillableName(s *string) *AppUpdate {
+	if s != nil {
+		au.SetName(*s)
+	}
+	return au
+}
+
 // SetKind sets the "kind" field.
 func (au *AppUpdate) SetKind(a app.Kind) *AppUpdate {
 	au.mutation.SetKind(a)
+	return au
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (au *AppUpdate) SetNillableKind(a *app.Kind) *AppUpdate {
+	if a != nil {
+		au.SetKind(*a)
+	}
 	return au
 }
 
@@ -1255,9 +1271,25 @@ func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableName(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetName(*s)
+	}
+	return auo
+}
+
 // SetKind sets the "kind" field.
 func (auo *AppUpdateOne) SetKind(a app.Kind) *AppUpdateOne {
 	auo.mutation.SetKind(a)
+	return auo
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableKind(a *app.Kind) *AppUpdateOne {
+	if a != nil {
+		auo.SetKind(*a)
+	}
 	return auo
 }
 

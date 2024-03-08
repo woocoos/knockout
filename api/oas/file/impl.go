@@ -172,7 +172,7 @@ func (si *ServerImpl) GetFile(c *gin.Context, r *GetFileRequest) (*FileInfo, err
 			Endpoint: fi.Edges.Source.Endpoint,
 			Bucket:   fi.Edges.Source.Bucket,
 			Region:   fi.Edges.Source.Region,
-			Kind:     fi.Edges.Source.Kind.String(),
+			Kind:     FileSourceKind(fi.Edges.Source.Kind),
 		},
 	}, nil
 }

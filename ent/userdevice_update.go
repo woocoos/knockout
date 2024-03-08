@@ -82,6 +82,14 @@ func (udu *UserDeviceUpdate) SetDeviceUID(s string) *UserDeviceUpdate {
 	return udu
 }
 
+// SetNillableDeviceUID sets the "device_uid" field if the given value is not nil.
+func (udu *UserDeviceUpdate) SetNillableDeviceUID(s *string) *UserDeviceUpdate {
+	if s != nil {
+		udu.SetDeviceUID(*s)
+	}
+	return udu
+}
+
 // SetDeviceName sets the "device_name" field.
 func (udu *UserDeviceUpdate) SetDeviceName(s string) *UserDeviceUpdate {
 	udu.mutation.SetDeviceName(s)
@@ -436,6 +444,14 @@ func (uduo *UserDeviceUpdateOne) ClearUpdatedAt() *UserDeviceUpdateOne {
 // SetDeviceUID sets the "device_uid" field.
 func (uduo *UserDeviceUpdateOne) SetDeviceUID(s string) *UserDeviceUpdateOne {
 	uduo.mutation.SetDeviceUID(s)
+	return uduo
+}
+
+// SetNillableDeviceUID sets the "device_uid" field if the given value is not nil.
+func (uduo *UserDeviceUpdateOne) SetNillableDeviceUID(s *string) *UserDeviceUpdateOne {
+	if s != nil {
+		uduo.SetDeviceUID(*s)
+	}
 	return uduo
 }
 

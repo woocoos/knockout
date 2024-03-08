@@ -83,6 +83,14 @@ func (amu *AppMenuUpdate) SetParentID(i int) *AppMenuUpdate {
 	return amu
 }
 
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableParentID(i *int) *AppMenuUpdate {
+	if i != nil {
+		amu.SetParentID(*i)
+	}
+	return amu
+}
+
 // AddParentID adds i to the "parent_id" field.
 func (amu *AppMenuUpdate) AddParentID(i int) *AppMenuUpdate {
 	amu.mutation.AddParentID(i)
@@ -95,9 +103,25 @@ func (amu *AppMenuUpdate) SetKind(a appmenu.Kind) *AppMenuUpdate {
 	return amu
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableKind(a *appmenu.Kind) *AppMenuUpdate {
+	if a != nil {
+		amu.SetKind(*a)
+	}
+	return amu
+}
+
 // SetName sets the "name" field.
 func (amu *AppMenuUpdate) SetName(s string) *AppMenuUpdate {
 	amu.mutation.SetName(s)
+	return amu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableName(s *string) *AppMenuUpdate {
+	if s != nil {
+		amu.SetName(*s)
+	}
 	return amu
 }
 
@@ -430,6 +454,14 @@ func (amuo *AppMenuUpdateOne) SetParentID(i int) *AppMenuUpdateOne {
 	return amuo
 }
 
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableParentID(i *int) *AppMenuUpdateOne {
+	if i != nil {
+		amuo.SetParentID(*i)
+	}
+	return amuo
+}
+
 // AddParentID adds i to the "parent_id" field.
 func (amuo *AppMenuUpdateOne) AddParentID(i int) *AppMenuUpdateOne {
 	amuo.mutation.AddParentID(i)
@@ -442,9 +474,25 @@ func (amuo *AppMenuUpdateOne) SetKind(a appmenu.Kind) *AppMenuUpdateOne {
 	return amuo
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableKind(a *appmenu.Kind) *AppMenuUpdateOne {
+	if a != nil {
+		amuo.SetKind(*a)
+	}
+	return amuo
+}
+
 // SetName sets the "name" field.
 func (amuo *AppMenuUpdateOne) SetName(s string) *AppMenuUpdateOne {
 	amuo.mutation.SetName(s)
+	return amuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableName(s *string) *AppMenuUpdateOne {
+	if s != nil {
+		amuo.SetName(*s)
+	}
 	return amuo
 }
 

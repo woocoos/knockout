@@ -74,7 +74,7 @@ store:
 
 cache:
   redis:
-    driverName: adminx
+    driverName: redis
     <<: *redis
     local:
       size: 1000
@@ -90,12 +90,27 @@ oas:
   msgsrv:
     baseUrl: "http://127.0.0.1:10072"
 
-oauth-with-cache:
-  timeout: 2s
-  oauth2:
-    clientID: 206734260394752
-    clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
-    endpoint:
-      tokenURL: http://127.0.0.1:10070/token
-    scopes:
-    storeKey: adminx
+kosdk:
+  client:
+    timeout: 2s
+    oauth2:
+      clientID: 206734260394752
+      clientSecret: T2UlqISVFq4DR9InXamj3l74iWdu3Tyr
+      endpoint:
+        tokenURL: http://127.0.0.1:10070/token
+      scopes:
+      storeKey: redis
+  signer:
+    authScheme: "KO-HMAC-SHA1"
+    authHeaders: [ "timestamp", "nonce" ]
+    signedLookups:
+      accessToken: "header:authorization>bearer"
+      timestamp:
+      nonce:
+      url: CanonicalUri
+    nonceLen: 12
+  plugin:
+    msg:
+      baseUrl: "http://127.0.0.1:10072"
+    file:
+      baseUrl: "http://127.0.0.1:10071"

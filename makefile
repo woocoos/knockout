@@ -43,7 +43,8 @@ gengql:
 genoas:
 	# go run codegen/oasgen/oasgen.go
 	# go install github.com/tsingsun/woocoo/cmd/woco@main
-	woco oasgen -c ./codegen/oasgen/config.yaml
+	woco oasgen -c ./codegen/oasgen/file-config.yaml
+	woco oasgen -c ./codegen/oasgen/auth-config.yaml
 
 .PHONY: cli-gql-actions
 cli-gql-actions:

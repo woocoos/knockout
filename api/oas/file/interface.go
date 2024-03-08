@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// FileService is the server API for File service.
+// FileServer is the server API for File service.
 type FileServer interface {
 	// DeleteFile delete file
 	// (DELETE /files/{fileId})

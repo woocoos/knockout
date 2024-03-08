@@ -83,9 +83,25 @@ func (arpu *AppRolePolicyUpdate) SetAppRoleID(i int) *AppRolePolicyUpdate {
 	return arpu
 }
 
+// SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppRoleID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppRoleID(*i)
+	}
+	return arpu
+}
+
 // SetAppPolicyID sets the "app_policy_id" field.
 func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
 	arpu.mutation.SetAppPolicyID(i)
+	return arpu
+}
+
+// SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppPolicyID(*i)
+	}
 	return arpu
 }
 
@@ -93,6 +109,14 @@ func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
 func (arpu *AppRolePolicyUpdate) SetAppID(i int) *AppRolePolicyUpdate {
 	arpu.mutation.ResetAppID()
 	arpu.mutation.SetAppID(i)
+	return arpu
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppID(*i)
+	}
 	return arpu
 }
 
@@ -343,9 +367,25 @@ func (arpuo *AppRolePolicyUpdateOne) SetAppRoleID(i int) *AppRolePolicyUpdateOne
 	return arpuo
 }
 
+// SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppRoleID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppRoleID(*i)
+	}
+	return arpuo
+}
+
 // SetAppPolicyID sets the "app_policy_id" field.
 func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateOne {
 	arpuo.mutation.SetAppPolicyID(i)
+	return arpuo
+}
+
+// SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppPolicyID(*i)
+	}
 	return arpuo
 }
 
@@ -353,6 +393,14 @@ func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateO
 func (arpuo *AppRolePolicyUpdateOne) SetAppID(i int) *AppRolePolicyUpdateOne {
 	arpuo.mutation.ResetAppID()
 	arpuo.mutation.SetAppID(i)
+	return arpuo
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppID(*i)
+	}
 	return arpuo
 }
 

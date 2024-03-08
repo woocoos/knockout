@@ -112,9 +112,9 @@ func (AppDictItem) Hooks() []ent.Hook {
 		}, ent.OpCreate),
 		hook.On(func(next ent.Mutator) ent.Mutator {
 			return hook.AppDictItemFunc(func(ctx context.Context, m *gen.AppDictItemMutation) (gen.Value, error) {
-				tid, err := identity.TenantIDFromContext(ctx)
-				if err != nil {
-					return nil, err
+				tid, ok := identity.TenantIDFromContext(ctx)
+				if !ok {
+					return nil, identity.ErrMisTenantID
 				}
 				if m.Op().Is(ent.OpCreate) {
 					org, _ := m.OrgID()

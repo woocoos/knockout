@@ -2,6 +2,10 @@
 
 package auth
 
+import (
+	"fmt"
+)
+
 // BindMfaRequest is the request object for (POST /mfa/bind)
 type BindMfaRequest struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
@@ -86,9 +90,31 @@ type ResetPasswordRequest struct {
 
 // TokenRequest is the request object for (POST /token)
 type TokenRequest struct {
-	ClientID     string `binding:"required" form:"client_id"`
-	ClientSecret string `binding:"required" form:"client_secret"`
-	GrantType    string `binding:"required" form:"grant_type"`
+	ClientID     string    `binding:"required" form:"client_id"`
+	ClientSecret string    `binding:"required" form:"client_secret"`
+	GrantType    GrantType `binding:"required,oneof=client_credentials" form:"grant_type"`
+}
+
+// GrantType defines the type for the grant_type.grant_type enum field.
+type GrantType string
+
+// GrantType values.
+const (
+	GrantTypeClientCredentials GrantType = "client_credentials"
+)
+
+func (gt GrantType) String() string {
+	return string(gt)
+}
+
+// GrantTypeValidator is a validator for the GrantType field enum values.
+func GrantTypeValidator(gt GrantType) error {
+	switch gt {
+	case GrantTypeClientCredentials:
+		return nil
+	default:
+		return fmt.Errorf("GrantType does not allow the value '%s'", gt)
+	}
 }
 
 // TokenResponse successful operation

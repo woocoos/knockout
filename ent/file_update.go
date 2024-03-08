@@ -82,9 +82,25 @@ func (fu *FileUpdate) SetName(s string) *FileUpdate {
 	return fu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableName(s *string) *FileUpdate {
+	if s != nil {
+		fu.SetName(*s)
+	}
+	return fu
+}
+
 // SetSourceID sets the "source_id" field.
 func (fu *FileUpdate) SetSourceID(i int) *FileUpdate {
 	fu.mutation.SetSourceID(i)
+	return fu
+}
+
+// SetNillableSourceID sets the "source_id" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableSourceID(i *int) *FileUpdate {
+	if i != nil {
+		fu.SetSourceID(*i)
+	}
 	return fu
 }
 
@@ -92,6 +108,14 @@ func (fu *FileUpdate) SetSourceID(i int) *FileUpdate {
 func (fu *FileUpdate) SetTenantID(i int) *FileUpdate {
 	fu.mutation.ResetTenantID()
 	fu.mutation.SetTenantID(i)
+	return fu
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableTenantID(i *int) *FileUpdate {
+	if i != nil {
+		fu.SetTenantID(*i)
+	}
 	return fu
 }
 
@@ -131,6 +155,14 @@ func (fu *FileUpdate) ClearRefCount() *FileUpdate {
 // SetPath sets the "path" field.
 func (fu *FileUpdate) SetPath(s string) *FileUpdate {
 	fu.mutation.SetPath(s)
+	return fu
+}
+
+// SetNillablePath sets the "path" field if the given value is not nil.
+func (fu *FileUpdate) SetNillablePath(s *string) *FileUpdate {
+	if s != nil {
+		fu.SetPath(*s)
+	}
 	return fu
 }
 
@@ -433,9 +465,25 @@ func (fuo *FileUpdateOne) SetName(s string) *FileUpdateOne {
 	return fuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableName(s *string) *FileUpdateOne {
+	if s != nil {
+		fuo.SetName(*s)
+	}
+	return fuo
+}
+
 // SetSourceID sets the "source_id" field.
 func (fuo *FileUpdateOne) SetSourceID(i int) *FileUpdateOne {
 	fuo.mutation.SetSourceID(i)
+	return fuo
+}
+
+// SetNillableSourceID sets the "source_id" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableSourceID(i *int) *FileUpdateOne {
+	if i != nil {
+		fuo.SetSourceID(*i)
+	}
 	return fuo
 }
 
@@ -443,6 +491,14 @@ func (fuo *FileUpdateOne) SetSourceID(i int) *FileUpdateOne {
 func (fuo *FileUpdateOne) SetTenantID(i int) *FileUpdateOne {
 	fuo.mutation.ResetTenantID()
 	fuo.mutation.SetTenantID(i)
+	return fuo
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableTenantID(i *int) *FileUpdateOne {
+	if i != nil {
+		fuo.SetTenantID(*i)
+	}
 	return fuo
 }
 
@@ -482,6 +538,14 @@ func (fuo *FileUpdateOne) ClearRefCount() *FileUpdateOne {
 // SetPath sets the "path" field.
 func (fuo *FileUpdateOne) SetPath(s string) *FileUpdateOne {
 	fuo.mutation.SetPath(s)
+	return fuo
+}
+
+// SetNillablePath sets the "path" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillablePath(s *string) *FileUpdateOne {
+	if s != nil {
+		fuo.SetPath(*s)
+	}
 	return fuo
 }
 
