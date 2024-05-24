@@ -19,8 +19,27 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"os"
 	"strconv"
 )
+
+const (
+	DefaultDsn    string = "root:pass@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+	DefaultDriver string = "mysql"
+)
+
+// ParseDNS parse dsn.Parameter dsn is the cmd argument, if dsn is empty, try to get dsn from environment variable,
+// if dsn is empty will fall back to DefaultDsn.
+func ParseDNS(dsn *string) {
+	if dsn == nil || *dsn == "" {
+		// get dsn from environment variable，if has
+		if e := os.Getenv("DATABASE_URL"); e != "" {
+			dsn = &e
+		} else {
+			*dsn = DefaultDsn
+		}
+	}
+}
 
 type dataset struct {
 	portal *ent.Client

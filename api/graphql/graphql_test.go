@@ -36,9 +36,7 @@ func (s *graphqlSuite) SetupSuite() {
 	data.InitBase(s.DriverName, s.DSN)
 
 	s.resolver = NewResolver(WithClient(s.Client), WithResource(&resource.Service{
-		Client:     s.Client,
-		HttpClient: nil,
-		OASOptions: resource.OASOptions{},
+		Client: s.Client,
 	}))
 
 	s.mr = &mutationResolver{

@@ -5,21 +5,23 @@ package main
 import (
 	"context"
 	"flag"
+	_ "github.com/go-sql-driver/mysql"
 	entadapter "github.com/woocoos/casbin-ent-adapter"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/migrate"
+	"github.com/woocoos/knockout/script/data"
 	"log"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 // receive two arguments: the migration name and the database dsn.
 var (
-	dsn  = flag.String("dsn", "root:@tcp(localhost:3306)/portal", "")
-	name = flag.String("name", "mysql", "driver name")
+	dsn  = flag.String("dsn", "", "")
+	name = flag.String("name", data.DefaultDriver, "driver name")
 )
 
 func main() {
+	flag.Parse()
+	data.ParseDNS(dsn)
 	client, err := ent.Open(*name, *dsn)
 	if err != nil {
 		log.Fatalf("failed connecting to mysql: %v", err)

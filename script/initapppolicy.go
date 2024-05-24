@@ -14,12 +14,13 @@ import (
 
 // receive two arguments: the migration name and the database dsn.
 var (
-	dsn  = flag.String("dsn", "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local", "")
-	name = flag.String("name", "mysql", "driver name")
+	dsn  = flag.String("dsn", "", "")
+	name = flag.String("name", data.DefaultDriver, "driver name")
 )
 
 func main() {
 	flag.Parse()
+	data.ParseDNS(dsn)
 	client, err := ent.Open(*name, *dsn, ent.Debug())
 	if err != nil {
 		log.Fatalf("failed connecting to mysql: %v", err)

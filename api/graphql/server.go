@@ -8,10 +8,10 @@ import (
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
-	"github.com/tsingsun/woocoo/pkg/httpx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
+	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout-go/pkg/middleware"
@@ -23,6 +23,7 @@ type Server struct {
 	portalClient *ent.Client
 	casbinClient *casbinent.Client
 	webSrv       *web.Server
+	kosdk        *api.SDK
 }
 
 func NewServer(app *woocoo.App) *Server {
@@ -42,6 +43,12 @@ func NewServer(app *woocoo.App) *Server {
 	s.buildWebEngine(app)
 
 	app.RegisterServer(s.webSrv)
+
+	var err error
+	s.kosdk, err = api.NewSDK(cnf.Sub("kosdk"))
+	if err != nil {
+		panic(err)
+	}
 	return s
 }
 
@@ -66,23 +73,8 @@ func (s *Server) buildWebEngine(app *woocoo.App) {
 		middleware.RegisterTokenSigner(),
 	)
 
-	// 初始化httpx
-	cfg, err := httpx.NewClientConfig(cnf.Sub("oauth-with-cache"))
-	if err != nil {
-		panic(err)
-	}
-	httpClient, err := cfg.Client(context.Background(), nil)
-	if err != nil {
-		panic(err)
-	}
-
-	oasOptions := resource.OASOptions{}
-	err = cnf.Sub("oas").Unmarshal(&oasOptions)
-	if err != nil {
-		panic(err)
-	}
 	gqlSrv := handler.NewDefaultServer(NewSchema(WithClient(s.portalClient),
-		WithResource(&resource.Service{Client: s.portalClient, HttpClient: httpClient, OASOptions: oasOptions}),
+		WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk}),
 	))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction

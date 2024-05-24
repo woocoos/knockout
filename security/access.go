@@ -3,7 +3,8 @@ package security
 import (
 	"errors"
 	"github.com/casbin/casbin/v2"
-	"github.com/tsingsun/woocoo/pkg/authz"
+	"github.com/tsingsun/woocoo/pkg/security"
+	authz "github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/permission"
@@ -17,7 +18,7 @@ import (
 //  2. 将授权信息同步到redis中
 func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, principalKind permission.PrincipalKind) error {
 	tenant := strconv.Itoa(domain)
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	role := principal
 	switch principalKind {
 	case permission.PrincipalKindUser:
@@ -70,7 +71,7 @@ func GrantByPermission(permission *ent.Permission, domain int) error {
 //  2. 将授权信息同步到redis中
 func RevokePolicy(rules []*types.PolicyRule, principal string, domain int, perm permission.PrincipalKind) error {
 	tenant := strconv.Itoa(domain)
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	role := principal
 	switch perm {
 	case permission.PrincipalKindUser:
@@ -116,7 +117,7 @@ func RevokeByPermission(perm *ent.Permission, domain int) error {
 }
 
 func GrantRoleForUser(userID, roleID int, domain int) error {
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	_, err := authorizer.Enforcer.AddRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
 	// 清除缓存
 	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
@@ -124,7 +125,7 @@ func GrantRoleForUser(userID, roleID int, domain int) error {
 }
 
 func RevokeGroupForUser(userID, roleID int, domain int) error {
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
 	// 清除缓存
 	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
@@ -132,11 +133,11 @@ func RevokeGroupForUser(userID, roleID int, domain int) error {
 }
 
 func GetUserPermissions(userID int, domain int) [][]string {
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), strconv.Itoa(domain))
 }
 
 func CheckUserPermission(rvals ...interface{}) (bool, error) {
-	authorizer := authz.DefaultAuthorization
+	authorizer := security.DefaultAuthorizer.(*authz.Authorizer)
 	return authorizer.Enforcer.Enforce(rvals...)
 }
