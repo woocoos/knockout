@@ -2,9 +2,10 @@ package resource
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/woocoos/entcache"
+	"github.com/woocoos/knockout-go/api/file"
+	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -12,7 +13,6 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -25,7 +25,6 @@ import (
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"net/http"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -129,17 +128,6 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	if err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
-	// 验证AvatarFileID key是否正确
-	if input.AvatarFileID != nil {
-		key, err := client.File.Query().Where(file.ID(*input.AvatarFileID)).Select(file.FieldPath).String(ctx)
-		if err != nil {
-			return nil, err
-		}
-		err = s.validateFilePath(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-	}
 
 	us, err := client.User.Create().SetInput(input).
 		SetUserType(ut).
@@ -204,7 +192,8 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 	if err != nil {
 		return err
 	}
-	params := []postAlertsInput{
+
+	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
 				"to":            usr.Email,
@@ -212,11 +201,13 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 				"principalName": usr.PrincipalName,
 				"password":      nPwd,
 			},
-			Labels: map[string]string{
-				"receiver":  "email",
-				"alertname": "UserPasswordAndPrincipal",
-				"tenant":    strconv.Itoa(tid),
-				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "UserPasswordAndPrincipal",
+					"tenant":    strconv.Itoa(tid),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
 			},
 		},
 	}
@@ -405,17 +396,6 @@ func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUs
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
-	// 验证AvatarFileID key是否正确
-	if input.AvatarFileID != nil {
-		key, err := client.File.Query().Where(file.ID(*input.AvatarFileID)).Select(file.FieldPath).String(ctx)
-		if err != nil {
-			return nil, err
-		}
-		err = s.validateFilePath(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-	}
 	ous, err := client.User.Query().Where(user.ID(userID)).Select(user.FieldAvatarFileID).Only(ctx)
 	us, err := client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
 	if err != nil {
@@ -741,18 +721,20 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	if err != nil {
 		return err
 	}
-	params := []postAlertsInput{
+	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
 				"to":          usr.Email,
 				"displayName": usr.DisplayName,
 				"mfaSecret":   usr.Edges.LoginProfile.MfaSecret,
 			},
-			Labels: map[string]string{
-				"receiver":  "email",
-				"alertname": "SendMFAToUser",
-				"tenant":    strconv.Itoa(tid),
-				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "SendMFAToUser",
+					"tenant":    strconv.Itoa(tid),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
 			},
 		},
 	}
@@ -787,7 +769,7 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	if err != nil {
 		return err
 	}
-	params := []postAlertsInput{
+	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
 				"to":            usr.Email,
@@ -795,81 +777,55 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 				"principalName": usr.Edges.Identities[0].Code,
 				"password":      newPwd,
 			},
-			Labels: map[string]string{
-				"receiver":  "email",
-				"alertname": "ResetUserPassword",
-				"tenant":    strconv.Itoa(tid),
-				"timestamp": strconv.Itoa(int(time.Now().Unix())),
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "ResetUserPassword",
+					"tenant":    strconv.Itoa(tid),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
 			},
 		},
 	}
 	return s.postAlerts(ctx, params)
 }
 
-// validateFilePath 验证路径是否符合规则
-func (s *Service) validateFilePath(ctx context.Context, path string) error {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return err
-	}
-	path = filepath.Join(path)
-	p := strings.TrimPrefix(path, "/")
-	prefixPath := filepath.Join(s.OASOptions.Files.PrefixDir, strconv.Itoa(tid))
-	if !strings.HasPrefix(p, strings.TrimPrefix(prefixPath, "/")) {
-		return fmt.Errorf("invalid path: %s,must be like:%s/xxx", path, prefixPath)
-	}
-	return nil
-}
-
 // filesRefCount 文件引用上报
 func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs []int) error {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return err
-	}
-	params := ""
+	var params []*file.FileRefInput
 	for _, v := range newFileIDs {
-		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "plus" },`, v)
+		params = append(params, &file.FileRefInput{
+			FileId: v,
+			OpType: "plus",
+		})
 	}
 	for _, v := range oldFileIDs {
-		params = params + fmt.Sprintf(`{ "fileId": %d, "opType": "minus" },`, v)
+		params = append(params, &file.FileRefInput{
+			FileId: v,
+			OpType: "minus",
+		})
 	}
-	if params == "" {
+	if len(params) == 0 {
 		return nil
 	}
-	params = strings.TrimSuffix(params, ",")
-	body := strings.NewReader(fmt.Sprintf(`{ "inputs": [%s] }`, params))
-	req, err := http.NewRequest("POST", s.OASOptions.Files.BaseUrl+"/files/report-ref-count", body)
+	req := file.ReportRefCountRequest{
+		Inputs: params,
+	}
+	ret, _, err := s.KOSDK.File().FileAPI.ReportRefCount(ctx, &req)
 	if err != nil {
 		return err
 	}
-	req.Header.Add("X-Tenant-ID", strconv.Itoa(tid))
-	req.Header.Add("Content-Type", "application/json")
-	_, err = s.HttpClient.Do(req)
-	return err
+	if ret {
+		return nil
+	} else {
+		return fmt.Errorf("report failure")
+	}
 }
 
-type postAlertsInput struct {
-	Annotations  map[string]string `json:"annotations,omitempty"`
-	StartsAt     time.Time         `json:"startsAt,omitempty"`
-	EndsAt       time.Time         `json:"endsAt,omitempty"`
-	Labels       map[string]string `json:"labels"`
-	GeneratorURL string            `json:"generatorURL,omitempty"`
-}
-
-func (s *Service) postAlerts(ctx context.Context, params []postAlertsInput) error {
-	val, err := json.Marshal(params)
-	if err != nil {
-		return err
-	}
-	body := strings.NewReader(string(val))
-	req, err := http.NewRequest("POST", s.OASOptions.Msgsrv.BaseUrl+"/api/v2/alerts", body)
-	if err != nil {
-		return err
-	}
-	//req.Header.Add("X-Tenant-ID", strconv.Itoa(tid))
-	req.Header.Add("Content-Type", "application/json")
-	resp, err := s.HttpClient.Do(req)
+func (s *Service) postAlerts(ctx context.Context, params msg.PostableAlerts) error {
+	resp, err := s.KOSDK.Msg().AlertAPI.PostAlerts(ctx, &msg.PostAlertsRequest{
+		PostableAlerts: params,
+	})
 	if err != nil {
 		return err
 	}

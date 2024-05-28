@@ -40,15 +40,16 @@ func NewServer(app *woocoo.App) *Server {
 	}
 	buildCashbin(cnf, s.casbinClient)
 
-	s.buildWebEngine(app)
-
-	app.RegisterServer(s.webSrv)
-
 	var err error
 	s.kosdk, err = api.NewSDK(cnf.Sub("kosdk"))
 	if err != nil {
 		panic(err)
 	}
+
+	s.buildWebEngine(app)
+
+	app.RegisterServer(s.webSrv)
+
 	return s
 }
 

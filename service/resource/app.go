@@ -17,7 +17,6 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
@@ -26,17 +25,6 @@ import (
 // TODO 应用工作流
 func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
-	// 验证LogoFileID key是否正确
-	if input.LogoFileID != nil {
-		key, err := client.File.Query().Where(file.ID(*input.LogoFileID)).Select(file.FieldPath).String(ctx)
-		if err != nil {
-			return nil, err
-		}
-		err = s.validateFilePath(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -386,17 +374,6 @@ func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action mode
 // UpdateApp 更新应用
 func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppInput) (*ent.App, error) {
 	client := ent.FromContext(ctx)
-	// 验证LogoFileID key是否正确
-	if input.LogoFileID != nil {
-		key, err := client.File.Query().Where(file.ID(*input.LogoFileID)).Select(file.FieldPath).String(ctx)
-		if err != nil {
-			return nil, err
-		}
-		err = s.validateFilePath(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err

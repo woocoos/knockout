@@ -163,6 +163,28 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ts.NotEmptyf(res.StateToken, "state token should not be empty")
 }
 
+func Test_CreateToken(t *testing.T) {
+	type jwtOpt struct {
+		SigningMethod   string        `json:"signingMethod"`
+		SigningKey      string        `json:"signingKey"`
+		TokenTTL        time.Duration `json:"tokenTTL"`
+		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
+	}
+	opts := Options{
+		JWT: jwtOpt{
+			SigningMethod:   "HS256",
+			SigningKey:      "secret",
+			TokenTTL:        time.Hour * 10000,
+			RefreshTokenTTL: time.Hour * 10000,
+		},
+	}
+	_, token, err := createToken("2", opts, false)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(token)
+}
+
 func (ts *loginFlowSuite) Test_AuthFail() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	for i := 0; i < ts.AuthServer.CaptchaTimes-1; i++ {

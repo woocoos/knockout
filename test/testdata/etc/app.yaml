@@ -7,6 +7,14 @@ auth:
     tokenTTL: 1h
     refreshTokenTTL: 1h
 
+authz:
+  autoSave: true
+  watcherOptions:
+    options:
+      addr: "127.0.0.1:6379"
+      channel: "/casbin"
+  model: "../test/testdata/etc/rbac_model.conf"
+
 cache:
   redis:
     driverName: redis
