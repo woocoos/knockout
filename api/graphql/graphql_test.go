@@ -3,7 +3,7 @@ package graphql
 import (
 	"context"
 	"entgo.io/ent/dialect/sql"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/pkg/security"

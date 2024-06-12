@@ -21,6 +21,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/forget-pwd/send-email", wrapForgetPwdSendEmail(si))
 	router.POST("/forget-pwd/verify-email", wrapForgetPwdVerifyEmail(si))
 	router.POST("/forget-pwd/verify-mfa", wrapForgetPwdVerifyMfa(si))
+	router.POST("/oss/sts", wrapGetSTS(si))
 	router.POST("/spm/auth", wrapGetSpmAuth(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
@@ -160,6 +161,17 @@ func wrapForgetPwdVerifyMfa(si AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.ForgetPwdVerifyMfa(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapGetSTS(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		resp, err := si.GetSTS(c)
 		if err != nil {
 			c.Error(err)
 			return

@@ -366,3 +366,19 @@ func TestPwd(t *testing.T) {
 	given := hex.EncodeToString(sha.Sum(nil))
 	t.Log(given)
 }
+
+func (ts *loginFlowSuite) Test_GetOssSts() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	req := httptest.NewRequest("POST", "/oss/sts", nil)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
+}

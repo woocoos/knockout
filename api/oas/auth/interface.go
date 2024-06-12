@@ -37,6 +37,9 @@ type AuthServer interface {
 	// ForgetPwdVerifyMfa verify the email to reset-password.
 	// (POST /forget-pwd/verify-mfa)
 	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
+	// GetSTS return temporary credentials by aws sts
+	// (POST /oss/sts)
+	GetSTS(*gin.Context) (*GetSTSResponse, error)
 	// GetSpmAuth get auth data by spm.
 	// (POST /spm/auth)
 	GetSpmAuth(*gin.Context, *GetSpmAuthRequest) (*LoginResponse, error)
@@ -52,6 +55,7 @@ type AuthServer interface {
 	// ResetPassword if login profile demand change password. use this API to reset password.
 	// (POST /login/reset-password)
 	ResetPassword(*gin.Context, *ResetPasswordRequest) (*LoginResponse, error)
+	// Token return access token for oauth2 flow
 	// (POST /token)
 	Token(*gin.Context, *TokenRequest) (*TokenResponse, error)
 	// UnBindMfa Verify a one-time password (OTP) value to unBind MFA.
@@ -107,6 +111,11 @@ func (UnimplementedAuthServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetP
 
 func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdVerifyMfa not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) GetSTS(c *gin.Context) (_ *GetSTSResponse, err error) {
+	err = fmt.Errorf("method GetSTS not implemented")
 	return
 }
 

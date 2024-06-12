@@ -118,4 +118,20 @@ kosdk:
     nonceLen: 12
   plugin:
     msg:
-      baseUrl: "http://127.0.0.1:10072"
+      basePath: "http://127.0.0.1:10072"
+
+oss:
+  1:
+    kind: "minio"
+    config:
+      endpoint: "http://192.168.1.157:9000"
+      accessKeyId: "test1"
+      secretAccessKey: "test1234"
+      region: "cn-east-1"
+      roleArn: "arn:aws:s3:::*"
+      policy: ""
+      durationSeconds: 3600
+      bucket: ""
+
+
+

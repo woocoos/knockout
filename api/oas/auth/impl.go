@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
 	"github.com/tsingsun/woocoo"
@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/api/oas/auth/oss"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -92,6 +93,8 @@ type ServerImpl struct {
 
 	kosdk *api.SDK
 
+	ossService *oss.Service
+
 	LogoutHandler func(*gin.Context)
 
 	captchaStore captcha.Store
@@ -112,6 +115,9 @@ func NewServer(app *woocoo.App) *ServerImpl {
 		s.db = ent.NewClient(ent.Driver(ents["portal"]))
 	}
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
+		panic(err)
+	}
+	if s.ossService, err = oss.NewService(cnf.Sub("oss")); err != nil {
 		panic(err)
 	}
 	if s.cache, err = cache.GetCache("redis"); err != nil {
@@ -930,4 +936,26 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 	}
 	return nil
 
+}
+
+func (s *ServerImpl) GetSTS(ctx *gin.Context) (*GetSTSResponse, error) {
+	tid, err := s.tryGetTenantID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.ossService.GetProvider(tid)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := provider.GetSTS(strconv.Itoa(uid))
+	return &GetSTSResponse{
+		AccessKeyID:     resp.AccessKeyID,
+		Expiration:      resp.Expiration,
+		SecretAccessKey: resp.SecretAccessKey,
+		SessionToken:    resp.SessionToken,
+	}, nil
 }

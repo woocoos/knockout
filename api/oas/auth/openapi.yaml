@@ -169,8 +169,28 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
-  /sts:
-
+  /oss/sts:
+    post:
+      tags:
+        - auth
+      operationId: getSTS
+      description: return temporary credentials by aws sts
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_key_id:
+                    type: string
+                  expiration:
+                    type: string
+                    format: date-time
+                  secret_access_key:
+                    type: string
+                  session_token:
+                    type: string
   /token:
     post:
       tags:

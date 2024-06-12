@@ -4,6 +4,7 @@ package auth
 
 import (
 	"fmt"
+	"time"
 )
 
 // BindMfaRequest is the request object for (POST /mfa/bind)
@@ -56,6 +57,14 @@ type ForgetPwdVerifyMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
 	// StateToken form begin
 	StateToken string `binding:"required" json:"stateToken"`
+}
+
+// GetSTSResponse successful operation
+type GetSTSResponse struct {
+	AccessKeyID     string    `json:"access_key_id,omitempty"`
+	Expiration      time.Time `json:"expiration,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	SecretAccessKey string    `json:"secret_access_key,omitempty"`
+	SessionToken    string    `json:"session_token,omitempty"`
 }
 
 // GetSpmAuthRequest is the request object for (POST /spm/auth)
