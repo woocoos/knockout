@@ -63,12 +63,10 @@ type OrgRoleUserEdges struct {
 // OrgRoleOrErr returns the OrgRole value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgRoleUserEdges) OrgRoleOrErr() (*OrgRole, error) {
-	if e.loadedTypes[0] {
-		if e.OrgRole == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: orgrole.Label}
-		}
+	if e.OrgRole != nil {
 		return e.OrgRole, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: orgrole.Label}
 	}
 	return nil, &NotLoadedError{edge: "org_role"}
 }
@@ -76,12 +74,10 @@ func (e OrgRoleUserEdges) OrgRoleOrErr() (*OrgRole, error) {
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgRoleUserEdges) OrgUserOrErr() (*OrgUser, error) {
-	if e.loadedTypes[1] {
-		if e.OrgUser == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: orguser.Label}
-		}
+	if e.OrgUser != nil {
 		return e.OrgUser, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: orguser.Label}
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
 }
@@ -89,12 +85,10 @@ func (e OrgRoleUserEdges) OrgUserOrErr() (*OrgUser, error) {
 // UserOrErr returns the User value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgRoleUserEdges) UserOrErr() (*User, error) {
-	if e.loadedTypes[2] {
-		if e.User == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.User != nil {
 		return e.User, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "user"}
 }
@@ -102,12 +96,10 @@ func (e OrgRoleUserEdges) UserOrErr() (*User, error) {
 // OrgOrErr returns the Org value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgRoleUserEdges) OrgOrErr() (*Org, error) {
-	if e.loadedTypes[3] {
-		if e.Org == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: org.Label}
-		}
+	if e.Org != nil {
 		return e.Org, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: org.Label}
 	}
 	return nil, &NotLoadedError{edge: "org"}
 }

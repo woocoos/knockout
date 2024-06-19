@@ -25,16 +25,32 @@ type FileSource struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// 组织ID
+	TenantID int `json:"tenant_id,omitempty"`
 	// 文件来源
 	Kind filesource.Kind `json:"kind,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
+	// accesskey id
+	AccessKeyID string `json:"access_key_id,omitempty"`
+	// accesskey secret
+	AccessKeySecret string `json:"access_key_secret,omitempty"`
 	// 对外服务的访问域名
 	Endpoint string `json:"endpoint,omitempty"`
-	// 地域，数据存储的物理位置。本地存储为：localhost
+	// sts服务的访问域名
+	StsEndpoint string `json:"sts_endpoint,omitempty"`
+	// 地域，数据存储的物理位置
 	Region string `json:"region,omitempty"`
-	// 文件存储空间。本地存储为：local
+	// 文件存储空间
 	Bucket string `json:"bucket,omitempty"`
+	// 文件存储空间地址，用于匹配url
+	BucketUrl string `json:"bucketUrl,omitempty"`
+	// 角色的资源名称(ARN)，用于STS
+	RoleArn string `json:"role_arn,omitempty"`
+	// 指定返回的STS令牌的权限的策略
+	Policy string `json:"policy,omitempty"`
+	// STS令牌的有效期，默认3600s
+	DurationSeconds int `json:"duration_seconds,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileSourceQuery when eager-loading is set.
 	Edges        FileSourceEdges `json:"edges"`
@@ -68,9 +84,9 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy:
+		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy, filesource.FieldTenantID, filesource.FieldDurationSeconds:
 			values[i] = new(sql.NullInt64)
-		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldRegion, filesource.FieldBucket:
+		case filesource.FieldKind, filesource.FieldComments, filesource.FieldAccessKeyID, filesource.FieldAccessKeySecret, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketUrl, filesource.FieldRoleArn, filesource.FieldPolicy:
 			values[i] = new(sql.NullString)
 		case filesource.FieldCreatedAt, filesource.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -119,6 +135,12 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.UpdatedAt = value.Time
 			}
+		case filesource.FieldTenantID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
+			} else if value.Valid {
+				fs.TenantID = int(value.Int64)
+			}
 		case filesource.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
@@ -131,11 +153,29 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.Comments = value.String
 			}
+		case filesource.FieldAccessKeyID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field access_key_id", values[i])
+			} else if value.Valid {
+				fs.AccessKeyID = value.String
+			}
+		case filesource.FieldAccessKeySecret:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field access_key_secret", values[i])
+			} else if value.Valid {
+				fs.AccessKeySecret = value.String
+			}
 		case filesource.FieldEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field endpoint", values[i])
 			} else if value.Valid {
 				fs.Endpoint = value.String
+			}
+		case filesource.FieldStsEndpoint:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sts_endpoint", values[i])
+			} else if value.Valid {
+				fs.StsEndpoint = value.String
 			}
 		case filesource.FieldRegion:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -148,6 +188,30 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field bucket", values[i])
 			} else if value.Valid {
 				fs.Bucket = value.String
+			}
+		case filesource.FieldBucketUrl:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field bucketUrl", values[i])
+			} else if value.Valid {
+				fs.BucketUrl = value.String
+			}
+		case filesource.FieldRoleArn:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field role_arn", values[i])
+			} else if value.Valid {
+				fs.RoleArn = value.String
+			}
+		case filesource.FieldPolicy:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field policy", values[i])
+			} else if value.Valid {
+				fs.Policy = value.String
+			}
+		case filesource.FieldDurationSeconds:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field duration_seconds", values[i])
+			} else if value.Valid {
+				fs.DurationSeconds = int(value.Int64)
 			}
 		default:
 			fs.selectValues.Set(columns[i], values[i])
@@ -202,20 +266,44 @@ func (fs *FileSource) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(fs.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
+	builder.WriteString("tenant_id=")
+	builder.WriteString(fmt.Sprintf("%v", fs.TenantID))
+	builder.WriteString(", ")
 	builder.WriteString("kind=")
 	builder.WriteString(fmt.Sprintf("%v", fs.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
 	builder.WriteString(fs.Comments)
 	builder.WriteString(", ")
+	builder.WriteString("access_key_id=")
+	builder.WriteString(fs.AccessKeyID)
+	builder.WriteString(", ")
+	builder.WriteString("access_key_secret=")
+	builder.WriteString(fs.AccessKeySecret)
+	builder.WriteString(", ")
 	builder.WriteString("endpoint=")
 	builder.WriteString(fs.Endpoint)
+	builder.WriteString(", ")
+	builder.WriteString("sts_endpoint=")
+	builder.WriteString(fs.StsEndpoint)
 	builder.WriteString(", ")
 	builder.WriteString("region=")
 	builder.WriteString(fs.Region)
 	builder.WriteString(", ")
 	builder.WriteString("bucket=")
 	builder.WriteString(fs.Bucket)
+	builder.WriteString(", ")
+	builder.WriteString("bucketUrl=")
+	builder.WriteString(fs.BucketUrl)
+	builder.WriteString(", ")
+	builder.WriteString("role_arn=")
+	builder.WriteString(fs.RoleArn)
+	builder.WriteString(", ")
+	builder.WriteString("policy=")
+	builder.WriteString(fs.Policy)
+	builder.WriteString(", ")
+	builder.WriteString("duration_seconds=")
+	builder.WriteString(fmt.Sprintf("%v", fs.DurationSeconds))
 	builder.WriteByte(')')
 	return builder.String()
 }

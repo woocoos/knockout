@@ -75,14 +75,34 @@ func UpdatedAt(v time.Time) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
+// TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
+func TenantID(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldTenantID, v))
+}
+
 // Comments applies equality check predicate on the "comments" field. It's identical to CommentsEQ.
 func Comments(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldComments, v))
 }
 
+// AccessKeyID applies equality check predicate on the "access_key_id" field. It's identical to AccessKeyIDEQ.
+func AccessKeyID(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldAccessKeyID, v))
+}
+
+// AccessKeySecret applies equality check predicate on the "access_key_secret" field. It's identical to AccessKeySecretEQ.
+func AccessKeySecret(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldAccessKeySecret, v))
+}
+
 // Endpoint applies equality check predicate on the "endpoint" field. It's identical to EndpointEQ.
 func Endpoint(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldEndpoint, v))
+}
+
+// StsEndpoint applies equality check predicate on the "sts_endpoint" field. It's identical to StsEndpointEQ.
+func StsEndpoint(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldStsEndpoint, v))
 }
 
 // Region applies equality check predicate on the "region" field. It's identical to RegionEQ.
@@ -93,6 +113,21 @@ func Region(v string) predicate.FileSource {
 // Bucket applies equality check predicate on the "bucket" field. It's identical to BucketEQ.
 func Bucket(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldBucket, v))
+}
+
+// BucketUrl applies equality check predicate on the "bucketUrl" field. It's identical to BucketUrlEQ.
+func BucketUrl(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldBucketUrl, v))
+}
+
+// RoleArn applies equality check predicate on the "role_arn" field. It's identical to RoleArnEQ.
+func RoleArn(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldRoleArn, v))
+}
+
+// DurationSeconds applies equality check predicate on the "duration_seconds" field. It's identical to DurationSecondsEQ.
+func DurationSeconds(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldDurationSeconds, v))
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
@@ -275,6 +310,46 @@ func UpdatedAtNotNil() predicate.FileSource {
 	return predicate.FileSource(sql.FieldNotNull(FieldUpdatedAt))
 }
 
+// TenantIDEQ applies the EQ predicate on the "tenant_id" field.
+func TenantIDEQ(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldTenantID, v))
+}
+
+// TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
+func TenantIDNEQ(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldTenantID, v))
+}
+
+// TenantIDIn applies the In predicate on the "tenant_id" field.
+func TenantIDIn(vs ...int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldTenantID, vs...))
+}
+
+// TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
+func TenantIDNotIn(vs ...int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldTenantID, vs...))
+}
+
+// TenantIDGT applies the GT predicate on the "tenant_id" field.
+func TenantIDGT(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldTenantID, v))
+}
+
+// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
+func TenantIDGTE(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldTenantID, v))
+}
+
+// TenantIDLT applies the LT predicate on the "tenant_id" field.
+func TenantIDLT(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldTenantID, v))
+}
+
+// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
+func TenantIDLTE(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldTenantID, v))
+}
+
 // KindEQ applies the EQ predicate on the "kind" field.
 func KindEQ(v Kind) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldKind, v))
@@ -370,6 +445,136 @@ func CommentsContainsFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldContainsFold(FieldComments, v))
 }
 
+// AccessKeyIDEQ applies the EQ predicate on the "access_key_id" field.
+func AccessKeyIDEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDNEQ applies the NEQ predicate on the "access_key_id" field.
+func AccessKeyIDNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDIn applies the In predicate on the "access_key_id" field.
+func AccessKeyIDIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldAccessKeyID, vs...))
+}
+
+// AccessKeyIDNotIn applies the NotIn predicate on the "access_key_id" field.
+func AccessKeyIDNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldAccessKeyID, vs...))
+}
+
+// AccessKeyIDGT applies the GT predicate on the "access_key_id" field.
+func AccessKeyIDGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDGTE applies the GTE predicate on the "access_key_id" field.
+func AccessKeyIDGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDLT applies the LT predicate on the "access_key_id" field.
+func AccessKeyIDLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDLTE applies the LTE predicate on the "access_key_id" field.
+func AccessKeyIDLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDContains applies the Contains predicate on the "access_key_id" field.
+func AccessKeyIDContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDHasPrefix applies the HasPrefix predicate on the "access_key_id" field.
+func AccessKeyIDHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDHasSuffix applies the HasSuffix predicate on the "access_key_id" field.
+func AccessKeyIDHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDEqualFold applies the EqualFold predicate on the "access_key_id" field.
+func AccessKeyIDEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldAccessKeyID, v))
+}
+
+// AccessKeyIDContainsFold applies the ContainsFold predicate on the "access_key_id" field.
+func AccessKeyIDContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldAccessKeyID, v))
+}
+
+// AccessKeySecretEQ applies the EQ predicate on the "access_key_secret" field.
+func AccessKeySecretEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretNEQ applies the NEQ predicate on the "access_key_secret" field.
+func AccessKeySecretNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretIn applies the In predicate on the "access_key_secret" field.
+func AccessKeySecretIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldAccessKeySecret, vs...))
+}
+
+// AccessKeySecretNotIn applies the NotIn predicate on the "access_key_secret" field.
+func AccessKeySecretNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldAccessKeySecret, vs...))
+}
+
+// AccessKeySecretGT applies the GT predicate on the "access_key_secret" field.
+func AccessKeySecretGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretGTE applies the GTE predicate on the "access_key_secret" field.
+func AccessKeySecretGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretLT applies the LT predicate on the "access_key_secret" field.
+func AccessKeySecretLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretLTE applies the LTE predicate on the "access_key_secret" field.
+func AccessKeySecretLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretContains applies the Contains predicate on the "access_key_secret" field.
+func AccessKeySecretContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretHasPrefix applies the HasPrefix predicate on the "access_key_secret" field.
+func AccessKeySecretHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretHasSuffix applies the HasSuffix predicate on the "access_key_secret" field.
+func AccessKeySecretHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretEqualFold applies the EqualFold predicate on the "access_key_secret" field.
+func AccessKeySecretEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldAccessKeySecret, v))
+}
+
+// AccessKeySecretContainsFold applies the ContainsFold predicate on the "access_key_secret" field.
+func AccessKeySecretContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldAccessKeySecret, v))
+}
+
 // EndpointEQ applies the EQ predicate on the "endpoint" field.
 func EndpointEQ(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldEndpoint, v))
@@ -425,16 +630,6 @@ func EndpointHasSuffix(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldHasSuffix(FieldEndpoint, v))
 }
 
-// EndpointIsNil applies the IsNil predicate on the "endpoint" field.
-func EndpointIsNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldIsNull(FieldEndpoint))
-}
-
-// EndpointNotNil applies the NotNil predicate on the "endpoint" field.
-func EndpointNotNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldNotNull(FieldEndpoint))
-}
-
 // EndpointEqualFold applies the EqualFold predicate on the "endpoint" field.
 func EndpointEqualFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEqualFold(FieldEndpoint, v))
@@ -443,6 +638,71 @@ func EndpointEqualFold(v string) predicate.FileSource {
 // EndpointContainsFold applies the ContainsFold predicate on the "endpoint" field.
 func EndpointContainsFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldContainsFold(FieldEndpoint, v))
+}
+
+// StsEndpointEQ applies the EQ predicate on the "sts_endpoint" field.
+func StsEndpointEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldStsEndpoint, v))
+}
+
+// StsEndpointNEQ applies the NEQ predicate on the "sts_endpoint" field.
+func StsEndpointNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldStsEndpoint, v))
+}
+
+// StsEndpointIn applies the In predicate on the "sts_endpoint" field.
+func StsEndpointIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldStsEndpoint, vs...))
+}
+
+// StsEndpointNotIn applies the NotIn predicate on the "sts_endpoint" field.
+func StsEndpointNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldStsEndpoint, vs...))
+}
+
+// StsEndpointGT applies the GT predicate on the "sts_endpoint" field.
+func StsEndpointGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldStsEndpoint, v))
+}
+
+// StsEndpointGTE applies the GTE predicate on the "sts_endpoint" field.
+func StsEndpointGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldStsEndpoint, v))
+}
+
+// StsEndpointLT applies the LT predicate on the "sts_endpoint" field.
+func StsEndpointLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldStsEndpoint, v))
+}
+
+// StsEndpointLTE applies the LTE predicate on the "sts_endpoint" field.
+func StsEndpointLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldStsEndpoint, v))
+}
+
+// StsEndpointContains applies the Contains predicate on the "sts_endpoint" field.
+func StsEndpointContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldStsEndpoint, v))
+}
+
+// StsEndpointHasPrefix applies the HasPrefix predicate on the "sts_endpoint" field.
+func StsEndpointHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldStsEndpoint, v))
+}
+
+// StsEndpointHasSuffix applies the HasSuffix predicate on the "sts_endpoint" field.
+func StsEndpointHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldStsEndpoint, v))
+}
+
+// StsEndpointEqualFold applies the EqualFold predicate on the "sts_endpoint" field.
+func StsEndpointEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldStsEndpoint, v))
+}
+
+// StsEndpointContainsFold applies the ContainsFold predicate on the "sts_endpoint" field.
+func StsEndpointContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldStsEndpoint, v))
 }
 
 // RegionEQ applies the EQ predicate on the "region" field.
@@ -498,16 +758,6 @@ func RegionHasPrefix(v string) predicate.FileSource {
 // RegionHasSuffix applies the HasSuffix predicate on the "region" field.
 func RegionHasSuffix(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldHasSuffix(FieldRegion, v))
-}
-
-// RegionIsNil applies the IsNil predicate on the "region" field.
-func RegionIsNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldIsNull(FieldRegion))
-}
-
-// RegionNotNil applies the NotNil predicate on the "region" field.
-func RegionNotNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldNotNull(FieldRegion))
 }
 
 // RegionEqualFold applies the EqualFold predicate on the "region" field.
@@ -575,16 +825,6 @@ func BucketHasSuffix(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldHasSuffix(FieldBucket, v))
 }
 
-// BucketIsNil applies the IsNil predicate on the "bucket" field.
-func BucketIsNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldIsNull(FieldBucket))
-}
-
-// BucketNotNil applies the NotNil predicate on the "bucket" field.
-func BucketNotNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldNotNull(FieldBucket))
-}
-
 // BucketEqualFold applies the EqualFold predicate on the "bucket" field.
 func BucketEqualFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEqualFold(FieldBucket, v))
@@ -593,6 +833,271 @@ func BucketEqualFold(v string) predicate.FileSource {
 // BucketContainsFold applies the ContainsFold predicate on the "bucket" field.
 func BucketContainsFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldContainsFold(FieldBucket, v))
+}
+
+// BucketUrlEQ applies the EQ predicate on the "bucketUrl" field.
+func BucketUrlEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldBucketUrl, v))
+}
+
+// BucketUrlNEQ applies the NEQ predicate on the "bucketUrl" field.
+func BucketUrlNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldBucketUrl, v))
+}
+
+// BucketUrlIn applies the In predicate on the "bucketUrl" field.
+func BucketUrlIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldBucketUrl, vs...))
+}
+
+// BucketUrlNotIn applies the NotIn predicate on the "bucketUrl" field.
+func BucketUrlNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldBucketUrl, vs...))
+}
+
+// BucketUrlGT applies the GT predicate on the "bucketUrl" field.
+func BucketUrlGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldBucketUrl, v))
+}
+
+// BucketUrlGTE applies the GTE predicate on the "bucketUrl" field.
+func BucketUrlGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldBucketUrl, v))
+}
+
+// BucketUrlLT applies the LT predicate on the "bucketUrl" field.
+func BucketUrlLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldBucketUrl, v))
+}
+
+// BucketUrlLTE applies the LTE predicate on the "bucketUrl" field.
+func BucketUrlLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldBucketUrl, v))
+}
+
+// BucketUrlContains applies the Contains predicate on the "bucketUrl" field.
+func BucketUrlContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldBucketUrl, v))
+}
+
+// BucketUrlHasPrefix applies the HasPrefix predicate on the "bucketUrl" field.
+func BucketUrlHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldBucketUrl, v))
+}
+
+// BucketUrlHasSuffix applies the HasSuffix predicate on the "bucketUrl" field.
+func BucketUrlHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldBucketUrl, v))
+}
+
+// BucketUrlIsNil applies the IsNil predicate on the "bucketUrl" field.
+func BucketUrlIsNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldIsNull(FieldBucketUrl))
+}
+
+// BucketUrlNotNil applies the NotNil predicate on the "bucketUrl" field.
+func BucketUrlNotNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotNull(FieldBucketUrl))
+}
+
+// BucketUrlEqualFold applies the EqualFold predicate on the "bucketUrl" field.
+func BucketUrlEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldBucketUrl, v))
+}
+
+// BucketUrlContainsFold applies the ContainsFold predicate on the "bucketUrl" field.
+func BucketUrlContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldBucketUrl, v))
+}
+
+// RoleArnEQ applies the EQ predicate on the "role_arn" field.
+func RoleArnEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldRoleArn, v))
+}
+
+// RoleArnNEQ applies the NEQ predicate on the "role_arn" field.
+func RoleArnNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldRoleArn, v))
+}
+
+// RoleArnIn applies the In predicate on the "role_arn" field.
+func RoleArnIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldRoleArn, vs...))
+}
+
+// RoleArnNotIn applies the NotIn predicate on the "role_arn" field.
+func RoleArnNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldRoleArn, vs...))
+}
+
+// RoleArnGT applies the GT predicate on the "role_arn" field.
+func RoleArnGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldRoleArn, v))
+}
+
+// RoleArnGTE applies the GTE predicate on the "role_arn" field.
+func RoleArnGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldRoleArn, v))
+}
+
+// RoleArnLT applies the LT predicate on the "role_arn" field.
+func RoleArnLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldRoleArn, v))
+}
+
+// RoleArnLTE applies the LTE predicate on the "role_arn" field.
+func RoleArnLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldRoleArn, v))
+}
+
+// RoleArnContains applies the Contains predicate on the "role_arn" field.
+func RoleArnContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldRoleArn, v))
+}
+
+// RoleArnHasPrefix applies the HasPrefix predicate on the "role_arn" field.
+func RoleArnHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldRoleArn, v))
+}
+
+// RoleArnHasSuffix applies the HasSuffix predicate on the "role_arn" field.
+func RoleArnHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldRoleArn, v))
+}
+
+// RoleArnEqualFold applies the EqualFold predicate on the "role_arn" field.
+func RoleArnEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldRoleArn, v))
+}
+
+// RoleArnContainsFold applies the ContainsFold predicate on the "role_arn" field.
+func RoleArnContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldRoleArn, v))
+}
+
+// PolicyEQ applies the EQ predicate on the "policy" field.
+func PolicyEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldPolicy, v))
+}
+
+// PolicyNEQ applies the NEQ predicate on the "policy" field.
+func PolicyNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldPolicy, v))
+}
+
+// PolicyIn applies the In predicate on the "policy" field.
+func PolicyIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldPolicy, vs...))
+}
+
+// PolicyNotIn applies the NotIn predicate on the "policy" field.
+func PolicyNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldPolicy, vs...))
+}
+
+// PolicyGT applies the GT predicate on the "policy" field.
+func PolicyGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldPolicy, v))
+}
+
+// PolicyGTE applies the GTE predicate on the "policy" field.
+func PolicyGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldPolicy, v))
+}
+
+// PolicyLT applies the LT predicate on the "policy" field.
+func PolicyLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldPolicy, v))
+}
+
+// PolicyLTE applies the LTE predicate on the "policy" field.
+func PolicyLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldPolicy, v))
+}
+
+// PolicyContains applies the Contains predicate on the "policy" field.
+func PolicyContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldPolicy, v))
+}
+
+// PolicyHasPrefix applies the HasPrefix predicate on the "policy" field.
+func PolicyHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldPolicy, v))
+}
+
+// PolicyHasSuffix applies the HasSuffix predicate on the "policy" field.
+func PolicyHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldPolicy, v))
+}
+
+// PolicyIsNil applies the IsNil predicate on the "policy" field.
+func PolicyIsNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldIsNull(FieldPolicy))
+}
+
+// PolicyNotNil applies the NotNil predicate on the "policy" field.
+func PolicyNotNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotNull(FieldPolicy))
+}
+
+// PolicyEqualFold applies the EqualFold predicate on the "policy" field.
+func PolicyEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldPolicy, v))
+}
+
+// PolicyContainsFold applies the ContainsFold predicate on the "policy" field.
+func PolicyContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldPolicy, v))
+}
+
+// DurationSecondsEQ applies the EQ predicate on the "duration_seconds" field.
+func DurationSecondsEQ(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldDurationSeconds, v))
+}
+
+// DurationSecondsNEQ applies the NEQ predicate on the "duration_seconds" field.
+func DurationSecondsNEQ(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldDurationSeconds, v))
+}
+
+// DurationSecondsIn applies the In predicate on the "duration_seconds" field.
+func DurationSecondsIn(vs ...int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldDurationSeconds, vs...))
+}
+
+// DurationSecondsNotIn applies the NotIn predicate on the "duration_seconds" field.
+func DurationSecondsNotIn(vs ...int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldDurationSeconds, vs...))
+}
+
+// DurationSecondsGT applies the GT predicate on the "duration_seconds" field.
+func DurationSecondsGT(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldDurationSeconds, v))
+}
+
+// DurationSecondsGTE applies the GTE predicate on the "duration_seconds" field.
+func DurationSecondsGTE(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldDurationSeconds, v))
+}
+
+// DurationSecondsLT applies the LT predicate on the "duration_seconds" field.
+func DurationSecondsLT(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldDurationSeconds, v))
+}
+
+// DurationSecondsLTE applies the LTE predicate on the "duration_seconds" field.
+func DurationSecondsLTE(v int) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldDurationSeconds, v))
+}
+
+// DurationSecondsIsNil applies the IsNil predicate on the "duration_seconds" field.
+func DurationSecondsIsNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldIsNull(FieldDurationSeconds))
+}
+
+// DurationSecondsNotNil applies the NotNil predicate on the "duration_seconds" field.
+func DurationSecondsNotNil() predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotNull(FieldDurationSeconds))
 }
 
 // HasFiles applies the HasEdge predicate on the "files" edge.

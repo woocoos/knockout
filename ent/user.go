@@ -47,6 +47,8 @@ type User struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
+	// 头像地址
+	Avatar string `json:"avatar,omitempty"`
 	// 头像,存储路规则：/{appcode}/{tid}/xxx
 	AvatarFileID int `json:"avatar_file_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -100,12 +102,10 @@ func (e UserEdges) IdentitiesOrErr() ([]*UserIdentity, error) {
 // LoginProfileOrErr returns the LoginProfile value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) LoginProfileOrErr() (*UserLoginProfile, error) {
-	if e.loadedTypes[1] {
-		if e.LoginProfile == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: userloginprofile.Label}
-		}
+	if e.LoginProfile != nil {
 		return e.LoginProfile, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: userloginprofile.Label}
 	}
 	return nil, &NotLoadedError{edge: "login_profile"}
 }
@@ -171,7 +171,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy, user.FieldAvatarFileID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldEmail, user.FieldMobile, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments:
+		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldEmail, user.FieldMobile, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments, user.FieldAvatar:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -280,6 +280,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
 				u.Comments = value.String
+			}
+		case user.FieldAvatar:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field avatar", values[i])
+			} else if value.Valid {
+				u.Avatar = value.String
 			}
 		case user.FieldAvatarFileID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -406,6 +412,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
 	builder.WriteString(u.Comments)
+	builder.WriteString(", ")
+	builder.WriteString("avatar=")
+	builder.WriteString(u.Avatar)
 	builder.WriteString(", ")
 	builder.WriteString("avatar_file_id=")
 	builder.WriteString(fmt.Sprintf("%v", u.AvatarFileID))

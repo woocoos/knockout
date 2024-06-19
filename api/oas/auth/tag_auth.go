@@ -59,10 +59,55 @@ type ForgetPwdVerifyMfaRequest struct {
 	StateToken string `binding:"required" json:"stateToken"`
 }
 
+// GetPreSignUrlRequest is the request object for (POST /oss/presignurl)
+type GetPreSignUrlRequest struct {
+	// URL the url of file
+	URL string `binding:"required" json:"url"`
+}
+
+// GetPreSignUrlResponse successful operation
+type GetPreSignUrlResponse struct {
+	URL string `json:"url,omitempty"`
+}
+
+// GetSTSRequest is the request object for (POST /oss/sts)
+type GetSTSRequest struct {
+	Bucket   string `binding:"required" json:"bucket"`
+	Endpoint string `binding:"required" json:"endpoint"`
+	Kind     Kind   `binding:"required,oneof=aliOSS minio" json:"kind"`
+}
+
+// Kind defines the type for the kind.kind enum field.
+type Kind string
+
+// Kind values.
+const (
+	KindAliOSS Kind = "aliOSS"
+	KindMinio  Kind = "minio"
+)
+
+func (k Kind) String() string {
+	return string(k)
+}
+
+// KindValidator is a validator for the Kind field enum values.
+func KindValidator(k Kind) error {
+	switch k {
+	case KindAliOSS, KindMinio:
+		return nil
+	default:
+		return fmt.Errorf("Kind does not allow the value '%s'", k)
+	}
+}
+
 // GetSTSResponse successful operation
 type GetSTSResponse struct {
+	Bucket          string    `json:"bucket,omitempty"`
+	Endpoint        string    `json:"endpoint,omitempty"`
+	Region          string    `json:"region,omitempty"`
 	AccessKeyID     string    `json:"access_key_id,omitempty"`
 	Expiration      time.Time `json:"expiration,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	Kind            string    `json:"kind,omitempty"`
 	SecretAccessKey string    `json:"secret_access_key,omitempty"`
 	SessionToken    string    `json:"session_token,omitempty"`
 }

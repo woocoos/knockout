@@ -2031,6 +2031,11 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldUpdatedAt)
 				fieldSeen[filesource.FieldUpdatedAt] = struct{}{}
 			}
+		case "tenantID":
+			if _, ok := fieldSeen[filesource.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldTenantID)
+				fieldSeen[filesource.FieldTenantID] = struct{}{}
+			}
 		case "kind":
 			if _, ok := fieldSeen[filesource.FieldKind]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldKind)
@@ -2041,10 +2046,25 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldComments)
 				fieldSeen[filesource.FieldComments] = struct{}{}
 			}
+		case "accessKeyID":
+			if _, ok := fieldSeen[filesource.FieldAccessKeyID]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldAccessKeyID)
+				fieldSeen[filesource.FieldAccessKeyID] = struct{}{}
+			}
+		case "accessKeySecret":
+			if _, ok := fieldSeen[filesource.FieldAccessKeySecret]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldAccessKeySecret)
+				fieldSeen[filesource.FieldAccessKeySecret] = struct{}{}
+			}
 		case "endpoint":
 			if _, ok := fieldSeen[filesource.FieldEndpoint]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldEndpoint)
 				fieldSeen[filesource.FieldEndpoint] = struct{}{}
+			}
+		case "stsEndpoint":
+			if _, ok := fieldSeen[filesource.FieldStsEndpoint]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldStsEndpoint)
+				fieldSeen[filesource.FieldStsEndpoint] = struct{}{}
 			}
 		case "region":
 			if _, ok := fieldSeen[filesource.FieldRegion]; !ok {
@@ -2055,6 +2075,26 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 			if _, ok := fieldSeen[filesource.FieldBucket]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldBucket)
 				fieldSeen[filesource.FieldBucket] = struct{}{}
+			}
+		case "bucketurl":
+			if _, ok := fieldSeen[filesource.FieldBucketUrl]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldBucketUrl)
+				fieldSeen[filesource.FieldBucketUrl] = struct{}{}
+			}
+		case "roleArn":
+			if _, ok := fieldSeen[filesource.FieldRoleArn]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldRoleArn)
+				fieldSeen[filesource.FieldRoleArn] = struct{}{}
+			}
+		case "policy":
+			if _, ok := fieldSeen[filesource.FieldPolicy]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldPolicy)
+				fieldSeen[filesource.FieldPolicy] = struct{}{}
+			}
+		case "durationSeconds":
+			if _, ok := fieldSeen[filesource.FieldDurationSeconds]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldDurationSeconds)
+				fieldSeen[filesource.FieldDurationSeconds] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3676,6 +3716,11 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			if _, ok := fieldSeen[user.FieldComments]; !ok {
 				selectedFields = append(selectedFields, user.FieldComments)
 				fieldSeen[user.FieldComments] = struct{}{}
+			}
+		case "avatar":
+			if _, ok := fieldSeen[user.FieldAvatar]; !ok {
+				selectedFields = append(selectedFields, user.FieldAvatar)
+				fieldSeen[user.FieldAvatar] = struct{}{}
 			}
 		case "avatarFileID":
 			if _, ok := fieldSeen[user.FieldAvatarFileID]; !ok {

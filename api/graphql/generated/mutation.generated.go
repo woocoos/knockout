@@ -2199,6 +2199,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "avatarFileID":
 				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
@@ -2299,6 +2301,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "avatarFileID":
 				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
@@ -2509,6 +2513,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "avatarFileID":
 				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
@@ -6121,6 +6127,8 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "avatarFileID":
 				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
@@ -6204,16 +6212,32 @@ func (ec *executionContext) fieldContext_Mutation_createFileSource(ctx context.C
 				return ec.fieldContext_FileSource_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_FileSource_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileSource_tenantID(ctx, field)
 			case "kind":
 				return ec.fieldContext_FileSource_kind(ctx, field)
 			case "comments":
 				return ec.fieldContext_FileSource_comments(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileSource_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileSource_accessKeySecret(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
+			case "bucketurl":
+				return ec.fieldContext_FileSource_bucketurl(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileSource_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileSource_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileSource_durationSeconds(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -6283,16 +6307,32 @@ func (ec *executionContext) fieldContext_Mutation_updateFileSource(ctx context.C
 				return ec.fieldContext_FileSource_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_FileSource_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileSource_tenantID(ctx, field)
 			case "kind":
 				return ec.fieldContext_FileSource_kind(ctx, field)
 			case "comments":
 				return ec.fieldContext_FileSource_comments(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileSource_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileSource_accessKeySecret(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
+			case "bucketurl":
+				return ec.fieldContext_FileSource_bucketurl(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileSource_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileSource_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileSource_durationSeconds(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}

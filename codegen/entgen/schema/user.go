@@ -86,7 +86,7 @@ func (User) Fields() []ent.Field {
 		field.String("comments").Optional().Comment("备注").Annotations(
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 		fieldx.File("avatar").MaxLen(255).Optional().Comment("头像地址").Annotations(
-			entgql.Skip(entgql.SkipWhereInput), entproto.Skip(), entgql.Type("ID")),
+			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 		field.Int("avatar_file_id").Optional().Comment("头像,存储路规则：/{appcode}/{tid}/xxx").Annotations(
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip(), entgql.Type("ID")),
 	}

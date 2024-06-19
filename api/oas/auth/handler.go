@@ -21,6 +21,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/forget-pwd/send-email", wrapForgetPwdSendEmail(si))
 	router.POST("/forget-pwd/verify-email", wrapForgetPwdVerifyEmail(si))
 	router.POST("/forget-pwd/verify-mfa", wrapForgetPwdVerifyMfa(si))
+	router.POST("/oss/presignurl", wrapGetPreSignUrl(si))
 	router.POST("/oss/sts", wrapGetSTS(si))
 	router.POST("/spm/auth", wrapGetSpmAuth(si))
 	router.POST("/login/auth", wrapLogin(si))
@@ -169,9 +170,30 @@ func wrapForgetPwdVerifyMfa(si AuthServer) func(c *gin.Context) {
 	}
 }
 
+func wrapGetPreSignUrl(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req GetPreSignUrlRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.GetPreSignUrl(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
 func wrapGetSTS(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		resp, err := si.GetSTS(c)
+		var req GetSTSRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.GetSTS(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

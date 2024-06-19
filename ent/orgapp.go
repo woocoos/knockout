@@ -53,12 +53,10 @@ type OrgAppEdges struct {
 // AppOrErr returns the App value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgAppEdges) AppOrErr() (*App, error) {
-	if e.loadedTypes[0] {
-		if e.App == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: app.Label}
-		}
+	if e.App != nil {
 		return e.App, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: app.Label}
 	}
 	return nil, &NotLoadedError{edge: "app"}
 }
@@ -66,12 +64,10 @@ func (e OrgAppEdges) AppOrErr() (*App, error) {
 // OrgOrErr returns the Org value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgAppEdges) OrgOrErr() (*Org, error) {
-	if e.loadedTypes[1] {
-		if e.Org == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: org.Label}
-		}
+	if e.Org != nil {
 		return e.Org, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: org.Label}
 	}
 	return nil, &NotLoadedError{edge: "org"}
 }

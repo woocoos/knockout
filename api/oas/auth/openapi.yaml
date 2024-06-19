@@ -175,6 +175,23 @@ paths:
         - auth
       operationId: getSTS
       description: return temporary credentials by aws sts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bucket:
+                  type: string
+                endpoint:
+                  type: string
+                kind:
+                  type: string
+                  enum: [ "aliOSS","minio" ]
+              required:
+                - bucket
+                - endpoint
+                - kind
       responses:
         '200':
           description: successful operation
@@ -190,6 +207,40 @@ paths:
                   secret_access_key:
                     type: string
                   session_token:
+                    type: string
+                  Endpoint:
+                    type: string
+                  Bucket:
+                    type: string
+                  Region:
+                    type: string
+                  kind:
+                    type: string
+  /oss/presignurl:
+    post:
+      tags:
+        - auth
+      operationId: getPreSignUrl
+      description: return the temporary authorization access url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: the url of file
+              required:
+                - url
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
                     type: string
   /token:
     post:

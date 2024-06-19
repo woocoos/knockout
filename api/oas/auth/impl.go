@@ -28,6 +28,7 @@ import (
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/oas/auth/oss"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -117,7 +118,7 @@ func NewServer(app *woocoo.App) *ServerImpl {
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
 		panic(err)
 	}
-	if s.ossService, err = oss.NewService(cnf.Sub("oss")); err != nil {
+	if s.ossService, err = oss.NewService(); err != nil {
 		panic(err)
 	}
 	if s.cache, err = cache.GetCache("redis"); err != nil {
@@ -938,24 +939,98 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 
 }
 
-func (s *ServerImpl) GetSTS(ctx *gin.Context) (*GetSTSResponse, error) {
-	tid, err := s.tryGetTenantID(ctx)
-	if err != nil {
-		return nil, err
-	}
+func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	provider, err := s.ossService.GetProvider(tid)
+	tid, err := s.tryGetTenantID(ctx)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := provider.GetSTS(strconv.Itoa(uid))
+	fs, err := s.db.FileSource.Query().Where(
+		filesource.TenantID(tid),
+		filesource.Endpoint(req.Endpoint),
+		filesource.Bucket(req.Bucket),
+		filesource.KindEQ(filesource.Kind(req.Kind.String())),
+	).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	provider, err := s.ossService.GetProvider(fs)
+	if err != nil {
+		return nil, err
+	}
+	usr, err := s.db.User.Get(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := provider.GetSTS(usr.PrincipalName)
+	if err != nil {
+		return nil, err
+	}
 	return &GetSTSResponse{
 		AccessKeyID:     resp.AccessKeyID,
 		Expiration:      resp.Expiration,
 		SecretAccessKey: resp.SecretAccessKey,
 		SessionToken:    resp.SessionToken,
+		Endpoint:        resp.Endpoint,
+		Bucket:          resp.Bucket,
+		Region:          resp.Region,
+		Kind:            resp.Kind,
 	}, nil
+}
+
+func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error) {
+	fs, path, err := s.convertUrlToFileSource(ctx, req.URL)
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.ossService.GetProvider(fs)
+	if err != nil {
+		return nil, err
+	}
+	signUrl, err := provider.GetPreSignedURL(fs.Bucket, path, time.Hour)
+	if err != nil {
+		return nil, err
+	}
+	return &GetPreSignUrlResponse{
+		URL: signUrl,
+	}, nil
+}
+
+// convertUrlToFileSource 将url转换为文件源
+func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, url string) (*ent.FileSource, string, error) {
+	tid, err := s.tryGetTenantID(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+	minioBucketUrl, minioPath, err := oss.ParseMinioUrl(url)
+	if err != nil {
+		return nil, "", err
+	}
+	aliOSSBucketUrl, aliOSSPath, err := oss.ParseAliOSSUrl(url)
+	if err != nil {
+		return nil, "", err
+	}
+	fs, err := s.db.FileSource.Query().Where(
+		filesource.TenantID(tid),
+		filesource.Or(
+			filesource.BucketUrl(minioBucketUrl),
+			filesource.BucketUrl(aliOSSBucketUrl),
+		),
+	).Only(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+	path := ""
+	if fs.Kind == filesource.KindMinio {
+		path = minioPath
+	} else if fs.Kind == filesource.KindAliOSS {
+		path = aliOSSPath
+	} else {
+		return nil, "", fmt.Errorf("error path")
+	}
+	return fs, path, nil
 }

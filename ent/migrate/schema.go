@@ -348,11 +348,19 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "alioss"}},
+		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "minio", "aliOSS"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "endpoint", Type: field.TypeString, Nullable: true},
-		{Name: "region", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "bucket", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "access_key_id", Type: field.TypeString, Size: 255},
+		{Name: "access_key_secret", Type: field.TypeString, Size: 255},
+		{Name: "endpoint", Type: field.TypeString, Size: 255},
+		{Name: "sts_endpoint", Type: field.TypeString, Size: 255},
+		{Name: "region", Type: field.TypeString, Size: 100},
+		{Name: "bucket", Type: field.TypeString, Size: 255},
+		{Name: "bucket_url", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "role_arn", Type: field.TypeString, Size: 255},
+		{Name: "policy", Type: field.TypeString, Nullable: true},
+		{Name: "duration_seconds", Type: field.TypeInt, Nullable: true},
 	}
 	// FileSourceTable holds the schema information for the "file_source" table.
 	FileSourceTable = &schema.Table{
@@ -363,7 +371,7 @@ var (
 			{
 				Name:    "filesource_kind_endpoint_region_bucket",
 				Unique:  true,
-				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[8], FileSourceColumns[9]},
+				Columns: []*schema.Column{FileSourceColumns[6], FileSourceColumns[10], FileSourceColumns[12], FileSourceColumns[13]},
 			},
 		},
 	}
@@ -723,6 +731,7 @@ var (
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "avatar", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.

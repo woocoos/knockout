@@ -26,16 +26,32 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldTenantID holds the string denoting the tenant_id field in the database.
+	FieldTenantID = "tenant_id"
 	// FieldKind holds the string denoting the kind field in the database.
 	FieldKind = "kind"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
+	// FieldAccessKeyID holds the string denoting the access_key_id field in the database.
+	FieldAccessKeyID = "access_key_id"
+	// FieldAccessKeySecret holds the string denoting the access_key_secret field in the database.
+	FieldAccessKeySecret = "access_key_secret"
 	// FieldEndpoint holds the string denoting the endpoint field in the database.
 	FieldEndpoint = "endpoint"
+	// FieldStsEndpoint holds the string denoting the sts_endpoint field in the database.
+	FieldStsEndpoint = "sts_endpoint"
 	// FieldRegion holds the string denoting the region field in the database.
 	FieldRegion = "region"
 	// FieldBucket holds the string denoting the bucket field in the database.
 	FieldBucket = "bucket"
+	// FieldBucketUrl holds the string denoting the bucketurl field in the database.
+	FieldBucketUrl = "bucket_url"
+	// FieldRoleArn holds the string denoting the role_arn field in the database.
+	FieldRoleArn = "role_arn"
+	// FieldPolicy holds the string denoting the policy field in the database.
+	FieldPolicy = "policy"
+	// FieldDurationSeconds holds the string denoting the duration_seconds field in the database.
+	FieldDurationSeconds = "duration_seconds"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
 	EdgeFiles = "files"
 	// Table holds the table name of the filesource in the database.
@@ -56,11 +72,19 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
+	FieldTenantID,
 	FieldKind,
 	FieldComments,
+	FieldAccessKeyID,
+	FieldAccessKeySecret,
 	FieldEndpoint,
+	FieldStsEndpoint,
 	FieldRegion,
 	FieldBucket,
+	FieldBucketUrl,
+	FieldRoleArn,
+	FieldPolicy,
+	FieldDurationSeconds,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -82,10 +106,22 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
+	AccessKeyIDValidator func(string) error
+	// AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
+	AccessKeySecretValidator func(string) error
+	// EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
+	EndpointValidator func(string) error
+	// StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
+	StsEndpointValidator func(string) error
 	// RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	RegionValidator func(string) error
 	// BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	BucketValidator func(string) error
+	// BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
+	BucketUrlValidator func(string) error
+	// RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
+	RoleArnValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -94,7 +130,8 @@ type Kind string
 // Kind values.
 const (
 	KindLocal  Kind = "local"
-	KindAlioss Kind = "alioss"
+	KindMinio  Kind = "minio"
+	KindAliOSS Kind = "aliOSS"
 )
 
 func (k Kind) String() string {
@@ -104,7 +141,7 @@ func (k Kind) String() string {
 // KindValidator is a validator for the "kind" field enum values. It is called by the builders before save.
 func KindValidator(k Kind) error {
 	switch k {
-	case KindLocal, KindAlioss:
+	case KindLocal, KindMinio, KindAliOSS:
 		return nil
 	default:
 		return fmt.Errorf("filesource: invalid enum value for kind field: %q", k)
@@ -139,6 +176,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
+// ByTenantID orders the results by the tenant_id field.
+func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
+}
+
 // ByKind orders the results by the kind field.
 func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
@@ -149,9 +191,24 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
+// ByAccessKeyID orders the results by the access_key_id field.
+func ByAccessKeyID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAccessKeyID, opts...).ToFunc()
+}
+
+// ByAccessKeySecret orders the results by the access_key_secret field.
+func ByAccessKeySecret(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAccessKeySecret, opts...).ToFunc()
+}
+
 // ByEndpoint orders the results by the endpoint field.
 func ByEndpoint(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndpoint, opts...).ToFunc()
+}
+
+// ByStsEndpoint orders the results by the sts_endpoint field.
+func ByStsEndpoint(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStsEndpoint, opts...).ToFunc()
 }
 
 // ByRegion orders the results by the region field.
@@ -162,6 +219,26 @@ func ByRegion(opts ...sql.OrderTermOption) OrderOption {
 // ByBucket orders the results by the bucket field.
 func ByBucket(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBucket, opts...).ToFunc()
+}
+
+// ByBucketUrl orders the results by the bucketUrl field.
+func ByBucketUrl(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBucketUrl, opts...).ToFunc()
+}
+
+// ByRoleArn orders the results by the role_arn field.
+func ByRoleArn(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRoleArn, opts...).ToFunc()
+}
+
+// ByPolicy orders the results by the policy field.
+func ByPolicy(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPolicy, opts...).ToFunc()
+}
+
+// ByDurationSeconds orders the results by the duration_seconds field.
+func ByDurationSeconds(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDurationSeconds, opts...).ToFunc()
 }
 
 // ByFilesCount orders the results by files count.

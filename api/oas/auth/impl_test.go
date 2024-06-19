@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/migrate"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
@@ -140,6 +141,11 @@ func (ts *loginFlowSuite) SetupSuite() {
 
 	err = db.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
 		SetDisplayName("admin").Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileSource.Create().SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").SetKind(filesource.KindMinio).
+		SetEndpoint("localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetRoleArn("arn:aws:s3:::*").
+		SetDurationSeconds(3600).SetBucket("test2").SetBucketUrl("http://localhost:9000/test2").Exec(context.Background())
 	ts.Require().NoError(err)
 }
 
@@ -370,7 +376,33 @@ func TestPwd(t *testing.T) {
 func (ts *loginFlowSuite) Test_GetOssSts() {
 	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
-	req := httptest.NewRequest("POST", "/oss/sts", nil)
+	payload := strings.NewReader(`{
+		"bucket": "test2",
+		"endpoint": "localhost:9000",
+        "kind": "minio"
+	}`)
+	req := httptest.NewRequest("POST", "/oss/sts", payload)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
+}
+
+func (ts *loginFlowSuite) Test_GetPreSignUrl() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	payload := strings.NewReader(`{
+		"url": "http://localhost:9000/test2/63f91559865b894cbe885e9a49d92a29.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test1%2F20240618%2Fcn-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240618T085259Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=cf0ac630cc5f39b106721a200ff4d178b53860d5c64d0e57fd59769b0825b035"
+	}`)
+	req := httptest.NewRequest("POST", "/oss/presignurl", payload)
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+adminToken)
 	req.Header.Set("X-Tenant-ID", "1")
 	res := httptest.NewRecorder()

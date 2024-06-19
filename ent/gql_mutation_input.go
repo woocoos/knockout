@@ -833,28 +833,44 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 
 // CreateFileSourceInput represents a mutation input for creating filesources.
 type CreateFileSourceInput struct {
-	Kind     filesource.Kind
-	Comments *string
-	Endpoint *string
-	Region   *string
-	Bucket   *string
-	FileIDs  []int
+	TenantID        int
+	Kind            filesource.Kind
+	Comments        *string
+	AccessKeyID     string
+	AccessKeySecret string
+	Endpoint        string
+	StsEndpoint     string
+	Region          string
+	Bucket          string
+	BucketUrl       *string
+	RoleArn         string
+	Policy          *string
+	DurationSeconds *int
+	FileIDs         []int
 }
 
 // Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
 func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
+	m.SetTenantID(i.TenantID)
 	m.SetKind(i.Kind)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
-	if v := i.Endpoint; v != nil {
-		m.SetEndpoint(*v)
+	m.SetAccessKeyID(i.AccessKeyID)
+	m.SetAccessKeySecret(i.AccessKeySecret)
+	m.SetEndpoint(i.Endpoint)
+	m.SetStsEndpoint(i.StsEndpoint)
+	m.SetRegion(i.Region)
+	m.SetBucket(i.Bucket)
+	if v := i.BucketUrl; v != nil {
+		m.SetBucketUrl(*v)
 	}
-	if v := i.Region; v != nil {
-		m.SetRegion(*v)
+	m.SetRoleArn(i.RoleArn)
+	if v := i.Policy; v != nil {
+		m.SetPolicy(*v)
 	}
-	if v := i.Bucket; v != nil {
-		m.SetBucket(*v)
+	if v := i.DurationSeconds; v != nil {
+		m.SetDurationSeconds(*v)
 	}
 	if v := i.FileIDs; len(v) > 0 {
 		m.AddFileIDs(v...)
@@ -869,22 +885,33 @@ func (c *FileSourceCreate) SetInput(i CreateFileSourceInput) *FileSourceCreate {
 
 // UpdateFileSourceInput represents a mutation input for updating filesources.
 type UpdateFileSourceInput struct {
-	Kind          *filesource.Kind
-	ClearComments bool
-	Comments      *string
-	ClearEndpoint bool
-	Endpoint      *string
-	ClearRegion   bool
-	Region        *string
-	ClearBucket   bool
-	Bucket        *string
-	ClearFiles    bool
-	AddFileIDs    []int
-	RemoveFileIDs []int
+	TenantID             *int
+	Kind                 *filesource.Kind
+	ClearComments        bool
+	Comments             *string
+	AccessKeyID          *string
+	AccessKeySecret      *string
+	Endpoint             *string
+	StsEndpoint          *string
+	Region               *string
+	Bucket               *string
+	ClearBucketUrl       bool
+	BucketUrl            *string
+	RoleArn              *string
+	ClearPolicy          bool
+	Policy               *string
+	ClearDurationSeconds bool
+	DurationSeconds      *int
+	ClearFiles           bool
+	AddFileIDs           []int
+	RemoveFileIDs        []int
 }
 
 // Mutate applies the UpdateFileSourceInput on the FileSourceMutation builder.
 func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
+	if v := i.TenantID; v != nil {
+		m.SetTenantID(*v)
+	}
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
 	}
@@ -894,23 +921,44 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
-	if i.ClearEndpoint {
-		m.ClearEndpoint()
+	if v := i.AccessKeyID; v != nil {
+		m.SetAccessKeyID(*v)
+	}
+	if v := i.AccessKeySecret; v != nil {
+		m.SetAccessKeySecret(*v)
 	}
 	if v := i.Endpoint; v != nil {
 		m.SetEndpoint(*v)
 	}
-	if i.ClearRegion {
-		m.ClearRegion()
+	if v := i.StsEndpoint; v != nil {
+		m.SetStsEndpoint(*v)
 	}
 	if v := i.Region; v != nil {
 		m.SetRegion(*v)
 	}
-	if i.ClearBucket {
-		m.ClearBucket()
-	}
 	if v := i.Bucket; v != nil {
 		m.SetBucket(*v)
+	}
+	if i.ClearBucketUrl {
+		m.ClearBucketUrl()
+	}
+	if v := i.BucketUrl; v != nil {
+		m.SetBucketUrl(*v)
+	}
+	if v := i.RoleArn; v != nil {
+		m.SetRoleArn(*v)
+	}
+	if i.ClearPolicy {
+		m.ClearPolicy()
+	}
+	if v := i.Policy; v != nil {
+		m.SetPolicy(*v)
+	}
+	if i.ClearDurationSeconds {
+		m.ClearDurationSeconds()
+	}
+	if v := i.DurationSeconds; v != nil {
+		m.SetDurationSeconds(*v)
 	}
 	if i.ClearFiles {
 		m.ClearFiles()
@@ -1573,6 +1621,7 @@ type CreateUserInput struct {
 	Mobile         *string
 	Status         *typex.SimpleStatus
 	Comments       *string
+	Avatar         *string
 	AvatarFileID   *int
 	IdentityIDs    []int
 	LoginProfileID *int
@@ -1596,6 +1645,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if v := i.Avatar; v != nil {
+		m.SetAvatar(*v)
 	}
 	if v := i.AvatarFileID; v != nil {
 		m.SetAvatarFileID(*v)
@@ -1633,6 +1685,8 @@ type UpdateUserInput struct {
 	Mobile            *string
 	ClearComments     bool
 	Comments          *string
+	ClearAvatar       bool
+	Avatar            *string
 	ClearAvatarFileID bool
 	AvatarFileID      *int
 }
@@ -1662,6 +1716,12 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if i.ClearAvatar {
+		m.ClearAvatar()
+	}
+	if v := i.Avatar; v != nil {
+		m.SetAvatar(*v)
 	}
 	if i.ClearAvatarFileID {
 		m.ClearAvatarFileID()

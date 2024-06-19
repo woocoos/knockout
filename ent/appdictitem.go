@@ -66,12 +66,10 @@ type AppDictItemEdges struct {
 // DictOrErr returns the Dict value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppDictItemEdges) DictOrErr() (*AppDict, error) {
-	if e.loadedTypes[0] {
-		if e.Dict == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: appdict.Label}
-		}
+	if e.Dict != nil {
 		return e.Dict, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: appdict.Label}
 	}
 	return nil, &NotLoadedError{edge: "dict"}
 }
@@ -79,12 +77,10 @@ func (e AppDictItemEdges) DictOrErr() (*AppDict, error) {
 // OrgOrErr returns the Org value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppDictItemEdges) OrgOrErr() (*Org, error) {
-	if e.loadedTypes[1] {
-		if e.Org == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: org.Label}
-		}
+	if e.Org != nil {
 		return e.Org, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: org.Label}
 	}
 	return nil, &NotLoadedError{edge: "org"}
 }

@@ -12649,27 +12649,37 @@ func (m *FileMutation) ResetEdge(name string) error {
 // FileSourceMutation represents an operation that mutates the FileSource nodes in the graph.
 type FileSourceMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_by    *int
-	addcreated_by *int
-	created_at    *time.Time
-	updated_by    *int
-	addupdated_by *int
-	updated_at    *time.Time
-	kind          *filesource.Kind
-	comments      *string
-	endpoint      *string
-	region        *string
-	bucket        *string
-	clearedFields map[string]struct{}
-	files         map[int]struct{}
-	removedfiles  map[int]struct{}
-	clearedfiles  bool
-	done          bool
-	oldValue      func(context.Context) (*FileSource, error)
-	predicates    []predicate.FileSource
+	op                  Op
+	typ                 string
+	id                  *int
+	created_by          *int
+	addcreated_by       *int
+	created_at          *time.Time
+	updated_by          *int
+	addupdated_by       *int
+	updated_at          *time.Time
+	tenant_id           *int
+	addtenant_id        *int
+	kind                *filesource.Kind
+	comments            *string
+	access_key_id       *string
+	access_key_secret   *string
+	endpoint            *string
+	sts_endpoint        *string
+	region              *string
+	bucket              *string
+	bucketUrl           *string
+	role_arn            *string
+	policy              *string
+	duration_seconds    *int
+	addduration_seconds *int
+	clearedFields       map[string]struct{}
+	files               map[int]struct{}
+	removedfiles        map[int]struct{}
+	clearedfiles        bool
+	done                bool
+	oldValue            func(context.Context) (*FileSource, error)
+	predicates          []predicate.FileSource
 }
 
 var _ ent.Mutation = (*FileSourceMutation)(nil)
@@ -12987,6 +12997,62 @@ func (m *FileSourceMutation) ResetUpdatedAt() {
 	delete(m.clearedFields, filesource.FieldUpdatedAt)
 }
 
+// SetTenantID sets the "tenant_id" field.
+func (m *FileSourceMutation) SetTenantID(i int) {
+	m.tenant_id = &i
+	m.addtenant_id = nil
+}
+
+// TenantID returns the value of the "tenant_id" field in the mutation.
+func (m *FileSourceMutation) TenantID() (r int, exists bool) {
+	v := m.tenant_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantID returns the old "tenant_id" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldTenantID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantID: %w", err)
+	}
+	return oldValue.TenantID, nil
+}
+
+// AddTenantID adds i to the "tenant_id" field.
+func (m *FileSourceMutation) AddTenantID(i int) {
+	if m.addtenant_id != nil {
+		*m.addtenant_id += i
+	} else {
+		m.addtenant_id = &i
+	}
+}
+
+// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
+func (m *FileSourceMutation) AddedTenantID() (r int, exists bool) {
+	v := m.addtenant_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTenantID resets all changes to the "tenant_id" field.
+func (m *FileSourceMutation) ResetTenantID() {
+	m.tenant_id = nil
+	m.addtenant_id = nil
+}
+
 // SetKind sets the "kind" field.
 func (m *FileSourceMutation) SetKind(f filesource.Kind) {
 	m.kind = &f
@@ -13072,6 +13138,78 @@ func (m *FileSourceMutation) ResetComments() {
 	delete(m.clearedFields, filesource.FieldComments)
 }
 
+// SetAccessKeyID sets the "access_key_id" field.
+func (m *FileSourceMutation) SetAccessKeyID(s string) {
+	m.access_key_id = &s
+}
+
+// AccessKeyID returns the value of the "access_key_id" field in the mutation.
+func (m *FileSourceMutation) AccessKeyID() (r string, exists bool) {
+	v := m.access_key_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAccessKeyID returns the old "access_key_id" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldAccessKeyID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAccessKeyID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAccessKeyID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAccessKeyID: %w", err)
+	}
+	return oldValue.AccessKeyID, nil
+}
+
+// ResetAccessKeyID resets all changes to the "access_key_id" field.
+func (m *FileSourceMutation) ResetAccessKeyID() {
+	m.access_key_id = nil
+}
+
+// SetAccessKeySecret sets the "access_key_secret" field.
+func (m *FileSourceMutation) SetAccessKeySecret(s string) {
+	m.access_key_secret = &s
+}
+
+// AccessKeySecret returns the value of the "access_key_secret" field in the mutation.
+func (m *FileSourceMutation) AccessKeySecret() (r string, exists bool) {
+	v := m.access_key_secret
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAccessKeySecret returns the old "access_key_secret" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldAccessKeySecret(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAccessKeySecret is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAccessKeySecret requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAccessKeySecret: %w", err)
+	}
+	return oldValue.AccessKeySecret, nil
+}
+
+// ResetAccessKeySecret resets all changes to the "access_key_secret" field.
+func (m *FileSourceMutation) ResetAccessKeySecret() {
+	m.access_key_secret = nil
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (m *FileSourceMutation) SetEndpoint(s string) {
 	m.endpoint = &s
@@ -13103,22 +13241,45 @@ func (m *FileSourceMutation) OldEndpoint(ctx context.Context) (v string, err err
 	return oldValue.Endpoint, nil
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (m *FileSourceMutation) ClearEndpoint() {
-	m.endpoint = nil
-	m.clearedFields[filesource.FieldEndpoint] = struct{}{}
-}
-
-// EndpointCleared returns if the "endpoint" field was cleared in this mutation.
-func (m *FileSourceMutation) EndpointCleared() bool {
-	_, ok := m.clearedFields[filesource.FieldEndpoint]
-	return ok
-}
-
 // ResetEndpoint resets all changes to the "endpoint" field.
 func (m *FileSourceMutation) ResetEndpoint() {
 	m.endpoint = nil
-	delete(m.clearedFields, filesource.FieldEndpoint)
+}
+
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (m *FileSourceMutation) SetStsEndpoint(s string) {
+	m.sts_endpoint = &s
+}
+
+// StsEndpoint returns the value of the "sts_endpoint" field in the mutation.
+func (m *FileSourceMutation) StsEndpoint() (r string, exists bool) {
+	v := m.sts_endpoint
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStsEndpoint returns the old "sts_endpoint" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldStsEndpoint(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStsEndpoint is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStsEndpoint requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStsEndpoint: %w", err)
+	}
+	return oldValue.StsEndpoint, nil
+}
+
+// ResetStsEndpoint resets all changes to the "sts_endpoint" field.
+func (m *FileSourceMutation) ResetStsEndpoint() {
+	m.sts_endpoint = nil
 }
 
 // SetRegion sets the "region" field.
@@ -13152,22 +13313,9 @@ func (m *FileSourceMutation) OldRegion(ctx context.Context) (v string, err error
 	return oldValue.Region, nil
 }
 
-// ClearRegion clears the value of the "region" field.
-func (m *FileSourceMutation) ClearRegion() {
-	m.region = nil
-	m.clearedFields[filesource.FieldRegion] = struct{}{}
-}
-
-// RegionCleared returns if the "region" field was cleared in this mutation.
-func (m *FileSourceMutation) RegionCleared() bool {
-	_, ok := m.clearedFields[filesource.FieldRegion]
-	return ok
-}
-
 // ResetRegion resets all changes to the "region" field.
 func (m *FileSourceMutation) ResetRegion() {
 	m.region = nil
-	delete(m.clearedFields, filesource.FieldRegion)
 }
 
 // SetBucket sets the "bucket" field.
@@ -13201,22 +13349,213 @@ func (m *FileSourceMutation) OldBucket(ctx context.Context) (v string, err error
 	return oldValue.Bucket, nil
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (m *FileSourceMutation) ClearBucket() {
-	m.bucket = nil
-	m.clearedFields[filesource.FieldBucket] = struct{}{}
-}
-
-// BucketCleared returns if the "bucket" field was cleared in this mutation.
-func (m *FileSourceMutation) BucketCleared() bool {
-	_, ok := m.clearedFields[filesource.FieldBucket]
-	return ok
-}
-
 // ResetBucket resets all changes to the "bucket" field.
 func (m *FileSourceMutation) ResetBucket() {
 	m.bucket = nil
-	delete(m.clearedFields, filesource.FieldBucket)
+}
+
+// SetBucketUrl sets the "bucketUrl" field.
+func (m *FileSourceMutation) SetBucketUrl(s string) {
+	m.bucketUrl = &s
+}
+
+// BucketUrl returns the value of the "bucketUrl" field in the mutation.
+func (m *FileSourceMutation) BucketUrl() (r string, exists bool) {
+	v := m.bucketUrl
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBucketUrl returns the old "bucketUrl" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldBucketUrl(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBucketUrl is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBucketUrl requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBucketUrl: %w", err)
+	}
+	return oldValue.BucketUrl, nil
+}
+
+// ClearBucketUrl clears the value of the "bucketUrl" field.
+func (m *FileSourceMutation) ClearBucketUrl() {
+	m.bucketUrl = nil
+	m.clearedFields[filesource.FieldBucketUrl] = struct{}{}
+}
+
+// BucketUrlCleared returns if the "bucketUrl" field was cleared in this mutation.
+func (m *FileSourceMutation) BucketUrlCleared() bool {
+	_, ok := m.clearedFields[filesource.FieldBucketUrl]
+	return ok
+}
+
+// ResetBucketUrl resets all changes to the "bucketUrl" field.
+func (m *FileSourceMutation) ResetBucketUrl() {
+	m.bucketUrl = nil
+	delete(m.clearedFields, filesource.FieldBucketUrl)
+}
+
+// SetRoleArn sets the "role_arn" field.
+func (m *FileSourceMutation) SetRoleArn(s string) {
+	m.role_arn = &s
+}
+
+// RoleArn returns the value of the "role_arn" field in the mutation.
+func (m *FileSourceMutation) RoleArn() (r string, exists bool) {
+	v := m.role_arn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRoleArn returns the old "role_arn" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldRoleArn(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRoleArn is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRoleArn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRoleArn: %w", err)
+	}
+	return oldValue.RoleArn, nil
+}
+
+// ResetRoleArn resets all changes to the "role_arn" field.
+func (m *FileSourceMutation) ResetRoleArn() {
+	m.role_arn = nil
+}
+
+// SetPolicy sets the "policy" field.
+func (m *FileSourceMutation) SetPolicy(s string) {
+	m.policy = &s
+}
+
+// Policy returns the value of the "policy" field in the mutation.
+func (m *FileSourceMutation) Policy() (r string, exists bool) {
+	v := m.policy
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPolicy returns the old "policy" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldPolicy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPolicy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPolicy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPolicy: %w", err)
+	}
+	return oldValue.Policy, nil
+}
+
+// ClearPolicy clears the value of the "policy" field.
+func (m *FileSourceMutation) ClearPolicy() {
+	m.policy = nil
+	m.clearedFields[filesource.FieldPolicy] = struct{}{}
+}
+
+// PolicyCleared returns if the "policy" field was cleared in this mutation.
+func (m *FileSourceMutation) PolicyCleared() bool {
+	_, ok := m.clearedFields[filesource.FieldPolicy]
+	return ok
+}
+
+// ResetPolicy resets all changes to the "policy" field.
+func (m *FileSourceMutation) ResetPolicy() {
+	m.policy = nil
+	delete(m.clearedFields, filesource.FieldPolicy)
+}
+
+// SetDurationSeconds sets the "duration_seconds" field.
+func (m *FileSourceMutation) SetDurationSeconds(i int) {
+	m.duration_seconds = &i
+	m.addduration_seconds = nil
+}
+
+// DurationSeconds returns the value of the "duration_seconds" field in the mutation.
+func (m *FileSourceMutation) DurationSeconds() (r int, exists bool) {
+	v := m.duration_seconds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDurationSeconds returns the old "duration_seconds" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldDurationSeconds(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDurationSeconds is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDurationSeconds requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDurationSeconds: %w", err)
+	}
+	return oldValue.DurationSeconds, nil
+}
+
+// AddDurationSeconds adds i to the "duration_seconds" field.
+func (m *FileSourceMutation) AddDurationSeconds(i int) {
+	if m.addduration_seconds != nil {
+		*m.addduration_seconds += i
+	} else {
+		m.addduration_seconds = &i
+	}
+}
+
+// AddedDurationSeconds returns the value that was added to the "duration_seconds" field in this mutation.
+func (m *FileSourceMutation) AddedDurationSeconds() (r int, exists bool) {
+	v := m.addduration_seconds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDurationSeconds clears the value of the "duration_seconds" field.
+func (m *FileSourceMutation) ClearDurationSeconds() {
+	m.duration_seconds = nil
+	m.addduration_seconds = nil
+	m.clearedFields[filesource.FieldDurationSeconds] = struct{}{}
+}
+
+// DurationSecondsCleared returns if the "duration_seconds" field was cleared in this mutation.
+func (m *FileSourceMutation) DurationSecondsCleared() bool {
+	_, ok := m.clearedFields[filesource.FieldDurationSeconds]
+	return ok
+}
+
+// ResetDurationSeconds resets all changes to the "duration_seconds" field.
+func (m *FileSourceMutation) ResetDurationSeconds() {
+	m.duration_seconds = nil
+	m.addduration_seconds = nil
+	delete(m.clearedFields, filesource.FieldDurationSeconds)
 }
 
 // AddFileIDs adds the "files" edge to the File entity by ids.
@@ -13307,7 +13646,7 @@ func (m *FileSourceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileSourceMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 17)
 	if m.created_by != nil {
 		fields = append(fields, filesource.FieldCreatedBy)
 	}
@@ -13320,20 +13659,44 @@ func (m *FileSourceMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, filesource.FieldUpdatedAt)
 	}
+	if m.tenant_id != nil {
+		fields = append(fields, filesource.FieldTenantID)
+	}
 	if m.kind != nil {
 		fields = append(fields, filesource.FieldKind)
 	}
 	if m.comments != nil {
 		fields = append(fields, filesource.FieldComments)
 	}
+	if m.access_key_id != nil {
+		fields = append(fields, filesource.FieldAccessKeyID)
+	}
+	if m.access_key_secret != nil {
+		fields = append(fields, filesource.FieldAccessKeySecret)
+	}
 	if m.endpoint != nil {
 		fields = append(fields, filesource.FieldEndpoint)
+	}
+	if m.sts_endpoint != nil {
+		fields = append(fields, filesource.FieldStsEndpoint)
 	}
 	if m.region != nil {
 		fields = append(fields, filesource.FieldRegion)
 	}
 	if m.bucket != nil {
 		fields = append(fields, filesource.FieldBucket)
+	}
+	if m.bucketUrl != nil {
+		fields = append(fields, filesource.FieldBucketUrl)
+	}
+	if m.role_arn != nil {
+		fields = append(fields, filesource.FieldRoleArn)
+	}
+	if m.policy != nil {
+		fields = append(fields, filesource.FieldPolicy)
+	}
+	if m.duration_seconds != nil {
+		fields = append(fields, filesource.FieldDurationSeconds)
 	}
 	return fields
 }
@@ -13351,16 +13714,32 @@ func (m *FileSourceMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case filesource.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case filesource.FieldTenantID:
+		return m.TenantID()
 	case filesource.FieldKind:
 		return m.Kind()
 	case filesource.FieldComments:
 		return m.Comments()
+	case filesource.FieldAccessKeyID:
+		return m.AccessKeyID()
+	case filesource.FieldAccessKeySecret:
+		return m.AccessKeySecret()
 	case filesource.FieldEndpoint:
 		return m.Endpoint()
+	case filesource.FieldStsEndpoint:
+		return m.StsEndpoint()
 	case filesource.FieldRegion:
 		return m.Region()
 	case filesource.FieldBucket:
 		return m.Bucket()
+	case filesource.FieldBucketUrl:
+		return m.BucketUrl()
+	case filesource.FieldRoleArn:
+		return m.RoleArn()
+	case filesource.FieldPolicy:
+		return m.Policy()
+	case filesource.FieldDurationSeconds:
+		return m.DurationSeconds()
 	}
 	return nil, false
 }
@@ -13378,16 +13757,32 @@ func (m *FileSourceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUpdatedBy(ctx)
 	case filesource.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case filesource.FieldTenantID:
+		return m.OldTenantID(ctx)
 	case filesource.FieldKind:
 		return m.OldKind(ctx)
 	case filesource.FieldComments:
 		return m.OldComments(ctx)
+	case filesource.FieldAccessKeyID:
+		return m.OldAccessKeyID(ctx)
+	case filesource.FieldAccessKeySecret:
+		return m.OldAccessKeySecret(ctx)
 	case filesource.FieldEndpoint:
 		return m.OldEndpoint(ctx)
+	case filesource.FieldStsEndpoint:
+		return m.OldStsEndpoint(ctx)
 	case filesource.FieldRegion:
 		return m.OldRegion(ctx)
 	case filesource.FieldBucket:
 		return m.OldBucket(ctx)
+	case filesource.FieldBucketUrl:
+		return m.OldBucketUrl(ctx)
+	case filesource.FieldRoleArn:
+		return m.OldRoleArn(ctx)
+	case filesource.FieldPolicy:
+		return m.OldPolicy(ctx)
+	case filesource.FieldDurationSeconds:
+		return m.OldDurationSeconds(ctx)
 	}
 	return nil, fmt.Errorf("unknown FileSource field %s", name)
 }
@@ -13425,6 +13820,13 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case filesource.FieldTenantID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantID(v)
+		return nil
 	case filesource.FieldKind:
 		v, ok := value.(filesource.Kind)
 		if !ok {
@@ -13439,12 +13841,33 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetComments(v)
 		return nil
+	case filesource.FieldAccessKeyID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAccessKeyID(v)
+		return nil
+	case filesource.FieldAccessKeySecret:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAccessKeySecret(v)
+		return nil
 	case filesource.FieldEndpoint:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEndpoint(v)
+		return nil
+	case filesource.FieldStsEndpoint:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStsEndpoint(v)
 		return nil
 	case filesource.FieldRegion:
 		v, ok := value.(string)
@@ -13460,6 +13883,34 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBucket(v)
 		return nil
+	case filesource.FieldBucketUrl:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBucketUrl(v)
+		return nil
+	case filesource.FieldRoleArn:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRoleArn(v)
+		return nil
+	case filesource.FieldPolicy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPolicy(v)
+		return nil
+	case filesource.FieldDurationSeconds:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDurationSeconds(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FileSource field %s", name)
 }
@@ -13474,6 +13925,12 @@ func (m *FileSourceMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, filesource.FieldUpdatedBy)
 	}
+	if m.addtenant_id != nil {
+		fields = append(fields, filesource.FieldTenantID)
+	}
+	if m.addduration_seconds != nil {
+		fields = append(fields, filesource.FieldDurationSeconds)
+	}
 	return fields
 }
 
@@ -13486,6 +13943,10 @@ func (m *FileSourceMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case filesource.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
+	case filesource.FieldTenantID:
+		return m.AddedTenantID()
+	case filesource.FieldDurationSeconds:
+		return m.AddedDurationSeconds()
 	}
 	return nil, false
 }
@@ -13509,6 +13970,20 @@ func (m *FileSourceMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpdatedBy(v)
 		return nil
+	case filesource.FieldTenantID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTenantID(v)
+		return nil
+	case filesource.FieldDurationSeconds:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDurationSeconds(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FileSource numeric field %s", name)
 }
@@ -13526,14 +14001,14 @@ func (m *FileSourceMutation) ClearedFields() []string {
 	if m.FieldCleared(filesource.FieldComments) {
 		fields = append(fields, filesource.FieldComments)
 	}
-	if m.FieldCleared(filesource.FieldEndpoint) {
-		fields = append(fields, filesource.FieldEndpoint)
+	if m.FieldCleared(filesource.FieldBucketUrl) {
+		fields = append(fields, filesource.FieldBucketUrl)
 	}
-	if m.FieldCleared(filesource.FieldRegion) {
-		fields = append(fields, filesource.FieldRegion)
+	if m.FieldCleared(filesource.FieldPolicy) {
+		fields = append(fields, filesource.FieldPolicy)
 	}
-	if m.FieldCleared(filesource.FieldBucket) {
-		fields = append(fields, filesource.FieldBucket)
+	if m.FieldCleared(filesource.FieldDurationSeconds) {
+		fields = append(fields, filesource.FieldDurationSeconds)
 	}
 	return fields
 }
@@ -13558,14 +14033,14 @@ func (m *FileSourceMutation) ClearField(name string) error {
 	case filesource.FieldComments:
 		m.ClearComments()
 		return nil
-	case filesource.FieldEndpoint:
-		m.ClearEndpoint()
+	case filesource.FieldBucketUrl:
+		m.ClearBucketUrl()
 		return nil
-	case filesource.FieldRegion:
-		m.ClearRegion()
+	case filesource.FieldPolicy:
+		m.ClearPolicy()
 		return nil
-	case filesource.FieldBucket:
-		m.ClearBucket()
+	case filesource.FieldDurationSeconds:
+		m.ClearDurationSeconds()
 		return nil
 	}
 	return fmt.Errorf("unknown FileSource nullable field %s", name)
@@ -13587,20 +14062,44 @@ func (m *FileSourceMutation) ResetField(name string) error {
 	case filesource.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
+	case filesource.FieldTenantID:
+		m.ResetTenantID()
+		return nil
 	case filesource.FieldKind:
 		m.ResetKind()
 		return nil
 	case filesource.FieldComments:
 		m.ResetComments()
 		return nil
+	case filesource.FieldAccessKeyID:
+		m.ResetAccessKeyID()
+		return nil
+	case filesource.FieldAccessKeySecret:
+		m.ResetAccessKeySecret()
+		return nil
 	case filesource.FieldEndpoint:
 		m.ResetEndpoint()
+		return nil
+	case filesource.FieldStsEndpoint:
+		m.ResetStsEndpoint()
 		return nil
 	case filesource.FieldRegion:
 		m.ResetRegion()
 		return nil
 	case filesource.FieldBucket:
 		m.ResetBucket()
+		return nil
+	case filesource.FieldBucketUrl:
+		m.ResetBucketUrl()
+		return nil
+	case filesource.FieldRoleArn:
+		m.ResetRoleArn()
+		return nil
+	case filesource.FieldPolicy:
+		m.ResetPolicy()
+		return nil
+	case filesource.FieldDurationSeconds:
+		m.ResetDurationSeconds()
 		return nil
 	}
 	return fmt.Errorf("unknown FileSource field %s", name)
@@ -24713,6 +25212,7 @@ type UserMutation struct {
 	register_ip          *string
 	status               *typex.SimpleStatus
 	comments             *string
+	avatar               *string
 	avatar_file_id       *int
 	addavatar_file_id    *int
 	clearedFields        map[string]struct{}
@@ -25484,6 +25984,55 @@ func (m *UserMutation) ResetComments() {
 	delete(m.clearedFields, user.FieldComments)
 }
 
+// SetAvatar sets the "avatar" field.
+func (m *UserMutation) SetAvatar(s string) {
+	m.avatar = &s
+}
+
+// Avatar returns the value of the "avatar" field in the mutation.
+func (m *UserMutation) Avatar() (r string, exists bool) {
+	v := m.avatar
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAvatar returns the old "avatar" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldAvatar(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAvatar is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAvatar requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAvatar: %w", err)
+	}
+	return oldValue.Avatar, nil
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (m *UserMutation) ClearAvatar() {
+	m.avatar = nil
+	m.clearedFields[user.FieldAvatar] = struct{}{}
+}
+
+// AvatarCleared returns if the "avatar" field was cleared in this mutation.
+func (m *UserMutation) AvatarCleared() bool {
+	_, ok := m.clearedFields[user.FieldAvatar]
+	return ok
+}
+
+// ResetAvatar resets all changes to the "avatar" field.
+func (m *UserMutation) ResetAvatar() {
+	m.avatar = nil
+	delete(m.clearedFields, user.FieldAvatar)
+}
+
 // SetAvatarFileID sets the "avatar_file_id" field.
 func (m *UserMutation) SetAvatarFileID(i int) {
 	m.avatar_file_id = &i
@@ -26005,7 +26554,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.created_by != nil {
 		fields = append(fields, user.FieldCreatedBy)
 	}
@@ -26048,6 +26597,9 @@ func (m *UserMutation) Fields() []string {
 	if m.comments != nil {
 		fields = append(fields, user.FieldComments)
 	}
+	if m.avatar != nil {
+		fields = append(fields, user.FieldAvatar)
+	}
 	if m.avatar_file_id != nil {
 		fields = append(fields, user.FieldAvatarFileID)
 	}
@@ -26087,6 +26639,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Status()
 	case user.FieldComments:
 		return m.Comments()
+	case user.FieldAvatar:
+		return m.Avatar()
 	case user.FieldAvatarFileID:
 		return m.AvatarFileID()
 	}
@@ -26126,6 +26680,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldStatus(ctx)
 	case user.FieldComments:
 		return m.OldComments(ctx)
+	case user.FieldAvatar:
+		return m.OldAvatar(ctx)
 	case user.FieldAvatarFileID:
 		return m.OldAvatarFileID(ctx)
 	}
@@ -26235,6 +26791,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetComments(v)
 		return nil
+	case user.FieldAvatar:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAvatar(v)
+		return nil
 	case user.FieldAvatarFileID:
 		v, ok := value.(int)
 		if !ok {
@@ -26332,6 +26895,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldComments) {
 		fields = append(fields, user.FieldComments)
 	}
+	if m.FieldCleared(user.FieldAvatar) {
+		fields = append(fields, user.FieldAvatar)
+	}
 	if m.FieldCleared(user.FieldAvatarFileID) {
 		fields = append(fields, user.FieldAvatarFileID)
 	}
@@ -26369,6 +26935,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldComments:
 		m.ClearComments()
+		return nil
+	case user.FieldAvatar:
+		m.ClearAvatar()
 		return nil
 	case user.FieldAvatarFileID:
 		m.ClearAvatarFileID()
@@ -26422,6 +26991,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldComments:
 		m.ResetComments()
+		return nil
+	case user.FieldAvatar:
+		m.ResetAvatar()
 		return nil
 	case user.FieldAvatarFileID:
 		m.ResetAvatarFileID()

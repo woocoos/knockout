@@ -71,6 +71,12 @@ func (fsc *FileSourceCreate) SetNillableUpdatedAt(t *time.Time) *FileSourceCreat
 	return fsc
 }
 
+// SetTenantID sets the "tenant_id" field.
+func (fsc *FileSourceCreate) SetTenantID(i int) *FileSourceCreate {
+	fsc.mutation.SetTenantID(i)
+	return fsc
+}
+
 // SetKind sets the "kind" field.
 func (fsc *FileSourceCreate) SetKind(f filesource.Kind) *FileSourceCreate {
 	fsc.mutation.SetKind(f)
@@ -91,17 +97,27 @@ func (fsc *FileSourceCreate) SetNillableComments(s *string) *FileSourceCreate {
 	return fsc
 }
 
+// SetAccessKeyID sets the "access_key_id" field.
+func (fsc *FileSourceCreate) SetAccessKeyID(s string) *FileSourceCreate {
+	fsc.mutation.SetAccessKeyID(s)
+	return fsc
+}
+
+// SetAccessKeySecret sets the "access_key_secret" field.
+func (fsc *FileSourceCreate) SetAccessKeySecret(s string) *FileSourceCreate {
+	fsc.mutation.SetAccessKeySecret(s)
+	return fsc
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (fsc *FileSourceCreate) SetEndpoint(s string) *FileSourceCreate {
 	fsc.mutation.SetEndpoint(s)
 	return fsc
 }
 
-// SetNillableEndpoint sets the "endpoint" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableEndpoint(s *string) *FileSourceCreate {
-	if s != nil {
-		fsc.SetEndpoint(*s)
-	}
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (fsc *FileSourceCreate) SetStsEndpoint(s string) *FileSourceCreate {
+	fsc.mutation.SetStsEndpoint(s)
 	return fsc
 }
 
@@ -111,24 +127,56 @@ func (fsc *FileSourceCreate) SetRegion(s string) *FileSourceCreate {
 	return fsc
 }
 
-// SetNillableRegion sets the "region" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableRegion(s *string) *FileSourceCreate {
-	if s != nil {
-		fsc.SetRegion(*s)
-	}
-	return fsc
-}
-
 // SetBucket sets the "bucket" field.
 func (fsc *FileSourceCreate) SetBucket(s string) *FileSourceCreate {
 	fsc.mutation.SetBucket(s)
 	return fsc
 }
 
-// SetNillableBucket sets the "bucket" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableBucket(s *string) *FileSourceCreate {
+// SetBucketUrl sets the "bucketUrl" field.
+func (fsc *FileSourceCreate) SetBucketUrl(s string) *FileSourceCreate {
+	fsc.mutation.SetBucketUrl(s)
+	return fsc
+}
+
+// SetNillableBucketUrl sets the "bucketUrl" field if the given value is not nil.
+func (fsc *FileSourceCreate) SetNillableBucketUrl(s *string) *FileSourceCreate {
 	if s != nil {
-		fsc.SetBucket(*s)
+		fsc.SetBucketUrl(*s)
+	}
+	return fsc
+}
+
+// SetRoleArn sets the "role_arn" field.
+func (fsc *FileSourceCreate) SetRoleArn(s string) *FileSourceCreate {
+	fsc.mutation.SetRoleArn(s)
+	return fsc
+}
+
+// SetPolicy sets the "policy" field.
+func (fsc *FileSourceCreate) SetPolicy(s string) *FileSourceCreate {
+	fsc.mutation.SetPolicy(s)
+	return fsc
+}
+
+// SetNillablePolicy sets the "policy" field if the given value is not nil.
+func (fsc *FileSourceCreate) SetNillablePolicy(s *string) *FileSourceCreate {
+	if s != nil {
+		fsc.SetPolicy(*s)
+	}
+	return fsc
+}
+
+// SetDurationSeconds sets the "duration_seconds" field.
+func (fsc *FileSourceCreate) SetDurationSeconds(i int) *FileSourceCreate {
+	fsc.mutation.SetDurationSeconds(i)
+	return fsc
+}
+
+// SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
+func (fsc *FileSourceCreate) SetNillableDurationSeconds(i *int) *FileSourceCreate {
+	if i != nil {
+		fsc.SetDurationSeconds(*i)
 	}
 	return fsc
 }
@@ -209,6 +257,9 @@ func (fsc *FileSourceCreate) check() error {
 	if _, ok := fsc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FileSource.created_at"`)}
 	}
+	if _, ok := fsc.mutation.TenantID(); !ok {
+		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "FileSource.tenant_id"`)}
+	}
 	if _, ok := fsc.mutation.Kind(); !ok {
 		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "FileSource.kind"`)}
 	}
@@ -217,14 +268,65 @@ func (fsc *FileSourceCreate) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
+	if _, ok := fsc.mutation.AccessKeyID(); !ok {
+		return &ValidationError{Name: "access_key_id", err: errors.New(`ent: missing required field "FileSource.access_key_id"`)}
+	}
+	if v, ok := fsc.mutation.AccessKeyID(); ok {
+		if err := filesource.AccessKeyIDValidator(v); err != nil {
+			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_id": %w`, err)}
+		}
+	}
+	if _, ok := fsc.mutation.AccessKeySecret(); !ok {
+		return &ValidationError{Name: "access_key_secret", err: errors.New(`ent: missing required field "FileSource.access_key_secret"`)}
+	}
+	if v, ok := fsc.mutation.AccessKeySecret(); ok {
+		if err := filesource.AccessKeySecretValidator(v); err != nil {
+			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_secret": %w`, err)}
+		}
+	}
+	if _, ok := fsc.mutation.Endpoint(); !ok {
+		return &ValidationError{Name: "endpoint", err: errors.New(`ent: missing required field "FileSource.endpoint"`)}
+	}
+	if v, ok := fsc.mutation.Endpoint(); ok {
+		if err := filesource.EndpointValidator(v); err != nil {
+			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
+		}
+	}
+	if _, ok := fsc.mutation.StsEndpoint(); !ok {
+		return &ValidationError{Name: "sts_endpoint", err: errors.New(`ent: missing required field "FileSource.sts_endpoint"`)}
+	}
+	if v, ok := fsc.mutation.StsEndpoint(); ok {
+		if err := filesource.StsEndpointValidator(v); err != nil {
+			return &ValidationError{Name: "sts_endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.sts_endpoint": %w`, err)}
+		}
+	}
+	if _, ok := fsc.mutation.Region(); !ok {
+		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "FileSource.region"`)}
+	}
 	if v, ok := fsc.mutation.Region(); ok {
 		if err := filesource.RegionValidator(v); err != nil {
 			return &ValidationError{Name: "region", err: fmt.Errorf(`ent: validator failed for field "FileSource.region": %w`, err)}
 		}
 	}
+	if _, ok := fsc.mutation.Bucket(); !ok {
+		return &ValidationError{Name: "bucket", err: errors.New(`ent: missing required field "FileSource.bucket"`)}
+	}
 	if v, ok := fsc.mutation.Bucket(); ok {
 		if err := filesource.BucketValidator(v); err != nil {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
+		}
+	}
+	if v, ok := fsc.mutation.BucketUrl(); ok {
+		if err := filesource.BucketUrlValidator(v); err != nil {
+			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
+		}
+	}
+	if _, ok := fsc.mutation.RoleArn(); !ok {
+		return &ValidationError{Name: "role_arn", err: errors.New(`ent: missing required field "FileSource.role_arn"`)}
+	}
+	if v, ok := fsc.mutation.RoleArn(); ok {
+		if err := filesource.RoleArnValidator(v); err != nil {
+			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileSource.role_arn": %w`, err)}
 		}
 	}
 	return nil
@@ -276,6 +378,10 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 		_spec.SetField(filesource.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := fsc.mutation.TenantID(); ok {
+		_spec.SetField(filesource.FieldTenantID, field.TypeInt, value)
+		_node.TenantID = value
+	}
 	if value, ok := fsc.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
@@ -284,9 +390,21 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 		_spec.SetField(filesource.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
+	if value, ok := fsc.mutation.AccessKeyID(); ok {
+		_spec.SetField(filesource.FieldAccessKeyID, field.TypeString, value)
+		_node.AccessKeyID = value
+	}
+	if value, ok := fsc.mutation.AccessKeySecret(); ok {
+		_spec.SetField(filesource.FieldAccessKeySecret, field.TypeString, value)
+		_node.AccessKeySecret = value
+	}
 	if value, ok := fsc.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 		_node.Endpoint = value
+	}
+	if value, ok := fsc.mutation.StsEndpoint(); ok {
+		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
+		_node.StsEndpoint = value
 	}
 	if value, ok := fsc.mutation.Region(); ok {
 		_spec.SetField(filesource.FieldRegion, field.TypeString, value)
@@ -295,6 +413,22 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 	if value, ok := fsc.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 		_node.Bucket = value
+	}
+	if value, ok := fsc.mutation.BucketUrl(); ok {
+		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
+		_node.BucketUrl = value
+	}
+	if value, ok := fsc.mutation.RoleArn(); ok {
+		_spec.SetField(filesource.FieldRoleArn, field.TypeString, value)
+		_node.RoleArn = value
+	}
+	if value, ok := fsc.mutation.Policy(); ok {
+		_spec.SetField(filesource.FieldPolicy, field.TypeString, value)
+		_node.Policy = value
+	}
+	if value, ok := fsc.mutation.DurationSeconds(); ok {
+		_spec.SetField(filesource.FieldDurationSeconds, field.TypeInt, value)
+		_node.DurationSeconds = value
 	}
 	if nodes := fsc.mutation.FilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -406,6 +540,24 @@ func (u *FileSourceUpsert) ClearUpdatedAt() *FileSourceUpsert {
 	return u
 }
 
+// SetTenantID sets the "tenant_id" field.
+func (u *FileSourceUpsert) SetTenantID(v int) *FileSourceUpsert {
+	u.Set(filesource.FieldTenantID, v)
+	return u
+}
+
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateTenantID() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldTenantID)
+	return u
+}
+
+// AddTenantID adds v to the "tenant_id" field.
+func (u *FileSourceUpsert) AddTenantID(v int) *FileSourceUpsert {
+	u.Add(filesource.FieldTenantID, v)
+	return u
+}
+
 // SetKind sets the "kind" field.
 func (u *FileSourceUpsert) SetKind(v filesource.Kind) *FileSourceUpsert {
 	u.Set(filesource.FieldKind, v)
@@ -436,6 +588,30 @@ func (u *FileSourceUpsert) ClearComments() *FileSourceUpsert {
 	return u
 }
 
+// SetAccessKeyID sets the "access_key_id" field.
+func (u *FileSourceUpsert) SetAccessKeyID(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldAccessKeyID, v)
+	return u
+}
+
+// UpdateAccessKeyID sets the "access_key_id" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateAccessKeyID() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldAccessKeyID)
+	return u
+}
+
+// SetAccessKeySecret sets the "access_key_secret" field.
+func (u *FileSourceUpsert) SetAccessKeySecret(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldAccessKeySecret, v)
+	return u
+}
+
+// UpdateAccessKeySecret sets the "access_key_secret" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateAccessKeySecret() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldAccessKeySecret)
+	return u
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (u *FileSourceUpsert) SetEndpoint(v string) *FileSourceUpsert {
 	u.Set(filesource.FieldEndpoint, v)
@@ -448,9 +624,15 @@ func (u *FileSourceUpsert) UpdateEndpoint() *FileSourceUpsert {
 	return u
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (u *FileSourceUpsert) ClearEndpoint() *FileSourceUpsert {
-	u.SetNull(filesource.FieldEndpoint)
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (u *FileSourceUpsert) SetStsEndpoint(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldStsEndpoint, v)
+	return u
+}
+
+// UpdateStsEndpoint sets the "sts_endpoint" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateStsEndpoint() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldStsEndpoint)
 	return u
 }
 
@@ -466,12 +648,6 @@ func (u *FileSourceUpsert) UpdateRegion() *FileSourceUpsert {
 	return u
 }
 
-// ClearRegion clears the value of the "region" field.
-func (u *FileSourceUpsert) ClearRegion() *FileSourceUpsert {
-	u.SetNull(filesource.FieldRegion)
-	return u
-}
-
 // SetBucket sets the "bucket" field.
 func (u *FileSourceUpsert) SetBucket(v string) *FileSourceUpsert {
 	u.Set(filesource.FieldBucket, v)
@@ -484,9 +660,75 @@ func (u *FileSourceUpsert) UpdateBucket() *FileSourceUpsert {
 	return u
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (u *FileSourceUpsert) ClearBucket() *FileSourceUpsert {
-	u.SetNull(filesource.FieldBucket)
+// SetBucketUrl sets the "bucketUrl" field.
+func (u *FileSourceUpsert) SetBucketUrl(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldBucketUrl, v)
+	return u
+}
+
+// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateBucketUrl() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldBucketUrl)
+	return u
+}
+
+// ClearBucketUrl clears the value of the "bucketUrl" field.
+func (u *FileSourceUpsert) ClearBucketUrl() *FileSourceUpsert {
+	u.SetNull(filesource.FieldBucketUrl)
+	return u
+}
+
+// SetRoleArn sets the "role_arn" field.
+func (u *FileSourceUpsert) SetRoleArn(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldRoleArn, v)
+	return u
+}
+
+// UpdateRoleArn sets the "role_arn" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateRoleArn() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldRoleArn)
+	return u
+}
+
+// SetPolicy sets the "policy" field.
+func (u *FileSourceUpsert) SetPolicy(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldPolicy, v)
+	return u
+}
+
+// UpdatePolicy sets the "policy" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdatePolicy() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldPolicy)
+	return u
+}
+
+// ClearPolicy clears the value of the "policy" field.
+func (u *FileSourceUpsert) ClearPolicy() *FileSourceUpsert {
+	u.SetNull(filesource.FieldPolicy)
+	return u
+}
+
+// SetDurationSeconds sets the "duration_seconds" field.
+func (u *FileSourceUpsert) SetDurationSeconds(v int) *FileSourceUpsert {
+	u.Set(filesource.FieldDurationSeconds, v)
+	return u
+}
+
+// UpdateDurationSeconds sets the "duration_seconds" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateDurationSeconds() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldDurationSeconds)
+	return u
+}
+
+// AddDurationSeconds adds v to the "duration_seconds" field.
+func (u *FileSourceUpsert) AddDurationSeconds(v int) *FileSourceUpsert {
+	u.Add(filesource.FieldDurationSeconds, v)
+	return u
+}
+
+// ClearDurationSeconds clears the value of the "duration_seconds" field.
+func (u *FileSourceUpsert) ClearDurationSeconds() *FileSourceUpsert {
+	u.SetNull(filesource.FieldDurationSeconds)
 	return u
 }
 
@@ -593,6 +835,27 @@ func (u *FileSourceUpsertOne) ClearUpdatedAt() *FileSourceUpsertOne {
 	})
 }
 
+// SetTenantID sets the "tenant_id" field.
+func (u *FileSourceUpsertOne) SetTenantID(v int) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetTenantID(v)
+	})
+}
+
+// AddTenantID adds v to the "tenant_id" field.
+func (u *FileSourceUpsertOne) AddTenantID(v int) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.AddTenantID(v)
+	})
+}
+
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateTenantID() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateTenantID()
+	})
+}
+
 // SetKind sets the "kind" field.
 func (u *FileSourceUpsertOne) SetKind(v filesource.Kind) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -628,6 +891,34 @@ func (u *FileSourceUpsertOne) ClearComments() *FileSourceUpsertOne {
 	})
 }
 
+// SetAccessKeyID sets the "access_key_id" field.
+func (u *FileSourceUpsertOne) SetAccessKeyID(v string) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetAccessKeyID(v)
+	})
+}
+
+// UpdateAccessKeyID sets the "access_key_id" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateAccessKeyID() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateAccessKeyID()
+	})
+}
+
+// SetAccessKeySecret sets the "access_key_secret" field.
+func (u *FileSourceUpsertOne) SetAccessKeySecret(v string) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetAccessKeySecret(v)
+	})
+}
+
+// UpdateAccessKeySecret sets the "access_key_secret" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateAccessKeySecret() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateAccessKeySecret()
+	})
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (u *FileSourceUpsertOne) SetEndpoint(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -642,10 +933,17 @@ func (u *FileSourceUpsertOne) UpdateEndpoint() *FileSourceUpsertOne {
 	})
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (u *FileSourceUpsertOne) ClearEndpoint() *FileSourceUpsertOne {
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (u *FileSourceUpsertOne) SetStsEndpoint(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearEndpoint()
+		s.SetStsEndpoint(v)
+	})
+}
+
+// UpdateStsEndpoint sets the "sts_endpoint" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateStsEndpoint() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateStsEndpoint()
 	})
 }
 
@@ -663,13 +961,6 @@ func (u *FileSourceUpsertOne) UpdateRegion() *FileSourceUpsertOne {
 	})
 }
 
-// ClearRegion clears the value of the "region" field.
-func (u *FileSourceUpsertOne) ClearRegion() *FileSourceUpsertOne {
-	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearRegion()
-	})
-}
-
 // SetBucket sets the "bucket" field.
 func (u *FileSourceUpsertOne) SetBucket(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -684,10 +975,87 @@ func (u *FileSourceUpsertOne) UpdateBucket() *FileSourceUpsertOne {
 	})
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (u *FileSourceUpsertOne) ClearBucket() *FileSourceUpsertOne {
+// SetBucketUrl sets the "bucketUrl" field.
+func (u *FileSourceUpsertOne) SetBucketUrl(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearBucket()
+		s.SetBucketUrl(v)
+	})
+}
+
+// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateBucketUrl() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateBucketUrl()
+	})
+}
+
+// ClearBucketUrl clears the value of the "bucketUrl" field.
+func (u *FileSourceUpsertOne) ClearBucketUrl() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearBucketUrl()
+	})
+}
+
+// SetRoleArn sets the "role_arn" field.
+func (u *FileSourceUpsertOne) SetRoleArn(v string) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetRoleArn(v)
+	})
+}
+
+// UpdateRoleArn sets the "role_arn" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateRoleArn() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateRoleArn()
+	})
+}
+
+// SetPolicy sets the "policy" field.
+func (u *FileSourceUpsertOne) SetPolicy(v string) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetPolicy(v)
+	})
+}
+
+// UpdatePolicy sets the "policy" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdatePolicy() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdatePolicy()
+	})
+}
+
+// ClearPolicy clears the value of the "policy" field.
+func (u *FileSourceUpsertOne) ClearPolicy() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearPolicy()
+	})
+}
+
+// SetDurationSeconds sets the "duration_seconds" field.
+func (u *FileSourceUpsertOne) SetDurationSeconds(v int) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetDurationSeconds(v)
+	})
+}
+
+// AddDurationSeconds adds v to the "duration_seconds" field.
+func (u *FileSourceUpsertOne) AddDurationSeconds(v int) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.AddDurationSeconds(v)
+	})
+}
+
+// UpdateDurationSeconds sets the "duration_seconds" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateDurationSeconds() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateDurationSeconds()
+	})
+}
+
+// ClearDurationSeconds clears the value of the "duration_seconds" field.
+func (u *FileSourceUpsertOne) ClearDurationSeconds() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearDurationSeconds()
 	})
 }
 
@@ -960,6 +1328,27 @@ func (u *FileSourceUpsertBulk) ClearUpdatedAt() *FileSourceUpsertBulk {
 	})
 }
 
+// SetTenantID sets the "tenant_id" field.
+func (u *FileSourceUpsertBulk) SetTenantID(v int) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetTenantID(v)
+	})
+}
+
+// AddTenantID adds v to the "tenant_id" field.
+func (u *FileSourceUpsertBulk) AddTenantID(v int) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.AddTenantID(v)
+	})
+}
+
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateTenantID() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateTenantID()
+	})
+}
+
 // SetKind sets the "kind" field.
 func (u *FileSourceUpsertBulk) SetKind(v filesource.Kind) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -995,6 +1384,34 @@ func (u *FileSourceUpsertBulk) ClearComments() *FileSourceUpsertBulk {
 	})
 }
 
+// SetAccessKeyID sets the "access_key_id" field.
+func (u *FileSourceUpsertBulk) SetAccessKeyID(v string) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetAccessKeyID(v)
+	})
+}
+
+// UpdateAccessKeyID sets the "access_key_id" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateAccessKeyID() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateAccessKeyID()
+	})
+}
+
+// SetAccessKeySecret sets the "access_key_secret" field.
+func (u *FileSourceUpsertBulk) SetAccessKeySecret(v string) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetAccessKeySecret(v)
+	})
+}
+
+// UpdateAccessKeySecret sets the "access_key_secret" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateAccessKeySecret() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateAccessKeySecret()
+	})
+}
+
 // SetEndpoint sets the "endpoint" field.
 func (u *FileSourceUpsertBulk) SetEndpoint(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -1009,10 +1426,17 @@ func (u *FileSourceUpsertBulk) UpdateEndpoint() *FileSourceUpsertBulk {
 	})
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (u *FileSourceUpsertBulk) ClearEndpoint() *FileSourceUpsertBulk {
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (u *FileSourceUpsertBulk) SetStsEndpoint(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearEndpoint()
+		s.SetStsEndpoint(v)
+	})
+}
+
+// UpdateStsEndpoint sets the "sts_endpoint" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateStsEndpoint() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateStsEndpoint()
 	})
 }
 
@@ -1030,13 +1454,6 @@ func (u *FileSourceUpsertBulk) UpdateRegion() *FileSourceUpsertBulk {
 	})
 }
 
-// ClearRegion clears the value of the "region" field.
-func (u *FileSourceUpsertBulk) ClearRegion() *FileSourceUpsertBulk {
-	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearRegion()
-	})
-}
-
 // SetBucket sets the "bucket" field.
 func (u *FileSourceUpsertBulk) SetBucket(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -1051,10 +1468,87 @@ func (u *FileSourceUpsertBulk) UpdateBucket() *FileSourceUpsertBulk {
 	})
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (u *FileSourceUpsertBulk) ClearBucket() *FileSourceUpsertBulk {
+// SetBucketUrl sets the "bucketUrl" field.
+func (u *FileSourceUpsertBulk) SetBucketUrl(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearBucket()
+		s.SetBucketUrl(v)
+	})
+}
+
+// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateBucketUrl() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateBucketUrl()
+	})
+}
+
+// ClearBucketUrl clears the value of the "bucketUrl" field.
+func (u *FileSourceUpsertBulk) ClearBucketUrl() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearBucketUrl()
+	})
+}
+
+// SetRoleArn sets the "role_arn" field.
+func (u *FileSourceUpsertBulk) SetRoleArn(v string) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetRoleArn(v)
+	})
+}
+
+// UpdateRoleArn sets the "role_arn" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateRoleArn() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateRoleArn()
+	})
+}
+
+// SetPolicy sets the "policy" field.
+func (u *FileSourceUpsertBulk) SetPolicy(v string) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetPolicy(v)
+	})
+}
+
+// UpdatePolicy sets the "policy" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdatePolicy() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdatePolicy()
+	})
+}
+
+// ClearPolicy clears the value of the "policy" field.
+func (u *FileSourceUpsertBulk) ClearPolicy() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearPolicy()
+	})
+}
+
+// SetDurationSeconds sets the "duration_seconds" field.
+func (u *FileSourceUpsertBulk) SetDurationSeconds(v int) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetDurationSeconds(v)
+	})
+}
+
+// AddDurationSeconds adds v to the "duration_seconds" field.
+func (u *FileSourceUpsertBulk) AddDurationSeconds(v int) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.AddDurationSeconds(v)
+	})
+}
+
+// UpdateDurationSeconds sets the "duration_seconds" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateDurationSeconds() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateDurationSeconds()
+	})
+}
+
+// ClearDurationSeconds clears the value of the "duration_seconds" field.
+func (u *FileSourceUpsertBulk) ClearDurationSeconds() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.ClearDurationSeconds()
 	})
 }
 

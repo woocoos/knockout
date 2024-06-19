@@ -360,14 +360,38 @@ func init() {
 	filesourceDescCreatedAt := filesourceMixinFields1[1].Descriptor()
 	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
 	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
+	// filesourceDescAccessKeyID is the schema descriptor for access_key_id field.
+	filesourceDescAccessKeyID := filesourceFields[3].Descriptor()
+	// filesource.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
+	filesource.AccessKeyIDValidator = filesourceDescAccessKeyID.Validators[0].(func(string) error)
+	// filesourceDescAccessKeySecret is the schema descriptor for access_key_secret field.
+	filesourceDescAccessKeySecret := filesourceFields[4].Descriptor()
+	// filesource.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
+	filesource.AccessKeySecretValidator = filesourceDescAccessKeySecret.Validators[0].(func(string) error)
+	// filesourceDescEndpoint is the schema descriptor for endpoint field.
+	filesourceDescEndpoint := filesourceFields[5].Descriptor()
+	// filesource.EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
+	filesource.EndpointValidator = filesourceDescEndpoint.Validators[0].(func(string) error)
+	// filesourceDescStsEndpoint is the schema descriptor for sts_endpoint field.
+	filesourceDescStsEndpoint := filesourceFields[6].Descriptor()
+	// filesource.StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
+	filesource.StsEndpointValidator = filesourceDescStsEndpoint.Validators[0].(func(string) error)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[3].Descriptor()
+	filesourceDescRegion := filesourceFields[7].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[4].Descriptor()
+	filesourceDescBucket := filesourceFields[8].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
+	// filesourceDescBucketUrl is the schema descriptor for bucketUrl field.
+	filesourceDescBucketUrl := filesourceFields[9].Descriptor()
+	// filesource.BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
+	filesource.BucketUrlValidator = filesourceDescBucketUrl.Validators[0].(func(string) error)
+	// filesourceDescRoleArn is the schema descriptor for role_arn field.
+	filesourceDescRoleArn := filesourceFields[10].Descriptor()
+	// filesource.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
+	filesource.RoleArnValidator = filesourceDescRoleArn.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()
 	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
 	oauthclientMixinHooks2 := oauthclientMixin[2].Hooks()
@@ -587,6 +611,10 @@ func init() {
 	userDescRegisterIP := userFields[6].Descriptor()
 	// user.RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	user.RegisterIPValidator = userDescRegisterIP.Validators[0].(func(string) error)
+	// userDescAvatar is the schema descriptor for avatar field.
+	userDescAvatar := userFields[9].Descriptor()
+	// user.AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
+	user.AvatarValidator = userDescAvatar.Validators[0].(func(string) error)
 	// userDescID is the schema descriptor for id field.
 	userDescID := userMixinFields0[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.
@@ -680,6 +708,6 @@ func init() {
 }
 
 const (
-	Version = "v0.12.5"                                         // Version of ent codegen.
-	Sum     = "h1:KREM5E4CSoej4zeGa88Ou/gfturAnpUv0mzAjch1sj4=" // Sum of ent codegen.
+	Version = "v0.13.1"                                         // Version of ent codegen.
+	Sum     = "h1:uD8QwN1h6SNphdCCzmkMN3feSUzNnVvV/WIkHKMbzOE=" // Sum of ent codegen.
 )

@@ -37,9 +37,12 @@ type AuthServer interface {
 	// ForgetPwdVerifyMfa verify the email to reset-password.
 	// (POST /forget-pwd/verify-mfa)
 	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
+	// GetPreSignUrl return the temporary authorization access url
+	// (POST /oss/presignurl)
+	GetPreSignUrl(*gin.Context, *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error)
 	// GetSTS return temporary credentials by aws sts
 	// (POST /oss/sts)
-	GetSTS(*gin.Context) (*GetSTSResponse, error)
+	GetSTS(*gin.Context, *GetSTSRequest) (*GetSTSResponse, error)
 	// GetSpmAuth get auth data by spm.
 	// (POST /spm/auth)
 	GetSpmAuth(*gin.Context, *GetSpmAuthRequest) (*LoginResponse, error)
@@ -114,7 +117,12 @@ func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwd
 	return
 }
 
-func (UnimplementedAuthServer) GetSTS(c *gin.Context) (_ *GetSTSResponse, err error) {
+func (UnimplementedAuthServer) GetPreSignUrl(c *gin.Context, req *GetPreSignUrlRequest) (_ *GetPreSignUrlResponse, err error) {
+	err = fmt.Errorf("method GetPreSignUrl not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) GetSTS(c *gin.Context, req *GetSTSRequest) (_ *GetSTSResponse, err error) {
 	err = fmt.Errorf("method GetSTS not implemented")
 	return
 }
