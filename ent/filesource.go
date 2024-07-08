@@ -25,16 +25,10 @@ type FileSource struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID
-	TenantID int `json:"tenant_id,omitempty"`
 	// 文件来源
 	Kind filesource.Kind `json:"kind,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
-	// accesskey id
-	AccessKeyID string `json:"access_key_id,omitempty"`
-	// accesskey secret
-	AccessKeySecret string `json:"access_key_secret,omitempty"`
 	// 对外服务的访问域名
 	Endpoint string `json:"endpoint,omitempty"`
 	// sts服务的访问域名
@@ -45,12 +39,6 @@ type FileSource struct {
 	Bucket string `json:"bucket,omitempty"`
 	// 文件存储空间地址，用于匹配url
 	BucketUrl string `json:"bucketUrl,omitempty"`
-	// 角色的资源名称(ARN)，用于STS
-	RoleArn string `json:"role_arn,omitempty"`
-	// 指定返回的STS令牌的权限的策略
-	Policy string `json:"policy,omitempty"`
-	// STS令牌的有效期，默认3600s
-	DurationSeconds int `json:"duration_seconds,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileSourceQuery when eager-loading is set.
 	Edges        FileSourceEdges `json:"edges"`
@@ -59,21 +47,33 @@ type FileSource struct {
 
 // FileSourceEdges holds the relations/edges for other nodes in the graph.
 type FileSourceEdges struct {
+	// 来源凭证
+	Identities []*FileIdentity `json:"identities,omitempty"`
 	// 所有文件
 	Files []*File `json:"files,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 
-	namedFiles map[string][]*File
+	namedIdentities map[string][]*FileIdentity
+	namedFiles      map[string][]*File
+}
+
+// IdentitiesOrErr returns the Identities value or an error if the edge
+// was not loaded in eager-loading.
+func (e FileSourceEdges) IdentitiesOrErr() ([]*FileIdentity, error) {
+	if e.loadedTypes[0] {
+		return e.Identities, nil
+	}
+	return nil, &NotLoadedError{edge: "identities"}
 }
 
 // FilesOrErr returns the Files value or an error if the edge
 // was not loaded in eager-loading.
 func (e FileSourceEdges) FilesOrErr() ([]*File, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Files, nil
 	}
 	return nil, &NotLoadedError{edge: "files"}
@@ -84,9 +84,9 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy, filesource.FieldTenantID, filesource.FieldDurationSeconds:
+		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy:
 			values[i] = new(sql.NullInt64)
-		case filesource.FieldKind, filesource.FieldComments, filesource.FieldAccessKeyID, filesource.FieldAccessKeySecret, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketUrl, filesource.FieldRoleArn, filesource.FieldPolicy:
+		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketUrl:
 			values[i] = new(sql.NullString)
 		case filesource.FieldCreatedAt, filesource.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -135,12 +135,6 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.UpdatedAt = value.Time
 			}
-		case filesource.FieldTenantID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
-			} else if value.Valid {
-				fs.TenantID = int(value.Int64)
-			}
 		case filesource.FieldKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field kind", values[i])
@@ -152,18 +146,6 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field comments", values[i])
 			} else if value.Valid {
 				fs.Comments = value.String
-			}
-		case filesource.FieldAccessKeyID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field access_key_id", values[i])
-			} else if value.Valid {
-				fs.AccessKeyID = value.String
-			}
-		case filesource.FieldAccessKeySecret:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field access_key_secret", values[i])
-			} else if value.Valid {
-				fs.AccessKeySecret = value.String
 			}
 		case filesource.FieldEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -195,24 +177,6 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.BucketUrl = value.String
 			}
-		case filesource.FieldRoleArn:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field role_arn", values[i])
-			} else if value.Valid {
-				fs.RoleArn = value.String
-			}
-		case filesource.FieldPolicy:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field policy", values[i])
-			} else if value.Valid {
-				fs.Policy = value.String
-			}
-		case filesource.FieldDurationSeconds:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field duration_seconds", values[i])
-			} else if value.Valid {
-				fs.DurationSeconds = int(value.Int64)
-			}
 		default:
 			fs.selectValues.Set(columns[i], values[i])
 		}
@@ -224,6 +188,11 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (fs *FileSource) Value(name string) (ent.Value, error) {
 	return fs.selectValues.Get(name)
+}
+
+// QueryIdentities queries the "identities" edge of the FileSource entity.
+func (fs *FileSource) QueryIdentities() *FileIdentityQuery {
+	return NewFileSourceClient(fs.config).QueryIdentities(fs)
 }
 
 // QueryFiles queries the "files" edge of the FileSource entity.
@@ -266,20 +235,11 @@ func (fs *FileSource) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(fs.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", fs.TenantID))
-	builder.WriteString(", ")
 	builder.WriteString("kind=")
 	builder.WriteString(fmt.Sprintf("%v", fs.Kind))
 	builder.WriteString(", ")
 	builder.WriteString("comments=")
 	builder.WriteString(fs.Comments)
-	builder.WriteString(", ")
-	builder.WriteString("access_key_id=")
-	builder.WriteString(fs.AccessKeyID)
-	builder.WriteString(", ")
-	builder.WriteString("access_key_secret=")
-	builder.WriteString(fs.AccessKeySecret)
 	builder.WriteString(", ")
 	builder.WriteString("endpoint=")
 	builder.WriteString(fs.Endpoint)
@@ -295,17 +255,32 @@ func (fs *FileSource) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("bucketUrl=")
 	builder.WriteString(fs.BucketUrl)
-	builder.WriteString(", ")
-	builder.WriteString("role_arn=")
-	builder.WriteString(fs.RoleArn)
-	builder.WriteString(", ")
-	builder.WriteString("policy=")
-	builder.WriteString(fs.Policy)
-	builder.WriteString(", ")
-	builder.WriteString("duration_seconds=")
-	builder.WriteString(fmt.Sprintf("%v", fs.DurationSeconds))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedIdentities returns the Identities named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (fs *FileSource) NamedIdentities(name string) ([]*FileIdentity, error) {
+	if fs.Edges.namedIdentities == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := fs.Edges.namedIdentities[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (fs *FileSource) appendNamedIdentities(name string, edges ...*FileIdentity) {
+	if fs.Edges.namedIdentities == nil {
+		fs.Edges.namedIdentities = make(map[string][]*FileIdentity)
+	}
+	if len(edges) == 0 {
+		fs.Edges.namedIdentities[name] = []*FileIdentity{}
+	} else {
+		fs.Edges.namedIdentities[name] = append(fs.Edges.namedIdentities[name], edges...)
+	}
 }
 
 // NamedFiles returns the Files named value or an error if the edge was not

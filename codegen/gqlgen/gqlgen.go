@@ -41,6 +41,7 @@ func main() {
 		FieldHook: constraintFieldHook,
 	}
 
+	//err = api.Generate(cfg, api.ReplacePlugin(&p))
 	err = api.Generate(cfg, api.ReplacePlugin(&p),
 		api.AddPlugin(gqlx.NewResolverPlugin(gqlx.WithRelayNodeEx(), gqlx.WithConfig(cfg))),
 	)

@@ -36,6 +36,9 @@ type AppRolePolicy func(*sql.Selector)
 // File is the predicate function for file builders.
 type File func(*sql.Selector)
 
+// FileIdentity is the predicate function for fileidentity builders.
+type FileIdentity func(*sql.Selector)
+
 // FileSource is the predicate function for filesource builders.
 type FileSource func(*sql.Selector)
 

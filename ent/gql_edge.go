@@ -265,6 +265,35 @@ func (f *File) Source(ctx context.Context) (*FileSource, error) {
 	return result, err
 }
 
+func (fi *FileIdentity) Source(ctx context.Context) (*FileSource, error) {
+	result, err := fi.Edges.SourceOrErr()
+	if IsNotLoaded(err) {
+		result, err = fi.QuerySource().Only(ctx)
+	}
+	return result, err
+}
+
+func (fs *FileSource) Identities(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *FileIdentityOrder, where *FileIdentityWhereInput,
+) (*FileIdentityConnection, error) {
+	opts := []FileIdentityPaginateOption{
+		WithFileIdentityOrder(orderBy),
+		WithFileIdentityFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := fs.Edges.totalCount[0][alias]
+	if nodes, err := fs.NamedIdentities(alias); err == nil || hasTotalCount {
+		pager, err := newFileIdentityPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &FileIdentityConnection{Edges: []*FileIdentityEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return fs.QueryIdentities().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (fs *FileSource) Files(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *FileOrder, where *FileWhereInput,
 ) (*FileConnection, error) {
@@ -273,7 +302,7 @@ func (fs *FileSource) Files(
 		WithFileFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := fs.Edges.totalCount[0][alias]
+	totalCount, hasTotalCount := fs.Edges.totalCount[1][alias]
 	if nodes, err := fs.NamedFiles(alias); err == nil || hasTotalCount {
 		pager, err := newFilePager(opts, last != nil)
 		if err != nil {

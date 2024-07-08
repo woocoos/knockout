@@ -143,9 +143,12 @@ func (ts *loginFlowSuite) SetupSuite() {
 		SetDisplayName("admin").Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = db.FileSource.Create().SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").SetKind(filesource.KindMinio).
-		SetEndpoint("localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetRoleArn("arn:aws:s3:::*").
-		SetDurationSeconds(3600).SetBucket("test2").SetBucketUrl("http://localhost:9000/test2").Exec(context.Background())
+	err = db.FileSource.Create().SetID(1).SetCreatedBy(1).SetKind(filesource.KindMinio).
+		SetEndpoint("http://localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetBucket("test2").SetBucketUrl("http://localhost:9000/test2").Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").
+		SetRoleArn("arn:aws:s3:::*").SetDurationSeconds(3600).SetIsDefault(true).SetFileSourceID(1).Exec(context.Background())
 	ts.Require().NoError(err)
 }
 
@@ -376,11 +379,7 @@ func TestPwd(t *testing.T) {
 func (ts *loginFlowSuite) Test_GetOssSts() {
 	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
-	payload := strings.NewReader(`{
-		"bucket": "test2",
-		"endpoint": "localhost:9000",
-        "kind": "minio"
-	}`)
+	payload := strings.NewReader(`{}`)
 	req := httptest.NewRequest("POST", "/oss/sts", payload)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+adminToken)

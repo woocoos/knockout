@@ -831,33 +831,133 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 	return c
 }
 
-// CreateFileSourceInput represents a mutation input for creating filesources.
-type CreateFileSourceInput struct {
+// CreateFileIdentityInput represents a mutation input for creating fileidentities.
+type CreateFileIdentityInput struct {
 	TenantID        int
-	Kind            filesource.Kind
-	Comments        *string
 	AccessKeyID     string
 	AccessKeySecret string
-	Endpoint        string
-	StsEndpoint     string
-	Region          string
-	Bucket          string
-	BucketUrl       *string
 	RoleArn         string
 	Policy          *string
 	DurationSeconds *int
-	FileIDs         []int
+	IsDefault       *bool
+	Comments        *string
+	SourceID        int
+}
+
+// Mutate applies the CreateFileIdentityInput on the FileIdentityMutation builder.
+func (i *CreateFileIdentityInput) Mutate(m *FileIdentityMutation) {
+	m.SetTenantID(i.TenantID)
+	m.SetAccessKeyID(i.AccessKeyID)
+	m.SetAccessKeySecret(i.AccessKeySecret)
+	m.SetRoleArn(i.RoleArn)
+	if v := i.Policy; v != nil {
+		m.SetPolicy(*v)
+	}
+	if v := i.DurationSeconds; v != nil {
+		m.SetDurationSeconds(*v)
+	}
+	if v := i.IsDefault; v != nil {
+		m.SetIsDefault(*v)
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	m.SetSourceID(i.SourceID)
+}
+
+// SetInput applies the change-set in the CreateFileIdentityInput on the FileIdentityCreate builder.
+func (c *FileIdentityCreate) SetInput(i CreateFileIdentityInput) *FileIdentityCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateFileIdentityInput represents a mutation input for updating fileidentities.
+type UpdateFileIdentityInput struct {
+	TenantID             *int
+	AccessKeyID          *string
+	AccessKeySecret      *string
+	RoleArn              *string
+	ClearPolicy          bool
+	Policy               *string
+	ClearDurationSeconds bool
+	DurationSeconds      *int
+	IsDefault            *bool
+	ClearComments        bool
+	Comments             *string
+	SourceID             *int
+}
+
+// Mutate applies the UpdateFileIdentityInput on the FileIdentityMutation builder.
+func (i *UpdateFileIdentityInput) Mutate(m *FileIdentityMutation) {
+	if v := i.TenantID; v != nil {
+		m.SetTenantID(*v)
+	}
+	if v := i.AccessKeyID; v != nil {
+		m.SetAccessKeyID(*v)
+	}
+	if v := i.AccessKeySecret; v != nil {
+		m.SetAccessKeySecret(*v)
+	}
+	if v := i.RoleArn; v != nil {
+		m.SetRoleArn(*v)
+	}
+	if i.ClearPolicy {
+		m.ClearPolicy()
+	}
+	if v := i.Policy; v != nil {
+		m.SetPolicy(*v)
+	}
+	if i.ClearDurationSeconds {
+		m.ClearDurationSeconds()
+	}
+	if v := i.DurationSeconds; v != nil {
+		m.SetDurationSeconds(*v)
+	}
+	if v := i.IsDefault; v != nil {
+		m.SetIsDefault(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.SourceID; v != nil {
+		m.SetSourceID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateFileIdentityInput on the FileIdentityUpdate builder.
+func (c *FileIdentityUpdate) SetInput(i UpdateFileIdentityInput) *FileIdentityUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateFileIdentityInput on the FileIdentityUpdateOne builder.
+func (c *FileIdentityUpdateOne) SetInput(i UpdateFileIdentityInput) *FileIdentityUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateFileSourceInput represents a mutation input for creating filesources.
+type CreateFileSourceInput struct {
+	Kind        filesource.Kind
+	Comments    *string
+	Endpoint    string
+	StsEndpoint string
+	Region      string
+	Bucket      string
+	BucketUrl   *string
+	IdentityIDs []int
+	FileIDs     []int
 }
 
 // Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
 func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
-	m.SetTenantID(i.TenantID)
 	m.SetKind(i.Kind)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
-	m.SetAccessKeyID(i.AccessKeyID)
-	m.SetAccessKeySecret(i.AccessKeySecret)
 	m.SetEndpoint(i.Endpoint)
 	m.SetStsEndpoint(i.StsEndpoint)
 	m.SetRegion(i.Region)
@@ -865,12 +965,8 @@ func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.BucketUrl; v != nil {
 		m.SetBucketUrl(*v)
 	}
-	m.SetRoleArn(i.RoleArn)
-	if v := i.Policy; v != nil {
-		m.SetPolicy(*v)
-	}
-	if v := i.DurationSeconds; v != nil {
-		m.SetDurationSeconds(*v)
+	if v := i.IdentityIDs; len(v) > 0 {
+		m.AddIdentityIDs(v...)
 	}
 	if v := i.FileIDs; len(v) > 0 {
 		m.AddFileIDs(v...)
@@ -885,33 +981,25 @@ func (c *FileSourceCreate) SetInput(i CreateFileSourceInput) *FileSourceCreate {
 
 // UpdateFileSourceInput represents a mutation input for updating filesources.
 type UpdateFileSourceInput struct {
-	TenantID             *int
-	Kind                 *filesource.Kind
-	ClearComments        bool
-	Comments             *string
-	AccessKeyID          *string
-	AccessKeySecret      *string
-	Endpoint             *string
-	StsEndpoint          *string
-	Region               *string
-	Bucket               *string
-	ClearBucketUrl       bool
-	BucketUrl            *string
-	RoleArn              *string
-	ClearPolicy          bool
-	Policy               *string
-	ClearDurationSeconds bool
-	DurationSeconds      *int
-	ClearFiles           bool
-	AddFileIDs           []int
-	RemoveFileIDs        []int
+	Kind              *filesource.Kind
+	ClearComments     bool
+	Comments          *string
+	Endpoint          *string
+	StsEndpoint       *string
+	Region            *string
+	Bucket            *string
+	ClearBucketUrl    bool
+	BucketUrl         *string
+	ClearIdentities   bool
+	AddIdentityIDs    []int
+	RemoveIdentityIDs []int
+	ClearFiles        bool
+	AddFileIDs        []int
+	RemoveFileIDs     []int
 }
 
 // Mutate applies the UpdateFileSourceInput on the FileSourceMutation builder.
 func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
 	}
@@ -920,12 +1008,6 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
-	}
-	if v := i.AccessKeyID; v != nil {
-		m.SetAccessKeyID(*v)
-	}
-	if v := i.AccessKeySecret; v != nil {
-		m.SetAccessKeySecret(*v)
 	}
 	if v := i.Endpoint; v != nil {
 		m.SetEndpoint(*v)
@@ -945,20 +1027,14 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.BucketUrl; v != nil {
 		m.SetBucketUrl(*v)
 	}
-	if v := i.RoleArn; v != nil {
-		m.SetRoleArn(*v)
+	if i.ClearIdentities {
+		m.ClearIdentities()
 	}
-	if i.ClearPolicy {
-		m.ClearPolicy()
+	if v := i.AddIdentityIDs; len(v) > 0 {
+		m.AddIdentityIDs(v...)
 	}
-	if v := i.Policy; v != nil {
-		m.SetPolicy(*v)
-	}
-	if i.ClearDurationSeconds {
-		m.ClearDurationSeconds()
-	}
-	if v := i.DurationSeconds; v != nil {
-		m.SetDurationSeconds(*v)
+	if v := i.RemoveIdentityIDs; len(v) > 0 {
+		m.RemoveIdentityIDs(v...)
 	}
 	if i.ClearFiles {
 		m.ClearFiles()

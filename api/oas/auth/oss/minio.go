@@ -6,23 +6,21 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsCfg "github.com/aws/aws-sdk-go-v2/config"
 	awsCredentials "github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"github.com/minio/minio-go/v7"
-	minioCredentials "github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/woocoos/knockout/ent"
 	"net/url"
 	"strings"
 	"time"
 )
 
 type Minio struct {
-	ctx         context.Context
-	stsClient   *sts.Client
-	minioClient *minio.Client
-	fileSource  *ent.FileSource
+	ctx        context.Context
+	stsClient  *sts.Client
+	s3Client   *s3.Client
+	fileSource *FileSource
 }
 
-func NewMinio(fileSource *ent.FileSource) (*Minio, error) {
+func NewMinio(fileSource *FileSource) (*Minio, error) {
 	svc := &Minio{
 		ctx:        context.TODO(),
 		fileSource: fileSource,
@@ -32,41 +30,28 @@ func NewMinio(fileSource *ent.FileSource) (*Minio, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = svc.initMinioClient()
-	if err != nil {
-		return nil, err
-	}
 	return svc, nil
 }
 
 func (svc *Minio) initAwsClient() error {
-	resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-		return aws.Endpoint{
-			URL: svc.fileSource.StsEndpoint,
-		}, nil
-	})
 	creds := awsCredentials.NewStaticCredentialsProvider(svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret, "")
-	cfg, err := awsCfg.LoadDefaultConfig(svc.ctx, awsCfg.WithCredentialsProvider(creds), awsCfg.WithEndpointResolverWithOptions(resolver))
+	cfg, err := awsCfg.LoadDefaultConfig(svc.ctx, awsCfg.WithCredentialsProvider(creds))
 	if err != nil {
 		return err
 	}
 
 	stsClient := sts.NewFromConfig(cfg, func(options *sts.Options) {
 		options.Region = svc.fileSource.Region
+		options.BaseEndpoint = aws.String(svc.fileSource.StsEndpoint)
 	})
 	svc.stsClient = stsClient
-	return nil
-}
 
-func (svc *Minio) initMinioClient() error {
-	minioClient, err := minio.New(svc.fileSource.Endpoint, &minio.Options{
-		Creds:  minioCredentials.NewStaticV4(svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret, ""),
-		Secure: false,
+	s3Client := s3.NewFromConfig(cfg, func(options *s3.Options) {
+		options.Region = svc.fileSource.Region
+		options.BaseEndpoint = aws.String(svc.fileSource.Endpoint)
+		options.UsePathStyle = true
 	})
-	if err != nil {
-		return err
-	}
-	svc.minioClient = minioClient
+	svc.s3Client = s3Client
 	return nil
 }
 
@@ -93,11 +78,20 @@ func (svc *Minio) GetSTS(roleSessionName string) (*STSResponse, error) {
 }
 
 func (svc *Minio) GetPreSignedURL(bucket, path string, expires time.Duration) (string, error) {
-	preSignedURL, err := svc.minioClient.PresignedGetObject(svc.ctx, bucket, strings.TrimLeft(path, "/"), expires, make(url.Values))
+	pClient := s3.NewPresignClient(svc.s3Client)
+	resp, err := pClient.PresignGetObject(svc.ctx, &s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(strings.TrimLeft(path, "/")),
+	}, func(options *s3.PresignOptions) {
+		options.Expires = expires
+	})
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return preSignedURL.String(), nil
+	if resp == nil {
+		return "", fmt.Errorf("signUrl response is nil")
+	}
+	return resp.URL, nil
 }
 
 func ParseMinioUrl(ossUrl string) (bucketUrl, path string, err error) {
@@ -116,4 +110,8 @@ func ParseMinioUrl(ossUrl string) (bucketUrl, path string, err error) {
 	}
 	bucketUrl = fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, bucketPath)
 	return
+}
+
+func (svc *Minio) GetS3Client() *s3.Client {
+	return svc.s3Client
 }

@@ -32,6 +32,8 @@ type Tx struct {
 	AppRolePolicy *AppRolePolicyClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// FileIdentity is the client for interacting with the FileIdentity builders.
+	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
 	FileSource *FileSourceClient
 	// OauthClient is the client for interacting with the OauthClient builders.
@@ -203,6 +205,7 @@ func (tx *Tx) init() {
 	tx.AppRole = NewAppRoleClient(tx.config)
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)
 	tx.File = NewFileClient(tx.config)
+	tx.FileIdentity = NewFileIdentityClient(tx.config)
 	tx.FileSource = NewFileSourceClient(tx.config)
 	tx.OauthClient = NewOauthClientClient(tx.config)
 	tx.Org = NewOrgClient(tx.config)

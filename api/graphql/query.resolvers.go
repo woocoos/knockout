@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appres"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -265,4 +266,13 @@ func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, er
 		return false, nil
 	}
 	return has, nil
+}
+
+// FileIdentities is the resolver for the fileIdentities field.
+func (r *queryResolver) FileIdentities(ctx context.Context) ([]*ent.FileIdentity, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).All(ctx)
 }

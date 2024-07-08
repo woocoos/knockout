@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -76,27 +77,6 @@ func (fsu *FileSourceUpdate) ClearUpdatedAt() *FileSourceUpdate {
 	return fsu
 }
 
-// SetTenantID sets the "tenant_id" field.
-func (fsu *FileSourceUpdate) SetTenantID(i int) *FileSourceUpdate {
-	fsu.mutation.ResetTenantID()
-	fsu.mutation.SetTenantID(i)
-	return fsu
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableTenantID(i *int) *FileSourceUpdate {
-	if i != nil {
-		fsu.SetTenantID(*i)
-	}
-	return fsu
-}
-
-// AddTenantID adds i to the "tenant_id" field.
-func (fsu *FileSourceUpdate) AddTenantID(i int) *FileSourceUpdate {
-	fsu.mutation.AddTenantID(i)
-	return fsu
-}
-
 // SetKind sets the "kind" field.
 func (fsu *FileSourceUpdate) SetKind(f filesource.Kind) *FileSourceUpdate {
 	fsu.mutation.SetKind(f)
@@ -128,34 +108,6 @@ func (fsu *FileSourceUpdate) SetNillableComments(s *string) *FileSourceUpdate {
 // ClearComments clears the value of the "comments" field.
 func (fsu *FileSourceUpdate) ClearComments() *FileSourceUpdate {
 	fsu.mutation.ClearComments()
-	return fsu
-}
-
-// SetAccessKeyID sets the "access_key_id" field.
-func (fsu *FileSourceUpdate) SetAccessKeyID(s string) *FileSourceUpdate {
-	fsu.mutation.SetAccessKeyID(s)
-	return fsu
-}
-
-// SetNillableAccessKeyID sets the "access_key_id" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableAccessKeyID(s *string) *FileSourceUpdate {
-	if s != nil {
-		fsu.SetAccessKeyID(*s)
-	}
-	return fsu
-}
-
-// SetAccessKeySecret sets the "access_key_secret" field.
-func (fsu *FileSourceUpdate) SetAccessKeySecret(s string) *FileSourceUpdate {
-	fsu.mutation.SetAccessKeySecret(s)
-	return fsu
-}
-
-// SetNillableAccessKeySecret sets the "access_key_secret" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableAccessKeySecret(s *string) *FileSourceUpdate {
-	if s != nil {
-		fsu.SetAccessKeySecret(*s)
-	}
 	return fsu
 }
 
@@ -235,65 +187,19 @@ func (fsu *FileSourceUpdate) ClearBucketUrl() *FileSourceUpdate {
 	return fsu
 }
 
-// SetRoleArn sets the "role_arn" field.
-func (fsu *FileSourceUpdate) SetRoleArn(s string) *FileSourceUpdate {
-	fsu.mutation.SetRoleArn(s)
+// AddIdentityIDs adds the "identities" edge to the FileIdentity entity by IDs.
+func (fsu *FileSourceUpdate) AddIdentityIDs(ids ...int) *FileSourceUpdate {
+	fsu.mutation.AddIdentityIDs(ids...)
 	return fsu
 }
 
-// SetNillableRoleArn sets the "role_arn" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableRoleArn(s *string) *FileSourceUpdate {
-	if s != nil {
-		fsu.SetRoleArn(*s)
+// AddIdentities adds the "identities" edges to the FileIdentity entity.
+func (fsu *FileSourceUpdate) AddIdentities(f ...*FileIdentity) *FileSourceUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return fsu
-}
-
-// SetPolicy sets the "policy" field.
-func (fsu *FileSourceUpdate) SetPolicy(s string) *FileSourceUpdate {
-	fsu.mutation.SetPolicy(s)
-	return fsu
-}
-
-// SetNillablePolicy sets the "policy" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillablePolicy(s *string) *FileSourceUpdate {
-	if s != nil {
-		fsu.SetPolicy(*s)
-	}
-	return fsu
-}
-
-// ClearPolicy clears the value of the "policy" field.
-func (fsu *FileSourceUpdate) ClearPolicy() *FileSourceUpdate {
-	fsu.mutation.ClearPolicy()
-	return fsu
-}
-
-// SetDurationSeconds sets the "duration_seconds" field.
-func (fsu *FileSourceUpdate) SetDurationSeconds(i int) *FileSourceUpdate {
-	fsu.mutation.ResetDurationSeconds()
-	fsu.mutation.SetDurationSeconds(i)
-	return fsu
-}
-
-// SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableDurationSeconds(i *int) *FileSourceUpdate {
-	if i != nil {
-		fsu.SetDurationSeconds(*i)
-	}
-	return fsu
-}
-
-// AddDurationSeconds adds i to the "duration_seconds" field.
-func (fsu *FileSourceUpdate) AddDurationSeconds(i int) *FileSourceUpdate {
-	fsu.mutation.AddDurationSeconds(i)
-	return fsu
-}
-
-// ClearDurationSeconds clears the value of the "duration_seconds" field.
-func (fsu *FileSourceUpdate) ClearDurationSeconds() *FileSourceUpdate {
-	fsu.mutation.ClearDurationSeconds()
-	return fsu
+	return fsu.AddIdentityIDs(ids...)
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
@@ -314,6 +220,27 @@ func (fsu *FileSourceUpdate) AddFiles(f ...*File) *FileSourceUpdate {
 // Mutation returns the FileSourceMutation object of the builder.
 func (fsu *FileSourceUpdate) Mutation() *FileSourceMutation {
 	return fsu.mutation
+}
+
+// ClearIdentities clears all "identities" edges to the FileIdentity entity.
+func (fsu *FileSourceUpdate) ClearIdentities() *FileSourceUpdate {
+	fsu.mutation.ClearIdentities()
+	return fsu
+}
+
+// RemoveIdentityIDs removes the "identities" edge to FileIdentity entities by IDs.
+func (fsu *FileSourceUpdate) RemoveIdentityIDs(ids ...int) *FileSourceUpdate {
+	fsu.mutation.RemoveIdentityIDs(ids...)
+	return fsu
+}
+
+// RemoveIdentities removes "identities" edges to FileIdentity entities.
+func (fsu *FileSourceUpdate) RemoveIdentities(f ...*FileIdentity) *FileSourceUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fsu.RemoveIdentityIDs(ids...)
 }
 
 // ClearFiles clears all "files" edges to the File entity.
@@ -371,16 +298,6 @@ func (fsu *FileSourceUpdate) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
-	if v, ok := fsu.mutation.AccessKeyID(); ok {
-		if err := filesource.AccessKeyIDValidator(v); err != nil {
-			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_id": %w`, err)}
-		}
-	}
-	if v, ok := fsu.mutation.AccessKeySecret(); ok {
-		if err := filesource.AccessKeySecretValidator(v); err != nil {
-			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_secret": %w`, err)}
-		}
-	}
 	if v, ok := fsu.mutation.Endpoint(); ok {
 		if err := filesource.EndpointValidator(v); err != nil {
 			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
@@ -404,11 +321,6 @@ func (fsu *FileSourceUpdate) check() error {
 	if v, ok := fsu.mutation.BucketUrl(); ok {
 		if err := filesource.BucketUrlValidator(v); err != nil {
 			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
-		}
-	}
-	if v, ok := fsu.mutation.RoleArn(); ok {
-		if err := filesource.RoleArnValidator(v); err != nil {
-			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileSource.role_arn": %w`, err)}
 		}
 	}
 	return nil
@@ -441,12 +353,6 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if fsu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(filesource.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := fsu.mutation.TenantID(); ok {
-		_spec.SetField(filesource.FieldTenantID, field.TypeInt, value)
-	}
-	if value, ok := fsu.mutation.AddedTenantID(); ok {
-		_spec.AddField(filesource.FieldTenantID, field.TypeInt, value)
-	}
 	if value, ok := fsu.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 	}
@@ -455,12 +361,6 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if fsu.mutation.CommentsCleared() {
 		_spec.ClearField(filesource.FieldComments, field.TypeString)
-	}
-	if value, ok := fsu.mutation.AccessKeyID(); ok {
-		_spec.SetField(filesource.FieldAccessKeyID, field.TypeString, value)
-	}
-	if value, ok := fsu.mutation.AccessKeySecret(); ok {
-		_spec.SetField(filesource.FieldAccessKeySecret, field.TypeString, value)
 	}
 	if value, ok := fsu.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
@@ -480,23 +380,50 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if fsu.mutation.BucketUrlCleared() {
 		_spec.ClearField(filesource.FieldBucketUrl, field.TypeString)
 	}
-	if value, ok := fsu.mutation.RoleArn(); ok {
-		_spec.SetField(filesource.FieldRoleArn, field.TypeString, value)
+	if fsu.mutation.IdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := fsu.mutation.Policy(); ok {
-		_spec.SetField(filesource.FieldPolicy, field.TypeString, value)
+	if nodes := fsu.mutation.RemovedIdentitiesIDs(); len(nodes) > 0 && !fsu.mutation.IdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if fsu.mutation.PolicyCleared() {
-		_spec.ClearField(filesource.FieldPolicy, field.TypeString)
-	}
-	if value, ok := fsu.mutation.DurationSeconds(); ok {
-		_spec.SetField(filesource.FieldDurationSeconds, field.TypeInt, value)
-	}
-	if value, ok := fsu.mutation.AddedDurationSeconds(); ok {
-		_spec.AddField(filesource.FieldDurationSeconds, field.TypeInt, value)
-	}
-	if fsu.mutation.DurationSecondsCleared() {
-		_spec.ClearField(filesource.FieldDurationSeconds, field.TypeInt)
+	if nodes := fsu.mutation.IdentitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if fsu.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -610,27 +537,6 @@ func (fsuo *FileSourceUpdateOne) ClearUpdatedAt() *FileSourceUpdateOne {
 	return fsuo
 }
 
-// SetTenantID sets the "tenant_id" field.
-func (fsuo *FileSourceUpdateOne) SetTenantID(i int) *FileSourceUpdateOne {
-	fsuo.mutation.ResetTenantID()
-	fsuo.mutation.SetTenantID(i)
-	return fsuo
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableTenantID(i *int) *FileSourceUpdateOne {
-	if i != nil {
-		fsuo.SetTenantID(*i)
-	}
-	return fsuo
-}
-
-// AddTenantID adds i to the "tenant_id" field.
-func (fsuo *FileSourceUpdateOne) AddTenantID(i int) *FileSourceUpdateOne {
-	fsuo.mutation.AddTenantID(i)
-	return fsuo
-}
-
 // SetKind sets the "kind" field.
 func (fsuo *FileSourceUpdateOne) SetKind(f filesource.Kind) *FileSourceUpdateOne {
 	fsuo.mutation.SetKind(f)
@@ -662,34 +568,6 @@ func (fsuo *FileSourceUpdateOne) SetNillableComments(s *string) *FileSourceUpdat
 // ClearComments clears the value of the "comments" field.
 func (fsuo *FileSourceUpdateOne) ClearComments() *FileSourceUpdateOne {
 	fsuo.mutation.ClearComments()
-	return fsuo
-}
-
-// SetAccessKeyID sets the "access_key_id" field.
-func (fsuo *FileSourceUpdateOne) SetAccessKeyID(s string) *FileSourceUpdateOne {
-	fsuo.mutation.SetAccessKeyID(s)
-	return fsuo
-}
-
-// SetNillableAccessKeyID sets the "access_key_id" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableAccessKeyID(s *string) *FileSourceUpdateOne {
-	if s != nil {
-		fsuo.SetAccessKeyID(*s)
-	}
-	return fsuo
-}
-
-// SetAccessKeySecret sets the "access_key_secret" field.
-func (fsuo *FileSourceUpdateOne) SetAccessKeySecret(s string) *FileSourceUpdateOne {
-	fsuo.mutation.SetAccessKeySecret(s)
-	return fsuo
-}
-
-// SetNillableAccessKeySecret sets the "access_key_secret" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableAccessKeySecret(s *string) *FileSourceUpdateOne {
-	if s != nil {
-		fsuo.SetAccessKeySecret(*s)
-	}
 	return fsuo
 }
 
@@ -769,65 +647,19 @@ func (fsuo *FileSourceUpdateOne) ClearBucketUrl() *FileSourceUpdateOne {
 	return fsuo
 }
 
-// SetRoleArn sets the "role_arn" field.
-func (fsuo *FileSourceUpdateOne) SetRoleArn(s string) *FileSourceUpdateOne {
-	fsuo.mutation.SetRoleArn(s)
+// AddIdentityIDs adds the "identities" edge to the FileIdentity entity by IDs.
+func (fsuo *FileSourceUpdateOne) AddIdentityIDs(ids ...int) *FileSourceUpdateOne {
+	fsuo.mutation.AddIdentityIDs(ids...)
 	return fsuo
 }
 
-// SetNillableRoleArn sets the "role_arn" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableRoleArn(s *string) *FileSourceUpdateOne {
-	if s != nil {
-		fsuo.SetRoleArn(*s)
+// AddIdentities adds the "identities" edges to the FileIdentity entity.
+func (fsuo *FileSourceUpdateOne) AddIdentities(f ...*FileIdentity) *FileSourceUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
 	}
-	return fsuo
-}
-
-// SetPolicy sets the "policy" field.
-func (fsuo *FileSourceUpdateOne) SetPolicy(s string) *FileSourceUpdateOne {
-	fsuo.mutation.SetPolicy(s)
-	return fsuo
-}
-
-// SetNillablePolicy sets the "policy" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillablePolicy(s *string) *FileSourceUpdateOne {
-	if s != nil {
-		fsuo.SetPolicy(*s)
-	}
-	return fsuo
-}
-
-// ClearPolicy clears the value of the "policy" field.
-func (fsuo *FileSourceUpdateOne) ClearPolicy() *FileSourceUpdateOne {
-	fsuo.mutation.ClearPolicy()
-	return fsuo
-}
-
-// SetDurationSeconds sets the "duration_seconds" field.
-func (fsuo *FileSourceUpdateOne) SetDurationSeconds(i int) *FileSourceUpdateOne {
-	fsuo.mutation.ResetDurationSeconds()
-	fsuo.mutation.SetDurationSeconds(i)
-	return fsuo
-}
-
-// SetNillableDurationSeconds sets the "duration_seconds" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableDurationSeconds(i *int) *FileSourceUpdateOne {
-	if i != nil {
-		fsuo.SetDurationSeconds(*i)
-	}
-	return fsuo
-}
-
-// AddDurationSeconds adds i to the "duration_seconds" field.
-func (fsuo *FileSourceUpdateOne) AddDurationSeconds(i int) *FileSourceUpdateOne {
-	fsuo.mutation.AddDurationSeconds(i)
-	return fsuo
-}
-
-// ClearDurationSeconds clears the value of the "duration_seconds" field.
-func (fsuo *FileSourceUpdateOne) ClearDurationSeconds() *FileSourceUpdateOne {
-	fsuo.mutation.ClearDurationSeconds()
-	return fsuo
+	return fsuo.AddIdentityIDs(ids...)
 }
 
 // AddFileIDs adds the "files" edge to the File entity by IDs.
@@ -848,6 +680,27 @@ func (fsuo *FileSourceUpdateOne) AddFiles(f ...*File) *FileSourceUpdateOne {
 // Mutation returns the FileSourceMutation object of the builder.
 func (fsuo *FileSourceUpdateOne) Mutation() *FileSourceMutation {
 	return fsuo.mutation
+}
+
+// ClearIdentities clears all "identities" edges to the FileIdentity entity.
+func (fsuo *FileSourceUpdateOne) ClearIdentities() *FileSourceUpdateOne {
+	fsuo.mutation.ClearIdentities()
+	return fsuo
+}
+
+// RemoveIdentityIDs removes the "identities" edge to FileIdentity entities by IDs.
+func (fsuo *FileSourceUpdateOne) RemoveIdentityIDs(ids ...int) *FileSourceUpdateOne {
+	fsuo.mutation.RemoveIdentityIDs(ids...)
+	return fsuo
+}
+
+// RemoveIdentities removes "identities" edges to FileIdentity entities.
+func (fsuo *FileSourceUpdateOne) RemoveIdentities(f ...*FileIdentity) *FileSourceUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fsuo.RemoveIdentityIDs(ids...)
 }
 
 // ClearFiles clears all "files" edges to the File entity.
@@ -918,16 +771,6 @@ func (fsuo *FileSourceUpdateOne) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
-	if v, ok := fsuo.mutation.AccessKeyID(); ok {
-		if err := filesource.AccessKeyIDValidator(v); err != nil {
-			return &ValidationError{Name: "access_key_id", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_id": %w`, err)}
-		}
-	}
-	if v, ok := fsuo.mutation.AccessKeySecret(); ok {
-		if err := filesource.AccessKeySecretValidator(v); err != nil {
-			return &ValidationError{Name: "access_key_secret", err: fmt.Errorf(`ent: validator failed for field "FileSource.access_key_secret": %w`, err)}
-		}
-	}
 	if v, ok := fsuo.mutation.Endpoint(); ok {
 		if err := filesource.EndpointValidator(v); err != nil {
 			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
@@ -951,11 +794,6 @@ func (fsuo *FileSourceUpdateOne) check() error {
 	if v, ok := fsuo.mutation.BucketUrl(); ok {
 		if err := filesource.BucketUrlValidator(v); err != nil {
 			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
-		}
-	}
-	if v, ok := fsuo.mutation.RoleArn(); ok {
-		if err := filesource.RoleArnValidator(v); err != nil {
-			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileSource.role_arn": %w`, err)}
 		}
 	}
 	return nil
@@ -1005,12 +843,6 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	if fsuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(filesource.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := fsuo.mutation.TenantID(); ok {
-		_spec.SetField(filesource.FieldTenantID, field.TypeInt, value)
-	}
-	if value, ok := fsuo.mutation.AddedTenantID(); ok {
-		_spec.AddField(filesource.FieldTenantID, field.TypeInt, value)
-	}
 	if value, ok := fsuo.mutation.Kind(); ok {
 		_spec.SetField(filesource.FieldKind, field.TypeEnum, value)
 	}
@@ -1019,12 +851,6 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	}
 	if fsuo.mutation.CommentsCleared() {
 		_spec.ClearField(filesource.FieldComments, field.TypeString)
-	}
-	if value, ok := fsuo.mutation.AccessKeyID(); ok {
-		_spec.SetField(filesource.FieldAccessKeyID, field.TypeString, value)
-	}
-	if value, ok := fsuo.mutation.AccessKeySecret(); ok {
-		_spec.SetField(filesource.FieldAccessKeySecret, field.TypeString, value)
 	}
 	if value, ok := fsuo.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
@@ -1044,23 +870,50 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	if fsuo.mutation.BucketUrlCleared() {
 		_spec.ClearField(filesource.FieldBucketUrl, field.TypeString)
 	}
-	if value, ok := fsuo.mutation.RoleArn(); ok {
-		_spec.SetField(filesource.FieldRoleArn, field.TypeString, value)
+	if fsuo.mutation.IdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := fsuo.mutation.Policy(); ok {
-		_spec.SetField(filesource.FieldPolicy, field.TypeString, value)
+	if nodes := fsuo.mutation.RemovedIdentitiesIDs(); len(nodes) > 0 && !fsuo.mutation.IdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if fsuo.mutation.PolicyCleared() {
-		_spec.ClearField(filesource.FieldPolicy, field.TypeString)
-	}
-	if value, ok := fsuo.mutation.DurationSeconds(); ok {
-		_spec.SetField(filesource.FieldDurationSeconds, field.TypeInt, value)
-	}
-	if value, ok := fsuo.mutation.AddedDurationSeconds(); ok {
-		_spec.AddField(filesource.FieldDurationSeconds, field.TypeInt, value)
-	}
-	if fsuo.mutation.DurationSecondsCleared() {
-		_spec.ClearField(filesource.FieldDurationSeconds, field.TypeInt)
+	if nodes := fsuo.mutation.IdentitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if fsuo.mutation.FilesCleared() {
 		edge := &sqlgraph.EdgeSpec{

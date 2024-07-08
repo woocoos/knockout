@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -347,6 +348,35 @@ func init() {
 	fileDescID := fileMixinFields0[0].Descriptor()
 	// file.DefaultID holds the default value on creation for the id field.
 	file.DefaultID = fileDescID.Default.(func() int)
+	fileidentityMixin := schema.FileIdentity{}.Mixin()
+	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
+	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()
+	fileidentity.Hooks[0] = fileidentityMixinHooks1[0]
+	fileidentity.Hooks[1] = fileidentityMixinHooks2[0]
+	fileidentityMixinFields1 := fileidentityMixin[1].Fields()
+	_ = fileidentityMixinFields1
+	fileidentityFields := schema.FileIdentity{}.Fields()
+	_ = fileidentityFields
+	// fileidentityDescCreatedAt is the schema descriptor for created_at field.
+	fileidentityDescCreatedAt := fileidentityMixinFields1[1].Descriptor()
+	// fileidentity.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fileidentity.DefaultCreatedAt = fileidentityDescCreatedAt.Default.(func() time.Time)
+	// fileidentityDescAccessKeyID is the schema descriptor for access_key_id field.
+	fileidentityDescAccessKeyID := fileidentityFields[1].Descriptor()
+	// fileidentity.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
+	fileidentity.AccessKeyIDValidator = fileidentityDescAccessKeyID.Validators[0].(func(string) error)
+	// fileidentityDescAccessKeySecret is the schema descriptor for access_key_secret field.
+	fileidentityDescAccessKeySecret := fileidentityFields[2].Descriptor()
+	// fileidentity.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
+	fileidentity.AccessKeySecretValidator = fileidentityDescAccessKeySecret.Validators[0].(func(string) error)
+	// fileidentityDescRoleArn is the schema descriptor for role_arn field.
+	fileidentityDescRoleArn := fileidentityFields[4].Descriptor()
+	// fileidentity.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
+	fileidentity.RoleArnValidator = fileidentityDescRoleArn.Validators[0].(func(string) error)
+	// fileidentityDescIsDefault is the schema descriptor for is_default field.
+	fileidentityDescIsDefault := fileidentityFields[7].Descriptor()
+	// fileidentity.DefaultIsDefault holds the default value on creation for the is_default field.
+	fileidentity.DefaultIsDefault = fileidentityDescIsDefault.Default.(bool)
 	filesourceMixin := schema.FileSource{}.Mixin()
 	filesourceMixinHooks1 := filesourceMixin[1].Hooks()
 	filesourceMixinHooks2 := filesourceMixin[2].Hooks()
@@ -360,38 +390,26 @@ func init() {
 	filesourceDescCreatedAt := filesourceMixinFields1[1].Descriptor()
 	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
 	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
-	// filesourceDescAccessKeyID is the schema descriptor for access_key_id field.
-	filesourceDescAccessKeyID := filesourceFields[3].Descriptor()
-	// filesource.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
-	filesource.AccessKeyIDValidator = filesourceDescAccessKeyID.Validators[0].(func(string) error)
-	// filesourceDescAccessKeySecret is the schema descriptor for access_key_secret field.
-	filesourceDescAccessKeySecret := filesourceFields[4].Descriptor()
-	// filesource.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
-	filesource.AccessKeySecretValidator = filesourceDescAccessKeySecret.Validators[0].(func(string) error)
 	// filesourceDescEndpoint is the schema descriptor for endpoint field.
-	filesourceDescEndpoint := filesourceFields[5].Descriptor()
+	filesourceDescEndpoint := filesourceFields[2].Descriptor()
 	// filesource.EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
 	filesource.EndpointValidator = filesourceDescEndpoint.Validators[0].(func(string) error)
 	// filesourceDescStsEndpoint is the schema descriptor for sts_endpoint field.
-	filesourceDescStsEndpoint := filesourceFields[6].Descriptor()
+	filesourceDescStsEndpoint := filesourceFields[3].Descriptor()
 	// filesource.StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
 	filesource.StsEndpointValidator = filesourceDescStsEndpoint.Validators[0].(func(string) error)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[7].Descriptor()
+	filesourceDescRegion := filesourceFields[4].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[8].Descriptor()
+	filesourceDescBucket := filesourceFields[5].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
 	// filesourceDescBucketUrl is the schema descriptor for bucketUrl field.
-	filesourceDescBucketUrl := filesourceFields[9].Descriptor()
+	filesourceDescBucketUrl := filesourceFields[6].Descriptor()
 	// filesource.BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
 	filesource.BucketUrlValidator = filesourceDescBucketUrl.Validators[0].(func(string) error)
-	// filesourceDescRoleArn is the schema descriptor for role_arn field.
-	filesourceDescRoleArn := filesourceFields[10].Descriptor()
-	// filesource.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
-	filesource.RoleArnValidator = filesourceDescRoleArn.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()
 	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
 	oauthclientMixinHooks2 := oauthclientMixin[2].Hooks()

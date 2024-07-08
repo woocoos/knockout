@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -68,6 +69,8 @@ type Client struct {
 	AppRolePolicy *AppRolePolicyClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
+	// FileIdentity is the client for interacting with the FileIdentity builders.
+	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
 	FileSource *FileSourceClient
 	// OauthClient is the client for interacting with the OauthClient builders.
@@ -121,6 +124,7 @@ func (c *Client) init() {
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
 	c.File = NewFileClient(c.config)
+	c.FileIdentity = NewFileIdentityClient(c.config)
 	c.FileSource = NewFileSourceClient(c.config)
 	c.OauthClient = NewOauthClientClient(c.config)
 	c.Org = NewOrgClient(c.config)
@@ -238,6 +242,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
 		File:              NewFileClient(cfg),
+		FileIdentity:      NewFileIdentityClient(cfg),
 		FileSource:        NewFileSourceClient(cfg),
 		OauthClient:       NewOauthClientClient(cfg),
 		Org:               NewOrgClient(cfg),
@@ -282,6 +287,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
 		File:              NewFileClient(cfg),
+		FileIdentity:      NewFileIdentityClient(cfg),
 		FileSource:        NewFileSourceClient(cfg),
 		OauthClient:       NewOauthClientClient(cfg),
 		Org:               NewOrgClient(cfg),
@@ -327,10 +333,10 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRole, c.AppRolePolicy, c.File, c.FileIdentity, c.FileSource,
+		c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.OrgUserPreference, c.Permission, c.User, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -341,10 +347,10 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.File, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRole, c.AppRolePolicy, c.File, c.FileIdentity, c.FileSource,
+		c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.OrgUserPreference, c.Permission, c.User, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -373,6 +379,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppRolePolicy.mutate(ctx, m)
 	case *FileMutation:
 		return c.File.mutate(ctx, m)
+	case *FileIdentityMutation:
+		return c.FileIdentity.mutate(ctx, m)
 	case *FileSourceMutation:
 		return c.FileSource.mutate(ctx, m)
 	case *OauthClientMutation:
@@ -2164,6 +2172,156 @@ func (c *FileClient) mutate(ctx context.Context, m *FileMutation) (Value, error)
 	}
 }
 
+// FileIdentityClient is a client for the FileIdentity schema.
+type FileIdentityClient struct {
+	config
+}
+
+// NewFileIdentityClient returns a client for the FileIdentity from the given config.
+func NewFileIdentityClient(c config) *FileIdentityClient {
+	return &FileIdentityClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `fileidentity.Hooks(f(g(h())))`.
+func (c *FileIdentityClient) Use(hooks ...Hook) {
+	c.hooks.FileIdentity = append(c.hooks.FileIdentity, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `fileidentity.Intercept(f(g(h())))`.
+func (c *FileIdentityClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FileIdentity = append(c.inters.FileIdentity, interceptors...)
+}
+
+// Create returns a builder for creating a FileIdentity entity.
+func (c *FileIdentityClient) Create() *FileIdentityCreate {
+	mutation := newFileIdentityMutation(c.config, OpCreate)
+	return &FileIdentityCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FileIdentity entities.
+func (c *FileIdentityClient) CreateBulk(builders ...*FileIdentityCreate) *FileIdentityCreateBulk {
+	return &FileIdentityCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileIdentityClient) MapCreateBulk(slice any, setFunc func(*FileIdentityCreate, int)) *FileIdentityCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileIdentityCreateBulk{err: fmt.Errorf("calling to FileIdentityClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileIdentityCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FileIdentityCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FileIdentity.
+func (c *FileIdentityClient) Update() *FileIdentityUpdate {
+	mutation := newFileIdentityMutation(c.config, OpUpdate)
+	return &FileIdentityUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FileIdentityClient) UpdateOne(fi *FileIdentity) *FileIdentityUpdateOne {
+	mutation := newFileIdentityMutation(c.config, OpUpdateOne, withFileIdentity(fi))
+	return &FileIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FileIdentityClient) UpdateOneID(id int) *FileIdentityUpdateOne {
+	mutation := newFileIdentityMutation(c.config, OpUpdateOne, withFileIdentityID(id))
+	return &FileIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FileIdentity.
+func (c *FileIdentityClient) Delete() *FileIdentityDelete {
+	mutation := newFileIdentityMutation(c.config, OpDelete)
+	return &FileIdentityDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FileIdentityClient) DeleteOne(fi *FileIdentity) *FileIdentityDeleteOne {
+	return c.DeleteOneID(fi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FileIdentityClient) DeleteOneID(id int) *FileIdentityDeleteOne {
+	builder := c.Delete().Where(fileidentity.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FileIdentityDeleteOne{builder}
+}
+
+// Query returns a query builder for FileIdentity.
+func (c *FileIdentityClient) Query() *FileIdentityQuery {
+	return &FileIdentityQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFileIdentity},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FileIdentity entity by its id.
+func (c *FileIdentityClient) Get(ctx context.Context, id int) (*FileIdentity, error) {
+	return c.Query().Where(fileidentity.ID(id)).Only(entcache.WithEntryKey(ctx, "FileIdentity", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FileIdentityClient) GetX(ctx context.Context, id int) *FileIdentity {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QuerySource queries the source edge of a FileIdentity.
+func (c *FileIdentityClient) QuerySource(fi *FileIdentity) *FileSourceQuery {
+	query := (&FileSourceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(fileidentity.Table, fileidentity.FieldID, id),
+			sqlgraph.To(filesource.Table, filesource.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, fileidentity.SourceTable, fileidentity.SourceColumn),
+		)
+		fromV = sqlgraph.Neighbors(fi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FileIdentityClient) Hooks() []Hook {
+	hooks := c.hooks.FileIdentity
+	return append(hooks[:len(hooks):len(hooks)], fileidentity.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *FileIdentityClient) Interceptors() []Interceptor {
+	return c.inters.FileIdentity
+}
+
+func (c *FileIdentityClient) mutate(ctx context.Context, m *FileIdentityMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FileIdentityCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FileIdentityUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FileIdentityUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FileIdentityDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FileIdentity mutation op: %q", m.Op())
+	}
+}
+
 // FileSourceClient is a client for the FileSource schema.
 type FileSourceClient struct {
 	config
@@ -2270,6 +2428,22 @@ func (c *FileSourceClient) GetX(ctx context.Context, id int) *FileSource {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryIdentities queries the identities edge of a FileSource.
+func (c *FileSourceClient) QueryIdentities(fs *FileSource) *FileIdentityQuery {
+	query := (&FileIdentityClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fs.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(filesource.Table, filesource.FieldID, id),
+			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, filesource.IdentitiesTable, filesource.IdentitiesColumn),
+		)
+		fromV = sqlgraph.Neighbors(fs.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryFiles queries the files edge of a FileSource.
@@ -4900,14 +5074,14 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 type (
 	hooks struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, File, FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole,
-		OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		AppRolePolicy, File, FileIdentity, FileSource, OauthClient, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, File, FileSource, OauthClient, Org, OrgApp, OrgPolicy, OrgRole,
-		OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
+		AppRolePolicy, File, FileIdentity, FileSource, OauthClient, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )

@@ -15,7 +15,7 @@ import (
 
 // receive two arguments: the migration name and the database dsn.
 var (
-	dsn  = flag.String("dsn", "", "")
+	dsn  = flag.String("dsn", "root@tcp(localhost:3306)/portal?parseTime=true&loc=Local", "")
 	name = flag.String("name", data.DefaultDriver, "driver name")
 )
 

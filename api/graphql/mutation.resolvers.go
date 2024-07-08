@@ -389,7 +389,7 @@ func (r *mutationResolver) UpdateFileSource(ctx context.Context, fsID int, input
 // DeleteFileSource is the resolver for the deleteFileSource field.
 func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool, error) {
 	client := ent.FromContext(ctx)
-	has, err := client.FileSource.Query().Where(filesource.ID(fsID), filesource.HasFiles()).Exist(ctx)
+	has, err := client.FileSource.Query().Where(filesource.ID(fsID), filesource.HasIdentities()).Exist(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -397,6 +397,22 @@ func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool
 		return false, fmt.Errorf("filesource: %d has be referenced, cannot be deleted", fsID)
 	}
 	err = client.FileSource.DeleteOneID(fsID).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateFileIdentity is the resolver for the createFileIdentity field.
+func (r *mutationResolver) CreateFileIdentity(ctx context.Context, input ent.CreateFileIdentityInput) (*ent.FileIdentity, error) {
+	return ent.FromContext(ctx).FileIdentity.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateFileIdentity is the resolver for the updateFileIdentity field.
+func (r *mutationResolver) UpdateFileIdentity(ctx context.Context, id int, input ent.UpdateFileIdentityInput) (*ent.FileIdentity, error) {
+	return ent.FromContext(ctx).FileIdentity.UpdateOneID(id).SetInput(input).Save(ctx)
+}
+
+// DeleteFileIdentity is the resolver for the deleteFileIdentity field.
+func (r *mutationResolver) DeleteFileIdentity(ctx context.Context, id int) (bool, error) {
+	err := ent.FromContext(ctx).FileIdentity.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
 }
 

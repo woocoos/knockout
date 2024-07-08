@@ -1,26 +1,33 @@
 package oss
 
 import (
+	"context"
 	"fmt"
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	sts20150401 "github.com/alibabacloud-go/sts-20150401/v2/client"
 	"github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/woocoos/knockout/ent"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsCfg "github.com/aws/aws-sdk-go-v2/config"
+	awsCredentials "github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"net/url"
 	"strings"
 	"time"
 )
 
 type AliOSS struct {
+	ctx        context.Context
 	stsClient  *sts20150401.Client
 	ossClient  *oss.Client
-	fileSource *ent.FileSource
+	s3Client   *s3.Client
+	fileSource *FileSource
 }
 
-func NewAliOSS(fileSource *ent.FileSource) (*AliOSS, error) {
+func NewAliOSS(fileSource *FileSource) (*AliOSS, error) {
 	svc := &AliOSS{
+		ctx:        context.TODO(),
 		fileSource: fileSource,
 	}
 	err := svc.initAliSTS()
@@ -28,6 +35,10 @@ func NewAliOSS(fileSource *ent.FileSource) (*AliOSS, error) {
 		return nil, err
 	}
 	err = svc.initAliOSS()
+	if err != nil {
+		return nil, err
+	}
+	err = svc.initAwsClient()
 	if err != nil {
 		return nil, err
 	}
@@ -55,6 +66,21 @@ func (svc *AliOSS) initAliOSS() error {
 		return err
 	}
 	svc.ossClient = client
+	return nil
+}
+
+func (svc *AliOSS) initAwsClient() error {
+	creds := awsCredentials.NewStaticCredentialsProvider(svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret, "")
+	cfg, err := awsCfg.LoadDefaultConfig(svc.ctx, awsCfg.WithCredentialsProvider(creds))
+	if err != nil {
+		return err
+	}
+
+	s3Client := s3.NewFromConfig(cfg, func(options *s3.Options) {
+		options.Region = svc.fileSource.Region
+		options.BaseEndpoint = aws.String(svc.fileSource.Endpoint)
+	})
+	svc.s3Client = s3Client
 	return nil
 }
 
@@ -108,4 +134,8 @@ func ParseAliOSSUrl(ossUrl string) (bucketUrl, path string, err error) {
 	bucketUrl = fmt.Sprintf("%s://%s", u.Scheme, u.Host)
 	path = u.Path
 	return
+}
+
+func (svc *AliOSS) GetS3Client() *s3.Client {
+	return svc.s3Client
 }

@@ -26,16 +26,10 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldTenantID holds the string denoting the tenant_id field in the database.
-	FieldTenantID = "tenant_id"
 	// FieldKind holds the string denoting the kind field in the database.
 	FieldKind = "kind"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
-	// FieldAccessKeyID holds the string denoting the access_key_id field in the database.
-	FieldAccessKeyID = "access_key_id"
-	// FieldAccessKeySecret holds the string denoting the access_key_secret field in the database.
-	FieldAccessKeySecret = "access_key_secret"
 	// FieldEndpoint holds the string denoting the endpoint field in the database.
 	FieldEndpoint = "endpoint"
 	// FieldStsEndpoint holds the string denoting the sts_endpoint field in the database.
@@ -46,16 +40,19 @@ const (
 	FieldBucket = "bucket"
 	// FieldBucketUrl holds the string denoting the bucketurl field in the database.
 	FieldBucketUrl = "bucket_url"
-	// FieldRoleArn holds the string denoting the role_arn field in the database.
-	FieldRoleArn = "role_arn"
-	// FieldPolicy holds the string denoting the policy field in the database.
-	FieldPolicy = "policy"
-	// FieldDurationSeconds holds the string denoting the duration_seconds field in the database.
-	FieldDurationSeconds = "duration_seconds"
+	// EdgeIdentities holds the string denoting the identities edge name in mutations.
+	EdgeIdentities = "identities"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
 	EdgeFiles = "files"
 	// Table holds the table name of the filesource in the database.
 	Table = "file_source"
+	// IdentitiesTable is the table that holds the identities relation/edge.
+	IdentitiesTable = "file_identity"
+	// IdentitiesInverseTable is the table name for the FileIdentity entity.
+	// It exists in this package in order to avoid circular dependency with the "fileidentity" package.
+	IdentitiesInverseTable = "file_identity"
+	// IdentitiesColumn is the table column denoting the identities relation/edge.
+	IdentitiesColumn = "file_source_id"
 	// FilesTable is the table that holds the files relation/edge.
 	FilesTable = "file"
 	// FilesInverseTable is the table name for the File entity.
@@ -72,19 +69,13 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
-	FieldTenantID,
 	FieldKind,
 	FieldComments,
-	FieldAccessKeyID,
-	FieldAccessKeySecret,
 	FieldEndpoint,
 	FieldStsEndpoint,
 	FieldRegion,
 	FieldBucket,
 	FieldBucketUrl,
-	FieldRoleArn,
-	FieldPolicy,
-	FieldDurationSeconds,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -106,10 +97,6 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
-	// AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
-	AccessKeyIDValidator func(string) error
-	// AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
-	AccessKeySecretValidator func(string) error
 	// EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
 	EndpointValidator func(string) error
 	// StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
@@ -120,8 +107,6 @@ var (
 	BucketValidator func(string) error
 	// BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
 	BucketUrlValidator func(string) error
-	// RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
-	RoleArnValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -176,11 +161,6 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByTenantID orders the results by the tenant_id field.
-func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
-}
-
 // ByKind orders the results by the kind field.
 func ByKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKind, opts...).ToFunc()
@@ -189,16 +169,6 @@ func ByKind(opts ...sql.OrderTermOption) OrderOption {
 // ByComments orders the results by the comments field.
 func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
-}
-
-// ByAccessKeyID orders the results by the access_key_id field.
-func ByAccessKeyID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAccessKeyID, opts...).ToFunc()
-}
-
-// ByAccessKeySecret orders the results by the access_key_secret field.
-func ByAccessKeySecret(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAccessKeySecret, opts...).ToFunc()
 }
 
 // ByEndpoint orders the results by the endpoint field.
@@ -226,19 +196,18 @@ func ByBucketUrl(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBucketUrl, opts...).ToFunc()
 }
 
-// ByRoleArn orders the results by the role_arn field.
-func ByRoleArn(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRoleArn, opts...).ToFunc()
+// ByIdentitiesCount orders the results by identities count.
+func ByIdentitiesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newIdentitiesStep(), opts...)
+	}
 }
 
-// ByPolicy orders the results by the policy field.
-func ByPolicy(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPolicy, opts...).ToFunc()
-}
-
-// ByDurationSeconds orders the results by the duration_seconds field.
-func ByDurationSeconds(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDurationSeconds, opts...).ToFunc()
+// ByIdentities orders the results by identities terms.
+func ByIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newIdentitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
 }
 
 // ByFilesCount orders the results by files count.
@@ -253,6 +222,13 @@ func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
+}
+func newIdentitiesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(IdentitiesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, IdentitiesTable, IdentitiesColumn),
+	)
 }
 func newFilesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

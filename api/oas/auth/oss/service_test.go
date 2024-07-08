@@ -1,29 +1,31 @@
 package oss
 
 import (
+	"context"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/stretchr/testify/assert"
-	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
 	"testing"
 	"time"
 )
 
 var (
-	minioFileSource = ent.FileSource{
+	minioFileSource = FileSource{
 		Kind:            filesource.KindMinio,
-		AccessKeyID:     "test1",
+		AccessKeyID:     "test",
 		AccessKeySecret: "test1234",
-		Endpoint:        "localhost:9000",
-		StsEndpoint:     "http://localhost:9000",
-		Region:          "cn-east-1",
+		Endpoint:        "http://192.168.0.17:32650",
+		StsEndpoint:     "http://192.168.0.17:32650",
+		Region:          "minio",
 		RoleArn:         "arn:aws:s3:::*",
 		Policy:          "",
 		DurationSeconds: 3600,
-		Bucket:          "test2",
-		BucketUrl:       "http://localhost:9000/test2",
+		Bucket:          "woocootest",
+		BucketUrl:       "http://192.168.0.17:32650/woocootest",
 	}
-	aliFileSource = ent.FileSource{
+	aliFileSource = FileSource{
 		Kind:            filesource.KindAliOSS,
 		AccessKeyID:     "LTAI5tDStcqxb8q7MkJXo54M",
 		AccessKeySecret: "xxx",
@@ -48,6 +50,34 @@ func TestMinioSTS(t *testing.T) {
 	fmt.Println(resp)
 }
 
+func TestMinioPreSignedUrl(t *testing.T) {
+	oss, err := NewService()
+	assert.NoError(t, err)
+	provider, err := oss.GetProvider(&minioFileSource)
+	assert.NoError(t, err)
+	u, err := provider.GetPreSignedURL("woocootest", "3a9809ba339ec87f1636c7878685f616.jpeg", time.Hour)
+	assert.NoError(t, err)
+	fmt.Println(u)
+}
+
+func TestMinioUrlParse(t *testing.T) {
+	minioUrl := "http://192.168.0.17:32650/woocootest/3a9809ba339ec87f1636c7878685f616.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test%2F20240708%2Fminio%2Fs3%2Faws4_request&X-Amz-Date=20240708T024958Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=9b8120f422dddb6a084e4c7b2cb5a74df9dc4b780fff488aef6c94e628af7bd7"
+	bucketUrl, path, err := ParseMinioUrl(minioUrl)
+	assert.NoError(t, err)
+	fmt.Println(bucketUrl, path)
+}
+
+func TestMinioS3GetObject(t *testing.T) {
+	oss, err := NewService()
+	assert.NoError(t, err)
+	provider, err := oss.GetProvider(&minioFileSource)
+	assert.NoError(t, err)
+	s3Client := provider.GetS3Client()
+	out, err := s3Client.GetObject(context.Background(), &s3.GetObjectInput{Bucket: aws.String("woocootest"), Key: aws.String("/3a9809ba339ec87f1636c7878685f616.jpeg")})
+	assert.NoError(t, err)
+	defer out.Body.Close()
+}
+
 func TestAliSTS(t *testing.T) {
 	oss, err := NewService()
 	assert.NoError(t, err)
@@ -56,16 +86,6 @@ func TestAliSTS(t *testing.T) {
 	resp, err := provider.GetSTS("test")
 	assert.NoError(t, err)
 	fmt.Println(resp)
-}
-
-func TestMinioPreSignedUrl(t *testing.T) {
-	oss, err := NewService()
-	assert.NoError(t, err)
-	provider, err := oss.GetProvider(&minioFileSource)
-	assert.NoError(t, err)
-	u, err := provider.GetPreSignedURL("test2", "63f91559865b894cbe885e9a49d92a29.jpeg", time.Hour)
-	assert.NoError(t, err)
-	fmt.Println(u)
 }
 
 func TestAliOSSPreSignedUrl(t *testing.T) {
@@ -85,9 +105,13 @@ func TestAliUrlParse(t *testing.T) {
 	fmt.Println(bucketUrl, path)
 }
 
-func TestMinioUrlParse(t *testing.T) {
-	minioUrl := "http://localhost:9000/test2/63f91559865b894cbe885e9a49d92a29.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test1%2F20240618%2Fcn-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240618T085259Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=cf0ac630cc5f39b106721a200ff4d178b53860d5c64d0e57fd59769b0825b035"
-	bucketUrl, path, err := ParseMinioUrl(minioUrl)
+func TestAliS3GetObject(t *testing.T) {
+	oss, err := NewService()
 	assert.NoError(t, err)
-	fmt.Println(bucketUrl, path)
+	provider, err := oss.GetProvider(&aliFileSource)
+	assert.NoError(t, err)
+	s3Client := provider.GetS3Client()
+	out, err := s3Client.GetObject(context.Background(), &s3.GetObjectInput{Bucket: aws.String("qldevtest"), Key: aws.String("cust/159ecc5f964dfe00")})
+	assert.NoError(t, err)
+	defer out.Body.Close()
 }

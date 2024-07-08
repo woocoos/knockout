@@ -282,26 +282,49 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
-	FileSource struct {
+	FileIdentity struct {
 		AccessKeyID     func(childComplexity int) int
-		AccessKeySecret func(childComplexity int) int
-		Bucket          func(childComplexity int) int
-		BucketUrl       func(childComplexity int) int
 		Comments        func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		CreatedBy       func(childComplexity int) int
 		DurationSeconds func(childComplexity int) int
-		Endpoint        func(childComplexity int) int
-		Files           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileOrder, where *ent.FileWhereInput) int
+		FileSourceID    func(childComplexity int) int
 		ID              func(childComplexity int) int
-		Kind            func(childComplexity int) int
+		IsDefault       func(childComplexity int) int
 		Policy          func(childComplexity int) int
-		Region          func(childComplexity int) int
 		RoleArn         func(childComplexity int) int
-		StsEndpoint     func(childComplexity int) int
+		Source          func(childComplexity int) int
 		TenantID        func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
 		UpdatedBy       func(childComplexity int) int
+	}
+
+	FileIdentityConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	FileIdentityEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	FileSource struct {
+		Bucket      func(childComplexity int) int
+		BucketUrl   func(childComplexity int) int
+		Comments    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		Endpoint    func(childComplexity int) int
+		Files       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileOrder, where *ent.FileWhereInput) int
+		ID          func(childComplexity int) int
+		Identities  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
+		Kind        func(childComplexity int) int
+		Region      func(childComplexity int) int
+		StsEndpoint func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
 	FileSourceConnection struct {
@@ -336,6 +359,7 @@ type ComplexityRoot struct {
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
+		CreateFileIdentity          func(childComplexity int, input ent.CreateFileIdentityInput) int
 		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
 		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
@@ -351,6 +375,7 @@ type ComplexityRoot struct {
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
+		DeleteFileIdentity          func(childComplexity int, id int) int
 		DeleteFileSource            func(childComplexity int, fsID int) int
 		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
@@ -386,6 +411,7 @@ type ComplexityRoot struct {
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
+		UpdateFileIdentity          func(childComplexity int, id int, input ent.UpdateFileIdentityInput) int
 		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
@@ -585,6 +611,7 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission         func(childComplexity int, permission string) int
+		FileIdentities          func(childComplexity int) int
 		FileSources             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
@@ -1891,19 +1918,138 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileEdge.Node(childComplexity), true
 
-	case "FileSource.accessKeyID":
-		if e.complexity.FileSource.AccessKeyID == nil {
+	case "FileIdentity.accessKeyID":
+		if e.complexity.FileIdentity.AccessKeyID == nil {
 			break
 		}
 
-		return e.complexity.FileSource.AccessKeyID(childComplexity), true
+		return e.complexity.FileIdentity.AccessKeyID(childComplexity), true
 
-	case "FileSource.accessKeySecret":
-		if e.complexity.FileSource.AccessKeySecret == nil {
+	case "FileIdentity.comments":
+		if e.complexity.FileIdentity.Comments == nil {
 			break
 		}
 
-		return e.complexity.FileSource.AccessKeySecret(childComplexity), true
+		return e.complexity.FileIdentity.Comments(childComplexity), true
+
+	case "FileIdentity.createdAt":
+		if e.complexity.FileIdentity.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.CreatedAt(childComplexity), true
+
+	case "FileIdentity.createdBy":
+		if e.complexity.FileIdentity.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.CreatedBy(childComplexity), true
+
+	case "FileIdentity.durationSeconds":
+		if e.complexity.FileIdentity.DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.DurationSeconds(childComplexity), true
+
+	case "FileIdentity.fileSourceID":
+		if e.complexity.FileIdentity.FileSourceID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.FileSourceID(childComplexity), true
+
+	case "FileIdentity.id":
+		if e.complexity.FileIdentity.ID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.ID(childComplexity), true
+
+	case "FileIdentity.isDefault":
+		if e.complexity.FileIdentity.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.IsDefault(childComplexity), true
+
+	case "FileIdentity.policy":
+		if e.complexity.FileIdentity.Policy == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.Policy(childComplexity), true
+
+	case "FileIdentity.roleArn":
+		if e.complexity.FileIdentity.RoleArn == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.RoleArn(childComplexity), true
+
+	case "FileIdentity.source":
+		if e.complexity.FileIdentity.Source == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.Source(childComplexity), true
+
+	case "FileIdentity.tenantID":
+		if e.complexity.FileIdentity.TenantID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.TenantID(childComplexity), true
+
+	case "FileIdentity.updatedAt":
+		if e.complexity.FileIdentity.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.UpdatedAt(childComplexity), true
+
+	case "FileIdentity.updatedBy":
+		if e.complexity.FileIdentity.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.UpdatedBy(childComplexity), true
+
+	case "FileIdentityConnection.edges":
+		if e.complexity.FileIdentityConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityConnection.Edges(childComplexity), true
+
+	case "FileIdentityConnection.pageInfo":
+		if e.complexity.FileIdentityConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityConnection.PageInfo(childComplexity), true
+
+	case "FileIdentityConnection.totalCount":
+		if e.complexity.FileIdentityConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityConnection.TotalCount(childComplexity), true
+
+	case "FileIdentityEdge.cursor":
+		if e.complexity.FileIdentityEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityEdge.Cursor(childComplexity), true
+
+	case "FileIdentityEdge.node":
+		if e.complexity.FileIdentityEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityEdge.Node(childComplexity), true
 
 	case "FileSource.bucket":
 		if e.complexity.FileSource.Bucket == nil {
@@ -1940,13 +2086,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.CreatedBy(childComplexity), true
 
-	case "FileSource.durationSeconds":
-		if e.complexity.FileSource.DurationSeconds == nil {
-			break
-		}
-
-		return e.complexity.FileSource.DurationSeconds(childComplexity), true
-
 	case "FileSource.endpoint":
 		if e.complexity.FileSource.Endpoint == nil {
 			break
@@ -1973,19 +2112,24 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.ID(childComplexity), true
 
+	case "FileSource.identities":
+		if e.complexity.FileSource.Identities == nil {
+			break
+		}
+
+		args, err := ec.field_FileSource_identities_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.FileSource.Identities(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileIdentityOrder), args["where"].(*ent.FileIdentityWhereInput)), true
+
 	case "FileSource.kind":
 		if e.complexity.FileSource.Kind == nil {
 			break
 		}
 
 		return e.complexity.FileSource.Kind(childComplexity), true
-
-	case "FileSource.policy":
-		if e.complexity.FileSource.Policy == nil {
-			break
-		}
-
-		return e.complexity.FileSource.Policy(childComplexity), true
 
 	case "FileSource.region":
 		if e.complexity.FileSource.Region == nil {
@@ -1994,26 +2138,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.Region(childComplexity), true
 
-	case "FileSource.roleArn":
-		if e.complexity.FileSource.RoleArn == nil {
-			break
-		}
-
-		return e.complexity.FileSource.RoleArn(childComplexity), true
-
 	case "FileSource.stsEndpoint":
 		if e.complexity.FileSource.StsEndpoint == nil {
 			break
 		}
 
 		return e.complexity.FileSource.StsEndpoint(childComplexity), true
-
-	case "FileSource.tenantID":
-		if e.complexity.FileSource.TenantID == nil {
-			break
-		}
-
-		return e.complexity.FileSource.TenantID(childComplexity), true
 
 	case "FileSource.updatedAt":
 		if e.complexity.FileSource.UpdatedAt == nil {
@@ -2258,6 +2388,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
 
+	case "Mutation.createFileIdentity":
+		if e.complexity.Mutation.CreateFileIdentity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFileIdentity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFileIdentity(childComplexity, args["input"].(ent.CreateFileIdentityInput)), true
+
 	case "Mutation.createFileSource":
 		if e.complexity.Mutation.CreateFileSource == nil {
 			break
@@ -2437,6 +2579,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
+
+	case "Mutation.deleteFileIdentity":
+		if e.complexity.Mutation.DeleteFileIdentity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteFileIdentity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteFileIdentity(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteFileSource":
 		if e.complexity.Mutation.DeleteFileSource == nil {
@@ -2857,6 +3011,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
+
+	case "Mutation.updateFileIdentity":
+		if e.complexity.Mutation.UpdateFileIdentity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateFileIdentity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateFileIdentity(childComplexity, args["id"].(int), args["input"].(ent.UpdateFileIdentityInput)), true
 
 	case "Mutation.updateFileSource":
 		if e.complexity.Mutation.UpdateFileSource == nil {
@@ -3972,6 +4138,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
+	case "Query.fileIdentities":
+		if e.complexity.Query.FileIdentities == nil {
+			break
+		}
+
+		return e.complexity.Query.FileIdentities(childComplexity), true
+
 	case "Query.fileSources":
 		if e.complexity.Query.FileSources == nil {
 			break
@@ -4800,6 +4973,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppPolicyInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
+		ec.unmarshalInputCreateFileIdentityInput,
 		ec.unmarshalInputCreateFileSourceInput,
 		ec.unmarshalInputCreateOauthClientInput,
 		ec.unmarshalInputCreateOrgInput,
@@ -4813,6 +4987,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserLoginProfileInput,
 		ec.unmarshalInputCreateUserPasswordInput,
 		ec.unmarshalInputEnableDirectoryInput,
+		ec.unmarshalInputFileIdentityOrder,
+		ec.unmarshalInputFileIdentityWhereInput,
 		ec.unmarshalInputFileOrder,
 		ec.unmarshalInputFileSourceOrder,
 		ec.unmarshalInputFileSourceWhereInput,
@@ -4844,6 +5020,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppPolicyInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
+		ec.unmarshalInputUpdateFileIdentityInput,
 		ec.unmarshalInputUpdateFileSourceInput,
 		ec.unmarshalInputUpdateOauthClientInput,
 		ec.unmarshalInputUpdateOrgInput,
@@ -7333,22 +7510,14 @@ input CreateAppRoleInput {
   appID: ID
 }
 """
-CreateFileSourceInput is used for create FileSource object.
+CreateFileIdentityInput is used for create FileIdentity object.
 Input was generated by ent.
 """
-input CreateFileSourceInput {
+input CreateFileIdentityInput {
   """
   组织ID
   """
   tenantID: ID!
-  """
-  文件来源
-  """
-  kind: FileSourceKind!
-  """
-  备注
-  """
-  comments: String
   """
   accesskey id
   """
@@ -7357,6 +7526,41 @@ input CreateFileSourceInput {
   accesskey secret
   """
   accessKeySecret: String!
+  """
+  角色的资源名称(ARN)，用于STS
+  """
+  roleArn: String!
+  """
+  指定返回的STS令牌的权限的策略
+  """
+  policy: String
+  """
+  STS令牌的有效期，默认3600s
+  """
+  durationSeconds: Int
+  """
+  租户默认的凭证
+  """
+  isDefault: Boolean
+  """
+  备注
+  """
+  comments: String
+  sourceID: ID!
+}
+"""
+CreateFileSourceInput is used for create FileSource object.
+Input was generated by ent.
+"""
+input CreateFileSourceInput {
+  """
+  文件来源
+  """
+  kind: FileSourceKind!
+  """
+  备注
+  """
+  comments: String
   """
   对外服务的访问域名
   """
@@ -7377,18 +7581,7 @@ input CreateFileSourceInput {
   文件存储空间地址，用于匹配url
   """
   bucketurl: String
-  """
-  角色的资源名称(ARN)，用于STS
-  """
-  roleArn: String!
-  """
-  指定返回的STS令牌的权限的策略
-  """
-  policy: String
-  """
-  STS令牌的有效期，默认3600s
-  """
-  durationSeconds: Int
+  identityIDs: [ID!]
   fileIDs: [ID!]
 }
 """
@@ -7721,6 +7914,270 @@ type FileEdge {
   """
   cursor: Cursor!
 }
+type FileIdentity implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  组织ID
+  """
+  tenantID: ID!
+  """
+  accesskey id
+  """
+  accessKeyID: String!
+  """
+  文件来源ID
+  """
+  fileSourceID: ID!
+  """
+  角色的资源名称(ARN)，用于STS
+  """
+  roleArn: String!
+  """
+  指定返回的STS令牌的权限的策略
+  """
+  policy: String
+  """
+  STS令牌的有效期，默认3600s
+  """
+  durationSeconds: Int
+  """
+  租户默认的凭证
+  """
+  isDefault: Boolean!
+  """
+  备注
+  """
+  comments: String
+  source: FileSource!
+}
+"""
+A connection to a list of items.
+"""
+type FileIdentityConnection {
+  """
+  A list of edges.
+  """
+  edges: [FileIdentityEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type FileIdentityEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: FileIdentity
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for FileIdentity connections
+"""
+input FileIdentityOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order FileIdentities.
+  """
+  field: FileIdentityOrderField!
+}
+"""
+Properties by which FileIdentity connections can be ordered.
+"""
+enum FileIdentityOrderField {
+  createdAt
+}
+"""
+FileIdentityWhereInput is used for filtering FileIdentity objects.
+Input was generated by ent.
+"""
+input FileIdentityWhereInput {
+  not: FileIdentityWhereInput
+  and: [FileIdentityWhereInput!]
+  or: [FileIdentityWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  tenant_id field predicates
+  """
+  tenantID: ID
+  tenantIDNEQ: ID
+  tenantIDIn: [ID!]
+  tenantIDNotIn: [ID!]
+  tenantIDGT: ID
+  tenantIDGTE: ID
+  tenantIDLT: ID
+  tenantIDLTE: ID
+  """
+  access_key_id field predicates
+  """
+  accessKeyID: String
+  accessKeyIDNEQ: String
+  accessKeyIDIn: [String!]
+  accessKeyIDNotIn: [String!]
+  accessKeyIDGT: String
+  accessKeyIDGTE: String
+  accessKeyIDLT: String
+  accessKeyIDLTE: String
+  accessKeyIDContains: String
+  accessKeyIDHasPrefix: String
+  accessKeyIDHasSuffix: String
+  accessKeyIDEqualFold: String
+  accessKeyIDContainsFold: String
+  """
+  access_key_secret field predicates
+  """
+  accessKeySecret: String
+  accessKeySecretNEQ: String
+  accessKeySecretIn: [String!]
+  accessKeySecretNotIn: [String!]
+  accessKeySecretGT: String
+  accessKeySecretGTE: String
+  accessKeySecretLT: String
+  accessKeySecretLTE: String
+  accessKeySecretContains: String
+  accessKeySecretHasPrefix: String
+  accessKeySecretHasSuffix: String
+  accessKeySecretEqualFold: String
+  accessKeySecretContainsFold: String
+  """
+  file_source_id field predicates
+  """
+  fileSourceID: ID
+  fileSourceIDNEQ: ID
+  fileSourceIDIn: [ID!]
+  fileSourceIDNotIn: [ID!]
+  """
+  role_arn field predicates
+  """
+  roleArn: String
+  roleArnNEQ: String
+  roleArnIn: [String!]
+  roleArnNotIn: [String!]
+  roleArnGT: String
+  roleArnGTE: String
+  roleArnLT: String
+  roleArnLTE: String
+  roleArnContains: String
+  roleArnHasPrefix: String
+  roleArnHasSuffix: String
+  roleArnEqualFold: String
+  roleArnContainsFold: String
+  """
+  policy field predicates
+  """
+  policy: String
+  policyNEQ: String
+  policyIn: [String!]
+  policyNotIn: [String!]
+  policyGT: String
+  policyGTE: String
+  policyLT: String
+  policyLTE: String
+  policyContains: String
+  policyHasPrefix: String
+  policyHasSuffix: String
+  policyIsNil: Boolean
+  policyNotNil: Boolean
+  policyEqualFold: String
+  policyContainsFold: String
+  """
+  duration_seconds field predicates
+  """
+  durationSeconds: Int
+  durationSecondsNEQ: Int
+  durationSecondsIn: [Int!]
+  durationSecondsNotIn: [Int!]
+  durationSecondsGT: Int
+  durationSecondsGTE: Int
+  durationSecondsLT: Int
+  durationSecondsLTE: Int
+  durationSecondsIsNil: Boolean
+  durationSecondsNotNil: Boolean
+  """
+  is_default field predicates
+  """
+  isDefault: Boolean
+  isDefaultNEQ: Boolean
+  """
+  source edge predicates
+  """
+  hasSource: Boolean
+  hasSourceWith: [FileSourceWhereInput!]
+}
 """
 Ordering options for File connections
 """
@@ -7747,10 +8204,6 @@ type FileSource implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID
-  """
-  tenantID: ID!
-  """
   文件来源
   """
   kind: FileSourceKind!
@@ -7758,14 +8211,6 @@ type FileSource implements Node {
   备注
   """
   comments: String
-  """
-  accesskey id
-  """
-  accessKeyID: String!
-  """
-  accesskey secret
-  """
-  accessKeySecret: String!
   """
   对外服务的访问域名
   """
@@ -7786,18 +8231,37 @@ type FileSource implements Node {
   文件存储空间地址，用于匹配url
   """
   bucketurl: String @goField(name: "BucketUrl", forceResolver: false)
-  """
-  角色的资源名称(ARN)，用于STS
-  """
-  roleArn: String!
-  """
-  指定返回的STS令牌的权限的策略
-  """
-  policy: String
-  """
-  STS令牌的有效期，默认3600s
-  """
-  durationSeconds: Int
+  identities(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for FileIdentities returned from the connection.
+    """
+    orderBy: FileIdentityOrder
+
+    """
+    Filtering options for FileIdentities returned from the connection.
+    """
+    where: FileIdentityWhereInput
+  ): FileIdentityConnection!
   files(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -7955,55 +8419,12 @@ input FileSourceWhereInput {
   updatedAtIsNil: Boolean
   updatedAtNotNil: Boolean
   """
-  tenant_id field predicates
-  """
-  tenantID: ID
-  tenantIDNEQ: ID
-  tenantIDIn: [ID!]
-  tenantIDNotIn: [ID!]
-  tenantIDGT: ID
-  tenantIDGTE: ID
-  tenantIDLT: ID
-  tenantIDLTE: ID
-  """
   kind field predicates
   """
   kind: FileSourceKind
   kindNEQ: FileSourceKind
   kindIn: [FileSourceKind!]
   kindNotIn: [FileSourceKind!]
-  """
-  access_key_id field predicates
-  """
-  accessKeyID: String
-  accessKeyIDNEQ: String
-  accessKeyIDIn: [String!]
-  accessKeyIDNotIn: [String!]
-  accessKeyIDGT: String
-  accessKeyIDGTE: String
-  accessKeyIDLT: String
-  accessKeyIDLTE: String
-  accessKeyIDContains: String
-  accessKeyIDHasPrefix: String
-  accessKeyIDHasSuffix: String
-  accessKeyIDEqualFold: String
-  accessKeyIDContainsFold: String
-  """
-  access_key_secret field predicates
-  """
-  accessKeySecret: String
-  accessKeySecretNEQ: String
-  accessKeySecretIn: [String!]
-  accessKeySecretNotIn: [String!]
-  accessKeySecretGT: String
-  accessKeySecretGTE: String
-  accessKeySecretLT: String
-  accessKeySecretLTE: String
-  accessKeySecretContains: String
-  accessKeySecretHasPrefix: String
-  accessKeySecretHasSuffix: String
-  accessKeySecretEqualFold: String
-  accessKeySecretContainsFold: String
   """
   endpoint field predicates
   """
@@ -8087,52 +8508,10 @@ input FileSourceWhereInput {
   bucketurlEqualFold: String
   bucketurlContainsFold: String
   """
-  role_arn field predicates
+  identities edge predicates
   """
-  roleArn: String
-  roleArnNEQ: String
-  roleArnIn: [String!]
-  roleArnNotIn: [String!]
-  roleArnGT: String
-  roleArnGTE: String
-  roleArnLT: String
-  roleArnLTE: String
-  roleArnContains: String
-  roleArnHasPrefix: String
-  roleArnHasSuffix: String
-  roleArnEqualFold: String
-  roleArnContainsFold: String
-  """
-  policy field predicates
-  """
-  policy: String
-  policyNEQ: String
-  policyIn: [String!]
-  policyNotIn: [String!]
-  policyGT: String
-  policyGTE: String
-  policyLT: String
-  policyLTE: String
-  policyContains: String
-  policyHasPrefix: String
-  policyHasSuffix: String
-  policyIsNil: Boolean
-  policyNotNil: Boolean
-  policyEqualFold: String
-  policyContainsFold: String
-  """
-  duration_seconds field predicates
-  """
-  durationSeconds: Int
-  durationSecondsNEQ: Int
-  durationSecondsIn: [Int!]
-  durationSecondsNotIn: [Int!]
-  durationSecondsGT: Int
-  durationSecondsGTE: Int
-  durationSecondsLT: Int
-  durationSecondsLTE: Int
-  durationSecondsIsNil: Boolean
-  durationSecondsNotNil: Boolean
+  hasIdentities: Boolean
+  hasIdentitiesWith: [FileIdentityWhereInput!]
   """
   files edge predicates
   """
@@ -10498,14 +10877,52 @@ input UpdateAppRoleInput {
   editable: Boolean
 }
 """
-UpdateFileSourceInput is used for update FileSource object.
+UpdateFileIdentityInput is used for update FileIdentity object.
 Input was generated by ent.
 """
-input UpdateFileSourceInput {
+input UpdateFileIdentityInput {
   """
   组织ID
   """
   tenantID: ID
+  """
+  accesskey id
+  """
+  accessKeyID: String
+  """
+  accesskey secret
+  """
+  accessKeySecret: String
+  """
+  角色的资源名称(ARN)，用于STS
+  """
+  roleArn: String
+  """
+  指定返回的STS令牌的权限的策略
+  """
+  policy: String
+  clearPolicy: Boolean
+  """
+  STS令牌的有效期，默认3600s
+  """
+  durationSeconds: Int
+  clearDurationSeconds: Boolean
+  """
+  租户默认的凭证
+  """
+  isDefault: Boolean
+  """
+  备注
+  """
+  comments: String
+  clearComments: Boolean
+  sourceID: ID
+}
+"""
+UpdateFileSourceInput is used for update FileSource object.
+Input was generated by ent.
+"""
+input UpdateFileSourceInput {
   """
   文件来源
   """
@@ -10515,14 +10932,6 @@ input UpdateFileSourceInput {
   """
   comments: String
   clearComments: Boolean
-  """
-  accesskey id
-  """
-  accessKeyID: String
-  """
-  accesskey secret
-  """
-  accessKeySecret: String
   """
   对外服务的访问域名
   """
@@ -10544,20 +10953,9 @@ input UpdateFileSourceInput {
   """
   bucketurl: String
   clearBucketUrl: Boolean
-  """
-  角色的资源名称(ARN)，用于STS
-  """
-  roleArn: String
-  """
-  指定返回的STS令牌的权限的策略
-  """
-  policy: String
-  clearPolicy: Boolean
-  """
-  STS令牌的有效期，默认3600s
-  """
-  durationSeconds: Int
-  clearDurationSeconds: Boolean
+  addIdentityIDs: [ID!]
+  removeIdentityIDs: [ID!]
+  clearIdentities: Boolean
   addFileIDs: [ID!]
   removeFileIDs: [ID!]
   clearFiles: Boolean
@@ -12258,6 +12656,8 @@ input OrgUserPreferenceInput {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
+    """文件凭证"""
+    fileIdentities: [FileIdentity!]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -12413,6 +12813,12 @@ input OrgUserPreferenceInput {
     updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
     """删除文件来源"""
     deleteFileSource(fsID: ID!): Boolean!
+    """创建文件凭证"""
+    createFileIdentity(input: CreateFileIdentityInput!): FileIdentity!
+    """更新文件凭证"""
+    updateFileIdentity(id: ID!,input: UpdateFileIdentityInput!): FileIdentity!
+    """删除文件凭证"""
+    deleteFileIdentity(id: ID!): Boolean!
     """创建用户 AccessKey"""
     createOauthClient(input: CreateOauthClientInput!): OauthClient!
     """启用OauthClient"""

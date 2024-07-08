@@ -152,6 +152,12 @@ type Mutation {
     updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
     """删除文件来源"""
     deleteFileSource(fsID: ID!): Boolean!
+    """创建文件凭证"""
+    createFileIdentity(input: CreateFileIdentityInput!): FileIdentity!
+    """更新文件凭证"""
+    updateFileIdentity(id: ID!,input: UpdateFileIdentityInput!): FileIdentity!
+    """删除文件凭证"""
+    deleteFileIdentity(id: ID!): Boolean!
     """创建用户 AccessKey"""
     createOauthClient(input: CreateOauthClientInput!): OauthClient!
     """启用OauthClient"""

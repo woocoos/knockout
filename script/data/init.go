@@ -239,10 +239,17 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 
 func (*dataset) initFileSource(client *ent.Tx) {
 	fs := make([]*ent.FileSourceCreate, 0)
-	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindLocal).SetComments("本地存储bucket").
-		SetEndpoint("http://127.0.0.1:10071").SetBucket("local").SetCreatedBy(1)
+	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindMinio).SetComments("本地存储bucket").
+		SetEndpoint("http://192.168.0.17:32650").SetBucket("woocootest").SetRegion("minio").SetStsEndpoint("http://192.168.0.17:32650").
+		SetBucketUrl("http://192.168.0.17:32650/woocootest").SetCreatedBy(1)
 	fs = append(fs, s1)
 	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
+
+	fi := make([]*ent.FileIdentityCreate, 0)
+	s2 := client.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetFileSourceID(1).SetAccessKeyID("test").SetAccessKeySecret("test1234").
+		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("").SetTenantID(1)
+	fi = append(fi, s2)
+	client.FileIdentity.CreateBulk(fi...).ExecX(context.Background())
 }
 
 func (*dataset) initOauthClient(client *ent.Tx) {

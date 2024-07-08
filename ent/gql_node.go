@@ -24,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -88,6 +89,11 @@ var fileImplementors = []string{"File", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*File) IsNode() {}
+
+var fileidentityImplementors = []string{"FileIdentity", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*FileIdentity) IsNode() {}
 
 var filesourceImplementors = []string{"FileSource", "Node"}
 
@@ -311,6 +317,18 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			return nil, err
 		}
 		n, err := query.Only(entcache.WithRefEntryKey(ctx, "File", id))
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case fileidentity.Table:
+		query := c.FileIdentity.Query().
+			Where(fileidentity.ID(id))
+		query, err := query.CollectFields(ctx, fileidentityImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(entcache.WithRefEntryKey(ctx, "FileIdentity", id))
 		if err != nil {
 			return nil, err
 		}
@@ -664,6 +682,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.File.Query().
 			Where(file.IDIn(ids...))
 		query, err := query.CollectFields(ctx, fileImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case fileidentity.Table:
+		query := c.FileIdentity.Query().
+			Where(fileidentity.IDIn(ids...))
+		query, err := query.CollectFields(ctx, fileidentityImplementors...)
 		if err != nil {
 			return nil, err
 		}

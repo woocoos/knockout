@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -5363,12 +5364,12 @@ func (i *FileWhereInput) P() (predicate.File, error) {
 	}
 }
 
-// FileSourceWhereInput represents a where input for filtering FileSource queries.
-type FileSourceWhereInput struct {
-	Predicates []predicate.FileSource  `json:"-"`
-	Not        *FileSourceWhereInput   `json:"not,omitempty"`
-	Or         []*FileSourceWhereInput `json:"or,omitempty"`
-	And        []*FileSourceWhereInput `json:"and,omitempty"`
+// FileIdentityWhereInput represents a where input for filtering FileIdentity queries.
+type FileIdentityWhereInput struct {
+	Predicates []predicate.FileIdentity  `json:"-"`
+	Not        *FileIdentityWhereInput   `json:"not,omitempty"`
+	Or         []*FileIdentityWhereInput `json:"or,omitempty"`
+	And        []*FileIdentityWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
 	ID      *int  `json:"id,omitempty"`
@@ -5434,12 +5435,6 @@ type FileSourceWhereInput struct {
 	TenantIDLT    *int  `json:"tenantIDLT,omitempty"`
 	TenantIDLTE   *int  `json:"tenantIDLTE,omitempty"`
 
-	// "kind" field predicates.
-	Kind      *filesource.Kind  `json:"kind,omitempty"`
-	KindNEQ   *filesource.Kind  `json:"kindNEQ,omitempty"`
-	KindIn    []filesource.Kind `json:"kindIn,omitempty"`
-	KindNotIn []filesource.Kind `json:"kindNotIn,omitempty"`
-
 	// "access_key_id" field predicates.
 	AccessKeyID             *string  `json:"accessKeyID,omitempty"`
 	AccessKeyIDNEQ          *string  `json:"accessKeyIDNEQ,omitempty"`
@@ -5469,6 +5464,598 @@ type FileSourceWhereInput struct {
 	AccessKeySecretHasSuffix    *string  `json:"accessKeySecretHasSuffix,omitempty"`
 	AccessKeySecretEqualFold    *string  `json:"accessKeySecretEqualFold,omitempty"`
 	AccessKeySecretContainsFold *string  `json:"accessKeySecretContainsFold,omitempty"`
+
+	// "file_source_id" field predicates.
+	FileSourceID      *int  `json:"fileSourceID,omitempty"`
+	FileSourceIDNEQ   *int  `json:"fileSourceIDNEQ,omitempty"`
+	FileSourceIDIn    []int `json:"fileSourceIDIn,omitempty"`
+	FileSourceIDNotIn []int `json:"fileSourceIDNotIn,omitempty"`
+
+	// "role_arn" field predicates.
+	RoleArn             *string  `json:"roleArn,omitempty"`
+	RoleArnNEQ          *string  `json:"roleArnNEQ,omitempty"`
+	RoleArnIn           []string `json:"roleArnIn,omitempty"`
+	RoleArnNotIn        []string `json:"roleArnNotIn,omitempty"`
+	RoleArnGT           *string  `json:"roleArnGT,omitempty"`
+	RoleArnGTE          *string  `json:"roleArnGTE,omitempty"`
+	RoleArnLT           *string  `json:"roleArnLT,omitempty"`
+	RoleArnLTE          *string  `json:"roleArnLTE,omitempty"`
+	RoleArnContains     *string  `json:"roleArnContains,omitempty"`
+	RoleArnHasPrefix    *string  `json:"roleArnHasPrefix,omitempty"`
+	RoleArnHasSuffix    *string  `json:"roleArnHasSuffix,omitempty"`
+	RoleArnEqualFold    *string  `json:"roleArnEqualFold,omitempty"`
+	RoleArnContainsFold *string  `json:"roleArnContainsFold,omitempty"`
+
+	// "policy" field predicates.
+	Policy             *string  `json:"policy,omitempty"`
+	PolicyNEQ          *string  `json:"policyNEQ,omitempty"`
+	PolicyIn           []string `json:"policyIn,omitempty"`
+	PolicyNotIn        []string `json:"policyNotIn,omitempty"`
+	PolicyGT           *string  `json:"policyGT,omitempty"`
+	PolicyGTE          *string  `json:"policyGTE,omitempty"`
+	PolicyLT           *string  `json:"policyLT,omitempty"`
+	PolicyLTE          *string  `json:"policyLTE,omitempty"`
+	PolicyContains     *string  `json:"policyContains,omitempty"`
+	PolicyHasPrefix    *string  `json:"policyHasPrefix,omitempty"`
+	PolicyHasSuffix    *string  `json:"policyHasSuffix,omitempty"`
+	PolicyIsNil        bool     `json:"policyIsNil,omitempty"`
+	PolicyNotNil       bool     `json:"policyNotNil,omitempty"`
+	PolicyEqualFold    *string  `json:"policyEqualFold,omitempty"`
+	PolicyContainsFold *string  `json:"policyContainsFold,omitempty"`
+
+	// "duration_seconds" field predicates.
+	DurationSeconds       *int  `json:"durationSeconds,omitempty"`
+	DurationSecondsNEQ    *int  `json:"durationSecondsNEQ,omitempty"`
+	DurationSecondsIn     []int `json:"durationSecondsIn,omitempty"`
+	DurationSecondsNotIn  []int `json:"durationSecondsNotIn,omitempty"`
+	DurationSecondsGT     *int  `json:"durationSecondsGT,omitempty"`
+	DurationSecondsGTE    *int  `json:"durationSecondsGTE,omitempty"`
+	DurationSecondsLT     *int  `json:"durationSecondsLT,omitempty"`
+	DurationSecondsLTE    *int  `json:"durationSecondsLTE,omitempty"`
+	DurationSecondsIsNil  bool  `json:"durationSecondsIsNil,omitempty"`
+	DurationSecondsNotNil bool  `json:"durationSecondsNotNil,omitempty"`
+
+	// "is_default" field predicates.
+	IsDefault    *bool `json:"isDefault,omitempty"`
+	IsDefaultNEQ *bool `json:"isDefaultNEQ,omitempty"`
+
+	// "source" edge predicates.
+	HasSource     *bool                   `json:"hasSource,omitempty"`
+	HasSourceWith []*FileSourceWhereInput `json:"hasSourceWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *FileIdentityWhereInput) AddPredicates(predicates ...predicate.FileIdentity) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the FileIdentityWhereInput filter on the FileIdentityQuery builder.
+func (i *FileIdentityWhereInput) Filter(q *FileIdentityQuery) (*FileIdentityQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyFileIdentityWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyFileIdentityWhereInput is returned in case the FileIdentityWhereInput is empty.
+var ErrEmptyFileIdentityWhereInput = errors.New("ent: empty predicate FileIdentityWhereInput")
+
+// P returns a predicate for filtering fileidentities.
+// An error is returned if the input is empty or invalid.
+func (i *FileIdentityWhereInput) P() (predicate.FileIdentity, error) {
+	var predicates []predicate.FileIdentity
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, fileidentity.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.FileIdentity, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, fileidentity.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.FileIdentity, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, fileidentity.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, fileidentity.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, fileidentity.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, fileidentity.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, fileidentity.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, fileidentity.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, fileidentity.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, fileidentity.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, fileidentity.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedBy != nil {
+		predicates = append(predicates, fileidentity.CreatedByEQ(*i.CreatedBy))
+	}
+	if i.CreatedByNEQ != nil {
+		predicates = append(predicates, fileidentity.CreatedByNEQ(*i.CreatedByNEQ))
+	}
+	if len(i.CreatedByIn) > 0 {
+		predicates = append(predicates, fileidentity.CreatedByIn(i.CreatedByIn...))
+	}
+	if len(i.CreatedByNotIn) > 0 {
+		predicates = append(predicates, fileidentity.CreatedByNotIn(i.CreatedByNotIn...))
+	}
+	if i.CreatedByGT != nil {
+		predicates = append(predicates, fileidentity.CreatedByGT(*i.CreatedByGT))
+	}
+	if i.CreatedByGTE != nil {
+		predicates = append(predicates, fileidentity.CreatedByGTE(*i.CreatedByGTE))
+	}
+	if i.CreatedByLT != nil {
+		predicates = append(predicates, fileidentity.CreatedByLT(*i.CreatedByLT))
+	}
+	if i.CreatedByLTE != nil {
+		predicates = append(predicates, fileidentity.CreatedByLTE(*i.CreatedByLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, fileidentity.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, fileidentity.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, fileidentity.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, fileidentity.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, fileidentity.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, fileidentity.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, fileidentity.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, fileidentity.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedBy != nil {
+		predicates = append(predicates, fileidentity.UpdatedByEQ(*i.UpdatedBy))
+	}
+	if i.UpdatedByNEQ != nil {
+		predicates = append(predicates, fileidentity.UpdatedByNEQ(*i.UpdatedByNEQ))
+	}
+	if len(i.UpdatedByIn) > 0 {
+		predicates = append(predicates, fileidentity.UpdatedByIn(i.UpdatedByIn...))
+	}
+	if len(i.UpdatedByNotIn) > 0 {
+		predicates = append(predicates, fileidentity.UpdatedByNotIn(i.UpdatedByNotIn...))
+	}
+	if i.UpdatedByGT != nil {
+		predicates = append(predicates, fileidentity.UpdatedByGT(*i.UpdatedByGT))
+	}
+	if i.UpdatedByGTE != nil {
+		predicates = append(predicates, fileidentity.UpdatedByGTE(*i.UpdatedByGTE))
+	}
+	if i.UpdatedByLT != nil {
+		predicates = append(predicates, fileidentity.UpdatedByLT(*i.UpdatedByLT))
+	}
+	if i.UpdatedByLTE != nil {
+		predicates = append(predicates, fileidentity.UpdatedByLTE(*i.UpdatedByLTE))
+	}
+	if i.UpdatedByIsNil {
+		predicates = append(predicates, fileidentity.UpdatedByIsNil())
+	}
+	if i.UpdatedByNotNil {
+		predicates = append(predicates, fileidentity.UpdatedByNotNil())
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, fileidentity.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, fileidentity.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, fileidentity.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.UpdatedAtIsNil {
+		predicates = append(predicates, fileidentity.UpdatedAtIsNil())
+	}
+	if i.UpdatedAtNotNil {
+		predicates = append(predicates, fileidentity.UpdatedAtNotNil())
+	}
+	if i.TenantID != nil {
+		predicates = append(predicates, fileidentity.TenantIDEQ(*i.TenantID))
+	}
+	if i.TenantIDNEQ != nil {
+		predicates = append(predicates, fileidentity.TenantIDNEQ(*i.TenantIDNEQ))
+	}
+	if len(i.TenantIDIn) > 0 {
+		predicates = append(predicates, fileidentity.TenantIDIn(i.TenantIDIn...))
+	}
+	if len(i.TenantIDNotIn) > 0 {
+		predicates = append(predicates, fileidentity.TenantIDNotIn(i.TenantIDNotIn...))
+	}
+	if i.TenantIDGT != nil {
+		predicates = append(predicates, fileidentity.TenantIDGT(*i.TenantIDGT))
+	}
+	if i.TenantIDGTE != nil {
+		predicates = append(predicates, fileidentity.TenantIDGTE(*i.TenantIDGTE))
+	}
+	if i.TenantIDLT != nil {
+		predicates = append(predicates, fileidentity.TenantIDLT(*i.TenantIDLT))
+	}
+	if i.TenantIDLTE != nil {
+		predicates = append(predicates, fileidentity.TenantIDLTE(*i.TenantIDLTE))
+	}
+	if i.AccessKeyID != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDEQ(*i.AccessKeyID))
+	}
+	if i.AccessKeyIDNEQ != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDNEQ(*i.AccessKeyIDNEQ))
+	}
+	if len(i.AccessKeyIDIn) > 0 {
+		predicates = append(predicates, fileidentity.AccessKeyIDIn(i.AccessKeyIDIn...))
+	}
+	if len(i.AccessKeyIDNotIn) > 0 {
+		predicates = append(predicates, fileidentity.AccessKeyIDNotIn(i.AccessKeyIDNotIn...))
+	}
+	if i.AccessKeyIDGT != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDGT(*i.AccessKeyIDGT))
+	}
+	if i.AccessKeyIDGTE != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDGTE(*i.AccessKeyIDGTE))
+	}
+	if i.AccessKeyIDLT != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDLT(*i.AccessKeyIDLT))
+	}
+	if i.AccessKeyIDLTE != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDLTE(*i.AccessKeyIDLTE))
+	}
+	if i.AccessKeyIDContains != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDContains(*i.AccessKeyIDContains))
+	}
+	if i.AccessKeyIDHasPrefix != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDHasPrefix(*i.AccessKeyIDHasPrefix))
+	}
+	if i.AccessKeyIDHasSuffix != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDHasSuffix(*i.AccessKeyIDHasSuffix))
+	}
+	if i.AccessKeyIDEqualFold != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDEqualFold(*i.AccessKeyIDEqualFold))
+	}
+	if i.AccessKeyIDContainsFold != nil {
+		predicates = append(predicates, fileidentity.AccessKeyIDContainsFold(*i.AccessKeyIDContainsFold))
+	}
+	if i.AccessKeySecret != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretEQ(*i.AccessKeySecret))
+	}
+	if i.AccessKeySecretNEQ != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretNEQ(*i.AccessKeySecretNEQ))
+	}
+	if len(i.AccessKeySecretIn) > 0 {
+		predicates = append(predicates, fileidentity.AccessKeySecretIn(i.AccessKeySecretIn...))
+	}
+	if len(i.AccessKeySecretNotIn) > 0 {
+		predicates = append(predicates, fileidentity.AccessKeySecretNotIn(i.AccessKeySecretNotIn...))
+	}
+	if i.AccessKeySecretGT != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretGT(*i.AccessKeySecretGT))
+	}
+	if i.AccessKeySecretGTE != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretGTE(*i.AccessKeySecretGTE))
+	}
+	if i.AccessKeySecretLT != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretLT(*i.AccessKeySecretLT))
+	}
+	if i.AccessKeySecretLTE != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretLTE(*i.AccessKeySecretLTE))
+	}
+	if i.AccessKeySecretContains != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretContains(*i.AccessKeySecretContains))
+	}
+	if i.AccessKeySecretHasPrefix != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretHasPrefix(*i.AccessKeySecretHasPrefix))
+	}
+	if i.AccessKeySecretHasSuffix != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretHasSuffix(*i.AccessKeySecretHasSuffix))
+	}
+	if i.AccessKeySecretEqualFold != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretEqualFold(*i.AccessKeySecretEqualFold))
+	}
+	if i.AccessKeySecretContainsFold != nil {
+		predicates = append(predicates, fileidentity.AccessKeySecretContainsFold(*i.AccessKeySecretContainsFold))
+	}
+	if i.FileSourceID != nil {
+		predicates = append(predicates, fileidentity.FileSourceIDEQ(*i.FileSourceID))
+	}
+	if i.FileSourceIDNEQ != nil {
+		predicates = append(predicates, fileidentity.FileSourceIDNEQ(*i.FileSourceIDNEQ))
+	}
+	if len(i.FileSourceIDIn) > 0 {
+		predicates = append(predicates, fileidentity.FileSourceIDIn(i.FileSourceIDIn...))
+	}
+	if len(i.FileSourceIDNotIn) > 0 {
+		predicates = append(predicates, fileidentity.FileSourceIDNotIn(i.FileSourceIDNotIn...))
+	}
+	if i.RoleArn != nil {
+		predicates = append(predicates, fileidentity.RoleArnEQ(*i.RoleArn))
+	}
+	if i.RoleArnNEQ != nil {
+		predicates = append(predicates, fileidentity.RoleArnNEQ(*i.RoleArnNEQ))
+	}
+	if len(i.RoleArnIn) > 0 {
+		predicates = append(predicates, fileidentity.RoleArnIn(i.RoleArnIn...))
+	}
+	if len(i.RoleArnNotIn) > 0 {
+		predicates = append(predicates, fileidentity.RoleArnNotIn(i.RoleArnNotIn...))
+	}
+	if i.RoleArnGT != nil {
+		predicates = append(predicates, fileidentity.RoleArnGT(*i.RoleArnGT))
+	}
+	if i.RoleArnGTE != nil {
+		predicates = append(predicates, fileidentity.RoleArnGTE(*i.RoleArnGTE))
+	}
+	if i.RoleArnLT != nil {
+		predicates = append(predicates, fileidentity.RoleArnLT(*i.RoleArnLT))
+	}
+	if i.RoleArnLTE != nil {
+		predicates = append(predicates, fileidentity.RoleArnLTE(*i.RoleArnLTE))
+	}
+	if i.RoleArnContains != nil {
+		predicates = append(predicates, fileidentity.RoleArnContains(*i.RoleArnContains))
+	}
+	if i.RoleArnHasPrefix != nil {
+		predicates = append(predicates, fileidentity.RoleArnHasPrefix(*i.RoleArnHasPrefix))
+	}
+	if i.RoleArnHasSuffix != nil {
+		predicates = append(predicates, fileidentity.RoleArnHasSuffix(*i.RoleArnHasSuffix))
+	}
+	if i.RoleArnEqualFold != nil {
+		predicates = append(predicates, fileidentity.RoleArnEqualFold(*i.RoleArnEqualFold))
+	}
+	if i.RoleArnContainsFold != nil {
+		predicates = append(predicates, fileidentity.RoleArnContainsFold(*i.RoleArnContainsFold))
+	}
+	if i.Policy != nil {
+		predicates = append(predicates, fileidentity.PolicyEQ(*i.Policy))
+	}
+	if i.PolicyNEQ != nil {
+		predicates = append(predicates, fileidentity.PolicyNEQ(*i.PolicyNEQ))
+	}
+	if len(i.PolicyIn) > 0 {
+		predicates = append(predicates, fileidentity.PolicyIn(i.PolicyIn...))
+	}
+	if len(i.PolicyNotIn) > 0 {
+		predicates = append(predicates, fileidentity.PolicyNotIn(i.PolicyNotIn...))
+	}
+	if i.PolicyGT != nil {
+		predicates = append(predicates, fileidentity.PolicyGT(*i.PolicyGT))
+	}
+	if i.PolicyGTE != nil {
+		predicates = append(predicates, fileidentity.PolicyGTE(*i.PolicyGTE))
+	}
+	if i.PolicyLT != nil {
+		predicates = append(predicates, fileidentity.PolicyLT(*i.PolicyLT))
+	}
+	if i.PolicyLTE != nil {
+		predicates = append(predicates, fileidentity.PolicyLTE(*i.PolicyLTE))
+	}
+	if i.PolicyContains != nil {
+		predicates = append(predicates, fileidentity.PolicyContains(*i.PolicyContains))
+	}
+	if i.PolicyHasPrefix != nil {
+		predicates = append(predicates, fileidentity.PolicyHasPrefix(*i.PolicyHasPrefix))
+	}
+	if i.PolicyHasSuffix != nil {
+		predicates = append(predicates, fileidentity.PolicyHasSuffix(*i.PolicyHasSuffix))
+	}
+	if i.PolicyIsNil {
+		predicates = append(predicates, fileidentity.PolicyIsNil())
+	}
+	if i.PolicyNotNil {
+		predicates = append(predicates, fileidentity.PolicyNotNil())
+	}
+	if i.PolicyEqualFold != nil {
+		predicates = append(predicates, fileidentity.PolicyEqualFold(*i.PolicyEqualFold))
+	}
+	if i.PolicyContainsFold != nil {
+		predicates = append(predicates, fileidentity.PolicyContainsFold(*i.PolicyContainsFold))
+	}
+	if i.DurationSeconds != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsEQ(*i.DurationSeconds))
+	}
+	if i.DurationSecondsNEQ != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsNEQ(*i.DurationSecondsNEQ))
+	}
+	if len(i.DurationSecondsIn) > 0 {
+		predicates = append(predicates, fileidentity.DurationSecondsIn(i.DurationSecondsIn...))
+	}
+	if len(i.DurationSecondsNotIn) > 0 {
+		predicates = append(predicates, fileidentity.DurationSecondsNotIn(i.DurationSecondsNotIn...))
+	}
+	if i.DurationSecondsGT != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsGT(*i.DurationSecondsGT))
+	}
+	if i.DurationSecondsGTE != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsGTE(*i.DurationSecondsGTE))
+	}
+	if i.DurationSecondsLT != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsLT(*i.DurationSecondsLT))
+	}
+	if i.DurationSecondsLTE != nil {
+		predicates = append(predicates, fileidentity.DurationSecondsLTE(*i.DurationSecondsLTE))
+	}
+	if i.DurationSecondsIsNil {
+		predicates = append(predicates, fileidentity.DurationSecondsIsNil())
+	}
+	if i.DurationSecondsNotNil {
+		predicates = append(predicates, fileidentity.DurationSecondsNotNil())
+	}
+	if i.IsDefault != nil {
+		predicates = append(predicates, fileidentity.IsDefaultEQ(*i.IsDefault))
+	}
+	if i.IsDefaultNEQ != nil {
+		predicates = append(predicates, fileidentity.IsDefaultNEQ(*i.IsDefaultNEQ))
+	}
+
+	if i.HasSource != nil {
+		p := fileidentity.HasSource()
+		if !*i.HasSource {
+			p = fileidentity.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasSourceWith) > 0 {
+		with := make([]predicate.FileSource, 0, len(i.HasSourceWith))
+		for _, w := range i.HasSourceWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasSourceWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, fileidentity.HasSourceWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyFileIdentityWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return fileidentity.And(predicates...), nil
+	}
+}
+
+// FileSourceWhereInput represents a where input for filtering FileSource queries.
+type FileSourceWhereInput struct {
+	Predicates []predicate.FileSource  `json:"-"`
+	Not        *FileSourceWhereInput   `json:"not,omitempty"`
+	Or         []*FileSourceWhereInput `json:"or,omitempty"`
+	And        []*FileSourceWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_by" field predicates.
+	CreatedBy      *int  `json:"createdBy,omitempty"`
+	CreatedByNEQ   *int  `json:"createdByNEQ,omitempty"`
+	CreatedByIn    []int `json:"createdByIn,omitempty"`
+	CreatedByNotIn []int `json:"createdByNotIn,omitempty"`
+	CreatedByGT    *int  `json:"createdByGT,omitempty"`
+	CreatedByGTE   *int  `json:"createdByGTE,omitempty"`
+	CreatedByLT    *int  `json:"createdByLT,omitempty"`
+	CreatedByLTE   *int  `json:"createdByLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_by" field predicates.
+	UpdatedBy       *int  `json:"updatedBy,omitempty"`
+	UpdatedByNEQ    *int  `json:"updatedByNEQ,omitempty"`
+	UpdatedByIn     []int `json:"updatedByIn,omitempty"`
+	UpdatedByNotIn  []int `json:"updatedByNotIn,omitempty"`
+	UpdatedByGT     *int  `json:"updatedByGT,omitempty"`
+	UpdatedByGTE    *int  `json:"updatedByGTE,omitempty"`
+	UpdatedByLT     *int  `json:"updatedByLT,omitempty"`
+	UpdatedByLTE    *int  `json:"updatedByLTE,omitempty"`
+	UpdatedByIsNil  bool  `json:"updatedByIsNil,omitempty"`
+	UpdatedByNotNil bool  `json:"updatedByNotNil,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt       *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ    *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn     []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn  []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT     *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE    *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT     *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE    *time.Time  `json:"updatedAtLTE,omitempty"`
+	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
+	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
+
+	// "kind" field predicates.
+	Kind      *filesource.Kind  `json:"kind,omitempty"`
+	KindNEQ   *filesource.Kind  `json:"kindNEQ,omitempty"`
+	KindIn    []filesource.Kind `json:"kindIn,omitempty"`
+	KindNotIn []filesource.Kind `json:"kindNotIn,omitempty"`
 
 	// "endpoint" field predicates.
 	Endpoint             *string  `json:"endpoint,omitempty"`
@@ -5547,49 +6134,9 @@ type FileSourceWhereInput struct {
 	BucketUrlEqualFold    *string  `json:"bucketurlEqualFold,omitempty"`
 	BucketUrlContainsFold *string  `json:"bucketurlContainsFold,omitempty"`
 
-	// "role_arn" field predicates.
-	RoleArn             *string  `json:"roleArn,omitempty"`
-	RoleArnNEQ          *string  `json:"roleArnNEQ,omitempty"`
-	RoleArnIn           []string `json:"roleArnIn,omitempty"`
-	RoleArnNotIn        []string `json:"roleArnNotIn,omitempty"`
-	RoleArnGT           *string  `json:"roleArnGT,omitempty"`
-	RoleArnGTE          *string  `json:"roleArnGTE,omitempty"`
-	RoleArnLT           *string  `json:"roleArnLT,omitempty"`
-	RoleArnLTE          *string  `json:"roleArnLTE,omitempty"`
-	RoleArnContains     *string  `json:"roleArnContains,omitempty"`
-	RoleArnHasPrefix    *string  `json:"roleArnHasPrefix,omitempty"`
-	RoleArnHasSuffix    *string  `json:"roleArnHasSuffix,omitempty"`
-	RoleArnEqualFold    *string  `json:"roleArnEqualFold,omitempty"`
-	RoleArnContainsFold *string  `json:"roleArnContainsFold,omitempty"`
-
-	// "policy" field predicates.
-	Policy             *string  `json:"policy,omitempty"`
-	PolicyNEQ          *string  `json:"policyNEQ,omitempty"`
-	PolicyIn           []string `json:"policyIn,omitempty"`
-	PolicyNotIn        []string `json:"policyNotIn,omitempty"`
-	PolicyGT           *string  `json:"policyGT,omitempty"`
-	PolicyGTE          *string  `json:"policyGTE,omitempty"`
-	PolicyLT           *string  `json:"policyLT,omitempty"`
-	PolicyLTE          *string  `json:"policyLTE,omitempty"`
-	PolicyContains     *string  `json:"policyContains,omitempty"`
-	PolicyHasPrefix    *string  `json:"policyHasPrefix,omitempty"`
-	PolicyHasSuffix    *string  `json:"policyHasSuffix,omitempty"`
-	PolicyIsNil        bool     `json:"policyIsNil,omitempty"`
-	PolicyNotNil       bool     `json:"policyNotNil,omitempty"`
-	PolicyEqualFold    *string  `json:"policyEqualFold,omitempty"`
-	PolicyContainsFold *string  `json:"policyContainsFold,omitempty"`
-
-	// "duration_seconds" field predicates.
-	DurationSeconds       *int  `json:"durationSeconds,omitempty"`
-	DurationSecondsNEQ    *int  `json:"durationSecondsNEQ,omitempty"`
-	DurationSecondsIn     []int `json:"durationSecondsIn,omitempty"`
-	DurationSecondsNotIn  []int `json:"durationSecondsNotIn,omitempty"`
-	DurationSecondsGT     *int  `json:"durationSecondsGT,omitempty"`
-	DurationSecondsGTE    *int  `json:"durationSecondsGTE,omitempty"`
-	DurationSecondsLT     *int  `json:"durationSecondsLT,omitempty"`
-	DurationSecondsLTE    *int  `json:"durationSecondsLTE,omitempty"`
-	DurationSecondsIsNil  bool  `json:"durationSecondsIsNil,omitempty"`
-	DurationSecondsNotNil bool  `json:"durationSecondsNotNil,omitempty"`
+	// "identities" edge predicates.
+	HasIdentities     *bool                     `json:"hasIdentities,omitempty"`
+	HasIdentitiesWith []*FileIdentityWhereInput `json:"hasIdentitiesWith,omitempty"`
 
 	// "files" edge predicates.
 	HasFiles     *bool             `json:"hasFiles,omitempty"`
@@ -5799,30 +6346,6 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	if i.UpdatedAtNotNil {
 		predicates = append(predicates, filesource.UpdatedAtNotNil())
 	}
-	if i.TenantID != nil {
-		predicates = append(predicates, filesource.TenantIDEQ(*i.TenantID))
-	}
-	if i.TenantIDNEQ != nil {
-		predicates = append(predicates, filesource.TenantIDNEQ(*i.TenantIDNEQ))
-	}
-	if len(i.TenantIDIn) > 0 {
-		predicates = append(predicates, filesource.TenantIDIn(i.TenantIDIn...))
-	}
-	if len(i.TenantIDNotIn) > 0 {
-		predicates = append(predicates, filesource.TenantIDNotIn(i.TenantIDNotIn...))
-	}
-	if i.TenantIDGT != nil {
-		predicates = append(predicates, filesource.TenantIDGT(*i.TenantIDGT))
-	}
-	if i.TenantIDGTE != nil {
-		predicates = append(predicates, filesource.TenantIDGTE(*i.TenantIDGTE))
-	}
-	if i.TenantIDLT != nil {
-		predicates = append(predicates, filesource.TenantIDLT(*i.TenantIDLT))
-	}
-	if i.TenantIDLTE != nil {
-		predicates = append(predicates, filesource.TenantIDLTE(*i.TenantIDLTE))
-	}
 	if i.Kind != nil {
 		predicates = append(predicates, filesource.KindEQ(*i.Kind))
 	}
@@ -5834,84 +6357,6 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	}
 	if len(i.KindNotIn) > 0 {
 		predicates = append(predicates, filesource.KindNotIn(i.KindNotIn...))
-	}
-	if i.AccessKeyID != nil {
-		predicates = append(predicates, filesource.AccessKeyIDEQ(*i.AccessKeyID))
-	}
-	if i.AccessKeyIDNEQ != nil {
-		predicates = append(predicates, filesource.AccessKeyIDNEQ(*i.AccessKeyIDNEQ))
-	}
-	if len(i.AccessKeyIDIn) > 0 {
-		predicates = append(predicates, filesource.AccessKeyIDIn(i.AccessKeyIDIn...))
-	}
-	if len(i.AccessKeyIDNotIn) > 0 {
-		predicates = append(predicates, filesource.AccessKeyIDNotIn(i.AccessKeyIDNotIn...))
-	}
-	if i.AccessKeyIDGT != nil {
-		predicates = append(predicates, filesource.AccessKeyIDGT(*i.AccessKeyIDGT))
-	}
-	if i.AccessKeyIDGTE != nil {
-		predicates = append(predicates, filesource.AccessKeyIDGTE(*i.AccessKeyIDGTE))
-	}
-	if i.AccessKeyIDLT != nil {
-		predicates = append(predicates, filesource.AccessKeyIDLT(*i.AccessKeyIDLT))
-	}
-	if i.AccessKeyIDLTE != nil {
-		predicates = append(predicates, filesource.AccessKeyIDLTE(*i.AccessKeyIDLTE))
-	}
-	if i.AccessKeyIDContains != nil {
-		predicates = append(predicates, filesource.AccessKeyIDContains(*i.AccessKeyIDContains))
-	}
-	if i.AccessKeyIDHasPrefix != nil {
-		predicates = append(predicates, filesource.AccessKeyIDHasPrefix(*i.AccessKeyIDHasPrefix))
-	}
-	if i.AccessKeyIDHasSuffix != nil {
-		predicates = append(predicates, filesource.AccessKeyIDHasSuffix(*i.AccessKeyIDHasSuffix))
-	}
-	if i.AccessKeyIDEqualFold != nil {
-		predicates = append(predicates, filesource.AccessKeyIDEqualFold(*i.AccessKeyIDEqualFold))
-	}
-	if i.AccessKeyIDContainsFold != nil {
-		predicates = append(predicates, filesource.AccessKeyIDContainsFold(*i.AccessKeyIDContainsFold))
-	}
-	if i.AccessKeySecret != nil {
-		predicates = append(predicates, filesource.AccessKeySecretEQ(*i.AccessKeySecret))
-	}
-	if i.AccessKeySecretNEQ != nil {
-		predicates = append(predicates, filesource.AccessKeySecretNEQ(*i.AccessKeySecretNEQ))
-	}
-	if len(i.AccessKeySecretIn) > 0 {
-		predicates = append(predicates, filesource.AccessKeySecretIn(i.AccessKeySecretIn...))
-	}
-	if len(i.AccessKeySecretNotIn) > 0 {
-		predicates = append(predicates, filesource.AccessKeySecretNotIn(i.AccessKeySecretNotIn...))
-	}
-	if i.AccessKeySecretGT != nil {
-		predicates = append(predicates, filesource.AccessKeySecretGT(*i.AccessKeySecretGT))
-	}
-	if i.AccessKeySecretGTE != nil {
-		predicates = append(predicates, filesource.AccessKeySecretGTE(*i.AccessKeySecretGTE))
-	}
-	if i.AccessKeySecretLT != nil {
-		predicates = append(predicates, filesource.AccessKeySecretLT(*i.AccessKeySecretLT))
-	}
-	if i.AccessKeySecretLTE != nil {
-		predicates = append(predicates, filesource.AccessKeySecretLTE(*i.AccessKeySecretLTE))
-	}
-	if i.AccessKeySecretContains != nil {
-		predicates = append(predicates, filesource.AccessKeySecretContains(*i.AccessKeySecretContains))
-	}
-	if i.AccessKeySecretHasPrefix != nil {
-		predicates = append(predicates, filesource.AccessKeySecretHasPrefix(*i.AccessKeySecretHasPrefix))
-	}
-	if i.AccessKeySecretHasSuffix != nil {
-		predicates = append(predicates, filesource.AccessKeySecretHasSuffix(*i.AccessKeySecretHasSuffix))
-	}
-	if i.AccessKeySecretEqualFold != nil {
-		predicates = append(predicates, filesource.AccessKeySecretEqualFold(*i.AccessKeySecretEqualFold))
-	}
-	if i.AccessKeySecretContainsFold != nil {
-		predicates = append(predicates, filesource.AccessKeySecretContainsFold(*i.AccessKeySecretContainsFold))
 	}
 	if i.Endpoint != nil {
 		predicates = append(predicates, filesource.EndpointEQ(*i.Endpoint))
@@ -6114,121 +6559,25 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	if i.BucketUrlContainsFold != nil {
 		predicates = append(predicates, filesource.BucketUrlContainsFold(*i.BucketUrlContainsFold))
 	}
-	if i.RoleArn != nil {
-		predicates = append(predicates, filesource.RoleArnEQ(*i.RoleArn))
-	}
-	if i.RoleArnNEQ != nil {
-		predicates = append(predicates, filesource.RoleArnNEQ(*i.RoleArnNEQ))
-	}
-	if len(i.RoleArnIn) > 0 {
-		predicates = append(predicates, filesource.RoleArnIn(i.RoleArnIn...))
-	}
-	if len(i.RoleArnNotIn) > 0 {
-		predicates = append(predicates, filesource.RoleArnNotIn(i.RoleArnNotIn...))
-	}
-	if i.RoleArnGT != nil {
-		predicates = append(predicates, filesource.RoleArnGT(*i.RoleArnGT))
-	}
-	if i.RoleArnGTE != nil {
-		predicates = append(predicates, filesource.RoleArnGTE(*i.RoleArnGTE))
-	}
-	if i.RoleArnLT != nil {
-		predicates = append(predicates, filesource.RoleArnLT(*i.RoleArnLT))
-	}
-	if i.RoleArnLTE != nil {
-		predicates = append(predicates, filesource.RoleArnLTE(*i.RoleArnLTE))
-	}
-	if i.RoleArnContains != nil {
-		predicates = append(predicates, filesource.RoleArnContains(*i.RoleArnContains))
-	}
-	if i.RoleArnHasPrefix != nil {
-		predicates = append(predicates, filesource.RoleArnHasPrefix(*i.RoleArnHasPrefix))
-	}
-	if i.RoleArnHasSuffix != nil {
-		predicates = append(predicates, filesource.RoleArnHasSuffix(*i.RoleArnHasSuffix))
-	}
-	if i.RoleArnEqualFold != nil {
-		predicates = append(predicates, filesource.RoleArnEqualFold(*i.RoleArnEqualFold))
-	}
-	if i.RoleArnContainsFold != nil {
-		predicates = append(predicates, filesource.RoleArnContainsFold(*i.RoleArnContainsFold))
-	}
-	if i.Policy != nil {
-		predicates = append(predicates, filesource.PolicyEQ(*i.Policy))
-	}
-	if i.PolicyNEQ != nil {
-		predicates = append(predicates, filesource.PolicyNEQ(*i.PolicyNEQ))
-	}
-	if len(i.PolicyIn) > 0 {
-		predicates = append(predicates, filesource.PolicyIn(i.PolicyIn...))
-	}
-	if len(i.PolicyNotIn) > 0 {
-		predicates = append(predicates, filesource.PolicyNotIn(i.PolicyNotIn...))
-	}
-	if i.PolicyGT != nil {
-		predicates = append(predicates, filesource.PolicyGT(*i.PolicyGT))
-	}
-	if i.PolicyGTE != nil {
-		predicates = append(predicates, filesource.PolicyGTE(*i.PolicyGTE))
-	}
-	if i.PolicyLT != nil {
-		predicates = append(predicates, filesource.PolicyLT(*i.PolicyLT))
-	}
-	if i.PolicyLTE != nil {
-		predicates = append(predicates, filesource.PolicyLTE(*i.PolicyLTE))
-	}
-	if i.PolicyContains != nil {
-		predicates = append(predicates, filesource.PolicyContains(*i.PolicyContains))
-	}
-	if i.PolicyHasPrefix != nil {
-		predicates = append(predicates, filesource.PolicyHasPrefix(*i.PolicyHasPrefix))
-	}
-	if i.PolicyHasSuffix != nil {
-		predicates = append(predicates, filesource.PolicyHasSuffix(*i.PolicyHasSuffix))
-	}
-	if i.PolicyIsNil {
-		predicates = append(predicates, filesource.PolicyIsNil())
-	}
-	if i.PolicyNotNil {
-		predicates = append(predicates, filesource.PolicyNotNil())
-	}
-	if i.PolicyEqualFold != nil {
-		predicates = append(predicates, filesource.PolicyEqualFold(*i.PolicyEqualFold))
-	}
-	if i.PolicyContainsFold != nil {
-		predicates = append(predicates, filesource.PolicyContainsFold(*i.PolicyContainsFold))
-	}
-	if i.DurationSeconds != nil {
-		predicates = append(predicates, filesource.DurationSecondsEQ(*i.DurationSeconds))
-	}
-	if i.DurationSecondsNEQ != nil {
-		predicates = append(predicates, filesource.DurationSecondsNEQ(*i.DurationSecondsNEQ))
-	}
-	if len(i.DurationSecondsIn) > 0 {
-		predicates = append(predicates, filesource.DurationSecondsIn(i.DurationSecondsIn...))
-	}
-	if len(i.DurationSecondsNotIn) > 0 {
-		predicates = append(predicates, filesource.DurationSecondsNotIn(i.DurationSecondsNotIn...))
-	}
-	if i.DurationSecondsGT != nil {
-		predicates = append(predicates, filesource.DurationSecondsGT(*i.DurationSecondsGT))
-	}
-	if i.DurationSecondsGTE != nil {
-		predicates = append(predicates, filesource.DurationSecondsGTE(*i.DurationSecondsGTE))
-	}
-	if i.DurationSecondsLT != nil {
-		predicates = append(predicates, filesource.DurationSecondsLT(*i.DurationSecondsLT))
-	}
-	if i.DurationSecondsLTE != nil {
-		predicates = append(predicates, filesource.DurationSecondsLTE(*i.DurationSecondsLTE))
-	}
-	if i.DurationSecondsIsNil {
-		predicates = append(predicates, filesource.DurationSecondsIsNil())
-	}
-	if i.DurationSecondsNotNil {
-		predicates = append(predicates, filesource.DurationSecondsNotNil())
-	}
 
+	if i.HasIdentities != nil {
+		p := filesource.HasIdentities()
+		if !*i.HasIdentities {
+			p = filesource.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasIdentitiesWith) > 0 {
+		with := make([]predicate.FileIdentity, 0, len(i.HasIdentitiesWith))
+		for _, w := range i.HasIdentitiesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasIdentitiesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, filesource.HasIdentitiesWith(with...))
+	}
 	if i.HasFiles != nil {
 		p := filesource.HasFiles()
 		if !*i.HasFiles {
