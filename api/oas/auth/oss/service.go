@@ -1,9 +1,12 @@
 package oss
 
 import (
+	"context"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/woocoos/knockout/ent/filesource"
+	"net/url"
 	"time"
 )
 
@@ -24,6 +27,8 @@ type FileSource struct {
 	AccessKeySecret string `json:"access_key_secret,omitempty"`
 	// 对外服务的访问域名
 	Endpoint string `json:"endpoint,omitempty"`
+	// endpoint是否不可变,如果是自定义域名则为true
+	EndpointImmutable bool `json:"endpointImmutable"`
 	// sts服务的访问域名
 	StsEndpoint string `json:"sts_endpoint,omitempty"`
 	// 地域，数据存储的物理位置
@@ -94,4 +99,25 @@ func (svc *Service) CleanProvider(fs *FileSource) {
 
 func getProviderKey(fs *FileSource) string {
 	return fmt.Sprintf("%d:%s:%s:%s", fs.TenantID, fs.Endpoint, fs.Bucket, fs.Kind)
+}
+
+type EndpointResolverV2 struct {
+	endpoint          string
+	EndpointImmutable bool
+}
+
+func (r *EndpointResolverV2) ResolveEndpoint(ctx context.Context, params s3.EndpointParameters) (
+	smithyendpoints.Endpoint, error,
+) {
+	if r.EndpointImmutable {
+		u, err := url.Parse(r.endpoint)
+		if err != nil {
+			return smithyendpoints.Endpoint{}, err
+		}
+		return smithyendpoints.Endpoint{
+			URI: *u,
+		}, nil
+	}
+	// delegate back to the default v2 resolver otherwise
+	return s3.NewDefaultEndpointResolverV2().ResolveEndpoint(ctx, params)
 }

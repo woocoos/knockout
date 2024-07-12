@@ -125,6 +125,20 @@ func (fsu *FileSourceUpdate) SetNillableEndpoint(s *string) *FileSourceUpdate {
 	return fsu
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (fsu *FileSourceUpdate) SetEndpointImmutable(b bool) *FileSourceUpdate {
+	fsu.mutation.SetEndpointImmutable(b)
+	return fsu
+}
+
+// SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableEndpointImmutable(b *bool) *FileSourceUpdate {
+	if b != nil {
+		fsu.SetEndpointImmutable(*b)
+	}
+	return fsu
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (fsu *FileSourceUpdate) SetStsEndpoint(s string) *FileSourceUpdate {
 	fsu.mutation.SetStsEndpoint(s)
@@ -178,12 +192,6 @@ func (fsu *FileSourceUpdate) SetNillableBucketUrl(s *string) *FileSourceUpdate {
 	if s != nil {
 		fsu.SetBucketUrl(*s)
 	}
-	return fsu
-}
-
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (fsu *FileSourceUpdate) ClearBucketUrl() *FileSourceUpdate {
-	fsu.mutation.ClearBucketUrl()
 	return fsu
 }
 
@@ -365,6 +373,9 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fsu.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 	}
+	if value, ok := fsu.mutation.EndpointImmutable(); ok {
+		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
+	}
 	if value, ok := fsu.mutation.StsEndpoint(); ok {
 		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
 	}
@@ -376,9 +387,6 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fsu.mutation.BucketUrl(); ok {
 		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
-	}
-	if fsu.mutation.BucketUrlCleared() {
-		_spec.ClearField(filesource.FieldBucketUrl, field.TypeString)
 	}
 	if fsu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -585,6 +593,20 @@ func (fsuo *FileSourceUpdateOne) SetNillableEndpoint(s *string) *FileSourceUpdat
 	return fsuo
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (fsuo *FileSourceUpdateOne) SetEndpointImmutable(b bool) *FileSourceUpdateOne {
+	fsuo.mutation.SetEndpointImmutable(b)
+	return fsuo
+}
+
+// SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableEndpointImmutable(b *bool) *FileSourceUpdateOne {
+	if b != nil {
+		fsuo.SetEndpointImmutable(*b)
+	}
+	return fsuo
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (fsuo *FileSourceUpdateOne) SetStsEndpoint(s string) *FileSourceUpdateOne {
 	fsuo.mutation.SetStsEndpoint(s)
@@ -638,12 +660,6 @@ func (fsuo *FileSourceUpdateOne) SetNillableBucketUrl(s *string) *FileSourceUpda
 	if s != nil {
 		fsuo.SetBucketUrl(*s)
 	}
-	return fsuo
-}
-
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (fsuo *FileSourceUpdateOne) ClearBucketUrl() *FileSourceUpdateOne {
-	fsuo.mutation.ClearBucketUrl()
 	return fsuo
 }
 
@@ -855,6 +871,9 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	if value, ok := fsuo.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 	}
+	if value, ok := fsuo.mutation.EndpointImmutable(); ok {
+		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
+	}
 	if value, ok := fsuo.mutation.StsEndpoint(); ok {
 		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
 	}
@@ -866,9 +885,6 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	}
 	if value, ok := fsuo.mutation.BucketUrl(); ok {
 		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
-	}
-	if fsuo.mutation.BucketUrlCleared() {
-		_spec.ClearField(filesource.FieldBucketUrl, field.TypeString)
 	}
 	if fsuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{

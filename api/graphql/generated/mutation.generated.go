@@ -6275,8 +6275,8 @@ func (ec *executionContext) fieldContext_Mutation_createFileSource(ctx context.C
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
-			case "stsEndpoint":
-				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
@@ -6360,8 +6360,8 @@ func (ec *executionContext) fieldContext_Mutation_updateFileSource(ctx context.C
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
-			case "stsEndpoint":
-				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
@@ -6496,16 +6496,8 @@ func (ec *executionContext) fieldContext_Mutation_createFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
-			case "accessKeyID":
-				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
-			case "roleArn":
-				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
-			case "policy":
-				return ec.fieldContext_FileIdentity_policy(ctx, field)
-			case "durationSeconds":
-				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":
@@ -6581,16 +6573,8 @@ func (ec *executionContext) fieldContext_Mutation_updateFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
-			case "accessKeyID":
-				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
-			case "roleArn":
-				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
-			case "policy":
-				return ec.fieldContext_FileIdentity_policy(ctx, field)
-			case "durationSeconds":
-				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":

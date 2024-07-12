@@ -2,7 +2,6 @@ package oss
 
 import (
 	"context"
-	"fmt"
 	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
 	sts20150401 "github.com/alibabacloud-go/sts-20150401/v2/client"
 	"github.com/alibabacloud-go/tea-utils/v2/service"
@@ -12,7 +11,6 @@ import (
 	awsCfg "github.com/aws/aws-sdk-go-v2/config"
 	awsCredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -61,7 +59,12 @@ func (svc *AliOSS) initAliSTS() error {
 }
 
 func (svc *AliOSS) initAliOSS() error {
-	client, err := oss.New(svc.fileSource.Endpoint, svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret)
+	useCname := false
+	// 判断是否自定义域名
+	if svc.fileSource.EndpointImmutable {
+		useCname = true
+	}
+	client, err := oss.New(svc.fileSource.Endpoint, svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret, oss.UseCname(useCname))
 	if err != nil {
 		return err
 	}
@@ -78,6 +81,10 @@ func (svc *AliOSS) initAwsClient() error {
 
 	s3Client := s3.NewFromConfig(cfg, func(options *s3.Options) {
 		options.Region = svc.fileSource.Region
+		options.EndpointResolverV2 = &EndpointResolverV2{
+			EndpointImmutable: svc.fileSource.EndpointImmutable,
+			endpoint:          svc.fileSource.Endpoint,
+		}
 		options.BaseEndpoint = aws.String(svc.fileSource.Endpoint)
 	})
 	svc.s3Client = s3Client
@@ -124,16 +131,6 @@ func (svc *AliOSS) GetPreSignedURL(bucket, path string, expires time.Duration) (
 		return "", err
 	}
 	return signedURL, nil
-}
-
-func ParseAliOSSUrl(ossUrl string) (bucketUrl, path string, err error) {
-	u, err := url.Parse(ossUrl)
-	if err != nil {
-		return
-	}
-	bucketUrl = fmt.Sprintf("%s://%s", u.Scheme, u.Host)
-	path = u.Path
-	return
 }
 
 func (svc *AliOSS) GetS3Client() *s3.Client {

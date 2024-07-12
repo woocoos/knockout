@@ -6072,6 +6072,10 @@ type FileSourceWhereInput struct {
 	EndpointEqualFold    *string  `json:"endpointEqualFold,omitempty"`
 	EndpointContainsFold *string  `json:"endpointContainsFold,omitempty"`
 
+	// "endpoint_immutable" field predicates.
+	EndpointImmutable    *bool `json:"endpointImmutable,omitempty"`
+	EndpointImmutableNEQ *bool `json:"endpointImmutableNEQ,omitempty"`
+
 	// "sts_endpoint" field predicates.
 	StsEndpoint             *string  `json:"stsEndpoint,omitempty"`
 	StsEndpointNEQ          *string  `json:"stsEndpointNEQ,omitempty"`
@@ -6129,8 +6133,6 @@ type FileSourceWhereInput struct {
 	BucketUrlContains     *string  `json:"bucketurlContains,omitempty"`
 	BucketUrlHasPrefix    *string  `json:"bucketurlHasPrefix,omitempty"`
 	BucketUrlHasSuffix    *string  `json:"bucketurlHasSuffix,omitempty"`
-	BucketUrlIsNil        bool     `json:"bucketurlIsNil,omitempty"`
-	BucketUrlNotNil       bool     `json:"bucketurlNotNil,omitempty"`
 	BucketUrlEqualFold    *string  `json:"bucketurlEqualFold,omitempty"`
 	BucketUrlContainsFold *string  `json:"bucketurlContainsFold,omitempty"`
 
@@ -6397,6 +6399,12 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	if i.EndpointContainsFold != nil {
 		predicates = append(predicates, filesource.EndpointContainsFold(*i.EndpointContainsFold))
 	}
+	if i.EndpointImmutable != nil {
+		predicates = append(predicates, filesource.EndpointImmutableEQ(*i.EndpointImmutable))
+	}
+	if i.EndpointImmutableNEQ != nil {
+		predicates = append(predicates, filesource.EndpointImmutableNEQ(*i.EndpointImmutableNEQ))
+	}
 	if i.StsEndpoint != nil {
 		predicates = append(predicates, filesource.StsEndpointEQ(*i.StsEndpoint))
 	}
@@ -6546,12 +6554,6 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	}
 	if i.BucketUrlHasSuffix != nil {
 		predicates = append(predicates, filesource.BucketUrlHasSuffix(*i.BucketUrlHasSuffix))
-	}
-	if i.BucketUrlIsNil {
-		predicates = append(predicates, filesource.BucketUrlIsNil())
-	}
-	if i.BucketUrlNotNil {
-		predicates = append(predicates, filesource.BucketUrlNotNil())
 	}
 	if i.BucketUrlEqualFold != nil {
 		predicates = append(predicates, filesource.BucketUrlEqualFold(*i.BucketUrlEqualFold))

@@ -85,6 +85,11 @@ func Endpoint(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldEndpoint, v))
 }
 
+// EndpointImmutable applies equality check predicate on the "endpoint_immutable" field. It's identical to EndpointImmutableEQ.
+func EndpointImmutable(v bool) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldEndpointImmutable, v))
+}
+
 // StsEndpoint applies equality check predicate on the "sts_endpoint" field. It's identical to StsEndpointEQ.
 func StsEndpoint(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldStsEndpoint, v))
@@ -445,6 +450,16 @@ func EndpointContainsFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldContainsFold(FieldEndpoint, v))
 }
 
+// EndpointImmutableEQ applies the EQ predicate on the "endpoint_immutable" field.
+func EndpointImmutableEQ(v bool) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldEndpointImmutable, v))
+}
+
+// EndpointImmutableNEQ applies the NEQ predicate on the "endpoint_immutable" field.
+func EndpointImmutableNEQ(v bool) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldEndpointImmutable, v))
+}
+
 // StsEndpointEQ applies the EQ predicate on the "sts_endpoint" field.
 func StsEndpointEQ(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldStsEndpoint, v))
@@ -693,16 +708,6 @@ func BucketUrlHasPrefix(v string) predicate.FileSource {
 // BucketUrlHasSuffix applies the HasSuffix predicate on the "bucketUrl" field.
 func BucketUrlHasSuffix(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldHasSuffix(FieldBucketUrl, v))
-}
-
-// BucketUrlIsNil applies the IsNil predicate on the "bucketUrl" field.
-func BucketUrlIsNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldIsNull(FieldBucketUrl))
-}
-
-// BucketUrlNotNil applies the NotNil predicate on the "bucketUrl" field.
-func BucketUrlNotNil() predicate.FileSource {
-	return predicate.FileSource(sql.FieldNotNull(FieldBucketUrl))
 }
 
 // BucketUrlEqualFold applies the EqualFold predicate on the "bucketUrl" field.

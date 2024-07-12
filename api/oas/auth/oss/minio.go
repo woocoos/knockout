@@ -8,7 +8,6 @@ import (
 	awsCredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -48,6 +47,10 @@ func (svc *Minio) initAwsClient() error {
 
 	s3Client := s3.NewFromConfig(cfg, func(options *s3.Options) {
 		options.Region = svc.fileSource.Region
+		options.EndpointResolverV2 = &EndpointResolverV2{
+			EndpointImmutable: svc.fileSource.EndpointImmutable,
+			endpoint:          svc.fileSource.Endpoint,
+		}
 		options.BaseEndpoint = aws.String(svc.fileSource.Endpoint)
 		options.UsePathStyle = true
 	})
@@ -92,24 +95,6 @@ func (svc *Minio) GetPreSignedURL(bucket, path string, expires time.Duration) (s
 		return "", fmt.Errorf("signUrl response is nil")
 	}
 	return resp.URL, nil
-}
-
-func ParseMinioUrl(ossUrl string) (bucketUrl, path string, err error) {
-	u, err := url.Parse(ossUrl)
-	if err != nil {
-		return
-	}
-	bucketPath := ""
-	if u.Path != "" {
-		trimPath := strings.TrimLeft(u.Path[1:], "/")
-		index := strings.Index(trimPath, "/")
-		if index != -1 {
-			bucketPath = "/" + trimPath[:index]
-			path = strings.TrimPrefix(u.Path, bucketPath)
-		}
-	}
-	bucketUrl = fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, bucketPath)
-	return
 }
 
 func (svc *Minio) GetS3Client() *s3.Client {

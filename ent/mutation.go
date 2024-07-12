@@ -13933,32 +13933,33 @@ func (m *FileIdentityMutation) ResetEdge(name string) error {
 // FileSourceMutation represents an operation that mutates the FileSource nodes in the graph.
 type FileSourceMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	created_by        *int
-	addcreated_by     *int
-	created_at        *time.Time
-	updated_by        *int
-	addupdated_by     *int
-	updated_at        *time.Time
-	kind              *filesource.Kind
-	comments          *string
-	endpoint          *string
-	sts_endpoint      *string
-	region            *string
-	bucket            *string
-	bucketUrl         *string
-	clearedFields     map[string]struct{}
-	identities        map[int]struct{}
-	removedidentities map[int]struct{}
-	clearedidentities bool
-	files             map[int]struct{}
-	removedfiles      map[int]struct{}
-	clearedfiles      bool
-	done              bool
-	oldValue          func(context.Context) (*FileSource, error)
-	predicates        []predicate.FileSource
+	op                 Op
+	typ                string
+	id                 *int
+	created_by         *int
+	addcreated_by      *int
+	created_at         *time.Time
+	updated_by         *int
+	addupdated_by      *int
+	updated_at         *time.Time
+	kind               *filesource.Kind
+	comments           *string
+	endpoint           *string
+	endpoint_immutable *bool
+	sts_endpoint       *string
+	region             *string
+	bucket             *string
+	bucketUrl          *string
+	clearedFields      map[string]struct{}
+	identities         map[int]struct{}
+	removedidentities  map[int]struct{}
+	clearedidentities  bool
+	files              map[int]struct{}
+	removedfiles       map[int]struct{}
+	clearedfiles       bool
+	done               bool
+	oldValue           func(context.Context) (*FileSource, error)
+	predicates         []predicate.FileSource
 }
 
 var _ ent.Mutation = (*FileSourceMutation)(nil)
@@ -14397,6 +14398,42 @@ func (m *FileSourceMutation) ResetEndpoint() {
 	m.endpoint = nil
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (m *FileSourceMutation) SetEndpointImmutable(b bool) {
+	m.endpoint_immutable = &b
+}
+
+// EndpointImmutable returns the value of the "endpoint_immutable" field in the mutation.
+func (m *FileSourceMutation) EndpointImmutable() (r bool, exists bool) {
+	v := m.endpoint_immutable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndpointImmutable returns the old "endpoint_immutable" field's value of the FileSource entity.
+// If the FileSource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FileSourceMutation) OldEndpointImmutable(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEndpointImmutable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEndpointImmutable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndpointImmutable: %w", err)
+	}
+	return oldValue.EndpointImmutable, nil
+}
+
+// ResetEndpointImmutable resets all changes to the "endpoint_immutable" field.
+func (m *FileSourceMutation) ResetEndpointImmutable() {
+	m.endpoint_immutable = nil
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (m *FileSourceMutation) SetStsEndpoint(s string) {
 	m.sts_endpoint = &s
@@ -14536,22 +14573,9 @@ func (m *FileSourceMutation) OldBucketUrl(ctx context.Context) (v string, err er
 	return oldValue.BucketUrl, nil
 }
 
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (m *FileSourceMutation) ClearBucketUrl() {
-	m.bucketUrl = nil
-	m.clearedFields[filesource.FieldBucketUrl] = struct{}{}
-}
-
-// BucketUrlCleared returns if the "bucketUrl" field was cleared in this mutation.
-func (m *FileSourceMutation) BucketUrlCleared() bool {
-	_, ok := m.clearedFields[filesource.FieldBucketUrl]
-	return ok
-}
-
 // ResetBucketUrl resets all changes to the "bucketUrl" field.
 func (m *FileSourceMutation) ResetBucketUrl() {
 	m.bucketUrl = nil
-	delete(m.clearedFields, filesource.FieldBucketUrl)
 }
 
 // AddIdentityIDs adds the "identities" edge to the FileIdentity entity by ids.
@@ -14696,7 +14720,7 @@ func (m *FileSourceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FileSourceMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_by != nil {
 		fields = append(fields, filesource.FieldCreatedBy)
 	}
@@ -14717,6 +14741,9 @@ func (m *FileSourceMutation) Fields() []string {
 	}
 	if m.endpoint != nil {
 		fields = append(fields, filesource.FieldEndpoint)
+	}
+	if m.endpoint_immutable != nil {
+		fields = append(fields, filesource.FieldEndpointImmutable)
 	}
 	if m.sts_endpoint != nil {
 		fields = append(fields, filesource.FieldStsEndpoint)
@@ -14752,6 +14779,8 @@ func (m *FileSourceMutation) Field(name string) (ent.Value, bool) {
 		return m.Comments()
 	case filesource.FieldEndpoint:
 		return m.Endpoint()
+	case filesource.FieldEndpointImmutable:
+		return m.EndpointImmutable()
 	case filesource.FieldStsEndpoint:
 		return m.StsEndpoint()
 	case filesource.FieldRegion:
@@ -14783,6 +14812,8 @@ func (m *FileSourceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldComments(ctx)
 	case filesource.FieldEndpoint:
 		return m.OldEndpoint(ctx)
+	case filesource.FieldEndpointImmutable:
+		return m.OldEndpointImmutable(ctx)
 	case filesource.FieldStsEndpoint:
 		return m.OldStsEndpoint(ctx)
 	case filesource.FieldRegion:
@@ -14848,6 +14879,13 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEndpoint(v)
+		return nil
+	case filesource.FieldEndpointImmutable:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndpointImmutable(v)
 		return nil
 	case filesource.FieldStsEndpoint:
 		v, ok := value.(string)
@@ -14943,9 +14981,6 @@ func (m *FileSourceMutation) ClearedFields() []string {
 	if m.FieldCleared(filesource.FieldComments) {
 		fields = append(fields, filesource.FieldComments)
 	}
-	if m.FieldCleared(filesource.FieldBucketUrl) {
-		fields = append(fields, filesource.FieldBucketUrl)
-	}
 	return fields
 }
 
@@ -14968,9 +15003,6 @@ func (m *FileSourceMutation) ClearField(name string) error {
 		return nil
 	case filesource.FieldComments:
 		m.ClearComments()
-		return nil
-	case filesource.FieldBucketUrl:
-		m.ClearBucketUrl()
 		return nil
 	}
 	return fmt.Errorf("unknown FileSource nullable field %s", name)
@@ -15000,6 +15032,9 @@ func (m *FileSourceMutation) ResetField(name string) error {
 		return nil
 	case filesource.FieldEndpoint:
 		m.ResetEndpoint()
+		return nil
+	case filesource.FieldEndpointImmutable:
+		m.ResetEndpointImmutable()
 		return nil
 	case filesource.FieldStsEndpoint:
 		m.ResetStsEndpoint()

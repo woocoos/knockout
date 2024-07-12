@@ -1967,30 +1967,10 @@ func (fi *FileIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, fileidentity.FieldTenantID)
 				fieldSeen[fileidentity.FieldTenantID] = struct{}{}
 			}
-		case "accessKeyID":
-			if _, ok := fieldSeen[fileidentity.FieldAccessKeyID]; !ok {
-				selectedFields = append(selectedFields, fileidentity.FieldAccessKeyID)
-				fieldSeen[fileidentity.FieldAccessKeyID] = struct{}{}
-			}
 		case "fileSourceID":
 			if _, ok := fieldSeen[fileidentity.FieldFileSourceID]; !ok {
 				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)
 				fieldSeen[fileidentity.FieldFileSourceID] = struct{}{}
-			}
-		case "roleArn":
-			if _, ok := fieldSeen[fileidentity.FieldRoleArn]; !ok {
-				selectedFields = append(selectedFields, fileidentity.FieldRoleArn)
-				fieldSeen[fileidentity.FieldRoleArn] = struct{}{}
-			}
-		case "policy":
-			if _, ok := fieldSeen[fileidentity.FieldPolicy]; !ok {
-				selectedFields = append(selectedFields, fileidentity.FieldPolicy)
-				fieldSeen[fileidentity.FieldPolicy] = struct{}{}
-			}
-		case "durationSeconds":
-			if _, ok := fieldSeen[fileidentity.FieldDurationSeconds]; !ok {
-				selectedFields = append(selectedFields, fileidentity.FieldDurationSeconds)
-				fieldSeen[fileidentity.FieldDurationSeconds] = struct{}{}
 			}
 		case "isDefault":
 			if _, ok := fieldSeen[fileidentity.FieldIsDefault]; !ok {
@@ -2289,10 +2269,10 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldEndpoint)
 				fieldSeen[filesource.FieldEndpoint] = struct{}{}
 			}
-		case "stsEndpoint":
-			if _, ok := fieldSeen[filesource.FieldStsEndpoint]; !ok {
-				selectedFields = append(selectedFields, filesource.FieldStsEndpoint)
-				fieldSeen[filesource.FieldStsEndpoint] = struct{}{}
+		case "endpointImmutable":
+			if _, ok := fieldSeen[filesource.FieldEndpointImmutable]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldEndpointImmutable)
+				fieldSeen[filesource.FieldEndpointImmutable] = struct{}{}
 			}
 		case "region":
 			if _, ok := fieldSeen[filesource.FieldRegion]; !ok {

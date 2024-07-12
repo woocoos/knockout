@@ -41,6 +41,7 @@ import (
 	"github.com/woocoos/knockout/service/resource"
 	"image/png"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -1017,44 +1018,41 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	if err != nil {
 		return nil, "", err
 	}
-	minioBucketUrl, minioPath, err := oss.ParseMinioUrl(req.URL)
-	if err != nil {
-		return nil, "", err
+	var fis []*ent.FileIdentity
+	// 取出组织对应的fileidentities
+	if req.Bucket != "" && req.Endpoint != "" {
+		fis, err = s.db.FileIdentity.Query().Where(
+			fileidentity.TenantID(tid),
+			fileidentity.HasSourceWith(
+				filesource.Bucket(req.Bucket),
+				filesource.Endpoint(req.Endpoint),
+			),
+		).WithSource().All(ctx)
+	} else {
+		fis, err = s.db.FileIdentity.Query().Where(fileidentity.TenantID(tid), fileidentity.IsDefault(true)).WithSource().All(ctx)
 	}
-	aliOSSBucketUrl, aliOSSPath, err := oss.ParseAliOSSUrl(req.URL)
 	if err != nil {
 		return nil, "", err
 	}
 	var fi *ent.FileIdentity
-	if req.Bucket != "" && req.Endpoint != "" {
-		fi, err = s.db.FileIdentity.Query().Where(
-			fileidentity.TenantID(tid),
-			fileidentity.HasSourceWith(
-				filesource.Or(filesource.BucketUrl(minioBucketUrl), filesource.BucketUrl(aliOSSBucketUrl)),
-				filesource.Bucket(req.Bucket),
-				filesource.Endpoint(req.Endpoint),
-			),
-		).WithSource().Only(ctx)
-	} else {
-		fi, err = s.db.FileIdentity.Query().Where(
-			fileidentity.TenantID(tid),
-			fileidentity.IsDefault(true),
-			fileidentity.HasSourceWith(
-				filesource.Or(filesource.BucketUrl(minioBucketUrl), filesource.BucketUrl(aliOSSBucketUrl)),
-			),
-		).WithSource().Only(ctx)
+	// 根据bucketUrl获取对应的fileIdentity
+	for _, f := range fis {
+		if strings.HasPrefix(req.URL, f.Edges.Source.BucketUrl) {
+			fi = f
+			break
+		}
 	}
 	if fi == nil {
 		return nil, "", fmt.Errorf("the fileidentity is null")
 	}
-	if err != nil {
-		return nil, "", err
-	}
+
+	// 解析url的path
 	path := ""
+	u, err := url.Parse(req.URL)
 	if fi.Edges.Source.Kind == filesource.KindMinio {
-		path = minioPath
+		path = strings.TrimLeft(u.Path, "/"+fi.Edges.Source.Bucket)
 	} else if fi.Edges.Source.Kind == filesource.KindAliOSS {
-		path = aliOSSPath
+		path = u.Path
 	} else {
 		return nil, "", fmt.Errorf("error path")
 	}
@@ -1063,17 +1061,18 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 
 func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *oss.FileSource {
 	return &oss.FileSource{
-		TenantID:        fi.TenantID,
-		Kind:            fi.Edges.Source.Kind,
-		Bucket:          fi.Edges.Source.Bucket,
-		BucketUrl:       fi.Edges.Source.BucketUrl,
-		Endpoint:        fi.Edges.Source.Endpoint,
-		StsEndpoint:     fi.Edges.Source.StsEndpoint,
-		AccessKeyID:     fi.AccessKeyID,
-		AccessKeySecret: fi.AccessKeySecret,
-		Policy:          fi.Policy,
-		Region:          fi.Edges.Source.Region,
-		RoleArn:         fi.RoleArn,
-		DurationSeconds: fi.DurationSeconds,
+		TenantID:          fi.TenantID,
+		Kind:              fi.Edges.Source.Kind,
+		Bucket:            fi.Edges.Source.Bucket,
+		BucketUrl:         fi.Edges.Source.BucketUrl,
+		Endpoint:          fi.Edges.Source.Endpoint,
+		EndpointImmutable: fi.Edges.Source.EndpointImmutable,
+		StsEndpoint:       fi.Edges.Source.StsEndpoint,
+		AccessKeyID:       fi.AccessKeyID,
+		AccessKeySecret:   fi.AccessKeySecret,
+		Policy:            fi.Policy,
+		Region:            fi.Edges.Source.Region,
+		RoleArn:           fi.RoleArn,
+		DurationSeconds:   fi.DurationSeconds,
 	}
 }

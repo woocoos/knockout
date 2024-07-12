@@ -2424,6 +2424,10 @@ input CreateFileSourceInput {
   """
   endpoint: String!
   """
+  是否禁止修改endpoint，如果是自定义域名设为true
+  """
+  endpointImmutable: Boolean
+  """
   sts服务的访问域名
   """
   stsEndpoint: String!
@@ -2438,7 +2442,7 @@ input CreateFileSourceInput {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String
+  bucketurl: String!
   identityIDs: [ID!]
   fileIDs: [ID!]
 }
@@ -2783,25 +2787,9 @@ type FileIdentity implements Node {
   """
   tenantID: ID!
   """
-  accesskey id
-  """
-  accessKeyID: String!
-  """
   文件来源ID
   """
   fileSourceID: ID!
-  """
-  角色的资源名称(ARN)，用于STS
-  """
-  roleArn: String!
-  """
-  指定返回的STS令牌的权限的策略
-  """
-  policy: String
-  """
-  STS令牌的有效期，默认3600s
-  """
-  durationSeconds: Int
   """
   租户默认的凭证
   """
@@ -3074,9 +3062,9 @@ type FileSource implements Node {
   """
   endpoint: String!
   """
-  sts服务的访问域名
+  是否禁止修改endpoint，如果是自定义域名设为true
   """
-  stsEndpoint: String!
+  endpointImmutable: Boolean!
   """
   地域，数据存储的物理位置
   """
@@ -3088,7 +3076,7 @@ type FileSource implements Node {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String @goField(name: "BucketUrl", forceResolver: false)
+  bucketurl: String! @goField(name: "BucketUrl", forceResolver: false)
   identities(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -3300,6 +3288,11 @@ input FileSourceWhereInput {
   endpointEqualFold: String
   endpointContainsFold: String
   """
+  endpoint_immutable field predicates
+  """
+  endpointImmutable: Boolean
+  endpointImmutableNEQ: Boolean
+  """
   sts_endpoint field predicates
   """
   stsEndpoint: String
@@ -3361,8 +3354,6 @@ input FileSourceWhereInput {
   bucketurlContains: String
   bucketurlHasPrefix: String
   bucketurlHasSuffix: String
-  bucketurlIsNil: Boolean
-  bucketurlNotNil: Boolean
   bucketurlEqualFold: String
   bucketurlContainsFold: String
   """
@@ -5795,6 +5786,10 @@ input UpdateFileSourceInput {
   """
   endpoint: String
   """
+  是否禁止修改endpoint，如果是自定义域名设为true
+  """
+  endpointImmutable: Boolean
+  """
   sts服务的访问域名
   """
   stsEndpoint: String
@@ -5810,7 +5805,6 @@ input UpdateFileSourceInput {
   文件存储空间地址，用于匹配url
   """
   bucketurl: String
-  clearBucketUrl: Boolean
   addIdentityIDs: [ID!]
   removeIdentityIDs: [ID!]
   clearIdentities: Boolean

@@ -394,20 +394,24 @@ func init() {
 	filesourceDescEndpoint := filesourceFields[2].Descriptor()
 	// filesource.EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
 	filesource.EndpointValidator = filesourceDescEndpoint.Validators[0].(func(string) error)
+	// filesourceDescEndpointImmutable is the schema descriptor for endpoint_immutable field.
+	filesourceDescEndpointImmutable := filesourceFields[3].Descriptor()
+	// filesource.DefaultEndpointImmutable holds the default value on creation for the endpoint_immutable field.
+	filesource.DefaultEndpointImmutable = filesourceDescEndpointImmutable.Default.(bool)
 	// filesourceDescStsEndpoint is the schema descriptor for sts_endpoint field.
-	filesourceDescStsEndpoint := filesourceFields[3].Descriptor()
+	filesourceDescStsEndpoint := filesourceFields[4].Descriptor()
 	// filesource.StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
 	filesource.StsEndpointValidator = filesourceDescStsEndpoint.Validators[0].(func(string) error)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[4].Descriptor()
+	filesourceDescRegion := filesourceFields[5].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[5].Descriptor()
+	filesourceDescBucket := filesourceFields[6].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
 	// filesourceDescBucketUrl is the schema descriptor for bucketUrl field.
-	filesourceDescBucketUrl := filesourceFields[6].Descriptor()
+	filesourceDescBucketUrl := filesourceFields[7].Descriptor()
 	// filesource.BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
 	filesource.BucketUrlValidator = filesourceDescBucketUrl.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()

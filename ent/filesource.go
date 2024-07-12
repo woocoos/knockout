@@ -31,6 +31,8 @@ type FileSource struct {
 	Comments string `json:"comments,omitempty"`
 	// 对外服务的访问域名
 	Endpoint string `json:"endpoint,omitempty"`
+	// 是否禁止修改endpoint，如果是自定义域名设为true
+	EndpointImmutable bool `json:"endpoint_immutable,omitempty"`
 	// sts服务的访问域名
 	StsEndpoint string `json:"sts_endpoint,omitempty"`
 	// 地域，数据存储的物理位置
@@ -84,6 +86,8 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case filesource.FieldEndpointImmutable:
+			values[i] = new(sql.NullBool)
 		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy:
 			values[i] = new(sql.NullInt64)
 		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketUrl:
@@ -152,6 +156,12 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field endpoint", values[i])
 			} else if value.Valid {
 				fs.Endpoint = value.String
+			}
+		case filesource.FieldEndpointImmutable:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field endpoint_immutable", values[i])
+			} else if value.Valid {
+				fs.EndpointImmutable = value.Bool
 			}
 		case filesource.FieldStsEndpoint:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -243,6 +253,9 @@ func (fs *FileSource) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("endpoint=")
 	builder.WriteString(fs.Endpoint)
+	builder.WriteString(", ")
+	builder.WriteString("endpoint_immutable=")
+	builder.WriteString(fmt.Sprintf("%v", fs.EndpointImmutable))
 	builder.WriteString(", ")
 	builder.WriteString("sts_endpoint=")
 	builder.WriteString(fs.StsEndpoint)

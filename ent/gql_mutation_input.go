@@ -941,15 +941,16 @@ func (c *FileIdentityUpdateOne) SetInput(i UpdateFileIdentityInput) *FileIdentit
 
 // CreateFileSourceInput represents a mutation input for creating filesources.
 type CreateFileSourceInput struct {
-	Kind        filesource.Kind
-	Comments    *string
-	Endpoint    string
-	StsEndpoint string
-	Region      string
-	Bucket      string
-	BucketUrl   *string
-	IdentityIDs []int
-	FileIDs     []int
+	Kind              filesource.Kind
+	Comments          *string
+	Endpoint          string
+	EndpointImmutable *bool
+	StsEndpoint       string
+	Region            string
+	Bucket            string
+	BucketUrl         string
+	IdentityIDs       []int
+	FileIDs           []int
 }
 
 // Mutate applies the CreateFileSourceInput on the FileSourceMutation builder.
@@ -959,12 +960,13 @@ func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
 		m.SetComments(*v)
 	}
 	m.SetEndpoint(i.Endpoint)
+	if v := i.EndpointImmutable; v != nil {
+		m.SetEndpointImmutable(*v)
+	}
 	m.SetStsEndpoint(i.StsEndpoint)
 	m.SetRegion(i.Region)
 	m.SetBucket(i.Bucket)
-	if v := i.BucketUrl; v != nil {
-		m.SetBucketUrl(*v)
-	}
+	m.SetBucketUrl(i.BucketUrl)
 	if v := i.IdentityIDs; len(v) > 0 {
 		m.AddIdentityIDs(v...)
 	}
@@ -985,10 +987,10 @@ type UpdateFileSourceInput struct {
 	ClearComments     bool
 	Comments          *string
 	Endpoint          *string
+	EndpointImmutable *bool
 	StsEndpoint       *string
 	Region            *string
 	Bucket            *string
-	ClearBucketUrl    bool
 	BucketUrl         *string
 	ClearIdentities   bool
 	AddIdentityIDs    []int
@@ -1012,6 +1014,9 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.Endpoint; v != nil {
 		m.SetEndpoint(*v)
 	}
+	if v := i.EndpointImmutable; v != nil {
+		m.SetEndpointImmutable(*v)
+	}
 	if v := i.StsEndpoint; v != nil {
 		m.SetStsEndpoint(*v)
 	}
@@ -1020,9 +1025,6 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	}
 	if v := i.Bucket; v != nil {
 		m.SetBucket(*v)
-	}
-	if i.ClearBucketUrl {
-		m.ClearBucketUrl()
 	}
 	if v := i.BucketUrl; v != nil {
 		m.SetBucketUrl(*v)

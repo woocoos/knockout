@@ -32,6 +32,8 @@ const (
 	FieldComments = "comments"
 	// FieldEndpoint holds the string denoting the endpoint field in the database.
 	FieldEndpoint = "endpoint"
+	// FieldEndpointImmutable holds the string denoting the endpoint_immutable field in the database.
+	FieldEndpointImmutable = "endpoint_immutable"
 	// FieldStsEndpoint holds the string denoting the sts_endpoint field in the database.
 	FieldStsEndpoint = "sts_endpoint"
 	// FieldRegion holds the string denoting the region field in the database.
@@ -72,6 +74,7 @@ var Columns = []string{
 	FieldKind,
 	FieldComments,
 	FieldEndpoint,
+	FieldEndpointImmutable,
 	FieldStsEndpoint,
 	FieldRegion,
 	FieldBucket,
@@ -99,6 +102,8 @@ var (
 	DefaultCreatedAt func() time.Time
 	// EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
 	EndpointValidator func(string) error
+	// DefaultEndpointImmutable holds the default value on creation for the "endpoint_immutable" field.
+	DefaultEndpointImmutable bool
 	// StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
 	StsEndpointValidator func(string) error
 	// RegionValidator is a validator for the "region" field. It is called by the builders before save.
@@ -174,6 +179,11 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 // ByEndpoint orders the results by the endpoint field.
 func ByEndpoint(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndpoint, opts...).ToFunc()
+}
+
+// ByEndpointImmutable orders the results by the endpoint_immutable field.
+func ByEndpointImmutable(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEndpointImmutable, opts...).ToFunc()
 }
 
 // ByStsEndpoint orders the results by the sts_endpoint field.

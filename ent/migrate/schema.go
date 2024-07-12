@@ -382,10 +382,11 @@ var (
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "minio", "aliOSS"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "endpoint", Type: field.TypeString, Size: 255},
+		{Name: "endpoint_immutable", Type: field.TypeBool, Default: false},
 		{Name: "sts_endpoint", Type: field.TypeString, Size: 255},
 		{Name: "region", Type: field.TypeString, Size: 100},
 		{Name: "bucket", Type: field.TypeString, Size: 255},
-		{Name: "bucket_url", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "bucket_url", Type: field.TypeString, Size: 255},
 	}
 	// FileSourceTable holds the schema information for the "file_source" table.
 	FileSourceTable = &schema.Table{
@@ -396,7 +397,7 @@ var (
 			{
 				Name:    "filesource_kind_endpoint_region_bucket",
 				Unique:  true,
-				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[9], FileSourceColumns[10]},
+				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[10], FileSourceColumns[11]},
 			},
 		},
 	}

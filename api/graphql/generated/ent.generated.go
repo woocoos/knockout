@@ -9712,8 +9712,8 @@ func (ec *executionContext) fieldContext_File_source(_ context.Context, field gr
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
-			case "stsEndpoint":
-				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
@@ -10247,50 +10247,6 @@ func (ec *executionContext) fieldContext_FileIdentity_tenantID(_ context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _FileIdentity_accessKeyID(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AccessKeyID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FileIdentity_accessKeyID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FileIdentity",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _FileIdentity_fileSourceID(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
 	if err != nil {
@@ -10330,132 +10286,6 @@ func (ec *executionContext) fieldContext_FileIdentity_fileSourceID(_ context.Con
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FileIdentity_roleArn(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileIdentity_roleArn(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RoleArn, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FileIdentity_roleArn(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FileIdentity",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FileIdentity_policy(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileIdentity_policy(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Policy, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FileIdentity_policy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FileIdentity",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FileIdentity_durationSeconds(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DurationSeconds, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FileIdentity_durationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FileIdentity",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10601,8 +10431,8 @@ func (ec *executionContext) fieldContext_FileIdentity_source(_ context.Context, 
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
-			case "stsEndpoint":
-				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
@@ -10813,16 +10643,8 @@ func (ec *executionContext) fieldContext_FileIdentityEdge_node(_ context.Context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
-			case "accessKeyID":
-				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
-			case "roleArn":
-				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
-			case "policy":
-				return ec.fieldContext_FileIdentity_policy(ctx, field)
-			case "durationSeconds":
-				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":
@@ -11223,8 +11045,8 @@ func (ec *executionContext) fieldContext_FileSource_endpoint(_ context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _FileSource_stsEndpoint(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+func (ec *executionContext) _FileSource_endpointImmutable(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11237,7 +11059,7 @@ func (ec *executionContext) _FileSource_stsEndpoint(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.StsEndpoint, nil
+		return obj.EndpointImmutable, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11249,19 +11071,19 @@ func (ec *executionContext) _FileSource_stsEndpoint(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_FileSource_stsEndpoint(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_FileSource_endpointImmutable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "FileSource",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11376,11 +11198,14 @@ func (ec *executionContext) _FileSource_bucketurl(ctx context.Context, field gra
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FileSource_bucketurl(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11719,8 +11544,8 @@ func (ec *executionContext) fieldContext_FileSourceEdge_node(_ context.Context, 
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
-			case "stsEndpoint":
-				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
@@ -20027,16 +19852,8 @@ func (ec *executionContext) fieldContext_Query_fileIdentities(_ context.Context,
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
-			case "accessKeyID":
-				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
-			case "roleArn":
-				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
-			case "policy":
-				return ec.fieldContext_FileIdentity_policy(ctx, field)
-			case "durationSeconds":
-				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":
@@ -31353,7 +31170,7 @@ func (ec *executionContext) unmarshalInputCreateFileSourceInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"kind", "comments", "endpoint", "stsEndpoint", "region", "bucket", "bucketurl", "identityIDs", "fileIDs"}
+	fieldsInOrder := [...]string{"kind", "comments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketurl", "identityIDs", "fileIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31381,6 +31198,13 @@ func (ec *executionContext) unmarshalInputCreateFileSourceInput(ctx context.Cont
 				return it, err
 			}
 			it.Endpoint = data
+		case "endpointImmutable":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endpointImmutable"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndpointImmutable = data
 		case "stsEndpoint":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stsEndpoint"))
 			data, err := ec.unmarshalNString2string(ctx, v)
@@ -31404,7 +31228,7 @@ func (ec *executionContext) unmarshalInputCreateFileSourceInput(ctx context.Cont
 			it.Bucket = data
 		case "bucketurl":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurl"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -33166,7 +32990,7 @@ func (ec *executionContext) unmarshalInputFileSourceWhereInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "endpoint", "endpointNEQ", "endpointIn", "endpointNotIn", "endpointGT", "endpointGTE", "endpointLT", "endpointLTE", "endpointContains", "endpointHasPrefix", "endpointHasSuffix", "endpointEqualFold", "endpointContainsFold", "stsEndpoint", "stsEndpointNEQ", "stsEndpointIn", "stsEndpointNotIn", "stsEndpointGT", "stsEndpointGTE", "stsEndpointLT", "stsEndpointLTE", "stsEndpointContains", "stsEndpointHasPrefix", "stsEndpointHasSuffix", "stsEndpointEqualFold", "stsEndpointContainsFold", "region", "regionNEQ", "regionIn", "regionNotIn", "regionGT", "regionGTE", "regionLT", "regionLTE", "regionContains", "regionHasPrefix", "regionHasSuffix", "regionEqualFold", "regionContainsFold", "bucket", "bucketNEQ", "bucketIn", "bucketNotIn", "bucketGT", "bucketGTE", "bucketLT", "bucketLTE", "bucketContains", "bucketHasPrefix", "bucketHasSuffix", "bucketEqualFold", "bucketContainsFold", "bucketurl", "bucketurlNEQ", "bucketurlIn", "bucketurlNotIn", "bucketurlGT", "bucketurlGTE", "bucketurlLT", "bucketurlLTE", "bucketurlContains", "bucketurlHasPrefix", "bucketurlHasSuffix", "bucketurlIsNil", "bucketurlNotNil", "bucketurlEqualFold", "bucketurlContainsFold", "hasIdentities", "hasIdentitiesWith", "hasFiles", "hasFilesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "endpoint", "endpointNEQ", "endpointIn", "endpointNotIn", "endpointGT", "endpointGTE", "endpointLT", "endpointLTE", "endpointContains", "endpointHasPrefix", "endpointHasSuffix", "endpointEqualFold", "endpointContainsFold", "endpointImmutable", "endpointImmutableNEQ", "stsEndpoint", "stsEndpointNEQ", "stsEndpointIn", "stsEndpointNotIn", "stsEndpointGT", "stsEndpointGTE", "stsEndpointLT", "stsEndpointLTE", "stsEndpointContains", "stsEndpointHasPrefix", "stsEndpointHasSuffix", "stsEndpointEqualFold", "stsEndpointContainsFold", "region", "regionNEQ", "regionIn", "regionNotIn", "regionGT", "regionGTE", "regionLT", "regionLTE", "regionContains", "regionHasPrefix", "regionHasSuffix", "regionEqualFold", "regionContainsFold", "bucket", "bucketNEQ", "bucketIn", "bucketNotIn", "bucketGT", "bucketGTE", "bucketLT", "bucketLTE", "bucketContains", "bucketHasPrefix", "bucketHasSuffix", "bucketEqualFold", "bucketContainsFold", "bucketurl", "bucketurlNEQ", "bucketurlIn", "bucketurlNotIn", "bucketurlGT", "bucketurlGTE", "bucketurlLT", "bucketurlLTE", "bucketurlContains", "bucketurlHasPrefix", "bucketurlHasSuffix", "bucketurlEqualFold", "bucketurlContainsFold", "hasIdentities", "hasIdentitiesWith", "hasFiles", "hasFilesWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -33621,6 +33445,20 @@ func (ec *executionContext) unmarshalInputFileSourceWhereInput(ctx context.Conte
 				return it, err
 			}
 			it.EndpointContainsFold = data
+		case "endpointImmutable":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endpointImmutable"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndpointImmutable = data
+		case "endpointImmutableNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endpointImmutableNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndpointImmutableNEQ = data
 		case "stsEndpoint":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stsEndpoint"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -33971,20 +33809,6 @@ func (ec *executionContext) unmarshalInputFileSourceWhereInput(ctx context.Conte
 				return it, err
 			}
 			it.BucketUrlHasSuffix = data
-		case "bucketurlIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BucketUrlIsNil = data
-		case "bucketurlNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BucketUrlNotNil = data
 		case "bucketurlEqualFold":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlEqualFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -41088,7 +40912,7 @@ func (ec *executionContext) unmarshalInputUpdateFileSourceInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"kind", "comments", "clearComments", "endpoint", "stsEndpoint", "region", "bucket", "bucketurl", "clearBucketUrl", "addIdentityIDs", "removeIdentityIDs", "clearIdentities", "addFileIDs", "removeFileIDs", "clearFiles"}
+	fieldsInOrder := [...]string{"kind", "comments", "clearComments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketurl", "addIdentityIDs", "removeIdentityIDs", "clearIdentities", "addFileIDs", "removeFileIDs", "clearFiles"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -41123,6 +40947,13 @@ func (ec *executionContext) unmarshalInputUpdateFileSourceInput(ctx context.Cont
 				return it, err
 			}
 			it.Endpoint = data
+		case "endpointImmutable":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endpointImmutable"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndpointImmutable = data
 		case "stsEndpoint":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stsEndpoint"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -41151,13 +40982,6 @@ func (ec *executionContext) unmarshalInputUpdateFileSourceInput(ctx context.Cont
 				return it, err
 			}
 			it.BucketUrl = data
-		case "clearBucketUrl":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearBucketUrl"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClearBucketUrl = data
 		case "addIdentityIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addIdentityIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
@@ -48357,25 +48181,11 @@ func (ec *executionContext) _FileIdentity(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "accessKeyID":
-			out.Values[i] = ec._FileIdentity_accessKeyID(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
 		case "fileSourceID":
 			out.Values[i] = ec._FileIdentity_fileSourceID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "roleArn":
-			out.Values[i] = ec._FileIdentity_roleArn(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "policy":
-			out.Values[i] = ec._FileIdentity_policy(ctx, field, obj)
-		case "durationSeconds":
-			out.Values[i] = ec._FileIdentity_durationSeconds(ctx, field, obj)
 		case "isDefault":
 			out.Values[i] = ec._FileIdentity_isDefault(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -48571,8 +48381,8 @@ func (ec *executionContext) _FileSource(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "stsEndpoint":
-			out.Values[i] = ec._FileSource_stsEndpoint(ctx, field, obj)
+		case "endpointImmutable":
+			out.Values[i] = ec._FileSource_endpointImmutable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -48588,6 +48398,9 @@ func (ec *executionContext) _FileSource(ctx context.Context, sel ast.SelectionSe
 			}
 		case "bucketurl":
 			out.Values[i] = ec._FileSource_bucketurl(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "identities":
 			field := field
 

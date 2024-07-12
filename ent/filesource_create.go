@@ -98,6 +98,20 @@ func (fsc *FileSourceCreate) SetEndpoint(s string) *FileSourceCreate {
 	return fsc
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (fsc *FileSourceCreate) SetEndpointImmutable(b bool) *FileSourceCreate {
+	fsc.mutation.SetEndpointImmutable(b)
+	return fsc
+}
+
+// SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
+func (fsc *FileSourceCreate) SetNillableEndpointImmutable(b *bool) *FileSourceCreate {
+	if b != nil {
+		fsc.SetEndpointImmutable(*b)
+	}
+	return fsc
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (fsc *FileSourceCreate) SetStsEndpoint(s string) *FileSourceCreate {
 	fsc.mutation.SetStsEndpoint(s)
@@ -119,14 +133,6 @@ func (fsc *FileSourceCreate) SetBucket(s string) *FileSourceCreate {
 // SetBucketUrl sets the "bucketUrl" field.
 func (fsc *FileSourceCreate) SetBucketUrl(s string) *FileSourceCreate {
 	fsc.mutation.SetBucketUrl(s)
-	return fsc
-}
-
-// SetNillableBucketUrl sets the "bucketUrl" field if the given value is not nil.
-func (fsc *FileSourceCreate) SetNillableBucketUrl(s *string) *FileSourceCreate {
-	if s != nil {
-		fsc.SetBucketUrl(*s)
-	}
 	return fsc
 }
 
@@ -210,6 +216,10 @@ func (fsc *FileSourceCreate) defaults() error {
 		v := filesource.DefaultCreatedAt()
 		fsc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := fsc.mutation.EndpointImmutable(); !ok {
+		v := filesource.DefaultEndpointImmutable
+		fsc.mutation.SetEndpointImmutable(v)
+	}
 	return nil
 }
 
@@ -237,6 +247,9 @@ func (fsc *FileSourceCreate) check() error {
 			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
 		}
 	}
+	if _, ok := fsc.mutation.EndpointImmutable(); !ok {
+		return &ValidationError{Name: "endpoint_immutable", err: errors.New(`ent: missing required field "FileSource.endpoint_immutable"`)}
+	}
 	if _, ok := fsc.mutation.StsEndpoint(); !ok {
 		return &ValidationError{Name: "sts_endpoint", err: errors.New(`ent: missing required field "FileSource.sts_endpoint"`)}
 	}
@@ -260,6 +273,9 @@ func (fsc *FileSourceCreate) check() error {
 		if err := filesource.BucketValidator(v); err != nil {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
 		}
+	}
+	if _, ok := fsc.mutation.BucketUrl(); !ok {
+		return &ValidationError{Name: "bucketUrl", err: errors.New(`ent: missing required field "FileSource.bucketUrl"`)}
 	}
 	if v, ok := fsc.mutation.BucketUrl(); ok {
 		if err := filesource.BucketUrlValidator(v); err != nil {
@@ -326,6 +342,10 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 	if value, ok := fsc.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 		_node.Endpoint = value
+	}
+	if value, ok := fsc.mutation.EndpointImmutable(); ok {
+		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
+		_node.EndpointImmutable = value
 	}
 	if value, ok := fsc.mutation.StsEndpoint(); ok {
 		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
@@ -511,6 +531,18 @@ func (u *FileSourceUpsert) UpdateEndpoint() *FileSourceUpsert {
 	return u
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (u *FileSourceUpsert) SetEndpointImmutable(v bool) *FileSourceUpsert {
+	u.Set(filesource.FieldEndpointImmutable, v)
+	return u
+}
+
+// UpdateEndpointImmutable sets the "endpoint_immutable" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateEndpointImmutable() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldEndpointImmutable)
+	return u
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (u *FileSourceUpsert) SetStsEndpoint(v string) *FileSourceUpsert {
 	u.Set(filesource.FieldStsEndpoint, v)
@@ -556,12 +588,6 @@ func (u *FileSourceUpsert) SetBucketUrl(v string) *FileSourceUpsert {
 // UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
 func (u *FileSourceUpsert) UpdateBucketUrl() *FileSourceUpsert {
 	u.SetExcluded(filesource.FieldBucketUrl)
-	return u
-}
-
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (u *FileSourceUpsert) ClearBucketUrl() *FileSourceUpsert {
-	u.SetNull(filesource.FieldBucketUrl)
 	return u
 }
 
@@ -717,6 +743,20 @@ func (u *FileSourceUpsertOne) UpdateEndpoint() *FileSourceUpsertOne {
 	})
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (u *FileSourceUpsertOne) SetEndpointImmutable(v bool) *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetEndpointImmutable(v)
+	})
+}
+
+// UpdateEndpointImmutable sets the "endpoint_immutable" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateEndpointImmutable() *FileSourceUpsertOne {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateEndpointImmutable()
+	})
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (u *FileSourceUpsertOne) SetStsEndpoint(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -770,13 +810,6 @@ func (u *FileSourceUpsertOne) SetBucketUrl(v string) *FileSourceUpsertOne {
 func (u *FileSourceUpsertOne) UpdateBucketUrl() *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
 		s.UpdateBucketUrl()
-	})
-}
-
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (u *FileSourceUpsertOne) ClearBucketUrl() *FileSourceUpsertOne {
-	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearBucketUrl()
 	})
 }
 
@@ -1098,6 +1131,20 @@ func (u *FileSourceUpsertBulk) UpdateEndpoint() *FileSourceUpsertBulk {
 	})
 }
 
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (u *FileSourceUpsertBulk) SetEndpointImmutable(v bool) *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.SetEndpointImmutable(v)
+	})
+}
+
+// UpdateEndpointImmutable sets the "endpoint_immutable" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateEndpointImmutable() *FileSourceUpsertBulk {
+	return u.Update(func(s *FileSourceUpsert) {
+		s.UpdateEndpointImmutable()
+	})
+}
+
 // SetStsEndpoint sets the "sts_endpoint" field.
 func (u *FileSourceUpsertBulk) SetStsEndpoint(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
@@ -1151,13 +1198,6 @@ func (u *FileSourceUpsertBulk) SetBucketUrl(v string) *FileSourceUpsertBulk {
 func (u *FileSourceUpsertBulk) UpdateBucketUrl() *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
 		s.UpdateBucketUrl()
-	})
-}
-
-// ClearBucketUrl clears the value of the "bucketUrl" field.
-func (u *FileSourceUpsertBulk) ClearBucketUrl() *FileSourceUpsertBulk {
-	return u.Update(func(s *FileSourceUpsert) {
-		s.ClearBucketUrl()
 	})
 }
 
