@@ -2640,6 +2640,47 @@ func (ec *executionContext) fieldContext_App_refreshTokenValidity(_ context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _App_logo(ctx context.Context, field graphql.CollectedField, obj *ent.App) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_App_logo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Logo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_App_logo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "App",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _App_logoFileID(ctx context.Context, field graphql.CollectedField, obj *ent.App) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_App_logoFileID(ctx, field)
 	if err != nil {
@@ -3708,6 +3749,8 @@ func (ec *executionContext) fieldContext_AppAction_app(_ context.Context, field 
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -4659,6 +4702,8 @@ func (ec *executionContext) fieldContext_AppDict_app(_ context.Context, field gr
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -5788,6 +5833,8 @@ func (ec *executionContext) fieldContext_AppEdge_node(_ context.Context, field g
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -6515,6 +6562,8 @@ func (ec *executionContext) fieldContext_AppMenu_app(_ context.Context, field gr
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -7416,6 +7465,8 @@ func (ec *executionContext) fieldContext_AppPolicy_app(_ context.Context, field 
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -8276,6 +8327,8 @@ func (ec *executionContext) fieldContext_AppRes_app(_ context.Context, field gra
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -9047,6 +9100,8 @@ func (ec *executionContext) fieldContext_AppRole_app(_ context.Context, field gr
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -19822,6 +19877,8 @@ func (ec *executionContext) fieldContext_Query_userApps(_ context.Context, field
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -30962,7 +31019,7 @@ func (ec *executionContext) unmarshalInputCreateAppInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "code", "kind", "redirectURI", "appKey", "appSecret", "scopes", "tokenValidity", "refreshTokenValidity", "logoFileID", "comments", "status", "menuIDs", "actionIDs", "resourceIDs", "roleIDs", "policyIDs", "dictIDs"}
+	fieldsInOrder := [...]string{"name", "code", "kind", "redirectURI", "appKey", "appSecret", "scopes", "tokenValidity", "refreshTokenValidity", "logo", "logoFileID", "comments", "status", "menuIDs", "actionIDs", "resourceIDs", "roleIDs", "policyIDs", "dictIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31032,6 +31089,13 @@ func (ec *executionContext) unmarshalInputCreateAppInput(ctx context.Context, ob
 				return it, err
 			}
 			it.RefreshTokenValidity = data
+		case "logo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Logo = data
 		case "logoFileID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -40515,7 +40579,7 @@ func (ec *executionContext) unmarshalInputUpdateAppInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "kind", "redirectURI", "clearRedirectURI", "appKey", "clearAppKey", "appSecret", "clearAppSecret", "scopes", "clearScopes", "tokenValidity", "clearTokenValidity", "refreshTokenValidity", "clearRefreshTokenValidity", "logoFileID", "clearLogoFileID", "comments", "clearComments", "status", "clearStatus", "addMenuIDs", "removeMenuIDs", "clearMenus", "addActionIDs", "removeActionIDs", "clearActions", "addResourceIDs", "removeResourceIDs", "clearResources", "addRoleIDs", "removeRoleIDs", "clearRoles", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addDictIDs", "removeDictIDs", "clearDicts"}
+	fieldsInOrder := [...]string{"name", "kind", "redirectURI", "clearRedirectURI", "appKey", "clearAppKey", "appSecret", "clearAppSecret", "scopes", "clearScopes", "tokenValidity", "clearTokenValidity", "refreshTokenValidity", "clearRefreshTokenValidity", "logo", "clearLogo", "logoFileID", "clearLogoFileID", "comments", "clearComments", "status", "clearStatus", "addMenuIDs", "removeMenuIDs", "clearMenus", "addActionIDs", "removeActionIDs", "clearActions", "addResourceIDs", "removeResourceIDs", "clearResources", "addRoleIDs", "removeRoleIDs", "clearRoles", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addDictIDs", "removeDictIDs", "clearDicts"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -40620,6 +40684,20 @@ func (ec *executionContext) unmarshalInputUpdateAppInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearRefreshTokenValidity = data
+		case "logo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Logo = data
+		case "clearLogo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearLogo"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearLogo = data
 		case "logoFileID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logoFileID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -46438,6 +46516,8 @@ func (ec *executionContext) _App(ctx context.Context, sel ast.SelectionSet, obj 
 			out.Values[i] = ec._App_tokenValidity(ctx, field, obj)
 		case "refreshTokenValidity":
 			out.Values[i] = ec._App_refreshTokenValidity(ctx, field, obj)
+		case "logo":
+			out.Values[i] = ec._App_logo(ctx, field, obj)
 		case "logoFileID":
 			out.Values[i] = ec._App_logoFileID(ctx, field, obj)
 		case "comments":

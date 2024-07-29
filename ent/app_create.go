@@ -181,6 +181,20 @@ func (ac *AppCreate) SetNillableRefreshTokenValidity(i *int32) *AppCreate {
 	return ac
 }
 
+// SetLogo sets the "logo" field.
+func (ac *AppCreate) SetLogo(s string) *AppCreate {
+	ac.mutation.SetLogo(s)
+	return ac
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (ac *AppCreate) SetNillableLogo(s *string) *AppCreate {
+	if s != nil {
+		ac.SetLogo(*s)
+	}
+	return ac
+}
+
 // SetLogoFileID sets the "logo_file_id" field.
 func (ac *AppCreate) SetLogoFileID(i int) *AppCreate {
 	ac.mutation.SetLogoFileID(i)
@@ -494,6 +508,11 @@ func (ac *AppCreate) check() error {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
+	if v, ok := ac.mutation.Logo(); ok {
+		if err := app.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
+		}
+	}
 	if v, ok := ac.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
@@ -583,6 +602,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.RefreshTokenValidity(); ok {
 		_spec.SetField(app.FieldRefreshTokenValidity, field.TypeInt32, value)
 		_node.RefreshTokenValidity = value
+	}
+	if value, ok := ac.mutation.Logo(); ok {
+		_spec.SetField(app.FieldLogo, field.TypeString, value)
+		_node.Logo = value
 	}
 	if value, ok := ac.mutation.LogoFileID(); ok {
 		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
@@ -974,6 +997,24 @@ func (u *AppUpsert) ClearRefreshTokenValidity() *AppUpsert {
 	return u
 }
 
+// SetLogo sets the "logo" field.
+func (u *AppUpsert) SetLogo(v string) *AppUpsert {
+	u.Set(app.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsert) UpdateLogo() *AppUpsert {
+	u.SetExcluded(app.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsert) ClearLogo() *AppUpsert {
+	u.SetNull(app.FieldLogo)
+	return u
+}
+
 // SetLogoFileID sets the "logo_file_id" field.
 func (u *AppUpsert) SetLogoFileID(v int) *AppUpsert {
 	u.Set(app.FieldLogoFileID, v)
@@ -1347,6 +1388,27 @@ func (u *AppUpsertOne) UpdateRefreshTokenValidity() *AppUpsertOne {
 func (u *AppUpsertOne) ClearRefreshTokenValidity() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearRefreshTokenValidity()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *AppUpsertOne) SetLogo(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateLogo() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsertOne) ClearLogo() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogo()
 	})
 }
 
@@ -1906,6 +1968,27 @@ func (u *AppUpsertBulk) UpdateRefreshTokenValidity() *AppUpsertBulk {
 func (u *AppUpsertBulk) ClearRefreshTokenValidity() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearRefreshTokenValidity()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *AppUpsertBulk) SetLogo(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateLogo() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *AppUpsertBulk) ClearLogo() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogo()
 	})
 }
 

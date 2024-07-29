@@ -246,6 +246,26 @@ func (au *AppUpdate) ClearRefreshTokenValidity() *AppUpdate {
 	return au
 }
 
+// SetLogo sets the "logo" field.
+func (au *AppUpdate) SetLogo(s string) *AppUpdate {
+	au.mutation.SetLogo(s)
+	return au
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (au *AppUpdate) SetNillableLogo(s *string) *AppUpdate {
+	if s != nil {
+		au.SetLogo(*s)
+	}
+	return au
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (au *AppUpdate) ClearLogo() *AppUpdate {
+	au.mutation.ClearLogo()
+	return au
+}
+
 // SetLogoFileID sets the "logo_file_id" field.
 func (au *AppUpdate) SetLogoFileID(i int) *AppUpdate {
 	au.mutation.ResetLogoFileID()
@@ -707,6 +727,11 @@ func (au *AppUpdate) check() error {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
+	if v, ok := au.mutation.Logo(); ok {
+		if err := app.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
+		}
+	}
 	if v, ok := au.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
@@ -789,6 +814,12 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
+	}
+	if value, ok := au.mutation.Logo(); ok {
+		_spec.SetField(app.FieldLogo, field.TypeString, value)
+	}
+	if au.mutation.LogoCleared() {
+		_spec.ClearField(app.FieldLogo, field.TypeString)
 	}
 	if value, ok := au.mutation.LogoFileID(); ok {
 		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
@@ -1427,6 +1458,26 @@ func (auo *AppUpdateOne) ClearRefreshTokenValidity() *AppUpdateOne {
 	return auo
 }
 
+// SetLogo sets the "logo" field.
+func (auo *AppUpdateOne) SetLogo(s string) *AppUpdateOne {
+	auo.mutation.SetLogo(s)
+	return auo
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableLogo(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetLogo(*s)
+	}
+	return auo
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (auo *AppUpdateOne) ClearLogo() *AppUpdateOne {
+	auo.mutation.ClearLogo()
+	return auo
+}
+
 // SetLogoFileID sets the "logo_file_id" field.
 func (auo *AppUpdateOne) SetLogoFileID(i int) *AppUpdateOne {
 	auo.mutation.ResetLogoFileID()
@@ -1901,6 +1952,11 @@ func (auo *AppUpdateOne) check() error {
 			return &ValidationError{Name: "scopes", err: fmt.Errorf(`ent: validator failed for field "App.scopes": %w`, err)}
 		}
 	}
+	if v, ok := auo.mutation.Logo(); ok {
+		if err := app.LogoValidator(v); err != nil {
+			return &ValidationError{Name: "logo", err: fmt.Errorf(`ent: validator failed for field "App.logo": %w`, err)}
+		}
+	}
 	if v, ok := auo.mutation.Status(); ok {
 		if err := app.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "App.status": %w`, err)}
@@ -2000,6 +2056,12 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if auo.mutation.RefreshTokenValidityCleared() {
 		_spec.ClearField(app.FieldRefreshTokenValidity, field.TypeInt32)
+	}
+	if value, ok := auo.mutation.Logo(); ok {
+		_spec.SetField(app.FieldLogo, field.TypeString, value)
+	}
+	if auo.mutation.LogoCleared() {
+		_spec.ClearField(app.FieldLogo, field.TypeString)
 	}
 	if value, ok := auo.mutation.LogoFileID(); ok {
 		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)

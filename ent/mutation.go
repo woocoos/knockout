@@ -102,6 +102,7 @@ type AppMutation struct {
 	addtoken_validity         *int32
 	refresh_token_validity    *int32
 	addrefresh_token_validity *int32
+	logo                      *string
 	logo_file_id              *int
 	addlogo_file_id           *int
 	comments                  *string
@@ -898,6 +899,55 @@ func (m *AppMutation) ResetRefreshTokenValidity() {
 	delete(m.clearedFields, app.FieldRefreshTokenValidity)
 }
 
+// SetLogo sets the "logo" field.
+func (m *AppMutation) SetLogo(s string) {
+	m.logo = &s
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *AppMutation) Logo() (r string, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldLogo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (m *AppMutation) ClearLogo() {
+	m.logo = nil
+	m.clearedFields[app.FieldLogo] = struct{}{}
+}
+
+// LogoCleared returns if the "logo" field was cleared in this mutation.
+func (m *AppMutation) LogoCleared() bool {
+	_, ok := m.clearedFields[app.FieldLogo]
+	return ok
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *AppMutation) ResetLogo() {
+	m.logo = nil
+	delete(m.clearedFields, app.FieldLogo)
+}
+
 // SetLogoFileID sets the "logo_file_id" field.
 func (m *AppMutation) SetLogoFileID(i int) {
 	m.logo_file_id = &i
@@ -1651,7 +1701,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.created_by != nil {
 		fields = append(fields, app.FieldCreatedBy)
 	}
@@ -1690,6 +1740,9 @@ func (m *AppMutation) Fields() []string {
 	}
 	if m.refresh_token_validity != nil {
 		fields = append(fields, app.FieldRefreshTokenValidity)
+	}
+	if m.logo != nil {
+		fields = append(fields, app.FieldLogo)
 	}
 	if m.logo_file_id != nil {
 		fields = append(fields, app.FieldLogoFileID)
@@ -1740,6 +1793,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.TokenValidity()
 	case app.FieldRefreshTokenValidity:
 		return m.RefreshTokenValidity()
+	case app.FieldLogo:
+		return m.Logo()
 	case app.FieldLogoFileID:
 		return m.LogoFileID()
 	case app.FieldComments:
@@ -1785,6 +1840,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldTokenValidity(ctx)
 	case app.FieldRefreshTokenValidity:
 		return m.OldRefreshTokenValidity(ctx)
+	case app.FieldLogo:
+		return m.OldLogo(ctx)
 	case app.FieldLogoFileID:
 		return m.OldLogoFileID(ctx)
 	case app.FieldComments:
@@ -1894,6 +1951,13 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRefreshTokenValidity(v)
+		return nil
+	case app.FieldLogo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
 		return nil
 	case app.FieldLogoFileID:
 		v, ok := value.(int)
@@ -2059,6 +2123,9 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldRefreshTokenValidity) {
 		fields = append(fields, app.FieldRefreshTokenValidity)
 	}
+	if m.FieldCleared(app.FieldLogo) {
+		fields = append(fields, app.FieldLogo)
+	}
 	if m.FieldCleared(app.FieldLogoFileID) {
 		fields = append(fields, app.FieldLogoFileID)
 	}
@@ -2111,6 +2178,9 @@ func (m *AppMutation) ClearField(name string) error {
 		return nil
 	case app.FieldRefreshTokenValidity:
 		m.ClearRefreshTokenValidity()
+		return nil
+	case app.FieldLogo:
+		m.ClearLogo()
 		return nil
 	case app.FieldLogoFileID:
 		m.ClearLogoFileID()
@@ -2173,6 +2243,9 @@ func (m *AppMutation) ResetField(name string) error {
 		return nil
 	case app.FieldRefreshTokenValidity:
 		m.ResetRefreshTokenValidity()
+		return nil
+	case app.FieldLogo:
+		m.ResetLogo()
 		return nil
 	case app.FieldLogoFileID:
 		m.ResetLogoFileID()

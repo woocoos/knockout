@@ -62,6 +62,7 @@ type ComplexityRoot struct {
 		Dicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		ID                   func(childComplexity int) int
 		Kind                 func(childComplexity int) int
+		Logo                 func(childComplexity int) int
 		LogoFileID           func(childComplexity int) int
 		Menus                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppMenuOrder, where *ent.AppMenuWhereInput) int
 		Name                 func(childComplexity int) int
@@ -848,6 +849,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.App.Kind(childComplexity), true
+
+	case "App.logo":
+		if e.complexity.App.Logo == nil {
+			break
+		}
+
+		return e.complexity.App.Logo(childComplexity), true
 
 	case "App.logoFileID":
 		if e.complexity.App.LogoFileID == nil {
@@ -5284,6 +5292,10 @@ type App implements Node {
   """
   refreshTokenValidity: Int
   """
+  应用图标地址
+  """
+  logo: String
+  """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """
   logoFileID: ID
@@ -7487,6 +7499,10 @@ input CreateAppInput {
   refresh_token有效期
   """
   refreshTokenValidity: Int
+  """
+  应用图标地址
+  """
+  logo: String
   """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """
@@ -10859,6 +10875,11 @@ input UpdateAppInput {
   """
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
+  """
+  应用图标地址
+  """
+  logo: String
+  clearLogo: Boolean
   """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """

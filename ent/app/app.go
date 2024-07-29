@@ -46,6 +46,8 @@ const (
 	FieldTokenValidity = "token_validity"
 	// FieldRefreshTokenValidity holds the string denoting the refresh_token_validity field in the database.
 	FieldRefreshTokenValidity = "refresh_token_validity"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// FieldLogoFileID holds the string denoting the logo_file_id field in the database.
 	FieldLogoFileID = "logo_file_id"
 	// FieldComments holds the string denoting the comments field in the database.
@@ -146,6 +148,7 @@ var Columns = []string{
 	FieldScopes,
 	FieldTokenValidity,
 	FieldRefreshTokenValidity,
+	FieldLogo,
 	FieldLogoFileID,
 	FieldComments,
 	FieldStatus,
@@ -188,6 +191,8 @@ var (
 	AppSecretValidator func(string) error
 	// ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
 	ScopesValidator func(string) error
+	// LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	LogoValidator func(string) error
 	// DefaultPrivate holds the default value on creation for the "private" field.
 	DefaultPrivate bool
 	// DefaultID holds the default value on creation for the "id" field.
@@ -301,6 +306,11 @@ func ByTokenValidity(opts ...sql.OrderTermOption) OrderOption {
 // ByRefreshTokenValidity orders the results by the refresh_token_validity field.
 func ByRefreshTokenValidity(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRefreshTokenValidity, opts...).ToFunc()
+}
+
+// ByLogo orders the results by the logo field.
+func ByLogo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLogo, opts...).ToFunc()
 }
 
 // ByLogoFileID orders the results by the logo_file_id field.

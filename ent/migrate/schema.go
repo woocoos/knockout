@@ -25,6 +25,7 @@ var (
 		{Name: "scopes", Type: field.TypeString, Nullable: true, Size: 500},
 		{Name: "token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},

@@ -30,6 +30,7 @@ type CreateAppInput struct {
 	Scopes               *string
 	TokenValidity        *int32
 	RefreshTokenValidity *int32
+	Logo                 *string
 	LogoFileID           *int
 	Comments             *string
 	Status               *typex.SimpleStatus
@@ -63,6 +64,9 @@ func (i *CreateAppInput) Mutate(m *AppMutation) {
 	}
 	if v := i.RefreshTokenValidity; v != nil {
 		m.SetRefreshTokenValidity(*v)
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(*v)
 	}
 	if v := i.LogoFileID; v != nil {
 		m.SetLogoFileID(*v)
@@ -115,6 +119,8 @@ type UpdateAppInput struct {
 	TokenValidity             *int32
 	ClearRefreshTokenValidity bool
 	RefreshTokenValidity      *int32
+	ClearLogo                 bool
+	Logo                      *string
 	ClearLogoFileID           bool
 	LogoFileID                *int
 	ClearComments             bool
@@ -184,6 +190,12 @@ func (i *UpdateAppInput) Mutate(m *AppMutation) {
 	}
 	if v := i.RefreshTokenValidity; v != nil {
 		m.SetRefreshTokenValidity(*v)
+	}
+	if i.ClearLogo {
+		m.ClearLogo()
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(*v)
 	}
 	if i.ClearLogoFileID {
 		m.ClearLogoFileID()

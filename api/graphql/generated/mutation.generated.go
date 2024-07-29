@@ -3050,6 +3050,8 @@ func (ec *executionContext) fieldContext_Mutation_createApp(ctx context.Context,
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
@@ -3152,6 +3154,8 @@ func (ec *executionContext) fieldContext_Mutation_updateApp(ctx context.Context,
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "logoFileID":
 				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":

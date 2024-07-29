@@ -43,6 +43,10 @@ type App implements Node {
   """
   refreshTokenValidity: Int
   """
+  应用图标地址
+  """
+  logo: String
+  """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """
   logoFileID: ID
@@ -2246,6 +2250,10 @@ input CreateAppInput {
   refresh_token有效期
   """
   refreshTokenValidity: Int
+  """
+  应用图标地址
+  """
+  logo: String
   """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """
@@ -5618,6 +5626,11 @@ input UpdateAppInput {
   """
   refreshTokenValidity: Int
   clearRefreshTokenValidity: Boolean
+  """
+  应用图标地址
+  """
+  logo: String
+  clearLogo: Boolean
   """
   图标,存储路规则：/{appcode}/{tid}/xxx
   """
