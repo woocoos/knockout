@@ -95,6 +95,7 @@ func (svc *AliOSS) GetSTS(roleSessionName string) (*STSResponse, error) {
 	assumeRoleRequest := &sts20150401.AssumeRoleRequest{
 		RoleSessionName: tea.String(roleSessionName),
 		RoleArn:         tea.String(svc.fileSource.RoleArn),
+		DurationSeconds: tea.Int64(int64(svc.fileSource.DurationSeconds)),
 	}
 	if svc.fileSource.Policy != "" {
 		assumeRoleRequest.Policy = tea.String(svc.fileSource.Policy)

@@ -57,6 +57,7 @@ type QueryResolver interface {
 	Nodes(ctx context.Context, ids []string) ([]ent.Noder, error)
 	Apps(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) (*ent.AppConnection, error)
 	AppDicts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) (*ent.AppDictConnection, error)
+	FileIdentities(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) (*ent.FileIdentityConnection, error)
 	FileSources(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) (*ent.FileSourceConnection, error)
 	Organizations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) (*ent.OrgConnection, error)
 	Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
@@ -82,7 +83,7 @@ type QueryResolver interface {
 	AppDictByRefCode(ctx context.Context, refCodes []string) ([]*ent.AppDict, error)
 	AppDictItemByRefCode(ctx context.Context, refCode string) ([]*ent.AppDictItem, error)
 	AppAccess(ctx context.Context, appCode string) (bool, error)
-	FileIdentities(ctx context.Context) ([]*ent.FileIdentity, error)
+	FileIdentitiesForOrg(ctx context.Context) ([]*model.OrgFileIdentity, error)
 }
 type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
@@ -465,66 +466,6 @@ func (ec *executionContext) field_FileSource_files_args(ctx context.Context, raw
 	if tmp, ok := rawArgs["where"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
 		arg5, err = ec.unmarshalOFileWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileWhereInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["where"] = arg5
-	return args, nil
-}
-
-func (ec *executionContext) field_FileSource_identities_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *entgql.Cursor[int]
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg0
-	var arg1 *int
-	if tmp, ok := rawArgs["first"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["first"] = arg1
-	var arg2 *entgql.Cursor[int]
-	if tmp, ok := rawArgs["before"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["before"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["last"] = arg3
-	var arg4 *ent.FileIdentityOrder
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
-		arg4, err = ec.unmarshalOFileIdentityOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityOrder(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg4
-	var arg5 *ent.FileIdentityWhereInput
-	if tmp, ok := rawArgs["where"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-		arg5, err = ec.unmarshalOFileIdentityWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityWhereInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1142,6 +1083,66 @@ func (ec *executionContext) field_Query_checkPermission_args(ctx context.Context
 		}
 	}
 	args["permission"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_fileIdentities_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *ent.FileIdentityOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOFileIdentityOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *ent.FileIdentityWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOFileIdentityWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
 	return args, nil
 }
 
@@ -9714,14 +9715,14 @@ func (ec *executionContext) fieldContext_File_source(_ context.Context, field gr
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
 			case "endpointImmutable":
 				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "bucketurl":
-				return ec.fieldContext_FileSource_bucketurl(ctx, field)
-			case "identities":
-				return ec.fieldContext_FileSource_identities(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -10247,6 +10248,94 @@ func (ec *executionContext) fieldContext_FileIdentity_tenantID(_ context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _FileIdentity_accessKeyID(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccessKeyID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_accessKeyID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentity_accessKeySecret(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccessKeySecret, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_accessKeySecret(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FileIdentity_fileSourceID(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
 	if err != nil {
@@ -10286,6 +10375,132 @@ func (ec *executionContext) fieldContext_FileIdentity_fileSourceID(_ context.Con
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentity_roleArn(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_roleArn(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RoleArn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_roleArn(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentity_policy(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_policy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Policy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_policy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentity_durationSeconds(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalOInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_durationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10433,14 +10648,14 @@ func (ec *executionContext) fieldContext_FileIdentity_source(_ context.Context, 
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
 			case "endpointImmutable":
 				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "bucketurl":
-				return ec.fieldContext_FileSource_bucketurl(ctx, field)
-			case "identities":
-				return ec.fieldContext_FileSource_identities(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -10643,8 +10858,18 @@ func (ec *executionContext) fieldContext_FileIdentityEdge_node(_ context.Context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":
@@ -11089,6 +11314,50 @@ func (ec *executionContext) fieldContext_FileSource_endpointImmutable(_ context.
 	return fc, nil
 }
 
+func (ec *executionContext) _FileSource_stsEndpoint(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StsEndpoint, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileSource_stsEndpoint(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileSource",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FileSource_region(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileSource_region(ctx, field)
 	if err != nil {
@@ -11177,8 +11446,8 @@ func (ec *executionContext) fieldContext_FileSource_bucket(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _FileSource_bucketurl(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileSource_bucketurl(ctx, field)
+func (ec *executionContext) _FileSource_bucketURL(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileSource_bucketURL(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11191,7 +11460,7 @@ func (ec *executionContext) _FileSource_bucketurl(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.BucketUrl, nil
+		return obj.BucketURL, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11208,7 +11477,7 @@ func (ec *executionContext) _FileSource_bucketurl(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_FileSource_bucketurl(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_FileSource_bucketURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "FileSource",
 		Field:      field,
@@ -11217,69 +11486,6 @@ func (ec *executionContext) fieldContext_FileSource_bucketurl(_ context.Context,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FileSource_identities(ctx context.Context, field graphql.CollectedField, obj *ent.FileSource) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FileSource_identities(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Identities(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.FileIdentityOrder), fc.Args["where"].(*ent.FileIdentityWhereInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ent.FileIdentityConnection)
-	fc.Result = res
-	return ec.marshalNFileIdentityConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityConnection(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FileSource_identities(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FileSource",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "edges":
-				return ec.fieldContext_FileIdentityConnection_edges(ctx, field)
-			case "pageInfo":
-				return ec.fieldContext_FileIdentityConnection_pageInfo(ctx, field)
-			case "totalCount":
-				return ec.fieldContext_FileIdentityConnection_totalCount(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FileIdentityConnection", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_FileSource_identities_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -11546,14 +11752,14 @@ func (ec *executionContext) fieldContext_FileSourceEdge_node(_ context.Context, 
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
 			case "endpointImmutable":
 				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "bucketurl":
-				return ec.fieldContext_FileSource_bucketurl(ctx, field)
-			case "identities":
-				return ec.fieldContext_FileSource_identities(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -17991,6 +18197,69 @@ func (ec *executionContext) fieldContext_Query_appDicts(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_fileIdentities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_fileIdentities(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().FileIdentities(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.FileIdentityOrder), fc.Args["where"].(*ent.FileIdentityWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.FileIdentityConnection)
+	fc.Result = res
+	return ec.marshalNFileIdentityConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_fileIdentities(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_FileIdentityConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_FileIdentityConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_FileIdentityConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileIdentityConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_fileIdentities_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_fileSources(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_fileSources(ctx, field)
 	if err != nil {
@@ -19801,8 +20070,8 @@ func (ec *executionContext) fieldContext_Query_appAccess(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_fileIdentities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_fileIdentities(ctx, field)
+func (ec *executionContext) _Query_fileIdentitiesForOrg(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_fileIdentitiesForOrg(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -19815,7 +20084,7 @@ func (ec *executionContext) _Query_fileIdentities(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FileIdentities(rctx)
+		return ec.resolvers.Query().FileIdentitiesForOrg(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19827,12 +20096,12 @@ func (ec *executionContext) _Query_fileIdentities(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.FileIdentity)
+	res := resTmp.([]*model.OrgFileIdentity)
 	fc.Result = res
-	return ec.marshalNFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx, field.Selections, res)
+	return ec.marshalNOrgFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgFileIdentityᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_fileIdentities(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_fileIdentitiesForOrg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -19841,27 +20110,27 @@ func (ec *executionContext) fieldContext_Query_fileIdentities(_ context.Context,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_FileIdentity_id(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_id(ctx, field)
 			case "createdBy":
-				return ec.fieldContext_FileIdentity_createdBy(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_createdBy(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_FileIdentity_createdAt(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_createdAt(ctx, field)
 			case "updatedBy":
-				return ec.fieldContext_FileIdentity_updatedBy(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_updatedBy(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_updatedAt(ctx, field)
 			case "tenantID":
-				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_tenantID(ctx, field)
 			case "fileSourceID":
-				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_fileSourceID(ctx, field)
 			case "isDefault":
-				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_isDefault(ctx, field)
 			case "comments":
-				return ec.fieldContext_FileIdentity_comments(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_comments(ctx, field)
 			case "source":
-				return ec.fieldContext_FileIdentity_source(ctx, field)
+				return ec.fieldContext_OrgFileIdentity_source(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type OrgFileIdentity", field.Name)
 		},
 	}
 	return fc, nil
@@ -31170,7 +31439,7 @@ func (ec *executionContext) unmarshalInputCreateFileSourceInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"kind", "comments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketurl", "identityIDs", "fileIDs"}
+	fieldsInOrder := [...]string{"kind", "comments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketURL", "identityIDs", "fileIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31226,13 +31495,13 @@ func (ec *executionContext) unmarshalInputCreateFileSourceInput(ctx context.Cont
 				return it, err
 			}
 			it.Bucket = data
-		case "bucketurl":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurl"))
+		case "bucketURL":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURL"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrl = data
+			it.BucketURL = data
 		case "identityIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identityIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
@@ -32990,7 +33259,7 @@ func (ec *executionContext) unmarshalInputFileSourceWhereInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "endpoint", "endpointNEQ", "endpointIn", "endpointNotIn", "endpointGT", "endpointGTE", "endpointLT", "endpointLTE", "endpointContains", "endpointHasPrefix", "endpointHasSuffix", "endpointEqualFold", "endpointContainsFold", "endpointImmutable", "endpointImmutableNEQ", "stsEndpoint", "stsEndpointNEQ", "stsEndpointIn", "stsEndpointNotIn", "stsEndpointGT", "stsEndpointGTE", "stsEndpointLT", "stsEndpointLTE", "stsEndpointContains", "stsEndpointHasPrefix", "stsEndpointHasSuffix", "stsEndpointEqualFold", "stsEndpointContainsFold", "region", "regionNEQ", "regionIn", "regionNotIn", "regionGT", "regionGTE", "regionLT", "regionLTE", "regionContains", "regionHasPrefix", "regionHasSuffix", "regionEqualFold", "regionContainsFold", "bucket", "bucketNEQ", "bucketIn", "bucketNotIn", "bucketGT", "bucketGTE", "bucketLT", "bucketLTE", "bucketContains", "bucketHasPrefix", "bucketHasSuffix", "bucketEqualFold", "bucketContainsFold", "bucketurl", "bucketurlNEQ", "bucketurlIn", "bucketurlNotIn", "bucketurlGT", "bucketurlGTE", "bucketurlLT", "bucketurlLTE", "bucketurlContains", "bucketurlHasPrefix", "bucketurlHasSuffix", "bucketurlEqualFold", "bucketurlContainsFold", "hasIdentities", "hasIdentitiesWith", "hasFiles", "hasFilesWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "endpoint", "endpointNEQ", "endpointIn", "endpointNotIn", "endpointGT", "endpointGTE", "endpointLT", "endpointLTE", "endpointContains", "endpointHasPrefix", "endpointHasSuffix", "endpointEqualFold", "endpointContainsFold", "endpointImmutable", "endpointImmutableNEQ", "stsEndpoint", "stsEndpointNEQ", "stsEndpointIn", "stsEndpointNotIn", "stsEndpointGT", "stsEndpointGTE", "stsEndpointLT", "stsEndpointLTE", "stsEndpointContains", "stsEndpointHasPrefix", "stsEndpointHasSuffix", "stsEndpointEqualFold", "stsEndpointContainsFold", "region", "regionNEQ", "regionIn", "regionNotIn", "regionGT", "regionGTE", "regionLT", "regionLTE", "regionContains", "regionHasPrefix", "regionHasSuffix", "regionEqualFold", "regionContainsFold", "bucket", "bucketNEQ", "bucketIn", "bucketNotIn", "bucketGT", "bucketGTE", "bucketLT", "bucketLTE", "bucketContains", "bucketHasPrefix", "bucketHasSuffix", "bucketEqualFold", "bucketContainsFold", "bucketURL", "bucketURLNEQ", "bucketURLIn", "bucketURLNotIn", "bucketURLGT", "bucketURLGTE", "bucketURLLT", "bucketURLLTE", "bucketURLContains", "bucketURLHasPrefix", "bucketURLHasSuffix", "bucketURLEqualFold", "bucketURLContainsFold", "hasIdentities", "hasIdentitiesWith", "hasFiles", "hasFilesWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -33732,97 +34001,97 @@ func (ec *executionContext) unmarshalInputFileSourceWhereInput(ctx context.Conte
 				return it, err
 			}
 			it.BucketContainsFold = data
-		case "bucketurl":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurl"))
+		case "bucketURL":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURL"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrl = data
-		case "bucketurlNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlNEQ"))
+			it.BucketURL = data
+		case "bucketURLNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLNEQ"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlNEQ = data
-		case "bucketurlIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlIn"))
+			it.BucketURLNEQ = data
+		case "bucketURLIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlIn = data
-		case "bucketurlNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlNotIn"))
+			it.BucketURLIn = data
+		case "bucketURLNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLNotIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlNotIn = data
-		case "bucketurlGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlGT"))
+			it.BucketURLNotIn = data
+		case "bucketURLGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLGT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlGT = data
-		case "bucketurlGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlGTE"))
+			it.BucketURLGT = data
+		case "bucketURLGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLGTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlGTE = data
-		case "bucketurlLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlLT"))
+			it.BucketURLGTE = data
+		case "bucketURLLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLLT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlLT = data
-		case "bucketurlLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlLTE"))
+			it.BucketURLLT = data
+		case "bucketURLLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLLTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlLTE = data
-		case "bucketurlContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlContains"))
+			it.BucketURLLTE = data
+		case "bucketURLContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLContains"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlContains = data
-		case "bucketurlHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlHasPrefix"))
+			it.BucketURLContains = data
+		case "bucketURLHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLHasPrefix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlHasPrefix = data
-		case "bucketurlHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlHasSuffix"))
+			it.BucketURLHasPrefix = data
+		case "bucketURLHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLHasSuffix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlHasSuffix = data
-		case "bucketurlEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlEqualFold"))
+			it.BucketURLHasSuffix = data
+		case "bucketURLEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLEqualFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlEqualFold = data
-		case "bucketurlContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurlContainsFold"))
+			it.BucketURLEqualFold = data
+		case "bucketURLContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURLContainsFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrlContainsFold = data
+			it.BucketURLContainsFold = data
 		case "hasIdentities":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasIdentities"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -40912,7 +41181,7 @@ func (ec *executionContext) unmarshalInputUpdateFileSourceInput(ctx context.Cont
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"kind", "comments", "clearComments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketurl", "addIdentityIDs", "removeIdentityIDs", "clearIdentities", "addFileIDs", "removeFileIDs", "clearFiles"}
+	fieldsInOrder := [...]string{"kind", "comments", "clearComments", "endpoint", "endpointImmutable", "stsEndpoint", "region", "bucket", "bucketURL", "addIdentityIDs", "removeIdentityIDs", "clearIdentities", "addFileIDs", "removeFileIDs", "clearFiles"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -40975,13 +41244,13 @@ func (ec *executionContext) unmarshalInputUpdateFileSourceInput(ctx context.Cont
 				return it, err
 			}
 			it.Bucket = data
-		case "bucketurl":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketurl"))
+		case "bucketURL":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bucketURL"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BucketUrl = data
+			it.BucketURL = data
 		case "addIdentityIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addIdentityIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
@@ -48181,11 +48450,30 @@ func (ec *executionContext) _FileIdentity(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "accessKeyID":
+			out.Values[i] = ec._FileIdentity_accessKeyID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "accessKeySecret":
+			out.Values[i] = ec._FileIdentity_accessKeySecret(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "fileSourceID":
 			out.Values[i] = ec._FileIdentity_fileSourceID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "roleArn":
+			out.Values[i] = ec._FileIdentity_roleArn(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "policy":
+			out.Values[i] = ec._FileIdentity_policy(ctx, field, obj)
+		case "durationSeconds":
+			out.Values[i] = ec._FileIdentity_durationSeconds(ctx, field, obj)
 		case "isDefault":
 			out.Values[i] = ec._FileIdentity_isDefault(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -48386,6 +48674,11 @@ func (ec *executionContext) _FileSource(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "stsEndpoint":
+			out.Values[i] = ec._FileSource_stsEndpoint(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "region":
 			out.Values[i] = ec._FileSource_region(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -48396,47 +48689,11 @@ func (ec *executionContext) _FileSource(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "bucketurl":
-			out.Values[i] = ec._FileSource_bucketurl(ctx, field, obj)
+		case "bucketURL":
+			out.Values[i] = ec._FileSource_bucketURL(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "identities":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._FileSource_identities(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "files":
 			field := field
 
@@ -50398,6 +50655,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "fileIdentities":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_fileIdentities(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "fileSources":
 			field := field
 
@@ -50942,7 +51221,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "fileIdentities":
+		case "fileIdentitiesForOrg":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -50951,7 +51230,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_fileIdentities(ctx, field)
+				res = ec._Query_fileIdentitiesForOrg(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -52619,50 +52898,6 @@ func (ec *executionContext) marshalNFileIdentity2githubᚗcomᚋwoocoosᚋknocko
 	return ec._FileIdentity(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.FileIdentity) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx context.Context, sel ast.SelectionSet, v *ent.FileIdentity) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -52671,6 +52906,10 @@ func (ec *executionContext) marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋkno
 		return graphql.Null
 	}
 	return ec._FileIdentity(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNFileIdentityConnection2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityConnection(ctx context.Context, sel ast.SelectionSet, v ent.FileIdentityConnection) graphql.Marshaler {
+	return ec._FileIdentityConnection(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNFileIdentityConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityConnection(ctx context.Context, sel ast.SelectionSet, v *ent.FileIdentityConnection) graphql.Marshaler {

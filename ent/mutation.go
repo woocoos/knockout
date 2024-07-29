@@ -13949,7 +13949,7 @@ type FileSourceMutation struct {
 	sts_endpoint       *string
 	region             *string
 	bucket             *string
-	bucketUrl          *string
+	bucket_url         *string
 	clearedFields      map[string]struct{}
 	identities         map[int]struct{}
 	removedidentities  map[int]struct{}
@@ -14542,40 +14542,40 @@ func (m *FileSourceMutation) ResetBucket() {
 	m.bucket = nil
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (m *FileSourceMutation) SetBucketUrl(s string) {
-	m.bucketUrl = &s
+// SetBucketURL sets the "bucket_url" field.
+func (m *FileSourceMutation) SetBucketURL(s string) {
+	m.bucket_url = &s
 }
 
-// BucketUrl returns the value of the "bucketUrl" field in the mutation.
-func (m *FileSourceMutation) BucketUrl() (r string, exists bool) {
-	v := m.bucketUrl
+// BucketURL returns the value of the "bucket_url" field in the mutation.
+func (m *FileSourceMutation) BucketURL() (r string, exists bool) {
+	v := m.bucket_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBucketUrl returns the old "bucketUrl" field's value of the FileSource entity.
+// OldBucketURL returns the old "bucket_url" field's value of the FileSource entity.
 // If the FileSource object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FileSourceMutation) OldBucketUrl(ctx context.Context) (v string, err error) {
+func (m *FileSourceMutation) OldBucketURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBucketUrl is only allowed on UpdateOne operations")
+		return v, errors.New("OldBucketURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBucketUrl requires an ID field in the mutation")
+		return v, errors.New("OldBucketURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBucketUrl: %w", err)
+		return v, fmt.Errorf("querying old value for OldBucketURL: %w", err)
 	}
-	return oldValue.BucketUrl, nil
+	return oldValue.BucketURL, nil
 }
 
-// ResetBucketUrl resets all changes to the "bucketUrl" field.
-func (m *FileSourceMutation) ResetBucketUrl() {
-	m.bucketUrl = nil
+// ResetBucketURL resets all changes to the "bucket_url" field.
+func (m *FileSourceMutation) ResetBucketURL() {
+	m.bucket_url = nil
 }
 
 // AddIdentityIDs adds the "identities" edge to the FileIdentity entity by ids.
@@ -14754,8 +14754,8 @@ func (m *FileSourceMutation) Fields() []string {
 	if m.bucket != nil {
 		fields = append(fields, filesource.FieldBucket)
 	}
-	if m.bucketUrl != nil {
-		fields = append(fields, filesource.FieldBucketUrl)
+	if m.bucket_url != nil {
+		fields = append(fields, filesource.FieldBucketURL)
 	}
 	return fields
 }
@@ -14787,8 +14787,8 @@ func (m *FileSourceMutation) Field(name string) (ent.Value, bool) {
 		return m.Region()
 	case filesource.FieldBucket:
 		return m.Bucket()
-	case filesource.FieldBucketUrl:
-		return m.BucketUrl()
+	case filesource.FieldBucketURL:
+		return m.BucketURL()
 	}
 	return nil, false
 }
@@ -14820,8 +14820,8 @@ func (m *FileSourceMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldRegion(ctx)
 	case filesource.FieldBucket:
 		return m.OldBucket(ctx)
-	case filesource.FieldBucketUrl:
-		return m.OldBucketUrl(ctx)
+	case filesource.FieldBucketURL:
+		return m.OldBucketURL(ctx)
 	}
 	return nil, fmt.Errorf("unknown FileSource field %s", name)
 }
@@ -14908,12 +14908,12 @@ func (m *FileSourceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBucket(v)
 		return nil
-	case filesource.FieldBucketUrl:
+	case filesource.FieldBucketURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBucketUrl(v)
+		m.SetBucketURL(v)
 		return nil
 	}
 	return fmt.Errorf("unknown FileSource field %s", name)
@@ -15045,8 +15045,8 @@ func (m *FileSourceMutation) ResetField(name string) error {
 	case filesource.FieldBucket:
 		m.ResetBucket()
 		return nil
-	case filesource.FieldBucketUrl:
-		m.ResetBucketUrl()
+	case filesource.FieldBucketURL:
+		m.ResetBucketURL()
 		return nil
 	}
 	return fmt.Errorf("unknown FileSource field %s", name)

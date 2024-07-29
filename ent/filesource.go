@@ -40,7 +40,7 @@ type FileSource struct {
 	// 文件存储空间
 	Bucket string `json:"bucket,omitempty"`
 	// 文件存储空间地址，用于匹配url
-	BucketUrl string `json:"bucketUrl,omitempty"`
+	BucketURL string `json:"bucket_url,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileSourceQuery when eager-loading is set.
 	Edges        FileSourceEdges `json:"edges"`
@@ -57,7 +57,7 @@ type FileSourceEdges struct {
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [1]map[string]int
 
 	namedIdentities map[string][]*FileIdentity
 	namedFiles      map[string][]*File
@@ -90,7 +90,7 @@ func (*FileSource) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case filesource.FieldID, filesource.FieldCreatedBy, filesource.FieldUpdatedBy:
 			values[i] = new(sql.NullInt64)
-		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketUrl:
+		case filesource.FieldKind, filesource.FieldComments, filesource.FieldEndpoint, filesource.FieldStsEndpoint, filesource.FieldRegion, filesource.FieldBucket, filesource.FieldBucketURL:
 			values[i] = new(sql.NullString)
 		case filesource.FieldCreatedAt, filesource.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -181,11 +181,11 @@ func (fs *FileSource) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.Bucket = value.String
 			}
-		case filesource.FieldBucketUrl:
+		case filesource.FieldBucketURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field bucketUrl", values[i])
+				return fmt.Errorf("unexpected type %T for field bucket_url", values[i])
 			} else if value.Valid {
-				fs.BucketUrl = value.String
+				fs.BucketURL = value.String
 			}
 		default:
 			fs.selectValues.Set(columns[i], values[i])
@@ -266,8 +266,8 @@ func (fs *FileSource) String() string {
 	builder.WriteString("bucket=")
 	builder.WriteString(fs.Bucket)
 	builder.WriteString(", ")
-	builder.WriteString("bucketUrl=")
-	builder.WriteString(fs.BucketUrl)
+	builder.WriteString("bucket_url=")
+	builder.WriteString(fs.BucketURL)
 	builder.WriteByte(')')
 	return builder.String()
 }

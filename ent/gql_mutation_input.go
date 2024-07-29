@@ -948,7 +948,7 @@ type CreateFileSourceInput struct {
 	StsEndpoint       string
 	Region            string
 	Bucket            string
-	BucketUrl         string
+	BucketURL         string
 	IdentityIDs       []int
 	FileIDs           []int
 }
@@ -966,7 +966,7 @@ func (i *CreateFileSourceInput) Mutate(m *FileSourceMutation) {
 	m.SetStsEndpoint(i.StsEndpoint)
 	m.SetRegion(i.Region)
 	m.SetBucket(i.Bucket)
-	m.SetBucketUrl(i.BucketUrl)
+	m.SetBucketURL(i.BucketURL)
 	if v := i.IdentityIDs; len(v) > 0 {
 		m.AddIdentityIDs(v...)
 	}
@@ -991,7 +991,7 @@ type UpdateFileSourceInput struct {
 	StsEndpoint       *string
 	Region            *string
 	Bucket            *string
-	BucketUrl         *string
+	BucketURL         *string
 	ClearIdentities   bool
 	AddIdentityIDs    []int
 	RemoveIdentityIDs []int
@@ -1026,8 +1026,8 @@ func (i *UpdateFileSourceInput) Mutate(m *FileSourceMutation) {
 	if v := i.Bucket; v != nil {
 		m.SetBucket(*v)
 	}
-	if v := i.BucketUrl; v != nil {
-		m.SetBucketUrl(*v)
+	if v := i.BucketURL; v != nil {
+		m.SetBucketURL(*v)
 	}
 	if i.ClearIdentities {
 		m.ClearIdentities()

@@ -373,6 +373,10 @@ func init() {
 	fileidentityDescRoleArn := fileidentityFields[4].Descriptor()
 	// fileidentity.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
 	fileidentity.RoleArnValidator = fileidentityDescRoleArn.Validators[0].(func(string) error)
+	// fileidentityDescDurationSeconds is the schema descriptor for duration_seconds field.
+	fileidentityDescDurationSeconds := fileidentityFields[6].Descriptor()
+	// fileidentity.DefaultDurationSeconds holds the default value on creation for the duration_seconds field.
+	fileidentity.DefaultDurationSeconds = fileidentityDescDurationSeconds.Default.(int)
 	// fileidentityDescIsDefault is the schema descriptor for is_default field.
 	fileidentityDescIsDefault := fileidentityFields[7].Descriptor()
 	// fileidentity.DefaultIsDefault holds the default value on creation for the is_default field.
@@ -410,10 +414,10 @@ func init() {
 	filesourceDescBucket := filesourceFields[6].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
-	// filesourceDescBucketUrl is the schema descriptor for bucketUrl field.
-	filesourceDescBucketUrl := filesourceFields[7].Descriptor()
-	// filesource.BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
-	filesource.BucketUrlValidator = filesourceDescBucketUrl.Validators[0].(func(string) error)
+	// filesourceDescBucketURL is the schema descriptor for bucket_url field.
+	filesourceDescBucketURL := filesourceFields[7].Descriptor()
+	// filesource.BucketURLValidator is a validator for the "bucket_url" field. It is called by the builders before save.
+	filesource.BucketURLValidator = filesourceDescBucketURL.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()
 	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
 	oauthclientMixinHooks2 := oauthclientMixin[2].Hooks()

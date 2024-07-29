@@ -105,9 +105,9 @@ func Bucket(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldEQ(FieldBucket, v))
 }
 
-// BucketUrl applies equality check predicate on the "bucketUrl" field. It's identical to BucketUrlEQ.
-func BucketUrl(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldEQ(FieldBucketUrl, v))
+// BucketURL applies equality check predicate on the "bucket_url" field. It's identical to BucketURLEQ.
+func BucketURL(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldBucketURL, v))
 }
 
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
@@ -655,69 +655,69 @@ func BucketContainsFold(v string) predicate.FileSource {
 	return predicate.FileSource(sql.FieldContainsFold(FieldBucket, v))
 }
 
-// BucketUrlEQ applies the EQ predicate on the "bucketUrl" field.
-func BucketUrlEQ(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldEQ(FieldBucketUrl, v))
+// BucketURLEQ applies the EQ predicate on the "bucket_url" field.
+func BucketURLEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEQ(FieldBucketURL, v))
 }
 
-// BucketUrlNEQ applies the NEQ predicate on the "bucketUrl" field.
-func BucketUrlNEQ(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldNEQ(FieldBucketUrl, v))
+// BucketURLNEQ applies the NEQ predicate on the "bucket_url" field.
+func BucketURLNEQ(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNEQ(FieldBucketURL, v))
 }
 
-// BucketUrlIn applies the In predicate on the "bucketUrl" field.
-func BucketUrlIn(vs ...string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldIn(FieldBucketUrl, vs...))
+// BucketURLIn applies the In predicate on the "bucket_url" field.
+func BucketURLIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldIn(FieldBucketURL, vs...))
 }
 
-// BucketUrlNotIn applies the NotIn predicate on the "bucketUrl" field.
-func BucketUrlNotIn(vs ...string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldNotIn(FieldBucketUrl, vs...))
+// BucketURLNotIn applies the NotIn predicate on the "bucket_url" field.
+func BucketURLNotIn(vs ...string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldNotIn(FieldBucketURL, vs...))
 }
 
-// BucketUrlGT applies the GT predicate on the "bucketUrl" field.
-func BucketUrlGT(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldGT(FieldBucketUrl, v))
+// BucketURLGT applies the GT predicate on the "bucket_url" field.
+func BucketURLGT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGT(FieldBucketURL, v))
 }
 
-// BucketUrlGTE applies the GTE predicate on the "bucketUrl" field.
-func BucketUrlGTE(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldGTE(FieldBucketUrl, v))
+// BucketURLGTE applies the GTE predicate on the "bucket_url" field.
+func BucketURLGTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldGTE(FieldBucketURL, v))
 }
 
-// BucketUrlLT applies the LT predicate on the "bucketUrl" field.
-func BucketUrlLT(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldLT(FieldBucketUrl, v))
+// BucketURLLT applies the LT predicate on the "bucket_url" field.
+func BucketURLLT(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLT(FieldBucketURL, v))
 }
 
-// BucketUrlLTE applies the LTE predicate on the "bucketUrl" field.
-func BucketUrlLTE(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldLTE(FieldBucketUrl, v))
+// BucketURLLTE applies the LTE predicate on the "bucket_url" field.
+func BucketURLLTE(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldLTE(FieldBucketURL, v))
 }
 
-// BucketUrlContains applies the Contains predicate on the "bucketUrl" field.
-func BucketUrlContains(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldContains(FieldBucketUrl, v))
+// BucketURLContains applies the Contains predicate on the "bucket_url" field.
+func BucketURLContains(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContains(FieldBucketURL, v))
 }
 
-// BucketUrlHasPrefix applies the HasPrefix predicate on the "bucketUrl" field.
-func BucketUrlHasPrefix(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldHasPrefix(FieldBucketUrl, v))
+// BucketURLHasPrefix applies the HasPrefix predicate on the "bucket_url" field.
+func BucketURLHasPrefix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasPrefix(FieldBucketURL, v))
 }
 
-// BucketUrlHasSuffix applies the HasSuffix predicate on the "bucketUrl" field.
-func BucketUrlHasSuffix(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldHasSuffix(FieldBucketUrl, v))
+// BucketURLHasSuffix applies the HasSuffix predicate on the "bucket_url" field.
+func BucketURLHasSuffix(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldHasSuffix(FieldBucketURL, v))
 }
 
-// BucketUrlEqualFold applies the EqualFold predicate on the "bucketUrl" field.
-func BucketUrlEqualFold(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldEqualFold(FieldBucketUrl, v))
+// BucketURLEqualFold applies the EqualFold predicate on the "bucket_url" field.
+func BucketURLEqualFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldEqualFold(FieldBucketURL, v))
 }
 
-// BucketUrlContainsFold applies the ContainsFold predicate on the "bucketUrl" field.
-func BucketUrlContainsFold(v string) predicate.FileSource {
-	return predicate.FileSource(sql.FieldContainsFold(FieldBucketUrl, v))
+// BucketURLContainsFold applies the ContainsFold predicate on the "bucket_url" field.
+func BucketURLContainsFold(v string) predicate.FileSource {
+	return predicate.FileSource(sql.FieldContainsFold(FieldBucketURL, v))
 }
 
 // HasIdentities applies the HasEdge predicate on the "identities" edge.

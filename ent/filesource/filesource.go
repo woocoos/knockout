@@ -40,8 +40,8 @@ const (
 	FieldRegion = "region"
 	// FieldBucket holds the string denoting the bucket field in the database.
 	FieldBucket = "bucket"
-	// FieldBucketUrl holds the string denoting the bucketurl field in the database.
-	FieldBucketUrl = "bucket_url"
+	// FieldBucketURL holds the string denoting the bucket_url field in the database.
+	FieldBucketURL = "bucket_url"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
@@ -78,7 +78,7 @@ var Columns = []string{
 	FieldStsEndpoint,
 	FieldRegion,
 	FieldBucket,
-	FieldBucketUrl,
+	FieldBucketURL,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -110,8 +110,8 @@ var (
 	RegionValidator func(string) error
 	// BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	BucketValidator func(string) error
-	// BucketUrlValidator is a validator for the "bucketUrl" field. It is called by the builders before save.
-	BucketUrlValidator func(string) error
+	// BucketURLValidator is a validator for the "bucket_url" field. It is called by the builders before save.
+	BucketURLValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -201,9 +201,9 @@ func ByBucket(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBucket, opts...).ToFunc()
 }
 
-// ByBucketUrl orders the results by the bucketUrl field.
-func ByBucketUrl(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBucketUrl, opts...).ToFunc()
+// ByBucketURL orders the results by the bucket_url field.
+func ByBucketURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBucketURL, opts...).ToFunc()
 }
 
 // ByIdentitiesCount orders the results by identities count.

@@ -130,9 +130,9 @@ func (fsc *FileSourceCreate) SetBucket(s string) *FileSourceCreate {
 	return fsc
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (fsc *FileSourceCreate) SetBucketUrl(s string) *FileSourceCreate {
-	fsc.mutation.SetBucketUrl(s)
+// SetBucketURL sets the "bucket_url" field.
+func (fsc *FileSourceCreate) SetBucketURL(s string) *FileSourceCreate {
+	fsc.mutation.SetBucketURL(s)
 	return fsc
 }
 
@@ -274,12 +274,12 @@ func (fsc *FileSourceCreate) check() error {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
 		}
 	}
-	if _, ok := fsc.mutation.BucketUrl(); !ok {
-		return &ValidationError{Name: "bucketUrl", err: errors.New(`ent: missing required field "FileSource.bucketUrl"`)}
+	if _, ok := fsc.mutation.BucketURL(); !ok {
+		return &ValidationError{Name: "bucket_url", err: errors.New(`ent: missing required field "FileSource.bucket_url"`)}
 	}
-	if v, ok := fsc.mutation.BucketUrl(); ok {
-		if err := filesource.BucketUrlValidator(v); err != nil {
-			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
+	if v, ok := fsc.mutation.BucketURL(); ok {
+		if err := filesource.BucketURLValidator(v); err != nil {
+			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
 	}
 	return nil
@@ -359,9 +359,9 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 		_node.Bucket = value
 	}
-	if value, ok := fsc.mutation.BucketUrl(); ok {
-		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
-		_node.BucketUrl = value
+	if value, ok := fsc.mutation.BucketURL(); ok {
+		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
+		_node.BucketURL = value
 	}
 	if nodes := fsc.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -579,15 +579,15 @@ func (u *FileSourceUpsert) UpdateBucket() *FileSourceUpsert {
 	return u
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (u *FileSourceUpsert) SetBucketUrl(v string) *FileSourceUpsert {
-	u.Set(filesource.FieldBucketUrl, v)
+// SetBucketURL sets the "bucket_url" field.
+func (u *FileSourceUpsert) SetBucketURL(v string) *FileSourceUpsert {
+	u.Set(filesource.FieldBucketURL, v)
 	return u
 }
 
-// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
-func (u *FileSourceUpsert) UpdateBucketUrl() *FileSourceUpsert {
-	u.SetExcluded(filesource.FieldBucketUrl)
+// UpdateBucketURL sets the "bucket_url" field to the value that was provided on create.
+func (u *FileSourceUpsert) UpdateBucketURL() *FileSourceUpsert {
+	u.SetExcluded(filesource.FieldBucketURL)
 	return u
 }
 
@@ -799,17 +799,17 @@ func (u *FileSourceUpsertOne) UpdateBucket() *FileSourceUpsertOne {
 	})
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (u *FileSourceUpsertOne) SetBucketUrl(v string) *FileSourceUpsertOne {
+// SetBucketURL sets the "bucket_url" field.
+func (u *FileSourceUpsertOne) SetBucketURL(v string) *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.SetBucketUrl(v)
+		s.SetBucketURL(v)
 	})
 }
 
-// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
-func (u *FileSourceUpsertOne) UpdateBucketUrl() *FileSourceUpsertOne {
+// UpdateBucketURL sets the "bucket_url" field to the value that was provided on create.
+func (u *FileSourceUpsertOne) UpdateBucketURL() *FileSourceUpsertOne {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.UpdateBucketUrl()
+		s.UpdateBucketURL()
 	})
 }
 
@@ -1187,17 +1187,17 @@ func (u *FileSourceUpsertBulk) UpdateBucket() *FileSourceUpsertBulk {
 	})
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (u *FileSourceUpsertBulk) SetBucketUrl(v string) *FileSourceUpsertBulk {
+// SetBucketURL sets the "bucket_url" field.
+func (u *FileSourceUpsertBulk) SetBucketURL(v string) *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.SetBucketUrl(v)
+		s.SetBucketURL(v)
 	})
 }
 
-// UpdateBucketUrl sets the "bucketUrl" field to the value that was provided on create.
-func (u *FileSourceUpsertBulk) UpdateBucketUrl() *FileSourceUpsertBulk {
+// UpdateBucketURL sets the "bucket_url" field to the value that was provided on create.
+func (u *FileSourceUpsertBulk) UpdateBucketURL() *FileSourceUpsertBulk {
 	return u.Update(func(s *FileSourceUpsert) {
-		s.UpdateBucketUrl()
+		s.UpdateBucketURL()
 	})
 }
 

@@ -1967,10 +1967,35 @@ func (fi *FileIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, fileidentity.FieldTenantID)
 				fieldSeen[fileidentity.FieldTenantID] = struct{}{}
 			}
+		case "accessKeyID":
+			if _, ok := fieldSeen[fileidentity.FieldAccessKeyID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldAccessKeyID)
+				fieldSeen[fileidentity.FieldAccessKeyID] = struct{}{}
+			}
+		case "accessKeySecret":
+			if _, ok := fieldSeen[fileidentity.FieldAccessKeySecret]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldAccessKeySecret)
+				fieldSeen[fileidentity.FieldAccessKeySecret] = struct{}{}
+			}
 		case "fileSourceID":
 			if _, ok := fieldSeen[fileidentity.FieldFileSourceID]; !ok {
 				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)
 				fieldSeen[fileidentity.FieldFileSourceID] = struct{}{}
+			}
+		case "roleArn":
+			if _, ok := fieldSeen[fileidentity.FieldRoleArn]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldRoleArn)
+				fieldSeen[fileidentity.FieldRoleArn] = struct{}{}
+			}
+		case "policy":
+			if _, ok := fieldSeen[fileidentity.FieldPolicy]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldPolicy)
+				fieldSeen[fileidentity.FieldPolicy] = struct{}{}
+			}
+		case "durationSeconds":
+			if _, ok := fieldSeen[fileidentity.FieldDurationSeconds]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldDurationSeconds)
+				fieldSeen[fileidentity.FieldDurationSeconds] = struct{}{}
 			}
 		case "isDefault":
 			if _, ok := fieldSeen[fileidentity.FieldIsDefault]; !ok {
@@ -2066,90 +2091,6 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "identities":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FileIdentityClient{config: fs.config}).Query()
-			)
-			args := newFileIdentityPaginateArgs(fieldArgs(ctx, new(FileIdentityWhereInput), path...))
-			if err := validateFirstLast(args.first, args.last); err != nil {
-				return fmt.Errorf("validate first and last in path %q: %w", path, err)
-			}
-			pager, err := newFileIdentityPager(args.opts, args.last != nil)
-			if err != nil {
-				return fmt.Errorf("create new pager in path %q: %w", path, err)
-			}
-			if query, err = pager.applyFilter(query); err != nil {
-				return err
-			}
-			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
-			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
-				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
-				if hasPagination || ignoredEdges {
-					query := query.Clone()
-					fs.loadTotal = append(fs.loadTotal, func(ctx context.Context, nodes []*FileSource) error {
-						ids := make([]driver.Value, len(nodes))
-						for i := range nodes {
-							ids[i] = nodes[i].ID
-						}
-						var v []struct {
-							NodeID int `sql:"file_source_id"`
-							Count  int `sql:"count"`
-						}
-						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(s.C(filesource.IdentitiesColumn), ids...))
-						})
-						if err := query.GroupBy(filesource.IdentitiesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
-							return err
-						}
-						m := make(map[int]int, len(v))
-						for i := range v {
-							m[v[i].NodeID] = v[i].Count
-						}
-						for i := range nodes {
-							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				} else {
-					fs.loadTotal = append(fs.loadTotal, func(_ context.Context, nodes []*FileSource) error {
-						for i := range nodes {
-							n := len(nodes[i].Edges.Identities)
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				}
-			}
-			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
-				continue
-			}
-			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
-				return err
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, fileidentityImplementors)...); err != nil {
-					return err
-				}
-			}
-			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(ctx, filesource.IdentitiesColumn, limit, args.first, args.last, pager.orderExpr(query))
-				query.modifiers = append(query.modifiers, modify)
-			} else {
-				query = pager.applyOrder(query)
-			}
-			fs.WithNamedIdentities(alias, func(wq *FileIdentityQuery) {
-				*wq = *query
-			})
 		case "files":
 			var (
 				alias = field.Alias
@@ -2193,10 +2134,10 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[1] == nil {
-								nodes[i].Edges.totalCount[1] = make(map[string]int)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[1][alias] = n
+							nodes[i].Edges.totalCount[0][alias] = n
 						}
 						return nil
 					})
@@ -2204,10 +2145,10 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 					fs.loadTotal = append(fs.loadTotal, func(_ context.Context, nodes []*FileSource) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Files)
-							if nodes[i].Edges.totalCount[1] == nil {
-								nodes[i].Edges.totalCount[1] = make(map[string]int)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[1][alias] = n
+							nodes[i].Edges.totalCount[0][alias] = n
 						}
 						return nil
 					})
@@ -2274,6 +2215,11 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldEndpointImmutable)
 				fieldSeen[filesource.FieldEndpointImmutable] = struct{}{}
 			}
+		case "stsEndpoint":
+			if _, ok := fieldSeen[filesource.FieldStsEndpoint]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldStsEndpoint)
+				fieldSeen[filesource.FieldStsEndpoint] = struct{}{}
+			}
 		case "region":
 			if _, ok := fieldSeen[filesource.FieldRegion]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldRegion)
@@ -2284,10 +2230,10 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldBucket)
 				fieldSeen[filesource.FieldBucket] = struct{}{}
 			}
-		case "bucketurl":
-			if _, ok := fieldSeen[filesource.FieldBucketUrl]; !ok {
-				selectedFields = append(selectedFields, filesource.FieldBucketUrl)
-				fieldSeen[filesource.FieldBucketUrl] = struct{}{}
+		case "bucketURL":
+			if _, ok := fieldSeen[filesource.FieldBucketURL]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldBucketURL)
+				fieldSeen[filesource.FieldBucketURL] = struct{}{}
 			}
 		case "id":
 		case "__typename":

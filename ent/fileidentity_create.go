@@ -218,6 +218,10 @@ func (fic *FileIdentityCreate) defaults() error {
 		v := fileidentity.DefaultCreatedAt()
 		fic.mutation.SetCreatedAt(v)
 	}
+	if _, ok := fic.mutation.DurationSeconds(); !ok {
+		v := fileidentity.DefaultDurationSeconds
+		fic.mutation.SetDurationSeconds(v)
+	}
 	if _, ok := fic.mutation.IsDefault(); !ok {
 		v := fileidentity.DefaultIsDefault
 		fic.mutation.SetIsDefault(v)

@@ -97,6 +97,8 @@ var (
 	AccessKeySecretValidator func(string) error
 	// RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
 	RoleArnValidator func(string) error
+	// DefaultDurationSeconds holds the default value on creation for the "duration_seconds" field.
+	DefaultDurationSeconds int
 	// DefaultIsDefault holds the default value on creation for the "is_default" field.
 	DefaultIsDefault bool
 )

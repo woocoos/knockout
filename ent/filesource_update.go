@@ -181,16 +181,16 @@ func (fsu *FileSourceUpdate) SetNillableBucket(s *string) *FileSourceUpdate {
 	return fsu
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (fsu *FileSourceUpdate) SetBucketUrl(s string) *FileSourceUpdate {
-	fsu.mutation.SetBucketUrl(s)
+// SetBucketURL sets the "bucket_url" field.
+func (fsu *FileSourceUpdate) SetBucketURL(s string) *FileSourceUpdate {
+	fsu.mutation.SetBucketURL(s)
 	return fsu
 }
 
-// SetNillableBucketUrl sets the "bucketUrl" field if the given value is not nil.
-func (fsu *FileSourceUpdate) SetNillableBucketUrl(s *string) *FileSourceUpdate {
+// SetNillableBucketURL sets the "bucket_url" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableBucketURL(s *string) *FileSourceUpdate {
 	if s != nil {
-		fsu.SetBucketUrl(*s)
+		fsu.SetBucketURL(*s)
 	}
 	return fsu
 }
@@ -326,9 +326,9 @@ func (fsu *FileSourceUpdate) check() error {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
 		}
 	}
-	if v, ok := fsu.mutation.BucketUrl(); ok {
-		if err := filesource.BucketUrlValidator(v); err != nil {
-			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
+	if v, ok := fsu.mutation.BucketURL(); ok {
+		if err := filesource.BucketURLValidator(v); err != nil {
+			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
 	}
 	return nil
@@ -385,8 +385,8 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fsu.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 	}
-	if value, ok := fsu.mutation.BucketUrl(); ok {
-		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
+	if value, ok := fsu.mutation.BucketURL(); ok {
+		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
 	}
 	if fsu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -649,16 +649,16 @@ func (fsuo *FileSourceUpdateOne) SetNillableBucket(s *string) *FileSourceUpdateO
 	return fsuo
 }
 
-// SetBucketUrl sets the "bucketUrl" field.
-func (fsuo *FileSourceUpdateOne) SetBucketUrl(s string) *FileSourceUpdateOne {
-	fsuo.mutation.SetBucketUrl(s)
+// SetBucketURL sets the "bucket_url" field.
+func (fsuo *FileSourceUpdateOne) SetBucketURL(s string) *FileSourceUpdateOne {
+	fsuo.mutation.SetBucketURL(s)
 	return fsuo
 }
 
-// SetNillableBucketUrl sets the "bucketUrl" field if the given value is not nil.
-func (fsuo *FileSourceUpdateOne) SetNillableBucketUrl(s *string) *FileSourceUpdateOne {
+// SetNillableBucketURL sets the "bucket_url" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableBucketURL(s *string) *FileSourceUpdateOne {
 	if s != nil {
-		fsuo.SetBucketUrl(*s)
+		fsuo.SetBucketURL(*s)
 	}
 	return fsuo
 }
@@ -807,9 +807,9 @@ func (fsuo *FileSourceUpdateOne) check() error {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
 		}
 	}
-	if v, ok := fsuo.mutation.BucketUrl(); ok {
-		if err := filesource.BucketUrlValidator(v); err != nil {
-			return &ValidationError{Name: "bucketUrl", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucketUrl": %w`, err)}
+	if v, ok := fsuo.mutation.BucketURL(); ok {
+		if err := filesource.BucketURLValidator(v); err != nil {
+			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
 	}
 	return nil
@@ -883,8 +883,8 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	if value, ok := fsuo.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 	}
-	if value, ok := fsuo.mutation.BucketUrl(); ok {
-		_spec.SetField(filesource.FieldBucketUrl, field.TypeString, value)
+	if value, ok := fsuo.mutation.BucketURL(); ok {
+		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
 	}
 	if fsuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{

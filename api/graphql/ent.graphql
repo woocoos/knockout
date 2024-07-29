@@ -2442,7 +2442,7 @@ input CreateFileSourceInput {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String!
+  bucketURL: String!
   identityIDs: [ID!]
   fileIDs: [ID!]
 }
@@ -2787,9 +2787,29 @@ type FileIdentity implements Node {
   """
   tenantID: ID!
   """
+  accesskey id
+  """
+  accessKeyID: String!
+  """
+  accesskey secret
+  """
+  accessKeySecret: String!
+  """
   文件来源ID
   """
   fileSourceID: ID!
+  """
+  角色的资源名称(ARN)，用于STS
+  """
+  roleArn: String!
+  """
+  指定返回的STS令牌的权限的策略
+  """
+  policy: String
+  """
+  STS令牌的有效期，默认3600s
+  """
+  durationSeconds: Int
   """
   租户默认的凭证
   """
@@ -3066,6 +3086,10 @@ type FileSource implements Node {
   """
   endpointImmutable: Boolean!
   """
+  sts服务的访问域名
+  """
+  stsEndpoint: String!
+  """
   地域，数据存储的物理位置
   """
   region: String!
@@ -3076,38 +3100,7 @@ type FileSource implements Node {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String! @goField(name: "BucketUrl", forceResolver: false)
-  identities(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for FileIdentities returned from the connection.
-    """
-    orderBy: FileIdentityOrder
-
-    """
-    Filtering options for FileIdentities returned from the connection.
-    """
-    where: FileIdentityWhereInput
-  ): FileIdentityConnection!
+  bucketURL: String!
   files(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -3341,21 +3334,21 @@ input FileSourceWhereInput {
   bucketEqualFold: String
   bucketContainsFold: String
   """
-  bucketUrl field predicates
+  bucket_url field predicates
   """
-  bucketurl: String
-  bucketurlNEQ: String
-  bucketurlIn: [String!]
-  bucketurlNotIn: [String!]
-  bucketurlGT: String
-  bucketurlGTE: String
-  bucketurlLT: String
-  bucketurlLTE: String
-  bucketurlContains: String
-  bucketurlHasPrefix: String
-  bucketurlHasSuffix: String
-  bucketurlEqualFold: String
-  bucketurlContainsFold: String
+  bucketURL: String
+  bucketURLNEQ: String
+  bucketURLIn: [String!]
+  bucketURLNotIn: [String!]
+  bucketURLGT: String
+  bucketURLGTE: String
+  bucketURLLT: String
+  bucketURLLTE: String
+  bucketURLContains: String
+  bucketURLHasPrefix: String
+  bucketURLHasSuffix: String
+  bucketURLEqualFold: String
+  bucketURLContainsFold: String
   """
   identities edge predicates
   """
@@ -5384,6 +5377,40 @@ type Query {
     where: AppDictWhereInput
   ): AppDictConnection!
   """
+  文件凭证
+  """
+  fileIdentities(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for FileIdentities returned from the connection.
+    """
+    orderBy: FileIdentityOrder
+
+    """
+    Filtering options for FileIdentities returned from the connection.
+    """
+    where: FileIdentityWhereInput
+  ): FileIdentityConnection!
+  """
   文件来源
   """
   fileSources(
@@ -5804,7 +5831,7 @@ input UpdateFileSourceInput {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String
+  bucketURL: String
   addIdentityIDs: [ID!]
   removeIdentityIDs: [ID!]
   clearIdentities: Boolean

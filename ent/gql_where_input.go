@@ -6121,20 +6121,20 @@ type FileSourceWhereInput struct {
 	BucketEqualFold    *string  `json:"bucketEqualFold,omitempty"`
 	BucketContainsFold *string  `json:"bucketContainsFold,omitempty"`
 
-	// "bucketUrl" field predicates.
-	BucketUrl             *string  `json:"bucketurl,omitempty"`
-	BucketUrlNEQ          *string  `json:"bucketurlNEQ,omitempty"`
-	BucketUrlIn           []string `json:"bucketurlIn,omitempty"`
-	BucketUrlNotIn        []string `json:"bucketurlNotIn,omitempty"`
-	BucketUrlGT           *string  `json:"bucketurlGT,omitempty"`
-	BucketUrlGTE          *string  `json:"bucketurlGTE,omitempty"`
-	BucketUrlLT           *string  `json:"bucketurlLT,omitempty"`
-	BucketUrlLTE          *string  `json:"bucketurlLTE,omitempty"`
-	BucketUrlContains     *string  `json:"bucketurlContains,omitempty"`
-	BucketUrlHasPrefix    *string  `json:"bucketurlHasPrefix,omitempty"`
-	BucketUrlHasSuffix    *string  `json:"bucketurlHasSuffix,omitempty"`
-	BucketUrlEqualFold    *string  `json:"bucketurlEqualFold,omitempty"`
-	BucketUrlContainsFold *string  `json:"bucketurlContainsFold,omitempty"`
+	// "bucket_url" field predicates.
+	BucketURL             *string  `json:"bucketURL,omitempty"`
+	BucketURLNEQ          *string  `json:"bucketURLNEQ,omitempty"`
+	BucketURLIn           []string `json:"bucketURLIn,omitempty"`
+	BucketURLNotIn        []string `json:"bucketURLNotIn,omitempty"`
+	BucketURLGT           *string  `json:"bucketURLGT,omitempty"`
+	BucketURLGTE          *string  `json:"bucketURLGTE,omitempty"`
+	BucketURLLT           *string  `json:"bucketURLLT,omitempty"`
+	BucketURLLTE          *string  `json:"bucketURLLTE,omitempty"`
+	BucketURLContains     *string  `json:"bucketURLContains,omitempty"`
+	BucketURLHasPrefix    *string  `json:"bucketURLHasPrefix,omitempty"`
+	BucketURLHasSuffix    *string  `json:"bucketURLHasSuffix,omitempty"`
+	BucketURLEqualFold    *string  `json:"bucketURLEqualFold,omitempty"`
+	BucketURLContainsFold *string  `json:"bucketURLContainsFold,omitempty"`
 
 	// "identities" edge predicates.
 	HasIdentities     *bool                     `json:"hasIdentities,omitempty"`
@@ -6522,44 +6522,44 @@ func (i *FileSourceWhereInput) P() (predicate.FileSource, error) {
 	if i.BucketContainsFold != nil {
 		predicates = append(predicates, filesource.BucketContainsFold(*i.BucketContainsFold))
 	}
-	if i.BucketUrl != nil {
-		predicates = append(predicates, filesource.BucketUrlEQ(*i.BucketUrl))
+	if i.BucketURL != nil {
+		predicates = append(predicates, filesource.BucketURLEQ(*i.BucketURL))
 	}
-	if i.BucketUrlNEQ != nil {
-		predicates = append(predicates, filesource.BucketUrlNEQ(*i.BucketUrlNEQ))
+	if i.BucketURLNEQ != nil {
+		predicates = append(predicates, filesource.BucketURLNEQ(*i.BucketURLNEQ))
 	}
-	if len(i.BucketUrlIn) > 0 {
-		predicates = append(predicates, filesource.BucketUrlIn(i.BucketUrlIn...))
+	if len(i.BucketURLIn) > 0 {
+		predicates = append(predicates, filesource.BucketURLIn(i.BucketURLIn...))
 	}
-	if len(i.BucketUrlNotIn) > 0 {
-		predicates = append(predicates, filesource.BucketUrlNotIn(i.BucketUrlNotIn...))
+	if len(i.BucketURLNotIn) > 0 {
+		predicates = append(predicates, filesource.BucketURLNotIn(i.BucketURLNotIn...))
 	}
-	if i.BucketUrlGT != nil {
-		predicates = append(predicates, filesource.BucketUrlGT(*i.BucketUrlGT))
+	if i.BucketURLGT != nil {
+		predicates = append(predicates, filesource.BucketURLGT(*i.BucketURLGT))
 	}
-	if i.BucketUrlGTE != nil {
-		predicates = append(predicates, filesource.BucketUrlGTE(*i.BucketUrlGTE))
+	if i.BucketURLGTE != nil {
+		predicates = append(predicates, filesource.BucketURLGTE(*i.BucketURLGTE))
 	}
-	if i.BucketUrlLT != nil {
-		predicates = append(predicates, filesource.BucketUrlLT(*i.BucketUrlLT))
+	if i.BucketURLLT != nil {
+		predicates = append(predicates, filesource.BucketURLLT(*i.BucketURLLT))
 	}
-	if i.BucketUrlLTE != nil {
-		predicates = append(predicates, filesource.BucketUrlLTE(*i.BucketUrlLTE))
+	if i.BucketURLLTE != nil {
+		predicates = append(predicates, filesource.BucketURLLTE(*i.BucketURLLTE))
 	}
-	if i.BucketUrlContains != nil {
-		predicates = append(predicates, filesource.BucketUrlContains(*i.BucketUrlContains))
+	if i.BucketURLContains != nil {
+		predicates = append(predicates, filesource.BucketURLContains(*i.BucketURLContains))
 	}
-	if i.BucketUrlHasPrefix != nil {
-		predicates = append(predicates, filesource.BucketUrlHasPrefix(*i.BucketUrlHasPrefix))
+	if i.BucketURLHasPrefix != nil {
+		predicates = append(predicates, filesource.BucketURLHasPrefix(*i.BucketURLHasPrefix))
 	}
-	if i.BucketUrlHasSuffix != nil {
-		predicates = append(predicates, filesource.BucketUrlHasSuffix(*i.BucketUrlHasSuffix))
+	if i.BucketURLHasSuffix != nil {
+		predicates = append(predicates, filesource.BucketURLHasSuffix(*i.BucketURLHasSuffix))
 	}
-	if i.BucketUrlEqualFold != nil {
-		predicates = append(predicates, filesource.BucketUrlEqualFold(*i.BucketUrlEqualFold))
+	if i.BucketURLEqualFold != nil {
+		predicates = append(predicates, filesource.BucketURLEqualFold(*i.BucketURLEqualFold))
 	}
-	if i.BucketUrlContainsFold != nil {
-		predicates = append(predicates, filesource.BucketUrlContainsFold(*i.BucketUrlContainsFold))
+	if i.BucketURLContainsFold != nil {
+		predicates = append(predicates, filesource.BucketURLContainsFold(*i.BucketURLContainsFold))
 	}
 
 	if i.HasIdentities != nil {

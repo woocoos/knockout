@@ -63,6 +63,7 @@ func (svc *Minio) GetSTS(roleSessionName string) (*STSResponse, error) {
 		RoleArn:         aws.String(svc.fileSource.RoleArn),
 		Policy:          aws.String(svc.fileSource.Policy),
 		RoleSessionName: aws.String(roleSessionName),
+		DurationSeconds: aws.Int32(int32(svc.fileSource.DurationSeconds)),
 	}
 	out, err := svc.stsClient.AssumeRole(svc.ctx, input)
 	if err != nil {

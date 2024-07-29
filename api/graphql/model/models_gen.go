@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"entgo.io/contrib/entgql"
+	"github.com/woocoos/knockout/ent"
 )
 
 // Ordering options for AppRolePolicy connections
@@ -44,6 +45,24 @@ type GrantInput struct {
 type Mfa struct {
 	Secret  string `json:"secret"`
 	Account string `json:"account"`
+}
+
+// 业务调用的fileIdentity
+type OrgFileIdentity struct {
+	ID        int        `json:"id"`
+	CreatedBy int        `json:"createdBy"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedBy *int       `json:"updatedBy,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	// 组织ID
+	TenantID int `json:"tenantID"`
+	// 文件来源ID
+	FileSourceID int `json:"fileSourceID"`
+	// 租户默认的凭证
+	IsDefault bool `json:"isDefault"`
+	// 备注
+	Comments *string         `json:"comments,omitempty"`
+	Source   *ent.FileSource `json:"source"`
 }
 
 // Ordering options for OrgRoleUser connections

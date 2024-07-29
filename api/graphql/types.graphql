@@ -104,3 +104,29 @@ input OrgUserPreferenceInput {
     """用户最近访问菜单"""
     menuRecent: [ID!]
 }
+
+"""业务调用的fileIdentity"""
+type OrgFileIdentity {
+    id: ID!
+    createdBy: Int!
+    createdAt: Time!
+    updatedBy: Int
+    updatedAt: Time
+    """
+    组织ID
+    """
+    tenantID: ID!
+    """
+    文件来源ID
+    """
+    fileSourceID: ID!
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    """
+    备注
+    """
+    comments: String
+    source: FileSource!
+}

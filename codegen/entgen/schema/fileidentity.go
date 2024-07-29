@@ -19,6 +19,7 @@ func (FileIdentity) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "file_identity"},
 		entgql.RelayConnection(),
+		entgql.QueryField("fileIdentities").Description("文件凭证"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
@@ -38,12 +39,12 @@ func (FileIdentity) Mixin() []ent.Mixin {
 func (FileIdentity) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("tenant_id").Comment("组织ID").Annotations(entgql.Type("ID")),
-		field.String("access_key_id").MaxLen(255).Comment("accesskey id").Annotations(entgql.Skip(entgql.SkipType)),
-		field.String("access_key_secret").MaxLen(255).Comment("accesskey secret").Annotations(entgql.Skip(entgql.SkipType)),
+		field.String("access_key_id").MaxLen(255).Comment("accesskey id"),
+		field.String("access_key_secret").MaxLen(255).Comment("accesskey secret"),
 		field.Int("file_source_id").Comment("文件来源ID"),
-		field.String("role_arn").MaxLen(255).Comment("角色的资源名称(ARN)，用于STS").Annotations(entgql.Skip(entgql.SkipType)),
-		field.String("policy").Optional().Comment("指定返回的STS令牌的权限的策略").Annotations(entgql.Skip(entgql.SkipType)),
-		field.Int("duration_seconds").Optional().Comment("STS令牌的有效期，默认3600s").Annotations(entgql.Skip(entgql.SkipType)),
+		field.String("role_arn").MaxLen(255).Comment("角色的资源名称(ARN)，用于STS"),
+		field.Text("policy").Optional().Comment("指定返回的STS令牌的权限的策略"),
+		field.Int("duration_seconds").Optional().Default(3600).Comment("STS令牌的有效期，默认3600s"),
 		field.Bool("is_default").Default(false).Comment("租户默认的凭证"),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),

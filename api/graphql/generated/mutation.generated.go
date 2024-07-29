@@ -6277,14 +6277,14 @@ func (ec *executionContext) fieldContext_Mutation_createFileSource(ctx context.C
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
 			case "endpointImmutable":
 				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "bucketurl":
-				return ec.fieldContext_FileSource_bucketurl(ctx, field)
-			case "identities":
-				return ec.fieldContext_FileSource_identities(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -6362,14 +6362,14 @@ func (ec *executionContext) fieldContext_Mutation_updateFileSource(ctx context.C
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
 			case "endpointImmutable":
 				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "bucketurl":
-				return ec.fieldContext_FileSource_bucketurl(ctx, field)
-			case "identities":
-				return ec.fieldContext_FileSource_identities(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			case "files":
 				return ec.fieldContext_FileSource_files(ctx, field)
 			}
@@ -6496,8 +6496,18 @@ func (ec *executionContext) fieldContext_Mutation_createFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":
@@ -6573,8 +6583,18 @@ func (ec *executionContext) fieldContext_Mutation_updateFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
 			case "tenantID":
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
 			case "isDefault":
 				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
 			case "comments":

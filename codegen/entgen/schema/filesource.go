@@ -46,17 +46,17 @@ func (FileSource) Fields() []ent.Field {
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.String("endpoint").MaxLen(255).Comment("对外服务的访问域名"),
 		field.Bool("endpoint_immutable").Default(false).Comment("是否禁止修改endpoint，如果是自定义域名设为true"),
-		field.String("sts_endpoint").MaxLen(255).Comment("sts服务的访问域名").Annotations(entgql.Skip(entgql.SkipType)),
+		field.String("sts_endpoint").MaxLen(255).Comment("sts服务的访问域名"),
 		field.String("region").MaxLen(100).Comment("地域，数据存储的物理位置"),
 		field.String("bucket").MaxLen(255).Comment("文件存储空间"),
-		field.String("bucketUrl").MaxLen(255).Comment("文件存储空间地址，用于匹配url"),
+		field.String("bucket_url").MaxLen(255).Comment("文件存储空间地址，用于匹配url"),
 	}
 }
 
 // Edges of the FileSource.
 func (FileSource) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("identities", FileIdentity.Type).Comment("来源凭证").Annotations(entgql.RelayConnection()),
+		edge.To("identities", FileIdentity.Type).Comment("来源凭证").Annotations(entgql.Skip(entgql.SkipType)),
 		edge.To("files", File.Type).Comment("所有文件").Annotations(entgql.RelayConnection()),
 	}
 }

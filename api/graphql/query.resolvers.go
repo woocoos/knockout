@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -268,11 +269,28 @@ func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, er
 	return has, nil
 }
 
-// FileIdentities is the resolver for the fileIdentities field.
-func (r *queryResolver) FileIdentities(ctx context.Context) ([]*ent.FileIdentity, error) {
+// FileIdentitiesForOrg is the resolver for the fileIdentitiesForOrg field.
+func (r *queryResolver) FileIdentitiesForOrg(ctx context.Context) ([]*model.OrgFileIdentity, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return r.client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).All(ctx)
+	fis, err := r.client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).WithSource().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*model.OrgFileIdentity, len(fis))
+	for i, fi := range fis {
+		res[i] = &model.OrgFileIdentity{
+			ID:        fi.ID,
+			CreatedAt: fi.CreatedAt,
+			CreatedBy: fi.CreatedBy,
+			UpdatedAt: &fi.UpdatedAt,
+			UpdatedBy: &fi.UpdatedBy,
+			Comments:  &fi.Comments,
+			IsDefault: fi.IsDefault,
+			Source:    fi.Edges.Source,
+		}
+	}
+	return res, nil
 }

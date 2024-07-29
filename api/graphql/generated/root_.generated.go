@@ -283,16 +283,21 @@ type ComplexityRoot struct {
 	}
 
 	FileIdentity struct {
-		Comments     func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		CreatedBy    func(childComplexity int) int
-		FileSourceID func(childComplexity int) int
-		ID           func(childComplexity int) int
-		IsDefault    func(childComplexity int) int
-		Source       func(childComplexity int) int
-		TenantID     func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		UpdatedBy    func(childComplexity int) int
+		AccessKeyID     func(childComplexity int) int
+		AccessKeySecret func(childComplexity int) int
+		Comments        func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		CreatedBy       func(childComplexity int) int
+		DurationSeconds func(childComplexity int) int
+		FileSourceID    func(childComplexity int) int
+		ID              func(childComplexity int) int
+		IsDefault       func(childComplexity int) int
+		Policy          func(childComplexity int) int
+		RoleArn         func(childComplexity int) int
+		Source          func(childComplexity int) int
+		TenantID        func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		UpdatedBy       func(childComplexity int) int
 	}
 
 	FileIdentityConnection struct {
@@ -308,7 +313,7 @@ type ComplexityRoot struct {
 
 	FileSource struct {
 		Bucket            func(childComplexity int) int
-		BucketUrl         func(childComplexity int) int
+		BucketURL         func(childComplexity int) int
 		Comments          func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
@@ -316,9 +321,9 @@ type ComplexityRoot struct {
 		EndpointImmutable func(childComplexity int) int
 		Files             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileOrder, where *ent.FileWhereInput) int
 		ID                func(childComplexity int) int
-		Identities        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
 		Kind              func(childComplexity int) int
 		Region            func(childComplexity int) int
+		StsEndpoint       func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
 		UpdatedBy         func(childComplexity int) int
 	}
@@ -473,6 +478,19 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	OrgFileIdentity struct {
+		Comments     func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		FileSourceID func(childComplexity int) int
+		ID           func(childComplexity int) int
+		IsDefault    func(childComplexity int) int
+		Source       func(childComplexity int) int
+		TenantID     func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+	}
+
 	OrgPolicy struct {
 		AppPolicyID func(childComplexity int) int
 		Comments    func(childComplexity int) int
@@ -607,7 +625,8 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission         func(childComplexity int, permission string) int
-		FileIdentities          func(childComplexity int) int
+		FileIdentities          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
+		FileIdentitiesForOrg    func(childComplexity int) int
 		FileSources             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
 		GlobalID                func(childComplexity int, typeArg string, id int) int
 		Node                    func(childComplexity int, id string) int
@@ -1914,6 +1933,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileEdge.Node(childComplexity), true
 
+	case "FileIdentity.accessKeyID":
+		if e.complexity.FileIdentity.AccessKeyID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.AccessKeyID(childComplexity), true
+
+	case "FileIdentity.accessKeySecret":
+		if e.complexity.FileIdentity.AccessKeySecret == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.AccessKeySecret(childComplexity), true
+
 	case "FileIdentity.comments":
 		if e.complexity.FileIdentity.Comments == nil {
 			break
@@ -1935,6 +1968,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileIdentity.CreatedBy(childComplexity), true
 
+	case "FileIdentity.durationSeconds":
+		if e.complexity.FileIdentity.DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.DurationSeconds(childComplexity), true
+
 	case "FileIdentity.fileSourceID":
 		if e.complexity.FileIdentity.FileSourceID == nil {
 			break
@@ -1955,6 +1995,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileIdentity.IsDefault(childComplexity), true
+
+	case "FileIdentity.policy":
+		if e.complexity.FileIdentity.Policy == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.Policy(childComplexity), true
+
+	case "FileIdentity.roleArn":
+		if e.complexity.FileIdentity.RoleArn == nil {
+			break
+		}
+
+		return e.complexity.FileIdentity.RoleArn(childComplexity), true
 
 	case "FileIdentity.source":
 		if e.complexity.FileIdentity.Source == nil {
@@ -2026,12 +2080,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.Bucket(childComplexity), true
 
-	case "FileSource.bucketurl":
-		if e.complexity.FileSource.BucketUrl == nil {
+	case "FileSource.bucketURL":
+		if e.complexity.FileSource.BucketURL == nil {
 			break
 		}
 
-		return e.complexity.FileSource.BucketUrl(childComplexity), true
+		return e.complexity.FileSource.BucketURL(childComplexity), true
 
 	case "FileSource.comments":
 		if e.complexity.FileSource.Comments == nil {
@@ -2087,18 +2141,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileSource.ID(childComplexity), true
 
-	case "FileSource.identities":
-		if e.complexity.FileSource.Identities == nil {
-			break
-		}
-
-		args, err := ec.field_FileSource_identities_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.FileSource.Identities(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileIdentityOrder), args["where"].(*ent.FileIdentityWhereInput)), true
-
 	case "FileSource.kind":
 		if e.complexity.FileSource.Kind == nil {
 			break
@@ -2112,6 +2154,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileSource.Region(childComplexity), true
+
+	case "FileSource.stsEndpoint":
+		if e.complexity.FileSource.StsEndpoint == nil {
+			break
+		}
+
+		return e.complexity.FileSource.StsEndpoint(childComplexity), true
 
 	case "FileSource.updatedAt":
 		if e.complexity.FileSource.UpdatedAt == nil {
@@ -3409,6 +3458,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgEdge.Node(childComplexity), true
 
+	case "OrgFileIdentity.comments":
+		if e.complexity.OrgFileIdentity.Comments == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.Comments(childComplexity), true
+
+	case "OrgFileIdentity.createdAt":
+		if e.complexity.OrgFileIdentity.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.CreatedAt(childComplexity), true
+
+	case "OrgFileIdentity.createdBy":
+		if e.complexity.OrgFileIdentity.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.CreatedBy(childComplexity), true
+
+	case "OrgFileIdentity.fileSourceID":
+		if e.complexity.OrgFileIdentity.FileSourceID == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.FileSourceID(childComplexity), true
+
+	case "OrgFileIdentity.id":
+		if e.complexity.OrgFileIdentity.ID == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.ID(childComplexity), true
+
+	case "OrgFileIdentity.isDefault":
+		if e.complexity.OrgFileIdentity.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.IsDefault(childComplexity), true
+
+	case "OrgFileIdentity.source":
+		if e.complexity.OrgFileIdentity.Source == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.Source(childComplexity), true
+
+	case "OrgFileIdentity.tenantID":
+		if e.complexity.OrgFileIdentity.TenantID == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.TenantID(childComplexity), true
+
+	case "OrgFileIdentity.updatedAt":
+		if e.complexity.OrgFileIdentity.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.UpdatedAt(childComplexity), true
+
+	case "OrgFileIdentity.updatedBy":
+		if e.complexity.OrgFileIdentity.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.OrgFileIdentity.UpdatedBy(childComplexity), true
+
 	case "OrgPolicy.appPolicyID":
 		if e.complexity.OrgPolicy.AppPolicyID == nil {
 			break
@@ -4111,7 +4230,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.FileIdentities(childComplexity), true
+		args, err := ec.field_Query_fileIdentities_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FileIdentities(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileIdentityOrder), args["where"].(*ent.FileIdentityWhereInput)), true
+
+	case "Query.fileIdentitiesForOrg":
+		if e.complexity.Query.FileIdentitiesForOrg == nil {
+			break
+		}
+
+		return e.complexity.Query.FileIdentitiesForOrg(childComplexity), true
 
 	case "Query.fileSources":
 		if e.complexity.Query.FileSources == nil {
@@ -7552,7 +7683,7 @@ input CreateFileSourceInput {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String!
+  bucketURL: String!
   identityIDs: [ID!]
   fileIDs: [ID!]
 }
@@ -7897,9 +8028,29 @@ type FileIdentity implements Node {
   """
   tenantID: ID!
   """
+  accesskey id
+  """
+  accessKeyID: String!
+  """
+  accesskey secret
+  """
+  accessKeySecret: String!
+  """
   文件来源ID
   """
   fileSourceID: ID!
+  """
+  角色的资源名称(ARN)，用于STS
+  """
+  roleArn: String!
+  """
+  指定返回的STS令牌的权限的策略
+  """
+  policy: String
+  """
+  STS令牌的有效期，默认3600s
+  """
+  durationSeconds: Int
   """
   租户默认的凭证
   """
@@ -8176,6 +8327,10 @@ type FileSource implements Node {
   """
   endpointImmutable: Boolean!
   """
+  sts服务的访问域名
+  """
+  stsEndpoint: String!
+  """
   地域，数据存储的物理位置
   """
   region: String!
@@ -8186,38 +8341,7 @@ type FileSource implements Node {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String! @goField(name: "BucketUrl", forceResolver: false)
-  identities(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for FileIdentities returned from the connection.
-    """
-    orderBy: FileIdentityOrder
-
-    """
-    Filtering options for FileIdentities returned from the connection.
-    """
-    where: FileIdentityWhereInput
-  ): FileIdentityConnection!
+  bucketURL: String!
   files(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -8451,21 +8575,21 @@ input FileSourceWhereInput {
   bucketEqualFold: String
   bucketContainsFold: String
   """
-  bucketUrl field predicates
+  bucket_url field predicates
   """
-  bucketurl: String
-  bucketurlNEQ: String
-  bucketurlIn: [String!]
-  bucketurlNotIn: [String!]
-  bucketurlGT: String
-  bucketurlGTE: String
-  bucketurlLT: String
-  bucketurlLTE: String
-  bucketurlContains: String
-  bucketurlHasPrefix: String
-  bucketurlHasSuffix: String
-  bucketurlEqualFold: String
-  bucketurlContainsFold: String
+  bucketURL: String
+  bucketURLNEQ: String
+  bucketURLIn: [String!]
+  bucketURLNotIn: [String!]
+  bucketURLGT: String
+  bucketURLGTE: String
+  bucketURLLT: String
+  bucketURLLTE: String
+  bucketURLContains: String
+  bucketURLHasPrefix: String
+  bucketURLHasSuffix: String
+  bucketURLEqualFold: String
+  bucketURLContainsFold: String
   """
   identities edge predicates
   """
@@ -10494,6 +10618,40 @@ type Query {
     where: AppDictWhereInput
   ): AppDictConnection!
   """
+  文件凭证
+  """
+  fileIdentities(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for FileIdentities returned from the connection.
+    """
+    orderBy: FileIdentityOrder
+
+    """
+    Filtering options for FileIdentities returned from the connection.
+    """
+    where: FileIdentityWhereInput
+  ): FileIdentityConnection!
+  """
   文件来源
   """
   fileSources(
@@ -10914,7 +11072,7 @@ input UpdateFileSourceInput {
   """
   文件存储空间地址，用于匹配url
   """
-  bucketurl: String
+  bucketURL: String
   addIdentityIDs: [ID!]
   removeIdentityIDs: [ID!]
   clearIdentities: Boolean
@@ -12494,6 +12652,32 @@ input OrgUserPreferenceInput {
     menuFavorite: [ID!]
     """用户最近访问菜单"""
     menuRecent: [ID!]
+}
+
+"""业务调用的fileIdentity"""
+type OrgFileIdentity {
+    id: ID!
+    createdBy: Int!
+    createdAt: Time!
+    updatedBy: Int
+    updatedAt: Time
+    """
+    组织ID
+    """
+    tenantID: ID!
+    """
+    文件来源ID
+    """
+    fileSourceID: ID!
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    """
+    备注
+    """
+    comments: String
+    source: FileSource!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -12618,8 +12802,8 @@ input OrgUserPreferenceInput {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
-    """文件凭证"""
-    fileIdentities: [FileIdentity!]!
+    """获取当前组织的文件凭证"""
+    fileIdentitiesForOrg: [OrgFileIdentity!]!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

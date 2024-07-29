@@ -121,6 +121,6 @@ extend type Query {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
-    """文件凭证"""
-    fileIdentities: [FileIdentity!]!
+    """获取当前组织的文件凭证"""
+    fileIdentitiesForOrg: [OrgFileIdentity!]!
 }
