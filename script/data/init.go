@@ -241,7 +241,7 @@ func (*dataset) initFileSource(client *ent.Tx) {
 	fs := make([]*ent.FileSourceCreate, 0)
 	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindMinio).SetComments("本地存储bucket").
 		SetEndpoint("http://192.168.0.17:32650").SetBucket("woocootest").SetRegion("minio").SetStsEndpoint("http://192.168.0.17:32650").
-		SetBucketUrl("http://192.168.0.17:32650/woocootest").SetCreatedBy(1)
+		SetBucketURL("http://192.168.0.17:32650/woocootest").SetCreatedBy(1)
 	fs = append(fs, s1)
 	client.FileSource.CreateBulk(fs...).ExecX(context.Background())
 

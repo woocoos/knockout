@@ -1037,7 +1037,7 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	var fi *ent.FileIdentity
 	// 根据bucketUrl获取对应的fileIdentity
 	for _, f := range fis {
-		if strings.HasPrefix(req.URL, f.Edges.Source.BucketUrl) {
+		if strings.HasPrefix(req.URL, f.Edges.Source.BucketURL) {
 			fi = f
 			break
 		}
@@ -1064,7 +1064,7 @@ func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *oss.FileSource {
 		TenantID:          fi.TenantID,
 		Kind:              fi.Edges.Source.Kind,
 		Bucket:            fi.Edges.Source.Bucket,
-		BucketUrl:         fi.Edges.Source.BucketUrl,
+		BucketUrl:         fi.Edges.Source.BucketURL,
 		Endpoint:          fi.Edges.Source.Endpoint,
 		EndpointImmutable: fi.Edges.Source.EndpointImmutable,
 		StsEndpoint:       fi.Edges.Source.StsEndpoint,

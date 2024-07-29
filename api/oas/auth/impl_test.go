@@ -144,7 +144,7 @@ func (ts *loginFlowSuite) SetupSuite() {
 	ts.Require().NoError(err)
 
 	err = db.FileSource.Create().SetID(1).SetCreatedBy(1).SetKind(filesource.KindMinio).
-		SetEndpoint("http://localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetBucket("test2").SetBucketUrl("http://localhost:9000/test2").Exec(context.Background())
+		SetEndpoint("http://localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetBucket("test2").SetBucketURL("http://localhost:9000/test2").Exec(context.Background())
 	ts.Require().NoError(err)
 
 	err = db.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").
