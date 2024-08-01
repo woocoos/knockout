@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -432,6 +433,21 @@ func (ou *OrgUpdate) AddApps(a ...*App) *OrgUpdate {
 	return ou.AddAppIDs(ids...)
 }
 
+// AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
+func (ou *OrgUpdate) AddFileIdentityIDs(ids ...int) *OrgUpdate {
+	ou.mutation.AddFileIdentityIDs(ids...)
+	return ou
+}
+
+// AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
+func (ou *OrgUpdate) AddFileIdentities(f ...*FileIdentity) *OrgUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return ou.AddFileIdentityIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ou *OrgUpdate) AddOrgUserIDs(ids ...int) *OrgUpdate {
 	ou.mutation.AddOrgUserIDs(ids...)
@@ -603,6 +619,27 @@ func (ou *OrgUpdate) RemoveApps(a ...*App) *OrgUpdate {
 		ids[i] = a[i].ID
 	}
 	return ou.RemoveAppIDs(ids...)
+}
+
+// ClearFileIdentities clears all "file_identities" edges to the FileIdentity entity.
+func (ou *OrgUpdate) ClearFileIdentities() *OrgUpdate {
+	ou.mutation.ClearFileIdentities()
+	return ou
+}
+
+// RemoveFileIdentityIDs removes the "file_identities" edge to FileIdentity entities by IDs.
+func (ou *OrgUpdate) RemoveFileIdentityIDs(ids ...int) *OrgUpdate {
+	ou.mutation.RemoveFileIdentityIDs(ids...)
+	return ou
+}
+
+// RemoveFileIdentities removes "file_identities" edges to FileIdentity entities.
+func (ou *OrgUpdate) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return ou.RemoveFileIdentityIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1159,6 +1196,51 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge.Target.Fields = specE.Fields
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.FileIdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !ou.mutation.FileIdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if ou.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1665,6 +1747,21 @@ func (ouo *OrgUpdateOne) AddApps(a ...*App) *OrgUpdateOne {
 	return ouo.AddAppIDs(ids...)
 }
 
+// AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
+func (ouo *OrgUpdateOne) AddFileIdentityIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.AddFileIdentityIDs(ids...)
+	return ouo
+}
+
+// AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
+func (ouo *OrgUpdateOne) AddFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return ouo.AddFileIdentityIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ouo *OrgUpdateOne) AddOrgUserIDs(ids ...int) *OrgUpdateOne {
 	ouo.mutation.AddOrgUserIDs(ids...)
@@ -1836,6 +1933,27 @@ func (ouo *OrgUpdateOne) RemoveApps(a ...*App) *OrgUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return ouo.RemoveAppIDs(ids...)
+}
+
+// ClearFileIdentities clears all "file_identities" edges to the FileIdentity entity.
+func (ouo *OrgUpdateOne) ClearFileIdentities() *OrgUpdateOne {
+	ouo.mutation.ClearFileIdentities()
+	return ouo
+}
+
+// RemoveFileIdentityIDs removes the "file_identities" edge to FileIdentity entities by IDs.
+func (ouo *OrgUpdateOne) RemoveFileIdentityIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.RemoveFileIdentityIDs(ids...)
+	return ouo
+}
+
+// RemoveFileIdentities removes "file_identities" edges to FileIdentity entities.
+func (ouo *OrgUpdateOne) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return ouo.RemoveFileIdentityIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -2420,6 +2538,51 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.FileIdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedFileIdentitiesIDs(); len(nodes) > 0 && !ouo.mutation.FileIdentitiesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if ouo.mutation.OrgUserCleared() {

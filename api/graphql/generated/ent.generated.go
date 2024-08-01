@@ -5760,6 +5760,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -10720,6 +10722,106 @@ func (ec *executionContext) fieldContext_FileIdentity_source(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _FileIdentity_org(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentity_org(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Org(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Org)
+	fc.Result = res
+	return ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentity",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Org_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Org_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Org_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Org_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Org_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Org_deletedAt(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Org_parentID(ctx, field)
+			case "domain":
+				return ec.fieldContext_Org_domain(ctx, field)
+			case "code":
+				return ec.fieldContext_Org_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Org_name(ctx, field)
+			case "profile":
+				return ec.fieldContext_Org_profile(ctx, field)
+			case "status":
+				return ec.fieldContext_Org_status(ctx, field)
+			case "path":
+				return ec.fieldContext_Org_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Org_displaySort(ctx, field)
+			case "countryCode":
+				return ec.fieldContext_Org_countryCode(ctx, field)
+			case "timezone":
+				return ec.fieldContext_Org_timezone(ctx, field)
+			case "parent":
+				return ec.fieldContext_Org_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
+			case "users":
+				return ec.fieldContext_Org_users(ctx, field)
+			case "permissions":
+				return ec.fieldContext_Org_permissions(ctx, field)
+			case "policies":
+				return ec.fieldContext_Org_policies(ctx, field)
+			case "apps":
+				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FileIdentityConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.FileIdentityConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileIdentityConnection_edges(ctx, field)
 	if err != nil {
@@ -10931,6 +11033,8 @@ func (ec *executionContext) fieldContext_FileIdentityEdge_node(_ context.Context
 				return ec.fieldContext_FileIdentity_comments(ctx, field)
 			case "source":
 				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
 		},
@@ -13326,6 +13430,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -13421,6 +13527,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -13773,6 +13881,81 @@ func (ec *executionContext) fieldContext_Org_apps(ctx context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_fileIdentities(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_fileIdentities(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FileIdentities(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.FileIdentity)
+	fc.Result = res
+	return ec.marshalOFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_fileIdentities(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_FileIdentity_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_FileIdentity_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_FileIdentity_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_FileIdentity_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "accessKeySecret":
+				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
+			case "fileSourceID":
+				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
+			case "isDefault":
+				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
+			case "comments":
+				return ec.fieldContext_FileIdentity_comments(ctx, field)
+			case "source":
+				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_isAllowRevokeAppPolicy(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 	if err != nil {
@@ -14059,6 +14242,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -14633,6 +14818,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -16395,6 +16582,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -17468,6 +17657,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -18834,6 +19025,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -18943,6 +19136,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -19673,6 +19868,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -31420,20 +31617,13 @@ func (ec *executionContext) unmarshalInputCreateFileIdentityInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"tenantID", "accessKeyID", "accessKeySecret", "roleArn", "policy", "durationSeconds", "isDefault", "comments", "sourceID"}
+	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "durationSeconds", "isDefault", "comments", "sourceID", "orgID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantID = data
 		case "accessKeyID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accessKeyID"))
 			data, err := ec.unmarshalNString2string(ctx, v)
@@ -31490,6 +31680,13 @@ func (ec *executionContext) unmarshalInputCreateFileIdentityInput(ctx context.Co
 				return it, err
 			}
 			it.SourceID = data
+		case "orgID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OrgID = data
 		}
 	}
 
@@ -31634,7 +31831,7 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs"}
+	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31739,6 +31936,13 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.AppIDs = data
+		case "fileIdentityIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fileIdentityIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.FileIdentityIDs = data
 		}
 	}
 
@@ -32338,7 +32542,7 @@ func (ec *executionContext) unmarshalInputFileIdentityWhereInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "tenantIDGT", "tenantIDGTE", "tenantIDLT", "tenantIDLTE", "accessKeyID", "accessKeyIDNEQ", "accessKeyIDIn", "accessKeyIDNotIn", "accessKeyIDGT", "accessKeyIDGTE", "accessKeyIDLT", "accessKeyIDLTE", "accessKeyIDContains", "accessKeyIDHasPrefix", "accessKeyIDHasSuffix", "accessKeyIDEqualFold", "accessKeyIDContainsFold", "accessKeySecret", "accessKeySecretNEQ", "accessKeySecretIn", "accessKeySecretNotIn", "accessKeySecretGT", "accessKeySecretGTE", "accessKeySecretLT", "accessKeySecretLTE", "accessKeySecretContains", "accessKeySecretHasPrefix", "accessKeySecretHasSuffix", "accessKeySecretEqualFold", "accessKeySecretContainsFold", "fileSourceID", "fileSourceIDNEQ", "fileSourceIDIn", "fileSourceIDNotIn", "roleArn", "roleArnNEQ", "roleArnIn", "roleArnNotIn", "roleArnGT", "roleArnGTE", "roleArnLT", "roleArnLTE", "roleArnContains", "roleArnHasPrefix", "roleArnHasSuffix", "roleArnEqualFold", "roleArnContainsFold", "policy", "policyNEQ", "policyIn", "policyNotIn", "policyGT", "policyGTE", "policyLT", "policyLTE", "policyContains", "policyHasPrefix", "policyHasSuffix", "policyIsNil", "policyNotNil", "policyEqualFold", "policyContainsFold", "durationSeconds", "durationSecondsNEQ", "durationSecondsIn", "durationSecondsNotIn", "durationSecondsGT", "durationSecondsGTE", "durationSecondsLT", "durationSecondsLTE", "durationSecondsIsNil", "durationSecondsNotNil", "isDefault", "isDefaultNEQ", "hasSource", "hasSourceWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "accessKeyID", "accessKeyIDNEQ", "accessKeyIDIn", "accessKeyIDNotIn", "accessKeyIDGT", "accessKeyIDGTE", "accessKeyIDLT", "accessKeyIDLTE", "accessKeyIDContains", "accessKeyIDHasPrefix", "accessKeyIDHasSuffix", "accessKeyIDEqualFold", "accessKeyIDContainsFold", "accessKeySecret", "accessKeySecretNEQ", "accessKeySecretIn", "accessKeySecretNotIn", "accessKeySecretGT", "accessKeySecretGTE", "accessKeySecretLT", "accessKeySecretLTE", "accessKeySecretContains", "accessKeySecretHasPrefix", "accessKeySecretHasSuffix", "accessKeySecretEqualFold", "accessKeySecretContainsFold", "fileSourceID", "fileSourceIDNEQ", "fileSourceIDIn", "fileSourceIDNotIn", "roleArn", "roleArnNEQ", "roleArnIn", "roleArnNotIn", "roleArnGT", "roleArnGTE", "roleArnLT", "roleArnLTE", "roleArnContains", "roleArnHasPrefix", "roleArnHasSuffix", "roleArnEqualFold", "roleArnContainsFold", "policy", "policyNEQ", "policyIn", "policyNotIn", "policyGT", "policyGTE", "policyLT", "policyLTE", "policyContains", "policyHasPrefix", "policyHasSuffix", "policyIsNil", "policyNotNil", "policyEqualFold", "policyContainsFold", "durationSeconds", "durationSecondsNEQ", "durationSecondsIn", "durationSecondsNotIn", "durationSecondsGT", "durationSecondsGTE", "durationSecondsLT", "durationSecondsLTE", "durationSecondsIsNil", "durationSecondsNotNil", "isDefault", "isDefaultNEQ", "hasSource", "hasSourceWith", "hasOrg", "hasOrgWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -32702,34 +32906,6 @@ func (ec *executionContext) unmarshalInputFileIdentityWhereInput(ctx context.Con
 				return it, err
 			}
 			it.TenantIDNotIn = data
-		case "tenantIDGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDGT = data
-		case "tenantIDGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDGTE = data
-		case "tenantIDLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDLT = data
-		case "tenantIDLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDLTE = data
 		case "accessKeyID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accessKeyID"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -33234,6 +33410,20 @@ func (ec *executionContext) unmarshalInputFileIdentityWhereInput(ctx context.Con
 				return it, err
 			}
 			it.HasSourceWith = data
+		case "hasOrg":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrg"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasOrg = data
+		case "hasOrgWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgWith"))
+			data, err := ec.unmarshalOOrgWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasOrgWith = data
 		}
 	}
 
@@ -38292,7 +38482,7 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasOrgUser", "hasOrgUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasFileIdentities", "hasFileIdentitiesWith", "hasOrgUser", "hasOrgUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -39566,6 +39756,20 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 				return it, err
 			}
 			it.HasAppsWith = data
+		case "hasFileIdentities":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFileIdentities"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasFileIdentities = data
+		case "hasFileIdentitiesWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasFileIdentitiesWith"))
+			data, err := ec.unmarshalOFileIdentityWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasFileIdentitiesWith = data
 		case "hasOrgUser":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgUser"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -41155,20 +41359,13 @@ func (ec *executionContext) unmarshalInputUpdateFileIdentityInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"tenantID", "accessKeyID", "accessKeySecret", "roleArn", "policy", "clearPolicy", "durationSeconds", "clearDurationSeconds", "isDefault", "comments", "clearComments", "sourceID"}
+	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "clearPolicy", "durationSeconds", "clearDurationSeconds", "isDefault", "comments", "clearComments", "sourceID", "orgID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantID = data
 		case "accessKeyID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accessKeyID"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -41246,6 +41443,13 @@ func (ec *executionContext) unmarshalInputUpdateFileIdentityInput(ctx context.Co
 				return it, err
 			}
 			it.SourceID = data
+		case "orgID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OrgID = data
 		}
 	}
 
@@ -41425,7 +41629,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -41656,6 +41860,27 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearApps = data
+		case "addFileIdentityIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addFileIdentityIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddFileIdentityIDs = data
+		case "removeFileIdentityIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeFileIdentityIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveFileIdentityIDs = data
+		case "clearFileIdentities":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearFileIdentities"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearFileIdentities = data
 		}
 	}
 
@@ -48597,6 +48822,42 @@ func (ec *executionContext) _FileIdentity(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "org":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._FileIdentity_org(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -49329,6 +49590,39 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "fileIdentities":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Org_fileIdentities(ctx, field, obj)
 				return res
 			}
 
@@ -55490,6 +55784,53 @@ func (ec *executionContext) marshalOFileEdge2ᚖgithubᚗcomᚋwoocoosᚋknockou
 		return graphql.Null
 	}
 	return ec._FileEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.FileIdentity) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalOFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx context.Context, sel ast.SelectionSet, v *ent.FileIdentity) graphql.Marshaler {

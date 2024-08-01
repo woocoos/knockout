@@ -5430,10 +5430,6 @@ type FileIdentityWhereInput struct {
 	TenantIDNEQ   *int  `json:"tenantIDNEQ,omitempty"`
 	TenantIDIn    []int `json:"tenantIDIn,omitempty"`
 	TenantIDNotIn []int `json:"tenantIDNotIn,omitempty"`
-	TenantIDGT    *int  `json:"tenantIDGT,omitempty"`
-	TenantIDGTE   *int  `json:"tenantIDGTE,omitempty"`
-	TenantIDLT    *int  `json:"tenantIDLT,omitempty"`
-	TenantIDLTE   *int  `json:"tenantIDLTE,omitempty"`
 
 	// "access_key_id" field predicates.
 	AccessKeyID             *string  `json:"accessKeyID,omitempty"`
@@ -5522,6 +5518,10 @@ type FileIdentityWhereInput struct {
 	// "source" edge predicates.
 	HasSource     *bool                   `json:"hasSource,omitempty"`
 	HasSourceWith []*FileSourceWhereInput `json:"hasSourceWith,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -5738,18 +5738,6 @@ func (i *FileIdentityWhereInput) P() (predicate.FileIdentity, error) {
 	}
 	if len(i.TenantIDNotIn) > 0 {
 		predicates = append(predicates, fileidentity.TenantIDNotIn(i.TenantIDNotIn...))
-	}
-	if i.TenantIDGT != nil {
-		predicates = append(predicates, fileidentity.TenantIDGT(*i.TenantIDGT))
-	}
-	if i.TenantIDGTE != nil {
-		predicates = append(predicates, fileidentity.TenantIDGTE(*i.TenantIDGTE))
-	}
-	if i.TenantIDLT != nil {
-		predicates = append(predicates, fileidentity.TenantIDLT(*i.TenantIDLT))
-	}
-	if i.TenantIDLTE != nil {
-		predicates = append(predicates, fileidentity.TenantIDLTE(*i.TenantIDLTE))
 	}
 	if i.AccessKeyID != nil {
 		predicates = append(predicates, fileidentity.AccessKeyIDEQ(*i.AccessKeyID))
@@ -5979,6 +5967,24 @@ func (i *FileIdentityWhereInput) P() (predicate.FileIdentity, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, fileidentity.HasSourceWith(with...))
+	}
+	if i.HasOrg != nil {
+		p := fileidentity.HasOrg()
+		if !*i.HasOrg {
+			p = fileidentity.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, fileidentity.HasOrgWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -7247,6 +7253,10 @@ type OrgWhereInput struct {
 	HasApps     *bool            `json:"hasApps,omitempty"`
 	HasAppsWith []*AppWhereInput `json:"hasAppsWith,omitempty"`
 
+	// "file_identities" edge predicates.
+	HasFileIdentities     *bool                     `json:"hasFileIdentities,omitempty"`
+	HasFileIdentitiesWith []*FileIdentityWhereInput `json:"hasFileIdentitiesWith,omitempty"`
+
 	// "org_user" edge predicates.
 	HasOrgUser     *bool                `json:"hasOrgUser,omitempty"`
 	HasOrgUserWith []*OrgUserWhereInput `json:"hasOrgUserWith,omitempty"`
@@ -7953,6 +7963,24 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, org.HasAppsWith(with...))
+	}
+	if i.HasFileIdentities != nil {
+		p := org.HasFileIdentities()
+		if !*i.HasFileIdentities {
+			p = org.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasFileIdentitiesWith) > 0 {
+		with := make([]predicate.FileIdentity, 0, len(i.HasFileIdentitiesWith))
+		for _, w := range i.HasFileIdentitiesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasFileIdentitiesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, org.HasFileIdentitiesWith(with...))
 	}
 	if i.HasOrgUser != nil {
 		p := org.HasOrgUser()

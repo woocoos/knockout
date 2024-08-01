@@ -55,5 +55,6 @@ func (FileIdentity) Fields() []ent.Field {
 func (FileIdentity) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("source", FileSource.Type).Ref("identities").Required().Unique().Field("file_source_id"),
+		edge.From("org", Org.Type).Ref("file_identities").Unique().Required().Field("tenant_id"),
 	}
 }

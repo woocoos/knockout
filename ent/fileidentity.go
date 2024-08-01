@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // FileIdentity is the model entity for the FileIdentity schema.
@@ -54,11 +55,13 @@ type FileIdentity struct {
 type FileIdentityEdges struct {
 	// Source holds the value of the source edge.
 	Source *FileSource `json:"source,omitempty"`
+	// Org holds the value of the org edge.
+	Org *Org `json:"org,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 }
 
 // SourceOrErr returns the Source value or an error if the edge
@@ -70,6 +73,17 @@ func (e FileIdentityEdges) SourceOrErr() (*FileSource, error) {
 		return nil, &NotFoundError{label: filesource.Label}
 	}
 	return nil, &NotLoadedError{edge: "source"}
+}
+
+// OrgOrErr returns the Org value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FileIdentityEdges) OrgOrErr() (*Org, error) {
+	if e.Org != nil {
+		return e.Org, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: org.Label}
+	}
+	return nil, &NotLoadedError{edge: "org"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -200,6 +214,11 @@ func (fi *FileIdentity) Value(name string) (ent.Value, error) {
 // QuerySource queries the "source" edge of the FileIdentity entity.
 func (fi *FileIdentity) QuerySource() *FileSourceQuery {
 	return NewFileIdentityClient(fi.config).QuerySource(fi)
+}
+
+// QueryOrg queries the "org" edge of the FileIdentity entity.
+func (fi *FileIdentity) QueryOrg() *OrgQuery {
+	return NewFileIdentityClient(fi.config).QueryOrg(fi)
 }
 
 // Update returns a builder for updating this FileIdentity.

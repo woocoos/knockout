@@ -43,6 +43,8 @@ const (
 	FieldComments = "comments"
 	// EdgeSource holds the string denoting the source edge name in mutations.
 	EdgeSource = "source"
+	// EdgeOrg holds the string denoting the org edge name in mutations.
+	EdgeOrg = "org"
 	// Table holds the table name of the fileidentity in the database.
 	Table = "file_identity"
 	// SourceTable is the table that holds the source relation/edge.
@@ -52,6 +54,13 @@ const (
 	SourceInverseTable = "file_source"
 	// SourceColumn is the table column denoting the source relation/edge.
 	SourceColumn = "file_source_id"
+	// OrgTable is the table that holds the org relation/edge.
+	OrgTable = "file_identity"
+	// OrgInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	OrgInverseTable = "org"
+	// OrgColumn is the table column denoting the org relation/edge.
+	OrgColumn = "tenant_id"
 )
 
 // Columns holds all SQL columns for fileidentity fields.
@@ -182,10 +191,24 @@ func BySourceField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newSourceStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByOrgField orders the results by org field.
+func ByOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newSourceStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, SourceTable, SourceColumn),
+	)
+}
+func newOrgStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
 	)
 }

@@ -349,7 +349,6 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "tenant_id", Type: field.TypeInt},
 		{Name: "access_key_id", Type: field.TypeString, Size: 255},
 		{Name: "access_key_secret", Type: field.TypeString, Size: 255},
 		{Name: "role_arn", Type: field.TypeString, Size: 255},
@@ -358,6 +357,7 @@ var (
 		{Name: "is_default", Type: field.TypeBool, Default: false},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "file_source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "tenant_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// FileIdentityTable holds the schema information for the "file_identity" table.
 	FileIdentityTable = &schema.Table{
@@ -367,8 +367,14 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "file_identity_file_source_identities",
-				Columns:    []*schema.Column{FileIdentityColumns[13]},
+				Columns:    []*schema.Column{FileIdentityColumns[12]},
 				RefColumns: []*schema.Column{FileSourceColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "file_identity_org_file_identities",
+				Columns:    []*schema.Column{FileIdentityColumns[13]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -959,6 +965,7 @@ func init() {
 		Table: "file",
 	}
 	FileIdentityTable.ForeignKeys[0].RefTable = FileSourceTable
+	FileIdentityTable.ForeignKeys[1].RefTable = OrgTable
 	FileIdentityTable.Annotation = &entsql.Annotation{
 		Table: "file_identity",
 	}

@@ -273,6 +273,14 @@ func (fi *FileIdentity) Source(ctx context.Context) (*FileSource, error) {
 	return result, err
 }
 
+func (fi *FileIdentity) Org(ctx context.Context) (*Org, error) {
+	result, err := fi.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = fi.QueryOrg().Only(ctx)
+	}
+	return result, err
+}
+
 func (fs *FileSource) Files(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *FileOrder, where *FileWhereInput,
 ) (*FileConnection, error) {
@@ -412,6 +420,18 @@ func (o *Org) Apps(
 		return conn, nil
 	}
 	return o.QueryApps().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (o *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = o.NamedFileIdentities(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = o.Edges.FileIdentitiesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = o.QueryFileIdentities().All(ctx)
+	}
+	return result, err
 }
 
 func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {

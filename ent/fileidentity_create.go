@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/org"
 )
 
 // FileIdentityCreate is the builder for creating a FileIdentity entity.
@@ -174,6 +175,17 @@ func (fic *FileIdentityCreate) SetSource(f *FileSource) *FileIdentityCreate {
 	return fic.SetSourceID(f.ID)
 }
 
+// SetOrgID sets the "org" edge to the Org entity by ID.
+func (fic *FileIdentityCreate) SetOrgID(id int) *FileIdentityCreate {
+	fic.mutation.SetOrgID(id)
+	return fic
+}
+
+// SetOrg sets the "org" edge to the Org entity.
+func (fic *FileIdentityCreate) SetOrg(o *Org) *FileIdentityCreate {
+	return fic.SetOrgID(o.ID)
+}
+
 // Mutation returns the FileIdentityMutation object of the builder.
 func (fic *FileIdentityCreate) Mutation() *FileIdentityMutation {
 	return fic.mutation
@@ -273,6 +285,9 @@ func (fic *FileIdentityCreate) check() error {
 	if _, ok := fic.mutation.SourceID(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required edge "FileIdentity.source"`)}
 	}
+	if _, ok := fic.mutation.OrgID(); !ok {
+		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "FileIdentity.org"`)}
+	}
 	return nil
 }
 
@@ -322,10 +337,6 @@ func (fic *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec
 		_spec.SetField(fileidentity.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := fic.mutation.TenantID(); ok {
-		_spec.SetField(fileidentity.FieldTenantID, field.TypeInt, value)
-		_node.TenantID = value
-	}
 	if value, ok := fic.mutation.AccessKeyID(); ok {
 		_spec.SetField(fileidentity.FieldAccessKeyID, field.TypeString, value)
 		_node.AccessKeyID = value
@@ -369,6 +380,23 @@ func (fic *FileIdentityCreate) createSpec() (*FileIdentity, *sqlgraph.CreateSpec
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.FileSourceID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fic.mutation.OrgIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   fileidentity.OrgTable,
+			Columns: []string{fileidentity.OrgColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -474,12 +502,6 @@ func (u *FileIdentityUpsert) SetTenantID(v int) *FileIdentityUpsert {
 // UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
 func (u *FileIdentityUpsert) UpdateTenantID() *FileIdentityUpsert {
 	u.SetExcluded(fileidentity.FieldTenantID)
-	return u
-}
-
-// AddTenantID adds v to the "tenant_id" field.
-func (u *FileIdentityUpsert) AddTenantID(v int) *FileIdentityUpsert {
-	u.Add(fileidentity.FieldTenantID, v)
 	return u
 }
 
@@ -710,13 +732,6 @@ func (u *FileIdentityUpsertOne) ClearUpdatedAt() *FileIdentityUpsertOne {
 func (u *FileIdentityUpsertOne) SetTenantID(v int) *FileIdentityUpsertOne {
 	return u.Update(func(s *FileIdentityUpsert) {
 		s.SetTenantID(v)
-	})
-}
-
-// AddTenantID adds v to the "tenant_id" field.
-func (u *FileIdentityUpsertOne) AddTenantID(v int) *FileIdentityUpsertOne {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.AddTenantID(v)
 	})
 }
 
@@ -1140,13 +1155,6 @@ func (u *FileIdentityUpsertBulk) ClearUpdatedAt() *FileIdentityUpsertBulk {
 func (u *FileIdentityUpsertBulk) SetTenantID(v int) *FileIdentityUpsertBulk {
 	return u.Update(func(s *FileIdentityUpsert) {
 		s.SetTenantID(v)
-	})
-}
-
-// AddTenantID adds v to the "tenant_id" field.
-func (u *FileIdentityUpsertBulk) AddTenantID(v int) *FileIdentityUpsertBulk {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.AddTenantID(v)
 	})
 }
 

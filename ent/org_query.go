@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -37,6 +38,7 @@ type OrgQuery struct {
 	withPermissions         *PermissionQuery
 	withPolicies            *OrgPolicyQuery
 	withApps                *AppQuery
+	withFileIdentities      *FileIdentityQuery
 	withOrgUser             *OrgUserQuery
 	withOrgApp              *OrgAppQuery
 	modifiers               []func(*sql.Selector)
@@ -47,6 +49,7 @@ type OrgQuery struct {
 	withNamedPermissions    map[string]*PermissionQuery
 	withNamedPolicies       map[string]*OrgPolicyQuery
 	withNamedApps           map[string]*AppQuery
+	withNamedFileIdentities map[string]*FileIdentityQuery
 	withNamedOrgUser        map[string]*OrgUserQuery
 	withNamedOrgApp         map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
@@ -254,6 +257,28 @@ func (oq *OrgQuery) QueryApps() *AppQuery {
 			sqlgraph.From(org.Table, org.FieldID, selector),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, org.AppsTable, org.AppsPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFileIdentities chains the current query on the "file_identities" edge.
+func (oq *OrgQuery) QueryFileIdentities() *FileIdentityQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, selector),
+			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.FileIdentitiesTable, org.FileIdentitiesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
 		return fromU, nil
@@ -505,6 +530,7 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 		withPermissions:    oq.withPermissions.Clone(),
 		withPolicies:       oq.withPolicies.Clone(),
 		withApps:           oq.withApps.Clone(),
+		withFileIdentities: oq.withFileIdentities.Clone(),
 		withOrgUser:        oq.withOrgUser.Clone(),
 		withOrgApp:         oq.withOrgApp.Clone(),
 		// clone intermediate query.
@@ -598,6 +624,17 @@ func (oq *OrgQuery) WithApps(opts ...func(*AppQuery)) *OrgQuery {
 		opt(query)
 	}
 	oq.withApps = query
+	return oq
+}
+
+// WithFileIdentities tells the query-builder to eager-load the nodes that are connected to
+// the "file_identities" edge. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithFileIdentities(opts ...func(*FileIdentityQuery)) *OrgQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	oq.withFileIdentities = query
 	return oq
 }
 
@@ -701,7 +738,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 	var (
 		nodes       = []*Org{}
 		_spec       = oq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [11]bool{
 			oq.withParent != nil,
 			oq.withChildren != nil,
 			oq.withOwner != nil,
@@ -710,6 +747,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			oq.withPermissions != nil,
 			oq.withPolicies != nil,
 			oq.withApps != nil,
+			oq.withFileIdentities != nil,
 			oq.withOrgUser != nil,
 			oq.withOrgApp != nil,
 		}
@@ -789,6 +827,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			return nil, err
 		}
 	}
+	if query := oq.withFileIdentities; query != nil {
+		if err := oq.loadFileIdentities(ctx, query, nodes,
+			func(n *Org) { n.Edges.FileIdentities = []*FileIdentity{} },
+			func(n *Org, e *FileIdentity) { n.Edges.FileIdentities = append(n.Edges.FileIdentities, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := oq.withOrgUser; query != nil {
 		if err := oq.loadOrgUser(ctx, query, nodes,
 			func(n *Org) { n.Edges.OrgUser = []*OrgUser{} },
@@ -842,6 +887,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 		if err := oq.loadApps(ctx, query, nodes,
 			func(n *Org) { n.appendNamedApps(name) },
 			func(n *Org, e *App) { n.appendNamedApps(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range oq.withNamedFileIdentities {
+		if err := oq.loadFileIdentities(ctx, query, nodes,
+			func(n *Org) { n.appendNamedFileIdentities(name) },
+			func(n *Org, e *FileIdentity) { n.appendNamedFileIdentities(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1170,6 +1222,36 @@ func (oq *OrgQuery) loadApps(ctx context.Context, query *AppQuery, nodes []*Org,
 	}
 	return nil
 }
+func (oq *OrgQuery) loadFileIdentities(ctx context.Context, query *FileIdentityQuery, nodes []*Org, init func(*Org), assign func(*Org, *FileIdentity)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Org)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(fileidentity.FieldTenantID)
+	}
+	query.Where(predicate.FileIdentity(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(org.FileIdentitiesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenant_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*Org, init func(*Org), assign func(*Org, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Org)
@@ -1402,6 +1484,20 @@ func (oq *OrgQuery) WithNamedApps(name string, opts ...func(*AppQuery)) *OrgQuer
 		oq.withNamedApps = make(map[string]*AppQuery)
 	}
 	oq.withNamedApps[name] = query
+	return oq
+}
+
+// WithNamedFileIdentities tells the query-builder to eager-load the nodes that are connected to the "file_identities"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithNamedFileIdentities(name string, opts ...func(*FileIdentityQuery)) *OrgQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if oq.withNamedFileIdentities == nil {
+		oq.withNamedFileIdentities = make(map[string]*FileIdentityQuery)
+	}
+	oq.withNamedFileIdentities[name] = query
 	return oq
 }
 

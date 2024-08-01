@@ -1742,6 +1742,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -1848,6 +1850,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -1954,6 +1958,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2060,6 +2066,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -6518,6 +6526,8 @@ func (ec *executionContext) fieldContext_Mutation_createFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_comments(ctx, field)
 			case "source":
 				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
 		},
@@ -6605,6 +6615,8 @@ func (ec *executionContext) fieldContext_Mutation_updateFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_comments(ctx, field)
 			case "source":
 				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
 		},

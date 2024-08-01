@@ -2296,6 +2296,22 @@ func (c *FileIdentityClient) QuerySource(fi *FileIdentity) *FileSourceQuery {
 	return query
 }
 
+// QueryOrg queries the org edge of a FileIdentity.
+func (c *FileIdentityClient) QueryOrg(fi *FileIdentity) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(fileidentity.Table, fileidentity.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, fileidentity.OrgTable, fileidentity.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(fi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FileIdentityClient) Hooks() []Hook {
 	hooks := c.hooks.FileIdentity
@@ -2867,6 +2883,22 @@ func (c *OrgClient) QueryApps(o *Org) *AppQuery {
 			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, org.AppsTable, org.AppsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFileIdentities queries the file_identities edge of a Org.
+func (c *OrgClient) QueryFileIdentities(o *Org) *FileIdentityQuery {
+	query := (&FileIdentityClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.FileIdentitiesTable, org.FileIdentitiesColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil

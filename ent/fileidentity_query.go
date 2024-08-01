@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -23,6 +24,7 @@ type FileIdentityQuery struct {
 	inters     []Interceptor
 	predicates []predicate.FileIdentity
 	withSource *FileSourceQuery
+	withOrg    *OrgQuery
 	modifiers  []func(*sql.Selector)
 	loadTotal  []func(context.Context, []*FileIdentity) error
 	// intermediate query (i.e. traversal path).
@@ -76,6 +78,28 @@ func (fiq *FileIdentityQuery) QuerySource() *FileSourceQuery {
 			sqlgraph.From(fileidentity.Table, fileidentity.FieldID, selector),
 			sqlgraph.To(filesource.Table, filesource.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, fileidentity.SourceTable, fileidentity.SourceColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fiq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrg chains the current query on the "org" edge.
+func (fiq *FileIdentityQuery) QueryOrg() *OrgQuery {
+	query := (&OrgClient{config: fiq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fiq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fiq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(fileidentity.Table, fileidentity.FieldID, selector),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, fileidentity.OrgTable, fileidentity.OrgColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fiq.driver.Dialect(), step)
 		return fromU, nil
@@ -276,6 +300,7 @@ func (fiq *FileIdentityQuery) Clone() *FileIdentityQuery {
 		inters:     append([]Interceptor{}, fiq.inters...),
 		predicates: append([]predicate.FileIdentity{}, fiq.predicates...),
 		withSource: fiq.withSource.Clone(),
+		withOrg:    fiq.withOrg.Clone(),
 		// clone intermediate query.
 		sql:  fiq.sql.Clone(),
 		path: fiq.path,
@@ -290,6 +315,17 @@ func (fiq *FileIdentityQuery) WithSource(opts ...func(*FileSourceQuery)) *FileId
 		opt(query)
 	}
 	fiq.withSource = query
+	return fiq
+}
+
+// WithOrg tells the query-builder to eager-load the nodes that are connected to
+// the "org" edge. The optional arguments are used to configure the query builder of the edge.
+func (fiq *FileIdentityQuery) WithOrg(opts ...func(*OrgQuery)) *FileIdentityQuery {
+	query := (&OrgClient{config: fiq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fiq.withOrg = query
 	return fiq
 }
 
@@ -371,8 +407,9 @@ func (fiq *FileIdentityQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	var (
 		nodes       = []*FileIdentity{}
 		_spec       = fiq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			fiq.withSource != nil,
+			fiq.withOrg != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -399,6 +436,12 @@ func (fiq *FileIdentityQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	if query := fiq.withSource; query != nil {
 		if err := fiq.loadSource(ctx, query, nodes, nil,
 			func(n *FileIdentity, e *FileSource) { n.Edges.Source = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := fiq.withOrg; query != nil {
+		if err := fiq.loadOrg(ctx, query, nodes, nil,
+			func(n *FileIdentity, e *Org) { n.Edges.Org = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -439,6 +482,35 @@ func (fiq *FileIdentityQuery) loadSource(ctx context.Context, query *FileSourceQ
 	}
 	return nil
 }
+func (fiq *FileIdentityQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*FileIdentity, init func(*FileIdentity), assign func(*FileIdentity, *Org)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*FileIdentity)
+	for i := range nodes {
+		fk := nodes[i].TenantID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(org.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "tenant_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (fiq *FileIdentityQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := fiq.querySpec()
@@ -470,6 +542,9 @@ func (fiq *FileIdentityQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if fiq.withSource != nil {
 			_spec.Node.AddColumnOnce(fileidentity.FieldFileSourceID)
+		}
+		if fiq.withOrg != nil {
+			_spec.Node.AddColumnOnce(fileidentity.FieldTenantID)
 		}
 	}
 	if ps := fiq.predicates; len(ps) > 0 {

@@ -315,26 +315,6 @@ func TenantIDNotIn(vs ...int) predicate.FileIdentity {
 	return predicate.FileIdentity(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
-// TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v int) predicate.FileIdentity {
-	return predicate.FileIdentity(sql.FieldGT(FieldTenantID, v))
-}
-
-// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v int) predicate.FileIdentity {
-	return predicate.FileIdentity(sql.FieldGTE(FieldTenantID, v))
-}
-
-// TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v int) predicate.FileIdentity {
-	return predicate.FileIdentity(sql.FieldLT(FieldTenantID, v))
-}
-
-// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v int) predicate.FileIdentity {
-	return predicate.FileIdentity(sql.FieldLTE(FieldTenantID, v))
-}
-
 // AccessKeyIDEQ applies the EQ predicate on the "access_key_id" field.
 func AccessKeyIDEQ(v string) predicate.FileIdentity {
 	return predicate.FileIdentity(sql.FieldEQ(FieldAccessKeyID, v))
@@ -775,6 +755,29 @@ func HasSource() predicate.FileIdentity {
 func HasSourceWith(preds ...predicate.FileSource) predicate.FileIdentity {
 	return predicate.FileIdentity(func(s *sql.Selector) {
 		step := newSourceStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrg applies the HasEdge predicate on the "org" edge.
+func HasOrg() predicate.FileIdentity {
+	return predicate.FileIdentity(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
+func HasOrgWith(preds ...predicate.Org) predicate.FileIdentity {
+	return predicate.FileIdentity(func(s *sql.Selector) {
+		step := newOrgStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

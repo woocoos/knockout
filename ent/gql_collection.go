@@ -1947,6 +1947,20 @@ func (fi *FileIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)
 				fieldSeen[fileidentity.FieldFileSourceID] = struct{}{}
 			}
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: fi.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			fi.withOrg = query
+			if _, ok := fieldSeen[fileidentity.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldTenantID)
+				fieldSeen[fileidentity.FieldTenantID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[fileidentity.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, fileidentity.FieldCreatedBy)
@@ -2859,6 +2873,18 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				query = pager.applyOrder(query)
 			}
 			o.WithNamedApps(alias, func(wq *AppQuery) {
+				*wq = *query
+			})
+		case "fileIdentities":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileIdentityClient{config: o.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, fileidentityImplementors)...); err != nil {
+				return err
+			}
+			o.WithNamedFileIdentities(alias, func(wq *FileIdentityQuery) {
 				*wq = *query
 			})
 		case "createdBy":

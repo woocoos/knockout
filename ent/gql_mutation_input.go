@@ -845,7 +845,6 @@ func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
 
 // CreateFileIdentityInput represents a mutation input for creating fileidentities.
 type CreateFileIdentityInput struct {
-	TenantID        int
 	AccessKeyID     string
 	AccessKeySecret string
 	RoleArn         string
@@ -854,11 +853,11 @@ type CreateFileIdentityInput struct {
 	IsDefault       *bool
 	Comments        *string
 	SourceID        int
+	OrgID           int
 }
 
 // Mutate applies the CreateFileIdentityInput on the FileIdentityMutation builder.
 func (i *CreateFileIdentityInput) Mutate(m *FileIdentityMutation) {
-	m.SetTenantID(i.TenantID)
 	m.SetAccessKeyID(i.AccessKeyID)
 	m.SetAccessKeySecret(i.AccessKeySecret)
 	m.SetRoleArn(i.RoleArn)
@@ -875,6 +874,7 @@ func (i *CreateFileIdentityInput) Mutate(m *FileIdentityMutation) {
 		m.SetComments(*v)
 	}
 	m.SetSourceID(i.SourceID)
+	m.SetOrgID(i.OrgID)
 }
 
 // SetInput applies the change-set in the CreateFileIdentityInput on the FileIdentityCreate builder.
@@ -885,7 +885,6 @@ func (c *FileIdentityCreate) SetInput(i CreateFileIdentityInput) *FileIdentityCr
 
 // UpdateFileIdentityInput represents a mutation input for updating fileidentities.
 type UpdateFileIdentityInput struct {
-	TenantID             *int
 	AccessKeyID          *string
 	AccessKeySecret      *string
 	RoleArn              *string
@@ -897,13 +896,11 @@ type UpdateFileIdentityInput struct {
 	ClearComments        bool
 	Comments             *string
 	SourceID             *int
+	OrgID                *int
 }
 
 // Mutate applies the UpdateFileIdentityInput on the FileIdentityMutation builder.
 func (i *UpdateFileIdentityInput) Mutate(m *FileIdentityMutation) {
-	if v := i.TenantID; v != nil {
-		m.SetTenantID(*v)
-	}
 	if v := i.AccessKeyID; v != nil {
 		m.SetAccessKeyID(*v)
 	}
@@ -936,6 +933,9 @@ func (i *UpdateFileIdentityInput) Mutate(m *FileIdentityMutation) {
 	}
 	if v := i.SourceID; v != nil {
 		m.SetSourceID(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
 	}
 }
 
@@ -1141,6 +1141,7 @@ type CreateOrgInput struct {
 	PermissionIDs    []int
 	PolicyIDs        []int
 	AppIDs           []int
+	FileIdentityIDs  []int
 }
 
 // Mutate applies the CreateOrgInput on the OrgMutation builder.
@@ -1182,6 +1183,9 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.AppIDs; len(v) > 0 {
 		m.AddAppIDs(v...)
+	}
+	if v := i.FileIdentityIDs; len(v) > 0 {
+		m.AddFileIdentityIDs(v...)
 	}
 }
 
@@ -1225,6 +1229,9 @@ type UpdateOrgInput struct {
 	ClearApps              bool
 	AddAppIDs              []int
 	RemoveAppIDs           []int
+	ClearFileIdentities    bool
+	AddFileIdentityIDs     []int
+	RemoveFileIdentityIDs  []int
 }
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
@@ -1324,6 +1331,15 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.RemoveAppIDs; len(v) > 0 {
 		m.RemoveAppIDs(v...)
+	}
+	if i.ClearFileIdentities {
+		m.ClearFileIdentities()
+	}
+	if v := i.AddFileIdentityIDs; len(v) > 0 {
+		m.AddFileIdentityIDs(v...)
+	}
+	if v := i.RemoveFileIdentityIDs; len(v) > 0 {
+		m.RemoveFileIdentityIDs(v...)
 	}
 }
 

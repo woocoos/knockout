@@ -12733,8 +12733,6 @@ type FileIdentityMutation struct {
 	updated_by          *int
 	addupdated_by       *int
 	updated_at          *time.Time
-	tenant_id           *int
-	addtenant_id        *int
 	access_key_id       *string
 	access_key_secret   *string
 	role_arn            *string
@@ -12746,6 +12744,8 @@ type FileIdentityMutation struct {
 	clearedFields       map[string]struct{}
 	source              *int
 	clearedsource       bool
+	org                 *int
+	clearedorg          bool
 	done                bool
 	oldValue            func(context.Context) (*FileIdentity, error)
 	predicates          []predicate.FileIdentity
@@ -13068,13 +13068,12 @@ func (m *FileIdentityMutation) ResetUpdatedAt() {
 
 // SetTenantID sets the "tenant_id" field.
 func (m *FileIdentityMutation) SetTenantID(i int) {
-	m.tenant_id = &i
-	m.addtenant_id = nil
+	m.org = &i
 }
 
 // TenantID returns the value of the "tenant_id" field in the mutation.
 func (m *FileIdentityMutation) TenantID() (r int, exists bool) {
-	v := m.tenant_id
+	v := m.org
 	if v == nil {
 		return
 	}
@@ -13098,28 +13097,9 @@ func (m *FileIdentityMutation) OldTenantID(ctx context.Context) (v int, err erro
 	return oldValue.TenantID, nil
 }
 
-// AddTenantID adds i to the "tenant_id" field.
-func (m *FileIdentityMutation) AddTenantID(i int) {
-	if m.addtenant_id != nil {
-		*m.addtenant_id += i
-	} else {
-		m.addtenant_id = &i
-	}
-}
-
-// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
-func (m *FileIdentityMutation) AddedTenantID() (r int, exists bool) {
-	v := m.addtenant_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetTenantID resets all changes to the "tenant_id" field.
 func (m *FileIdentityMutation) ResetTenantID() {
-	m.tenant_id = nil
-	m.addtenant_id = nil
+	m.org = nil
 }
 
 // SetAccessKeyID sets the "access_key_id" field.
@@ -13510,6 +13490,46 @@ func (m *FileIdentityMutation) ResetSource() {
 	m.clearedsource = false
 }
 
+// SetOrgID sets the "org" edge to the Org entity by id.
+func (m *FileIdentityMutation) SetOrgID(id int) {
+	m.org = &id
+}
+
+// ClearOrg clears the "org" edge to the Org entity.
+func (m *FileIdentityMutation) ClearOrg() {
+	m.clearedorg = true
+	m.clearedFields[fileidentity.FieldTenantID] = struct{}{}
+}
+
+// OrgCleared reports if the "org" edge to the Org entity was cleared.
+func (m *FileIdentityMutation) OrgCleared() bool {
+	return m.clearedorg
+}
+
+// OrgID returns the "org" edge ID in the mutation.
+func (m *FileIdentityMutation) OrgID() (id int, exists bool) {
+	if m.org != nil {
+		return *m.org, true
+	}
+	return
+}
+
+// OrgIDs returns the "org" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrgID instead. It exists only for internal usage by the builders.
+func (m *FileIdentityMutation) OrgIDs() (ids []int) {
+	if id := m.org; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrg resets all changes to the "org" edge.
+func (m *FileIdentityMutation) ResetOrg() {
+	m.org = nil
+	m.clearedorg = false
+}
+
 // Where appends a list predicates to the FileIdentityMutation builder.
 func (m *FileIdentityMutation) Where(ps ...predicate.FileIdentity) {
 	m.predicates = append(m.predicates, ps...)
@@ -13557,7 +13577,7 @@ func (m *FileIdentityMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, fileidentity.FieldUpdatedAt)
 	}
-	if m.tenant_id != nil {
+	if m.org != nil {
 		fields = append(fields, fileidentity.FieldTenantID)
 	}
 	if m.access_key_id != nil {
@@ -13767,9 +13787,6 @@ func (m *FileIdentityMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, fileidentity.FieldUpdatedBy)
 	}
-	if m.addtenant_id != nil {
-		fields = append(fields, fileidentity.FieldTenantID)
-	}
 	if m.addduration_seconds != nil {
 		fields = append(fields, fileidentity.FieldDurationSeconds)
 	}
@@ -13785,8 +13802,6 @@ func (m *FileIdentityMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case fileidentity.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case fileidentity.FieldTenantID:
-		return m.AddedTenantID()
 	case fileidentity.FieldDurationSeconds:
 		return m.AddedDurationSeconds()
 	}
@@ -13811,13 +13826,6 @@ func (m *FileIdentityMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case fileidentity.FieldTenantID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTenantID(v)
 		return nil
 	case fileidentity.FieldDurationSeconds:
 		v, ok := value.(int)
@@ -13931,9 +13939,12 @@ func (m *FileIdentityMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FileIdentityMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.source != nil {
 		edges = append(edges, fileidentity.EdgeSource)
+	}
+	if m.org != nil {
+		edges = append(edges, fileidentity.EdgeOrg)
 	}
 	return edges
 }
@@ -13946,13 +13957,17 @@ func (m *FileIdentityMutation) AddedIDs(name string) []ent.Value {
 		if id := m.source; id != nil {
 			return []ent.Value{*id}
 		}
+	case fileidentity.EdgeOrg:
+		if id := m.org; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FileIdentityMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -13964,9 +13979,12 @@ func (m *FileIdentityMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FileIdentityMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedsource {
 		edges = append(edges, fileidentity.EdgeSource)
+	}
+	if m.clearedorg {
+		edges = append(edges, fileidentity.EdgeOrg)
 	}
 	return edges
 }
@@ -13977,6 +13995,8 @@ func (m *FileIdentityMutation) EdgeCleared(name string) bool {
 	switch name {
 	case fileidentity.EdgeSource:
 		return m.clearedsource
+	case fileidentity.EdgeOrg:
+		return m.clearedorg
 	}
 	return false
 }
@@ -13988,6 +14008,9 @@ func (m *FileIdentityMutation) ClearEdge(name string) error {
 	case fileidentity.EdgeSource:
 		m.ClearSource()
 		return nil
+	case fileidentity.EdgeOrg:
+		m.ClearOrg()
+		return nil
 	}
 	return fmt.Errorf("unknown FileIdentity unique edge %s", name)
 }
@@ -13998,6 +14021,9 @@ func (m *FileIdentityMutation) ResetEdge(name string) error {
 	switch name {
 	case fileidentity.EdgeSource:
 		m.ResetSource()
+		return nil
+	case fileidentity.EdgeOrg:
+		m.ResetOrg()
 		return nil
 	}
 	return fmt.Errorf("unknown FileIdentity edge %s", name)
@@ -16338,6 +16364,9 @@ type OrgMutation struct {
 	apps                    map[int]struct{}
 	removedapps             map[int]struct{}
 	clearedapps             bool
+	file_identities         map[int]struct{}
+	removedfile_identities  map[int]struct{}
+	clearedfile_identities  bool
 	org_user                map[int]struct{}
 	removedorg_user         map[int]struct{}
 	clearedorg_user         bool
@@ -17661,6 +17690,60 @@ func (m *OrgMutation) ResetApps() {
 	m.removedapps = nil
 }
 
+// AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by ids.
+func (m *OrgMutation) AddFileIdentityIDs(ids ...int) {
+	if m.file_identities == nil {
+		m.file_identities = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.file_identities[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFileIdentities clears the "file_identities" edge to the FileIdentity entity.
+func (m *OrgMutation) ClearFileIdentities() {
+	m.clearedfile_identities = true
+}
+
+// FileIdentitiesCleared reports if the "file_identities" edge to the FileIdentity entity was cleared.
+func (m *OrgMutation) FileIdentitiesCleared() bool {
+	return m.clearedfile_identities
+}
+
+// RemoveFileIdentityIDs removes the "file_identities" edge to the FileIdentity entity by IDs.
+func (m *OrgMutation) RemoveFileIdentityIDs(ids ...int) {
+	if m.removedfile_identities == nil {
+		m.removedfile_identities = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.file_identities, ids[i])
+		m.removedfile_identities[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFileIdentities returns the removed IDs of the "file_identities" edge to the FileIdentity entity.
+func (m *OrgMutation) RemovedFileIdentitiesIDs() (ids []int) {
+	for id := range m.removedfile_identities {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FileIdentitiesIDs returns the "file_identities" edge IDs in the mutation.
+func (m *OrgMutation) FileIdentitiesIDs() (ids []int) {
+	for id := range m.file_identities {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFileIdentities resets all changes to the "file_identities" edge.
+func (m *OrgMutation) ResetFileIdentities() {
+	m.file_identities = nil
+	m.clearedfile_identities = false
+	m.removedfile_identities = nil
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by ids.
 func (m *OrgMutation) AddOrgUserIDs(ids ...int) {
 	if m.org_user == nil {
@@ -18288,7 +18371,7 @@ func (m *OrgMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrgMutation) AddedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.parent != nil {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -18312,6 +18395,9 @@ func (m *OrgMutation) AddedEdges() []string {
 	}
 	if m.apps != nil {
 		edges = append(edges, org.EdgeApps)
+	}
+	if m.file_identities != nil {
+		edges = append(edges, org.EdgeFileIdentities)
 	}
 	if m.org_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -18370,6 +18456,12 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeFileIdentities:
+		ids := make([]ent.Value, 0, len(m.file_identities))
+		for id := range m.file_identities {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.org_user))
 		for id := range m.org_user {
@@ -18388,7 +18480,7 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrgMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.removedchildren != nil {
 		edges = append(edges, org.EdgeChildren)
 	}
@@ -18406,6 +18498,9 @@ func (m *OrgMutation) RemovedEdges() []string {
 	}
 	if m.removedapps != nil {
 		edges = append(edges, org.EdgeApps)
+	}
+	if m.removedfile_identities != nil {
+		edges = append(edges, org.EdgeFileIdentities)
 	}
 	if m.removedorg_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -18456,6 +18551,12 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeFileIdentities:
+		ids := make([]ent.Value, 0, len(m.removedfile_identities))
+		for id := range m.removedfile_identities {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.removedorg_user))
 		for id := range m.removedorg_user {
@@ -18474,7 +18575,7 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrgMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.clearedparent {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -18498,6 +18599,9 @@ func (m *OrgMutation) ClearedEdges() []string {
 	}
 	if m.clearedapps {
 		edges = append(edges, org.EdgeApps)
+	}
+	if m.clearedfile_identities {
+		edges = append(edges, org.EdgeFileIdentities)
 	}
 	if m.clearedorg_user {
 		edges = append(edges, org.EdgeOrgUser)
@@ -18528,6 +18632,8 @@ func (m *OrgMutation) EdgeCleared(name string) bool {
 		return m.clearedpolicies
 	case org.EdgeApps:
 		return m.clearedapps
+	case org.EdgeFileIdentities:
+		return m.clearedfile_identities
 	case org.EdgeOrgUser:
 		return m.clearedorg_user
 	case org.EdgeOrgApp:
@@ -18577,6 +18683,9 @@ func (m *OrgMutation) ResetEdge(name string) error {
 		return nil
 	case org.EdgeApps:
 		m.ResetApps()
+		return nil
+	case org.EdgeFileIdentities:
+		m.ResetFileIdentities()
 		return nil
 	case org.EdgeOrgUser:
 		m.ResetOrgUser()
