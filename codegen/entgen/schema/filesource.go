@@ -40,7 +40,7 @@ func (FileSource) Mixin() []ent.Mixin {
 func (FileSource) Fields() []ent.Field {
 	return []ent.Field{
 		field.Enum("kind").Values(
-			"local", "minio", "aliOSS",
+			"local", "minio", "aliOSS", "awsS3",
 		).Comment("文件来源"),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),

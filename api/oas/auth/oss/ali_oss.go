@@ -7,9 +7,6 @@ import (
 	"github.com/alibabacloud-go/tea-utils/v2/service"
 	"github.com/alibabacloud-go/tea/tea"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/aws/aws-sdk-go-v2/aws"
-	awsCfg "github.com/aws/aws-sdk-go-v2/config"
-	awsCredentials "github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"strings"
 	"time"
@@ -23,9 +20,9 @@ type AliOSS struct {
 	fileSource *FileSource
 }
 
-func NewAliOSS(fileSource *FileSource) (*AliOSS, error) {
+func NewAliOSS(ctx context.Context, fileSource *FileSource) (*AliOSS, error) {
 	svc := &AliOSS{
-		ctx:        context.TODO(),
+		ctx:        ctx,
 		fileSource: fileSource,
 	}
 	err := svc.initAliSTS()
@@ -43,6 +40,7 @@ func NewAliOSS(fileSource *FileSource) (*AliOSS, error) {
 	return svc, nil
 }
 
+// initAliSTS 初始化阿里云STS客户端
 func (svc *AliOSS) initAliSTS() error {
 	cfg := &openapi.Config{
 		AccessKeyId:     tea.String(svc.fileSource.AccessKeyID),
@@ -58,6 +56,7 @@ func (svc *AliOSS) initAliSTS() error {
 	return nil
 }
 
+// initAliOSS 初始化阿里云OSS客户端
 func (svc *AliOSS) initAliOSS() error {
 	useCname := false
 	// 判断是否自定义域名
@@ -72,25 +71,17 @@ func (svc *AliOSS) initAliOSS() error {
 	return nil
 }
 
+// initAwsClient 初始化AWS客户端
 func (svc *AliOSS) initAwsClient() error {
-	creds := awsCredentials.NewStaticCredentialsProvider(svc.fileSource.AccessKeyID, svc.fileSource.AccessKeySecret, "")
-	cfg, err := awsCfg.LoadDefaultConfig(svc.ctx, awsCfg.WithCredentialsProvider(creds))
+	s3Client, err := initAwsClient(svc.ctx, svc.fileSource)
 	if err != nil {
 		return err
 	}
-
-	s3Client := s3.NewFromConfig(cfg, func(options *s3.Options) {
-		options.Region = svc.fileSource.Region
-		options.EndpointResolverV2 = &EndpointResolverV2{
-			EndpointImmutable: svc.fileSource.EndpointImmutable,
-			endpoint:          svc.fileSource.Endpoint,
-		}
-		options.BaseEndpoint = aws.String(svc.fileSource.Endpoint)
-	})
 	svc.s3Client = s3Client
 	return nil
 }
 
+// GetSTS 获取阿里云STS
 func (svc *AliOSS) GetSTS(roleSessionName string) (*STSResponse, error) {
 	assumeRoleRequest := &sts20150401.AssumeRoleRequest{
 		RoleSessionName: tea.String(roleSessionName),
@@ -115,13 +106,10 @@ func (svc *AliOSS) GetSTS(roleSessionName string) (*STSResponse, error) {
 		SecretAccessKey: *resp.Body.Credentials.AccessKeySecret,
 		SessionToken:    *resp.Body.Credentials.SecurityToken,
 		Expiration:      expiration,
-		Endpoint:        svc.fileSource.Endpoint,
-		Bucket:          svc.fileSource.Bucket,
-		Region:          svc.fileSource.Region,
-		Kind:            svc.fileSource.Kind.String(),
 	}, nil
 }
 
+// GetPreSignedURL 获取阿里云预签名URL
 func (svc *AliOSS) GetPreSignedURL(bucket, path string, expires time.Duration) (string, error) {
 	bk, err := svc.ossClient.Bucket(bucket)
 	if err != nil {
@@ -134,6 +122,7 @@ func (svc *AliOSS) GetPreSignedURL(bucket, path string, expires time.Duration) (
 	return signedURL, nil
 }
 
+// GetS3Client 获取AWS S3客户端
 func (svc *AliOSS) GetS3Client() *s3.Client {
 	return svc.s3Client
 }

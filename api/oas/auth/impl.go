@@ -938,7 +938,6 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 		return err
 	}
 	return nil
-
 }
 
 func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
@@ -974,7 +973,7 @@ func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSRespon
 		return nil, err
 	}
 
-	provider, err := s.ossService.GetProvider(s.toOSSFileSource(fi))
+	provider, err := s.ossService.GetProvider(ctx, s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}
@@ -999,7 +998,7 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 	if err != nil {
 		return nil, err
 	}
-	provider, err := s.ossService.GetProvider(s.toOSSFileSource(fi))
+	provider, err := s.ossService.GetProvider(ctx, s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}
@@ -1062,7 +1061,7 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *oss.FileSource {
 	return &oss.FileSource{
 		TenantID:          fi.TenantID,
-		Kind:              fi.Edges.Source.Kind,
+		Kind:              oss.Kind(fi.Edges.Source.Kind.String()),
 		Bucket:            fi.Edges.Source.Bucket,
 		BucketUrl:         fi.Edges.Source.BucketURL,
 		Endpoint:          fi.Edges.Source.Endpoint,

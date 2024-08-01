@@ -8427,6 +8427,7 @@ enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.
   local
   minio
   aliOSS
+  awsS3
 }
 """
 Ordering options for FileSource connections

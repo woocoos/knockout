@@ -4,9 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
-	"github.com/woocoos/knockout/ent/filesource"
-	"net/url"
 	"time"
 )
 
@@ -16,11 +13,20 @@ type Provider interface {
 	GetS3Client() *s3.Client
 }
 
+type Kind string
+
+// Kind values.
+const (
+	KindMinio  Kind = "minio"
+	KindAliOSS Kind = "aliOSS"
+	KindAwsS3  Kind = "awsS3"
+)
+
 type FileSource struct {
 	// 租户ID
 	TenantID int `json:"tenant_id,omitempty"`
 	// 文件来源
-	Kind filesource.Kind `json:"kind,omitempty"`
+	Kind Kind `json:"kind,omitempty"`
 	// accesskey id
 	AccessKeyID string `json:"access_key_id,omitempty"`
 	// accesskey secret
@@ -50,10 +56,6 @@ type STSResponse struct {
 	SecretAccessKey string
 	SessionToken    string
 	Expiration      time.Time
-	Endpoint        string
-	Bucket          string
-	Region          string
-	Kind            string
 }
 
 type Service struct {
@@ -67,21 +69,21 @@ func NewService() (*Service, error) {
 	return svc, nil
 }
 
-func (svc *Service) GetProvider(fs *FileSource) (Provider, error) {
+func (svc *Service) GetProvider(ctx context.Context, fs *FileSource) (Provider, error) {
 	v, ok := svc.providers[getProviderKey(fs)]
 	if ok {
 		return v, nil
 	}
 	switch fs.Kind {
-	case filesource.KindMinio:
-		provider, err := NewMinio(fs)
+	case KindMinio, KindAwsS3:
+		provider, err := NewAwsS3(ctx, fs)
 		if err != nil {
 			return nil, err
 		}
 		svc.providers[getProviderKey(fs)] = provider
 		return provider, nil
-	case filesource.KindAliOSS:
-		provide, err := NewAliOSS(fs)
+	case KindAliOSS:
+		provide, err := NewAliOSS(ctx, fs)
 		if err != nil {
 			return nil, err
 		}
@@ -99,25 +101,4 @@ func (svc *Service) CleanProvider(fs *FileSource) {
 
 func getProviderKey(fs *FileSource) string {
 	return fmt.Sprintf("%d:%s:%s:%s", fs.TenantID, fs.Endpoint, fs.Bucket, fs.Kind)
-}
-
-type EndpointResolverV2 struct {
-	endpoint          string
-	EndpointImmutable bool
-}
-
-func (r *EndpointResolverV2) ResolveEndpoint(ctx context.Context, params s3.EndpointParameters) (
-	smithyendpoints.Endpoint, error,
-) {
-	if r.EndpointImmutable {
-		u, err := url.Parse(r.endpoint)
-		if err != nil {
-			return smithyendpoints.Endpoint{}, err
-		}
-		return smithyendpoints.Endpoint{
-			URI: *u,
-		}, nil
-	}
-	// delegate back to the default v2 resolver otherwise
-	return s3.NewDefaultEndpointResolverV2().ResolveEndpoint(ctx, params)
 }
