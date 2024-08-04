@@ -406,6 +406,7 @@ type ComplexityRoot struct {
 		RevokeRoleUser              func(childComplexity int, roleID int, userID int) int
 		SaveOrgUserPreference       func(childComplexity int, input model.OrgUserPreferenceInput) int
 		SendMFAToUserByEmail        func(childComplexity int, userID int) int
+		SetDefaultFileIdentity      func(childComplexity int, identityID int, orgID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppDict               func(childComplexity int, dictID int, input ent.UpdateAppDictInput) int
@@ -2949,6 +2950,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SendMFAToUserByEmail(childComplexity, args["userID"].(int)), true
+
+	case "Mutation.setDefaultFileIdentity":
+		if e.complexity.Mutation.SetDefaultFileIdentity == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setDefaultFileIdentity_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetDefaultFileIdentity(childComplexity, args["identityID"].(int), args["orgID"].(int)), true
 
 	case "Mutation.updateApp":
 		if e.complexity.Mutation.UpdateApp == nil {
@@ -7666,10 +7679,6 @@ input CreateFileIdentityInput {
   """
   durationSeconds: Int
   """
-  租户默认的凭证
-  """
-  isDefault: Boolean
-  """
   备注
   """
   comments: String
@@ -11068,10 +11077,6 @@ input UpdateFileIdentityInput {
   durationSeconds: Int
   clearDurationSeconds: Boolean
   """
-  租户默认的凭证
-  """
-  isDefault: Boolean
-  """
   备注
   """
   comments: String
@@ -13012,6 +13017,8 @@ type OrgFileIdentity {
     updateFileIdentity(id: ID!,input: UpdateFileIdentityInput!): FileIdentity!
     """删除文件凭证"""
     deleteFileIdentity(id: ID!): Boolean!
+    """设置默认凭证"""
+    setDefaultFileIdentity(identityID: ID!,orgID: ID!): Boolean!
     """创建用户 AccessKey"""
     createOauthClient(input: CreateOauthClientInput!): OauthClient!
     """启用OauthClient"""

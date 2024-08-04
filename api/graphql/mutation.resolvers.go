@@ -13,6 +13,7 @@ import (
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/user"
@@ -402,7 +403,18 @@ func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool
 
 // CreateFileIdentity is the resolver for the createFileIdentity field.
 func (r *mutationResolver) CreateFileIdentity(ctx context.Context, input ent.CreateFileIdentityInput) (*ent.FileIdentity, error) {
-	return ent.FromContext(ctx).FileIdentity.Create().SetInput(input).Save(ctx)
+	client := ent.FromContext(ctx)
+	// 判断当前租户有没有默认凭证
+	has, err := client.FileIdentity.Query().Where(fileidentity.IsDefault(true), fileidentity.TenantID(input.OrgID)).Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	isDefault := false
+	if !has {
+		// 没有默认凭证，则设置为默认
+		isDefault = true
+	}
+	return client.FileIdentity.Create().SetIsDefault(isDefault).SetInput(input).Save(ctx)
 }
 
 // UpdateFileIdentity is the resolver for the updateFileIdentity field.
@@ -414,6 +426,20 @@ func (r *mutationResolver) UpdateFileIdentity(ctx context.Context, id int, input
 func (r *mutationResolver) DeleteFileIdentity(ctx context.Context, id int) (bool, error) {
 	err := ent.FromContext(ctx).FileIdentity.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
+}
+
+// SetDefaultFileIdentity is the resolver for the setDefaultFileIdentity field.
+func (r *mutationResolver) SetDefaultFileIdentity(ctx context.Context, identityID int, orgID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	_, err := client.FileIdentity.Update().Where(fileidentity.TenantID(orgID), fileidentity.IsDefault(true)).SetIsDefault(false).Save(ctx)
+	if err != nil {
+		return false, err
+	}
+	err = client.FileIdentity.UpdateOneID(identityID).SetIsDefault(true).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // CreateOauthClient is the resolver for the createOauthClient field.
@@ -456,3 +482,17 @@ func (r *mutationResolver) SaveOrgUserPreference(ctx context.Context, input mode
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) UpdateDefaultFileIdentity(ctx context.Context, identityID int, orgID *int) (bool, error) {
+	// 不传取默认
+	if orgID == nil {
+
+	}
+	panic("")
+}

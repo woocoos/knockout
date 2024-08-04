@@ -31617,7 +31617,7 @@ func (ec *executionContext) unmarshalInputCreateFileIdentityInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "durationSeconds", "isDefault", "comments", "sourceID", "orgID"}
+	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "durationSeconds", "comments", "sourceID", "orgID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31659,13 +31659,6 @@ func (ec *executionContext) unmarshalInputCreateFileIdentityInput(ctx context.Co
 				return it, err
 			}
 			it.DurationSeconds = data
-		case "isDefault":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isDefault"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IsDefault = data
 		case "comments":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comments"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -41359,7 +41352,7 @@ func (ec *executionContext) unmarshalInputUpdateFileIdentityInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "clearPolicy", "durationSeconds", "clearDurationSeconds", "isDefault", "comments", "clearComments", "sourceID", "orgID"}
+	fieldsInOrder := [...]string{"accessKeyID", "accessKeySecret", "roleArn", "policy", "clearPolicy", "durationSeconds", "clearDurationSeconds", "comments", "clearComments", "sourceID", "orgID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -41415,13 +41408,6 @@ func (ec *executionContext) unmarshalInputUpdateFileIdentityInput(ctx context.Co
 				return it, err
 			}
 			it.ClearDurationSeconds = data
-		case "isDefault":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isDefault"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IsDefault = data
 		case "comments":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comments"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (upq *UserPasswordQuery) QueryUser() *UserQuery {
 // First returns the first UserPassword entity from the query.
 // Returns a *NotFoundError when no UserPassword was found.
 func (upq *UserPasswordQuery) First(ctx context.Context) (*UserPassword, error) {
-	nodes, err := upq.Limit(1).All(setContextOp(ctx, upq.ctx, "First"))
+	nodes, err := upq.Limit(1).All(setContextOp(ctx, upq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (upq *UserPasswordQuery) FirstX(ctx context.Context) *UserPassword {
 // Returns a *NotFoundError when no UserPassword ID was found.
 func (upq *UserPasswordQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = upq.Limit(1).IDs(setContextOp(ctx, upq.ctx, "FirstID")); err != nil {
+	if ids, err = upq.Limit(1).IDs(setContextOp(ctx, upq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (upq *UserPasswordQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one UserPassword entity is found.
 // Returns a *NotFoundError when no UserPassword entities are found.
 func (upq *UserPasswordQuery) Only(ctx context.Context) (*UserPassword, error) {
-	nodes, err := upq.Limit(2).All(setContextOp(ctx, upq.ctx, "Only"))
+	nodes, err := upq.Limit(2).All(setContextOp(ctx, upq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (upq *UserPasswordQuery) OnlyX(ctx context.Context) *UserPassword {
 // Returns a *NotFoundError when no entities are found.
 func (upq *UserPasswordQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = upq.Limit(2).IDs(setContextOp(ctx, upq.ctx, "OnlyID")); err != nil {
+	if ids, err = upq.Limit(2).IDs(setContextOp(ctx, upq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (upq *UserPasswordQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of UserPasswords.
 func (upq *UserPasswordQuery) All(ctx context.Context) ([]*UserPassword, error) {
-	ctx = setContextOp(ctx, upq.ctx, "All")
+	ctx = setContextOp(ctx, upq.ctx, ent.OpQueryAll)
 	if err := upq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (upq *UserPasswordQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if upq.ctx.Unique == nil && upq.path != nil {
 		upq.Unique(true)
 	}
-	ctx = setContextOp(ctx, upq.ctx, "IDs")
+	ctx = setContextOp(ctx, upq.ctx, ent.OpQueryIDs)
 	if err = upq.Select(userpassword.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (upq *UserPasswordQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (upq *UserPasswordQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, upq.ctx, "Count")
+	ctx = setContextOp(ctx, upq.ctx, ent.OpQueryCount)
 	if err := upq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (upq *UserPasswordQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (upq *UserPasswordQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, upq.ctx, "Exist")
+	ctx = setContextOp(ctx, upq.ctx, ent.OpQueryExist)
 	switch _, err := upq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -541,7 +542,7 @@ func (upgb *UserPasswordGroupBy) Aggregate(fns ...AggregateFunc) *UserPasswordGr
 
 // Scan applies the selector query and scans the result into the given value.
 func (upgb *UserPasswordGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, upgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, upgb.build.ctx, ent.OpQueryGroupBy)
 	if err := upgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -589,7 +590,7 @@ func (ups *UserPasswordSelect) Aggregate(fns ...AggregateFunc) *UserPasswordSele
 
 // Scan applies the selector query and scans the result into the given value.
 func (ups *UserPasswordSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ups.ctx, "Select")
+	ctx = setContextOp(ctx, ups.ctx, ent.OpQuerySelect)
 	if err := ups.prepareQuery(ctx); err != nil {
 		return err
 	}

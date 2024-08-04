@@ -67,6 +67,8 @@ kosdk:
 #      url: CanonicalUri
 #    nonceLen: 12
   plugin:
+    fs:
+      sources:
     msg:
       baseUrl: "http://127.0.0.1:10072"
 

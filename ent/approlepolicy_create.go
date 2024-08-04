@@ -182,10 +182,10 @@ func (arpc *AppRolePolicyCreate) check() error {
 	if _, ok := arpc.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRolePolicy.app_id"`)}
 	}
-	if _, ok := arpc.mutation.RoleID(); !ok {
+	if len(arpc.mutation.RoleIDs()) == 0 {
 		return &ValidationError{Name: "role", err: errors.New(`ent: missing required edge "AppRolePolicy.role"`)}
 	}
-	if _, ok := arpc.mutation.PolicyID(); !ok {
+	if len(arpc.mutation.PolicyIDs()) == 0 {
 		return &ValidationError{Name: "policy", err: errors.New(`ent: missing required edge "AppRolePolicy.policy"`)}
 	}
 	return nil

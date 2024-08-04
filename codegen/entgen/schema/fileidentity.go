@@ -45,7 +45,7 @@ func (FileIdentity) Fields() []ent.Field {
 		field.String("role_arn").MaxLen(255).Comment("角色的资源名称(ARN)，用于STS"),
 		field.Text("policy").Optional().Comment("指定返回的STS令牌的权限的策略"),
 		field.Int("duration_seconds").Optional().Default(3600).Comment("STS令牌的有效期，默认3600s"),
-		field.Bool("is_default").Default(false).Comment("租户默认的凭证"),
+		field.Bool("is_default").Default(false).Comment("租户默认的凭证").Annotations(entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationCreateInput)),
 		field.String("comments").Optional().Comment("备注").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
 	}

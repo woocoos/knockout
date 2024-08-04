@@ -311,10 +311,10 @@ func (fiu *FileIdentityUpdate) check() error {
 			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.role_arn": %w`, err)}
 		}
 	}
-	if _, ok := fiu.mutation.SourceID(); fiu.mutation.SourceCleared() && !ok {
+	if fiu.mutation.SourceCleared() && len(fiu.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.source"`)
 	}
-	if _, ok := fiu.mutation.OrgID(); fiu.mutation.OrgCleared() && !ok {
+	if fiu.mutation.OrgCleared() && len(fiu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.org"`)
 	}
 	return nil
@@ -752,10 +752,10 @@ func (fiuo *FileIdentityUpdateOne) check() error {
 			return &ValidationError{Name: "role_arn", err: fmt.Errorf(`ent: validator failed for field "FileIdentity.role_arn": %w`, err)}
 		}
 	}
-	if _, ok := fiuo.mutation.SourceID(); fiuo.mutation.SourceCleared() && !ok {
+	if fiuo.mutation.SourceCleared() && len(fiuo.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.source"`)
 	}
-	if _, ok := fiuo.mutation.OrgID(); fiuo.mutation.OrgCleared() && !ok {
+	if fiuo.mutation.OrgCleared() && len(fiuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FileIdentity.org"`)
 	}
 	return nil

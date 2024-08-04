@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (arpq *AppRolePolicyQuery) QueryPolicy() *AppPolicyQuery {
 // First returns the first AppRolePolicy entity from the query.
 // Returns a *NotFoundError when no AppRolePolicy was found.
 func (arpq *AppRolePolicyQuery) First(ctx context.Context) (*AppRolePolicy, error) {
-	nodes, err := arpq.Limit(1).All(setContextOp(ctx, arpq.ctx, "First"))
+	nodes, err := arpq.Limit(1).All(setContextOp(ctx, arpq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (arpq *AppRolePolicyQuery) FirstX(ctx context.Context) *AppRolePolicy {
 // Returns a *NotFoundError when no AppRolePolicy ID was found.
 func (arpq *AppRolePolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arpq.Limit(1).IDs(setContextOp(ctx, arpq.ctx, "FirstID")); err != nil {
+	if ids, err = arpq.Limit(1).IDs(setContextOp(ctx, arpq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (arpq *AppRolePolicyQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppRolePolicy entity is found.
 // Returns a *NotFoundError when no AppRolePolicy entities are found.
 func (arpq *AppRolePolicyQuery) Only(ctx context.Context) (*AppRolePolicy, error) {
-	nodes, err := arpq.Limit(2).All(setContextOp(ctx, arpq.ctx, "Only"))
+	nodes, err := arpq.Limit(2).All(setContextOp(ctx, arpq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (arpq *AppRolePolicyQuery) OnlyX(ctx context.Context) *AppRolePolicy {
 // Returns a *NotFoundError when no entities are found.
 func (arpq *AppRolePolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arpq.Limit(2).IDs(setContextOp(ctx, arpq.ctx, "OnlyID")); err != nil {
+	if ids, err = arpq.Limit(2).IDs(setContextOp(ctx, arpq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (arpq *AppRolePolicyQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppRolePolicies.
 func (arpq *AppRolePolicyQuery) All(ctx context.Context) ([]*AppRolePolicy, error) {
-	ctx = setContextOp(ctx, arpq.ctx, "All")
+	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryAll)
 	if err := arpq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (arpq *AppRolePolicyQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if arpq.ctx.Unique == nil && arpq.path != nil {
 		arpq.Unique(true)
 	}
-	ctx = setContextOp(ctx, arpq.ctx, "IDs")
+	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryIDs)
 	if err = arpq.Select(approlepolicy.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (arpq *AppRolePolicyQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (arpq *AppRolePolicyQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, arpq.ctx, "Count")
+	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryCount)
 	if err := arpq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (arpq *AppRolePolicyQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (arpq *AppRolePolicyQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, arpq.ctx, "Exist")
+	ctx = setContextOp(ctx, arpq.ctx, ent.OpQueryExist)
 	switch _, err := arpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -616,7 +617,7 @@ func (arpgb *AppRolePolicyGroupBy) Aggregate(fns ...AggregateFunc) *AppRolePolic
 
 // Scan applies the selector query and scans the result into the given value.
 func (arpgb *AppRolePolicyGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, arpgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, arpgb.build.ctx, ent.OpQueryGroupBy)
 	if err := arpgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -664,7 +665,7 @@ func (arps *AppRolePolicySelect) Aggregate(fns ...AggregateFunc) *AppRolePolicyS
 
 // Scan applies the selector query and scans the result into the given value.
 func (arps *AppRolePolicySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, arps.ctx, "Select")
+	ctx = setContextOp(ctx, arps.ctx, ent.OpQuerySelect)
 	if err := arps.prepareQuery(ctx); err != nil {
 		return err
 	}

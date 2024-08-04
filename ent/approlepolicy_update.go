@@ -194,10 +194,10 @@ func (arpu *AppRolePolicyUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (arpu *AppRolePolicyUpdate) check() error {
-	if _, ok := arpu.mutation.RoleID(); arpu.mutation.RoleCleared() && !ok {
+	if arpu.mutation.RoleCleared() && len(arpu.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if _, ok := arpu.mutation.PolicyID(); arpu.mutation.PolicyCleared() && !ok {
+	if arpu.mutation.PolicyCleared() && len(arpu.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil
@@ -491,10 +491,10 @@ func (arpuo *AppRolePolicyUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (arpuo *AppRolePolicyUpdateOne) check() error {
-	if _, ok := arpuo.mutation.RoleID(); arpuo.mutation.RoleCleared() && !ok {
+	if arpuo.mutation.RoleCleared() && len(arpuo.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if _, ok := arpuo.mutation.PolicyID(); arpuo.mutation.PolicyCleared() && !ok {
+	if arpuo.mutation.PolicyCleared() && len(arpuo.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil

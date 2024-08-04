@@ -278,10 +278,10 @@ func (pc *PermissionCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := pc.mutation.OrgID(); !ok {
+	if len(pc.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "Permission.org"`)}
 	}
-	if _, ok := pc.mutation.OrgPolicyID(); !ok {
+	if len(pc.mutation.OrgPolicyIDs()) == 0 {
 		return &ValidationError{Name: "org_policy", err: errors.New(`ent: missing required edge "Permission.org_policy"`)}
 	}
 	return nil

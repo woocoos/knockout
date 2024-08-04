@@ -173,10 +173,10 @@ func (oupc *OrgUserPreferenceCreate) check() error {
 	if _, ok := oupc.mutation.OrgID(); !ok {
 		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgUserPreference.org_id"`)}
 	}
-	if _, ok := oupc.mutation.UserID(); !ok {
+	if len(oupc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgUserPreference.user"`)}
 	}
-	if _, ok := oupc.mutation.OrgID(); !ok {
+	if len(oupc.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgUserPreference.org"`)}
 	}
 	return nil

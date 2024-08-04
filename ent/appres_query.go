@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (arq *AppResQuery) QueryApp() *AppQuery {
 // First returns the first AppRes entity from the query.
 // Returns a *NotFoundError when no AppRes was found.
 func (arq *AppResQuery) First(ctx context.Context) (*AppRes, error) {
-	nodes, err := arq.Limit(1).All(setContextOp(ctx, arq.ctx, "First"))
+	nodes, err := arq.Limit(1).All(setContextOp(ctx, arq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (arq *AppResQuery) FirstX(ctx context.Context) *AppRes {
 // Returns a *NotFoundError when no AppRes ID was found.
 func (arq *AppResQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arq.Limit(1).IDs(setContextOp(ctx, arq.ctx, "FirstID")); err != nil {
+	if ids, err = arq.Limit(1).IDs(setContextOp(ctx, arq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (arq *AppResQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppRes entity is found.
 // Returns a *NotFoundError when no AppRes entities are found.
 func (arq *AppResQuery) Only(ctx context.Context) (*AppRes, error) {
-	nodes, err := arq.Limit(2).All(setContextOp(ctx, arq.ctx, "Only"))
+	nodes, err := arq.Limit(2).All(setContextOp(ctx, arq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (arq *AppResQuery) OnlyX(ctx context.Context) *AppRes {
 // Returns a *NotFoundError when no entities are found.
 func (arq *AppResQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arq.Limit(2).IDs(setContextOp(ctx, arq.ctx, "OnlyID")); err != nil {
+	if ids, err = arq.Limit(2).IDs(setContextOp(ctx, arq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (arq *AppResQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppResSlice.
 func (arq *AppResQuery) All(ctx context.Context) ([]*AppRes, error) {
-	ctx = setContextOp(ctx, arq.ctx, "All")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryAll)
 	if err := arq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (arq *AppResQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if arq.ctx.Unique == nil && arq.path != nil {
 		arq.Unique(true)
 	}
-	ctx = setContextOp(ctx, arq.ctx, "IDs")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryIDs)
 	if err = arq.Select(appres.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (arq *AppResQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (arq *AppResQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, arq.ctx, "Count")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryCount)
 	if err := arq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (arq *AppResQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (arq *AppResQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, arq.ctx, "Exist")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryExist)
 	switch _, err := arq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -541,7 +542,7 @@ func (argb *AppResGroupBy) Aggregate(fns ...AggregateFunc) *AppResGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (argb *AppResGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, argb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, argb.build.ctx, ent.OpQueryGroupBy)
 	if err := argb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -589,7 +590,7 @@ func (ars *AppResSelect) Aggregate(fns ...AggregateFunc) *AppResSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ars *AppResSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ars.ctx, "Select")
+	ctx = setContextOp(ctx, ars.ctx, ent.OpQuerySelect)
 	if err := ars.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -112,7 +113,7 @@ func (opq *OrgPolicyQuery) QueryPermissions() *PermissionQuery {
 // First returns the first OrgPolicy entity from the query.
 // Returns a *NotFoundError when no OrgPolicy was found.
 func (opq *OrgPolicyQuery) First(ctx context.Context) (*OrgPolicy, error) {
-	nodes, err := opq.Limit(1).All(setContextOp(ctx, opq.ctx, "First"))
+	nodes, err := opq.Limit(1).All(setContextOp(ctx, opq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (opq *OrgPolicyQuery) FirstX(ctx context.Context) *OrgPolicy {
 // Returns a *NotFoundError when no OrgPolicy ID was found.
 func (opq *OrgPolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = opq.Limit(1).IDs(setContextOp(ctx, opq.ctx, "FirstID")); err != nil {
+	if ids, err = opq.Limit(1).IDs(setContextOp(ctx, opq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -158,7 +159,7 @@ func (opq *OrgPolicyQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgPolicy entity is found.
 // Returns a *NotFoundError when no OrgPolicy entities are found.
 func (opq *OrgPolicyQuery) Only(ctx context.Context) (*OrgPolicy, error) {
-	nodes, err := opq.Limit(2).All(setContextOp(ctx, opq.ctx, "Only"))
+	nodes, err := opq.Limit(2).All(setContextOp(ctx, opq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (opq *OrgPolicyQuery) OnlyX(ctx context.Context) *OrgPolicy {
 // Returns a *NotFoundError when no entities are found.
 func (opq *OrgPolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = opq.Limit(2).IDs(setContextOp(ctx, opq.ctx, "OnlyID")); err != nil {
+	if ids, err = opq.Limit(2).IDs(setContextOp(ctx, opq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -211,7 +212,7 @@ func (opq *OrgPolicyQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgPolicies.
 func (opq *OrgPolicyQuery) All(ctx context.Context) ([]*OrgPolicy, error) {
-	ctx = setContextOp(ctx, opq.ctx, "All")
+	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryAll)
 	if err := opq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -233,7 +234,7 @@ func (opq *OrgPolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if opq.ctx.Unique == nil && opq.path != nil {
 		opq.Unique(true)
 	}
-	ctx = setContextOp(ctx, opq.ctx, "IDs")
+	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryIDs)
 	if err = opq.Select(orgpolicy.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -251,7 +252,7 @@ func (opq *OrgPolicyQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (opq *OrgPolicyQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, opq.ctx, "Count")
+	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryCount)
 	if err := opq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -269,7 +270,7 @@ func (opq *OrgPolicyQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (opq *OrgPolicyQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, opq.ctx, "Exist")
+	ctx = setContextOp(ctx, opq.ctx, ent.OpQueryExist)
 	switch _, err := opq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -638,7 +639,7 @@ func (opgb *OrgPolicyGroupBy) Aggregate(fns ...AggregateFunc) *OrgPolicyGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (opgb *OrgPolicyGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, opgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, opgb.build.ctx, ent.OpQueryGroupBy)
 	if err := opgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -686,7 +687,7 @@ func (ops *OrgPolicySelect) Aggregate(fns ...AggregateFunc) *OrgPolicySelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ops *OrgPolicySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ops.ctx, "Select")
+	ctx = setContextOp(ctx, ops.ctx, ent.OpQuerySelect)
 	if err := ops.prepareQuery(ctx); err != nil {
 		return err
 	}

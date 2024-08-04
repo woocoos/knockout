@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -158,7 +159,7 @@ func (oruq *OrgRoleUserQuery) QueryOrg() *OrgQuery {
 // First returns the first OrgRoleUser entity from the query.
 // Returns a *NotFoundError when no OrgRoleUser was found.
 func (oruq *OrgRoleUserQuery) First(ctx context.Context) (*OrgRoleUser, error) {
-	nodes, err := oruq.Limit(1).All(setContextOp(ctx, oruq.ctx, "First"))
+	nodes, err := oruq.Limit(1).All(setContextOp(ctx, oruq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (oruq *OrgRoleUserQuery) FirstX(ctx context.Context) *OrgRoleUser {
 // Returns a *NotFoundError when no OrgRoleUser ID was found.
 func (oruq *OrgRoleUserQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oruq.Limit(1).IDs(setContextOp(ctx, oruq.ctx, "FirstID")); err != nil {
+	if ids, err = oruq.Limit(1).IDs(setContextOp(ctx, oruq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -204,7 +205,7 @@ func (oruq *OrgRoleUserQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgRoleUser entity is found.
 // Returns a *NotFoundError when no OrgRoleUser entities are found.
 func (oruq *OrgRoleUserQuery) Only(ctx context.Context) (*OrgRoleUser, error) {
-	nodes, err := oruq.Limit(2).All(setContextOp(ctx, oruq.ctx, "Only"))
+	nodes, err := oruq.Limit(2).All(setContextOp(ctx, oruq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +233,7 @@ func (oruq *OrgRoleUserQuery) OnlyX(ctx context.Context) *OrgRoleUser {
 // Returns a *NotFoundError when no entities are found.
 func (oruq *OrgRoleUserQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oruq.Limit(2).IDs(setContextOp(ctx, oruq.ctx, "OnlyID")); err != nil {
+	if ids, err = oruq.Limit(2).IDs(setContextOp(ctx, oruq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -257,7 +258,7 @@ func (oruq *OrgRoleUserQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgRoleUsers.
 func (oruq *OrgRoleUserQuery) All(ctx context.Context) ([]*OrgRoleUser, error) {
-	ctx = setContextOp(ctx, oruq.ctx, "All")
+	ctx = setContextOp(ctx, oruq.ctx, ent.OpQueryAll)
 	if err := oruq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -279,7 +280,7 @@ func (oruq *OrgRoleUserQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if oruq.ctx.Unique == nil && oruq.path != nil {
 		oruq.Unique(true)
 	}
-	ctx = setContextOp(ctx, oruq.ctx, "IDs")
+	ctx = setContextOp(ctx, oruq.ctx, ent.OpQueryIDs)
 	if err = oruq.Select(orgroleuser.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -297,7 +298,7 @@ func (oruq *OrgRoleUserQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (oruq *OrgRoleUserQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oruq.ctx, "Count")
+	ctx = setContextOp(ctx, oruq.ctx, ent.OpQueryCount)
 	if err := oruq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -315,7 +316,7 @@ func (oruq *OrgRoleUserQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (oruq *OrgRoleUserQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oruq.ctx, "Exist")
+	ctx = setContextOp(ctx, oruq.ctx, ent.OpQueryExist)
 	switch _, err := oruq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -766,7 +767,7 @@ func (orugb *OrgRoleUserGroupBy) Aggregate(fns ...AggregateFunc) *OrgRoleUserGro
 
 // Scan applies the selector query and scans the result into the given value.
 func (orugb *OrgRoleUserGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, orugb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, orugb.build.ctx, ent.OpQueryGroupBy)
 	if err := orugb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -814,7 +815,7 @@ func (orus *OrgRoleUserSelect) Aggregate(fns ...AggregateFunc) *OrgRoleUserSelec
 
 // Scan applies the selector query and scans the result into the given value.
 func (orus *OrgRoleUserSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, orus.ctx, "Select")
+	ctx = setContextOp(ctx, orus.ctx, ent.OpQuerySelect)
 	if err := orus.prepareQuery(ctx); err != nil {
 		return err
 	}

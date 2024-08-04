@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (oupq *OrgUserPreferenceQuery) QueryOrg() *OrgQuery {
 // First returns the first OrgUserPreference entity from the query.
 // Returns a *NotFoundError when no OrgUserPreference was found.
 func (oupq *OrgUserPreferenceQuery) First(ctx context.Context) (*OrgUserPreference, error) {
-	nodes, err := oupq.Limit(1).All(setContextOp(ctx, oupq.ctx, "First"))
+	nodes, err := oupq.Limit(1).All(setContextOp(ctx, oupq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (oupq *OrgUserPreferenceQuery) FirstX(ctx context.Context) *OrgUserPreferen
 // Returns a *NotFoundError when no OrgUserPreference ID was found.
 func (oupq *OrgUserPreferenceQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oupq.Limit(1).IDs(setContextOp(ctx, oupq.ctx, "FirstID")); err != nil {
+	if ids, err = oupq.Limit(1).IDs(setContextOp(ctx, oupq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (oupq *OrgUserPreferenceQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgUserPreference entity is found.
 // Returns a *NotFoundError when no OrgUserPreference entities are found.
 func (oupq *OrgUserPreferenceQuery) Only(ctx context.Context) (*OrgUserPreference, error) {
-	nodes, err := oupq.Limit(2).All(setContextOp(ctx, oupq.ctx, "Only"))
+	nodes, err := oupq.Limit(2).All(setContextOp(ctx, oupq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (oupq *OrgUserPreferenceQuery) OnlyX(ctx context.Context) *OrgUserPreferenc
 // Returns a *NotFoundError when no entities are found.
 func (oupq *OrgUserPreferenceQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oupq.Limit(2).IDs(setContextOp(ctx, oupq.ctx, "OnlyID")); err != nil {
+	if ids, err = oupq.Limit(2).IDs(setContextOp(ctx, oupq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (oupq *OrgUserPreferenceQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgUserPreferences.
 func (oupq *OrgUserPreferenceQuery) All(ctx context.Context) ([]*OrgUserPreference, error) {
-	ctx = setContextOp(ctx, oupq.ctx, "All")
+	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryAll)
 	if err := oupq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (oupq *OrgUserPreferenceQuery) IDs(ctx context.Context) (ids []int, err err
 	if oupq.ctx.Unique == nil && oupq.path != nil {
 		oupq.Unique(true)
 	}
-	ctx = setContextOp(ctx, oupq.ctx, "IDs")
+	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryIDs)
 	if err = oupq.Select(orguserpreference.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (oupq *OrgUserPreferenceQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (oupq *OrgUserPreferenceQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oupq.ctx, "Count")
+	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryCount)
 	if err := oupq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (oupq *OrgUserPreferenceQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (oupq *OrgUserPreferenceQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oupq.ctx, "Exist")
+	ctx = setContextOp(ctx, oupq.ctx, ent.OpQueryExist)
 	switch _, err := oupq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -616,7 +617,7 @@ func (oupgb *OrgUserPreferenceGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserP
 
 // Scan applies the selector query and scans the result into the given value.
 func (oupgb *OrgUserPreferenceGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oupgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, oupgb.build.ctx, ent.OpQueryGroupBy)
 	if err := oupgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -664,7 +665,7 @@ func (oups *OrgUserPreferenceSelect) Aggregate(fns ...AggregateFunc) *OrgUserPre
 
 // Scan applies the selector query and scans the result into the given value.
 func (oups *OrgUserPreferenceSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oups.ctx, "Select")
+	ctx = setContextOp(ctx, oups.ctx, ent.OpQuerySelect)
 	if err := oups.prepareQuery(ctx); err != nil {
 		return err
 	}

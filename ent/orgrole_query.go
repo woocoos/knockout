@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (orq *OrgRoleQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
 // First returns the first OrgRole entity from the query.
 // Returns a *NotFoundError when no OrgRole was found.
 func (orq *OrgRoleQuery) First(ctx context.Context) (*OrgRole, error) {
-	nodes, err := orq.Limit(1).All(setContextOp(ctx, orq.ctx, "First"))
+	nodes, err := orq.Limit(1).All(setContextOp(ctx, orq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (orq *OrgRoleQuery) FirstX(ctx context.Context) *OrgRole {
 // Returns a *NotFoundError when no OrgRole ID was found.
 func (orq *OrgRoleQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = orq.Limit(1).IDs(setContextOp(ctx, orq.ctx, "FirstID")); err != nil {
+	if ids, err = orq.Limit(1).IDs(setContextOp(ctx, orq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (orq *OrgRoleQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgRole entity is found.
 // Returns a *NotFoundError when no OrgRole entities are found.
 func (orq *OrgRoleQuery) Only(ctx context.Context) (*OrgRole, error) {
-	nodes, err := orq.Limit(2).All(setContextOp(ctx, orq.ctx, "Only"))
+	nodes, err := orq.Limit(2).All(setContextOp(ctx, orq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (orq *OrgRoleQuery) OnlyX(ctx context.Context) *OrgRole {
 // Returns a *NotFoundError when no entities are found.
 func (orq *OrgRoleQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = orq.Limit(2).IDs(setContextOp(ctx, orq.ctx, "OnlyID")); err != nil {
+	if ids, err = orq.Limit(2).IDs(setContextOp(ctx, orq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (orq *OrgRoleQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgRoles.
 func (orq *OrgRoleQuery) All(ctx context.Context) ([]*OrgRole, error) {
-	ctx = setContextOp(ctx, orq.ctx, "All")
+	ctx = setContextOp(ctx, orq.ctx, ent.OpQueryAll)
 	if err := orq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (orq *OrgRoleQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if orq.ctx.Unique == nil && orq.path != nil {
 		orq.Unique(true)
 	}
-	ctx = setContextOp(ctx, orq.ctx, "IDs")
+	ctx = setContextOp(ctx, orq.ctx, ent.OpQueryIDs)
 	if err = orq.Select(orgrole.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (orq *OrgRoleQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (orq *OrgRoleQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, orq.ctx, "Count")
+	ctx = setContextOp(ctx, orq.ctx, ent.OpQueryCount)
 	if err := orq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (orq *OrgRoleQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (orq *OrgRoleQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, orq.ctx, "Exist")
+	ctx = setContextOp(ctx, orq.ctx, ent.OpQueryExist)
 	switch _, err := orq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -765,7 +766,7 @@ func (orgb *OrgRoleGroupBy) Aggregate(fns ...AggregateFunc) *OrgRoleGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (orgb *OrgRoleGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, orgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, orgb.build.ctx, ent.OpQueryGroupBy)
 	if err := orgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -813,7 +814,7 @@ func (ors *OrgRoleSelect) Aggregate(fns ...AggregateFunc) *OrgRoleSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ors *OrgRoleSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ors.ctx, "Select")
+	ctx = setContextOp(ctx, ors.ctx, ent.OpQuerySelect)
 	if err := ors.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -21,12 +21,13 @@ import (
 	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
+	"github.com/woocoos/knockout-go/api/fs"
+	"github.com/woocoos/knockout-go/api/fs/alioss"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
-	"github.com/woocoos/knockout/api/oas/auth/oss"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
@@ -96,8 +97,6 @@ type ServerImpl struct {
 
 	kosdk *api.SDK
 
-	ossService *oss.Service
-
 	LogoutHandler func(*gin.Context)
 
 	captchaStore captcha.Store
@@ -117,10 +116,8 @@ func NewServer(app *woocoo.App) *ServerImpl {
 	} else {
 		s.db = ent.NewClient(ent.Driver(ents["portal"]))
 	}
+	fs.RegisterS3Provider(fs.KindAliOSS, alioss.BuildProvider)
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
-		panic(err)
-	}
-	if s.ossService, err = oss.NewService(); err != nil {
 		panic(err)
 	}
 	if s.cache, err = cache.GetCache("redis"); err != nil {
@@ -973,7 +970,7 @@ func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSRespon
 		return nil, err
 	}
 
-	provider, err := s.ossService.GetProvider(ctx, s.toOSSFileSource(fi))
+	provider, err := s.kosdk.Fs().GetProvider(ctx, s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}
@@ -998,7 +995,7 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 	if err != nil {
 		return nil, err
 	}
-	provider, err := s.ossService.GetProvider(ctx, s.toOSSFileSource(fi))
+	provider, err := s.kosdk.Fs().GetProvider(ctx, s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}
@@ -1058,10 +1055,10 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	return fi, path, nil
 }
 
-func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *oss.FileSource {
-	return &oss.FileSource{
+func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *fs.SourceConfig {
+	return &fs.SourceConfig{
 		TenantID:          fi.TenantID,
-		Kind:              oss.Kind(fi.Edges.Source.Kind.String()),
+		Kind:              fs.Kind(fi.Edges.Source.Kind.String()),
 		Bucket:            fi.Edges.Source.Bucket,
 		BucketUrl:         fi.Edges.Source.BucketURL,
 		Endpoint:          fi.Edges.Source.Endpoint,

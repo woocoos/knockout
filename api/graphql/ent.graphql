@@ -2401,10 +2401,6 @@ input CreateFileIdentityInput {
   """
   durationSeconds: Int
   """
-  租户默认的凭证
-  """
-  isDefault: Boolean
-  """
   备注
   """
   comments: String
@@ -5802,10 +5798,6 @@ input UpdateFileIdentityInput {
   """
   durationSeconds: Int
   clearDurationSeconds: Boolean
-  """
-  租户默认的凭证
-  """
-  isDefault: Boolean
   """
   备注
   """

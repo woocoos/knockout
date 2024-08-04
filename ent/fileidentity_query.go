@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (fiq *FileIdentityQuery) QueryOrg() *OrgQuery {
 // First returns the first FileIdentity entity from the query.
 // Returns a *NotFoundError when no FileIdentity was found.
 func (fiq *FileIdentityQuery) First(ctx context.Context) (*FileIdentity, error) {
-	nodes, err := fiq.Limit(1).All(setContextOp(ctx, fiq.ctx, "First"))
+	nodes, err := fiq.Limit(1).All(setContextOp(ctx, fiq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (fiq *FileIdentityQuery) FirstX(ctx context.Context) *FileIdentity {
 // Returns a *NotFoundError when no FileIdentity ID was found.
 func (fiq *FileIdentityQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, "FirstID")); err != nil {
+	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (fiq *FileIdentityQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FileIdentity entity is found.
 // Returns a *NotFoundError when no FileIdentity entities are found.
 func (fiq *FileIdentityQuery) Only(ctx context.Context) (*FileIdentity, error) {
-	nodes, err := fiq.Limit(2).All(setContextOp(ctx, fiq.ctx, "Only"))
+	nodes, err := fiq.Limit(2).All(setContextOp(ctx, fiq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (fiq *FileIdentityQuery) OnlyX(ctx context.Context) *FileIdentity {
 // Returns a *NotFoundError when no entities are found.
 func (fiq *FileIdentityQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, "OnlyID")); err != nil {
+	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (fiq *FileIdentityQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FileIdentities.
 func (fiq *FileIdentityQuery) All(ctx context.Context) ([]*FileIdentity, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "All")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryAll)
 	if err := fiq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (fiq *FileIdentityQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if fiq.ctx.Unique == nil && fiq.path != nil {
 		fiq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fiq.ctx, "IDs")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryIDs)
 	if err = fiq.Select(fileidentity.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (fiq *FileIdentityQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fiq *FileIdentityQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "Count")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryCount)
 	if err := fiq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (fiq *FileIdentityQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fiq *FileIdentityQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "Exist")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryExist)
 	switch _, err := fiq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -616,7 +617,7 @@ func (figb *FileIdentityGroupBy) Aggregate(fns ...AggregateFunc) *FileIdentityGr
 
 // Scan applies the selector query and scans the result into the given value.
 func (figb *FileIdentityGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, figb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, figb.build.ctx, ent.OpQueryGroupBy)
 	if err := figb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -664,7 +665,7 @@ func (fis *FileIdentitySelect) Aggregate(fns ...AggregateFunc) *FileIdentitySele
 
 // Scan applies the selector query and scans the result into the given value.
 func (fis *FileIdentitySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fis.ctx, "Select")
+	ctx = setContextOp(ctx, fis.ctx, ent.OpQuerySelect)
 	if err := fis.prepareQuery(ctx); err != nil {
 		return err
 	}

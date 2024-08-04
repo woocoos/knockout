@@ -161,10 +161,10 @@ func (oac *OrgAppCreate) check() error {
 	if _, ok := oac.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "OrgApp.app_id"`)}
 	}
-	if _, ok := oac.mutation.AppID(); !ok {
+	if len(oac.mutation.AppIDs()) == 0 {
 		return &ValidationError{Name: "app", err: errors.New(`ent: missing required edge "OrgApp.app"`)}
 	}
-	if _, ok := oac.mutation.OrgID(); !ok {
+	if len(oac.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgApp.org"`)}
 	}
 	return nil

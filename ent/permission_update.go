@@ -175,10 +175,10 @@ func (pu *PermissionUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := pu.mutation.OrgID(); pu.mutation.OrgCleared() && !ok {
+	if pu.mutation.OrgCleared() && len(pu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
 	}
-	if _, ok := pu.mutation.OrgPolicyID(); pu.mutation.OrgPolicyCleared() && !ok {
+	if pu.mutation.OrgPolicyCleared() && len(pu.mutation.OrgPolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Permission.org_policy"`)
 	}
 	return nil
@@ -408,10 +408,10 @@ func (puo *PermissionUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Permission.status": %w`, err)}
 		}
 	}
-	if _, ok := puo.mutation.OrgID(); puo.mutation.OrgCleared() && !ok {
+	if puo.mutation.OrgCleared() && len(puo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Permission.org"`)
 	}
-	if _, ok := puo.mutation.OrgPolicyID(); puo.mutation.OrgPolicyCleared() && !ok {
+	if puo.mutation.OrgPolicyCleared() && len(puo.mutation.OrgPolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Permission.org_policy"`)
 	}
 	return nil

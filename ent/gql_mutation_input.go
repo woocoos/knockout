@@ -850,7 +850,6 @@ type CreateFileIdentityInput struct {
 	RoleArn         string
 	Policy          *string
 	DurationSeconds *int
-	IsDefault       *bool
 	Comments        *string
 	SourceID        int
 	OrgID           int
@@ -866,9 +865,6 @@ func (i *CreateFileIdentityInput) Mutate(m *FileIdentityMutation) {
 	}
 	if v := i.DurationSeconds; v != nil {
 		m.SetDurationSeconds(*v)
-	}
-	if v := i.IsDefault; v != nil {
-		m.SetIsDefault(*v)
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -892,7 +888,6 @@ type UpdateFileIdentityInput struct {
 	Policy               *string
 	ClearDurationSeconds bool
 	DurationSeconds      *int
-	IsDefault            *bool
 	ClearComments        bool
 	Comments             *string
 	SourceID             *int
@@ -921,9 +916,6 @@ func (i *UpdateFileIdentityInput) Mutate(m *FileIdentityMutation) {
 	}
 	if v := i.DurationSeconds; v != nil {
 		m.SetDurationSeconds(*v)
-	}
-	if v := i.IsDefault; v != nil {
-		m.SetIsDefault(*v)
 	}
 	if i.ClearComments {
 		m.ClearComments()

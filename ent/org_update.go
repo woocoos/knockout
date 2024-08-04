@@ -748,7 +748,7 @@ func (ou *OrgUpdate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if _, ok := ou.mutation.ParentID(); ou.mutation.ParentCleared() && !ok {
+	if ou.mutation.ParentCleared() && len(ou.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
 	return nil
@@ -2075,7 +2075,7 @@ func (ouo *OrgUpdateOne) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if _, ok := ouo.mutation.ParentID(); ouo.mutation.ParentCleared() && !ok {
+	if ouo.mutation.ParentCleared() && len(ouo.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
 	return nil

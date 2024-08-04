@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (adiq *AppDictItemQuery) QueryOrg() *OrgQuery {
 // First returns the first AppDictItem entity from the query.
 // Returns a *NotFoundError when no AppDictItem was found.
 func (adiq *AppDictItemQuery) First(ctx context.Context) (*AppDictItem, error) {
-	nodes, err := adiq.Limit(1).All(setContextOp(ctx, adiq.ctx, "First"))
+	nodes, err := adiq.Limit(1).All(setContextOp(ctx, adiq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (adiq *AppDictItemQuery) FirstX(ctx context.Context) *AppDictItem {
 // Returns a *NotFoundError when no AppDictItem ID was found.
 func (adiq *AppDictItemQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adiq.Limit(1).IDs(setContextOp(ctx, adiq.ctx, "FirstID")); err != nil {
+	if ids, err = adiq.Limit(1).IDs(setContextOp(ctx, adiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (adiq *AppDictItemQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppDictItem entity is found.
 // Returns a *NotFoundError when no AppDictItem entities are found.
 func (adiq *AppDictItemQuery) Only(ctx context.Context) (*AppDictItem, error) {
-	nodes, err := adiq.Limit(2).All(setContextOp(ctx, adiq.ctx, "Only"))
+	nodes, err := adiq.Limit(2).All(setContextOp(ctx, adiq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (adiq *AppDictItemQuery) OnlyX(ctx context.Context) *AppDictItem {
 // Returns a *NotFoundError when no entities are found.
 func (adiq *AppDictItemQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adiq.Limit(2).IDs(setContextOp(ctx, adiq.ctx, "OnlyID")); err != nil {
+	if ids, err = adiq.Limit(2).IDs(setContextOp(ctx, adiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (adiq *AppDictItemQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppDictItems.
 func (adiq *AppDictItemQuery) All(ctx context.Context) ([]*AppDictItem, error) {
-	ctx = setContextOp(ctx, adiq.ctx, "All")
+	ctx = setContextOp(ctx, adiq.ctx, ent.OpQueryAll)
 	if err := adiq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (adiq *AppDictItemQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if adiq.ctx.Unique == nil && adiq.path != nil {
 		adiq.Unique(true)
 	}
-	ctx = setContextOp(ctx, adiq.ctx, "IDs")
+	ctx = setContextOp(ctx, adiq.ctx, ent.OpQueryIDs)
 	if err = adiq.Select(appdictitem.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (adiq *AppDictItemQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (adiq *AppDictItemQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, adiq.ctx, "Count")
+	ctx = setContextOp(ctx, adiq.ctx, ent.OpQueryCount)
 	if err := adiq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (adiq *AppDictItemQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (adiq *AppDictItemQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, adiq.ctx, "Exist")
+	ctx = setContextOp(ctx, adiq.ctx, ent.OpQueryExist)
 	switch _, err := adiq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -616,7 +617,7 @@ func (adigb *AppDictItemGroupBy) Aggregate(fns ...AggregateFunc) *AppDictItemGro
 
 // Scan applies the selector query and scans the result into the given value.
 func (adigb *AppDictItemGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, adigb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, adigb.build.ctx, ent.OpQueryGroupBy)
 	if err := adigb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -664,7 +665,7 @@ func (adis *AppDictItemSelect) Aggregate(fns ...AggregateFunc) *AppDictItemSelec
 
 // Scan applies the selector query and scans the result into the given value.
 func (adis *AppDictItemSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, adis.ctx, "Select")
+	ctx = setContextOp(ctx, adis.ctx, ent.OpQuerySelect)
 	if err := adis.prepareQuery(ctx); err != nil {
 		return err
 	}

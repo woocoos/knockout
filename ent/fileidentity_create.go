@@ -282,10 +282,10 @@ func (fic *FileIdentityCreate) check() error {
 	if _, ok := fic.mutation.IsDefault(); !ok {
 		return &ValidationError{Name: "is_default", err: errors.New(`ent: missing required field "FileIdentity.is_default"`)}
 	}
-	if _, ok := fic.mutation.SourceID(); !ok {
+	if len(fic.mutation.SourceIDs()) == 0 {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required edge "FileIdentity.source"`)}
 	}
-	if _, ok := fic.mutation.OrgID(); !ok {
+	if len(fic.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "FileIdentity.org"`)}
 	}
 	return nil

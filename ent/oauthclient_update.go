@@ -213,7 +213,7 @@ func (ocu *OauthClientUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if _, ok := ocu.mutation.UserID(); ocu.mutation.UserCleared() && !ok {
+	if ocu.mutation.UserCleared() && len(ocu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil
@@ -506,7 +506,7 @@ func (ocuo *OauthClientUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if _, ok := ocuo.mutation.UserID(); ocuo.mutation.UserCleared() && !ok {
+	if ocuo.mutation.UserCleared() && len(ocuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil

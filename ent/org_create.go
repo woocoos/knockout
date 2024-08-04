@@ -530,7 +530,7 @@ func (oc *OrgCreate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if _, ok := oc.mutation.ParentID(); !ok {
+	if len(oc.mutation.ParentIDs()) == 0 {
 		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "Org.parent"`)}
 	}
 	return nil

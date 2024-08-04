@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (ulpq *UserLoginProfileQuery) QueryUser() *UserQuery {
 // First returns the first UserLoginProfile entity from the query.
 // Returns a *NotFoundError when no UserLoginProfile was found.
 func (ulpq *UserLoginProfileQuery) First(ctx context.Context) (*UserLoginProfile, error) {
-	nodes, err := ulpq.Limit(1).All(setContextOp(ctx, ulpq.ctx, "First"))
+	nodes, err := ulpq.Limit(1).All(setContextOp(ctx, ulpq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (ulpq *UserLoginProfileQuery) FirstX(ctx context.Context) *UserLoginProfile
 // Returns a *NotFoundError when no UserLoginProfile ID was found.
 func (ulpq *UserLoginProfileQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ulpq.Limit(1).IDs(setContextOp(ctx, ulpq.ctx, "FirstID")); err != nil {
+	if ids, err = ulpq.Limit(1).IDs(setContextOp(ctx, ulpq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (ulpq *UserLoginProfileQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one UserLoginProfile entity is found.
 // Returns a *NotFoundError when no UserLoginProfile entities are found.
 func (ulpq *UserLoginProfileQuery) Only(ctx context.Context) (*UserLoginProfile, error) {
-	nodes, err := ulpq.Limit(2).All(setContextOp(ctx, ulpq.ctx, "Only"))
+	nodes, err := ulpq.Limit(2).All(setContextOp(ctx, ulpq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (ulpq *UserLoginProfileQuery) OnlyX(ctx context.Context) *UserLoginProfile 
 // Returns a *NotFoundError when no entities are found.
 func (ulpq *UserLoginProfileQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ulpq.Limit(2).IDs(setContextOp(ctx, ulpq.ctx, "OnlyID")); err != nil {
+	if ids, err = ulpq.Limit(2).IDs(setContextOp(ctx, ulpq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (ulpq *UserLoginProfileQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of UserLoginProfiles.
 func (ulpq *UserLoginProfileQuery) All(ctx context.Context) ([]*UserLoginProfile, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, "All")
+	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryAll)
 	if err := ulpq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (ulpq *UserLoginProfileQuery) IDs(ctx context.Context) (ids []int, err erro
 	if ulpq.ctx.Unique == nil && ulpq.path != nil {
 		ulpq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ulpq.ctx, "IDs")
+	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryIDs)
 	if err = ulpq.Select(userloginprofile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (ulpq *UserLoginProfileQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (ulpq *UserLoginProfileQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, "Count")
+	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryCount)
 	if err := ulpq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (ulpq *UserLoginProfileQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ulpq *UserLoginProfileQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ulpq.ctx, "Exist")
+	ctx = setContextOp(ctx, ulpq.ctx, ent.OpQueryExist)
 	switch _, err := ulpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -541,7 +542,7 @@ func (ulpgb *UserLoginProfileGroupBy) Aggregate(fns ...AggregateFunc) *UserLogin
 
 // Scan applies the selector query and scans the result into the given value.
 func (ulpgb *UserLoginProfileGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ulpgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ulpgb.build.ctx, ent.OpQueryGroupBy)
 	if err := ulpgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -589,7 +590,7 @@ func (ulps *UserLoginProfileSelect) Aggregate(fns ...AggregateFunc) *UserLoginPr
 
 // Scan applies the selector query and scans the result into the given value.
 func (ulps *UserLoginProfileSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ulps.ctx, "Select")
+	ctx = setContextOp(ctx, ulps.ctx, ent.OpQuerySelect)
 	if err := ulps.prepareQuery(ctx); err != nil {
 		return err
 	}

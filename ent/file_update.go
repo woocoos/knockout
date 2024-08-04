@@ -288,7 +288,7 @@ func (fu *FileUpdate) check() error {
 			return &ValidationError{Name: "md5", err: fmt.Errorf(`ent: validator failed for field "File.md5": %w`, err)}
 		}
 	}
-	if _, ok := fu.mutation.SourceID(); fu.mutation.SourceCleared() && !ok {
+	if fu.mutation.SourceCleared() && len(fu.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "File.source"`)
 	}
 	return nil
@@ -684,7 +684,7 @@ func (fuo *FileUpdateOne) check() error {
 			return &ValidationError{Name: "md5", err: fmt.Errorf(`ent: validator failed for field "File.md5": %w`, err)}
 		}
 	}
-	if _, ok := fuo.mutation.SourceID(); fuo.mutation.SourceCleared() && !ok {
+	if fuo.mutation.SourceCleared() && len(fuo.mutation.SourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "File.source"`)
 	}
 	return nil

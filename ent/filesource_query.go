@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (fsq *FileSourceQuery) QueryFiles() *FileQuery {
 // First returns the first FileSource entity from the query.
 // Returns a *NotFoundError when no FileSource was found.
 func (fsq *FileSourceQuery) First(ctx context.Context) (*FileSource, error) {
-	nodes, err := fsq.Limit(1).All(setContextOp(ctx, fsq.ctx, "First"))
+	nodes, err := fsq.Limit(1).All(setContextOp(ctx, fsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (fsq *FileSourceQuery) FirstX(ctx context.Context) *FileSource {
 // Returns a *NotFoundError when no FileSource ID was found.
 func (fsq *FileSourceQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fsq.Limit(1).IDs(setContextOp(ctx, fsq.ctx, "FirstID")); err != nil {
+	if ids, err = fsq.Limit(1).IDs(setContextOp(ctx, fsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (fsq *FileSourceQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FileSource entity is found.
 // Returns a *NotFoundError when no FileSource entities are found.
 func (fsq *FileSourceQuery) Only(ctx context.Context) (*FileSource, error) {
-	nodes, err := fsq.Limit(2).All(setContextOp(ctx, fsq.ctx, "Only"))
+	nodes, err := fsq.Limit(2).All(setContextOp(ctx, fsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (fsq *FileSourceQuery) OnlyX(ctx context.Context) *FileSource {
 // Returns a *NotFoundError when no entities are found.
 func (fsq *FileSourceQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fsq.Limit(2).IDs(setContextOp(ctx, fsq.ctx, "OnlyID")); err != nil {
+	if ids, err = fsq.Limit(2).IDs(setContextOp(ctx, fsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (fsq *FileSourceQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FileSources.
 func (fsq *FileSourceQuery) All(ctx context.Context) ([]*FileSource, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "All")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryAll)
 	if err := fsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (fsq *FileSourceQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if fsq.ctx.Unique == nil && fsq.path != nil {
 		fsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fsq.ctx, "IDs")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryIDs)
 	if err = fsq.Select(filesource.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (fsq *FileSourceQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fsq *FileSourceQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "Count")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryCount)
 	if err := fsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (fsq *FileSourceQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fsq *FileSourceQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "Exist")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryExist)
 	switch _, err := fsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -659,7 +660,7 @@ func (fsgb *FileSourceGroupBy) Aggregate(fns ...AggregateFunc) *FileSourceGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (fsgb *FileSourceGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -707,7 +708,7 @@ func (fss *FileSourceSelect) Aggregate(fns ...AggregateFunc) *FileSourceSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fss *FileSourceSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fss.ctx, "Select")
+	ctx = setContextOp(ctx, fss.ctx, ent.OpQuerySelect)
 	if err := fss.prepareQuery(ctx); err != nil {
 		return err
 	}

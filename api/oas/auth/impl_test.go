@@ -150,6 +150,14 @@ func (ts *loginFlowSuite) SetupSuite() {
 	err = db.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").
 		SetRoleArn("arn:aws:s3:::*").SetDurationSeconds(3600).SetIsDefault(true).SetFileSourceID(1).Exec(context.Background())
 	ts.Require().NoError(err)
+
+	err = db.FileSource.Create().SetID(2).SetCreatedBy(1).SetKind(filesource.KindAliOSS).
+		SetEndpoint("https://oss-cn-shenzhen.aliyuncs.com").SetStsEndpoint("sts.cn-shenzhen.aliyuncs.com").SetRegion("oss-cn-shenzhen").SetBucket("qldevtest").SetBucketURL("https://qldevtest.oss-cn-shenzhen.aliyuncs.com").Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileIdentity.Create().SetID(2).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("LTAI5tDStcqxb8q7MkJXo54M").SetAccessKeySecret("xxx").
+		SetRoleArn("acs:ram::5755321561100682:role/devossrwrole").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(context.Background())
+	ts.Require().NoError(err)
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
@@ -376,10 +384,31 @@ func TestPwd(t *testing.T) {
 	t.Log(given)
 }
 
-func (ts *loginFlowSuite) Test_GetOssSts() {
+func (ts *loginFlowSuite) Test_GetMinioSts() {
 	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{}`)
+	req := httptest.NewRequest("POST", "/oss/sts", payload)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
+}
+
+func (ts *loginFlowSuite) Test_GetAliSts() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	payload := strings.NewReader(`{
+		"bucket": "qldevtest",
+		"endpoint": "https://oss-cn-shenzhen.aliyuncs.com"
+	}`)
 	req := httptest.NewRequest("POST", "/oss/sts", payload)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+adminToken)

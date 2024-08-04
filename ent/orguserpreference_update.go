@@ -172,10 +172,10 @@ func (oupu *OrgUserPreferenceUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oupu *OrgUserPreferenceUpdate) check() error {
-	if _, ok := oupu.mutation.UserID(); oupu.mutation.UserCleared() && !ok {
+	if oupu.mutation.UserCleared() && len(oupu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.user"`)
 	}
-	if _, ok := oupu.mutation.OrgID(); oupu.mutation.OrgCleared() && !ok {
+	if oupu.mutation.OrgCleared() && len(oupu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.org"`)
 	}
 	return nil
@@ -434,10 +434,10 @@ func (oupuo *OrgUserPreferenceUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oupuo *OrgUserPreferenceUpdateOne) check() error {
-	if _, ok := oupuo.mutation.UserID(); oupuo.mutation.UserCleared() && !ok {
+	if oupuo.mutation.UserCleared() && len(oupuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.user"`)
 	}
-	if _, ok := oupuo.mutation.OrgID(); oupuo.mutation.OrgCleared() && !ok {
+	if oupuo.mutation.OrgCleared() && len(oupuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUserPreference.org"`)
 	}
 	return nil

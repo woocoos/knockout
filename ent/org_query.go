@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -333,7 +334,7 @@ func (oq *OrgQuery) QueryOrgApp() *OrgAppQuery {
 // First returns the first Org entity from the query.
 // Returns a *NotFoundError when no Org was found.
 func (oq *OrgQuery) First(ctx context.Context) (*Org, error) {
-	nodes, err := oq.Limit(1).All(setContextOp(ctx, oq.ctx, "First"))
+	nodes, err := oq.Limit(1).All(setContextOp(ctx, oq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -356,7 +357,7 @@ func (oq *OrgQuery) FirstX(ctx context.Context) *Org {
 // Returns a *NotFoundError when no Org ID was found.
 func (oq *OrgQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oq.Limit(1).IDs(setContextOp(ctx, oq.ctx, "FirstID")); err != nil {
+	if ids, err = oq.Limit(1).IDs(setContextOp(ctx, oq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -379,7 +380,7 @@ func (oq *OrgQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one Org entity is found.
 // Returns a *NotFoundError when no Org entities are found.
 func (oq *OrgQuery) Only(ctx context.Context) (*Org, error) {
-	nodes, err := oq.Limit(2).All(setContextOp(ctx, oq.ctx, "Only"))
+	nodes, err := oq.Limit(2).All(setContextOp(ctx, oq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -407,7 +408,7 @@ func (oq *OrgQuery) OnlyX(ctx context.Context) *Org {
 // Returns a *NotFoundError when no entities are found.
 func (oq *OrgQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oq.Limit(2).IDs(setContextOp(ctx, oq.ctx, "OnlyID")); err != nil {
+	if ids, err = oq.Limit(2).IDs(setContextOp(ctx, oq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -432,7 +433,7 @@ func (oq *OrgQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of Orgs.
 func (oq *OrgQuery) All(ctx context.Context) ([]*Org, error) {
-	ctx = setContextOp(ctx, oq.ctx, "All")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryAll)
 	if err := oq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -454,7 +455,7 @@ func (oq *OrgQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if oq.ctx.Unique == nil && oq.path != nil {
 		oq.Unique(true)
 	}
-	ctx = setContextOp(ctx, oq.ctx, "IDs")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryIDs)
 	if err = oq.Select(org.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -472,7 +473,7 @@ func (oq *OrgQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (oq *OrgQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oq.ctx, "Count")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryCount)
 	if err := oq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -490,7 +491,7 @@ func (oq *OrgQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (oq *OrgQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oq.ctx, "Exist")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryExist)
 	switch _, err := oq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -1543,7 +1544,7 @@ func (ogb *OrgGroupBy) Aggregate(fns ...AggregateFunc) *OrgGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ogb *OrgGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ogb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ogb.build.ctx, ent.OpQueryGroupBy)
 	if err := ogb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -1591,7 +1592,7 @@ func (os *OrgSelect) Aggregate(fns ...AggregateFunc) *OrgSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (os *OrgSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, os.ctx, "Select")
+	ctx = setContextOp(ctx, os.ctx, ent.OpQuerySelect)
 	if err := os.prepareQuery(ctx); err != nil {
 		return err
 	}

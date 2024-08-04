@@ -213,16 +213,16 @@ func (oruu *OrgRoleUserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oruu *OrgRoleUserUpdate) check() error {
-	if _, ok := oruu.mutation.OrgRoleID(); oruu.mutation.OrgRoleCleared() && !ok {
+	if oruu.mutation.OrgRoleCleared() && len(oruu.mutation.OrgRoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_role"`)
 	}
-	if _, ok := oruu.mutation.OrgUserID(); oruu.mutation.OrgUserCleared() && !ok {
+	if oruu.mutation.OrgUserCleared() && len(oruu.mutation.OrgUserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_user"`)
 	}
-	if _, ok := oruu.mutation.UserID(); oruu.mutation.UserCleared() && !ok {
+	if oruu.mutation.UserCleared() && len(oruu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.user"`)
 	}
-	if _, ok := oruu.mutation.OrgID(); oruu.mutation.OrgCleared() && !ok {
+	if oruu.mutation.OrgCleared() && len(oruu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org"`)
 	}
 	return nil
@@ -585,16 +585,16 @@ func (oruuo *OrgRoleUserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oruuo *OrgRoleUserUpdateOne) check() error {
-	if _, ok := oruuo.mutation.OrgRoleID(); oruuo.mutation.OrgRoleCleared() && !ok {
+	if oruuo.mutation.OrgRoleCleared() && len(oruuo.mutation.OrgRoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_role"`)
 	}
-	if _, ok := oruuo.mutation.OrgUserID(); oruuo.mutation.OrgUserCleared() && !ok {
+	if oruuo.mutation.OrgUserCleared() && len(oruuo.mutation.OrgUserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_user"`)
 	}
-	if _, ok := oruuo.mutation.UserID(); oruuo.mutation.UserCleared() && !ok {
+	if oruuo.mutation.UserCleared() && len(oruuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.user"`)
 	}
-	if _, ok := oruuo.mutation.OrgID(); oruuo.mutation.OrgCleared() && !ok {
+	if oruuo.mutation.OrgCleared() && len(oruuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org"`)
 	}
 	return nil

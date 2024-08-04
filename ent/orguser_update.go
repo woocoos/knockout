@@ -263,10 +263,10 @@ func (ouu *OrgUserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ouu *OrgUserUpdate) check() error {
-	if _, ok := ouu.mutation.OrgID(); ouu.mutation.OrgCleared() && !ok {
+	if ouu.mutation.OrgCleared() && len(ouu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
-	if _, ok := ouu.mutation.UserID(); ouu.mutation.UserCleared() && !ok {
+	if ouu.mutation.UserCleared() && len(ouu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.user"`)
 	}
 	return nil
@@ -729,10 +729,10 @@ func (ouuo *OrgUserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ouuo *OrgUserUpdateOne) check() error {
-	if _, ok := ouuo.mutation.OrgID(); ouuo.mutation.OrgCleared() && !ok {
+	if ouuo.mutation.OrgCleared() && len(ouuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
-	if _, ok := ouuo.mutation.UserID(); ouuo.mutation.UserCleared() && !ok {
+	if ouuo.mutation.UserCleared() && len(ouuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.user"`)
 	}
 	return nil

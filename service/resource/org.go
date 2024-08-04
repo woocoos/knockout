@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/woocoos/entcache"
-	"github.com/woocoos/knockout-go/api/file"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -792,34 +791,35 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 
 // filesRefCount 文件引用上报
 func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs []int) error {
-	var params []*file.FileRefInput
-	for _, v := range newFileIDs {
-		params = append(params, &file.FileRefInput{
-			FileId: v,
-			OpType: "plus",
-		})
-	}
-	for _, v := range oldFileIDs {
-		params = append(params, &file.FileRefInput{
-			FileId: v,
-			OpType: "minus",
-		})
-	}
-	if len(params) == 0 {
-		return nil
-	}
-	req := file.ReportRefCountRequest{
-		Inputs: params,
-	}
-	ret, _, err := s.KOSDK.File().FileAPI.ReportRefCount(ctx, &req)
-	if err != nil {
-		return err
-	}
-	if ret {
-		return nil
-	} else {
-		return fmt.Errorf("report failure")
-	}
+	//var params []*file.FileRefInput
+	//for _, v := range newFileIDs {
+	//	params = append(params, &file.FileRefInput{
+	//		FileId: v,
+	//		OpType: "plus",
+	//	})
+	//}
+	//for _, v := range oldFileIDs {
+	//	params = append(params, &file.FileRefInput{
+	//		FileId: v,
+	//		OpType: "minus",
+	//	})
+	//}
+	//if len(params) == 0 {
+	//	return nil
+	//}
+	//req := file.ReportRefCountRequest{
+	//	Inputs: params,
+	//}
+	//ret, _, err := s.KOSDK.File().FileAPI.ReportRefCount(ctx, &req)
+	//if err != nil {
+	//	return err
+	//}
+	//if ret {
+	//	return nil
+	//} else {
+	//	return fmt.Errorf("report failure")
+	//}
+	return nil
 }
 
 func (s *Service) postAlerts(ctx context.Context, params msg.PostableAlerts) error {

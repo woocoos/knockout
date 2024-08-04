@@ -254,7 +254,7 @@ func (fc *FileCreate) check() error {
 			return &ValidationError{Name: "md5", err: fmt.Errorf(`ent: validator failed for field "File.md5": %w`, err)}
 		}
 	}
-	if _, ok := fc.mutation.SourceID(); !ok {
+	if len(fc.mutation.SourceIDs()) == 0 {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required edge "File.source"`)}
 	}
 	return nil

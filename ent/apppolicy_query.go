@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (apq *AppPolicyQuery) QueryAppRolePolicy() *AppRolePolicyQuery {
 // First returns the first AppPolicy entity from the query.
 // Returns a *NotFoundError when no AppPolicy was found.
 func (apq *AppPolicyQuery) First(ctx context.Context) (*AppPolicy, error) {
-	nodes, err := apq.Limit(1).All(setContextOp(ctx, apq.ctx, "First"))
+	nodes, err := apq.Limit(1).All(setContextOp(ctx, apq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (apq *AppPolicyQuery) FirstX(ctx context.Context) *AppPolicy {
 // Returns a *NotFoundError when no AppPolicy ID was found.
 func (apq *AppPolicyQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apq.Limit(1).IDs(setContextOp(ctx, apq.ctx, "FirstID")); err != nil {
+	if ids, err = apq.Limit(1).IDs(setContextOp(ctx, apq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (apq *AppPolicyQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppPolicy entity is found.
 // Returns a *NotFoundError when no AppPolicy entities are found.
 func (apq *AppPolicyQuery) Only(ctx context.Context) (*AppPolicy, error) {
-	nodes, err := apq.Limit(2).All(setContextOp(ctx, apq.ctx, "Only"))
+	nodes, err := apq.Limit(2).All(setContextOp(ctx, apq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (apq *AppPolicyQuery) OnlyX(ctx context.Context) *AppPolicy {
 // Returns a *NotFoundError when no entities are found.
 func (apq *AppPolicyQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apq.Limit(2).IDs(setContextOp(ctx, apq.ctx, "OnlyID")); err != nil {
+	if ids, err = apq.Limit(2).IDs(setContextOp(ctx, apq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (apq *AppPolicyQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppPolicies.
 func (apq *AppPolicyQuery) All(ctx context.Context) ([]*AppPolicy, error) {
-	ctx = setContextOp(ctx, apq.ctx, "All")
+	ctx = setContextOp(ctx, apq.ctx, ent.OpQueryAll)
 	if err := apq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (apq *AppPolicyQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if apq.ctx.Unique == nil && apq.path != nil {
 		apq.Unique(true)
 	}
-	ctx = setContextOp(ctx, apq.ctx, "IDs")
+	ctx = setContextOp(ctx, apq.ctx, ent.OpQueryIDs)
 	if err = apq.Select(apppolicy.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (apq *AppPolicyQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (apq *AppPolicyQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, apq.ctx, "Count")
+	ctx = setContextOp(ctx, apq.ctx, ent.OpQueryCount)
 	if err := apq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (apq *AppPolicyQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (apq *AppPolicyQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, apq.ctx, "Exist")
+	ctx = setContextOp(ctx, apq.ctx, ent.OpQueryExist)
 	switch _, err := apq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -765,7 +766,7 @@ func (apgb *AppPolicyGroupBy) Aggregate(fns ...AggregateFunc) *AppPolicyGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (apgb *AppPolicyGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, apgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, apgb.build.ctx, ent.OpQueryGroupBy)
 	if err := apgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -813,7 +814,7 @@ func (aps *AppPolicySelect) Aggregate(fns ...AggregateFunc) *AppPolicySelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (aps *AppPolicySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aps.ctx, "Select")
+	ctx = setContextOp(ctx, aps.ctx, ent.OpQuerySelect)
 	if err := aps.prepareQuery(ctx); err != nil {
 		return err
 	}
