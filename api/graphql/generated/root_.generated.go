@@ -63,7 +63,6 @@ type ComplexityRoot struct {
 		ID                   func(childComplexity int) int
 		Kind                 func(childComplexity int) int
 		Logo                 func(childComplexity int) int
-		LogoFileID           func(childComplexity int) int
 		Menus                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppMenuOrder, where *ent.AppMenuWhereInput) int
 		Name                 func(childComplexity int) int
 		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
@@ -256,33 +255,6 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 	}
 
-	File struct {
-		CreatedAt func(childComplexity int) int
-		CreatedBy func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Md5       func(childComplexity int) int
-		MineType  func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Path      func(childComplexity int) int
-		Size      func(childComplexity int) int
-		Source    func(childComplexity int) int
-		SourceID  func(childComplexity int) int
-		TenantID  func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		UpdatedBy func(childComplexity int) int
-	}
-
-	FileConnection struct {
-		Edges      func(childComplexity int) int
-		PageInfo   func(childComplexity int) int
-		TotalCount func(childComplexity int) int
-	}
-
-	FileEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
-	}
-
 	FileIdentity struct {
 		AccessKeyID     func(childComplexity int) int
 		AccessKeySecret func(childComplexity int) int
@@ -321,7 +293,6 @@ type ComplexityRoot struct {
 		CreatedBy         func(childComplexity int) int
 		Endpoint          func(childComplexity int) int
 		EndpointImmutable func(childComplexity int) int
-		Files             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileOrder, where *ent.FileWhereInput) int
 		ID                func(childComplexity int) int
 		Kind              func(childComplexity int) int
 		Region            func(childComplexity int) int
@@ -655,7 +626,6 @@ type ComplexityRoot struct {
 
 	User struct {
 		Avatar            func(childComplexity int) int
-		AvatarFileID      func(childComplexity int) int
 		Comments          func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
@@ -859,13 +829,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.App.Logo(childComplexity), true
-
-	case "App.logoFileID":
-		if e.complexity.App.LogoFileID == nil {
-			break
-		}
-
-		return e.complexity.App.LogoFileID(childComplexity), true
 
 	case "App.menus":
 		if e.complexity.App.Menus == nil {
@@ -1818,132 +1781,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppRole.UpdatedBy(childComplexity), true
 
-	case "File.createdAt":
-		if e.complexity.File.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.File.CreatedAt(childComplexity), true
-
-	case "File.createdBy":
-		if e.complexity.File.CreatedBy == nil {
-			break
-		}
-
-		return e.complexity.File.CreatedBy(childComplexity), true
-
-	case "File.id":
-		if e.complexity.File.ID == nil {
-			break
-		}
-
-		return e.complexity.File.ID(childComplexity), true
-
-	case "File.md5":
-		if e.complexity.File.Md5 == nil {
-			break
-		}
-
-		return e.complexity.File.Md5(childComplexity), true
-
-	case "File.mineType":
-		if e.complexity.File.MineType == nil {
-			break
-		}
-
-		return e.complexity.File.MineType(childComplexity), true
-
-	case "File.name":
-		if e.complexity.File.Name == nil {
-			break
-		}
-
-		return e.complexity.File.Name(childComplexity), true
-
-	case "File.path":
-		if e.complexity.File.Path == nil {
-			break
-		}
-
-		return e.complexity.File.Path(childComplexity), true
-
-	case "File.size":
-		if e.complexity.File.Size == nil {
-			break
-		}
-
-		return e.complexity.File.Size(childComplexity), true
-
-	case "File.source":
-		if e.complexity.File.Source == nil {
-			break
-		}
-
-		return e.complexity.File.Source(childComplexity), true
-
-	case "File.sourceID":
-		if e.complexity.File.SourceID == nil {
-			break
-		}
-
-		return e.complexity.File.SourceID(childComplexity), true
-
-	case "File.tenantID":
-		if e.complexity.File.TenantID == nil {
-			break
-		}
-
-		return e.complexity.File.TenantID(childComplexity), true
-
-	case "File.updatedAt":
-		if e.complexity.File.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.File.UpdatedAt(childComplexity), true
-
-	case "File.updatedBy":
-		if e.complexity.File.UpdatedBy == nil {
-			break
-		}
-
-		return e.complexity.File.UpdatedBy(childComplexity), true
-
-	case "FileConnection.edges":
-		if e.complexity.FileConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.FileConnection.Edges(childComplexity), true
-
-	case "FileConnection.pageInfo":
-		if e.complexity.FileConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.FileConnection.PageInfo(childComplexity), true
-
-	case "FileConnection.totalCount":
-		if e.complexity.FileConnection.TotalCount == nil {
-			break
-		}
-
-		return e.complexity.FileConnection.TotalCount(childComplexity), true
-
-	case "FileEdge.cursor":
-		if e.complexity.FileEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.FileEdge.Cursor(childComplexity), true
-
-	case "FileEdge.node":
-		if e.complexity.FileEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.FileEdge.Node(childComplexity), true
-
 	case "FileIdentity.accessKeyID":
 		if e.complexity.FileIdentity.AccessKeyID == nil {
 			break
@@ -2139,18 +1976,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileSource.EndpointImmutable(childComplexity), true
-
-	case "FileSource.files":
-		if e.complexity.FileSource.Files == nil {
-			break
-		}
-
-		args, err := ec.field_FileSource_files_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.FileSource.Files(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileOrder), args["where"].(*ent.FileWhereInput)), true
 
 	case "FileSource.id":
 		if e.complexity.FileSource.ID == nil {
@@ -4513,13 +4338,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Avatar(childComplexity), true
 
-	case "User.avatarFileID":
-		if e.complexity.User.AvatarFileID == nil {
-			break
-		}
-
-		return e.complexity.User.AvatarFileID(childComplexity), true
-
 	case "User.comments":
 		if e.complexity.User.Comments == nil {
 			break
@@ -5125,10 +4943,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputEnableDirectoryInput,
 		ec.unmarshalInputFileIdentityOrder,
 		ec.unmarshalInputFileIdentityWhereInput,
-		ec.unmarshalInputFileOrder,
 		ec.unmarshalInputFileSourceOrder,
 		ec.unmarshalInputFileSourceWhereInput,
-		ec.unmarshalInputFileWhereInput,
 		ec.unmarshalInputGrantInput,
 		ec.unmarshalInputOauthClientOrder,
 		ec.unmarshalInputOauthClientWhereInput,
@@ -5324,10 +5140,6 @@ type App implements Node {
   应用图标地址
   """
   logo: String
-  """
-  图标,存储路规则：/{appcode}/{tid}/xxx
-  """
-  logoFileID: ID
   """
   备注
   """
@@ -7344,19 +7156,6 @@ input AppWhereInput {
   refreshTokenValidityIsNil: Boolean
   refreshTokenValidityNotNil: Boolean
   """
-  logo_file_id field predicates
-  """
-  logoFileID: ID
-  logoFileIDNEQ: ID
-  logoFileIDIn: [ID!]
-  logoFileIDNotIn: [ID!]
-  logoFileIDGT: ID
-  logoFileIDGTE: ID
-  logoFileIDLT: ID
-  logoFileIDLTE: ID
-  logoFileIDIsNil: Boolean
-  logoFileIDNotNil: Boolean
-  """
   comments field predicates
   """
   comments: String
@@ -7532,10 +7331,6 @@ input CreateAppInput {
   应用图标地址
   """
   logo: String
-  """
-  图标,存储路规则：/{appcode}/{tid}/xxx
-  """
-  logoFileID: ID
   """
   备注
   """
@@ -7723,7 +7518,6 @@ input CreateFileSourceInput {
   """
   bucketURL: String!
   identityIDs: [ID!]
-  fileIDs: [ID!]
 }
 """
 CreateOauthClientInput is used for create OauthClient object.
@@ -7930,10 +7724,6 @@ input CreateUserInput {
   头像地址
   """
   avatar: String
-  """
-  头像,存储路规则：/{appcode}/{tid}/xxx
-  """
-  avatarFileID: ID
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
@@ -7987,75 +7777,6 @@ Define a Relay Cursor type:
 https://relay.dev/graphql/connections.htm#sec-Cursor
 """
 scalar Cursor
-type File implements Node {
-  id: ID!
-  createdBy: Int!
-  createdAt: Time!
-  updatedBy: Int
-  updatedAt: Time
-  """
-  文件名称
-  """
-  name: String!
-  """
-  文件来源
-  """
-  sourceID: ID!
-  """
-  租户ID
-  """
-  tenantID: Int!
-  """
-  文件相对路径
-  """
-  path: String!
-  """
-  文件大小，单位为B
-  """
-  size: Int
-  """
-  媒体类型，如：image/png
-  """
-  mineType: String
-  """
-  md5值
-  """
-  md5: String
-  """
-  文件来源
-  """
-  source: FileSource!
-}
-"""
-A connection to a list of items.
-"""
-type FileConnection {
-  """
-  A list of edges.
-  """
-  edges: [FileEdge]
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-  """
-  Identifies the total count of items in the connection.
-  """
-  totalCount: Int!
-}
-"""
-An edge in a connection.
-"""
-type FileEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: File
-  """
-  A cursor for use in pagination.
-  """
-  cursor: Cursor!
-}
 type FileIdentity implements Node {
   id: ID!
   createdBy: Int!
@@ -8326,25 +8047,6 @@ input FileIdentityWhereInput {
   hasOrg: Boolean
   hasOrgWith: [OrgWhereInput!]
 }
-"""
-Ordering options for File connections
-"""
-input FileOrder {
-  """
-  The ordering direction.
-  """
-  direction: OrderDirection! = ASC
-  """
-  The field by which to order Files.
-  """
-  field: FileOrderField!
-}
-"""
-Properties by which File connections can be ordered.
-"""
-enum FileOrderField {
-  createdAt
-}
 type FileSource implements Node {
   id: ID!
   createdBy: Int!
@@ -8383,37 +8085,6 @@ type FileSource implements Node {
   文件存储空间地址，用于匹配url
   """
   bucketURL: String!
-  files(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for Files returned from the connection.
-    """
-    orderBy: FileOrder
-
-    """
-    Filtering options for Files returned from the connection.
-    """
-    where: FileWhereInput
-  ): FileConnection!
 }
 """
 A connection to a list of items.
@@ -8637,147 +8308,6 @@ input FileSourceWhereInput {
   """
   hasIdentities: Boolean
   hasIdentitiesWith: [FileIdentityWhereInput!]
-  """
-  files edge predicates
-  """
-  hasFiles: Boolean
-  hasFilesWith: [FileWhereInput!]
-}
-"""
-FileWhereInput is used for filtering File objects.
-Input was generated by ent.
-"""
-input FileWhereInput {
-  not: FileWhereInput
-  and: [FileWhereInput!]
-  or: [FileWhereInput!]
-  """
-  id field predicates
-  """
-  id: ID
-  idNEQ: ID
-  idIn: [ID!]
-  idNotIn: [ID!]
-  idGT: ID
-  idGTE: ID
-  idLT: ID
-  idLTE: ID
-  """
-  created_by field predicates
-  """
-  createdBy: Int
-  createdByNEQ: Int
-  createdByIn: [Int!]
-  createdByNotIn: [Int!]
-  createdByGT: Int
-  createdByGTE: Int
-  createdByLT: Int
-  createdByLTE: Int
-  """
-  created_at field predicates
-  """
-  createdAt: Time
-  createdAtNEQ: Time
-  createdAtIn: [Time!]
-  createdAtNotIn: [Time!]
-  createdAtGT: Time
-  createdAtGTE: Time
-  createdAtLT: Time
-  createdAtLTE: Time
-  """
-  updated_by field predicates
-  """
-  updatedBy: Int
-  updatedByNEQ: Int
-  updatedByIn: [Int!]
-  updatedByNotIn: [Int!]
-  updatedByGT: Int
-  updatedByGTE: Int
-  updatedByLT: Int
-  updatedByLTE: Int
-  updatedByIsNil: Boolean
-  updatedByNotNil: Boolean
-  """
-  updated_at field predicates
-  """
-  updatedAt: Time
-  updatedAtNEQ: Time
-  updatedAtIn: [Time!]
-  updatedAtNotIn: [Time!]
-  updatedAtGT: Time
-  updatedAtGTE: Time
-  updatedAtLT: Time
-  updatedAtLTE: Time
-  updatedAtIsNil: Boolean
-  updatedAtNotNil: Boolean
-  """
-  name field predicates
-  """
-  name: String
-  nameNEQ: String
-  nameIn: [String!]
-  nameNotIn: [String!]
-  nameGT: String
-  nameGTE: String
-  nameLT: String
-  nameLTE: String
-  nameContains: String
-  nameHasPrefix: String
-  nameHasSuffix: String
-  nameEqualFold: String
-  nameContainsFold: String
-  """
-  source_id field predicates
-  """
-  sourceID: ID
-  sourceIDNEQ: ID
-  sourceIDIn: [ID!]
-  sourceIDNotIn: [ID!]
-  """
-  tenant_id field predicates
-  """
-  tenantID: Int
-  tenantIDNEQ: Int
-  tenantIDIn: [Int!]
-  tenantIDNotIn: [Int!]
-  tenantIDGT: Int
-  tenantIDGTE: Int
-  tenantIDLT: Int
-  tenantIDLTE: Int
-  """
-  path field predicates
-  """
-  path: String
-  pathNEQ: String
-  pathIn: [String!]
-  pathNotIn: [String!]
-  pathGT: String
-  pathGTE: String
-  pathLT: String
-  pathLTE: String
-  pathContains: String
-  pathHasPrefix: String
-  pathHasSuffix: String
-  pathEqualFold: String
-  pathContainsFold: String
-  """
-  size field predicates
-  """
-  size: Int
-  sizeNEQ: Int
-  sizeIn: [Int!]
-  sizeNotIn: [Int!]
-  sizeGT: Int
-  sizeGTE: Int
-  sizeLT: Int
-  sizeLTE: Int
-  sizeIsNil: Boolean
-  sizeNotNil: Boolean
-  """
-  source edge predicates
-  """
-  hasSource: Boolean
-  hasSourceWith: [FileSourceWhereInput!]
 }
 """
 An object with a Global ID,for using in Noder interface.
@@ -10916,11 +10446,6 @@ input UpdateAppInput {
   logo: String
   clearLogo: Boolean
   """
-  图标,存储路规则：/{appcode}/{tid}/xxx
-  """
-  logoFileID: ID
-  clearLogoFileID: Boolean
-  """
   备注
   """
   comments: String
@@ -11125,9 +10650,6 @@ input UpdateFileSourceInput {
   addIdentityIDs: [ID!]
   removeIdentityIDs: [ID!]
   clearIdentities: Boolean
-  addFileIDs: [ID!]
-  removeFileIDs: [ID!]
-  clearFiles: Boolean
 }
 """
 UpdateOauthClientInput is used for update OauthClient object.
@@ -11363,11 +10885,6 @@ input UpdateUserInput {
   """
   avatar: String
   clearAvatar: Boolean
-  """
-  头像,存储路规则：/{appcode}/{tid}/xxx
-  """
-  avatarFileID: ID
-  clearAvatarFileID: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -11460,10 +10977,6 @@ type User implements Node {
   头像地址
   """
   avatar: String
-  """
-  头像,存储路规则：/{appcode}/{tid}/xxx
-  """
-  avatarFileID: ID
   """
   用户身份标识
   """

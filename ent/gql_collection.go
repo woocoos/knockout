@@ -19,7 +19,6 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -573,11 +572,6 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 			if _, ok := fieldSeen[app.FieldLogo]; !ok {
 				selectedFields = append(selectedFields, app.FieldLogo)
 				fieldSeen[app.FieldLogo] = struct{}{}
-			}
-		case "logoFileID":
-			if _, ok := fieldSeen[app.FieldLogoFileID]; !ok {
-				selectedFields = append(selectedFields, app.FieldLogoFileID)
-				fieldSeen[app.FieldLogoFileID] = struct{}{}
 			}
 		case "comments":
 			if _, ok := fieldSeen[app.FieldComments]; !ok {
@@ -1760,159 +1754,6 @@ func newAppRolePaginateArgs(rv map[string]any) *approlePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (f *FileQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return f, nil
-	}
-	if err := f.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return f, nil
-}
-
-func (f *FileQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	var (
-		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(file.Columns))
-		selectedFields = []string{file.FieldID}
-	)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-		case "source":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FileSourceClient{config: f.config}).Query()
-			)
-			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, filesourceImplementors)...); err != nil {
-				return err
-			}
-			f.withSource = query
-			if _, ok := fieldSeen[file.FieldSourceID]; !ok {
-				selectedFields = append(selectedFields, file.FieldSourceID)
-				fieldSeen[file.FieldSourceID] = struct{}{}
-			}
-		case "createdBy":
-			if _, ok := fieldSeen[file.FieldCreatedBy]; !ok {
-				selectedFields = append(selectedFields, file.FieldCreatedBy)
-				fieldSeen[file.FieldCreatedBy] = struct{}{}
-			}
-		case "createdAt":
-			if _, ok := fieldSeen[file.FieldCreatedAt]; !ok {
-				selectedFields = append(selectedFields, file.FieldCreatedAt)
-				fieldSeen[file.FieldCreatedAt] = struct{}{}
-			}
-		case "updatedBy":
-			if _, ok := fieldSeen[file.FieldUpdatedBy]; !ok {
-				selectedFields = append(selectedFields, file.FieldUpdatedBy)
-				fieldSeen[file.FieldUpdatedBy] = struct{}{}
-			}
-		case "updatedAt":
-			if _, ok := fieldSeen[file.FieldUpdatedAt]; !ok {
-				selectedFields = append(selectedFields, file.FieldUpdatedAt)
-				fieldSeen[file.FieldUpdatedAt] = struct{}{}
-			}
-		case "name":
-			if _, ok := fieldSeen[file.FieldName]; !ok {
-				selectedFields = append(selectedFields, file.FieldName)
-				fieldSeen[file.FieldName] = struct{}{}
-			}
-		case "sourceID":
-			if _, ok := fieldSeen[file.FieldSourceID]; !ok {
-				selectedFields = append(selectedFields, file.FieldSourceID)
-				fieldSeen[file.FieldSourceID] = struct{}{}
-			}
-		case "tenantID":
-			if _, ok := fieldSeen[file.FieldTenantID]; !ok {
-				selectedFields = append(selectedFields, file.FieldTenantID)
-				fieldSeen[file.FieldTenantID] = struct{}{}
-			}
-		case "path":
-			if _, ok := fieldSeen[file.FieldPath]; !ok {
-				selectedFields = append(selectedFields, file.FieldPath)
-				fieldSeen[file.FieldPath] = struct{}{}
-			}
-		case "size":
-			if _, ok := fieldSeen[file.FieldSize]; !ok {
-				selectedFields = append(selectedFields, file.FieldSize)
-				fieldSeen[file.FieldSize] = struct{}{}
-			}
-		case "mineType":
-			if _, ok := fieldSeen[file.FieldMineType]; !ok {
-				selectedFields = append(selectedFields, file.FieldMineType)
-				fieldSeen[file.FieldMineType] = struct{}{}
-			}
-		case "md5":
-			if _, ok := fieldSeen[file.FieldMd5]; !ok {
-				selectedFields = append(selectedFields, file.FieldMd5)
-				fieldSeen[file.FieldMd5] = struct{}{}
-			}
-		case "id":
-		case "__typename":
-		default:
-			unknownSeen = true
-		}
-	}
-	if !unknownSeen {
-		f.Select(selectedFields...)
-	}
-	return nil
-}
-
-type filePaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []FilePaginateOption
-}
-
-func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
-	args := &filePaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]any:
-			var (
-				err1, err2 error
-				order      = &FileOrder{Field: &FileOrderField{}, Direction: entgql.OrderDirectionAsc}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithFileOrder(order))
-			}
-		case *FileOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithFileOrder(v))
-			}
-		}
-	}
-	if v, ok := rv[whereField].(*FileWhereInput); ok {
-		args.opts = append(args.opts, WithFileFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (fi *FileIdentityQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileIdentityQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -2110,90 +1951,6 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "files":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FileClient{config: fs.config}).Query()
-			)
-			args := newFilePaginateArgs(fieldArgs(ctx, new(FileWhereInput), path...))
-			if err := validateFirstLast(args.first, args.last); err != nil {
-				return fmt.Errorf("validate first and last in path %q: %w", path, err)
-			}
-			pager, err := newFilePager(args.opts, args.last != nil)
-			if err != nil {
-				return fmt.Errorf("create new pager in path %q: %w", path, err)
-			}
-			if query, err = pager.applyFilter(query); err != nil {
-				return err
-			}
-			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
-			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
-				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
-				if hasPagination || ignoredEdges {
-					query := query.Clone()
-					fs.loadTotal = append(fs.loadTotal, func(ctx context.Context, nodes []*FileSource) error {
-						ids := make([]driver.Value, len(nodes))
-						for i := range nodes {
-							ids[i] = nodes[i].ID
-						}
-						var v []struct {
-							NodeID int `sql:"source_id"`
-							Count  int `sql:"count"`
-						}
-						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(s.C(filesource.FilesColumn), ids...))
-						})
-						if err := query.GroupBy(filesource.FilesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
-							return err
-						}
-						m := make(map[int]int, len(v))
-						for i := range v {
-							m[v[i].NodeID] = v[i].Count
-						}
-						for i := range nodes {
-							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				} else {
-					fs.loadTotal = append(fs.loadTotal, func(_ context.Context, nodes []*FileSource) error {
-						for i := range nodes {
-							n := len(nodes[i].Edges.Files)
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				}
-			}
-			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
-				continue
-			}
-			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
-				return err
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
-					return err
-				}
-			}
-			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(ctx, filesource.FilesColumn, limit, args.first, args.last, pager.orderExpr(query))
-				query.modifiers = append(query.modifiers, modify)
-			} else {
-				query = pager.applyOrder(query)
-			}
-			fs.WithNamedFiles(alias, func(wq *FileQuery) {
-				*wq = *query
-			})
 		case "createdBy":
 			if _, ok := fieldSeen[filesource.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldCreatedBy)
@@ -3891,11 +3648,6 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			if _, ok := fieldSeen[user.FieldAvatar]; !ok {
 				selectedFields = append(selectedFields, user.FieldAvatar)
 				fieldSeen[user.FieldAvatar] = struct{}{}
-			}
-		case "avatarFileID":
-			if _, ok := fieldSeen[user.FieldAvatarFileID]; !ok {
-				selectedFields = append(selectedFields, user.FieldAvatarFileID)
-				fieldSeen[user.FieldAvatarFileID] = struct{}{}
 			}
 		case "id":
 		case "__typename":

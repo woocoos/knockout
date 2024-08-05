@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 )
@@ -155,21 +154,6 @@ func (fsc *FileSourceCreate) AddIdentities(f ...*FileIdentity) *FileSourceCreate
 		ids[i] = f[i].ID
 	}
 	return fsc.AddIdentityIDs(ids...)
-}
-
-// AddFileIDs adds the "files" edge to the File entity by IDs.
-func (fsc *FileSourceCreate) AddFileIDs(ids ...int) *FileSourceCreate {
-	fsc.mutation.AddFileIDs(ids...)
-	return fsc
-}
-
-// AddFiles adds the "files" edges to the File entity.
-func (fsc *FileSourceCreate) AddFiles(f ...*File) *FileSourceCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fsc.AddFileIDs(ids...)
 }
 
 // Mutation returns the FileSourceMutation object of the builder.
@@ -372,22 +356,6 @@ func (fsc *FileSourceCreate) createSpec() (*FileSource, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := fsc.mutation.FilesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

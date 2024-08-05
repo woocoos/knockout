@@ -625,8 +625,8 @@ components:
           type: integer
         displayName:
           type: string
-        avatarFileId:
-          type: integer
+        avatar:
+          type: string
         domains:
           type: array
           items:

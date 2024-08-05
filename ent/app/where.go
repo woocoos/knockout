@@ -121,11 +121,6 @@ func Logo(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldLogo, v))
 }
 
-// LogoFileID applies equality check predicate on the "logo_file_id" field. It's identical to LogoFileIDEQ.
-func LogoFileID(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoFileID, v))
-}
-
 // Comments applies equality check predicate on the "comments" field. It's identical to CommentsEQ.
 func Comments(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldComments, v))
@@ -944,56 +939,6 @@ func LogoEqualFold(v string) predicate.App {
 // LogoContainsFold applies the ContainsFold predicate on the "logo" field.
 func LogoContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldLogo, v))
-}
-
-// LogoFileIDEQ applies the EQ predicate on the "logo_file_id" field.
-func LogoFileIDEQ(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoFileID, v))
-}
-
-// LogoFileIDNEQ applies the NEQ predicate on the "logo_file_id" field.
-func LogoFileIDNEQ(v int) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldLogoFileID, v))
-}
-
-// LogoFileIDIn applies the In predicate on the "logo_file_id" field.
-func LogoFileIDIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldIn(FieldLogoFileID, vs...))
-}
-
-// LogoFileIDNotIn applies the NotIn predicate on the "logo_file_id" field.
-func LogoFileIDNotIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldNotIn(FieldLogoFileID, vs...))
-}
-
-// LogoFileIDGT applies the GT predicate on the "logo_file_id" field.
-func LogoFileIDGT(v int) predicate.App {
-	return predicate.App(sql.FieldGT(FieldLogoFileID, v))
-}
-
-// LogoFileIDGTE applies the GTE predicate on the "logo_file_id" field.
-func LogoFileIDGTE(v int) predicate.App {
-	return predicate.App(sql.FieldGTE(FieldLogoFileID, v))
-}
-
-// LogoFileIDLT applies the LT predicate on the "logo_file_id" field.
-func LogoFileIDLT(v int) predicate.App {
-	return predicate.App(sql.FieldLT(FieldLogoFileID, v))
-}
-
-// LogoFileIDLTE applies the LTE predicate on the "logo_file_id" field.
-func LogoFileIDLTE(v int) predicate.App {
-	return predicate.App(sql.FieldLTE(FieldLogoFileID, v))
-}
-
-// LogoFileIDIsNil applies the IsNil predicate on the "logo_file_id" field.
-func LogoFileIDIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldLogoFileID))
-}
-
-// LogoFileIDNotNil applies the NotNil predicate on the "logo_file_id" field.
-func LogoFileIDNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldLogoFileID))
 }
 
 // CommentsEQ applies the EQ predicate on the "comments" field.

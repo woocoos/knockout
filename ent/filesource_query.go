@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -26,11 +25,9 @@ type FileSourceQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.FileSource
 	withIdentities      *FileIdentityQuery
-	withFiles           *FileQuery
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*FileSource) error
 	withNamedIdentities map[string]*FileIdentityQuery
-	withNamedFiles      map[string]*FileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -82,28 +79,6 @@ func (fsq *FileSourceQuery) QueryIdentities() *FileIdentityQuery {
 			sqlgraph.From(filesource.Table, filesource.FieldID, selector),
 			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, filesource.IdentitiesTable, filesource.IdentitiesColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(fsq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryFiles chains the current query on the "files" edge.
-func (fsq *FileSourceQuery) QueryFiles() *FileQuery {
-	query := (&FileClient{config: fsq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fsq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := fsq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(filesource.Table, filesource.FieldID, selector),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, filesource.FilesTable, filesource.FilesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fsq.driver.Dialect(), step)
 		return fromU, nil
@@ -304,7 +279,6 @@ func (fsq *FileSourceQuery) Clone() *FileSourceQuery {
 		inters:         append([]Interceptor{}, fsq.inters...),
 		predicates:     append([]predicate.FileSource{}, fsq.predicates...),
 		withIdentities: fsq.withIdentities.Clone(),
-		withFiles:      fsq.withFiles.Clone(),
 		// clone intermediate query.
 		sql:  fsq.sql.Clone(),
 		path: fsq.path,
@@ -319,17 +293,6 @@ func (fsq *FileSourceQuery) WithIdentities(opts ...func(*FileIdentityQuery)) *Fi
 		opt(query)
 	}
 	fsq.withIdentities = query
-	return fsq
-}
-
-// WithFiles tells the query-builder to eager-load the nodes that are connected to
-// the "files" edge. The optional arguments are used to configure the query builder of the edge.
-func (fsq *FileSourceQuery) WithFiles(opts ...func(*FileQuery)) *FileSourceQuery {
-	query := (&FileClient{config: fsq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	fsq.withFiles = query
 	return fsq
 }
 
@@ -411,9 +374,8 @@ func (fsq *FileSourceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	var (
 		nodes       = []*FileSource{}
 		_spec       = fsq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			fsq.withIdentities != nil,
-			fsq.withFiles != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -444,24 +406,10 @@ func (fsq *FileSourceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			return nil, err
 		}
 	}
-	if query := fsq.withFiles; query != nil {
-		if err := fsq.loadFiles(ctx, query, nodes,
-			func(n *FileSource) { n.Edges.Files = []*File{} },
-			func(n *FileSource, e *File) { n.Edges.Files = append(n.Edges.Files, e) }); err != nil {
-			return nil, err
-		}
-	}
 	for name, query := range fsq.withNamedIdentities {
 		if err := fsq.loadIdentities(ctx, query, nodes,
 			func(n *FileSource) { n.appendNamedIdentities(name) },
 			func(n *FileSource, e *FileIdentity) { n.appendNamedIdentities(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range fsq.withNamedFiles {
-		if err := fsq.loadFiles(ctx, query, nodes,
-			func(n *FileSource) { n.appendNamedFiles(name) },
-			func(n *FileSource, e *File) { n.appendNamedFiles(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -498,36 +446,6 @@ func (fsq *FileSourceQuery) loadIdentities(ctx context.Context, query *FileIdent
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "file_source_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (fsq *FileSourceQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*FileSource, init func(*FileSource), assign func(*FileSource, *File)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*FileSource)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(file.FieldSourceID)
-	}
-	query.Where(predicate.File(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(filesource.FilesColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.SourceID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "source_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -629,20 +547,6 @@ func (fsq *FileSourceQuery) WithNamedIdentities(name string, opts ...func(*FileI
 		fsq.withNamedIdentities = make(map[string]*FileIdentityQuery)
 	}
 	fsq.withNamedIdentities[name] = query
-	return fsq
-}
-
-// WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (fsq *FileSourceQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *FileSourceQuery {
-	query := (&FileClient{config: fsq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if fsq.withNamedFiles == nil {
-		fsq.withNamedFiles = make(map[string]*FileQuery)
-	}
-	fsq.withNamedFiles[name] = query
 	return fsq
 }
 

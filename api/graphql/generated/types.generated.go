@@ -572,8 +572,6 @@ func (ec *executionContext) fieldContext_OrgFileIdentity_source(_ context.Contex
 				return ec.fieldContext_FileSource_bucket(ctx, field)
 			case "bucketURL":
 				return ec.fieldContext_FileSource_bucketURL(ctx, field)
-			case "files":
-				return ec.fieldContext_FileSource_files(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
 		},

@@ -49,8 +49,6 @@ type User struct {
 	Comments string `json:"comments,omitempty"`
 	// 头像地址
 	Avatar string `json:"avatar,omitempty"`
-	// 头像,存储路规则：/{appcode}/{tid}/xxx
-	AvatarFileID int `json:"avatar_file_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -169,7 +167,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy, user.FieldAvatarFileID:
+		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy:
 			values[i] = new(sql.NullInt64)
 		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldEmail, user.FieldMobile, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments, user.FieldAvatar:
 			values[i] = new(sql.NullString)
@@ -286,12 +284,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value.Valid {
 				u.Avatar = value.String
-			}
-		case user.FieldAvatarFileID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field avatar_file_id", values[i])
-			} else if value.Valid {
-				u.AvatarFileID = int(value.Int64)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -415,9 +407,6 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("avatar=")
 	builder.WriteString(u.Avatar)
-	builder.WriteString(", ")
-	builder.WriteString("avatar_file_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.AvatarFileID))
 	builder.WriteByte(')')
 	return builder.String()
 }

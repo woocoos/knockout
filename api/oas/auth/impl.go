@@ -420,10 +420,10 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
 		User: &User{
-			ID:           usr.ID,
-			DisplayName:  usr.DisplayName,
-			AvatarFileId: usr.AvatarFileID,
-			Domains:      domains,
+			ID:          usr.ID,
+			DisplayName: usr.DisplayName,
+			Avatar:      usr.Avatar,
+			Domains:     domains,
 		},
 	}, nil
 }
@@ -969,7 +969,8 @@ func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSRespon
 		return nil, err
 	}
 
-	provider, err := s.kosdk.Fs().GetProvider(ctx, s.toOSSFileSource(fi))
+	//使用上下文的ctx，在并发请求时会出现context canceled错误
+	provider, err := s.kosdk.Fs().GetProvider(context.TODO(), s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}
@@ -994,7 +995,7 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 	if err != nil {
 		return nil, err
 	}
-	provider, err := s.kosdk.Fs().GetProvider(ctx, s.toOSSFileSource(fi))
+	provider, err := s.kosdk.Fs().GetProvider(context.TODO(), s.toOSSFileSource(fi))
 	if err != nil {
 		return nil, err
 	}

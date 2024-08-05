@@ -29,15 +29,7 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 	if err != nil {
 		return nil, err
 	}
-	apl := client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).SaveX(ctx)
-	// 上报文件引用
-	if input.LogoFileID != nil {
-		err = s.reportFileRefCount(ctx, []int{apl.LogoFileID}, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return apl, nil
+	return client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).Save(ctx)
 }
 
 // CreateAppActions 创建应用权限
@@ -386,19 +378,7 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 		return nil, fmt.Errorf("app not exist")
 	}
 
-	oap, err := client.App.Query().Where(app.ID(appID)).Select(app.FieldLogoFileID).Only(ctx)
-	ap, err := client.App.UpdateOneID(appID).SetInput(input).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	// 上报文件引用
-	if input.LogoFileID != nil {
-		err = s.reportFileRefCount(ctx, []int{ap.LogoFileID}, []int{oap.LogoFileID})
-		if err != nil {
-			return nil, err
-		}
-	}
-	return ap, nil
+	return client.App.UpdateOneID(appID).SetInput(input).Save(ctx)
 }
 
 func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.UpdateAppRoleInput) (*ent.AppRole, error) {

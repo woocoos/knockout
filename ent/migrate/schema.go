@@ -26,7 +26,6 @@ var (
 		{Name: "token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "logo", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
@@ -302,43 +301,6 @@ var (
 				Name:    "approlepolicy_app_role_id_app_policy_id",
 				Unique:  true,
 				Columns: []*schema.Column{AppRolePolicyColumns[6], AppRolePolicyColumns[7]},
-			},
-		},
-	}
-	// FileColumns holds the columns for the "file" table.
-	FileColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
-		{Name: "created_by", Type: field.TypeInt},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
-		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "tenant_id", Type: field.TypeInt},
-		{Name: "ref_count", Type: field.TypeInt, Nullable: true},
-		{Name: "path", Type: field.TypeString},
-		{Name: "size", Type: field.TypeInt, Nullable: true},
-		{Name: "mine_type", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "md5", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-	}
-	// FileTable holds the schema information for the "file" table.
-	FileTable = &schema.Table{
-		Name:       "file",
-		Columns:    FileColumns,
-		PrimaryKey: []*schema.Column{FileColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "file_file_source_files",
-				Columns:    []*schema.Column{FileColumns[12]},
-				RefColumns: []*schema.Column{FileSourceColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "file_tenant_id_source_id_path",
-				Unique:  true,
-				Columns: []*schema.Column{FileColumns[6], FileColumns[12], FileColumns[8]},
 			},
 		},
 	}
@@ -765,7 +727,6 @@ var (
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "avatar", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{
@@ -901,7 +862,6 @@ var (
 		AppResTable,
 		AppRoleTable,
 		AppRolePolicyTable,
-		FileTable,
 		FileIdentityTable,
 		FileSourceTable,
 		OauthClientTable,
@@ -959,10 +919,6 @@ func init() {
 	AppRolePolicyTable.ForeignKeys[1].RefTable = AppPolicyTable
 	AppRolePolicyTable.Annotation = &entsql.Annotation{
 		Table: "app_role_policy",
-	}
-	FileTable.ForeignKeys[0].RefTable = FileSourceTable
-	FileTable.Annotation = &entsql.Annotation{
-		Table: "file",
 	}
 	FileIdentityTable.ForeignKeys[0].RefTable = FileSourceTable
 	FileIdentityTable.ForeignKeys[1].RefTable = OrgTable

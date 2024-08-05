@@ -57,7 +57,6 @@ func (FileSource) Fields() []ent.Field {
 func (FileSource) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("identities", FileIdentity.Type).Comment("来源凭证").Annotations(entgql.Skip(entgql.SkipType)),
-		edge.To("files", File.Type).Comment("所有文件").Annotations(entgql.RelayConnection()),
 	}
 }
 

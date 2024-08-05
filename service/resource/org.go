@@ -161,13 +161,6 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 			return nil, err
 		}
 	}
-	// 上报文件引用
-	if input.AvatarFileID != nil {
-		err = s.reportFileRefCount(ctx, []int{us.AvatarFileID}, nil)
-		if err != nil {
-			return nil, err
-		}
-	}
 	return us, nil
 }
 
@@ -395,19 +388,7 @@ func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUs
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
-	ous, err := client.User.Query().Where(user.ID(userID)).Select(user.FieldAvatarFileID).Only(ctx)
-	us, err := client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	// 上报文件引用
-	if input.AvatarFileID != nil {
-		err = s.reportFileRefCount(ctx, []int{us.AvatarFileID}, []int{ous.AvatarFileID})
-		if err != nil {
-			return nil, err
-		}
-	}
-	return us, nil
+	return client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
 }
 
 func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) error {
@@ -787,39 +768,6 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 		},
 	}
 	return s.postAlerts(ctx, params)
-}
-
-// filesRefCount 文件引用上报
-func (s *Service) reportFileRefCount(ctx context.Context, newFileIDs, oldFileIDs []int) error {
-	//var params []*file.FileRefInput
-	//for _, v := range newFileIDs {
-	//	params = append(params, &file.FileRefInput{
-	//		FileId: v,
-	//		OpType: "plus",
-	//	})
-	//}
-	//for _, v := range oldFileIDs {
-	//	params = append(params, &file.FileRefInput{
-	//		FileId: v,
-	//		OpType: "minus",
-	//	})
-	//}
-	//if len(params) == 0 {
-	//	return nil
-	//}
-	//req := file.ReportRefCountRequest{
-	//	Inputs: params,
-	//}
-	//ret, _, err := s.KOSDK.File().FileAPI.ReportRefCount(ctx, &req)
-	//if err != nil {
-	//	return err
-	//}
-	//if ret {
-	//	return nil
-	//} else {
-	//	return fmt.Errorf("report failure")
-	//}
-	return nil
 }
 
 func (s *Service) postAlerts(ctx context.Context, params msg.PostableAlerts) error {

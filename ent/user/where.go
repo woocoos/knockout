@@ -116,11 +116,6 @@ func Avatar(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldAvatar, v))
 }
 
-// AvatarFileID applies equality check predicate on the "avatar_file_id" field. It's identical to AvatarFileIDEQ.
-func AvatarFileID(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldAvatarFileID, v))
-}
-
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedBy, v))
@@ -924,56 +919,6 @@ func AvatarEqualFold(v string) predicate.User {
 // AvatarContainsFold applies the ContainsFold predicate on the "avatar" field.
 func AvatarContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldAvatar, v))
-}
-
-// AvatarFileIDEQ applies the EQ predicate on the "avatar_file_id" field.
-func AvatarFileIDEQ(v int) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDNEQ applies the NEQ predicate on the "avatar_file_id" field.
-func AvatarFileIDNEQ(v int) predicate.User {
-	return predicate.User(sql.FieldNEQ(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDIn applies the In predicate on the "avatar_file_id" field.
-func AvatarFileIDIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldIn(FieldAvatarFileID, vs...))
-}
-
-// AvatarFileIDNotIn applies the NotIn predicate on the "avatar_file_id" field.
-func AvatarFileIDNotIn(vs ...int) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldAvatarFileID, vs...))
-}
-
-// AvatarFileIDGT applies the GT predicate on the "avatar_file_id" field.
-func AvatarFileIDGT(v int) predicate.User {
-	return predicate.User(sql.FieldGT(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDGTE applies the GTE predicate on the "avatar_file_id" field.
-func AvatarFileIDGTE(v int) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDLT applies the LT predicate on the "avatar_file_id" field.
-func AvatarFileIDLT(v int) predicate.User {
-	return predicate.User(sql.FieldLT(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDLTE applies the LTE predicate on the "avatar_file_id" field.
-func AvatarFileIDLTE(v int) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldAvatarFileID, v))
-}
-
-// AvatarFileIDIsNil applies the IsNil predicate on the "avatar_file_id" field.
-func AvatarFileIDIsNil() predicate.User {
-	return predicate.User(sql.FieldIsNull(FieldAvatarFileID))
-}
-
-// AvatarFileIDNotNil applies the NotNil predicate on the "avatar_file_id" field.
-func AvatarFileIDNotNil() predicate.User {
-	return predicate.User(sql.FieldNotNull(FieldAvatarFileID))
 }
 
 // HasIdentities applies the HasEdge predicate on the "identities" edge.

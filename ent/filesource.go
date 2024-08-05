@@ -51,16 +51,11 @@ type FileSource struct {
 type FileSourceEdges struct {
 	// 来源凭证
 	Identities []*FileIdentity `json:"identities,omitempty"`
-	// 所有文件
-	Files []*File `json:"files,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
-	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	loadedTypes [1]bool
 
 	namedIdentities map[string][]*FileIdentity
-	namedFiles      map[string][]*File
 }
 
 // IdentitiesOrErr returns the Identities value or an error if the edge
@@ -70,15 +65,6 @@ func (e FileSourceEdges) IdentitiesOrErr() ([]*FileIdentity, error) {
 		return e.Identities, nil
 	}
 	return nil, &NotLoadedError{edge: "identities"}
-}
-
-// FilesOrErr returns the Files value or an error if the edge
-// was not loaded in eager-loading.
-func (e FileSourceEdges) FilesOrErr() ([]*File, error) {
-	if e.loadedTypes[1] {
-		return e.Files, nil
-	}
-	return nil, &NotLoadedError{edge: "files"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -205,11 +191,6 @@ func (fs *FileSource) QueryIdentities() *FileIdentityQuery {
 	return NewFileSourceClient(fs.config).QueryIdentities(fs)
 }
 
-// QueryFiles queries the "files" edge of the FileSource entity.
-func (fs *FileSource) QueryFiles() *FileQuery {
-	return NewFileSourceClient(fs.config).QueryFiles(fs)
-}
-
 // Update returns a builder for updating this FileSource.
 // Note that you need to call FileSource.Unwrap() before calling this method if this FileSource
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -293,30 +274,6 @@ func (fs *FileSource) appendNamedIdentities(name string, edges ...*FileIdentity)
 		fs.Edges.namedIdentities[name] = []*FileIdentity{}
 	} else {
 		fs.Edges.namedIdentities[name] = append(fs.Edges.namedIdentities[name], edges...)
-	}
-}
-
-// NamedFiles returns the Files named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (fs *FileSource) NamedFiles(name string) ([]*File, error) {
-	if fs.Edges.namedFiles == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := fs.Edges.namedFiles[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (fs *FileSource) appendNamedFiles(name string, edges ...*File) {
-	if fs.Edges.namedFiles == nil {
-		fs.Edges.namedFiles = make(map[string][]*File)
-	}
-	if len(edges) == 0 {
-		fs.Edges.namedFiles[name] = []*File{}
-	} else {
-		fs.Edges.namedFiles[name] = append(fs.Edges.namedFiles[name], edges...)
 	}
 }
 

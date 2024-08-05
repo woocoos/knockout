@@ -17,7 +17,6 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -334,33 +333,6 @@ func (f TraverseAppRolePolicy) Traverse(ctx context.Context, q ent.Query) error 
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppRolePolicyQuery", q)
-}
-
-// The FileFunc type is an adapter to allow the use of ordinary function as a Querier.
-type FileFunc func(context.Context, *ent.FileQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f FileFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.FileQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FileQuery", q)
-}
-
-// The TraverseFile type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseFile func(context.Context, *ent.FileQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseFile) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseFile) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.FileQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.FileQuery", q)
 }
 
 // The FileIdentityFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -816,8 +788,6 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.OrderOption]{typ: ent.TypeAppRole, tq: q}, nil
 	case *ent.AppRolePolicyQuery:
 		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.OrderOption]{typ: ent.TypeAppRolePolicy, tq: q}, nil
-	case *ent.FileQuery:
-		return &query[*ent.FileQuery, predicate.File, file.OrderOption]{typ: ent.TypeFile, tq: q}, nil
 	case *ent.FileIdentityQuery:
 		return &query[*ent.FileIdentityQuery, predicate.FileIdentity, fileidentity.OrderOption]{typ: ent.TypeFileIdentity, tq: q}, nil
 	case *ent.FileSourceQuery:

@@ -50,8 +50,6 @@ const (
 	FieldComments = "comments"
 	// FieldAvatar holds the string denoting the avatar field in the database.
 	FieldAvatar = "avatar"
-	// FieldAvatarFileID holds the string denoting the avatar_file_id field in the database.
-	FieldAvatarFileID = "avatar_file_id"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeLoginProfile holds the string denoting the login_profile edge name in mutations.
@@ -144,7 +142,6 @@ var Columns = []string{
 	FieldStatus,
 	FieldComments,
 	FieldAvatar,
-	FieldAvatarFileID,
 }
 
 var (
@@ -323,11 +320,6 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 // ByAvatar orders the results by the avatar field.
 func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
-}
-
-// ByAvatarFileID orders the results by the avatar_file_id field.
-func ByAvatarFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAvatarFileID, opts...).ToFunc()
 }
 
 // ByIdentitiesCount orders the results by identities count.

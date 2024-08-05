@@ -247,7 +247,7 @@ func (*dataset) initFileSource(client *ent.Tx) {
 
 	fi := make([]*ent.FileIdentityCreate, 0)
 	s2 := client.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetFileSourceID(1).SetAccessKeyID("test").SetAccessKeySecret("test1234").
-		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("").SetTenantID(1)
+		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("arn:aws:s3:::*").SetTenantID(1)
 	fi = append(fi, s2)
 	client.FileIdentity.CreateBulk(fi...).ExecX(context.Background())
 }

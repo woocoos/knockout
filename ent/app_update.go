@@ -266,33 +266,6 @@ func (au *AppUpdate) ClearLogo() *AppUpdate {
 	return au
 }
 
-// SetLogoFileID sets the "logo_file_id" field.
-func (au *AppUpdate) SetLogoFileID(i int) *AppUpdate {
-	au.mutation.ResetLogoFileID()
-	au.mutation.SetLogoFileID(i)
-	return au
-}
-
-// SetNillableLogoFileID sets the "logo_file_id" field if the given value is not nil.
-func (au *AppUpdate) SetNillableLogoFileID(i *int) *AppUpdate {
-	if i != nil {
-		au.SetLogoFileID(*i)
-	}
-	return au
-}
-
-// AddLogoFileID adds i to the "logo_file_id" field.
-func (au *AppUpdate) AddLogoFileID(i int) *AppUpdate {
-	au.mutation.AddLogoFileID(i)
-	return au
-}
-
-// ClearLogoFileID clears the value of the "logo_file_id" field.
-func (au *AppUpdate) ClearLogoFileID() *AppUpdate {
-	au.mutation.ClearLogoFileID()
-	return au
-}
-
 // SetComments sets the "comments" field.
 func (au *AppUpdate) SetComments(s string) *AppUpdate {
 	au.mutation.SetComments(s)
@@ -820,15 +793,6 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.LogoCleared() {
 		_spec.ClearField(app.FieldLogo, field.TypeString)
-	}
-	if value, ok := au.mutation.LogoFileID(); ok {
-		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
-	}
-	if value, ok := au.mutation.AddedLogoFileID(); ok {
-		_spec.AddField(app.FieldLogoFileID, field.TypeInt, value)
-	}
-	if au.mutation.LogoFileIDCleared() {
-		_spec.ClearField(app.FieldLogoFileID, field.TypeInt)
 	}
 	if value, ok := au.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
@@ -1478,33 +1442,6 @@ func (auo *AppUpdateOne) ClearLogo() *AppUpdateOne {
 	return auo
 }
 
-// SetLogoFileID sets the "logo_file_id" field.
-func (auo *AppUpdateOne) SetLogoFileID(i int) *AppUpdateOne {
-	auo.mutation.ResetLogoFileID()
-	auo.mutation.SetLogoFileID(i)
-	return auo
-}
-
-// SetNillableLogoFileID sets the "logo_file_id" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableLogoFileID(i *int) *AppUpdateOne {
-	if i != nil {
-		auo.SetLogoFileID(*i)
-	}
-	return auo
-}
-
-// AddLogoFileID adds i to the "logo_file_id" field.
-func (auo *AppUpdateOne) AddLogoFileID(i int) *AppUpdateOne {
-	auo.mutation.AddLogoFileID(i)
-	return auo
-}
-
-// ClearLogoFileID clears the value of the "logo_file_id" field.
-func (auo *AppUpdateOne) ClearLogoFileID() *AppUpdateOne {
-	auo.mutation.ClearLogoFileID()
-	return auo
-}
-
 // SetComments sets the "comments" field.
 func (auo *AppUpdateOne) SetComments(s string) *AppUpdateOne {
 	auo.mutation.SetComments(s)
@@ -2062,15 +1999,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if auo.mutation.LogoCleared() {
 		_spec.ClearField(app.FieldLogo, field.TypeString)
-	}
-	if value, ok := auo.mutation.LogoFileID(); ok {
-		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
-	}
-	if value, ok := auo.mutation.AddedLogoFileID(); ok {
-		_spec.AddField(app.FieldLogoFileID, field.TypeInt, value)
-	}
-	if auo.mutation.LogoFileIDCleared() {
-		_spec.ClearField(app.FieldLogoFileID, field.TypeInt)
 	}
 	if value, ok := auo.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)

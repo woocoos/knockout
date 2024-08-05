@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -210,21 +209,6 @@ func (fsu *FileSourceUpdate) AddIdentities(f ...*FileIdentity) *FileSourceUpdate
 	return fsu.AddIdentityIDs(ids...)
 }
 
-// AddFileIDs adds the "files" edge to the File entity by IDs.
-func (fsu *FileSourceUpdate) AddFileIDs(ids ...int) *FileSourceUpdate {
-	fsu.mutation.AddFileIDs(ids...)
-	return fsu
-}
-
-// AddFiles adds the "files" edges to the File entity.
-func (fsu *FileSourceUpdate) AddFiles(f ...*File) *FileSourceUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fsu.AddFileIDs(ids...)
-}
-
 // Mutation returns the FileSourceMutation object of the builder.
 func (fsu *FileSourceUpdate) Mutation() *FileSourceMutation {
 	return fsu.mutation
@@ -249,27 +233,6 @@ func (fsu *FileSourceUpdate) RemoveIdentities(f ...*FileIdentity) *FileSourceUpd
 		ids[i] = f[i].ID
 	}
 	return fsu.RemoveIdentityIDs(ids...)
-}
-
-// ClearFiles clears all "files" edges to the File entity.
-func (fsu *FileSourceUpdate) ClearFiles() *FileSourceUpdate {
-	fsu.mutation.ClearFiles()
-	return fsu
-}
-
-// RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (fsu *FileSourceUpdate) RemoveFileIDs(ids ...int) *FileSourceUpdate {
-	fsu.mutation.RemoveFileIDs(ids...)
-	return fsu
-}
-
-// RemoveFiles removes "files" edges to File entities.
-func (fsu *FileSourceUpdate) RemoveFiles(f ...*File) *FileSourceUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fsu.RemoveFileIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -426,51 +389,6 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fsu.mutation.FilesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fsu.mutation.RemovedFilesIDs(); len(nodes) > 0 && !fsu.mutation.FilesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fsu.mutation.FilesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -678,21 +596,6 @@ func (fsuo *FileSourceUpdateOne) AddIdentities(f ...*FileIdentity) *FileSourceUp
 	return fsuo.AddIdentityIDs(ids...)
 }
 
-// AddFileIDs adds the "files" edge to the File entity by IDs.
-func (fsuo *FileSourceUpdateOne) AddFileIDs(ids ...int) *FileSourceUpdateOne {
-	fsuo.mutation.AddFileIDs(ids...)
-	return fsuo
-}
-
-// AddFiles adds the "files" edges to the File entity.
-func (fsuo *FileSourceUpdateOne) AddFiles(f ...*File) *FileSourceUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fsuo.AddFileIDs(ids...)
-}
-
 // Mutation returns the FileSourceMutation object of the builder.
 func (fsuo *FileSourceUpdateOne) Mutation() *FileSourceMutation {
 	return fsuo.mutation
@@ -717,27 +620,6 @@ func (fsuo *FileSourceUpdateOne) RemoveIdentities(f ...*FileIdentity) *FileSourc
 		ids[i] = f[i].ID
 	}
 	return fsuo.RemoveIdentityIDs(ids...)
-}
-
-// ClearFiles clears all "files" edges to the File entity.
-func (fsuo *FileSourceUpdateOne) ClearFiles() *FileSourceUpdateOne {
-	fsuo.mutation.ClearFiles()
-	return fsuo
-}
-
-// RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (fsuo *FileSourceUpdateOne) RemoveFileIDs(ids ...int) *FileSourceUpdateOne {
-	fsuo.mutation.RemoveFileIDs(ids...)
-	return fsuo
-}
-
-// RemoveFiles removes "files" edges to File entities.
-func (fsuo *FileSourceUpdateOne) RemoveFiles(f ...*File) *FileSourceUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fsuo.RemoveFileIDs(ids...)
 }
 
 // Where appends a list predicates to the FileSourceUpdate builder.
@@ -924,51 +806,6 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fsuo.mutation.FilesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fsuo.mutation.RemovedFilesIDs(); len(nodes) > 0 && !fsuo.mutation.FilesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fsuo.mutation.FilesIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -15,7 +15,6 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/file"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -94,7 +93,7 @@ func init() {
 	// app.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
 	app.LogoValidator = appDescLogo.Validators[0].(func(string) error)
 	// appDescPrivate is the schema descriptor for private field.
-	appDescPrivate := appFields[13].Descriptor()
+	appDescPrivate := appFields[12].Descriptor()
 	// app.DefaultPrivate holds the default value on creation for the private field.
 	app.DefaultPrivate = appDescPrivate.Default.(bool)
 	// appDescID is the schema descriptor for id field.
@@ -325,33 +324,6 @@ func init() {
 	approlepolicyDescCreatedAt := approlepolicyMixinFields1[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
-	fileMixin := schema.File{}.Mixin()
-	fileMixinHooks1 := fileMixin[1].Hooks()
-	fileMixinHooks2 := fileMixin[2].Hooks()
-	file.Hooks[0] = fileMixinHooks1[0]
-	file.Hooks[1] = fileMixinHooks2[0]
-	fileMixinFields0 := fileMixin[0].Fields()
-	_ = fileMixinFields0
-	fileMixinFields1 := fileMixin[1].Fields()
-	_ = fileMixinFields1
-	fileFields := schema.File{}.Fields()
-	_ = fileFields
-	// fileDescCreatedAt is the schema descriptor for created_at field.
-	fileDescCreatedAt := fileMixinFields1[1].Descriptor()
-	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
-	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
-	// fileDescMineType is the schema descriptor for mine_type field.
-	fileDescMineType := fileFields[6].Descriptor()
-	// file.MineTypeValidator is a validator for the "mine_type" field. It is called by the builders before save.
-	file.MineTypeValidator = fileDescMineType.Validators[0].(func(string) error)
-	// fileDescMd5 is the schema descriptor for md5 field.
-	fileDescMd5 := fileFields[7].Descriptor()
-	// file.Md5Validator is a validator for the "md5" field. It is called by the builders before save.
-	file.Md5Validator = fileDescMd5.Validators[0].(func(string) error)
-	// fileDescID is the schema descriptor for id field.
-	fileDescID := fileMixinFields0[0].Descriptor()
-	// file.DefaultID holds the default value on creation for the id field.
-	file.DefaultID = fileDescID.Default.(func() int)
 	fileidentityMixin := schema.FileIdentity{}.Mixin()
 	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
 	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()

@@ -71,8 +71,3 @@ kosdk:
       sources:
     msg:
       baseUrl: "http://127.0.0.1:10072"
-
-files:
-  local:
-    baseDir: "tmp"
-    endpoint: "http://localhost:9000"

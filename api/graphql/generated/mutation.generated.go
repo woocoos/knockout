@@ -2291,8 +2291,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2393,8 +2391,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2605,8 +2601,6 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -3085,8 +3079,6 @@ func (ec *executionContext) fieldContext_Mutation_createApp(ctx context.Context,
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
 			case "logo":
 				return ec.fieldContext_App_logo(ctx, field)
-			case "logoFileID":
-				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -3189,8 +3181,6 @@ func (ec *executionContext) fieldContext_Mutation_updateApp(ctx context.Context,
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
 			case "logo":
 				return ec.fieldContext_App_logo(ctx, field)
-			case "logoFileID":
-				return ec.fieldContext_App_logoFileID(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -6223,8 +6213,6 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -6322,8 +6310,6 @@ func (ec *executionContext) fieldContext_Mutation_createFileSource(ctx context.C
 				return ec.fieldContext_FileSource_bucket(ctx, field)
 			case "bucketURL":
 				return ec.fieldContext_FileSource_bucketURL(ctx, field)
-			case "files":
-				return ec.fieldContext_FileSource_files(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
 		},
@@ -6407,8 +6393,6 @@ func (ec *executionContext) fieldContext_Mutation_updateFileSource(ctx context.C
 				return ec.fieldContext_FileSource_bucket(ctx, field)
 			case "bucketURL":
 				return ec.fieldContext_FileSource_bucketURL(ctx, field)
-			case "files":
-				return ec.fieldContext_FileSource_files(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
 		},

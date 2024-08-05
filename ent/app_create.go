@@ -195,20 +195,6 @@ func (ac *AppCreate) SetNillableLogo(s *string) *AppCreate {
 	return ac
 }
 
-// SetLogoFileID sets the "logo_file_id" field.
-func (ac *AppCreate) SetLogoFileID(i int) *AppCreate {
-	ac.mutation.SetLogoFileID(i)
-	return ac
-}
-
-// SetNillableLogoFileID sets the "logo_file_id" field if the given value is not nil.
-func (ac *AppCreate) SetNillableLogoFileID(i *int) *AppCreate {
-	if i != nil {
-		ac.SetLogoFileID(*i)
-	}
-	return ac
-}
-
 // SetComments sets the "comments" field.
 func (ac *AppCreate) SetComments(s string) *AppCreate {
 	ac.mutation.SetComments(s)
@@ -606,10 +592,6 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Logo(); ok {
 		_spec.SetField(app.FieldLogo, field.TypeString, value)
 		_node.Logo = value
-	}
-	if value, ok := ac.mutation.LogoFileID(); ok {
-		_spec.SetField(app.FieldLogoFileID, field.TypeInt, value)
-		_node.LogoFileID = value
 	}
 	if value, ok := ac.mutation.Comments(); ok {
 		_spec.SetField(app.FieldComments, field.TypeString, value)
@@ -1015,30 +997,6 @@ func (u *AppUpsert) ClearLogo() *AppUpsert {
 	return u
 }
 
-// SetLogoFileID sets the "logo_file_id" field.
-func (u *AppUpsert) SetLogoFileID(v int) *AppUpsert {
-	u.Set(app.FieldLogoFileID, v)
-	return u
-}
-
-// UpdateLogoFileID sets the "logo_file_id" field to the value that was provided on create.
-func (u *AppUpsert) UpdateLogoFileID() *AppUpsert {
-	u.SetExcluded(app.FieldLogoFileID)
-	return u
-}
-
-// AddLogoFileID adds v to the "logo_file_id" field.
-func (u *AppUpsert) AddLogoFileID(v int) *AppUpsert {
-	u.Add(app.FieldLogoFileID, v)
-	return u
-}
-
-// ClearLogoFileID clears the value of the "logo_file_id" field.
-func (u *AppUpsert) ClearLogoFileID() *AppUpsert {
-	u.SetNull(app.FieldLogoFileID)
-	return u
-}
-
 // SetComments sets the "comments" field.
 func (u *AppUpsert) SetComments(v string) *AppUpsert {
 	u.Set(app.FieldComments, v)
@@ -1409,34 +1367,6 @@ func (u *AppUpsertOne) UpdateLogo() *AppUpsertOne {
 func (u *AppUpsertOne) ClearLogo() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearLogo()
-	})
-}
-
-// SetLogoFileID sets the "logo_file_id" field.
-func (u *AppUpsertOne) SetLogoFileID(v int) *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.SetLogoFileID(v)
-	})
-}
-
-// AddLogoFileID adds v to the "logo_file_id" field.
-func (u *AppUpsertOne) AddLogoFileID(v int) *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.AddLogoFileID(v)
-	})
-}
-
-// UpdateLogoFileID sets the "logo_file_id" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateLogoFileID() *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateLogoFileID()
-	})
-}
-
-// ClearLogoFileID clears the value of the "logo_file_id" field.
-func (u *AppUpsertOne) ClearLogoFileID() *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.ClearLogoFileID()
 	})
 }
 
@@ -1989,34 +1919,6 @@ func (u *AppUpsertBulk) UpdateLogo() *AppUpsertBulk {
 func (u *AppUpsertBulk) ClearLogo() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearLogo()
-	})
-}
-
-// SetLogoFileID sets the "logo_file_id" field.
-func (u *AppUpsertBulk) SetLogoFileID(v int) *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.SetLogoFileID(v)
-	})
-}
-
-// AddLogoFileID adds v to the "logo_file_id" field.
-func (u *AppUpsertBulk) AddLogoFileID(v int) *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.AddLogoFileID(v)
-	})
-}
-
-// UpdateLogoFileID sets the "logo_file_id" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateLogoFileID() *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateLogoFileID()
-	})
-}
-
-// ClearLogoFileID clears the value of the "logo_file_id" field.
-func (u *AppUpsertBulk) ClearLogoFileID() *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.ClearLogoFileID()
 	})
 }
 
