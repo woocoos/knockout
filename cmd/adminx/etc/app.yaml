@@ -105,5 +105,3 @@ kosdk:
   plugin:
     msg:
       basePath: "http://127.0.0.1:10072/api/v2"
-    file:
-      basePath: "http://127.0.0.1:10071"

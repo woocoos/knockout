@@ -155,8 +155,8 @@ func (ts *loginFlowSuite) SetupSuite() {
 		SetEndpoint("https://oss-cn-shenzhen.aliyuncs.com").SetStsEndpoint("sts.cn-shenzhen.aliyuncs.com").SetRegion("oss-cn-shenzhen").SetBucket("qldevtest").SetBucketURL("https://qldevtest.oss-cn-shenzhen.aliyuncs.com").Exec(context.Background())
 	ts.Require().NoError(err)
 
-	err = db.FileIdentity.Create().SetID(2).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("LTAI5tDStcqxb8q7MkJXo54M").SetAccessKeySecret("xxx").
-		SetRoleArn("acs:ram::5755321561100682:role/devossrwrole").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(context.Background())
+	err = db.FileIdentity.Create().SetID(2).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("todo").SetAccessKeySecret("todo").
+		SetRoleArn("todo").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(context.Background())
 	ts.Require().NoError(err)
 }
 

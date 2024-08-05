@@ -22,7 +22,7 @@ import (
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
-	"github.com/woocoos/knockout-go/api/fs/alioss"
+	_ "github.com/woocoos/knockout-go/api/fs/alioss"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
@@ -116,7 +116,6 @@ func NewServer(app *woocoo.App) *ServerImpl {
 	} else {
 		s.db = ent.NewClient(ent.Driver(ents["portal"]))
 	}
-	fs.RegisterS3Provider(fs.KindAliOSS, alioss.BuildProvider)
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
 		panic(err)
 	}
@@ -1055,9 +1054,8 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	return fi, path, nil
 }
 
-func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *fs.SourceConfig {
-	return &fs.SourceConfig{
-		TenantID:          fi.TenantID,
+func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *fs.ProviderConfig {
+	return &fs.ProviderConfig{
 		Kind:              fs.Kind(fi.Edges.Source.Kind.String()),
 		Bucket:            fi.Edges.Source.Bucket,
 		BucketUrl:         fi.Edges.Source.BucketURL,
