@@ -45,7 +45,7 @@ web:
             - recovery:
             - errorHandle:
             - jwt:
-                tokenStoreKey: redis
+                #tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
                   - "/login/mfaqr.png"
@@ -118,7 +118,6 @@ kosdk:
     nonceLen: 12
   plugin:
     fs:
-      sources:
     msg:
       basePath: "http://127.0.0.1:10072"
 
