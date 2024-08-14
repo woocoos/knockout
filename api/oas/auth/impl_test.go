@@ -427,7 +427,7 @@ func (ts *loginFlowSuite) Test_GetPreSignUrl() {
 	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{
-		"url": "http://localhost:9000/test2/63f91559865b894cbe885e9a49d92a29.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test1%2F20240618%2Fcn-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240618T085259Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=cf0ac630cc5f39b106721a200ff4d178b53860d5c64d0e57fd59769b0825b035"
+		"url": "http://localhost:9000/test2/sendCaptchaCode.tmpl"
 	}`)
 	req := httptest.NewRequest("POST", "/oss/presignurl", payload)
 	req.Header.Set("Content-Type", "application/json")

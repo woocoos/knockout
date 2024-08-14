@@ -1046,11 +1046,9 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	path := ""
 	u, err := url.Parse(req.URL)
 	if fi.Edges.Source.Kind == filesource.KindMinio {
-		path = strings.TrimLeft(u.Path, "/"+fi.Edges.Source.Bucket)
-	} else if fi.Edges.Source.Kind == filesource.KindAliOSS {
-		path = u.Path
+		path = strings.TrimPrefix(u.Path, "/"+fi.Edges.Source.Bucket)
 	} else {
-		return nil, "", fmt.Errorf("error path")
+		path = u.Path
 	}
 	return fi, path, nil
 }
