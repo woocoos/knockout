@@ -879,7 +879,6 @@ type UpdateFileIdentityInput struct {
 	ClearComments        bool
 	Comments             *string
 	SourceID             *int
-	OrgID                *int
 }
 
 // Mutate applies the UpdateFileIdentityInput on the FileIdentityMutation builder.
@@ -913,9 +912,6 @@ func (i *UpdateFileIdentityInput) Mutate(m *FileIdentityMutation) {
 	}
 	if v := i.SourceID; v != nil {
 		m.SetSourceID(*v)
-	}
-	if v := i.OrgID; v != nil {
-		m.SetOrgID(*v)
 	}
 }
 

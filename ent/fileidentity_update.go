@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -74,20 +73,6 @@ func (fiu *FileIdentityUpdate) SetNillableUpdatedAt(t *time.Time) *FileIdentityU
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (fiu *FileIdentityUpdate) ClearUpdatedAt() *FileIdentityUpdate {
 	fiu.mutation.ClearUpdatedAt()
-	return fiu
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (fiu *FileIdentityUpdate) SetTenantID(i int) *FileIdentityUpdate {
-	fiu.mutation.SetTenantID(i)
-	return fiu
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (fiu *FileIdentityUpdate) SetNillableTenantID(i *int) *FileIdentityUpdate {
-	if i != nil {
-		fiu.SetTenantID(*i)
-	}
 	return fiu
 }
 
@@ -239,17 +224,6 @@ func (fiu *FileIdentityUpdate) SetSource(f *FileSource) *FileIdentityUpdate {
 	return fiu.SetSourceID(f.ID)
 }
 
-// SetOrgID sets the "org" edge to the Org entity by ID.
-func (fiu *FileIdentityUpdate) SetOrgID(id int) *FileIdentityUpdate {
-	fiu.mutation.SetOrgID(id)
-	return fiu
-}
-
-// SetOrg sets the "org" edge to the Org entity.
-func (fiu *FileIdentityUpdate) SetOrg(o *Org) *FileIdentityUpdate {
-	return fiu.SetOrgID(o.ID)
-}
-
 // Mutation returns the FileIdentityMutation object of the builder.
 func (fiu *FileIdentityUpdate) Mutation() *FileIdentityMutation {
 	return fiu.mutation
@@ -258,12 +232,6 @@ func (fiu *FileIdentityUpdate) Mutation() *FileIdentityMutation {
 // ClearSource clears the "source" edge to the FileSource entity.
 func (fiu *FileIdentityUpdate) ClearSource() *FileIdentityUpdate {
 	fiu.mutation.ClearSource()
-	return fiu
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (fiu *FileIdentityUpdate) ClearOrg() *FileIdentityUpdate {
-	fiu.mutation.ClearOrg()
 	return fiu
 }
 
@@ -409,35 +377,6 @@ func (fiu *FileIdentityUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fiu.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   fileidentity.OrgTable,
-			Columns: []string{fileidentity.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fiu.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   fileidentity.OrgTable,
-			Columns: []string{fileidentity.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{fileidentity.Label}
@@ -502,20 +441,6 @@ func (fiuo *FileIdentityUpdateOne) SetNillableUpdatedAt(t *time.Time) *FileIdent
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (fiuo *FileIdentityUpdateOne) ClearUpdatedAt() *FileIdentityUpdateOne {
 	fiuo.mutation.ClearUpdatedAt()
-	return fiuo
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (fiuo *FileIdentityUpdateOne) SetTenantID(i int) *FileIdentityUpdateOne {
-	fiuo.mutation.SetTenantID(i)
-	return fiuo
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (fiuo *FileIdentityUpdateOne) SetNillableTenantID(i *int) *FileIdentityUpdateOne {
-	if i != nil {
-		fiuo.SetTenantID(*i)
-	}
 	return fiuo
 }
 
@@ -667,17 +592,6 @@ func (fiuo *FileIdentityUpdateOne) SetSource(f *FileSource) *FileIdentityUpdateO
 	return fiuo.SetSourceID(f.ID)
 }
 
-// SetOrgID sets the "org" edge to the Org entity by ID.
-func (fiuo *FileIdentityUpdateOne) SetOrgID(id int) *FileIdentityUpdateOne {
-	fiuo.mutation.SetOrgID(id)
-	return fiuo
-}
-
-// SetOrg sets the "org" edge to the Org entity.
-func (fiuo *FileIdentityUpdateOne) SetOrg(o *Org) *FileIdentityUpdateOne {
-	return fiuo.SetOrgID(o.ID)
-}
-
 // Mutation returns the FileIdentityMutation object of the builder.
 func (fiuo *FileIdentityUpdateOne) Mutation() *FileIdentityMutation {
 	return fiuo.mutation
@@ -686,12 +600,6 @@ func (fiuo *FileIdentityUpdateOne) Mutation() *FileIdentityMutation {
 // ClearSource clears the "source" edge to the FileSource entity.
 func (fiuo *FileIdentityUpdateOne) ClearSource() *FileIdentityUpdateOne {
 	fiuo.mutation.ClearSource()
-	return fiuo
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (fiuo *FileIdentityUpdateOne) ClearOrg() *FileIdentityUpdateOne {
-	fiuo.mutation.ClearOrg()
 	return fiuo
 }
 
@@ -860,35 +768,6 @@ func (fiuo *FileIdentityUpdateOne) sqlSave(ctx context.Context) (_node *FileIden
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesource.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fiuo.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   fileidentity.OrgTable,
-			Columns: []string{fileidentity.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fiuo.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   fileidentity.OrgTable,
-			Columns: []string{fileidentity.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

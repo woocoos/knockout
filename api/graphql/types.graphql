@@ -130,3 +130,28 @@ type OrgFileIdentity {
     comments: String
     source: FileSource!
 }
+
+"""内部调用fileIdentity"""
+type FileIdentityForApp implements Node{
+    id: ID!
+    tenantID: ID!
+    accessKeyID: String!
+    accessKeySecret: String!
+    """
+    角色的资源名称(ARN)，用于STS
+    """
+    roleArn: String!
+    """
+    指定返回的STS令牌的权限的策略
+    """
+    policy: String
+    """
+    STS令牌的有效期，默认3600s
+    """
+    durationSeconds: Int
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    source: FileSource!
+}

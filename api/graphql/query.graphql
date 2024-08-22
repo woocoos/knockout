@@ -123,4 +123,8 @@ extend type Query {
     appAccess(appCode:String!):Boolean!
     """获取当前组织的文件凭证"""
     fileIdentitiesForOrg: [OrgFileIdentity!]!
+    """获取文件凭证"""
+    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
+    """获取凭证AccessKeySecret"""
+    fileIdentityAccessKeySecret(id: ID!): String!
 }

@@ -110,7 +110,6 @@ type Kind string
 
 // Kind values.
 const (
-	KindLocal  Kind = "local"
 	KindMinio  Kind = "minio"
 	KindAliOSS Kind = "aliOSS"
 	KindAwsS3  Kind = "awsS3"
@@ -123,7 +122,7 @@ func (k Kind) String() string {
 // KindValidator is a validator for the "kind" field enum values. It is called by the builders before save.
 func KindValidator(k Kind) error {
 	switch k {
-	case KindLocal, KindMinio, KindAliOSS, KindAwsS3:
+	case KindMinio, KindAliOSS, KindAwsS3:
 		return nil
 	default:
 		return fmt.Errorf("filesource: invalid enum value for kind field: %q", k)

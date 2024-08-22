@@ -327,8 +327,12 @@ func init() {
 	fileidentityMixin := schema.FileIdentity{}.Mixin()
 	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
 	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()
+	fileidentityMixinHooks3 := fileidentityMixin[3].Hooks()
 	fileidentity.Hooks[0] = fileidentityMixinHooks1[0]
 	fileidentity.Hooks[1] = fileidentityMixinHooks2[0]
+	fileidentity.Hooks[2] = fileidentityMixinHooks3[0]
+	fileidentityMixinInters2 := fileidentityMixin[2].Interceptors()
+	fileidentity.Interceptors[0] = fileidentityMixinInters2[0]
 	fileidentityMixinFields1 := fileidentityMixin[1].Fields()
 	_ = fileidentityMixinFields1
 	fileidentityFields := schema.FileIdentity{}.Fields()
@@ -338,23 +342,23 @@ func init() {
 	// fileidentity.DefaultCreatedAt holds the default value on creation for the created_at field.
 	fileidentity.DefaultCreatedAt = fileidentityDescCreatedAt.Default.(func() time.Time)
 	// fileidentityDescAccessKeyID is the schema descriptor for access_key_id field.
-	fileidentityDescAccessKeyID := fileidentityFields[1].Descriptor()
+	fileidentityDescAccessKeyID := fileidentityFields[0].Descriptor()
 	// fileidentity.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
 	fileidentity.AccessKeyIDValidator = fileidentityDescAccessKeyID.Validators[0].(func(string) error)
 	// fileidentityDescAccessKeySecret is the schema descriptor for access_key_secret field.
-	fileidentityDescAccessKeySecret := fileidentityFields[2].Descriptor()
+	fileidentityDescAccessKeySecret := fileidentityFields[1].Descriptor()
 	// fileidentity.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
 	fileidentity.AccessKeySecretValidator = fileidentityDescAccessKeySecret.Validators[0].(func(string) error)
 	// fileidentityDescRoleArn is the schema descriptor for role_arn field.
-	fileidentityDescRoleArn := fileidentityFields[4].Descriptor()
+	fileidentityDescRoleArn := fileidentityFields[3].Descriptor()
 	// fileidentity.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
 	fileidentity.RoleArnValidator = fileidentityDescRoleArn.Validators[0].(func(string) error)
 	// fileidentityDescDurationSeconds is the schema descriptor for duration_seconds field.
-	fileidentityDescDurationSeconds := fileidentityFields[6].Descriptor()
+	fileidentityDescDurationSeconds := fileidentityFields[5].Descriptor()
 	// fileidentity.DefaultDurationSeconds holds the default value on creation for the duration_seconds field.
 	fileidentity.DefaultDurationSeconds = fileidentityDescDurationSeconds.Default.(int)
 	// fileidentityDescIsDefault is the schema descriptor for is_default field.
-	fileidentityDescIsDefault := fileidentityFields[7].Descriptor()
+	fileidentityDescIsDefault := fileidentityFields[6].Descriptor()
 	// fileidentity.DefaultIsDefault holds the default value on creation for the is_default field.
 	fileidentity.DefaultIsDefault = fileidentityDescIsDefault.Default.(bool)
 	filesourceMixin := schema.FileSource{}.Mixin()

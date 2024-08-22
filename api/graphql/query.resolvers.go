@@ -294,3 +294,33 @@ func (r *queryResolver) FileIdentitiesForOrg(ctx context.Context) ([]*model.OrgF
 	}
 	return res, nil
 }
+
+// FileIdentitiesForApp is the resolver for the fileIdentitiesForApp field.
+func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error) {
+	q := r.client.FileIdentity.Query()
+	q, err := where.Filter(q)
+	if err != nil {
+		return nil, err
+	}
+	fulls := make([]*model.FileIdentityForApp, 0)
+	fis, err := q.WithSource().WithOrg().All(ctx)
+	for _, fi := range fis {
+		fulls = append(fulls, &model.FileIdentityForApp{
+			ID:              fi.ID,
+			IsDefault:       fi.IsDefault,
+			Source:          fi.Edges.Source,
+			RoleArn:         fi.RoleArn,
+			Policy:          &fi.Policy,
+			AccessKeyID:     fi.AccessKeyID,
+			AccessKeySecret: fi.AccessKeySecret,
+			TenantID:        fi.TenantID,
+			DurationSeconds: &fi.DurationSeconds,
+		})
+	}
+	return fulls, nil
+}
+
+// FileIdentityAccessKeySecret is the resolver for the fileIdentityAccessKeySecret field.
+func (r *queryResolver) FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error) {
+	return r.client.FileIdentity.Query().Where(fileidentity.ID(id)).Select(fileidentity.FieldAccessKeySecret).String(ctx)
+}

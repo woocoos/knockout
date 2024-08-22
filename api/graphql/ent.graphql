@@ -2689,18 +2689,11 @@ type FileIdentity implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
-  """
-  组织ID
-  """
   tenantID: ID!
   """
   accesskey id
   """
   accessKeyID: String!
-  """
-  accesskey secret
-  """
-  accessKeySecret: String!
   """
   文件来源ID
   """
@@ -2868,22 +2861,6 @@ input FileIdentityWhereInput {
   accessKeyIDEqualFold: String
   accessKeyIDContainsFold: String
   """
-  access_key_secret field predicates
-  """
-  accessKeySecret: String
-  accessKeySecretNEQ: String
-  accessKeySecretIn: [String!]
-  accessKeySecretNotIn: [String!]
-  accessKeySecretGT: String
-  accessKeySecretGTE: String
-  accessKeySecretLT: String
-  accessKeySecretLTE: String
-  accessKeySecretContains: String
-  accessKeySecretHasPrefix: String
-  accessKeySecretHasSuffix: String
-  accessKeySecretEqualFold: String
-  accessKeySecretContainsFold: String
-  """
   file_source_id field predicates
   """
   fileSourceID: ID
@@ -3026,7 +3003,6 @@ type FileSourceEdge {
 FileSourceKind is enum for the field kind
 """
 enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
-  local
   minio
   aliOSS
   awsS3
@@ -5513,7 +5489,6 @@ input UpdateFileIdentityInput {
   comments: String
   clearComments: Boolean
   sourceID: ID
-  orgID: ID
 }
 """
 UpdateFileSourceInput is used for update FileSource object.

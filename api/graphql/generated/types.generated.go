@@ -32,6 +32,424 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _FileIdentityForApp_id(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_tenantID(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_tenantID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TenantID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_tenantID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_accessKeyID(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_accessKeyID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccessKeyID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_accessKeyID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_accessKeySecret(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_accessKeySecret(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccessKeySecret, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_accessKeySecret(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_roleArn(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_roleArn(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RoleArn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_roleArn(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_policy(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_policy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Policy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_policy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_durationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_durationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_durationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_isDefault(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_isDefault(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDefault, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_isDefault(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _FileIdentityForApp_source(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_FileIdentityForApp_source(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Source, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.FileSource)
+	fc.Result = res
+	return ec.marshalNFileSource2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileSource(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_FileIdentityForApp_source(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "FileIdentityForApp",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_FileSource_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_FileSource_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_FileSource_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_FileSource_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_FileSource_updatedAt(ctx, field)
+			case "kind":
+				return ec.fieldContext_FileSource_kind(ctx, field)
+			case "comments":
+				return ec.fieldContext_FileSource_comments(ctx, field)
+			case "endpoint":
+				return ec.fieldContext_FileSource_endpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
+			case "region":
+				return ec.fieldContext_FileSource_region(ctx, field)
+			case "bucket":
+				return ec.fieldContext_FileSource_bucket(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mfa_secret(ctx context.Context, field graphql.CollectedField, obj *model.Mfa) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mfa_secret(ctx, field)
 	if err != nil {
@@ -963,6 +1381,79 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 
 // region    **************************** object.gotpl ****************************
 
+var fileIdentityForAppImplementors = []string{"FileIdentityForApp", "Node"}
+
+func (ec *executionContext) _FileIdentityForApp(ctx context.Context, sel ast.SelectionSet, obj *model.FileIdentityForApp) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, fileIdentityForAppImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("FileIdentityForApp")
+		case "id":
+			out.Values[i] = ec._FileIdentityForApp_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "tenantID":
+			out.Values[i] = ec._FileIdentityForApp_tenantID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "accessKeyID":
+			out.Values[i] = ec._FileIdentityForApp_accessKeyID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "accessKeySecret":
+			out.Values[i] = ec._FileIdentityForApp_accessKeySecret(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "roleArn":
+			out.Values[i] = ec._FileIdentityForApp_roleArn(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "policy":
+			out.Values[i] = ec._FileIdentityForApp_policy(ctx, field, obj)
+		case "durationSeconds":
+			out.Values[i] = ec._FileIdentityForApp_durationSeconds(ctx, field, obj)
+		case "isDefault":
+			out.Values[i] = ec._FileIdentityForApp_isDefault(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "source":
+			out.Values[i] = ec._FileIdentityForApp_source(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var mfaImplementors = []string{"Mfa"}
 
 func (ec *executionContext) _Mfa(ctx context.Context, sel ast.SelectionSet, obj *model.Mfa) graphql.Marshaler {
@@ -1139,6 +1630,60 @@ func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoos
 func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFileIdentityForApp2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐFileIdentityForAppᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.FileIdentityForApp) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNFileIdentityForApp2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐFileIdentityForApp(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNFileIdentityForApp2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐFileIdentityForApp(ctx context.Context, sel ast.SelectionSet, v *model.FileIdentityForApp) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._FileIdentityForApp(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNMfa2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐMfa(ctx context.Context, sel ast.SelectionSet, v model.Mfa) graphql.Marshaler {

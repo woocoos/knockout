@@ -969,8 +969,11 @@ func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSRespon
 		return nil, err
 	}
 
-	//使用上下文的ctx，在并发请求时会出现context canceled错误
-	provider, err := s.kosdk.Fs().GetProvider(s.toOSSFileSource(fi))
+	err = s.kosdk.Fs().RegistryProvider(s.toProviderConfig(fi), fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.kosdk.Fs().GetProviderByBizKey(fs.GetProviderKey(s.toProviderConfig(fi)))
 	if err != nil {
 		return nil, err
 	}
@@ -995,7 +998,11 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 	if err != nil {
 		return nil, err
 	}
-	provider, err := s.kosdk.Fs().GetProvider(s.toOSSFileSource(fi))
+	err = s.kosdk.Fs().RegistryProvider(s.toProviderConfig(fi), fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.kosdk.Fs().GetProviderByBizKey(fs.GetProviderKey(s.toProviderConfig(fi)))
 	if err != nil {
 		return nil, err
 	}
@@ -1053,7 +1060,7 @@ func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrl
 	return fi, path, nil
 }
 
-func (s *ServerImpl) toOSSFileSource(fi *ent.FileIdentity) *fs.ProviderConfig {
+func (s *ServerImpl) toProviderConfig(fi *ent.FileIdentity) *fs.ProviderConfig {
 	return &fs.ProviderConfig{
 		Kind:              fs.Kind(fi.Edges.Source.Kind.String()),
 		Bucket:            fi.Edges.Source.Bucket,

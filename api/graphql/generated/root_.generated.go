@@ -257,7 +257,6 @@ type ComplexityRoot struct {
 
 	FileIdentity struct {
 		AccessKeyID     func(childComplexity int) int
-		AccessKeySecret func(childComplexity int) int
 		Comments        func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		CreatedBy       func(childComplexity int) int
@@ -283,6 +282,18 @@ type ComplexityRoot struct {
 	FileIdentityEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
+	}
+
+	FileIdentityForApp struct {
+		AccessKeyID     func(childComplexity int) int
+		AccessKeySecret func(childComplexity int) int
+		DurationSeconds func(childComplexity int) int
+		ID              func(childComplexity int) int
+		IsDefault       func(childComplexity int) int
+		Policy          func(childComplexity int) int
+		RoleArn         func(childComplexity int) int
+		Source          func(childComplexity int) int
+		TenantID        func(childComplexity int) int
 	}
 
 	FileSource struct {
@@ -591,37 +602,39 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppAccess               func(childComplexity int, appCode string) int
-		AppDictByRefCode        func(childComplexity int, refCodes []string) int
-		AppDictItemByRefCode    func(childComplexity int, refCode string) int
-		AppDicts                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
-		AppPolicyAssignedToOrgs func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
-		AppResources            func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		AppRoleAssignedToOrgs   func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
-		Apps                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		CheckPermission         func(childComplexity int, permission string) int
-		FileIdentities          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
-		FileIdentitiesForOrg    func(childComplexity int) int
-		FileSources             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
-		GlobalID                func(childComplexity int, typeArg string, id int) int
-		Node                    func(childComplexity int, id string) int
-		Nodes                   func(childComplexity int, ids []string) int
-		OrgAppActions           func(childComplexity int, appCode string) int
-		OrgAppResources         func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		OrgGroups               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgPolicyReferences     func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		OrgRecycleUsers         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoleUsers            func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgUserPreference       func(childComplexity int) int
-		Organizations           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		UserApps                func(childComplexity int) int
-		UserExtendGroupPolicies func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		UserGroups              func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		UserMenus               func(childComplexity int, appCode string) int
-		UserPermissions         func(childComplexity int, where *ent.AppActionWhereInput) int
-		UserRootOrgs            func(childComplexity int) int
-		Users                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		AppAccess                   func(childComplexity int, appCode string) int
+		AppDictByRefCode            func(childComplexity int, refCodes []string) int
+		AppDictItemByRefCode        func(childComplexity int, refCode string) int
+		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
+		AppPolicyAssignedToOrgs     func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
+		AppResources                func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
+		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		CheckPermission             func(childComplexity int, permission string) int
+		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
+		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
+		FileIdentitiesForOrg        func(childComplexity int) int
+		FileIdentityAccessKeySecret func(childComplexity int, id int) int
+		FileSources                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
+		GlobalID                    func(childComplexity int, typeArg string, id int) int
+		Node                        func(childComplexity int, id string) int
+		Nodes                       func(childComplexity int, ids []string) int
+		OrgAppActions               func(childComplexity int, appCode string) int
+		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgUserPreference           func(childComplexity int) int
+		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		UserApps                    func(childComplexity int) int
+		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserMenus                   func(childComplexity int, appCode string) int
+		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
+		UserRootOrgs                func(childComplexity int) int
+		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
 	User struct {
@@ -1788,13 +1801,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.FileIdentity.AccessKeyID(childComplexity), true
 
-	case "FileIdentity.accessKeySecret":
-		if e.complexity.FileIdentity.AccessKeySecret == nil {
-			break
-		}
-
-		return e.complexity.FileIdentity.AccessKeySecret(childComplexity), true
-
 	case "FileIdentity.comments":
 		if e.complexity.FileIdentity.Comments == nil {
 			break
@@ -1927,6 +1933,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.FileIdentityEdge.Node(childComplexity), true
+
+	case "FileIdentityForApp.accessKeyID":
+		if e.complexity.FileIdentityForApp.AccessKeyID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.AccessKeyID(childComplexity), true
+
+	case "FileIdentityForApp.accessKeySecret":
+		if e.complexity.FileIdentityForApp.AccessKeySecret == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.AccessKeySecret(childComplexity), true
+
+	case "FileIdentityForApp.durationSeconds":
+		if e.complexity.FileIdentityForApp.DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.DurationSeconds(childComplexity), true
+
+	case "FileIdentityForApp.id":
+		if e.complexity.FileIdentityForApp.ID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.ID(childComplexity), true
+
+	case "FileIdentityForApp.isDefault":
+		if e.complexity.FileIdentityForApp.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.IsDefault(childComplexity), true
+
+	case "FileIdentityForApp.policy":
+		if e.complexity.FileIdentityForApp.Policy == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.Policy(childComplexity), true
+
+	case "FileIdentityForApp.roleArn":
+		if e.complexity.FileIdentityForApp.RoleArn == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.RoleArn(childComplexity), true
+
+	case "FileIdentityForApp.source":
+		if e.complexity.FileIdentityForApp.Source == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.Source(childComplexity), true
+
+	case "FileIdentityForApp.tenantID":
+		if e.complexity.FileIdentityForApp.TenantID == nil {
+			break
+		}
+
+		return e.complexity.FileIdentityForApp.TenantID(childComplexity), true
 
 	case "FileSource.bucket":
 		if e.complexity.FileSource.Bucket == nil {
@@ -4099,12 +4168,36 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.FileIdentities(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.FileIdentityOrder), args["where"].(*ent.FileIdentityWhereInput)), true
 
+	case "Query.fileIdentitiesForApp":
+		if e.complexity.Query.FileIdentitiesForApp == nil {
+			break
+		}
+
+		args, err := ec.field_Query_fileIdentitiesForApp_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FileIdentitiesForApp(childComplexity, args["where"].(*ent.FileIdentityWhereInput)), true
+
 	case "Query.fileIdentitiesForOrg":
 		if e.complexity.Query.FileIdentitiesForOrg == nil {
 			break
 		}
 
 		return e.complexity.Query.FileIdentitiesForOrg(childComplexity), true
+
+	case "Query.fileIdentityAccessKeySecret":
+		if e.complexity.Query.FileIdentityAccessKeySecret == nil {
+			break
+		}
+
+		args, err := ec.field_Query_fileIdentityAccessKeySecret_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FileIdentityAccessKeySecret(childComplexity, args["id"].(int)), true
 
 	case "Query.fileSources":
 		if e.complexity.Query.FileSources == nil {
@@ -7783,18 +7876,11 @@ type FileIdentity implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
-  """
-  组织ID
-  """
   tenantID: ID!
   """
   accesskey id
   """
   accessKeyID: String!
-  """
-  accesskey secret
-  """
-  accessKeySecret: String!
   """
   文件来源ID
   """
@@ -7962,22 +8048,6 @@ input FileIdentityWhereInput {
   accessKeyIDEqualFold: String
   accessKeyIDContainsFold: String
   """
-  access_key_secret field predicates
-  """
-  accessKeySecret: String
-  accessKeySecretNEQ: String
-  accessKeySecretIn: [String!]
-  accessKeySecretNotIn: [String!]
-  accessKeySecretGT: String
-  accessKeySecretGTE: String
-  accessKeySecretLT: String
-  accessKeySecretLTE: String
-  accessKeySecretContains: String
-  accessKeySecretHasPrefix: String
-  accessKeySecretHasSuffix: String
-  accessKeySecretEqualFold: String
-  accessKeySecretContainsFold: String
-  """
   file_source_id field predicates
   """
   fileSourceID: ID
@@ -8120,7 +8190,6 @@ type FileSourceEdge {
 FileSourceKind is enum for the field kind
 """
 enum FileSourceKind @goModel(model: "github.com/woocoos/knockout/ent/filesource.Kind") {
-  local
   minio
   aliOSS
   awsS3
@@ -10607,7 +10676,6 @@ input UpdateFileIdentityInput {
   comments: String
   clearComments: Boolean
   sourceID: ID
-  orgID: ID
 }
 """
 UpdateFileSourceInput is used for update FileSource object.
@@ -12243,6 +12311,31 @@ type OrgFileIdentity {
     """
     comments: String
     source: FileSource!
+}
+
+"""内部调用fileIdentity"""
+type FileIdentityForApp implements Node{
+    id: ID!
+    tenantID: ID!
+    accessKeyID: String!
+    accessKeySecret: String!
+    """
+    角色的资源名称(ARN)，用于STS
+    """
+    roleArn: String!
+    """
+    指定返回的STS令牌的权限的策略
+    """
+    policy: String
+    """
+    STS令牌的有效期，默认3600s
+    """
+    durationSeconds: Int
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    source: FileSource!
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -12369,6 +12462,10 @@ type OrgFileIdentity {
     appAccess(appCode:String!):Boolean!
     """获取当前组织的文件凭证"""
     fileIdentitiesForOrg: [OrgFileIdentity!]!
+    """获取文件凭证"""
+    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
+    """获取凭证AccessKeySecret"""
+    fileIdentityAccessKeySecret(id: ID!): String!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""

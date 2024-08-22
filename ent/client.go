@@ -2162,7 +2162,8 @@ func (c *FileIdentityClient) Hooks() []Hook {
 
 // Interceptors returns the client interceptors.
 func (c *FileIdentityClient) Interceptors() []Interceptor {
-	return c.inters.FileIdentity
+	inters := c.inters.FileIdentity
+	return append(inters[:len(inters):len(inters)], fileidentity.Interceptors[:]...)
 }
 
 func (c *FileIdentityClient) mutate(ctx context.Context, m *FileIdentityMutation) (Value, error) {

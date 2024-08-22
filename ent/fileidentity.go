@@ -27,12 +27,12 @@ type FileIdentity struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID
+	// TenantID holds the value of the "tenant_id" field.
 	TenantID int `json:"tenant_id,omitempty"`
 	// accesskey id
 	AccessKeyID string `json:"access_key_id,omitempty"`
 	// accesskey secret
-	AccessKeySecret string `json:"access_key_secret,omitempty"`
+	AccessKeySecret string `json:"-"`
 	// 文件来源ID
 	FileSourceID int `json:"file_source_id,omitempty"`
 	// 角色的资源名称(ARN)，用于STS
@@ -262,8 +262,7 @@ func (fi *FileIdentity) String() string {
 	builder.WriteString("access_key_id=")
 	builder.WriteString(fi.AccessKeyID)
 	builder.WriteString(", ")
-	builder.WriteString("access_key_secret=")
-	builder.WriteString(fi.AccessKeySecret)
+	builder.WriteString("access_key_secret=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("file_source_id=")
 	builder.WriteString(fmt.Sprintf("%v", fi.FileSourceID))

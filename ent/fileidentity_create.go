@@ -493,18 +493,6 @@ func (u *FileIdentityUpsert) ClearUpdatedAt() *FileIdentityUpsert {
 	return u
 }
 
-// SetTenantID sets the "tenant_id" field.
-func (u *FileIdentityUpsert) SetTenantID(v int) *FileIdentityUpsert {
-	u.Set(fileidentity.FieldTenantID, v)
-	return u
-}
-
-// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
-func (u *FileIdentityUpsert) UpdateTenantID() *FileIdentityUpsert {
-	u.SetExcluded(fileidentity.FieldTenantID)
-	return u
-}
-
 // SetAccessKeyID sets the "access_key_id" field.
 func (u *FileIdentityUpsert) SetAccessKeyID(v string) *FileIdentityUpsert {
 	u.Set(fileidentity.FieldAccessKeyID, v)
@@ -648,6 +636,9 @@ func (u *FileIdentityUpsertOne) UpdateNewValues() *FileIdentityUpsertOne {
 		if _, exists := u.create.mutation.CreatedAt(); exists {
 			s.SetIgnore(fileidentity.FieldCreatedAt)
 		}
+		if _, exists := u.create.mutation.TenantID(); exists {
+			s.SetIgnore(fileidentity.FieldTenantID)
+		}
 	}))
 	return u
 }
@@ -725,20 +716,6 @@ func (u *FileIdentityUpsertOne) UpdateUpdatedAt() *FileIdentityUpsertOne {
 func (u *FileIdentityUpsertOne) ClearUpdatedAt() *FileIdentityUpsertOne {
 	return u.Update(func(s *FileIdentityUpsert) {
 		s.ClearUpdatedAt()
-	})
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (u *FileIdentityUpsertOne) SetTenantID(v int) *FileIdentityUpsertOne {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.SetTenantID(v)
-	})
-}
-
-// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
-func (u *FileIdentityUpsertOne) UpdateTenantID() *FileIdentityUpsertOne {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.UpdateTenantID()
 	})
 }
 
@@ -1070,6 +1047,9 @@ func (u *FileIdentityUpsertBulk) UpdateNewValues() *FileIdentityUpsertBulk {
 			if _, exists := b.mutation.CreatedAt(); exists {
 				s.SetIgnore(fileidentity.FieldCreatedAt)
 			}
+			if _, exists := b.mutation.TenantID(); exists {
+				s.SetIgnore(fileidentity.FieldTenantID)
+			}
 		}
 	}))
 	return u
@@ -1148,20 +1128,6 @@ func (u *FileIdentityUpsertBulk) UpdateUpdatedAt() *FileIdentityUpsertBulk {
 func (u *FileIdentityUpsertBulk) ClearUpdatedAt() *FileIdentityUpsertBulk {
 	return u.Update(func(s *FileIdentityUpsert) {
 		s.ClearUpdatedAt()
-	})
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (u *FileIdentityUpsertBulk) SetTenantID(v int) *FileIdentityUpsertBulk {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.SetTenantID(v)
-	})
-}
-
-// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
-func (u *FileIdentityUpsertBulk) UpdateTenantID() *FileIdentityUpsertBulk {
-	return u.Update(func(s *FileIdentityUpsert) {
-		s.UpdateTenantID()
 	})
 }
 

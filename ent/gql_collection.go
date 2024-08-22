@@ -1832,11 +1832,6 @@ func (fi *FileIdentityQuery) collectField(ctx context.Context, opCtx *graphql.Op
 				selectedFields = append(selectedFields, fileidentity.FieldAccessKeyID)
 				fieldSeen[fileidentity.FieldAccessKeyID] = struct{}{}
 			}
-		case "accessKeySecret":
-			if _, ok := fieldSeen[fileidentity.FieldAccessKeySecret]; !ok {
-				selectedFields = append(selectedFields, fileidentity.FieldAccessKeySecret)
-				fieldSeen[fileidentity.FieldAccessKeySecret] = struct{}{}
-			}
 		case "fileSourceID":
 			if _, ok := fieldSeen[fileidentity.FieldFileSourceID]; !ok {
 				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)

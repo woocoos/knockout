@@ -6519,8 +6519,6 @@ func (ec *executionContext) fieldContext_Mutation_createFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
 			case "accessKeyID":
 				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
-			case "accessKeySecret":
-				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
 			case "roleArn":
@@ -6608,8 +6606,6 @@ func (ec *executionContext) fieldContext_Mutation_updateFileIdentity(ctx context
 				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
 			case "accessKeyID":
 				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
-			case "accessKeySecret":
-				return ec.fieldContext_FileIdentity_accessKeySecret(ctx, field)
 			case "fileSourceID":
 				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
 			case "roleArn":

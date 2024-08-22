@@ -348,7 +348,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "minio", "aliOSS", "awsS3"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"minio", "aliOSS", "awsS3"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "endpoint", Type: field.TypeString, Size: 255},
 		{Name: "endpoint_immutable", Type: field.TypeBool, Default: false},
