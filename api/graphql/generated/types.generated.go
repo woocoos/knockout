@@ -1700,60 +1700,6 @@ func (ec *executionContext) marshalNMfa2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋa
 	return ec._Mfa(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNOrgFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgFileIdentityᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.OrgFileIdentity) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNOrgFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgFileIdentity(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalNOrgFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgFileIdentity(ctx context.Context, sel ast.SelectionSet, v *model.OrgFileIdentity) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._OrgFileIdentity(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx context.Context, v interface{}) (model.OrgUserPreferenceInput, error) {
 	res, err := ec.unmarshalInputOrgUserPreferenceInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)

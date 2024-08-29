@@ -269,32 +269,6 @@ func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, er
 	return has, nil
 }
 
-// FileIdentitiesForOrg is the resolver for the fileIdentitiesForOrg field.
-func (r *queryResolver) FileIdentitiesForOrg(ctx context.Context) ([]*model.OrgFileIdentity, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	fis, err := r.client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).WithSource().All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res := make([]*model.OrgFileIdentity, len(fis))
-	for i, fi := range fis {
-		res[i] = &model.OrgFileIdentity{
-			ID:        fi.ID,
-			CreatedAt: fi.CreatedAt,
-			CreatedBy: fi.CreatedBy,
-			UpdatedAt: &fi.UpdatedAt,
-			UpdatedBy: &fi.UpdatedBy,
-			Comments:  &fi.Comments,
-			IsDefault: fi.IsDefault,
-			Source:    fi.Edges.Source,
-		}
-	}
-	return res, nil
-}
-
 // FileIdentitiesForApp is the resolver for the fileIdentitiesForApp field.
 func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error) {
 	q := r.client.FileIdentity.Query()

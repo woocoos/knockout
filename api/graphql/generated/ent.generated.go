@@ -83,7 +83,6 @@ type QueryResolver interface {
 	AppDictByRefCode(ctx context.Context, refCodes []string) ([]*ent.AppDict, error)
 	AppDictItemByRefCode(ctx context.Context, refCode string) ([]*ent.AppDictItem, error)
 	AppAccess(ctx context.Context, appCode string) (bool, error)
-	FileIdentitiesForOrg(ctx context.Context) ([]*model.OrgFileIdentity, error)
 	FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error)
 	FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error)
 }
@@ -19267,72 +19266,6 @@ func (ec *executionContext) fieldContext_Query_appAccess(ctx context.Context, fi
 	if fc.Args, err = ec.field_Query_appAccess_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_fileIdentitiesForOrg(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_fileIdentitiesForOrg(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FileIdentitiesForOrg(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.OrgFileIdentity)
-	fc.Result = res
-	return ec.marshalNOrgFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgFileIdentityᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_fileIdentitiesForOrg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_OrgFileIdentity_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_OrgFileIdentity_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_OrgFileIdentity_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_OrgFileIdentity_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_OrgFileIdentity_updatedAt(ctx, field)
-			case "tenantID":
-				return ec.fieldContext_OrgFileIdentity_tenantID(ctx, field)
-			case "fileSourceID":
-				return ec.fieldContext_OrgFileIdentity_fileSourceID(ctx, field)
-			case "isDefault":
-				return ec.fieldContext_OrgFileIdentity_isDefault(ctx, field)
-			case "comments":
-				return ec.fieldContext_OrgFileIdentity_comments(ctx, field)
-			case "source":
-				return ec.fieldContext_OrgFileIdentity_source(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type OrgFileIdentity", field.Name)
-		},
 	}
 	return fc, nil
 }
@@ -49363,28 +49296,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_appAccess(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "fileIdentitiesForOrg":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_fileIdentitiesForOrg(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

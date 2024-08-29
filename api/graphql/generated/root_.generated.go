@@ -613,7 +613,6 @@ type ComplexityRoot struct {
 		CheckPermission             func(childComplexity int, permission string) int
 		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
 		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
-		FileIdentitiesForOrg        func(childComplexity int) int
 		FileIdentityAccessKeySecret func(childComplexity int, id int) int
 		FileSources                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
 		GlobalID                    func(childComplexity int, typeArg string, id int) int
@@ -4179,13 +4178,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.FileIdentitiesForApp(childComplexity, args["where"].(*ent.FileIdentityWhereInput)), true
-
-	case "Query.fileIdentitiesForOrg":
-		if e.complexity.Query.FileIdentitiesForOrg == nil {
-			break
-		}
-
-		return e.complexity.Query.FileIdentitiesForOrg(childComplexity), true
 
 	case "Query.fileIdentityAccessKeySecret":
 		if e.complexity.Query.FileIdentityAccessKeySecret == nil {
@@ -12460,8 +12452,6 @@ type FileIdentityForApp implements Node{
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
-    """获取当前组织的文件凭证"""
-    fileIdentitiesForOrg: [OrgFileIdentity!]!
     """获取文件凭证"""
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
