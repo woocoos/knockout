@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
 	"github.com/tsingsun/woocoo"
@@ -21,12 +21,16 @@ import (
 	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
+	"github.com/woocoos/knockout-go/api/fs"
+	_ "github.com/woocoos/knockout-go/api/fs/alioss"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/fileidentity"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
@@ -38,6 +42,7 @@ import (
 	"github.com/woocoos/knockout/service/resource"
 	"image/png"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -415,10 +420,10 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		ExpiresIn:    int(s.Options.JWT.TokenTTL.Seconds()),
 		RefreshToken: trstr,
 		User: &User{
-			ID:           usr.ID,
-			DisplayName:  usr.DisplayName,
-			AvatarFileId: usr.AvatarFileID,
-			Domains:      domains,
+			ID:          usr.ID,
+			DisplayName: usr.DisplayName,
+			Avatar:      usr.Avatar,
+			Domains:     domains,
 		},
 	}, nil
 }
@@ -929,5 +934,149 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 		return err
 	}
 	return nil
+}
 
+func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
+	uid, err := identity.UserIDFromContext(c)
+	if err != nil {
+		return nil, err
+	}
+	tid, err := s.tryGetTenantID(c)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := identity.WithTenantID(c, tid)
+
+	var fi *ent.FileIdentity
+	if req.Bucket != "" && req.Endpoint != "" {
+		// 传参取对应identity
+		fi, err = s.db.FileIdentity.Query().Where(
+			fileidentity.TenantID(tid),
+			fileidentity.HasSourceWith(
+				filesource.Endpoint(req.Endpoint),
+				filesource.Bucket(req.Bucket),
+			),
+		).WithSource().Only(ctx)
+	} else {
+		// 不传参去默认值
+		fi, err = s.db.FileIdentity.Query().Where(
+			fileidentity.TenantID(tid),
+			fileidentity.IsDefault(true),
+		).WithSource().Only(ctx)
+	}
+	if fi == nil {
+		return nil, fmt.Errorf("the fileidentity is null")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.kosdk.Fs().RegistryProvider(s.toProviderConfig(fi), fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.kosdk.Fs().GetProviderByBizKey(fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	usr, err := s.db.User.Get(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := provider.GetSTS(ctx, usr.PrincipalName)
+	if err != nil {
+		return nil, err
+	}
+	return &GetSTSResponse{
+		AccessKeyID:     resp.AccessKeyID,
+		SecretAccessKey: resp.SecretAccessKey,
+		SessionToken:    resp.SessionToken,
+		Expiration:      resp.Expiration,
+	}, nil
+}
+
+func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error) {
+	fi, path, err := s.convertUrlToFileSource(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	err = s.kosdk.Fs().RegistryProvider(s.toProviderConfig(fi), fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	provider, err := s.kosdk.Fs().GetProviderByBizKey(fs.GetProviderKey(s.toProviderConfig(fi)))
+	if err != nil {
+		return nil, err
+	}
+	signUrl, err := provider.GetPreSignedURL(ctx, fi.Edges.Source.Bucket, path, time.Hour)
+	if err != nil {
+		return nil, err
+	}
+	return &GetPreSignUrlResponse{
+		URL: signUrl,
+	}, nil
+}
+
+// convertUrlToFileSource 将url转换为文件源
+func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRequest) (*ent.FileIdentity, string, error) {
+	tid, err := s.tryGetTenantID(c)
+	if err != nil {
+		return nil, "", err
+	}
+	ctx := identity.WithTenantID(c, tid)
+	var fis []*ent.FileIdentity
+	// 取出组织对应的fileidentities
+	if req.Bucket != "" && req.Endpoint != "" {
+		fis, err = s.db.FileIdentity.Query().Where(
+			fileidentity.TenantID(tid),
+			fileidentity.HasSourceWith(
+				filesource.Bucket(req.Bucket),
+				filesource.Endpoint(req.Endpoint),
+			),
+		).WithSource().All(ctx)
+	} else {
+		fis, err = s.db.FileIdentity.Query().Where(fileidentity.TenantID(tid), fileidentity.IsDefault(true)).WithSource().All(ctx)
+	}
+	if err != nil {
+		return nil, "", err
+	}
+	var fi *ent.FileIdentity
+	// 根据bucketUrl获取对应的fileIdentity
+	for _, f := range fis {
+		if strings.HasPrefix(req.URL, f.Edges.Source.BucketURL) {
+			fi = f
+			break
+		}
+	}
+	if fi == nil {
+		return nil, "", fmt.Errorf("the fileidentity is null")
+	}
+
+	// 解析url的path
+	path := ""
+	u, err := url.Parse(req.URL)
+	if fi.Edges.Source.Kind == filesource.KindMinio {
+		path = strings.TrimPrefix(u.Path, "/"+fi.Edges.Source.Bucket)
+	} else {
+		path = u.Path
+	}
+	return fi, path, nil
+}
+
+func (s *ServerImpl) toProviderConfig(fi *ent.FileIdentity) *fs.ProviderConfig {
+	return &fs.ProviderConfig{
+		Kind:              fs.Kind(fi.Edges.Source.Kind.String()),
+		Bucket:            fi.Edges.Source.Bucket,
+		BucketUrl:         fi.Edges.Source.BucketURL,
+		Endpoint:          fi.Edges.Source.Endpoint,
+		EndpointImmutable: fi.Edges.Source.EndpointImmutable,
+		StsEndpoint:       fi.Edges.Source.StsEndpoint,
+		AccessKeyID:       fi.AccessKeyID,
+		AccessKeySecret:   fi.AccessKeySecret,
+		Policy:            fi.Policy,
+		Region:            fi.Edges.Source.Region,
+		RoleArn:           fi.RoleArn,
+		DurationSeconds:   fi.DurationSeconds,
+	}
 }

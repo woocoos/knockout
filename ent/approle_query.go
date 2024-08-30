@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (arq *AppRoleQuery) QueryAppRolePolicy() *AppRolePolicyQuery {
 // First returns the first AppRole entity from the query.
 // Returns a *NotFoundError when no AppRole was found.
 func (arq *AppRoleQuery) First(ctx context.Context) (*AppRole, error) {
-	nodes, err := arq.Limit(1).All(setContextOp(ctx, arq.ctx, "First"))
+	nodes, err := arq.Limit(1).All(setContextOp(ctx, arq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (arq *AppRoleQuery) FirstX(ctx context.Context) *AppRole {
 // Returns a *NotFoundError when no AppRole ID was found.
 func (arq *AppRoleQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arq.Limit(1).IDs(setContextOp(ctx, arq.ctx, "FirstID")); err != nil {
+	if ids, err = arq.Limit(1).IDs(setContextOp(ctx, arq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (arq *AppRoleQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppRole entity is found.
 // Returns a *NotFoundError when no AppRole entities are found.
 func (arq *AppRoleQuery) Only(ctx context.Context) (*AppRole, error) {
-	nodes, err := arq.Limit(2).All(setContextOp(ctx, arq.ctx, "Only"))
+	nodes, err := arq.Limit(2).All(setContextOp(ctx, arq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (arq *AppRoleQuery) OnlyX(ctx context.Context) *AppRole {
 // Returns a *NotFoundError when no entities are found.
 func (arq *AppRoleQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = arq.Limit(2).IDs(setContextOp(ctx, arq.ctx, "OnlyID")); err != nil {
+	if ids, err = arq.Limit(2).IDs(setContextOp(ctx, arq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (arq *AppRoleQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppRoles.
 func (arq *AppRoleQuery) All(ctx context.Context) ([]*AppRole, error) {
-	ctx = setContextOp(ctx, arq.ctx, "All")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryAll)
 	if err := arq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (arq *AppRoleQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if arq.ctx.Unique == nil && arq.path != nil {
 		arq.Unique(true)
 	}
-	ctx = setContextOp(ctx, arq.ctx, "IDs")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryIDs)
 	if err = arq.Select(approle.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (arq *AppRoleQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (arq *AppRoleQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, arq.ctx, "Count")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryCount)
 	if err := arq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (arq *AppRoleQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (arq *AppRoleQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, arq.ctx, "Exist")
+	ctx = setContextOp(ctx, arq.ctx, ent.OpQueryExist)
 	switch _, err := arq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -765,7 +766,7 @@ func (argb *AppRoleGroupBy) Aggregate(fns ...AggregateFunc) *AppRoleGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (argb *AppRoleGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, argb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, argb.build.ctx, ent.OpQueryGroupBy)
 	if err := argb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -813,7 +814,7 @@ func (ars *AppRoleSelect) Aggregate(fns ...AggregateFunc) *AppRoleSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ars *AppRoleSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ars.ctx, "Select")
+	ctx = setContextOp(ctx, ars.ctx, ent.OpQuerySelect)
 	if err := ars.prepareQuery(ctx); err != nil {
 		return err
 	}

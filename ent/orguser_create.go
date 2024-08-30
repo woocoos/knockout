@@ -226,10 +226,10 @@ func (ouc *OrgUserCreate) check() error {
 	if _, ok := ouc.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "OrgUser.display_name"`)}
 	}
-	if _, ok := ouc.mutation.OrgID(); !ok {
+	if len(ouc.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgUser.org"`)}
 	}
-	if _, ok := ouc.mutation.UserID(); !ok {
+	if len(ouc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgUser.user"`)}
 	}
 	return nil

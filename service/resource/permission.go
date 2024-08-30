@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/authorization"
+	"github.com/woocoos/knockout-go/pkg/authz"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -30,7 +30,7 @@ import (
 	"time"
 )
 
-const ArnSplit = authorization.ArnSplit
+const ArnSplit = authz.ArnSplit
 const SplitPolicyEffect = "&&"
 
 // AssignOrganizationApp 分配应用到根组织下. 如: 新账户创建时, 根账户分配已有应用给子账户(需要验证根用户是否该应用权限,可在外层验证).
@@ -115,9 +115,9 @@ func appPolicyToOrgPolicy(appCode string, rules []*types.PolicyRule, tenantID in
 		}
 		for j, resource := range rule.Resources {
 			// 替换tenant_id
-			resource = authorization.ReplaceTenantID(resource, tenantID)
+			resource = authz.ReplaceTenantID(resource, tenantID)
 			// 补充appCode
-			rule.Resources[j] = appCode + ArnSplit + authorization.FormatResourceArn(resource)
+			rule.Resources[j] = appCode + ArnSplit + authz.FormatResourceArn(resource)
 		}
 	}
 	return nil

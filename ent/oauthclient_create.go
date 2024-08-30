@@ -258,7 +258,7 @@ func (occ *OauthClientCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if _, ok := occ.mutation.UserID(); !ok {
+	if len(occ.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OauthClient.user"`)}
 	}
 	return nil

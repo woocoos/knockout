@@ -15,7 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -88,6 +88,10 @@ func init() {
 	appDescScopes := appFields[6].Descriptor()
 	// app.ScopesValidator is a validator for the "scopes" field. It is called by the builders before save.
 	app.ScopesValidator = appDescScopes.Validators[0].(func(string) error)
+	// appDescLogo is the schema descriptor for logo field.
+	appDescLogo := appFields[9].Descriptor()
+	// app.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
+	app.LogoValidator = appDescLogo.Validators[0].(func(string) error)
 	// appDescPrivate is the schema descriptor for private field.
 	appDescPrivate := appFields[12].Descriptor()
 	// app.DefaultPrivate holds the default value on creation for the private field.
@@ -320,33 +324,43 @@ func init() {
 	approlepolicyDescCreatedAt := approlepolicyMixinFields1[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
-	fileMixin := schema.File{}.Mixin()
-	fileMixinHooks1 := fileMixin[1].Hooks()
-	fileMixinHooks2 := fileMixin[2].Hooks()
-	file.Hooks[0] = fileMixinHooks1[0]
-	file.Hooks[1] = fileMixinHooks2[0]
-	fileMixinFields0 := fileMixin[0].Fields()
-	_ = fileMixinFields0
-	fileMixinFields1 := fileMixin[1].Fields()
-	_ = fileMixinFields1
-	fileFields := schema.File{}.Fields()
-	_ = fileFields
-	// fileDescCreatedAt is the schema descriptor for created_at field.
-	fileDescCreatedAt := fileMixinFields1[1].Descriptor()
-	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
-	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
-	// fileDescMineType is the schema descriptor for mine_type field.
-	fileDescMineType := fileFields[6].Descriptor()
-	// file.MineTypeValidator is a validator for the "mine_type" field. It is called by the builders before save.
-	file.MineTypeValidator = fileDescMineType.Validators[0].(func(string) error)
-	// fileDescMd5 is the schema descriptor for md5 field.
-	fileDescMd5 := fileFields[7].Descriptor()
-	// file.Md5Validator is a validator for the "md5" field. It is called by the builders before save.
-	file.Md5Validator = fileDescMd5.Validators[0].(func(string) error)
-	// fileDescID is the schema descriptor for id field.
-	fileDescID := fileMixinFields0[0].Descriptor()
-	// file.DefaultID holds the default value on creation for the id field.
-	file.DefaultID = fileDescID.Default.(func() int)
+	fileidentityMixin := schema.FileIdentity{}.Mixin()
+	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
+	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()
+	fileidentityMixinHooks3 := fileidentityMixin[3].Hooks()
+	fileidentity.Hooks[0] = fileidentityMixinHooks1[0]
+	fileidentity.Hooks[1] = fileidentityMixinHooks2[0]
+	fileidentity.Hooks[2] = fileidentityMixinHooks3[0]
+	fileidentityMixinInters2 := fileidentityMixin[2].Interceptors()
+	fileidentity.Interceptors[0] = fileidentityMixinInters2[0]
+	fileidentityMixinFields1 := fileidentityMixin[1].Fields()
+	_ = fileidentityMixinFields1
+	fileidentityFields := schema.FileIdentity{}.Fields()
+	_ = fileidentityFields
+	// fileidentityDescCreatedAt is the schema descriptor for created_at field.
+	fileidentityDescCreatedAt := fileidentityMixinFields1[1].Descriptor()
+	// fileidentity.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fileidentity.DefaultCreatedAt = fileidentityDescCreatedAt.Default.(func() time.Time)
+	// fileidentityDescAccessKeyID is the schema descriptor for access_key_id field.
+	fileidentityDescAccessKeyID := fileidentityFields[0].Descriptor()
+	// fileidentity.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
+	fileidentity.AccessKeyIDValidator = fileidentityDescAccessKeyID.Validators[0].(func(string) error)
+	// fileidentityDescAccessKeySecret is the schema descriptor for access_key_secret field.
+	fileidentityDescAccessKeySecret := fileidentityFields[1].Descriptor()
+	// fileidentity.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
+	fileidentity.AccessKeySecretValidator = fileidentityDescAccessKeySecret.Validators[0].(func(string) error)
+	// fileidentityDescRoleArn is the schema descriptor for role_arn field.
+	fileidentityDescRoleArn := fileidentityFields[3].Descriptor()
+	// fileidentity.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
+	fileidentity.RoleArnValidator = fileidentityDescRoleArn.Validators[0].(func(string) error)
+	// fileidentityDescDurationSeconds is the schema descriptor for duration_seconds field.
+	fileidentityDescDurationSeconds := fileidentityFields[5].Descriptor()
+	// fileidentity.DefaultDurationSeconds holds the default value on creation for the duration_seconds field.
+	fileidentity.DefaultDurationSeconds = fileidentityDescDurationSeconds.Default.(int)
+	// fileidentityDescIsDefault is the schema descriptor for is_default field.
+	fileidentityDescIsDefault := fileidentityFields[6].Descriptor()
+	// fileidentity.DefaultIsDefault holds the default value on creation for the is_default field.
+	fileidentity.DefaultIsDefault = fileidentityDescIsDefault.Default.(bool)
 	filesourceMixin := schema.FileSource{}.Mixin()
 	filesourceMixinHooks1 := filesourceMixin[1].Hooks()
 	filesourceMixinHooks2 := filesourceMixin[2].Hooks()
@@ -360,14 +374,30 @@ func init() {
 	filesourceDescCreatedAt := filesourceMixinFields1[1].Descriptor()
 	// filesource.DefaultCreatedAt holds the default value on creation for the created_at field.
 	filesource.DefaultCreatedAt = filesourceDescCreatedAt.Default.(func() time.Time)
+	// filesourceDescEndpoint is the schema descriptor for endpoint field.
+	filesourceDescEndpoint := filesourceFields[2].Descriptor()
+	// filesource.EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
+	filesource.EndpointValidator = filesourceDescEndpoint.Validators[0].(func(string) error)
+	// filesourceDescEndpointImmutable is the schema descriptor for endpoint_immutable field.
+	filesourceDescEndpointImmutable := filesourceFields[3].Descriptor()
+	// filesource.DefaultEndpointImmutable holds the default value on creation for the endpoint_immutable field.
+	filesource.DefaultEndpointImmutable = filesourceDescEndpointImmutable.Default.(bool)
+	// filesourceDescStsEndpoint is the schema descriptor for sts_endpoint field.
+	filesourceDescStsEndpoint := filesourceFields[4].Descriptor()
+	// filesource.StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
+	filesource.StsEndpointValidator = filesourceDescStsEndpoint.Validators[0].(func(string) error)
 	// filesourceDescRegion is the schema descriptor for region field.
-	filesourceDescRegion := filesourceFields[3].Descriptor()
+	filesourceDescRegion := filesourceFields[5].Descriptor()
 	// filesource.RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	filesource.RegionValidator = filesourceDescRegion.Validators[0].(func(string) error)
 	// filesourceDescBucket is the schema descriptor for bucket field.
-	filesourceDescBucket := filesourceFields[4].Descriptor()
+	filesourceDescBucket := filesourceFields[6].Descriptor()
 	// filesource.BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	filesource.BucketValidator = filesourceDescBucket.Validators[0].(func(string) error)
+	// filesourceDescBucketURL is the schema descriptor for bucket_url field.
+	filesourceDescBucketURL := filesourceFields[7].Descriptor()
+	// filesource.BucketURLValidator is a validator for the "bucket_url" field. It is called by the builders before save.
+	filesource.BucketURLValidator = filesourceDescBucketURL.Validators[0].(func(string) error)
 	oauthclientMixin := schema.OauthClient{}.Mixin()
 	oauthclientMixinHooks1 := oauthclientMixin[1].Hooks()
 	oauthclientMixinHooks2 := oauthclientMixin[2].Hooks()
@@ -587,6 +617,10 @@ func init() {
 	userDescRegisterIP := userFields[6].Descriptor()
 	// user.RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	user.RegisterIPValidator = userDescRegisterIP.Validators[0].(func(string) error)
+	// userDescAvatar is the schema descriptor for avatar field.
+	userDescAvatar := userFields[9].Descriptor()
+	// user.AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
+	user.AvatarValidator = userDescAvatar.Validators[0].(func(string) error)
 	// userDescID is the schema descriptor for id field.
 	userDescID := userMixinFields0[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.
@@ -680,6 +714,6 @@ func init() {
 }
 
 const (
-	Version = "v0.12.4"                                         // Version of ent codegen.
-	Sum     = "h1:LddPnAyxls/O7DTXZvUGDj0NZIdGSu317+aoNLJWbD8=" // Sum of ent codegen.
+	Version = "v0.14.0"                                         // Version of ent codegen.
+	Sum     = "h1:EO3Z9aZ5bXJatJeGqu/EVdnNr6K4mRq3rWe5owt0MC4=" // Sum of ent codegen.
 )

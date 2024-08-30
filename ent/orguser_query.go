@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -161,7 +162,7 @@ func (ouq *OrgUserQuery) QueryOrgRoleUser() *OrgRoleUserQuery {
 // First returns the first OrgUser entity from the query.
 // Returns a *NotFoundError when no OrgUser was found.
 func (ouq *OrgUserQuery) First(ctx context.Context) (*OrgUser, error) {
-	nodes, err := ouq.Limit(1).All(setContextOp(ctx, ouq.ctx, "First"))
+	nodes, err := ouq.Limit(1).All(setContextOp(ctx, ouq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (ouq *OrgUserQuery) FirstX(ctx context.Context) *OrgUser {
 // Returns a *NotFoundError when no OrgUser ID was found.
 func (ouq *OrgUserQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ouq.Limit(1).IDs(setContextOp(ctx, ouq.ctx, "FirstID")); err != nil {
+	if ids, err = ouq.Limit(1).IDs(setContextOp(ctx, ouq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -207,7 +208,7 @@ func (ouq *OrgUserQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgUser entity is found.
 // Returns a *NotFoundError when no OrgUser entities are found.
 func (ouq *OrgUserQuery) Only(ctx context.Context) (*OrgUser, error) {
-	nodes, err := ouq.Limit(2).All(setContextOp(ctx, ouq.ctx, "Only"))
+	nodes, err := ouq.Limit(2).All(setContextOp(ctx, ouq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +236,7 @@ func (ouq *OrgUserQuery) OnlyX(ctx context.Context) *OrgUser {
 // Returns a *NotFoundError when no entities are found.
 func (ouq *OrgUserQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ouq.Limit(2).IDs(setContextOp(ctx, ouq.ctx, "OnlyID")); err != nil {
+	if ids, err = ouq.Limit(2).IDs(setContextOp(ctx, ouq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -260,7 +261,7 @@ func (ouq *OrgUserQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgUsers.
 func (ouq *OrgUserQuery) All(ctx context.Context) ([]*OrgUser, error) {
-	ctx = setContextOp(ctx, ouq.ctx, "All")
+	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryAll)
 	if err := ouq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -282,7 +283,7 @@ func (ouq *OrgUserQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if ouq.ctx.Unique == nil && ouq.path != nil {
 		ouq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ouq.ctx, "IDs")
+	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryIDs)
 	if err = ouq.Select(orguser.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -300,7 +301,7 @@ func (ouq *OrgUserQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (ouq *OrgUserQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ouq.ctx, "Count")
+	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryCount)
 	if err := ouq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -318,7 +319,7 @@ func (ouq *OrgUserQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ouq *OrgUserQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ouq.ctx, "Exist")
+	ctx = setContextOp(ctx, ouq.ctx, ent.OpQueryExist)
 	switch _, err := ouq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -840,7 +841,7 @@ func (ougb *OrgUserGroupBy) Aggregate(fns ...AggregateFunc) *OrgUserGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ougb *OrgUserGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ougb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ougb.build.ctx, ent.OpQueryGroupBy)
 	if err := ougb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -888,7 +889,7 @@ func (ous *OrgUserSelect) Aggregate(fns ...AggregateFunc) *OrgUserSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ous *OrgUserSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ous.ctx, "Select")
+	ctx = setContextOp(ctx, ous.ctx, ent.OpQuerySelect)
 	if err := ous.prepareQuery(ctx); err != nil {
 		return err
 	}

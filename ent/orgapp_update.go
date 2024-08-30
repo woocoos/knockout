@@ -83,9 +83,25 @@ func (oau *OrgAppUpdate) SetOrgID(i int) *OrgAppUpdate {
 	return oau
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (oau *OrgAppUpdate) SetNillableOrgID(i *int) *OrgAppUpdate {
+	if i != nil {
+		oau.SetOrgID(*i)
+	}
+	return oau
+}
+
 // SetAppID sets the "app_id" field.
 func (oau *OrgAppUpdate) SetAppID(i int) *OrgAppUpdate {
 	oau.mutation.SetAppID(i)
+	return oau
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (oau *OrgAppUpdate) SetNillableAppID(i *int) *OrgAppUpdate {
+	if i != nil {
+		oau.SetAppID(*i)
+	}
 	return oau
 }
 
@@ -145,10 +161,10 @@ func (oau *OrgAppUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oau *OrgAppUpdate) check() error {
-	if _, ok := oau.mutation.AppID(); oau.mutation.AppCleared() && !ok {
+	if oau.mutation.AppCleared() && len(oau.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.app"`)
 	}
-	if _, ok := oau.mutation.OrgID(); oau.mutation.OrgCleared() && !ok {
+	if oau.mutation.OrgCleared() && len(oau.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.org"`)
 	}
 	return nil
@@ -312,9 +328,25 @@ func (oauo *OrgAppUpdateOne) SetOrgID(i int) *OrgAppUpdateOne {
 	return oauo
 }
 
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (oauo *OrgAppUpdateOne) SetNillableOrgID(i *int) *OrgAppUpdateOne {
+	if i != nil {
+		oauo.SetOrgID(*i)
+	}
+	return oauo
+}
+
 // SetAppID sets the "app_id" field.
 func (oauo *OrgAppUpdateOne) SetAppID(i int) *OrgAppUpdateOne {
 	oauo.mutation.SetAppID(i)
+	return oauo
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (oauo *OrgAppUpdateOne) SetNillableAppID(i *int) *OrgAppUpdateOne {
+	if i != nil {
+		oauo.SetAppID(*i)
+	}
 	return oauo
 }
 
@@ -387,10 +419,10 @@ func (oauo *OrgAppUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oauo *OrgAppUpdateOne) check() error {
-	if _, ok := oauo.mutation.AppID(); oauo.mutation.AppCleared() && !ok {
+	if oauo.mutation.AppCleared() && len(oauo.mutation.AppIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.app"`)
 	}
-	if _, ok := oauo.mutation.OrgID(); oauo.mutation.OrgCleared() && !ok {
+	if oauo.mutation.OrgCleared() && len(oauo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgApp.org"`)
 	}
 	return nil

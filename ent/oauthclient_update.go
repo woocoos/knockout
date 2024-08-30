@@ -83,15 +83,39 @@ func (ocu *OauthClientUpdate) SetName(s string) *OauthClientUpdate {
 	return ocu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ocu *OauthClientUpdate) SetNillableName(s *string) *OauthClientUpdate {
+	if s != nil {
+		ocu.SetName(*s)
+	}
+	return ocu
+}
+
 // SetGrantTypes sets the "grant_types" field.
 func (ocu *OauthClientUpdate) SetGrantTypes(ot oauthclient.GrantTypes) *OauthClientUpdate {
 	ocu.mutation.SetGrantTypes(ot)
 	return ocu
 }
 
+// SetNillableGrantTypes sets the "grant_types" field if the given value is not nil.
+func (ocu *OauthClientUpdate) SetNillableGrantTypes(ot *oauthclient.GrantTypes) *OauthClientUpdate {
+	if ot != nil {
+		ocu.SetGrantTypes(*ot)
+	}
+	return ocu
+}
+
 // SetUserID sets the "user_id" field.
 func (ocu *OauthClientUpdate) SetUserID(i int) *OauthClientUpdate {
 	ocu.mutation.SetUserID(i)
+	return ocu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ocu *OauthClientUpdate) SetNillableUserID(i *int) *OauthClientUpdate {
+	if i != nil {
+		ocu.SetUserID(*i)
+	}
 	return ocu
 }
 
@@ -189,7 +213,7 @@ func (ocu *OauthClientUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if _, ok := ocu.mutation.UserID(); ocu.mutation.UserCleared() && !ok {
+	if ocu.mutation.UserCleared() && len(ocu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil
@@ -339,15 +363,39 @@ func (ocuo *OauthClientUpdateOne) SetName(s string) *OauthClientUpdateOne {
 	return ocuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ocuo *OauthClientUpdateOne) SetNillableName(s *string) *OauthClientUpdateOne {
+	if s != nil {
+		ocuo.SetName(*s)
+	}
+	return ocuo
+}
+
 // SetGrantTypes sets the "grant_types" field.
 func (ocuo *OauthClientUpdateOne) SetGrantTypes(ot oauthclient.GrantTypes) *OauthClientUpdateOne {
 	ocuo.mutation.SetGrantTypes(ot)
 	return ocuo
 }
 
+// SetNillableGrantTypes sets the "grant_types" field if the given value is not nil.
+func (ocuo *OauthClientUpdateOne) SetNillableGrantTypes(ot *oauthclient.GrantTypes) *OauthClientUpdateOne {
+	if ot != nil {
+		ocuo.SetGrantTypes(*ot)
+	}
+	return ocuo
+}
+
 // SetUserID sets the "user_id" field.
 func (ocuo *OauthClientUpdateOne) SetUserID(i int) *OauthClientUpdateOne {
 	ocuo.mutation.SetUserID(i)
+	return ocuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ocuo *OauthClientUpdateOne) SetNillableUserID(i *int) *OauthClientUpdateOne {
+	if i != nil {
+		ocuo.SetUserID(*i)
+	}
 	return ocuo
 }
 
@@ -458,7 +506,7 @@ func (ocuo *OauthClientUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "OauthClient.status": %w`, err)}
 		}
 	}
-	if _, ok := ocuo.mutation.UserID(); ocuo.mutation.UserCleared() && !ok {
+	if ocuo.mutation.UserCleared() && len(ocuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OauthClient.user"`)
 	}
 	return nil

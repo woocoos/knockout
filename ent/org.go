@@ -77,15 +77,17 @@ type OrgEdges struct {
 	Policies []*OrgPolicy `json:"policies,omitempty"`
 	// 组织下应用
 	Apps []*App `json:"apps,omitempty"`
+	// 组织下文件凭证
+	FileIdentities []*FileIdentity `json:"file_identities,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// OrgApp holds the value of the org_app edge.
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [10]bool
+	loadedTypes [11]bool
 	// totalCount holds the count of the edges above.
-	totalCount [7]map[string]int
+	totalCount [8]map[string]int
 
 	namedChildren       map[string][]*Org
 	namedUsers          map[string][]*User
@@ -93,6 +95,7 @@ type OrgEdges struct {
 	namedPermissions    map[string][]*Permission
 	namedPolicies       map[string][]*OrgPolicy
 	namedApps           map[string][]*App
+	namedFileIdentities map[string][]*FileIdentity
 	namedOrgUser        map[string][]*OrgUser
 	namedOrgApp         map[string][]*OrgApp
 }
@@ -100,12 +103,10 @@ type OrgEdges struct {
 // ParentOrErr returns the Parent value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgEdges) ParentOrErr() (*Org, error) {
-	if e.loadedTypes[0] {
-		if e.Parent == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: org.Label}
-		}
+	if e.Parent != nil {
 		return e.Parent, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: org.Label}
 	}
 	return nil, &NotLoadedError{edge: "parent"}
 }
@@ -122,12 +123,10 @@ func (e OrgEdges) ChildrenOrErr() ([]*Org, error) {
 // OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e OrgEdges) OwnerOrErr() (*User, error) {
-	if e.loadedTypes[2] {
-		if e.Owner == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.Owner != nil {
 		return e.Owner, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "owner"}
 }
@@ -177,10 +176,19 @@ func (e OrgEdges) AppsOrErr() ([]*App, error) {
 	return nil, &NotLoadedError{edge: "apps"}
 }
 
+// FileIdentitiesOrErr returns the FileIdentities value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgEdges) FileIdentitiesOrErr() ([]*FileIdentity, error) {
+	if e.loadedTypes[8] {
+		return e.FileIdentities, nil
+	}
+	return nil, &NotLoadedError{edge: "file_identities"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -189,7 +197,7 @@ func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -381,6 +389,11 @@ func (o *Org) QueryPolicies() *OrgPolicyQuery {
 // QueryApps queries the "apps" edge of the Org entity.
 func (o *Org) QueryApps() *AppQuery {
 	return NewOrgClient(o.config).QueryApps(o)
+}
+
+// QueryFileIdentities queries the "file_identities" edge of the Org entity.
+func (o *Org) QueryFileIdentities() *FileIdentityQuery {
+	return NewOrgClient(o.config).QueryFileIdentities(o)
 }
 
 // QueryOrgUser queries the "org_user" edge of the Org entity.
@@ -613,6 +626,30 @@ func (o *Org) appendNamedApps(name string, edges ...*App) {
 		o.Edges.namedApps[name] = []*App{}
 	} else {
 		o.Edges.namedApps[name] = append(o.Edges.namedApps[name], edges...)
+	}
+}
+
+// NamedFileIdentities returns the FileIdentities named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (o *Org) NamedFileIdentities(name string) ([]*FileIdentity, error) {
+	if o.Edges.namedFileIdentities == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := o.Edges.namedFileIdentities[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (o *Org) appendNamedFileIdentities(name string, edges ...*FileIdentity) {
+	if o.Edges.namedFileIdentities == nil {
+		o.Edges.namedFileIdentities = make(map[string][]*FileIdentity)
+	}
+	if len(edges) == 0 {
+		o.Edges.namedFileIdentities[name] = []*FileIdentity{}
+	} else {
+		o.Edges.namedFileIdentities[name] = append(o.Edges.namedFileIdentities[name], edges...)
 	}
 }
 

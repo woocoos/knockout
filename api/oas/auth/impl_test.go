@@ -9,7 +9,7 @@ import (
 	"github.com/alicebob/miniredis/v2"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
 	"github.com/stretchr/testify/suite"
@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/migrate"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
@@ -141,6 +142,22 @@ func (ts *loginFlowSuite) SetupSuite() {
 	err = db.OrgUser.Create().SetUserID(1).SetCreatedBy(1).SetOrgID(1).
 		SetDisplayName("admin").Exec(context.Background())
 	ts.Require().NoError(err)
+
+	err = db.FileSource.Create().SetID(1).SetCreatedBy(1).SetKind(filesource.KindMinio).
+		SetEndpoint("http://localhost:9000").SetStsEndpoint("http://localhost:9000").SetRegion("cn-east-1").SetBucket("test2").SetBucketURL("http://localhost:9000/test2").Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").
+		SetRoleArn("arn:aws:s3:::*").SetDurationSeconds(3600).SetIsDefault(true).SetFileSourceID(1).Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileSource.Create().SetID(2).SetCreatedBy(1).SetKind(filesource.KindAliOSS).
+		SetEndpoint("https://oss-cn-shenzhen.aliyuncs.com").SetStsEndpoint("sts.cn-shenzhen.aliyuncs.com").SetRegion("oss-cn-shenzhen").SetBucket("qldevtest").SetBucketURL("https://qldevtest.oss-cn-shenzhen.aliyuncs.com").Exec(context.Background())
+	ts.Require().NoError(err)
+
+	err = db.FileIdentity.Create().SetID(2).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("todo").SetAccessKeySecret("todo").
+		SetRoleArn("todo").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(context.Background())
+	ts.Require().NoError(err)
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
@@ -161,6 +178,28 @@ func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ts.Require().NoError(err)
 	ts.Contains(res.CallbackUrl, "/login/verify-factor")
 	ts.NotEmptyf(res.StateToken, "state token should not be empty")
+}
+
+func Test_CreateToken(t *testing.T) {
+	type jwtOpt struct {
+		SigningMethod   string        `json:"signingMethod"`
+		SigningKey      string        `json:"signingKey"`
+		TokenTTL        time.Duration `json:"tokenTTL"`
+		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
+	}
+	opts := Options{
+		JWT: jwtOpt{
+			SigningMethod:   "HS256",
+			SigningKey:      "secret",
+			TokenTTL:        time.Hour * 10000,
+			RefreshTokenTTL: time.Hour * 10000,
+		},
+	}
+	_, token, err := createToken("2", opts, false)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(token)
 }
 
 func (ts *loginFlowSuite) Test_AuthFail() {
@@ -343,4 +382,63 @@ func TestPwd(t *testing.T) {
 	sha.Write([]byte("123456"))
 	given := hex.EncodeToString(sha.Sum(nil))
 	t.Log(given)
+}
+
+func (ts *loginFlowSuite) Test_GetMinioSts() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	payload := strings.NewReader(`{}`)
+	req := httptest.NewRequest("POST", "/oss/sts", payload)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
+}
+
+func (ts *loginFlowSuite) Test_GetAliSts() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	payload := strings.NewReader(`{
+		"bucket": "qldevtest",
+		"endpoint": "https://oss-cn-shenzhen.aliyuncs.com"
+	}`)
+	req := httptest.NewRequest("POST", "/oss/sts", payload)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
+}
+
+func (ts *loginFlowSuite) Test_GetPreSignUrl() {
+	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	ts.NoError(err)
+	payload := strings.NewReader(`{
+		"url": "http://localhost:9000/test2/sendCaptchaCode.tmpl"
+	}`)
+	req := httptest.NewRequest("POST", "/oss/presignurl", payload)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("X-Tenant-ID", "1")
+	res := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(res, req)
+	ts.Require().Equal(res.Code, 200)
+
+	var bp map[string]any
+	err = json.Unmarshal([]byte(res.Body.String()), &bp)
+	fmt.Print(bp)
+	ts.Require().NoError(err)
 }

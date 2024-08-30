@@ -3,6 +3,7 @@ package schema
 import (
 	"context"
 	"entgo.io/contrib/entgql"
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -10,6 +11,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/fieldx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -65,7 +67,8 @@ func (App) Fields() []ent.Field {
 		field.String("scopes").MaxLen(500).Optional().Comment("权限范围"),
 		field.Int32("token_validity").Optional().Comment("token有效期"),
 		field.Int32("refresh_token_validity").Optional().Comment("refresh_token有效期"),
-		field.Int("logo_file_id").Optional().Comment("图标,存储路规则：/{appcode}/{tid}/xxx").Annotations(entgql.Type("ID")),
+		fieldx.File("logo").MaxLen(255).Optional().Comment("应用图标地址").Annotations(
+			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
 		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").

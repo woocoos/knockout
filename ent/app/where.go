@@ -116,9 +116,9 @@ func RefreshTokenValidity(v int32) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldRefreshTokenValidity, v))
 }
 
-// LogoFileID applies equality check predicate on the "logo_file_id" field. It's identical to LogoFileIDEQ.
-func LogoFileID(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoFileID, v))
+// Logo applies equality check predicate on the "logo" field. It's identical to LogoEQ.
+func Logo(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldLogo, v))
 }
 
 // Comments applies equality check predicate on the "comments" field. It's identical to CommentsEQ.
@@ -866,54 +866,79 @@ func RefreshTokenValidityNotNil() predicate.App {
 	return predicate.App(sql.FieldNotNull(FieldRefreshTokenValidity))
 }
 
-// LogoFileIDEQ applies the EQ predicate on the "logo_file_id" field.
-func LogoFileIDEQ(v int) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoFileID, v))
+// LogoEQ applies the EQ predicate on the "logo" field.
+func LogoEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldLogo, v))
 }
 
-// LogoFileIDNEQ applies the NEQ predicate on the "logo_file_id" field.
-func LogoFileIDNEQ(v int) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldLogoFileID, v))
+// LogoNEQ applies the NEQ predicate on the "logo" field.
+func LogoNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldLogo, v))
 }
 
-// LogoFileIDIn applies the In predicate on the "logo_file_id" field.
-func LogoFileIDIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldIn(FieldLogoFileID, vs...))
+// LogoIn applies the In predicate on the "logo" field.
+func LogoIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldLogo, vs...))
 }
 
-// LogoFileIDNotIn applies the NotIn predicate on the "logo_file_id" field.
-func LogoFileIDNotIn(vs ...int) predicate.App {
-	return predicate.App(sql.FieldNotIn(FieldLogoFileID, vs...))
+// LogoNotIn applies the NotIn predicate on the "logo" field.
+func LogoNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldLogo, vs...))
 }
 
-// LogoFileIDGT applies the GT predicate on the "logo_file_id" field.
-func LogoFileIDGT(v int) predicate.App {
-	return predicate.App(sql.FieldGT(FieldLogoFileID, v))
+// LogoGT applies the GT predicate on the "logo" field.
+func LogoGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldLogo, v))
 }
 
-// LogoFileIDGTE applies the GTE predicate on the "logo_file_id" field.
-func LogoFileIDGTE(v int) predicate.App {
-	return predicate.App(sql.FieldGTE(FieldLogoFileID, v))
+// LogoGTE applies the GTE predicate on the "logo" field.
+func LogoGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldLogo, v))
 }
 
-// LogoFileIDLT applies the LT predicate on the "logo_file_id" field.
-func LogoFileIDLT(v int) predicate.App {
-	return predicate.App(sql.FieldLT(FieldLogoFileID, v))
+// LogoLT applies the LT predicate on the "logo" field.
+func LogoLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldLogo, v))
 }
 
-// LogoFileIDLTE applies the LTE predicate on the "logo_file_id" field.
-func LogoFileIDLTE(v int) predicate.App {
-	return predicate.App(sql.FieldLTE(FieldLogoFileID, v))
+// LogoLTE applies the LTE predicate on the "logo" field.
+func LogoLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldLogo, v))
 }
 
-// LogoFileIDIsNil applies the IsNil predicate on the "logo_file_id" field.
-func LogoFileIDIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldLogoFileID))
+// LogoContains applies the Contains predicate on the "logo" field.
+func LogoContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldLogo, v))
 }
 
-// LogoFileIDNotNil applies the NotNil predicate on the "logo_file_id" field.
-func LogoFileIDNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldLogoFileID))
+// LogoHasPrefix applies the HasPrefix predicate on the "logo" field.
+func LogoHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldLogo, v))
+}
+
+// LogoHasSuffix applies the HasSuffix predicate on the "logo" field.
+func LogoHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldLogo, v))
+}
+
+// LogoIsNil applies the IsNil predicate on the "logo" field.
+func LogoIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldLogo))
+}
+
+// LogoNotNil applies the NotNil predicate on the "logo" field.
+func LogoNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldLogo))
+}
+
+// LogoEqualFold applies the EqualFold predicate on the "logo" field.
+func LogoEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldLogo, v))
+}
+
+// LogoContainsFold applies the ContainsFold predicate on the "logo" field.
+func LogoContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldLogo, v))
 }
 
 // CommentsEQ applies the EQ predicate on the "comments" field.

@@ -1,6 +1,6 @@
 # Knockout
 
-knockout是提供了woocoos服务平台的资源管理功能的核心库.
+knockout是提供了woocoos服务平台的资源管理功能的核心库。
 
 目录结构
 
@@ -28,4 +28,19 @@ knockout是提供了woocoos服务平台的资源管理功能的核心库.
 │   └── initdb.go       // 测试数据库初始化
 ├── version             // 应用版本信息
 │   └── info.go         
+```
+
+# 快速安装
+
+快速安装以Mysql为例，其他的可参考Knockout文档。
+
+## 准备数据库
+
+
+```shell
+docker run --name knockout-db --rm -p 3306:3306 -e MYSQL_ROOT_PASSWORD=pass -e MYSQL_DATABASE=portal -d mysql
+```
+
+```shell
+make db
 ```

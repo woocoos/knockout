@@ -24,7 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -2579,20 +2579,20 @@ func (ar *AppRole) ToEdge(order *AppRoleOrder) *AppRoleEdge {
 	}
 }
 
-// FileEdge is the edge representation of File.
-type FileEdge struct {
-	Node   *File  `json:"node"`
-	Cursor Cursor `json:"cursor"`
+// FileIdentityEdge is the edge representation of FileIdentity.
+type FileIdentityEdge struct {
+	Node   *FileIdentity `json:"node"`
+	Cursor Cursor        `json:"cursor"`
 }
 
-// FileConnection is the connection containing edges to File.
-type FileConnection struct {
-	Edges      []*FileEdge `json:"edges"`
-	PageInfo   PageInfo    `json:"pageInfo"`
-	TotalCount int         `json:"totalCount"`
+// FileIdentityConnection is the connection containing edges to FileIdentity.
+type FileIdentityConnection struct {
+	Edges      []*FileIdentityEdge `json:"edges"`
+	PageInfo   PageInfo            `json:"pageInfo"`
+	TotalCount int                 `json:"totalCount"`
 }
 
-func (c *FileConnection) build(nodes []*File, pager *filePager, after *Cursor, first *int, before *Cursor, last *int) {
+func (c *FileIdentityConnection) build(nodes []*FileIdentity, pager *fileidentityPager, after *Cursor, first *int, before *Cursor, last *int) {
 	c.PageInfo.HasNextPage = before != nil
 	c.PageInfo.HasPreviousPage = after != nil
 	if first != nil && *first+1 == len(nodes) {
@@ -2602,21 +2602,21 @@ func (c *FileConnection) build(nodes []*File, pager *filePager, after *Cursor, f
 		c.PageInfo.HasPreviousPage = true
 		nodes = nodes[:len(nodes)-1]
 	}
-	var nodeAt func(int) *File
+	var nodeAt func(int) *FileIdentity
 	if last != nil {
 		n := len(nodes) - 1
-		nodeAt = func(i int) *File {
+		nodeAt = func(i int) *FileIdentity {
 			return nodes[n-i]
 		}
 	} else {
-		nodeAt = func(i int) *File {
+		nodeAt = func(i int) *FileIdentity {
 			return nodes[i]
 		}
 	}
-	c.Edges = make([]*FileEdge, len(nodes))
+	c.Edges = make([]*FileIdentityEdge, len(nodes))
 	for i := range nodes {
 		node := nodeAt(i)
-		c.Edges[i] = &FileEdge{
+		c.Edges[i] = &FileIdentityEdge{
 			Node:   node,
 			Cursor: pager.toCursor(node),
 		}
@@ -2630,87 +2630,87 @@ func (c *FileConnection) build(nodes []*File, pager *filePager, after *Cursor, f
 	}
 }
 
-// FilePaginateOption enables pagination customization.
-type FilePaginateOption func(*filePager) error
+// FileIdentityPaginateOption enables pagination customization.
+type FileIdentityPaginateOption func(*fileidentityPager) error
 
-// WithFileOrder configures pagination ordering.
-func WithFileOrder(order *FileOrder) FilePaginateOption {
+// WithFileIdentityOrder configures pagination ordering.
+func WithFileIdentityOrder(order *FileIdentityOrder) FileIdentityPaginateOption {
 	if order == nil {
-		order = DefaultFileOrder
+		order = DefaultFileIdentityOrder
 	}
 	o := *order
-	return func(pager *filePager) error {
+	return func(pager *fileidentityPager) error {
 		if err := o.Direction.Validate(); err != nil {
 			return err
 		}
 		if o.Field == nil {
-			o.Field = DefaultFileOrder.Field
+			o.Field = DefaultFileIdentityOrder.Field
 		}
 		pager.order = &o
 		return nil
 	}
 }
 
-// WithFileFilter configures pagination filter.
-func WithFileFilter(filter func(*FileQuery) (*FileQuery, error)) FilePaginateOption {
-	return func(pager *filePager) error {
+// WithFileIdentityFilter configures pagination filter.
+func WithFileIdentityFilter(filter func(*FileIdentityQuery) (*FileIdentityQuery, error)) FileIdentityPaginateOption {
+	return func(pager *fileidentityPager) error {
 		if filter == nil {
-			return errors.New("FileQuery filter cannot be nil")
+			return errors.New("FileIdentityQuery filter cannot be nil")
 		}
 		pager.filter = filter
 		return nil
 	}
 }
 
-type filePager struct {
+type fileidentityPager struct {
 	reverse bool
-	order   *FileOrder
-	filter  func(*FileQuery) (*FileQuery, error)
+	order   *FileIdentityOrder
+	filter  func(*FileIdentityQuery) (*FileIdentityQuery, error)
 }
 
-func newFilePager(opts []FilePaginateOption, reverse bool) (*filePager, error) {
-	pager := &filePager{reverse: reverse}
+func newFileIdentityPager(opts []FileIdentityPaginateOption, reverse bool) (*fileidentityPager, error) {
+	pager := &fileidentityPager{reverse: reverse}
 	for _, opt := range opts {
 		if err := opt(pager); err != nil {
 			return nil, err
 		}
 	}
 	if pager.order == nil {
-		pager.order = DefaultFileOrder
+		pager.order = DefaultFileIdentityOrder
 	}
 	return pager, nil
 }
 
-func (p *filePager) applyFilter(query *FileQuery) (*FileQuery, error) {
+func (p *fileidentityPager) applyFilter(query *FileIdentityQuery) (*FileIdentityQuery, error) {
 	if p.filter != nil {
 		return p.filter(query)
 	}
 	return query, nil
 }
 
-func (p *filePager) toCursor(f *File) Cursor {
-	return p.order.Field.toCursor(f)
+func (p *fileidentityPager) toCursor(fi *FileIdentity) Cursor {
+	return p.order.Field.toCursor(fi)
 }
 
-func (p *filePager) applyCursors(query *FileQuery, after, before *Cursor) (*FileQuery, error) {
+func (p *fileidentityPager) applyCursors(query *FileIdentityQuery, after, before *Cursor) (*FileIdentityQuery, error) {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultFileOrder.Field.column, p.order.Field.column, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultFileIdentityOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
 }
 
-func (p *filePager) applyOrder(query *FileQuery) *FileQuery {
+func (p *fileidentityPager) applyOrder(query *FileIdentityQuery) *FileIdentityQuery {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
-	if p.order.Field != DefaultFileOrder.Field {
-		query = query.Order(DefaultFileOrder.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultFileIdentityOrder.Field {
+		query = query.Order(DefaultFileIdentityOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	if len(query.ctx.Fields) > 0 {
 		query.ctx.AppendFieldOnce(p.order.Field.column)
@@ -2718,7 +2718,7 @@ func (p *filePager) applyOrder(query *FileQuery) *FileQuery {
 	return query
 }
 
-func (p *filePager) orderExpr(query *FileQuery) sql.Querier {
+func (p *fileidentityPager) orderExpr(query *FileIdentityQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
@@ -2728,33 +2728,33 @@ func (p *filePager) orderExpr(query *FileQuery) sql.Querier {
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
 		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
-		if p.order.Field != DefaultFileOrder.Field {
-			b.Comma().Ident(DefaultFileOrder.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultFileIdentityOrder.Field {
+			b.Comma().Ident(DefaultFileIdentityOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
 
-// Paginate executes the query and returns a relay based cursor connection to File.
-func (f *FileQuery) Paginate(
+// Paginate executes the query and returns a relay based cursor connection to FileIdentity.
+func (fi *FileIdentityQuery) Paginate(
 	ctx context.Context, after *Cursor, first *int,
-	before *Cursor, last *int, opts ...FilePaginateOption,
-) (*FileConnection, error) {
+	before *Cursor, last *int, opts ...FileIdentityPaginateOption,
+) (*FileIdentityConnection, error) {
 	if err := validateFirstLast(first, last); err != nil {
 		return nil, err
 	}
-	pager, err := newFilePager(opts, last != nil)
+	pager, err := newFileIdentityPager(opts, last != nil)
 	if err != nil {
 		return nil, err
 	}
-	if f, err = pager.applyFilter(f); err != nil {
+	if fi, err = pager.applyFilter(fi); err != nil {
 		return nil, err
 	}
-	conn := &FileConnection{Edges: []*FileEdge{}}
+	conn := &FileIdentityConnection{Edges: []*FileIdentityEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
 	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
 		hasPagination := after != nil || first != nil || before != nil || last != nil
 		if hasPagination || ignoredEdges {
-			c := f.Clone()
+			c := fi.Clone()
 			c.ctx.Fields = nil
 			if conn.TotalCount, err = c.Count(ctx); err != nil {
 				return nil, err
@@ -2766,27 +2766,27 @@ func (f *FileQuery) Paginate(
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
 	}
-	if f, err = pager.applyCursors(f, after, before); err != nil {
+	if fi, err = pager.applyCursors(fi, after, before); err != nil {
 		return nil, err
 	}
 	if limit := paginateLimit(first, last); limit != 0 {
-		f.Limit(limit)
+		fi.Limit(limit)
 	}
 	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
 		if first != nil {
-			f.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+			fi.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
 		}
 		if last != nil {
-			f.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+			fi.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
 		}
 	}
 	if field := collectedField(ctx, edgesField, nodeField); field != nil {
-		if err := f.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+		if err := fi.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
 			return nil, err
 		}
 	}
-	f = pager.applyOrder(f)
-	nodes, err := f.All(ctx)
+	fi = pager.applyOrder(fi)
+	nodes, err := fi.All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -2795,90 +2795,90 @@ func (f *FileQuery) Paginate(
 }
 
 var (
-	// FileOrderFieldCreatedAt orders File by created_at.
-	FileOrderFieldCreatedAt = &FileOrderField{
-		Value: func(f *File) (ent.Value, error) {
-			return f.CreatedAt, nil
+	// FileIdentityOrderFieldCreatedAt orders FileIdentity by created_at.
+	FileIdentityOrderFieldCreatedAt = &FileIdentityOrderField{
+		Value: func(fi *FileIdentity) (ent.Value, error) {
+			return fi.CreatedAt, nil
 		},
-		column: file.FieldCreatedAt,
-		toTerm: file.ByCreatedAt,
-		toCursor: func(f *File) Cursor {
+		column: fileidentity.FieldCreatedAt,
+		toTerm: fileidentity.ByCreatedAt,
+		toCursor: func(fi *FileIdentity) Cursor {
 			return Cursor{
-				ID:    f.ID,
-				Value: f.CreatedAt,
+				ID:    fi.ID,
+				Value: fi.CreatedAt,
 			}
 		},
 	}
 )
 
 // String implement fmt.Stringer interface.
-func (f FileOrderField) String() string {
+func (f FileIdentityOrderField) String() string {
 	var str string
 	switch f.column {
-	case FileOrderFieldCreatedAt.column:
+	case FileIdentityOrderFieldCreatedAt.column:
 		str = "createdAt"
 	}
 	return str
 }
 
 // MarshalGQL implements graphql.Marshaler interface.
-func (f FileOrderField) MarshalGQL(w io.Writer) {
+func (f FileIdentityOrderField) MarshalGQL(w io.Writer) {
 	io.WriteString(w, strconv.Quote(f.String()))
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler interface.
-func (f *FileOrderField) UnmarshalGQL(v interface{}) error {
+func (f *FileIdentityOrderField) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
-		return fmt.Errorf("FileOrderField %T must be a string", v)
+		return fmt.Errorf("FileIdentityOrderField %T must be a string", v)
 	}
 	switch str {
 	case "createdAt":
-		*f = *FileOrderFieldCreatedAt
+		*f = *FileIdentityOrderFieldCreatedAt
 	default:
-		return fmt.Errorf("%s is not a valid FileOrderField", str)
+		return fmt.Errorf("%s is not a valid FileIdentityOrderField", str)
 	}
 	return nil
 }
 
-// FileOrderField defines the ordering field of File.
-type FileOrderField struct {
-	// Value extracts the ordering value from the given File.
-	Value    func(*File) (ent.Value, error)
+// FileIdentityOrderField defines the ordering field of FileIdentity.
+type FileIdentityOrderField struct {
+	// Value extracts the ordering value from the given FileIdentity.
+	Value    func(*FileIdentity) (ent.Value, error)
 	column   string // field or computed.
-	toTerm   func(...sql.OrderTermOption) file.OrderOption
-	toCursor func(*File) Cursor
+	toTerm   func(...sql.OrderTermOption) fileidentity.OrderOption
+	toCursor func(*FileIdentity) Cursor
 }
 
-// FileOrder defines the ordering of File.
-type FileOrder struct {
-	Direction OrderDirection  `json:"direction"`
-	Field     *FileOrderField `json:"field"`
+// FileIdentityOrder defines the ordering of FileIdentity.
+type FileIdentityOrder struct {
+	Direction OrderDirection          `json:"direction"`
+	Field     *FileIdentityOrderField `json:"field"`
 }
 
-// DefaultFileOrder is the default ordering of File.
-var DefaultFileOrder = &FileOrder{
+// DefaultFileIdentityOrder is the default ordering of FileIdentity.
+var DefaultFileIdentityOrder = &FileIdentityOrder{
 	Direction: entgql.OrderDirectionAsc,
-	Field: &FileOrderField{
-		Value: func(f *File) (ent.Value, error) {
-			return f.ID, nil
+	Field: &FileIdentityOrderField{
+		Value: func(fi *FileIdentity) (ent.Value, error) {
+			return fi.ID, nil
 		},
-		column: file.FieldID,
-		toTerm: file.ByID,
-		toCursor: func(f *File) Cursor {
-			return Cursor{ID: f.ID}
+		column: fileidentity.FieldID,
+		toTerm: fileidentity.ByID,
+		toCursor: func(fi *FileIdentity) Cursor {
+			return Cursor{ID: fi.ID}
 		},
 	},
 }
 
-// ToEdge converts File into FileEdge.
-func (f *File) ToEdge(order *FileOrder) *FileEdge {
+// ToEdge converts FileIdentity into FileIdentityEdge.
+func (fi *FileIdentity) ToEdge(order *FileIdentityOrder) *FileIdentityEdge {
 	if order == nil {
-		order = DefaultFileOrder
+		order = DefaultFileIdentityOrder
 	}
-	return &FileEdge{
-		Node:   f,
-		Cursor: order.Field.toCursor(f),
+	return &FileIdentityEdge{
+		Node:   fi,
+		Cursor: order.Field.toCursor(fi),
 	}
 }
 

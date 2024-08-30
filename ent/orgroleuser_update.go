@@ -85,9 +85,25 @@ func (oruu *OrgRoleUserUpdate) SetOrgRoleID(i int) *OrgRoleUserUpdate {
 	return oruu
 }
 
+// SetNillableOrgRoleID sets the "org_role_id" field if the given value is not nil.
+func (oruu *OrgRoleUserUpdate) SetNillableOrgRoleID(i *int) *OrgRoleUserUpdate {
+	if i != nil {
+		oruu.SetOrgRoleID(*i)
+	}
+	return oruu
+}
+
 // SetOrgUserID sets the "org_user_id" field.
 func (oruu *OrgRoleUserUpdate) SetOrgUserID(i int) *OrgRoleUserUpdate {
 	oruu.mutation.SetOrgUserID(i)
+	return oruu
+}
+
+// SetNillableOrgUserID sets the "org_user_id" field if the given value is not nil.
+func (oruu *OrgRoleUserUpdate) SetNillableOrgUserID(i *int) *OrgRoleUserUpdate {
+	if i != nil {
+		oruu.SetOrgUserID(*i)
+	}
 	return oruu
 }
 
@@ -97,9 +113,25 @@ func (oruu *OrgRoleUserUpdate) SetUserID(i int) *OrgRoleUserUpdate {
 	return oruu
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (oruu *OrgRoleUserUpdate) SetNillableUserID(i *int) *OrgRoleUserUpdate {
+	if i != nil {
+		oruu.SetUserID(*i)
+	}
+	return oruu
+}
+
 // SetOrgID sets the "org_id" field.
 func (oruu *OrgRoleUserUpdate) SetOrgID(i int) *OrgRoleUserUpdate {
 	oruu.mutation.SetOrgID(i)
+	return oruu
+}
+
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (oruu *OrgRoleUserUpdate) SetNillableOrgID(i *int) *OrgRoleUserUpdate {
+	if i != nil {
+		oruu.SetOrgID(*i)
+	}
 	return oruu
 }
 
@@ -181,16 +213,16 @@ func (oruu *OrgRoleUserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oruu *OrgRoleUserUpdate) check() error {
-	if _, ok := oruu.mutation.OrgRoleID(); oruu.mutation.OrgRoleCleared() && !ok {
+	if oruu.mutation.OrgRoleCleared() && len(oruu.mutation.OrgRoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_role"`)
 	}
-	if _, ok := oruu.mutation.OrgUserID(); oruu.mutation.OrgUserCleared() && !ok {
+	if oruu.mutation.OrgUserCleared() && len(oruu.mutation.OrgUserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_user"`)
 	}
-	if _, ok := oruu.mutation.UserID(); oruu.mutation.UserCleared() && !ok {
+	if oruu.mutation.UserCleared() && len(oruu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.user"`)
 	}
-	if _, ok := oruu.mutation.OrgID(); oruu.mutation.OrgCleared() && !ok {
+	if oruu.mutation.OrgCleared() && len(oruu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org"`)
 	}
 	return nil
@@ -412,9 +444,25 @@ func (oruuo *OrgRoleUserUpdateOne) SetOrgRoleID(i int) *OrgRoleUserUpdateOne {
 	return oruuo
 }
 
+// SetNillableOrgRoleID sets the "org_role_id" field if the given value is not nil.
+func (oruuo *OrgRoleUserUpdateOne) SetNillableOrgRoleID(i *int) *OrgRoleUserUpdateOne {
+	if i != nil {
+		oruuo.SetOrgRoleID(*i)
+	}
+	return oruuo
+}
+
 // SetOrgUserID sets the "org_user_id" field.
 func (oruuo *OrgRoleUserUpdateOne) SetOrgUserID(i int) *OrgRoleUserUpdateOne {
 	oruuo.mutation.SetOrgUserID(i)
+	return oruuo
+}
+
+// SetNillableOrgUserID sets the "org_user_id" field if the given value is not nil.
+func (oruuo *OrgRoleUserUpdateOne) SetNillableOrgUserID(i *int) *OrgRoleUserUpdateOne {
+	if i != nil {
+		oruuo.SetOrgUserID(*i)
+	}
 	return oruuo
 }
 
@@ -424,9 +472,25 @@ func (oruuo *OrgRoleUserUpdateOne) SetUserID(i int) *OrgRoleUserUpdateOne {
 	return oruuo
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (oruuo *OrgRoleUserUpdateOne) SetNillableUserID(i *int) *OrgRoleUserUpdateOne {
+	if i != nil {
+		oruuo.SetUserID(*i)
+	}
+	return oruuo
+}
+
 // SetOrgID sets the "org_id" field.
 func (oruuo *OrgRoleUserUpdateOne) SetOrgID(i int) *OrgRoleUserUpdateOne {
 	oruuo.mutation.SetOrgID(i)
+	return oruuo
+}
+
+// SetNillableOrgID sets the "org_id" field if the given value is not nil.
+func (oruuo *OrgRoleUserUpdateOne) SetNillableOrgID(i *int) *OrgRoleUserUpdateOne {
+	if i != nil {
+		oruuo.SetOrgID(*i)
+	}
 	return oruuo
 }
 
@@ -521,16 +585,16 @@ func (oruuo *OrgRoleUserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (oruuo *OrgRoleUserUpdateOne) check() error {
-	if _, ok := oruuo.mutation.OrgRoleID(); oruuo.mutation.OrgRoleCleared() && !ok {
+	if oruuo.mutation.OrgRoleCleared() && len(oruuo.mutation.OrgRoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_role"`)
 	}
-	if _, ok := oruuo.mutation.OrgUserID(); oruuo.mutation.OrgUserCleared() && !ok {
+	if oruuo.mutation.OrgUserCleared() && len(oruuo.mutation.OrgUserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org_user"`)
 	}
-	if _, ok := oruuo.mutation.UserID(); oruuo.mutation.UserCleared() && !ok {
+	if oruuo.mutation.UserCleared() && len(oruuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.user"`)
 	}
-	if _, ok := oruuo.mutation.OrgID(); oruuo.mutation.OrgCleared() && !ok {
+	if oruuo.mutation.OrgCleared() && len(oruuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgRoleUser.org"`)
 	}
 	return nil

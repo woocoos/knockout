@@ -55,12 +55,10 @@ type AppRolePolicyEdges struct {
 // RoleOrErr returns the Role value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppRolePolicyEdges) RoleOrErr() (*AppRole, error) {
-	if e.loadedTypes[0] {
-		if e.Role == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: approle.Label}
-		}
+	if e.Role != nil {
 		return e.Role, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: approle.Label}
 	}
 	return nil, &NotLoadedError{edge: "role"}
 }
@@ -68,12 +66,10 @@ func (e AppRolePolicyEdges) RoleOrErr() (*AppRole, error) {
 // PolicyOrErr returns the Policy value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppRolePolicyEdges) PolicyOrErr() (*AppPolicy, error) {
-	if e.loadedTypes[1] {
-		if e.Policy == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: apppolicy.Label}
-		}
+	if e.Policy != nil {
 		return e.Policy, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: apppolicy.Label}
 	}
 	return nil, &NotLoadedError{edge: "policy"}
 }

@@ -1,5 +1,0 @@
-spec: "./api/oas/auth.yaml"
-target: "./api/oas"
-models:
-  UUID:
-    model: github.com/google/uuid.UUID

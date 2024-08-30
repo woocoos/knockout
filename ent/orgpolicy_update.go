@@ -138,6 +138,14 @@ func (opu *OrgPolicyUpdate) SetName(s string) *OrgPolicyUpdate {
 	return opu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (opu *OrgPolicyUpdate) SetNillableName(s *string) *OrgPolicyUpdate {
+	if s != nil {
+		opu.SetName(*s)
+	}
+	return opu
+}
+
 // SetComments sets the "comments" field.
 func (opu *OrgPolicyUpdate) SetComments(s string) *OrgPolicyUpdate {
 	opu.mutation.SetComments(s)
@@ -466,6 +474,14 @@ func (opuo *OrgPolicyUpdateOne) ClearAppPolicyID() *OrgPolicyUpdateOne {
 // SetName sets the "name" field.
 func (opuo *OrgPolicyUpdateOne) SetName(s string) *OrgPolicyUpdateOne {
 	opuo.mutation.SetName(s)
+	return opuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (opuo *OrgPolicyUpdateOne) SetNillableName(s *string) *OrgPolicyUpdateOne {
+	if s != nil {
+		opuo.SetName(*s)
+	}
 	return opuo
 }
 

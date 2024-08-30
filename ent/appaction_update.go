@@ -82,15 +82,39 @@ func (aau *AppActionUpdate) SetName(s string) *AppActionUpdate {
 	return aau
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aau *AppActionUpdate) SetNillableName(s *string) *AppActionUpdate {
+	if s != nil {
+		aau.SetName(*s)
+	}
+	return aau
+}
+
 // SetKind sets the "kind" field.
 func (aau *AppActionUpdate) SetKind(a appaction.Kind) *AppActionUpdate {
 	aau.mutation.SetKind(a)
 	return aau
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (aau *AppActionUpdate) SetNillableKind(a *appaction.Kind) *AppActionUpdate {
+	if a != nil {
+		aau.SetKind(*a)
+	}
+	return aau
+}
+
 // SetMethod sets the "method" field.
 func (aau *AppActionUpdate) SetMethod(a appaction.Method) *AppActionUpdate {
 	aau.mutation.SetMethod(a)
+	return aau
+}
+
+// SetNillableMethod sets the "method" field if the given value is not nil.
+func (aau *AppActionUpdate) SetNillableMethod(a *appaction.Method) *AppActionUpdate {
+	if a != nil {
+		aau.SetMethod(*a)
+	}
 	return aau
 }
 
@@ -362,15 +386,39 @@ func (aauo *AppActionUpdateOne) SetName(s string) *AppActionUpdateOne {
 	return aauo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aauo *AppActionUpdateOne) SetNillableName(s *string) *AppActionUpdateOne {
+	if s != nil {
+		aauo.SetName(*s)
+	}
+	return aauo
+}
+
 // SetKind sets the "kind" field.
 func (aauo *AppActionUpdateOne) SetKind(a appaction.Kind) *AppActionUpdateOne {
 	aauo.mutation.SetKind(a)
 	return aauo
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (aauo *AppActionUpdateOne) SetNillableKind(a *appaction.Kind) *AppActionUpdateOne {
+	if a != nil {
+		aauo.SetKind(*a)
+	}
+	return aauo
+}
+
 // SetMethod sets the "method" field.
 func (aauo *AppActionUpdateOne) SetMethod(a appaction.Method) *AppActionUpdateOne {
 	aauo.mutation.SetMethod(a)
+	return aauo
+}
+
+// SetNillableMethod sets the "method" field if the given value is not nil.
+func (aauo *AppActionUpdateOne) SetNillableMethod(a *appaction.Method) *AppActionUpdateOne {
+	if a != nil {
+		aauo.SetMethod(*a)
+	}
 	return aauo
 }
 

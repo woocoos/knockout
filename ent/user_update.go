@@ -110,9 +110,25 @@ func (uu *UserUpdate) SetPrincipalName(s string) *UserUpdate {
 	return uu
 }
 
+// SetNillablePrincipalName sets the "principal_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePrincipalName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetPrincipalName(*s)
+	}
+	return uu
+}
+
 // SetDisplayName sets the "display_name" field.
 func (uu *UserUpdate) SetDisplayName(s string) *UserUpdate {
 	uu.mutation.SetDisplayName(s)
+	return uu
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableDisplayName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetDisplayName(*s)
+	}
 	return uu
 }
 
@@ -162,15 +178,39 @@ func (uu *UserUpdate) SetUserType(ut user.UserType) *UserUpdate {
 	return uu
 }
 
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableUserType(ut *user.UserType) *UserUpdate {
+	if ut != nil {
+		uu.SetUserType(*ut)
+	}
+	return uu
+}
+
 // SetCreationType sets the "creation_type" field.
 func (uu *UserUpdate) SetCreationType(ut user.CreationType) *UserUpdate {
 	uu.mutation.SetCreationType(ut)
 	return uu
 }
 
+// SetNillableCreationType sets the "creation_type" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableCreationType(ut *user.CreationType) *UserUpdate {
+	if ut != nil {
+		uu.SetCreationType(*ut)
+	}
+	return uu
+}
+
 // SetRegisterIP sets the "register_ip" field.
 func (uu *UserUpdate) SetRegisterIP(s string) *UserUpdate {
 	uu.mutation.SetRegisterIP(s)
+	return uu
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableRegisterIP(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetRegisterIP(*s)
+	}
 	return uu
 }
 
@@ -214,30 +254,23 @@ func (uu *UserUpdate) ClearComments() *UserUpdate {
 	return uu
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (uu *UserUpdate) SetAvatarFileID(i int) *UserUpdate {
-	uu.mutation.ResetAvatarFileID()
-	uu.mutation.SetAvatarFileID(i)
+// SetAvatar sets the "avatar" field.
+func (uu *UserUpdate) SetAvatar(s string) *UserUpdate {
+	uu.mutation.SetAvatar(s)
 	return uu
 }
 
-// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableAvatarFileID(i *int) *UserUpdate {
-	if i != nil {
-		uu.SetAvatarFileID(*i)
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableAvatar(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetAvatar(*s)
 	}
 	return uu
 }
 
-// AddAvatarFileID adds i to the "avatar_file_id" field.
-func (uu *UserUpdate) AddAvatarFileID(i int) *UserUpdate {
-	uu.mutation.AddAvatarFileID(i)
-	return uu
-}
-
-// ClearAvatarFileID clears the value of the "avatar_file_id" field.
-func (uu *UserUpdate) ClearAvatarFileID() *UserUpdate {
-	uu.mutation.ClearAvatarFileID()
+// ClearAvatar clears the value of the "avatar" field.
+func (uu *UserUpdate) ClearAvatar() *UserUpdate {
+	uu.mutation.ClearAvatar()
 	return uu
 }
 
@@ -582,6 +615,11 @@ func (uu *UserUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
 		}
 	}
+	if v, ok := uu.mutation.Avatar(); ok {
+		if err := user.AvatarValidator(v); err != nil {
+			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -657,14 +695,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if uu.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
 	}
-	if value, ok := uu.mutation.AvatarFileID(); ok {
-		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	if value, ok := uu.mutation.Avatar(); ok {
+		_spec.SetField(user.FieldAvatar, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.AddedAvatarFileID(); ok {
-		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
-	}
-	if uu.mutation.AvatarFileIDCleared() {
-		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
+	if uu.mutation.AvatarCleared() {
+		_spec.ClearField(user.FieldAvatar, field.TypeString)
 	}
 	if uu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1115,9 +1150,25 @@ func (uuo *UserUpdateOne) SetPrincipalName(s string) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillablePrincipalName sets the "principal_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePrincipalName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetPrincipalName(*s)
+	}
+	return uuo
+}
+
 // SetDisplayName sets the "display_name" field.
 func (uuo *UserUpdateOne) SetDisplayName(s string) *UserUpdateOne {
 	uuo.mutation.SetDisplayName(s)
+	return uuo
+}
+
+// SetNillableDisplayName sets the "display_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableDisplayName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetDisplayName(*s)
+	}
 	return uuo
 }
 
@@ -1167,15 +1218,39 @@ func (uuo *UserUpdateOne) SetUserType(ut user.UserType) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableUserType(ut *user.UserType) *UserUpdateOne {
+	if ut != nil {
+		uuo.SetUserType(*ut)
+	}
+	return uuo
+}
+
 // SetCreationType sets the "creation_type" field.
 func (uuo *UserUpdateOne) SetCreationType(ut user.CreationType) *UserUpdateOne {
 	uuo.mutation.SetCreationType(ut)
 	return uuo
 }
 
+// SetNillableCreationType sets the "creation_type" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableCreationType(ut *user.CreationType) *UserUpdateOne {
+	if ut != nil {
+		uuo.SetCreationType(*ut)
+	}
+	return uuo
+}
+
 // SetRegisterIP sets the "register_ip" field.
 func (uuo *UserUpdateOne) SetRegisterIP(s string) *UserUpdateOne {
 	uuo.mutation.SetRegisterIP(s)
+	return uuo
+}
+
+// SetNillableRegisterIP sets the "register_ip" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableRegisterIP(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetRegisterIP(*s)
+	}
 	return uuo
 }
 
@@ -1219,30 +1294,23 @@ func (uuo *UserUpdateOne) ClearComments() *UserUpdateOne {
 	return uuo
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (uuo *UserUpdateOne) SetAvatarFileID(i int) *UserUpdateOne {
-	uuo.mutation.ResetAvatarFileID()
-	uuo.mutation.SetAvatarFileID(i)
+// SetAvatar sets the "avatar" field.
+func (uuo *UserUpdateOne) SetAvatar(s string) *UserUpdateOne {
+	uuo.mutation.SetAvatar(s)
 	return uuo
 }
 
-// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableAvatarFileID(i *int) *UserUpdateOne {
-	if i != nil {
-		uuo.SetAvatarFileID(*i)
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableAvatar(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetAvatar(*s)
 	}
 	return uuo
 }
 
-// AddAvatarFileID adds i to the "avatar_file_id" field.
-func (uuo *UserUpdateOne) AddAvatarFileID(i int) *UserUpdateOne {
-	uuo.mutation.AddAvatarFileID(i)
-	return uuo
-}
-
-// ClearAvatarFileID clears the value of the "avatar_file_id" field.
-func (uuo *UserUpdateOne) ClearAvatarFileID() *UserUpdateOne {
-	uuo.mutation.ClearAvatarFileID()
+// ClearAvatar clears the value of the "avatar" field.
+func (uuo *UserUpdateOne) ClearAvatar() *UserUpdateOne {
+	uuo.mutation.ClearAvatar()
 	return uuo
 }
 
@@ -1600,6 +1668,11 @@ func (uuo *UserUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
 		}
 	}
+	if v, ok := uuo.mutation.Avatar(); ok {
+		if err := user.AvatarValidator(v); err != nil {
+			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -1692,14 +1765,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if uuo.mutation.CommentsCleared() {
 		_spec.ClearField(user.FieldComments, field.TypeString)
 	}
-	if value, ok := uuo.mutation.AvatarFileID(); ok {
-		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
+	if value, ok := uuo.mutation.Avatar(); ok {
+		_spec.SetField(user.FieldAvatar, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.AddedAvatarFileID(); ok {
-		_spec.AddField(user.FieldAvatarFileID, field.TypeInt, value)
-	}
-	if uuo.mutation.AvatarFileIDCleared() {
-		_spec.ClearField(user.FieldAvatarFileID, field.TypeInt)
+	if uuo.mutation.AvatarCleared() {
+		_spec.ClearField(user.FieldAvatar, field.TypeString)
 	}
 	if uuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -48,8 +48,8 @@ const (
 	FieldStatus = "status"
 	// FieldComments holds the string denoting the comments field in the database.
 	FieldComments = "comments"
-	// FieldAvatarFileID holds the string denoting the avatar_file_id field in the database.
-	FieldAvatarFileID = "avatar_file_id"
+	// FieldAvatar holds the string denoting the avatar field in the database.
+	FieldAvatar = "avatar"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeLoginProfile holds the string denoting the login_profile edge name in mutations.
@@ -141,7 +141,7 @@ var Columns = []string{
 	FieldRegisterIP,
 	FieldStatus,
 	FieldComments,
-	FieldAvatarFileID,
+	FieldAvatar,
 }
 
 var (
@@ -176,6 +176,8 @@ var (
 	MobileValidator func(string) error
 	// RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	RegisterIPValidator func(string) error
+	// AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
+	AvatarValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() int
 )
@@ -315,9 +317,9 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldComments, opts...).ToFunc()
 }
 
-// ByAvatarFileID orders the results by the avatar_file_id field.
-func ByAvatarFileID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAvatarFileID, opts...).ToFunc()
+// ByAvatar orders the results by the avatar field.
+func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
 }
 
 // ByIdentitiesCount orders the results by identities count.

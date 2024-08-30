@@ -169,11 +169,76 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
       security:
         - bearerAuth: [ ]
+  /oss/sts:
+    post:
+      tags:
+        - auth
+      operationId: getSTS
+      description: return temporary credentials by aws sts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bucket:
+                  type: string
+                endpoint:
+                  type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  access_key_id:
+                    type: string
+                  expiration:
+                    type: string
+                    format: date-time
+                  secret_access_key:
+                    type: string
+                  session_token:
+                    type: string
+  /oss/presignurl:
+    post:
+      tags:
+        - auth
+      operationId: getPreSignUrl
+      description: return the temporary authorization access url
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: the url of file
+                bucket:
+                  type: string
+                  description: do not use the default identity,must be used with endpoint
+                endpoint:
+                  type: string
+                  description: do not use the default identity,must be used with bucket
+              required:
+                - url
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  url:
+                    type: string
   /token:
     post:
       tags:
         - auth
       operationId: token
+      description: return access token for oauth2 flow
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -560,8 +625,8 @@ components:
           type: integer
         displayName:
           type: string
-        avatarFileId:
-          type: integer
+        avatar:
+          type: string
         domains:
           type: array
           items:

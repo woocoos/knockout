@@ -83,9 +83,25 @@ func (arpu *AppRolePolicyUpdate) SetAppRoleID(i int) *AppRolePolicyUpdate {
 	return arpu
 }
 
+// SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppRoleID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppRoleID(*i)
+	}
+	return arpu
+}
+
 // SetAppPolicyID sets the "app_policy_id" field.
 func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
 	arpu.mutation.SetAppPolicyID(i)
+	return arpu
+}
+
+// SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppPolicyID(*i)
+	}
 	return arpu
 }
 
@@ -93,6 +109,14 @@ func (arpu *AppRolePolicyUpdate) SetAppPolicyID(i int) *AppRolePolicyUpdate {
 func (arpu *AppRolePolicyUpdate) SetAppID(i int) *AppRolePolicyUpdate {
 	arpu.mutation.ResetAppID()
 	arpu.mutation.SetAppID(i)
+	return arpu
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arpu *AppRolePolicyUpdate) SetNillableAppID(i *int) *AppRolePolicyUpdate {
+	if i != nil {
+		arpu.SetAppID(*i)
+	}
 	return arpu
 }
 
@@ -170,10 +194,10 @@ func (arpu *AppRolePolicyUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (arpu *AppRolePolicyUpdate) check() error {
-	if _, ok := arpu.mutation.RoleID(); arpu.mutation.RoleCleared() && !ok {
+	if arpu.mutation.RoleCleared() && len(arpu.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if _, ok := arpu.mutation.PolicyID(); arpu.mutation.PolicyCleared() && !ok {
+	if arpu.mutation.PolicyCleared() && len(arpu.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil
@@ -343,9 +367,25 @@ func (arpuo *AppRolePolicyUpdateOne) SetAppRoleID(i int) *AppRolePolicyUpdateOne
 	return arpuo
 }
 
+// SetNillableAppRoleID sets the "app_role_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppRoleID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppRoleID(*i)
+	}
+	return arpuo
+}
+
 // SetAppPolicyID sets the "app_policy_id" field.
 func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateOne {
 	arpuo.mutation.SetAppPolicyID(i)
+	return arpuo
+}
+
+// SetNillableAppPolicyID sets the "app_policy_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppPolicyID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppPolicyID(*i)
+	}
 	return arpuo
 }
 
@@ -353,6 +393,14 @@ func (arpuo *AppRolePolicyUpdateOne) SetAppPolicyID(i int) *AppRolePolicyUpdateO
 func (arpuo *AppRolePolicyUpdateOne) SetAppID(i int) *AppRolePolicyUpdateOne {
 	arpuo.mutation.ResetAppID()
 	arpuo.mutation.SetAppID(i)
+	return arpuo
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (arpuo *AppRolePolicyUpdateOne) SetNillableAppID(i *int) *AppRolePolicyUpdateOne {
+	if i != nil {
+		arpuo.SetAppID(*i)
+	}
 	return arpuo
 }
 
@@ -443,10 +491,10 @@ func (arpuo *AppRolePolicyUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (arpuo *AppRolePolicyUpdateOne) check() error {
-	if _, ok := arpuo.mutation.RoleID(); arpuo.mutation.RoleCleared() && !ok {
+	if arpuo.mutation.RoleCleared() && len(arpuo.mutation.RoleIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.role"`)
 	}
-	if _, ok := arpuo.mutation.PolicyID(); arpuo.mutation.PolicyCleared() && !ok {
+	if arpuo.mutation.PolicyCleared() && len(arpuo.mutation.PolicyIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppRolePolicy.policy"`)
 	}
 	return nil

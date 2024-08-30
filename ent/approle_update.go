@@ -83,6 +83,14 @@ func (aru *AppRoleUpdate) SetName(s string) *AppRoleUpdate {
 	return aru
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aru *AppRoleUpdate) SetNillableName(s *string) *AppRoleUpdate {
+	if s != nil {
+		aru.SetName(*s)
+	}
+	return aru
+}
+
 // SetComments sets the "comments" field.
 func (aru *AppRoleUpdate) SetComments(s string) *AppRoleUpdate {
 	aru.mutation.SetComments(s)
@@ -446,6 +454,14 @@ func (aruo *AppRoleUpdateOne) ClearUpdatedAt() *AppRoleUpdateOne {
 // SetName sets the "name" field.
 func (aruo *AppRoleUpdateOne) SetName(s string) *AppRoleUpdateOne {
 	aruo.mutation.SetName(s)
+	return aruo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aruo *AppRoleUpdateOne) SetNillableName(s *string) *AppRoleUpdateOne {
+	if s != nil {
+		aruo.SetName(*s)
+	}
 	return aruo
 }
 

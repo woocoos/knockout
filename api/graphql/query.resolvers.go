@@ -14,11 +14,13 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appres"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -265,4 +267,34 @@ func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, er
 		return false, nil
 	}
 	return has, nil
+}
+
+// FileIdentitiesForApp is the resolver for the fileIdentitiesForApp field.
+func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error) {
+	q := r.client.FileIdentity.Query()
+	q, err := where.Filter(q)
+	if err != nil {
+		return nil, err
+	}
+	fulls := make([]*model.FileIdentityForApp, 0)
+	fis, err := q.WithSource().WithOrg().All(ctx)
+	for _, fi := range fis {
+		fulls = append(fulls, &model.FileIdentityForApp{
+			ID:              fi.ID,
+			IsDefault:       fi.IsDefault,
+			Source:          fi.Edges.Source,
+			RoleArn:         fi.RoleArn,
+			Policy:          &fi.Policy,
+			AccessKeyID:     fi.AccessKeyID,
+			AccessKeySecret: fi.AccessKeySecret,
+			TenantID:        fi.TenantID,
+			DurationSeconds: &fi.DurationSeconds,
+		})
+	}
+	return fulls, nil
+}
+
+// FileIdentityAccessKeySecret is the resolver for the fileIdentityAccessKeySecret field.
+func (r *queryResolver) FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error) {
+	return r.client.FileIdentity.Query().Where(fileidentity.ID(id)).Select(fileidentity.FieldAccessKeySecret).String(ctx)
 }

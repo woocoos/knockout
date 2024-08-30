@@ -81,15 +81,39 @@ func (aru *AppResUpdate) SetName(s string) *AppResUpdate {
 	return aru
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aru *AppResUpdate) SetNillableName(s *string) *AppResUpdate {
+	if s != nil {
+		aru.SetName(*s)
+	}
+	return aru
+}
+
 // SetTypeName sets the "type_name" field.
 func (aru *AppResUpdate) SetTypeName(s string) *AppResUpdate {
 	aru.mutation.SetTypeName(s)
 	return aru
 }
 
+// SetNillableTypeName sets the "type_name" field if the given value is not nil.
+func (aru *AppResUpdate) SetNillableTypeName(s *string) *AppResUpdate {
+	if s != nil {
+		aru.SetTypeName(*s)
+	}
+	return aru
+}
+
 // SetArnPattern sets the "arn_pattern" field.
 func (aru *AppResUpdate) SetArnPattern(s string) *AppResUpdate {
 	aru.mutation.SetArnPattern(s)
+	return aru
+}
+
+// SetNillableArnPattern sets the "arn_pattern" field if the given value is not nil.
+func (aru *AppResUpdate) SetNillableArnPattern(s *string) *AppResUpdate {
+	if s != nil {
+		aru.SetArnPattern(*s)
+	}
 	return aru
 }
 
@@ -231,15 +255,39 @@ func (aruo *AppResUpdateOne) SetName(s string) *AppResUpdateOne {
 	return aruo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aruo *AppResUpdateOne) SetNillableName(s *string) *AppResUpdateOne {
+	if s != nil {
+		aruo.SetName(*s)
+	}
+	return aruo
+}
+
 // SetTypeName sets the "type_name" field.
 func (aruo *AppResUpdateOne) SetTypeName(s string) *AppResUpdateOne {
 	aruo.mutation.SetTypeName(s)
 	return aruo
 }
 
+// SetNillableTypeName sets the "type_name" field if the given value is not nil.
+func (aruo *AppResUpdateOne) SetNillableTypeName(s *string) *AppResUpdateOne {
+	if s != nil {
+		aruo.SetTypeName(*s)
+	}
+	return aruo
+}
+
 // SetArnPattern sets the "arn_pattern" field.
 func (aruo *AppResUpdateOne) SetArnPattern(s string) *AppResUpdateOne {
 	aruo.mutation.SetArnPattern(s)
+	return aruo
+}
+
+// SetNillableArnPattern sets the "arn_pattern" field if the given value is not nil.
+func (aruo *AppResUpdateOne) SetNillableArnPattern(s *string) *AppResUpdateOne {
+	if s != nil {
+		aruo.SetArnPattern(*s)
+	}
 	return aruo
 }
 

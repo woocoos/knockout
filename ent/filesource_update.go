@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -82,6 +82,14 @@ func (fsu *FileSourceUpdate) SetKind(f filesource.Kind) *FileSourceUpdate {
 	return fsu
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableKind(f *filesource.Kind) *FileSourceUpdate {
+	if f != nil {
+		fsu.SetKind(*f)
+	}
+	return fsu
+}
+
 // SetComments sets the "comments" field.
 func (fsu *FileSourceUpdate) SetComments(s string) *FileSourceUpdate {
 	fsu.mutation.SetComments(s)
@@ -116,9 +124,31 @@ func (fsu *FileSourceUpdate) SetNillableEndpoint(s *string) *FileSourceUpdate {
 	return fsu
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (fsu *FileSourceUpdate) ClearEndpoint() *FileSourceUpdate {
-	fsu.mutation.ClearEndpoint()
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (fsu *FileSourceUpdate) SetEndpointImmutable(b bool) *FileSourceUpdate {
+	fsu.mutation.SetEndpointImmutable(b)
+	return fsu
+}
+
+// SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableEndpointImmutable(b *bool) *FileSourceUpdate {
+	if b != nil {
+		fsu.SetEndpointImmutable(*b)
+	}
+	return fsu
+}
+
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (fsu *FileSourceUpdate) SetStsEndpoint(s string) *FileSourceUpdate {
+	fsu.mutation.SetStsEndpoint(s)
+	return fsu
+}
+
+// SetNillableStsEndpoint sets the "sts_endpoint" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableStsEndpoint(s *string) *FileSourceUpdate {
+	if s != nil {
+		fsu.SetStsEndpoint(*s)
+	}
 	return fsu
 }
 
@@ -136,12 +166,6 @@ func (fsu *FileSourceUpdate) SetNillableRegion(s *string) *FileSourceUpdate {
 	return fsu
 }
 
-// ClearRegion clears the value of the "region" field.
-func (fsu *FileSourceUpdate) ClearRegion() *FileSourceUpdate {
-	fsu.mutation.ClearRegion()
-	return fsu
-}
-
 // SetBucket sets the "bucket" field.
 func (fsu *FileSourceUpdate) SetBucket(s string) *FileSourceUpdate {
 	fsu.mutation.SetBucket(s)
@@ -156,25 +180,33 @@ func (fsu *FileSourceUpdate) SetNillableBucket(s *string) *FileSourceUpdate {
 	return fsu
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (fsu *FileSourceUpdate) ClearBucket() *FileSourceUpdate {
-	fsu.mutation.ClearBucket()
+// SetBucketURL sets the "bucket_url" field.
+func (fsu *FileSourceUpdate) SetBucketURL(s string) *FileSourceUpdate {
+	fsu.mutation.SetBucketURL(s)
 	return fsu
 }
 
-// AddFileIDs adds the "files" edge to the File entity by IDs.
-func (fsu *FileSourceUpdate) AddFileIDs(ids ...int) *FileSourceUpdate {
-	fsu.mutation.AddFileIDs(ids...)
+// SetNillableBucketURL sets the "bucket_url" field if the given value is not nil.
+func (fsu *FileSourceUpdate) SetNillableBucketURL(s *string) *FileSourceUpdate {
+	if s != nil {
+		fsu.SetBucketURL(*s)
+	}
 	return fsu
 }
 
-// AddFiles adds the "files" edges to the File entity.
-func (fsu *FileSourceUpdate) AddFiles(f ...*File) *FileSourceUpdate {
+// AddIdentityIDs adds the "identities" edge to the FileIdentity entity by IDs.
+func (fsu *FileSourceUpdate) AddIdentityIDs(ids ...int) *FileSourceUpdate {
+	fsu.mutation.AddIdentityIDs(ids...)
+	return fsu
+}
+
+// AddIdentities adds the "identities" edges to the FileIdentity entity.
+func (fsu *FileSourceUpdate) AddIdentities(f ...*FileIdentity) *FileSourceUpdate {
 	ids := make([]int, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
-	return fsu.AddFileIDs(ids...)
+	return fsu.AddIdentityIDs(ids...)
 }
 
 // Mutation returns the FileSourceMutation object of the builder.
@@ -182,25 +214,25 @@ func (fsu *FileSourceUpdate) Mutation() *FileSourceMutation {
 	return fsu.mutation
 }
 
-// ClearFiles clears all "files" edges to the File entity.
-func (fsu *FileSourceUpdate) ClearFiles() *FileSourceUpdate {
-	fsu.mutation.ClearFiles()
+// ClearIdentities clears all "identities" edges to the FileIdentity entity.
+func (fsu *FileSourceUpdate) ClearIdentities() *FileSourceUpdate {
+	fsu.mutation.ClearIdentities()
 	return fsu
 }
 
-// RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (fsu *FileSourceUpdate) RemoveFileIDs(ids ...int) *FileSourceUpdate {
-	fsu.mutation.RemoveFileIDs(ids...)
+// RemoveIdentityIDs removes the "identities" edge to FileIdentity entities by IDs.
+func (fsu *FileSourceUpdate) RemoveIdentityIDs(ids ...int) *FileSourceUpdate {
+	fsu.mutation.RemoveIdentityIDs(ids...)
 	return fsu
 }
 
-// RemoveFiles removes "files" edges to File entities.
-func (fsu *FileSourceUpdate) RemoveFiles(f ...*File) *FileSourceUpdate {
+// RemoveIdentities removes "identities" edges to FileIdentity entities.
+func (fsu *FileSourceUpdate) RemoveIdentities(f ...*FileIdentity) *FileSourceUpdate {
 	ids := make([]int, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
-	return fsu.RemoveFileIDs(ids...)
+	return fsu.RemoveIdentityIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -237,6 +269,16 @@ func (fsu *FileSourceUpdate) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
+	if v, ok := fsu.mutation.Endpoint(); ok {
+		if err := filesource.EndpointValidator(v); err != nil {
+			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
+		}
+	}
+	if v, ok := fsu.mutation.StsEndpoint(); ok {
+		if err := filesource.StsEndpointValidator(v); err != nil {
+			return &ValidationError{Name: "sts_endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.sts_endpoint": %w`, err)}
+		}
+	}
 	if v, ok := fsu.mutation.Region(); ok {
 		if err := filesource.RegionValidator(v); err != nil {
 			return &ValidationError{Name: "region", err: fmt.Errorf(`ent: validator failed for field "FileSource.region": %w`, err)}
@@ -245,6 +287,11 @@ func (fsu *FileSourceUpdate) check() error {
 	if v, ok := fsu.mutation.Bucket(); ok {
 		if err := filesource.BucketValidator(v); err != nil {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
+		}
+	}
+	if v, ok := fsu.mutation.BucketURL(); ok {
+		if err := filesource.BucketURLValidator(v); err != nil {
+			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
 	}
 	return nil
@@ -289,43 +336,43 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fsu.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 	}
-	if fsu.mutation.EndpointCleared() {
-		_spec.ClearField(filesource.FieldEndpoint, field.TypeString)
+	if value, ok := fsu.mutation.EndpointImmutable(); ok {
+		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
+	}
+	if value, ok := fsu.mutation.StsEndpoint(); ok {
+		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
 	}
 	if value, ok := fsu.mutation.Region(); ok {
 		_spec.SetField(filesource.FieldRegion, field.TypeString, value)
 	}
-	if fsu.mutation.RegionCleared() {
-		_spec.ClearField(filesource.FieldRegion, field.TypeString)
-	}
 	if value, ok := fsu.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 	}
-	if fsu.mutation.BucketCleared() {
-		_spec.ClearField(filesource.FieldBucket, field.TypeString)
+	if value, ok := fsu.mutation.BucketURL(); ok {
+		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
 	}
-	if fsu.mutation.FilesCleared() {
+	if fsu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fsu.mutation.RemovedFilesIDs(); len(nodes) > 0 && !fsu.mutation.FilesCleared() {
+	if nodes := fsu.mutation.RemovedIdentitiesIDs(); len(nodes) > 0 && !fsu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -333,15 +380,15 @@ func (fsu *FileSourceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fsu.mutation.FilesIDs(); len(nodes) > 0 {
+	if nodes := fsu.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -422,6 +469,14 @@ func (fsuo *FileSourceUpdateOne) SetKind(f filesource.Kind) *FileSourceUpdateOne
 	return fsuo
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableKind(f *filesource.Kind) *FileSourceUpdateOne {
+	if f != nil {
+		fsuo.SetKind(*f)
+	}
+	return fsuo
+}
+
 // SetComments sets the "comments" field.
 func (fsuo *FileSourceUpdateOne) SetComments(s string) *FileSourceUpdateOne {
 	fsuo.mutation.SetComments(s)
@@ -456,9 +511,31 @@ func (fsuo *FileSourceUpdateOne) SetNillableEndpoint(s *string) *FileSourceUpdat
 	return fsuo
 }
 
-// ClearEndpoint clears the value of the "endpoint" field.
-func (fsuo *FileSourceUpdateOne) ClearEndpoint() *FileSourceUpdateOne {
-	fsuo.mutation.ClearEndpoint()
+// SetEndpointImmutable sets the "endpoint_immutable" field.
+func (fsuo *FileSourceUpdateOne) SetEndpointImmutable(b bool) *FileSourceUpdateOne {
+	fsuo.mutation.SetEndpointImmutable(b)
+	return fsuo
+}
+
+// SetNillableEndpointImmutable sets the "endpoint_immutable" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableEndpointImmutable(b *bool) *FileSourceUpdateOne {
+	if b != nil {
+		fsuo.SetEndpointImmutable(*b)
+	}
+	return fsuo
+}
+
+// SetStsEndpoint sets the "sts_endpoint" field.
+func (fsuo *FileSourceUpdateOne) SetStsEndpoint(s string) *FileSourceUpdateOne {
+	fsuo.mutation.SetStsEndpoint(s)
+	return fsuo
+}
+
+// SetNillableStsEndpoint sets the "sts_endpoint" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableStsEndpoint(s *string) *FileSourceUpdateOne {
+	if s != nil {
+		fsuo.SetStsEndpoint(*s)
+	}
 	return fsuo
 }
 
@@ -476,12 +553,6 @@ func (fsuo *FileSourceUpdateOne) SetNillableRegion(s *string) *FileSourceUpdateO
 	return fsuo
 }
 
-// ClearRegion clears the value of the "region" field.
-func (fsuo *FileSourceUpdateOne) ClearRegion() *FileSourceUpdateOne {
-	fsuo.mutation.ClearRegion()
-	return fsuo
-}
-
 // SetBucket sets the "bucket" field.
 func (fsuo *FileSourceUpdateOne) SetBucket(s string) *FileSourceUpdateOne {
 	fsuo.mutation.SetBucket(s)
@@ -496,25 +567,33 @@ func (fsuo *FileSourceUpdateOne) SetNillableBucket(s *string) *FileSourceUpdateO
 	return fsuo
 }
 
-// ClearBucket clears the value of the "bucket" field.
-func (fsuo *FileSourceUpdateOne) ClearBucket() *FileSourceUpdateOne {
-	fsuo.mutation.ClearBucket()
+// SetBucketURL sets the "bucket_url" field.
+func (fsuo *FileSourceUpdateOne) SetBucketURL(s string) *FileSourceUpdateOne {
+	fsuo.mutation.SetBucketURL(s)
 	return fsuo
 }
 
-// AddFileIDs adds the "files" edge to the File entity by IDs.
-func (fsuo *FileSourceUpdateOne) AddFileIDs(ids ...int) *FileSourceUpdateOne {
-	fsuo.mutation.AddFileIDs(ids...)
+// SetNillableBucketURL sets the "bucket_url" field if the given value is not nil.
+func (fsuo *FileSourceUpdateOne) SetNillableBucketURL(s *string) *FileSourceUpdateOne {
+	if s != nil {
+		fsuo.SetBucketURL(*s)
+	}
 	return fsuo
 }
 
-// AddFiles adds the "files" edges to the File entity.
-func (fsuo *FileSourceUpdateOne) AddFiles(f ...*File) *FileSourceUpdateOne {
+// AddIdentityIDs adds the "identities" edge to the FileIdentity entity by IDs.
+func (fsuo *FileSourceUpdateOne) AddIdentityIDs(ids ...int) *FileSourceUpdateOne {
+	fsuo.mutation.AddIdentityIDs(ids...)
+	return fsuo
+}
+
+// AddIdentities adds the "identities" edges to the FileIdentity entity.
+func (fsuo *FileSourceUpdateOne) AddIdentities(f ...*FileIdentity) *FileSourceUpdateOne {
 	ids := make([]int, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
-	return fsuo.AddFileIDs(ids...)
+	return fsuo.AddIdentityIDs(ids...)
 }
 
 // Mutation returns the FileSourceMutation object of the builder.
@@ -522,25 +601,25 @@ func (fsuo *FileSourceUpdateOne) Mutation() *FileSourceMutation {
 	return fsuo.mutation
 }
 
-// ClearFiles clears all "files" edges to the File entity.
-func (fsuo *FileSourceUpdateOne) ClearFiles() *FileSourceUpdateOne {
-	fsuo.mutation.ClearFiles()
+// ClearIdentities clears all "identities" edges to the FileIdentity entity.
+func (fsuo *FileSourceUpdateOne) ClearIdentities() *FileSourceUpdateOne {
+	fsuo.mutation.ClearIdentities()
 	return fsuo
 }
 
-// RemoveFileIDs removes the "files" edge to File entities by IDs.
-func (fsuo *FileSourceUpdateOne) RemoveFileIDs(ids ...int) *FileSourceUpdateOne {
-	fsuo.mutation.RemoveFileIDs(ids...)
+// RemoveIdentityIDs removes the "identities" edge to FileIdentity entities by IDs.
+func (fsuo *FileSourceUpdateOne) RemoveIdentityIDs(ids ...int) *FileSourceUpdateOne {
+	fsuo.mutation.RemoveIdentityIDs(ids...)
 	return fsuo
 }
 
-// RemoveFiles removes "files" edges to File entities.
-func (fsuo *FileSourceUpdateOne) RemoveFiles(f ...*File) *FileSourceUpdateOne {
+// RemoveIdentities removes "identities" edges to FileIdentity entities.
+func (fsuo *FileSourceUpdateOne) RemoveIdentities(f ...*FileIdentity) *FileSourceUpdateOne {
 	ids := make([]int, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
-	return fsuo.RemoveFileIDs(ids...)
+	return fsuo.RemoveIdentityIDs(ids...)
 }
 
 // Where appends a list predicates to the FileSourceUpdate builder.
@@ -590,6 +669,16 @@ func (fsuo *FileSourceUpdateOne) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "FileSource.kind": %w`, err)}
 		}
 	}
+	if v, ok := fsuo.mutation.Endpoint(); ok {
+		if err := filesource.EndpointValidator(v); err != nil {
+			return &ValidationError{Name: "endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.endpoint": %w`, err)}
+		}
+	}
+	if v, ok := fsuo.mutation.StsEndpoint(); ok {
+		if err := filesource.StsEndpointValidator(v); err != nil {
+			return &ValidationError{Name: "sts_endpoint", err: fmt.Errorf(`ent: validator failed for field "FileSource.sts_endpoint": %w`, err)}
+		}
+	}
 	if v, ok := fsuo.mutation.Region(); ok {
 		if err := filesource.RegionValidator(v); err != nil {
 			return &ValidationError{Name: "region", err: fmt.Errorf(`ent: validator failed for field "FileSource.region": %w`, err)}
@@ -598,6 +687,11 @@ func (fsuo *FileSourceUpdateOne) check() error {
 	if v, ok := fsuo.mutation.Bucket(); ok {
 		if err := filesource.BucketValidator(v); err != nil {
 			return &ValidationError{Name: "bucket", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket": %w`, err)}
+		}
+	}
+	if v, ok := fsuo.mutation.BucketURL(); ok {
+		if err := filesource.BucketURLValidator(v); err != nil {
+			return &ValidationError{Name: "bucket_url", err: fmt.Errorf(`ent: validator failed for field "FileSource.bucket_url": %w`, err)}
 		}
 	}
 	return nil
@@ -659,43 +753,43 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 	if value, ok := fsuo.mutation.Endpoint(); ok {
 		_spec.SetField(filesource.FieldEndpoint, field.TypeString, value)
 	}
-	if fsuo.mutation.EndpointCleared() {
-		_spec.ClearField(filesource.FieldEndpoint, field.TypeString)
+	if value, ok := fsuo.mutation.EndpointImmutable(); ok {
+		_spec.SetField(filesource.FieldEndpointImmutable, field.TypeBool, value)
+	}
+	if value, ok := fsuo.mutation.StsEndpoint(); ok {
+		_spec.SetField(filesource.FieldStsEndpoint, field.TypeString, value)
 	}
 	if value, ok := fsuo.mutation.Region(); ok {
 		_spec.SetField(filesource.FieldRegion, field.TypeString, value)
 	}
-	if fsuo.mutation.RegionCleared() {
-		_spec.ClearField(filesource.FieldRegion, field.TypeString)
-	}
 	if value, ok := fsuo.mutation.Bucket(); ok {
 		_spec.SetField(filesource.FieldBucket, field.TypeString, value)
 	}
-	if fsuo.mutation.BucketCleared() {
-		_spec.ClearField(filesource.FieldBucket, field.TypeString)
+	if value, ok := fsuo.mutation.BucketURL(); ok {
+		_spec.SetField(filesource.FieldBucketURL, field.TypeString, value)
 	}
-	if fsuo.mutation.FilesCleared() {
+	if fsuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fsuo.mutation.RemovedFilesIDs(); len(nodes) > 0 && !fsuo.mutation.FilesCleared() {
+	if nodes := fsuo.mutation.RemovedIdentitiesIDs(); len(nodes) > 0 && !fsuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -703,15 +797,15 @@ func (fsuo *FileSourceUpdateOne) sqlSave(ctx context.Context) (_node *FileSource
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fsuo.mutation.FilesIDs(); len(nodes) > 0 {
+	if nodes := fsuo.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   filesource.FilesTable,
-			Columns: []string{filesource.FilesColumn},
+			Table:   filesource.IdentitiesTable,
+			Columns: []string{filesource.IdentitiesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

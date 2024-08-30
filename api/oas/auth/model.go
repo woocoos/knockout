@@ -2,6 +2,10 @@
 
 package auth
 
+import (
+	"fmt"
+)
+
 // Captcha captcha info
 type Captcha struct {
 	CaptchaId    string `json:"captchaId,omitempty"`
@@ -30,8 +34,31 @@ type ForgetPwdBeginResponse struct {
 }
 
 type ForgetPwdVerify struct {
-	Kind  string `json:"kind,omitempty"`
-	Value string `json:"value,omitempty"`
+	Kind  ForgetPwdVerifyKind `binding:"omitempty,oneof=email mfa" json:"kind,omitempty"`
+	Value string              `json:"value,omitempty"`
+}
+
+// ForgetPwdVerifyKind defines the type for the ForgetPwdVerify.kind enum field.
+type ForgetPwdVerifyKind string
+
+// ForgetPwdVerifyKind values.
+const (
+	ForgetPwdVerifyKindEmail ForgetPwdVerifyKind = "email"
+	ForgetPwdVerifyKindMfa   ForgetPwdVerifyKind = "mfa"
+)
+
+func (k ForgetPwdVerifyKind) String() string {
+	return string(k)
+}
+
+// ForgetPwdVerifyKindValidator is a validator for the ForgetPwdVerifyKind field enum values.
+func ForgetPwdVerifyKindValidator(k ForgetPwdVerifyKind) error {
+	switch k {
+	case ForgetPwdVerifyKindEmail, ForgetPwdVerifyKindMfa:
+		return nil
+	default:
+		return fmt.Errorf("ForgetPwdVerifyKind does not allow the value '%s'", k)
+	}
 }
 
 // LoginResponse when complete login accessToken,expiresAt,refreshToken will be filled
@@ -56,8 +83,8 @@ type Mfa struct {
 }
 
 type User struct {
-	AvatarFileId int       `json:"avatarFileId,omitempty"`
-	DisplayName  string    `json:"displayName,omitempty"`
-	Domains      []*Domain `json:"domains,omitempty"`
-	ID           int       `json:"id,omitempty"`
+	Avatar      string    `json:"avatar,omitempty"`
+	DisplayName string    `json:"displayName,omitempty"`
+	Domains     []*Domain `json:"domains,omitempty"`
+	ID          int       `json:"id,omitempty"`
 }

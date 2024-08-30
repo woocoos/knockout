@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (amq *AppMenuQuery) QueryAction() *AppActionQuery {
 // First returns the first AppMenu entity from the query.
 // Returns a *NotFoundError when no AppMenu was found.
 func (amq *AppMenuQuery) First(ctx context.Context) (*AppMenu, error) {
-	nodes, err := amq.Limit(1).All(setContextOp(ctx, amq.ctx, "First"))
+	nodes, err := amq.Limit(1).All(setContextOp(ctx, amq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (amq *AppMenuQuery) FirstX(ctx context.Context) *AppMenu {
 // Returns a *NotFoundError when no AppMenu ID was found.
 func (amq *AppMenuQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, "FirstID")); err != nil {
+	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (amq *AppMenuQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppMenu entity is found.
 // Returns a *NotFoundError when no AppMenu entities are found.
 func (amq *AppMenuQuery) Only(ctx context.Context) (*AppMenu, error) {
-	nodes, err := amq.Limit(2).All(setContextOp(ctx, amq.ctx, "Only"))
+	nodes, err := amq.Limit(2).All(setContextOp(ctx, amq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (amq *AppMenuQuery) OnlyX(ctx context.Context) *AppMenu {
 // Returns a *NotFoundError when no entities are found.
 func (amq *AppMenuQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, "OnlyID")); err != nil {
+	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (amq *AppMenuQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppMenus.
 func (amq *AppMenuQuery) All(ctx context.Context) ([]*AppMenu, error) {
-	ctx = setContextOp(ctx, amq.ctx, "All")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryAll)
 	if err := amq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (amq *AppMenuQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if amq.ctx.Unique == nil && amq.path != nil {
 		amq.Unique(true)
 	}
-	ctx = setContextOp(ctx, amq.ctx, "IDs")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryIDs)
 	if err = amq.Select(appmenu.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (amq *AppMenuQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (amq *AppMenuQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, amq.ctx, "Count")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryCount)
 	if err := amq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (amq *AppMenuQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (amq *AppMenuQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, amq.ctx, "Exist")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryExist)
 	switch _, err := amq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -619,7 +620,7 @@ func (amgb *AppMenuGroupBy) Aggregate(fns ...AggregateFunc) *AppMenuGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (amgb *AppMenuGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, amgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, amgb.build.ctx, ent.OpQueryGroupBy)
 	if err := amgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -667,7 +668,7 @@ func (ams *AppMenuSelect) Aggregate(fns ...AggregateFunc) *AppMenuSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ams *AppMenuSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ams.ctx, "Select")
+	ctx = setContextOp(ctx, ams.ctx, ent.OpQuerySelect)
 	if err := ams.prepareQuery(ctx); err != nil {
 		return err
 	}

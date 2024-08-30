@@ -32,21 +32,27 @@ const (
 	FieldComments = "comments"
 	// FieldEndpoint holds the string denoting the endpoint field in the database.
 	FieldEndpoint = "endpoint"
+	// FieldEndpointImmutable holds the string denoting the endpoint_immutable field in the database.
+	FieldEndpointImmutable = "endpoint_immutable"
+	// FieldStsEndpoint holds the string denoting the sts_endpoint field in the database.
+	FieldStsEndpoint = "sts_endpoint"
 	// FieldRegion holds the string denoting the region field in the database.
 	FieldRegion = "region"
 	// FieldBucket holds the string denoting the bucket field in the database.
 	FieldBucket = "bucket"
-	// EdgeFiles holds the string denoting the files edge name in mutations.
-	EdgeFiles = "files"
+	// FieldBucketURL holds the string denoting the bucket_url field in the database.
+	FieldBucketURL = "bucket_url"
+	// EdgeIdentities holds the string denoting the identities edge name in mutations.
+	EdgeIdentities = "identities"
 	// Table holds the table name of the filesource in the database.
 	Table = "file_source"
-	// FilesTable is the table that holds the files relation/edge.
-	FilesTable = "file"
-	// FilesInverseTable is the table name for the File entity.
-	// It exists in this package in order to avoid circular dependency with the "file" package.
-	FilesInverseTable = "file"
-	// FilesColumn is the table column denoting the files relation/edge.
-	FilesColumn = "source_id"
+	// IdentitiesTable is the table that holds the identities relation/edge.
+	IdentitiesTable = "file_identity"
+	// IdentitiesInverseTable is the table name for the FileIdentity entity.
+	// It exists in this package in order to avoid circular dependency with the "fileidentity" package.
+	IdentitiesInverseTable = "file_identity"
+	// IdentitiesColumn is the table column denoting the identities relation/edge.
+	IdentitiesColumn = "file_source_id"
 )
 
 // Columns holds all SQL columns for filesource fields.
@@ -59,8 +65,11 @@ var Columns = []string{
 	FieldKind,
 	FieldComments,
 	FieldEndpoint,
+	FieldEndpointImmutable,
+	FieldStsEndpoint,
 	FieldRegion,
 	FieldBucket,
+	FieldBucketURL,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -82,10 +91,18 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// EndpointValidator is a validator for the "endpoint" field. It is called by the builders before save.
+	EndpointValidator func(string) error
+	// DefaultEndpointImmutable holds the default value on creation for the "endpoint_immutable" field.
+	DefaultEndpointImmutable bool
+	// StsEndpointValidator is a validator for the "sts_endpoint" field. It is called by the builders before save.
+	StsEndpointValidator func(string) error
 	// RegionValidator is a validator for the "region" field. It is called by the builders before save.
 	RegionValidator func(string) error
 	// BucketValidator is a validator for the "bucket" field. It is called by the builders before save.
 	BucketValidator func(string) error
+	// BucketURLValidator is a validator for the "bucket_url" field. It is called by the builders before save.
+	BucketURLValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -93,8 +110,9 @@ type Kind string
 
 // Kind values.
 const (
-	KindLocal  Kind = "local"
-	KindAlioss Kind = "alioss"
+	KindMinio  Kind = "minio"
+	KindAliOSS Kind = "aliOSS"
+	KindAwsS3  Kind = "awsS3"
 )
 
 func (k Kind) String() string {
@@ -104,7 +122,7 @@ func (k Kind) String() string {
 // KindValidator is a validator for the "kind" field enum values. It is called by the builders before save.
 func KindValidator(k Kind) error {
 	switch k {
-	case KindLocal, KindAlioss:
+	case KindMinio, KindAliOSS, KindAwsS3:
 		return nil
 	default:
 		return fmt.Errorf("filesource: invalid enum value for kind field: %q", k)
@@ -154,6 +172,16 @@ func ByEndpoint(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndpoint, opts...).ToFunc()
 }
 
+// ByEndpointImmutable orders the results by the endpoint_immutable field.
+func ByEndpointImmutable(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEndpointImmutable, opts...).ToFunc()
+}
+
+// ByStsEndpoint orders the results by the sts_endpoint field.
+func ByStsEndpoint(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStsEndpoint, opts...).ToFunc()
+}
+
 // ByRegion orders the results by the region field.
 func ByRegion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRegion, opts...).ToFunc()
@@ -164,24 +192,29 @@ func ByBucket(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBucket, opts...).ToFunc()
 }
 
-// ByFilesCount orders the results by files count.
-func ByFilesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBucketURL orders the results by the bucket_url field.
+func ByBucketURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBucketURL, opts...).ToFunc()
+}
+
+// ByIdentitiesCount orders the results by identities count.
+func ByIdentitiesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newFilesStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newIdentitiesStep(), opts...)
 	}
 }
 
-// ByFiles orders the results by files terms.
-func ByFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByIdentities orders the results by identities terms.
+func ByIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newIdentitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newFilesStep() *sqlgraph.Step {
+func newIdentitiesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(FilesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, FilesTable, FilesColumn),
+		sqlgraph.To(IdentitiesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, IdentitiesTable, IdentitiesColumn),
 	)
 }
 

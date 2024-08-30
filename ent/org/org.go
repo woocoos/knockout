@@ -70,6 +70,8 @@ const (
 	EdgePolicies = "policies"
 	// EdgeApps holds the string denoting the apps edge name in mutations.
 	EdgeApps = "apps"
+	// EdgeFileIdentities holds the string denoting the file_identities edge name in mutations.
+	EdgeFileIdentities = "file_identities"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
@@ -122,6 +124,13 @@ const (
 	// AppsInverseTable is the table name for the App entity.
 	// It exists in this package in order to avoid circular dependency with the "app" package.
 	AppsInverseTable = "app"
+	// FileIdentitiesTable is the table that holds the file_identities relation/edge.
+	FileIdentitiesTable = "file_identity"
+	// FileIdentitiesInverseTable is the table name for the FileIdentity entity.
+	// It exists in this package in order to avoid circular dependency with the "fileidentity" package.
+	FileIdentitiesInverseTable = "file_identity"
+	// FileIdentitiesColumn is the table column denoting the file_identities relation/edge.
+	FileIdentitiesColumn = "tenant_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -434,6 +443,20 @@ func ByApps(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByFileIdentitiesCount orders the results by file_identities count.
+func ByFileIdentitiesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFileIdentitiesStep(), opts...)
+	}
+}
+
+// ByFileIdentities orders the results by file_identities terms.
+func ByFileIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFileIdentitiesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -515,6 +538,13 @@ func newAppsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, false, AppsTable, AppsPrimaryKey...),
+	)
+}
+func newFileIdentitiesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FileIdentitiesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FileIdentitiesTable, FileIdentitiesColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

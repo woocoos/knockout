@@ -179,16 +179,16 @@ func (uc *UserCreate) SetNillableComments(s *string) *UserCreate {
 	return uc
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (uc *UserCreate) SetAvatarFileID(i int) *UserCreate {
-	uc.mutation.SetAvatarFileID(i)
+// SetAvatar sets the "avatar" field.
+func (uc *UserCreate) SetAvatar(s string) *UserCreate {
+	uc.mutation.SetAvatar(s)
 	return uc
 }
 
-// SetNillableAvatarFileID sets the "avatar_file_id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableAvatarFileID(i *int) *UserCreate {
-	if i != nil {
-		uc.SetAvatarFileID(*i)
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (uc *UserCreate) SetNillableAvatar(s *string) *UserCreate {
+	if s != nil {
+		uc.SetAvatar(*s)
 	}
 	return uc
 }
@@ -438,6 +438,11 @@ func (uc *UserCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
 		}
 	}
+	if v, ok := uc.mutation.Avatar(); ok {
+		if err := user.AvatarValidator(v); err != nil {
+			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -527,9 +532,9 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldComments, field.TypeString, value)
 		_node.Comments = value
 	}
-	if value, ok := uc.mutation.AvatarFileID(); ok {
-		_spec.SetField(user.FieldAvatarFileID, field.TypeInt, value)
-		_node.AvatarFileID = value
+	if value, ok := uc.mutation.Avatar(); ok {
+		_spec.SetField(user.FieldAvatar, field.TypeString, value)
+		_node.Avatar = value
 	}
 	if nodes := uc.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -907,27 +912,21 @@ func (u *UserUpsert) ClearComments() *UserUpsert {
 	return u
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (u *UserUpsert) SetAvatarFileID(v int) *UserUpsert {
-	u.Set(user.FieldAvatarFileID, v)
+// SetAvatar sets the "avatar" field.
+func (u *UserUpsert) SetAvatar(v string) *UserUpsert {
+	u.Set(user.FieldAvatar, v)
 	return u
 }
 
-// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
-func (u *UserUpsert) UpdateAvatarFileID() *UserUpsert {
-	u.SetExcluded(user.FieldAvatarFileID)
+// UpdateAvatar sets the "avatar" field to the value that was provided on create.
+func (u *UserUpsert) UpdateAvatar() *UserUpsert {
+	u.SetExcluded(user.FieldAvatar)
 	return u
 }
 
-// AddAvatarFileID adds v to the "avatar_file_id" field.
-func (u *UserUpsert) AddAvatarFileID(v int) *UserUpsert {
-	u.Add(user.FieldAvatarFileID, v)
-	return u
-}
-
-// ClearAvatarFileID clears the value of the "avatar_file_id" field.
-func (u *UserUpsert) ClearAvatarFileID() *UserUpsert {
-	u.SetNull(user.FieldAvatarFileID)
+// ClearAvatar clears the value of the "avatar" field.
+func (u *UserUpsert) ClearAvatar() *UserUpsert {
+	u.SetNull(user.FieldAvatar)
 	return u
 }
 
@@ -1209,31 +1208,24 @@ func (u *UserUpsertOne) ClearComments() *UserUpsertOne {
 	})
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (u *UserUpsertOne) SetAvatarFileID(v int) *UserUpsertOne {
+// SetAvatar sets the "avatar" field.
+func (u *UserUpsertOne) SetAvatar(v string) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
-		s.SetAvatarFileID(v)
+		s.SetAvatar(v)
 	})
 }
 
-// AddAvatarFileID adds v to the "avatar_file_id" field.
-func (u *UserUpsertOne) AddAvatarFileID(v int) *UserUpsertOne {
+// UpdateAvatar sets the "avatar" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateAvatar() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
-		s.AddAvatarFileID(v)
+		s.UpdateAvatar()
 	})
 }
 
-// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateAvatarFileID() *UserUpsertOne {
+// ClearAvatar clears the value of the "avatar" field.
+func (u *UserUpsertOne) ClearAvatar() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
-		s.UpdateAvatarFileID()
-	})
-}
-
-// ClearAvatarFileID clears the value of the "avatar_file_id" field.
-func (u *UserUpsertOne) ClearAvatarFileID() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearAvatarFileID()
+		s.ClearAvatar()
 	})
 }
 
@@ -1681,31 +1673,24 @@ func (u *UserUpsertBulk) ClearComments() *UserUpsertBulk {
 	})
 }
 
-// SetAvatarFileID sets the "avatar_file_id" field.
-func (u *UserUpsertBulk) SetAvatarFileID(v int) *UserUpsertBulk {
+// SetAvatar sets the "avatar" field.
+func (u *UserUpsertBulk) SetAvatar(v string) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
-		s.SetAvatarFileID(v)
+		s.SetAvatar(v)
 	})
 }
 
-// AddAvatarFileID adds v to the "avatar_file_id" field.
-func (u *UserUpsertBulk) AddAvatarFileID(v int) *UserUpsertBulk {
+// UpdateAvatar sets the "avatar" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateAvatar() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
-		s.AddAvatarFileID(v)
+		s.UpdateAvatar()
 	})
 }
 
-// UpdateAvatarFileID sets the "avatar_file_id" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateAvatarFileID() *UserUpsertBulk {
+// ClearAvatar clears the value of the "avatar" field.
+func (u *UserUpsertBulk) ClearAvatar() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
-		s.UpdateAvatarFileID()
-	})
-}
-
-// ClearAvatarFileID clears the value of the "avatar_file_id" field.
-func (u *UserUpsertBulk) ClearAvatarFileID() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearAvatarFileID()
+		s.ClearAvatar()
 	})
 }
 

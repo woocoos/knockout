@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -366,6 +367,21 @@ func (oc *OrgCreate) AddApps(a ...*App) *OrgCreate {
 	return oc.AddAppIDs(ids...)
 }
 
+// AddFileIdentityIDs adds the "file_identities" edge to the FileIdentity entity by IDs.
+func (oc *OrgCreate) AddFileIdentityIDs(ids ...int) *OrgCreate {
+	oc.mutation.AddFileIdentityIDs(ids...)
+	return oc
+}
+
+// AddFileIdentities adds the "file_identities" edges to the FileIdentity entity.
+func (oc *OrgCreate) AddFileIdentities(f ...*FileIdentity) *OrgCreate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return oc.AddFileIdentityIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (oc *OrgCreate) AddOrgUserIDs(ids ...int) *OrgCreate {
 	oc.mutation.AddOrgUserIDs(ids...)
@@ -514,7 +530,7 @@ func (oc *OrgCreate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if _, ok := oc.mutation.ParentID(); !ok {
+	if len(oc.mutation.ParentIDs()) == 0 {
 		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "Org.parent"`)}
 	}
 	return nil
@@ -746,6 +762,22 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.FileIdentitiesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.FileIdentitiesTable,
+			Columns: []string{org.FileIdentitiesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := oc.mutation.OrgUserIDs(); len(nodes) > 0 {

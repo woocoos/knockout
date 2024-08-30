@@ -4,7 +4,7 @@ import (
 	"context"
 	"entgo.io/ent/dialect/sql"
 	"github.com/alicebob/miniredis/v2"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/conf"

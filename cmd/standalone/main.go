@@ -9,7 +9,6 @@ import (
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/api/oas/auth"
-	"github.com/woocoos/knockout/api/oas/file"
 	"go.opentelemetry.io/contrib/propagators/b3"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,7 +19,6 @@ import (
 var (
 	rmcConfig  = flag.String("r", "../adminx", "rms etc dir")
 	authConfig = flag.String("a", "../auth", "auth etc dir")
-	fileConfig = flag.String("f", "../files", "files etc dir")
 )
 
 // Notice: reuse the app instance to initial servers,
@@ -46,14 +44,7 @@ func main() {
 	app.AppConfiguration().Configuration = authcnf.Configuration
 	authSrv := auth.NewServer(app)
 
-	filecnf := &conf.AppConfiguration{
-		Configuration: conf.New(conf.WithBaseDir(*fileConfig), conf.WithGlobal(false)).Load(),
-	}
-	koapp.BuildCacheComponents(filecnf)
-	app.AppConfiguration().Configuration = filecnf.Configuration
-	fileSrv := file.NewServer(app)
-
-	app.RegisterServer(rmsSvr, authSrv, fileSrv, clientx.ChangeSet)
+	app.RegisterServer(rmsSvr, authSrv, clientx.ChangeSet)
 
 	if err := app.Run(); err != nil {
 		panic(err)

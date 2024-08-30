@@ -7,6 +7,14 @@ auth:
     tokenTTL: 1h
     refreshTokenTTL: 1h
 
+authz:
+  autoSave: true
+  watcherOptions:
+    options:
+      addr: "127.0.0.1:6379"
+      channel: "/casbin"
+  model: "../test/testdata/etc/rbac_model.conf"
+
 cache:
   redis:
     driverName: redis
@@ -34,7 +42,7 @@ web:
           middlewares:
             - errorHandle:
             - jwt:
-                tokenStoreKey: redis
+#                tokenStoreKey: redis
                 exclude:
                   - "/spm/auth"
                 <<: *jwt
@@ -59,10 +67,6 @@ kosdk:
 #      url: CanonicalUri
 #    nonceLen: 12
   plugin:
+    fs:
     msg:
       baseUrl: "http://127.0.0.1:10072"
-
-files:
-  local:
-    baseDir: "tmp"
-    endpoint: "http://localhost:9000"

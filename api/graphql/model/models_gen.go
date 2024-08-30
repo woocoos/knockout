@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"entgo.io/contrib/entgql"
+	"github.com/woocoos/knockout/ent"
 )
 
 // Ordering options for AppRolePolicy connections
@@ -35,6 +36,25 @@ type EnableDirectoryInput struct {
 	Name   string `json:"name"`
 }
 
+// 内部调用fileIdentity
+type FileIdentityForApp struct {
+	ID              int    `json:"id"`
+	TenantID        int    `json:"tenantID"`
+	AccessKeyID     string `json:"accessKeyID"`
+	AccessKeySecret string `json:"accessKeySecret"`
+	// 角色的资源名称(ARN)，用于STS
+	RoleArn string `json:"roleArn"`
+	// 指定返回的STS令牌的权限的策略
+	Policy *string `json:"policy,omitempty"`
+	// STS令牌的有效期，默认3600s
+	DurationSeconds *int `json:"durationSeconds,omitempty"`
+	// 租户默认的凭证
+	IsDefault bool            `json:"isDefault"`
+	Source    *ent.FileSource `json:"source"`
+}
+
+func (FileIdentityForApp) IsNode() {}
+
 type GrantInput struct {
 	Principal string `json:"principal"`
 	OrgScope  int    `json:"orgScope"`
@@ -44,6 +64,24 @@ type GrantInput struct {
 type Mfa struct {
 	Secret  string `json:"secret"`
 	Account string `json:"account"`
+}
+
+// 业务调用的fileIdentity
+type OrgFileIdentity struct {
+	ID        int        `json:"id"`
+	CreatedBy int        `json:"createdBy"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedBy *int       `json:"updatedBy,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	// 组织ID
+	TenantID int `json:"tenantID"`
+	// 文件来源ID
+	FileSourceID int `json:"fileSourceID"`
+	// 租户默认的凭证
+	IsDefault bool `json:"isDefault"`
+	// 备注
+	Comments *string         `json:"comments,omitempty"`
+	Source   *ent.FileSource `json:"source"`
 }
 
 // Ordering options for OrgRoleUser connections

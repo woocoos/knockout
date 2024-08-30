@@ -2,6 +2,11 @@
 
 package auth
 
+import (
+	"fmt"
+	"time"
+)
+
 // BindMfaRequest is the request object for (POST /mfa/bind)
 type BindMfaRequest struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
@@ -54,6 +59,35 @@ type ForgetPwdVerifyMfaRequest struct {
 	StateToken string `binding:"required" json:"stateToken"`
 }
 
+// GetPreSignUrlRequest is the request object for (POST /oss/presignurl)
+type GetPreSignUrlRequest struct {
+	// Bucket do not use the default identity,must be used with endpoint
+	Bucket string `json:"bucket,omitempty"`
+	// Endpoint do not use the default identity,must be used with bucket
+	Endpoint string `json:"endpoint,omitempty"`
+	// URL the url of file
+	URL string `binding:"required" json:"url"`
+}
+
+// GetPreSignUrlResponse successful operation
+type GetPreSignUrlResponse struct {
+	URL string `json:"url,omitempty"`
+}
+
+// GetSTSRequest is the request object for (POST /oss/sts)
+type GetSTSRequest struct {
+	Bucket   string `json:"bucket,omitempty"`
+	Endpoint string `json:"endpoint,omitempty"`
+}
+
+// GetSTSResponse successful operation
+type GetSTSResponse struct {
+	AccessKeyID     string    `json:"access_key_id,omitempty"`
+	Expiration      time.Time `json:"expiration,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	SecretAccessKey string    `json:"secret_access_key,omitempty"`
+	SessionToken    string    `json:"session_token,omitempty"`
+}
+
 // GetSpmAuthRequest is the request object for (POST /spm/auth)
 type GetSpmAuthRequest struct {
 	// Spm the spm key to get auth data
@@ -86,9 +120,31 @@ type ResetPasswordRequest struct {
 
 // TokenRequest is the request object for (POST /token)
 type TokenRequest struct {
-	ClientID     string `binding:"required" form:"client_id"`
-	ClientSecret string `binding:"required" form:"client_secret"`
-	GrantType    string `binding:"required" form:"grant_type"`
+	ClientID     string    `binding:"required" form:"client_id"`
+	ClientSecret string    `binding:"required" form:"client_secret"`
+	GrantType    GrantType `binding:"required,oneof=client_credentials" form:"grant_type"`
+}
+
+// GrantType defines the type for the grant_type.grant_type enum field.
+type GrantType string
+
+// GrantType values.
+const (
+	GrantTypeClientCredentials GrantType = "client_credentials"
+)
+
+func (gt GrantType) String() string {
+	return string(gt)
+}
+
+// GrantTypeValidator is a validator for the GrantType field enum values.
+func GrantTypeValidator(gt GrantType) error {
+	switch gt {
+	case GrantTypeClientCredentials:
+		return nil
+	default:
+		return fmt.Errorf("GrantType does not allow the value '%s'", gt)
+	}
 }
 
 // TokenResponse successful operation

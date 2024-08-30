@@ -86,6 +86,14 @@ func (apu *AppPolicyUpdate) SetName(s string) *AppPolicyUpdate {
 	return apu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (apu *AppPolicyUpdate) SetNillableName(s *string) *AppPolicyUpdate {
+	if s != nil {
+		apu.SetName(*s)
+	}
+	return apu
+}
+
 // SetComments sets the "comments" field.
 func (apu *AppPolicyUpdate) SetComments(s string) *AppPolicyUpdate {
 	apu.mutation.SetComments(s)
@@ -508,6 +516,14 @@ func (apuo *AppPolicyUpdateOne) ClearUpdatedAt() *AppPolicyUpdateOne {
 // SetName sets the "name" field.
 func (apuo *AppPolicyUpdateOne) SetName(s string) *AppPolicyUpdateOne {
 	apuo.mutation.SetName(s)
+	return apuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (apuo *AppPolicyUpdateOne) SetNillableName(s *string) *AppPolicyUpdateOne {
+	if s != nil {
+		apuo.SetName(*s)
+	}
 	return apuo
 }
 

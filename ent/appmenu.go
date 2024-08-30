@@ -67,12 +67,10 @@ type AppMenuEdges struct {
 // AppOrErr returns the App value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppMenuEdges) AppOrErr() (*App, error) {
-	if e.loadedTypes[0] {
-		if e.App == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: app.Label}
-		}
+	if e.App != nil {
 		return e.App, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: app.Label}
 	}
 	return nil, &NotLoadedError{edge: "app"}
 }
@@ -80,12 +78,10 @@ func (e AppMenuEdges) AppOrErr() (*App, error) {
 // ActionOrErr returns the Action value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppMenuEdges) ActionOrErr() (*AppAction, error) {
-	if e.loadedTypes[1] {
-		if e.Action == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: appaction.Label}
-		}
+	if e.Action != nil {
 		return e.Action, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: appaction.Label}
 	}
 	return nil, &NotLoadedError{edge: "action"}
 }

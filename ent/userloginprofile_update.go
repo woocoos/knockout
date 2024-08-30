@@ -142,6 +142,14 @@ func (ulpu *UserLoginProfileUpdate) SetSetKind(uk userloginprofile.SetKind) *Use
 	return ulpu
 }
 
+// SetNillableSetKind sets the "set_kind" field if the given value is not nil.
+func (ulpu *UserLoginProfileUpdate) SetNillableSetKind(uk *userloginprofile.SetKind) *UserLoginProfileUpdate {
+	if uk != nil {
+		ulpu.SetSetKind(*uk)
+	}
+	return ulpu
+}
+
 // SetPasswordReset sets the "password_reset" field.
 func (ulpu *UserLoginProfileUpdate) SetPasswordReset(b bool) *UserLoginProfileUpdate {
 	ulpu.mutation.SetPasswordReset(b)
@@ -165,6 +173,14 @@ func (ulpu *UserLoginProfileUpdate) ClearPasswordReset() *UserLoginProfileUpdate
 // SetVerifyDevice sets the "verify_device" field.
 func (ulpu *UserLoginProfileUpdate) SetVerifyDevice(b bool) *UserLoginProfileUpdate {
 	ulpu.mutation.SetVerifyDevice(b)
+	return ulpu
+}
+
+// SetNillableVerifyDevice sets the "verify_device" field if the given value is not nil.
+func (ulpu *UserLoginProfileUpdate) SetNillableVerifyDevice(b *bool) *UserLoginProfileUpdate {
+	if b != nil {
+		ulpu.SetVerifyDevice(*b)
+	}
 	return ulpu
 }
 
@@ -488,6 +504,14 @@ func (ulpuo *UserLoginProfileUpdateOne) SetSetKind(uk userloginprofile.SetKind) 
 	return ulpuo
 }
 
+// SetNillableSetKind sets the "set_kind" field if the given value is not nil.
+func (ulpuo *UserLoginProfileUpdateOne) SetNillableSetKind(uk *userloginprofile.SetKind) *UserLoginProfileUpdateOne {
+	if uk != nil {
+		ulpuo.SetSetKind(*uk)
+	}
+	return ulpuo
+}
+
 // SetPasswordReset sets the "password_reset" field.
 func (ulpuo *UserLoginProfileUpdateOne) SetPasswordReset(b bool) *UserLoginProfileUpdateOne {
 	ulpuo.mutation.SetPasswordReset(b)
@@ -511,6 +535,14 @@ func (ulpuo *UserLoginProfileUpdateOne) ClearPasswordReset() *UserLoginProfileUp
 // SetVerifyDevice sets the "verify_device" field.
 func (ulpuo *UserLoginProfileUpdateOne) SetVerifyDevice(b bool) *UserLoginProfileUpdateOne {
 	ulpuo.mutation.SetVerifyDevice(b)
+	return ulpuo
+}
+
+// SetNillableVerifyDevice sets the "verify_device" field if the given value is not nil.
+func (ulpuo *UserLoginProfileUpdateOne) SetNillableVerifyDevice(b *bool) *UserLoginProfileUpdateOne {
+	if b != nil {
+		ulpuo.SetVerifyDevice(*b)
+	}
 	return ulpuo
 }
 

@@ -191,16 +191,16 @@ func (oruc *OrgRoleUserCreate) check() error {
 	if _, ok := oruc.mutation.OrgID(); !ok {
 		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "OrgRoleUser.org_id"`)}
 	}
-	if _, ok := oruc.mutation.OrgRoleID(); !ok {
+	if len(oruc.mutation.OrgRoleIDs()) == 0 {
 		return &ValidationError{Name: "org_role", err: errors.New(`ent: missing required edge "OrgRoleUser.org_role"`)}
 	}
-	if _, ok := oruc.mutation.OrgUserID(); !ok {
+	if len(oruc.mutation.OrgUserIDs()) == 0 {
 		return &ValidationError{Name: "org_user", err: errors.New(`ent: missing required edge "OrgRoleUser.org_user"`)}
 	}
-	if _, ok := oruc.mutation.UserID(); !ok {
+	if len(oruc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "OrgRoleUser.user"`)}
 	}
-	if _, ok := oruc.mutation.OrgID(); !ok {
+	if len(oruc.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgRoleUser.org"`)}
 	}
 	return nil

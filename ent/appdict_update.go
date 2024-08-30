@@ -82,6 +82,14 @@ func (adu *AppDictUpdate) SetName(s string) *AppDictUpdate {
 	return adu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (adu *AppDictUpdate) SetNillableName(s *string) *AppDictUpdate {
+	if s != nil {
+		adu.SetName(*s)
+	}
+	return adu
+}
+
 // SetComments sets the "comments" field.
 func (adu *AppDictUpdate) SetComments(s string) *AppDictUpdate {
 	adu.mutation.SetComments(s)
@@ -331,6 +339,14 @@ func (aduo *AppDictUpdateOne) ClearUpdatedAt() *AppDictUpdateOne {
 // SetName sets the "name" field.
 func (aduo *AppDictUpdateOne) SetName(s string) *AppDictUpdateOne {
 	aduo.mutation.SetName(s)
+	return aduo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (aduo *AppDictUpdateOne) SetNillableName(s *string) *AppDictUpdateOne {
+	if s != nil {
+		aduo.SetName(*s)
+	}
 	return aduo
 }
 

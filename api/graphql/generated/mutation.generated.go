@@ -86,6 +86,10 @@ type MutationResolver interface {
 	CreateFileSource(ctx context.Context, input ent.CreateFileSourceInput) (*ent.FileSource, error)
 	UpdateFileSource(ctx context.Context, fsID int, input ent.UpdateFileSourceInput) (*ent.FileSource, error)
 	DeleteFileSource(ctx context.Context, fsID int) (bool, error)
+	CreateFileIdentity(ctx context.Context, input ent.CreateFileIdentityInput) (*ent.FileIdentity, error)
+	UpdateFileIdentity(ctx context.Context, id int, input ent.UpdateFileIdentityInput) (*ent.FileIdentity, error)
+	DeleteFileIdentity(ctx context.Context, id int) (bool, error)
+	SetDefaultFileIdentity(ctx context.Context, identityID int, orgID int) (bool, error)
 	CreateOauthClient(ctx context.Context, input ent.CreateOauthClientInput) (*ent.OauthClient, error)
 	EnableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
 	DisableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
@@ -430,6 +434,21 @@ func (ec *executionContext) field_Mutation_createApp_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateFileIdentityInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateFileIdentityInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createFileSource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -670,6 +689,21 @@ func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, r
 		}
 	}
 	args["appID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -1231,6 +1265,30 @@ func (ec *executionContext) field_Mutation_sendMFAToUserByEmail_args(ctx context
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_setDefaultFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["identityID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identityID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["identityID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgID"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateAppAction_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1415,6 +1473,30 @@ func (ec *executionContext) field_Mutation_updateApp_args(ctx context.Context, r
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg1, err = ec.unmarshalNUpdateAppInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 ent.UpdateFileIdentityInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateFileIdentityInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1685,6 +1767,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -1791,6 +1875,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -1897,6 +1983,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2003,6 +2091,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_policies(ctx, field)
 			case "apps":
 				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2199,8 +2289,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2299,8 +2389,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2509,8 +2599,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2987,8 +3077,8 @@ func (ec *executionContext) fieldContext_Mutation_createApp(ctx context.Context,
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logoFileID":
-				return ec.fieldContext_App_logoFileID(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -3089,8 +3179,8 @@ func (ec *executionContext) fieldContext_Mutation_updateApp(ctx context.Context,
 				return ec.fieldContext_App_tokenValidity(ctx, field)
 			case "refreshTokenValidity":
 				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
-			case "logoFileID":
-				return ec.fieldContext_App_logoFileID(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
 			case "comments":
 				return ec.fieldContext_App_comments(ctx, field)
 			case "status":
@@ -6121,8 +6211,8 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_status(ctx, field)
 			case "comments":
 				return ec.fieldContext_User_comments(ctx, field)
-			case "avatarFileID":
-				return ec.fieldContext_User_avatarFileID(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -6210,12 +6300,16 @@ func (ec *executionContext) fieldContext_Mutation_createFileSource(ctx context.C
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "files":
-				return ec.fieldContext_FileSource_files(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
 		},
@@ -6289,12 +6383,16 @@ func (ec *executionContext) fieldContext_Mutation_updateFileSource(ctx context.C
 				return ec.fieldContext_FileSource_comments(ctx, field)
 			case "endpoint":
 				return ec.fieldContext_FileSource_endpoint(ctx, field)
+			case "endpointImmutable":
+				return ec.fieldContext_FileSource_endpointImmutable(ctx, field)
+			case "stsEndpoint":
+				return ec.fieldContext_FileSource_stsEndpoint(ctx, field)
 			case "region":
 				return ec.fieldContext_FileSource_region(ctx, field)
 			case "bucket":
 				return ec.fieldContext_FileSource_bucket(ctx, field)
-			case "files":
-				return ec.fieldContext_FileSource_files(ctx, field)
+			case "bucketURL":
+				return ec.fieldContext_FileSource_bucketURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type FileSource", field.Name)
 		},
@@ -6362,6 +6460,290 @@ func (ec *executionContext) fieldContext_Mutation_deleteFileSource(ctx context.C
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteFileSource_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createFileIdentity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createFileIdentity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateFileIdentity(rctx, fc.Args["input"].(ent.CreateFileIdentityInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.FileIdentity)
+	fc.Result = res
+	return ec.marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createFileIdentity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_FileIdentity_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_FileIdentity_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_FileIdentity_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_FileIdentity_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "fileSourceID":
+				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
+			case "isDefault":
+				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
+			case "comments":
+				return ec.fieldContext_FileIdentity_comments(ctx, field)
+			case "source":
+				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createFileIdentity_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateFileIdentity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateFileIdentity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateFileIdentity(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateFileIdentityInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.FileIdentity)
+	fc.Result = res
+	return ec.marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateFileIdentity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_FileIdentity_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_FileIdentity_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_FileIdentity_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_FileIdentity_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "fileSourceID":
+				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
+			case "isDefault":
+				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
+			case "comments":
+				return ec.fieldContext_FileIdentity_comments(ctx, field)
+			case "source":
+				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateFileIdentity_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteFileIdentity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteFileIdentity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteFileIdentity(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteFileIdentity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteFileIdentity_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_setDefaultFileIdentity(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_setDefaultFileIdentity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetDefaultFileIdentity(rctx, fc.Args["identityID"].(int), fc.Args["orgID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_setDefaultFileIdentity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setDefaultFileIdentity_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7163,6 +7545,34 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteFileSource":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteFileSource(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createFileIdentity":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createFileIdentity(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateFileIdentity":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateFileIdentity(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteFileIdentity":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteFileIdentity(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "setDefaultFileIdentity":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setDefaultFileIdentity(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

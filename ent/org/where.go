@@ -1220,6 +1220,29 @@ func HasAppsWith(preds ...predicate.App) predicate.Org {
 	})
 }
 
+// HasFileIdentities applies the HasEdge predicate on the "file_identities" edge.
+func HasFileIdentities() predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FileIdentitiesTable, FileIdentitiesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFileIdentitiesWith applies the HasEdge predicate on the "file_identities" edge with a given conditions (other predicates).
+func HasFileIdentitiesWith(preds ...predicate.FileIdentity) predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := newFileIdentitiesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasOrgUser applies the HasEdge predicate on the "org_user" edge.
 func HasOrgUser() predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {

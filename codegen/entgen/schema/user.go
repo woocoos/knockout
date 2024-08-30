@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/fieldx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/intercept"
@@ -84,8 +85,8 @@ func (User) Fields() []ent.Field {
 			),
 		field.String("comments").Optional().Comment("备注").Annotations(
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
-		field.Int("avatar_file_id").Optional().Comment("头像,存储路规则：/{appcode}/{tid}/xxx").Annotations(
-			entgql.Skip(entgql.SkipWhereInput), entproto.Skip(), entgql.Type("ID")),
+		fieldx.File("avatar").MaxLen(255).Optional().Comment("头像地址").Annotations(
+			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 	}
 }
 

@@ -83,9 +83,25 @@ func (oru *OrgRoleUpdate) SetKind(o orgrole.Kind) *OrgRoleUpdate {
 	return oru
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (oru *OrgRoleUpdate) SetNillableKind(o *orgrole.Kind) *OrgRoleUpdate {
+	if o != nil {
+		oru.SetKind(*o)
+	}
+	return oru
+}
+
 // SetName sets the "name" field.
 func (oru *OrgRoleUpdate) SetName(s string) *OrgRoleUpdate {
 	oru.mutation.SetName(s)
+	return oru
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (oru *OrgRoleUpdate) SetNillableName(s *string) *OrgRoleUpdate {
+	if s != nil {
+		oru.SetName(*s)
+	}
 	return oru
 }
 
@@ -473,9 +489,25 @@ func (oruo *OrgRoleUpdateOne) SetKind(o orgrole.Kind) *OrgRoleUpdateOne {
 	return oruo
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (oruo *OrgRoleUpdateOne) SetNillableKind(o *orgrole.Kind) *OrgRoleUpdateOne {
+	if o != nil {
+		oruo.SetKind(*o)
+	}
+	return oruo
+}
+
 // SetName sets the "name" field.
 func (oruo *OrgRoleUpdateOne) SetName(s string) *OrgRoleUpdateOne {
 	oruo.mutation.SetName(s)
+	return oruo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (oruo *OrgRoleUpdateOne) SetNillableName(s *string) *OrgRoleUpdateOne {
+	if s != nil {
+		oruo.SetName(*s)
+	}
 	return oruo
 }
 

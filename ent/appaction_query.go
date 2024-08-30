@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -112,7 +113,7 @@ func (aaq *AppActionQuery) QueryMenus() *AppMenuQuery {
 // First returns the first AppAction entity from the query.
 // Returns a *NotFoundError when no AppAction was found.
 func (aaq *AppActionQuery) First(ctx context.Context) (*AppAction, error) {
-	nodes, err := aaq.Limit(1).All(setContextOp(ctx, aaq.ctx, "First"))
+	nodes, err := aaq.Limit(1).All(setContextOp(ctx, aaq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (aaq *AppActionQuery) FirstX(ctx context.Context) *AppAction {
 // Returns a *NotFoundError when no AppAction ID was found.
 func (aaq *AppActionQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aaq.Limit(1).IDs(setContextOp(ctx, aaq.ctx, "FirstID")); err != nil {
+	if ids, err = aaq.Limit(1).IDs(setContextOp(ctx, aaq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -158,7 +159,7 @@ func (aaq *AppActionQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppAction entity is found.
 // Returns a *NotFoundError when no AppAction entities are found.
 func (aaq *AppActionQuery) Only(ctx context.Context) (*AppAction, error) {
-	nodes, err := aaq.Limit(2).All(setContextOp(ctx, aaq.ctx, "Only"))
+	nodes, err := aaq.Limit(2).All(setContextOp(ctx, aaq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (aaq *AppActionQuery) OnlyX(ctx context.Context) *AppAction {
 // Returns a *NotFoundError when no entities are found.
 func (aaq *AppActionQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aaq.Limit(2).IDs(setContextOp(ctx, aaq.ctx, "OnlyID")); err != nil {
+	if ids, err = aaq.Limit(2).IDs(setContextOp(ctx, aaq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -211,7 +212,7 @@ func (aaq *AppActionQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppActions.
 func (aaq *AppActionQuery) All(ctx context.Context) ([]*AppAction, error) {
-	ctx = setContextOp(ctx, aaq.ctx, "All")
+	ctx = setContextOp(ctx, aaq.ctx, ent.OpQueryAll)
 	if err := aaq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -233,7 +234,7 @@ func (aaq *AppActionQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if aaq.ctx.Unique == nil && aaq.path != nil {
 		aaq.Unique(true)
 	}
-	ctx = setContextOp(ctx, aaq.ctx, "IDs")
+	ctx = setContextOp(ctx, aaq.ctx, ent.OpQueryIDs)
 	if err = aaq.Select(appaction.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -251,7 +252,7 @@ func (aaq *AppActionQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (aaq *AppActionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, aaq.ctx, "Count")
+	ctx = setContextOp(ctx, aaq.ctx, ent.OpQueryCount)
 	if err := aaq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -269,7 +270,7 @@ func (aaq *AppActionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (aaq *AppActionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, aaq.ctx, "Exist")
+	ctx = setContextOp(ctx, aaq.ctx, ent.OpQueryExist)
 	switch _, err := aaq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -641,7 +642,7 @@ func (aagb *AppActionGroupBy) Aggregate(fns ...AggregateFunc) *AppActionGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (aagb *AppActionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aagb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, aagb.build.ctx, ent.OpQueryGroupBy)
 	if err := aagb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -689,7 +690,7 @@ func (aas *AppActionSelect) Aggregate(fns ...AggregateFunc) *AppActionSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (aas *AppActionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aas.ctx, "Select")
+	ctx = setContextOp(ctx, aas.ctx, ent.OpQuerySelect)
 	if err := aas.prepareQuery(ctx); err != nil {
 		return err
 	}

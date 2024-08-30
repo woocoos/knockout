@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (oaq *OrgAppQuery) QueryOrg() *OrgQuery {
 // First returns the first OrgApp entity from the query.
 // Returns a *NotFoundError when no OrgApp was found.
 func (oaq *OrgAppQuery) First(ctx context.Context) (*OrgApp, error) {
-	nodes, err := oaq.Limit(1).All(setContextOp(ctx, oaq.ctx, "First"))
+	nodes, err := oaq.Limit(1).All(setContextOp(ctx, oaq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (oaq *OrgAppQuery) FirstX(ctx context.Context) *OrgApp {
 // Returns a *NotFoundError when no OrgApp ID was found.
 func (oaq *OrgAppQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oaq.Limit(1).IDs(setContextOp(ctx, oaq.ctx, "FirstID")); err != nil {
+	if ids, err = oaq.Limit(1).IDs(setContextOp(ctx, oaq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (oaq *OrgAppQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OrgApp entity is found.
 // Returns a *NotFoundError when no OrgApp entities are found.
 func (oaq *OrgAppQuery) Only(ctx context.Context) (*OrgApp, error) {
-	nodes, err := oaq.Limit(2).All(setContextOp(ctx, oaq.ctx, "Only"))
+	nodes, err := oaq.Limit(2).All(setContextOp(ctx, oaq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (oaq *OrgAppQuery) OnlyX(ctx context.Context) *OrgApp {
 // Returns a *NotFoundError when no entities are found.
 func (oaq *OrgAppQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oaq.Limit(2).IDs(setContextOp(ctx, oaq.ctx, "OnlyID")); err != nil {
+	if ids, err = oaq.Limit(2).IDs(setContextOp(ctx, oaq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (oaq *OrgAppQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OrgApps.
 func (oaq *OrgAppQuery) All(ctx context.Context) ([]*OrgApp, error) {
-	ctx = setContextOp(ctx, oaq.ctx, "All")
+	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryAll)
 	if err := oaq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (oaq *OrgAppQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if oaq.ctx.Unique == nil && oaq.path != nil {
 		oaq.Unique(true)
 	}
-	ctx = setContextOp(ctx, oaq.ctx, "IDs")
+	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryIDs)
 	if err = oaq.Select(orgapp.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (oaq *OrgAppQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (oaq *OrgAppQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oaq.ctx, "Count")
+	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryCount)
 	if err := oaq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (oaq *OrgAppQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (oaq *OrgAppQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oaq.ctx, "Exist")
+	ctx = setContextOp(ctx, oaq.ctx, ent.OpQueryExist)
 	switch _, err := oaq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -616,7 +617,7 @@ func (oagb *OrgAppGroupBy) Aggregate(fns ...AggregateFunc) *OrgAppGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (oagb *OrgAppGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oagb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, oagb.build.ctx, ent.OpQueryGroupBy)
 	if err := oagb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -664,7 +665,7 @@ func (oas *OrgAppSelect) Aggregate(fns ...AggregateFunc) *OrgAppSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (oas *OrgAppSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oas.ctx, "Select")
+	ctx = setContextOp(ctx, oas.ctx, ent.OpQuerySelect)
 	if err := oas.prepareQuery(ctx); err != nil {
 		return err
 	}

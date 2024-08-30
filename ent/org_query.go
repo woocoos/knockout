@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -37,6 +39,7 @@ type OrgQuery struct {
 	withPermissions         *PermissionQuery
 	withPolicies            *OrgPolicyQuery
 	withApps                *AppQuery
+	withFileIdentities      *FileIdentityQuery
 	withOrgUser             *OrgUserQuery
 	withOrgApp              *OrgAppQuery
 	modifiers               []func(*sql.Selector)
@@ -47,6 +50,7 @@ type OrgQuery struct {
 	withNamedPermissions    map[string]*PermissionQuery
 	withNamedPolicies       map[string]*OrgPolicyQuery
 	withNamedApps           map[string]*AppQuery
+	withNamedFileIdentities map[string]*FileIdentityQuery
 	withNamedOrgUser        map[string]*OrgUserQuery
 	withNamedOrgApp         map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
@@ -261,6 +265,28 @@ func (oq *OrgQuery) QueryApps() *AppQuery {
 	return query
 }
 
+// QueryFileIdentities chains the current query on the "file_identities" edge.
+func (oq *OrgQuery) QueryFileIdentities() *FileIdentityQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, selector),
+			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.FileIdentitiesTable, org.FileIdentitiesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryOrgUser chains the current query on the "org_user" edge.
 func (oq *OrgQuery) QueryOrgUser() *OrgUserQuery {
 	query := (&OrgUserClient{config: oq.config}).Query()
@@ -308,7 +334,7 @@ func (oq *OrgQuery) QueryOrgApp() *OrgAppQuery {
 // First returns the first Org entity from the query.
 // Returns a *NotFoundError when no Org was found.
 func (oq *OrgQuery) First(ctx context.Context) (*Org, error) {
-	nodes, err := oq.Limit(1).All(setContextOp(ctx, oq.ctx, "First"))
+	nodes, err := oq.Limit(1).All(setContextOp(ctx, oq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -331,7 +357,7 @@ func (oq *OrgQuery) FirstX(ctx context.Context) *Org {
 // Returns a *NotFoundError when no Org ID was found.
 func (oq *OrgQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oq.Limit(1).IDs(setContextOp(ctx, oq.ctx, "FirstID")); err != nil {
+	if ids, err = oq.Limit(1).IDs(setContextOp(ctx, oq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -354,7 +380,7 @@ func (oq *OrgQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one Org entity is found.
 // Returns a *NotFoundError when no Org entities are found.
 func (oq *OrgQuery) Only(ctx context.Context) (*Org, error) {
-	nodes, err := oq.Limit(2).All(setContextOp(ctx, oq.ctx, "Only"))
+	nodes, err := oq.Limit(2).All(setContextOp(ctx, oq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -382,7 +408,7 @@ func (oq *OrgQuery) OnlyX(ctx context.Context) *Org {
 // Returns a *NotFoundError when no entities are found.
 func (oq *OrgQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = oq.Limit(2).IDs(setContextOp(ctx, oq.ctx, "OnlyID")); err != nil {
+	if ids, err = oq.Limit(2).IDs(setContextOp(ctx, oq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -407,7 +433,7 @@ func (oq *OrgQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of Orgs.
 func (oq *OrgQuery) All(ctx context.Context) ([]*Org, error) {
-	ctx = setContextOp(ctx, oq.ctx, "All")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryAll)
 	if err := oq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -429,7 +455,7 @@ func (oq *OrgQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if oq.ctx.Unique == nil && oq.path != nil {
 		oq.Unique(true)
 	}
-	ctx = setContextOp(ctx, oq.ctx, "IDs")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryIDs)
 	if err = oq.Select(org.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -447,7 +473,7 @@ func (oq *OrgQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (oq *OrgQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, oq.ctx, "Count")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryCount)
 	if err := oq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -465,7 +491,7 @@ func (oq *OrgQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (oq *OrgQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, oq.ctx, "Exist")
+	ctx = setContextOp(ctx, oq.ctx, ent.OpQueryExist)
 	switch _, err := oq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -505,6 +531,7 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 		withPermissions:    oq.withPermissions.Clone(),
 		withPolicies:       oq.withPolicies.Clone(),
 		withApps:           oq.withApps.Clone(),
+		withFileIdentities: oq.withFileIdentities.Clone(),
 		withOrgUser:        oq.withOrgUser.Clone(),
 		withOrgApp:         oq.withOrgApp.Clone(),
 		// clone intermediate query.
@@ -598,6 +625,17 @@ func (oq *OrgQuery) WithApps(opts ...func(*AppQuery)) *OrgQuery {
 		opt(query)
 	}
 	oq.withApps = query
+	return oq
+}
+
+// WithFileIdentities tells the query-builder to eager-load the nodes that are connected to
+// the "file_identities" edge. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithFileIdentities(opts ...func(*FileIdentityQuery)) *OrgQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	oq.withFileIdentities = query
 	return oq
 }
 
@@ -701,7 +739,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 	var (
 		nodes       = []*Org{}
 		_spec       = oq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [11]bool{
 			oq.withParent != nil,
 			oq.withChildren != nil,
 			oq.withOwner != nil,
@@ -710,6 +748,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			oq.withPermissions != nil,
 			oq.withPolicies != nil,
 			oq.withApps != nil,
+			oq.withFileIdentities != nil,
 			oq.withOrgUser != nil,
 			oq.withOrgApp != nil,
 		}
@@ -789,6 +828,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			return nil, err
 		}
 	}
+	if query := oq.withFileIdentities; query != nil {
+		if err := oq.loadFileIdentities(ctx, query, nodes,
+			func(n *Org) { n.Edges.FileIdentities = []*FileIdentity{} },
+			func(n *Org, e *FileIdentity) { n.Edges.FileIdentities = append(n.Edges.FileIdentities, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := oq.withOrgUser; query != nil {
 		if err := oq.loadOrgUser(ctx, query, nodes,
 			func(n *Org) { n.Edges.OrgUser = []*OrgUser{} },
@@ -842,6 +888,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 		if err := oq.loadApps(ctx, query, nodes,
 			func(n *Org) { n.appendNamedApps(name) },
 			func(n *Org, e *App) { n.appendNamedApps(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range oq.withNamedFileIdentities {
+		if err := oq.loadFileIdentities(ctx, query, nodes,
+			func(n *Org) { n.appendNamedFileIdentities(name) },
+			func(n *Org, e *FileIdentity) { n.appendNamedFileIdentities(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1170,6 +1223,36 @@ func (oq *OrgQuery) loadApps(ctx context.Context, query *AppQuery, nodes []*Org,
 	}
 	return nil
 }
+func (oq *OrgQuery) loadFileIdentities(ctx context.Context, query *FileIdentityQuery, nodes []*Org, init func(*Org), assign func(*Org, *FileIdentity)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Org)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(fileidentity.FieldTenantID)
+	}
+	query.Where(predicate.FileIdentity(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(org.FileIdentitiesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenant_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*Org, init func(*Org), assign func(*Org, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Org)
@@ -1405,6 +1488,20 @@ func (oq *OrgQuery) WithNamedApps(name string, opts ...func(*AppQuery)) *OrgQuer
 	return oq
 }
 
+// WithNamedFileIdentities tells the query-builder to eager-load the nodes that are connected to the "file_identities"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithNamedFileIdentities(name string, opts ...func(*FileIdentityQuery)) *OrgQuery {
+	query := (&FileIdentityClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if oq.withNamedFileIdentities == nil {
+		oq.withNamedFileIdentities = make(map[string]*FileIdentityQuery)
+	}
+	oq.withNamedFileIdentities[name] = query
+	return oq
+}
+
 // WithNamedOrgUser tells the query-builder to eager-load the nodes that are connected to the "org_user"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
 func (oq *OrgQuery) WithNamedOrgUser(name string, opts ...func(*OrgUserQuery)) *OrgQuery {
@@ -1447,7 +1544,7 @@ func (ogb *OrgGroupBy) Aggregate(fns ...AggregateFunc) *OrgGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ogb *OrgGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ogb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ogb.build.ctx, ent.OpQueryGroupBy)
 	if err := ogb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -1495,7 +1592,7 @@ func (os *OrgSelect) Aggregate(fns ...AggregateFunc) *OrgSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (os *OrgSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, os.ctx, "Select")
+	ctx = setContextOp(ctx, os.ctx, ent.OpQuerySelect)
 	if err := os.prepareQuery(ctx); err != nil {
 		return err
 	}

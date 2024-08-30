@@ -19,7 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -568,10 +568,10 @@ func (a *AppQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				selectedFields = append(selectedFields, app.FieldRefreshTokenValidity)
 				fieldSeen[app.FieldRefreshTokenValidity] = struct{}{}
 			}
-		case "logoFileID":
-			if _, ok := fieldSeen[app.FieldLogoFileID]; !ok {
-				selectedFields = append(selectedFields, app.FieldLogoFileID)
-				fieldSeen[app.FieldLogoFileID] = struct{}{}
+		case "logo":
+			if _, ok := fieldSeen[app.FieldLogo]; !ok {
+				selectedFields = append(selectedFields, app.FieldLogo)
+				fieldSeen[app.FieldLogo] = struct{}{}
 			}
 		case "comments":
 			if _, ok := fieldSeen[app.FieldComments]; !ok {
@@ -1754,23 +1754,23 @@ func newAppRolePaginateArgs(rv map[string]any) *approlePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (f *FileQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileQuery, error) {
+func (fi *FileIdentityQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileIdentityQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return f, nil
+		return fi, nil
 	}
-	if err := f.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := fi.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return f, nil
+	return fi, nil
 }
 
-func (f *FileQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (fi *FileIdentityQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(file.Columns))
-		selectedFields = []string{file.FieldID}
+		fieldSeen      = make(map[string]struct{}, len(fileidentity.Columns))
+		selectedFields = []string{fileidentity.FieldID}
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
@@ -1778,70 +1778,89 @@ func (f *FileQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&FileSourceClient{config: f.config}).Query()
+				query = (&FileSourceClient{config: fi.config}).Query()
 			)
 			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, filesourceImplementors)...); err != nil {
 				return err
 			}
-			f.withSource = query
-			if _, ok := fieldSeen[file.FieldSourceID]; !ok {
-				selectedFields = append(selectedFields, file.FieldSourceID)
-				fieldSeen[file.FieldSourceID] = struct{}{}
+			fi.withSource = query
+			if _, ok := fieldSeen[fileidentity.FieldFileSourceID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)
+				fieldSeen[fileidentity.FieldFileSourceID] = struct{}{}
+			}
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: fi.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			fi.withOrg = query
+			if _, ok := fieldSeen[fileidentity.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldTenantID)
+				fieldSeen[fileidentity.FieldTenantID] = struct{}{}
 			}
 		case "createdBy":
-			if _, ok := fieldSeen[file.FieldCreatedBy]; !ok {
-				selectedFields = append(selectedFields, file.FieldCreatedBy)
-				fieldSeen[file.FieldCreatedBy] = struct{}{}
+			if _, ok := fieldSeen[fileidentity.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldCreatedBy)
+				fieldSeen[fileidentity.FieldCreatedBy] = struct{}{}
 			}
 		case "createdAt":
-			if _, ok := fieldSeen[file.FieldCreatedAt]; !ok {
-				selectedFields = append(selectedFields, file.FieldCreatedAt)
-				fieldSeen[file.FieldCreatedAt] = struct{}{}
+			if _, ok := fieldSeen[fileidentity.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldCreatedAt)
+				fieldSeen[fileidentity.FieldCreatedAt] = struct{}{}
 			}
 		case "updatedBy":
-			if _, ok := fieldSeen[file.FieldUpdatedBy]; !ok {
-				selectedFields = append(selectedFields, file.FieldUpdatedBy)
-				fieldSeen[file.FieldUpdatedBy] = struct{}{}
+			if _, ok := fieldSeen[fileidentity.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldUpdatedBy)
+				fieldSeen[fileidentity.FieldUpdatedBy] = struct{}{}
 			}
 		case "updatedAt":
-			if _, ok := fieldSeen[file.FieldUpdatedAt]; !ok {
-				selectedFields = append(selectedFields, file.FieldUpdatedAt)
-				fieldSeen[file.FieldUpdatedAt] = struct{}{}
-			}
-		case "name":
-			if _, ok := fieldSeen[file.FieldName]; !ok {
-				selectedFields = append(selectedFields, file.FieldName)
-				fieldSeen[file.FieldName] = struct{}{}
-			}
-		case "sourceID":
-			if _, ok := fieldSeen[file.FieldSourceID]; !ok {
-				selectedFields = append(selectedFields, file.FieldSourceID)
-				fieldSeen[file.FieldSourceID] = struct{}{}
+			if _, ok := fieldSeen[fileidentity.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldUpdatedAt)
+				fieldSeen[fileidentity.FieldUpdatedAt] = struct{}{}
 			}
 		case "tenantID":
-			if _, ok := fieldSeen[file.FieldTenantID]; !ok {
-				selectedFields = append(selectedFields, file.FieldTenantID)
-				fieldSeen[file.FieldTenantID] = struct{}{}
+			if _, ok := fieldSeen[fileidentity.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldTenantID)
+				fieldSeen[fileidentity.FieldTenantID] = struct{}{}
 			}
-		case "path":
-			if _, ok := fieldSeen[file.FieldPath]; !ok {
-				selectedFields = append(selectedFields, file.FieldPath)
-				fieldSeen[file.FieldPath] = struct{}{}
+		case "accessKeyID":
+			if _, ok := fieldSeen[fileidentity.FieldAccessKeyID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldAccessKeyID)
+				fieldSeen[fileidentity.FieldAccessKeyID] = struct{}{}
 			}
-		case "size":
-			if _, ok := fieldSeen[file.FieldSize]; !ok {
-				selectedFields = append(selectedFields, file.FieldSize)
-				fieldSeen[file.FieldSize] = struct{}{}
+		case "fileSourceID":
+			if _, ok := fieldSeen[fileidentity.FieldFileSourceID]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldFileSourceID)
+				fieldSeen[fileidentity.FieldFileSourceID] = struct{}{}
 			}
-		case "mineType":
-			if _, ok := fieldSeen[file.FieldMineType]; !ok {
-				selectedFields = append(selectedFields, file.FieldMineType)
-				fieldSeen[file.FieldMineType] = struct{}{}
+		case "roleArn":
+			if _, ok := fieldSeen[fileidentity.FieldRoleArn]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldRoleArn)
+				fieldSeen[fileidentity.FieldRoleArn] = struct{}{}
 			}
-		case "md5":
-			if _, ok := fieldSeen[file.FieldMd5]; !ok {
-				selectedFields = append(selectedFields, file.FieldMd5)
-				fieldSeen[file.FieldMd5] = struct{}{}
+		case "policy":
+			if _, ok := fieldSeen[fileidentity.FieldPolicy]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldPolicy)
+				fieldSeen[fileidentity.FieldPolicy] = struct{}{}
+			}
+		case "durationSeconds":
+			if _, ok := fieldSeen[fileidentity.FieldDurationSeconds]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldDurationSeconds)
+				fieldSeen[fileidentity.FieldDurationSeconds] = struct{}{}
+			}
+		case "isDefault":
+			if _, ok := fieldSeen[fileidentity.FieldIsDefault]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldIsDefault)
+				fieldSeen[fileidentity.FieldIsDefault] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[fileidentity.FieldComments]; !ok {
+				selectedFields = append(selectedFields, fileidentity.FieldComments)
+				fieldSeen[fileidentity.FieldComments] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1850,19 +1869,19 @@ func (f *FileQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 		}
 	}
 	if !unknownSeen {
-		f.Select(selectedFields...)
+		fi.Select(selectedFields...)
 	}
 	return nil
 }
 
-type filePaginateArgs struct {
+type fileidentityPaginateArgs struct {
 	first, last   *int
 	after, before *Cursor
-	opts          []FilePaginateOption
+	opts          []FileIdentityPaginateOption
 }
 
-func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
-	args := &filePaginateArgs{}
+func newFileIdentityPaginateArgs(rv map[string]any) *fileidentityPaginateArgs {
+	args := &fileidentityPaginateArgs{}
 	if rv == nil {
 		return args
 	}
@@ -1883,7 +1902,7 @@ func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
 		case map[string]any:
 			var (
 				err1, err2 error
-				order      = &FileOrder{Field: &FileOrderField{}, Direction: entgql.OrderDirectionAsc}
+				order      = &FileIdentityOrder{Field: &FileIdentityOrderField{}, Direction: entgql.OrderDirectionAsc}
 			)
 			if d, ok := v[directionField]; ok {
 				err1 = order.Direction.UnmarshalGQL(d)
@@ -1892,16 +1911,16 @@ func newFilePaginateArgs(rv map[string]any) *filePaginateArgs {
 				err2 = order.Field.UnmarshalGQL(f)
 			}
 			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithFileOrder(order))
+				args.opts = append(args.opts, WithFileIdentityOrder(order))
 			}
-		case *FileOrder:
+		case *FileIdentityOrder:
 			if v != nil {
-				args.opts = append(args.opts, WithFileOrder(v))
+				args.opts = append(args.opts, WithFileIdentityOrder(v))
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*FileWhereInput); ok {
-		args.opts = append(args.opts, WithFileFilter(v.Filter))
+	if v, ok := rv[whereField].(*FileIdentityWhereInput); ok {
+		args.opts = append(args.opts, WithFileIdentityFilter(v.Filter))
 	}
 	return args
 }
@@ -1927,90 +1946,6 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "files":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FileClient{config: fs.config}).Query()
-			)
-			args := newFilePaginateArgs(fieldArgs(ctx, new(FileWhereInput), path...))
-			if err := validateFirstLast(args.first, args.last); err != nil {
-				return fmt.Errorf("validate first and last in path %q: %w", path, err)
-			}
-			pager, err := newFilePager(args.opts, args.last != nil)
-			if err != nil {
-				return fmt.Errorf("create new pager in path %q: %w", path, err)
-			}
-			if query, err = pager.applyFilter(query); err != nil {
-				return err
-			}
-			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
-			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
-				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
-				if hasPagination || ignoredEdges {
-					query := query.Clone()
-					fs.loadTotal = append(fs.loadTotal, func(ctx context.Context, nodes []*FileSource) error {
-						ids := make([]driver.Value, len(nodes))
-						for i := range nodes {
-							ids[i] = nodes[i].ID
-						}
-						var v []struct {
-							NodeID int `sql:"source_id"`
-							Count  int `sql:"count"`
-						}
-						query.Where(func(s *sql.Selector) {
-							s.Where(sql.InValues(s.C(filesource.FilesColumn), ids...))
-						})
-						if err := query.GroupBy(filesource.FilesColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
-							return err
-						}
-						m := make(map[int]int, len(v))
-						for i := range v {
-							m[v[i].NodeID] = v[i].Count
-						}
-						for i := range nodes {
-							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				} else {
-					fs.loadTotal = append(fs.loadTotal, func(_ context.Context, nodes []*FileSource) error {
-						for i := range nodes {
-							n := len(nodes[i].Edges.Files)
-							if nodes[i].Edges.totalCount[0] == nil {
-								nodes[i].Edges.totalCount[0] = make(map[string]int)
-							}
-							nodes[i].Edges.totalCount[0][alias] = n
-						}
-						return nil
-					})
-				}
-			}
-			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
-				continue
-			}
-			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
-				return err
-			}
-			path = append(path, edgesField, nodeField)
-			if field := collectedField(ctx, path...); field != nil {
-				if err := query.collectField(ctx, opCtx, *field, path, mayAddCondition(satisfies, fileImplementors)...); err != nil {
-					return err
-				}
-			}
-			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				modify := limitRows(ctx, filesource.FilesColumn, limit, args.first, args.last, pager.orderExpr(query))
-				query.modifiers = append(query.modifiers, modify)
-			} else {
-				query = pager.applyOrder(query)
-			}
-			fs.WithNamedFiles(alias, func(wq *FileQuery) {
-				*wq = *query
-			})
 		case "createdBy":
 			if _, ok := fieldSeen[filesource.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldCreatedBy)
@@ -2046,6 +1981,16 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 				selectedFields = append(selectedFields, filesource.FieldEndpoint)
 				fieldSeen[filesource.FieldEndpoint] = struct{}{}
 			}
+		case "endpointImmutable":
+			if _, ok := fieldSeen[filesource.FieldEndpointImmutable]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldEndpointImmutable)
+				fieldSeen[filesource.FieldEndpointImmutable] = struct{}{}
+			}
+		case "stsEndpoint":
+			if _, ok := fieldSeen[filesource.FieldStsEndpoint]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldStsEndpoint)
+				fieldSeen[filesource.FieldStsEndpoint] = struct{}{}
+			}
 		case "region":
 			if _, ok := fieldSeen[filesource.FieldRegion]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldRegion)
@@ -2055,6 +2000,11 @@ func (fs *FileSourceQuery) collectField(ctx context.Context, opCtx *graphql.Oper
 			if _, ok := fieldSeen[filesource.FieldBucket]; !ok {
 				selectedFields = append(selectedFields, filesource.FieldBucket)
 				fieldSeen[filesource.FieldBucket] = struct{}{}
+			}
+		case "bucketURL":
+			if _, ok := fieldSeen[filesource.FieldBucketURL]; !ok {
+				selectedFields = append(selectedFields, filesource.FieldBucketURL)
+				fieldSeen[filesource.FieldBucketURL] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2675,6 +2625,18 @@ func (o *OrgQuery) collectField(ctx context.Context, opCtx *graphql.OperationCon
 				query = pager.applyOrder(query)
 			}
 			o.WithNamedApps(alias, func(wq *AppQuery) {
+				*wq = *query
+			})
+		case "fileIdentities":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FileIdentityClient{config: o.config}).Query()
+			)
+			if err := query.collectField(ctx, opCtx, field, path, mayAddCondition(satisfies, fileidentityImplementors)...); err != nil {
+				return err
+			}
+			o.WithNamedFileIdentities(alias, func(wq *FileIdentityQuery) {
 				*wq = *query
 			})
 		case "createdBy":
@@ -3677,10 +3639,10 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, user.FieldComments)
 				fieldSeen[user.FieldComments] = struct{}{}
 			}
-		case "avatarFileID":
-			if _, ok := fieldSeen[user.FieldAvatarFileID]; !ok {
-				selectedFields = append(selectedFields, user.FieldAvatarFileID)
-				fieldSeen[user.FieldAvatarFileID] = struct{}{}
+		case "avatar":
+			if _, ok := fieldSeen[user.FieldAvatar]; !ok {
+				selectedFields = append(selectedFields, user.FieldAvatar)
+				fieldSeen[user.FieldAvatar] = struct{}{}
 			}
 		case "id":
 		case "__typename":

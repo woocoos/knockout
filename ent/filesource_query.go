@@ -8,10 +8,11 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/file"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/predicate"
 )
@@ -19,14 +20,14 @@ import (
 // FileSourceQuery is the builder for querying FileSource entities.
 type FileSourceQuery struct {
 	config
-	ctx            *QueryContext
-	order          []filesource.OrderOption
-	inters         []Interceptor
-	predicates     []predicate.FileSource
-	withFiles      *FileQuery
-	modifiers      []func(*sql.Selector)
-	loadTotal      []func(context.Context, []*FileSource) error
-	withNamedFiles map[string]*FileQuery
+	ctx                 *QueryContext
+	order               []filesource.OrderOption
+	inters              []Interceptor
+	predicates          []predicate.FileSource
+	withIdentities      *FileIdentityQuery
+	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*FileSource) error
+	withNamedIdentities map[string]*FileIdentityQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +64,9 @@ func (fsq *FileSourceQuery) Order(o ...filesource.OrderOption) *FileSourceQuery 
 	return fsq
 }
 
-// QueryFiles chains the current query on the "files" edge.
-func (fsq *FileSourceQuery) QueryFiles() *FileQuery {
-	query := (&FileClient{config: fsq.config}).Query()
+// QueryIdentities chains the current query on the "identities" edge.
+func (fsq *FileSourceQuery) QueryIdentities() *FileIdentityQuery {
+	query := (&FileIdentityClient{config: fsq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := fsq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +77,8 @@ func (fsq *FileSourceQuery) QueryFiles() *FileQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(filesource.Table, filesource.FieldID, selector),
-			sqlgraph.To(file.Table, file.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, filesource.FilesTable, filesource.FilesColumn),
+			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, filesource.IdentitiesTable, filesource.IdentitiesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fsq.driver.Dialect(), step)
 		return fromU, nil
@@ -88,7 +89,7 @@ func (fsq *FileSourceQuery) QueryFiles() *FileQuery {
 // First returns the first FileSource entity from the query.
 // Returns a *NotFoundError when no FileSource was found.
 func (fsq *FileSourceQuery) First(ctx context.Context) (*FileSource, error) {
-	nodes, err := fsq.Limit(1).All(setContextOp(ctx, fsq.ctx, "First"))
+	nodes, err := fsq.Limit(1).All(setContextOp(ctx, fsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +112,7 @@ func (fsq *FileSourceQuery) FirstX(ctx context.Context) *FileSource {
 // Returns a *NotFoundError when no FileSource ID was found.
 func (fsq *FileSourceQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fsq.Limit(1).IDs(setContextOp(ctx, fsq.ctx, "FirstID")); err != nil {
+	if ids, err = fsq.Limit(1).IDs(setContextOp(ctx, fsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -134,7 +135,7 @@ func (fsq *FileSourceQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FileSource entity is found.
 // Returns a *NotFoundError when no FileSource entities are found.
 func (fsq *FileSourceQuery) Only(ctx context.Context) (*FileSource, error) {
-	nodes, err := fsq.Limit(2).All(setContextOp(ctx, fsq.ctx, "Only"))
+	nodes, err := fsq.Limit(2).All(setContextOp(ctx, fsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +163,7 @@ func (fsq *FileSourceQuery) OnlyX(ctx context.Context) *FileSource {
 // Returns a *NotFoundError when no entities are found.
 func (fsq *FileSourceQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fsq.Limit(2).IDs(setContextOp(ctx, fsq.ctx, "OnlyID")); err != nil {
+	if ids, err = fsq.Limit(2).IDs(setContextOp(ctx, fsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -187,7 +188,7 @@ func (fsq *FileSourceQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FileSources.
 func (fsq *FileSourceQuery) All(ctx context.Context) ([]*FileSource, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "All")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryAll)
 	if err := fsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func (fsq *FileSourceQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if fsq.ctx.Unique == nil && fsq.path != nil {
 		fsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fsq.ctx, "IDs")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryIDs)
 	if err = fsq.Select(filesource.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -227,7 +228,7 @@ func (fsq *FileSourceQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fsq *FileSourceQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "Count")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryCount)
 	if err := fsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -245,7 +246,7 @@ func (fsq *FileSourceQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fsq *FileSourceQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fsq.ctx, "Exist")
+	ctx = setContextOp(ctx, fsq.ctx, ent.OpQueryExist)
 	switch _, err := fsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -272,26 +273,26 @@ func (fsq *FileSourceQuery) Clone() *FileSourceQuery {
 		return nil
 	}
 	return &FileSourceQuery{
-		config:     fsq.config,
-		ctx:        fsq.ctx.Clone(),
-		order:      append([]filesource.OrderOption{}, fsq.order...),
-		inters:     append([]Interceptor{}, fsq.inters...),
-		predicates: append([]predicate.FileSource{}, fsq.predicates...),
-		withFiles:  fsq.withFiles.Clone(),
+		config:         fsq.config,
+		ctx:            fsq.ctx.Clone(),
+		order:          append([]filesource.OrderOption{}, fsq.order...),
+		inters:         append([]Interceptor{}, fsq.inters...),
+		predicates:     append([]predicate.FileSource{}, fsq.predicates...),
+		withIdentities: fsq.withIdentities.Clone(),
 		// clone intermediate query.
 		sql:  fsq.sql.Clone(),
 		path: fsq.path,
 	}
 }
 
-// WithFiles tells the query-builder to eager-load the nodes that are connected to
-// the "files" edge. The optional arguments are used to configure the query builder of the edge.
-func (fsq *FileSourceQuery) WithFiles(opts ...func(*FileQuery)) *FileSourceQuery {
-	query := (&FileClient{config: fsq.config}).Query()
+// WithIdentities tells the query-builder to eager-load the nodes that are connected to
+// the "identities" edge. The optional arguments are used to configure the query builder of the edge.
+func (fsq *FileSourceQuery) WithIdentities(opts ...func(*FileIdentityQuery)) *FileSourceQuery {
+	query := (&FileIdentityClient{config: fsq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fsq.withFiles = query
+	fsq.withIdentities = query
 	return fsq
 }
 
@@ -374,7 +375,7 @@ func (fsq *FileSourceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*FileSource{}
 		_spec       = fsq.querySpec()
 		loadedTypes = [1]bool{
-			fsq.withFiles != nil,
+			fsq.withIdentities != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -398,17 +399,17 @@ func (fsq *FileSourceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := fsq.withFiles; query != nil {
-		if err := fsq.loadFiles(ctx, query, nodes,
-			func(n *FileSource) { n.Edges.Files = []*File{} },
-			func(n *FileSource, e *File) { n.Edges.Files = append(n.Edges.Files, e) }); err != nil {
+	if query := fsq.withIdentities; query != nil {
+		if err := fsq.loadIdentities(ctx, query, nodes,
+			func(n *FileSource) { n.Edges.Identities = []*FileIdentity{} },
+			func(n *FileSource, e *FileIdentity) { n.Edges.Identities = append(n.Edges.Identities, e) }); err != nil {
 			return nil, err
 		}
 	}
-	for name, query := range fsq.withNamedFiles {
-		if err := fsq.loadFiles(ctx, query, nodes,
-			func(n *FileSource) { n.appendNamedFiles(name) },
-			func(n *FileSource, e *File) { n.appendNamedFiles(name, e) }); err != nil {
+	for name, query := range fsq.withNamedIdentities {
+		if err := fsq.loadIdentities(ctx, query, nodes,
+			func(n *FileSource) { n.appendNamedIdentities(name) },
+			func(n *FileSource, e *FileIdentity) { n.appendNamedIdentities(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -420,7 +421,7 @@ func (fsq *FileSourceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (fsq *FileSourceQuery) loadFiles(ctx context.Context, query *FileQuery, nodes []*FileSource, init func(*FileSource), assign func(*FileSource, *File)) error {
+func (fsq *FileSourceQuery) loadIdentities(ctx context.Context, query *FileIdentityQuery, nodes []*FileSource, init func(*FileSource), assign func(*FileSource, *FileIdentity)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*FileSource)
 	for i := range nodes {
@@ -431,20 +432,20 @@ func (fsq *FileSourceQuery) loadFiles(ctx context.Context, query *FileQuery, nod
 		}
 	}
 	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(file.FieldSourceID)
+		query.ctx.AppendFieldOnce(fileidentity.FieldFileSourceID)
 	}
-	query.Where(predicate.File(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(filesource.FilesColumn), fks...))
+	query.Where(predicate.FileIdentity(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(filesource.IdentitiesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.SourceID
+		fk := n.FileSourceID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "source_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "file_source_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -535,17 +536,17 @@ func (fsq *FileSourceQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
+// WithNamedIdentities tells the query-builder to eager-load the nodes that are connected to the "identities"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (fsq *FileSourceQuery) WithNamedFiles(name string, opts ...func(*FileQuery)) *FileSourceQuery {
-	query := (&FileClient{config: fsq.config}).Query()
+func (fsq *FileSourceQuery) WithNamedIdentities(name string, opts ...func(*FileIdentityQuery)) *FileSourceQuery {
+	query := (&FileIdentityClient{config: fsq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if fsq.withNamedFiles == nil {
-		fsq.withNamedFiles = make(map[string]*FileQuery)
+	if fsq.withNamedIdentities == nil {
+		fsq.withNamedIdentities = make(map[string]*FileIdentityQuery)
 	}
-	fsq.withNamedFiles[name] = query
+	fsq.withNamedIdentities[name] = query
 	return fsq
 }
 
@@ -563,7 +564,7 @@ func (fsgb *FileSourceGroupBy) Aggregate(fns ...AggregateFunc) *FileSourceGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (fsgb *FileSourceGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -611,7 +612,7 @@ func (fss *FileSourceSelect) Aggregate(fns ...AggregateFunc) *FileSourceSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fss *FileSourceSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fss.ctx, "Select")
+	ctx = setContextOp(ctx, fss.ctx, ent.OpQuerySelect)
 	if err := fss.prepareQuery(ctx); err != nil {
 		return err
 	}

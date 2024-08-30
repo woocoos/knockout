@@ -82,6 +82,14 @@ func (uiu *UserIdentityUpdate) SetKind(u useridentity.Kind) *UserIdentityUpdate 
 	return uiu
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (uiu *UserIdentityUpdate) SetNillableKind(u *useridentity.Kind) *UserIdentityUpdate {
+	if u != nil {
+		uiu.SetKind(*u)
+	}
+	return uiu
+}
+
 // SetCode sets the "code" field.
 func (uiu *UserIdentityUpdate) SetCode(s string) *UserIdentityUpdate {
 	uiu.mutation.SetCode(s)
@@ -307,6 +315,14 @@ func (uiuo *UserIdentityUpdateOne) ClearUpdatedAt() *UserIdentityUpdateOne {
 // SetKind sets the "kind" field.
 func (uiuo *UserIdentityUpdateOne) SetKind(u useridentity.Kind) *UserIdentityUpdateOne {
 	uiuo.mutation.SetKind(u)
+	return uiuo
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (uiuo *UserIdentityUpdateOne) SetNillableKind(u *useridentity.Kind) *UserIdentityUpdateOne {
+	if u != nil {
+		uiuo.SetKind(*u)
+	}
 	return uiuo
 }
 

@@ -1,0 +1,5 @@
+spec: "./api/oas/auth/openapi.yaml"
+target: "./api/oas/auth"
+models:
+  UUID:
+    model: github.com/google/uuid.UUID

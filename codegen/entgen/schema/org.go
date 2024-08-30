@@ -88,6 +88,7 @@ func (Org) Edges() []ent.Edge {
 			Annotations(entgql.RelayConnection()),
 		edge.To("apps", App.Type).Comment("组织下应用").Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection()),
+		edge.To("file_identities", FileIdentity.Type).Comment("组织下文件凭证"),
 	}
 }
 

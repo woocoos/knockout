@@ -25,7 +25,7 @@ var (
 		{Name: "scopes", Type: field.TypeString, Nullable: true, Size: 500},
 		{Name: "token_validity", Type: field.TypeInt32, Nullable: true},
 		{Name: "refresh_token_validity", Type: field.TypeInt32, Nullable: true},
-		{Name: "logo_file_id", Type: field.TypeInt, Nullable: true},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
@@ -304,40 +304,40 @@ var (
 			},
 		},
 	}
-	// FileColumns holds the columns for the "file" table.
-	FileColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+	// FileIdentityColumns holds the columns for the "file_identity" table.
+	FileIdentityColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "tenant_id", Type: field.TypeInt},
-		{Name: "ref_count", Type: field.TypeInt, Nullable: true},
-		{Name: "path", Type: field.TypeString},
-		{Name: "size", Type: field.TypeInt, Nullable: true},
-		{Name: "mine_type", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "md5", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "access_key_id", Type: field.TypeString, Size: 255},
+		{Name: "access_key_secret", Type: field.TypeString, Size: 255},
+		{Name: "role_arn", Type: field.TypeString, Size: 255},
+		{Name: "policy", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "duration_seconds", Type: field.TypeInt, Nullable: true, Default: 3600},
+		{Name: "is_default", Type: field.TypeBool, Default: false},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "file_source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "tenant_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
-	// FileTable holds the schema information for the "file" table.
-	FileTable = &schema.Table{
-		Name:       "file",
-		Columns:    FileColumns,
-		PrimaryKey: []*schema.Column{FileColumns[0]},
+	// FileIdentityTable holds the schema information for the "file_identity" table.
+	FileIdentityTable = &schema.Table{
+		Name:       "file_identity",
+		Columns:    FileIdentityColumns,
+		PrimaryKey: []*schema.Column{FileIdentityColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "file_file_source_files",
-				Columns:    []*schema.Column{FileColumns[12]},
+				Symbol:     "file_identity_file_source_identities",
+				Columns:    []*schema.Column{FileIdentityColumns[12]},
 				RefColumns: []*schema.Column{FileSourceColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
-		},
-		Indexes: []*schema.Index{
 			{
-				Name:    "file_tenant_id_source_id_path",
-				Unique:  true,
-				Columns: []*schema.Column{FileColumns[6], FileColumns[12], FileColumns[8]},
+				Symbol:     "file_identity_org_file_identities",
+				Columns:    []*schema.Column{FileIdentityColumns[13]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -348,11 +348,14 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"local", "alioss"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"minio", "aliOSS", "awsS3"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "endpoint", Type: field.TypeString, Nullable: true},
-		{Name: "region", Type: field.TypeString, Nullable: true, Size: 100},
-		{Name: "bucket", Type: field.TypeString, Nullable: true, Size: 100},
+		{Name: "endpoint", Type: field.TypeString, Size: 255},
+		{Name: "endpoint_immutable", Type: field.TypeBool, Default: false},
+		{Name: "sts_endpoint", Type: field.TypeString, Size: 255},
+		{Name: "region", Type: field.TypeString, Size: 100},
+		{Name: "bucket", Type: field.TypeString, Size: 255},
+		{Name: "bucket_url", Type: field.TypeString, Size: 255},
 	}
 	// FileSourceTable holds the schema information for the "file_source" table.
 	FileSourceTable = &schema.Table{
@@ -363,7 +366,7 @@ var (
 			{
 				Name:    "filesource_kind_endpoint_region_bucket",
 				Unique:  true,
-				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[8], FileSourceColumns[9]},
+				Columns: []*schema.Column{FileSourceColumns[5], FileSourceColumns[7], FileSourceColumns[10], FileSourceColumns[11]},
 			},
 		},
 	}
@@ -723,7 +726,7 @@ var (
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "avatar_file_id", Type: field.TypeInt, Nullable: true},
+		{Name: "avatar", Type: field.TypeString, Nullable: true, Size: 255},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{
@@ -859,7 +862,7 @@ var (
 		AppResTable,
 		AppRoleTable,
 		AppRolePolicyTable,
-		FileTable,
+		FileIdentityTable,
 		FileSourceTable,
 		OauthClientTable,
 		OrgTable,
@@ -917,9 +920,10 @@ func init() {
 	AppRolePolicyTable.Annotation = &entsql.Annotation{
 		Table: "app_role_policy",
 	}
-	FileTable.ForeignKeys[0].RefTable = FileSourceTable
-	FileTable.Annotation = &entsql.Annotation{
-		Table: "file",
+	FileIdentityTable.ForeignKeys[0].RefTable = FileSourceTable
+	FileIdentityTable.ForeignKeys[1].RefTable = OrgTable
+	FileIdentityTable.Annotation = &entsql.Annotation{
+		Table: "file_identity",
 	}
 	FileSourceTable.Annotation = &entsql.Annotation{
 		Table: "file_source",
