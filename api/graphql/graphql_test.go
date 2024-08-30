@@ -73,7 +73,7 @@ func (s *graphqlSuite) TestApp() {
 		ap, err := s.Client.App.UpdateOneID(1).SetUpdatedBy(1).SetInput(ent.UpdateAppInput{Scopes: gds.Ptr("a")}).
 			Save(context.Background())
 		s.Require().NoError(err)
-		s.NotNil(ap.LogoFileID)
+		s.NotNil(ap.Logo)
 	})
 }
 

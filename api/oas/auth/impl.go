@@ -936,15 +936,18 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 	return nil
 }
 
-func (s *ServerImpl) GetSTS(ctx *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
-	uid, err := identity.UserIDFromContext(ctx)
+func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
+	uid, err := identity.UserIDFromContext(c)
 	if err != nil {
 		return nil, err
 	}
-	tid, err := s.tryGetTenantID(ctx)
+	tid, err := s.tryGetTenantID(c)
 	if err != nil {
 		return nil, err
 	}
+
+	ctx := identity.WithTenantID(c, tid)
+
 	var fi *ent.FileIdentity
 	if req.Bucket != "" && req.Endpoint != "" {
 		// 传参取对应identity
@@ -1016,11 +1019,12 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 }
 
 // convertUrlToFileSource 将url转换为文件源
-func (s *ServerImpl) convertUrlToFileSource(ctx *gin.Context, req *GetPreSignUrlRequest) (*ent.FileIdentity, string, error) {
-	tid, err := s.tryGetTenantID(ctx)
+func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRequest) (*ent.FileIdentity, string, error) {
+	tid, err := s.tryGetTenantID(c)
 	if err != nil {
 		return nil, "", err
 	}
+	ctx := identity.WithTenantID(c, tid)
 	var fis []*ent.FileIdentity
 	// 取出组织对应的fileidentities
 	if req.Bucket != "" && req.Endpoint != "" {

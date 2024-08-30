@@ -373,6 +373,8 @@ github.com/woocoos/knockout-go v0.0.0-20240822063016-87042cc38ffd h1:8dCEje2C561
 github.com/woocoos/knockout-go v0.0.0-20240822063016-87042cc38ffd/go.mod h1:5TbkFC9GwTSCVJmxVxbc3NOj1yTuM8RI3+OFlPGERQY=
 github.com/woocoos/knockout-go v0.0.0-20240823155336-a12d53fa6b98 h1:TAE214I4RG7zOru/NitSXVHtHnE4GD0O2CO3tQ5VN1o=
 github.com/woocoos/knockout-go v0.0.0-20240823155336-a12d53fa6b98/go.mod h1:5TbkFC9GwTSCVJmxVxbc3NOj1yTuM8RI3+OFlPGERQY=
+github.com/woocoos/knockout-go v0.0.0-20240829122518-cea89e619058 h1:V2vbqVelDVEhMAXkvaGJy1Ggwo7SDOKZA4xkXcisUNA=
+github.com/woocoos/knockout-go v0.0.0-20240829122518-cea89e619058/go.mod h1:5TbkFC9GwTSCVJmxVxbc3NOj1yTuM8RI3+OFlPGERQY=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.30/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
