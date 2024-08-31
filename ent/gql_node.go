@@ -210,255 +210,192 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 	case app.Table:
 		query := c.App.Query().
 			Where(app.ID(id))
-		query, err := query.CollectFields(ctx, appImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "App", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "App", id))
 	case appaction.Table:
 		query := c.AppAction.Query().
 			Where(appaction.ID(id))
-		query, err := query.CollectFields(ctx, appactionImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appactionImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppAction", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppAction", id))
 	case appdict.Table:
 		query := c.AppDict.Query().
 			Where(appdict.ID(id))
-		query, err := query.CollectFields(ctx, appdictImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appdictImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppDict", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppDict", id))
 	case appdictitem.Table:
 		query := c.AppDictItem.Query().
 			Where(appdictitem.ID(id))
-		query, err := query.CollectFields(ctx, appdictitemImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appdictitemImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppDictItem", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppDictItem", id))
 	case appmenu.Table:
 		query := c.AppMenu.Query().
 			Where(appmenu.ID(id))
-		query, err := query.CollectFields(ctx, appmenuImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appmenuImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppMenu", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppMenu", id))
 	case apppolicy.Table:
 		query := c.AppPolicy.Query().
 			Where(apppolicy.ID(id))
-		query, err := query.CollectFields(ctx, apppolicyImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, apppolicyImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppPolicy", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppPolicy", id))
 	case appres.Table:
 		query := c.AppRes.Query().
 			Where(appres.ID(id))
-		query, err := query.CollectFields(ctx, appresImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, appresImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppRes", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppRes", id))
 	case approle.Table:
 		query := c.AppRole.Query().
 			Where(approle.ID(id))
-		query, err := query.CollectFields(ctx, approleImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, approleImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
 	case fileidentity.Table:
 		query := c.FileIdentity.Query().
 			Where(fileidentity.ID(id))
-		query, err := query.CollectFields(ctx, fileidentityImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, fileidentityImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "FileIdentity", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "FileIdentity", id))
 	case filesource.Table:
 		query := c.FileSource.Query().
 			Where(filesource.ID(id))
-		query, err := query.CollectFields(ctx, filesourceImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filesourceImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "FileSource", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "FileSource", id))
 	case oauthclient.Table:
 		query := c.OauthClient.Query().
 			Where(oauthclient.ID(id))
-		query, err := query.CollectFields(ctx, oauthclientImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, oauthclientImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OauthClient", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "OauthClient", id))
 	case org.Table:
 		query := c.Org.Query().
 			Where(org.ID(id))
-		query, err := query.CollectFields(ctx, orgImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, orgImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "Org", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "Org", id))
 	case orgpolicy.Table:
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.ID(id))
-		query, err := query.CollectFields(ctx, orgpolicyImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, orgpolicyImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgPolicy", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "OrgPolicy", id))
 	case orgrole.Table:
 		query := c.OrgRole.Query().
 			Where(orgrole.ID(id))
-		query, err := query.CollectFields(ctx, orgroleImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, orgroleImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgRole", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "OrgRole", id))
 	case orguserpreference.Table:
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.ID(id))
-		query, err := query.CollectFields(ctx, orguserpreferenceImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, orguserpreferenceImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "OrgUserPreference", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "OrgUserPreference", id))
 	case permission.Table:
 		query := c.Permission.Query().
 			Where(permission.ID(id))
-		query, err := query.CollectFields(ctx, permissionImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, permissionImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
 	case user.Table:
 		query := c.User.Query().
 			Where(user.ID(id))
-		query, err := query.CollectFields(ctx, userImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "User", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "User", id))
 	case userdevice.Table:
 		query := c.UserDevice.Query().
 			Where(userdevice.ID(id))
-		query, err := query.CollectFields(ctx, userdeviceImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userdeviceImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserDevice", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserDevice", id))
 	case useridentity.Table:
 		query := c.UserIdentity.Query().
 			Where(useridentity.ID(id))
-		query, err := query.CollectFields(ctx, useridentityImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, useridentityImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserIdentity", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserIdentity", id))
 	case userloginprofile.Table:
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.ID(id))
-		query, err := query.CollectFields(ctx, userloginprofileImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userloginprofileImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserLoginProfile", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserLoginProfile", id))
 	case userpassword.Table:
 		query := c.UserPassword.Query().
 			Where(userpassword.ID(id))
-		query, err := query.CollectFields(ctx, userpasswordImplementors...)
-		if err != nil {
-			return nil, err
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userpasswordImplementors...); err != nil {
+				return nil, err
+			}
 		}
-		n, err := query.Only(entcache.WithRefEntryKey(ctx, "UserPassword", id))
-		if err != nil {
-			return nil, err
-		}
-		return n, nil
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserPassword", id))
 	default:
 		return nil, fmt.Errorf("cannot resolve noder from table %q: %w", table, errNodeInvalidID)
 	}
