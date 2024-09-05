@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -238,6 +239,7 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 }
 
 func (*dataset) initFileSource(client *ent.Tx) {
+	tenantID := 1
 	fs := make([]*ent.FileSourceCreate, 0)
 	s1 := client.FileSource.Create().SetID(1).SetKind(filesource.KindMinio).SetComments("本地存储bucket").
 		SetEndpoint("http://192.168.0.17:32650").SetBucket("woocootest").SetRegion("minio").SetStsEndpoint("http://192.168.0.17:32650").
@@ -247,9 +249,9 @@ func (*dataset) initFileSource(client *ent.Tx) {
 
 	fi := make([]*ent.FileIdentityCreate, 0)
 	s2 := client.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetFileSourceID(1).SetAccessKeyID("test").SetAccessKeySecret("test1234").
-		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("arn:aws:s3:::*").SetTenantID(1)
+		SetIsDefault(true).SetDurationSeconds(3600).SetPolicy("").SetRoleArn("arn:aws:s3:::*").SetTenantID(tenantID)
 	fi = append(fi, s2)
-	client.FileIdentity.CreateBulk(fi...).ExecX(context.Background())
+	client.FileIdentity.CreateBulk(fi...).ExecX(identity.WithTenantID(context.Background(), tenantID))
 }
 
 func (*dataset) initOauthClient(client *ent.Tx) {
