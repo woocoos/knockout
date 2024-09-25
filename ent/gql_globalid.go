@@ -62,6 +62,12 @@ func (ar *AppRole) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given Country node.
+func (c *Country) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Country:%d", c.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given FileIdentity node.
 func (fi *FileIdentity) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("FileIdentity:%d", fi.ID)
@@ -110,9 +116,21 @@ func (pe *Permission) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given Region node.
+func (r *Region) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Region:%d", r.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given User node.
 func (u *User) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("User:%d", u.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given UserAddr node.
+func (ua *UserAddr) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserAddr:%d", ua.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -173,6 +191,8 @@ func GlobalID(tp, id string) (string, error) {
 		break
 	case "AppRole":
 		break
+	case "Country":
+		break
 	case "FileIdentity":
 		break
 	case "FileSource":
@@ -189,7 +209,11 @@ func GlobalID(tp, id string) (string, error) {
 		break
 	case "Permission":
 		break
+	case "Region":
+		break
 	case "User":
+		break
+	case "UserAddr":
 		break
 	case "UserDevice":
 		break

@@ -210,8 +210,6 @@ var (
 	CountryCodeValidator func(string) error
 	// TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	TimezoneValidator func(string) error
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() int
 )
 
 // Kind defines the type for the "kind" enum field.

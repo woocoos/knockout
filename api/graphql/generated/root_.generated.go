@@ -255,6 +255,31 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 	}
 
+	Country struct {
+		Code        func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		NameEn      func(childComplexity int) int
+		Regions     func(childComplexity int) int
+		Status      func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+	}
+
+	CountryConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	CountryEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	FileIdentity struct {
 		AccessKeyID     func(childComplexity int) int
 		Comments        func(childComplexity int) int
@@ -344,6 +369,7 @@ type ComplexityRoot struct {
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
+		CreateCountry               func(childComplexity int, input ent.CreateCountryInput) int
 		CreateFileIdentity          func(childComplexity int, input ent.CreateFileIdentityInput) int
 		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
 		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
@@ -351,6 +377,7 @@ type ComplexityRoot struct {
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
+		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
@@ -360,11 +387,13 @@ type ComplexityRoot struct {
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
+		DeleteCountry               func(childComplexity int, countryID int) int
 		DeleteFileIdentity          func(childComplexity int, id int) int
 		DeleteFileSource            func(childComplexity int, fsID int) int
 		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
+		DeleteRegion                func(childComplexity int, regionID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
@@ -376,8 +405,10 @@ type ComplexityRoot struct {
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppDictItem             func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		MoveCountry                 func(childComplexity int, sourceID int, targetID int, action model.ListAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
-		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) int
+		MoveRegion                  func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) int
 		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
 		Revoke                      func(childComplexity int, orgID int, permissionID int) int
@@ -397,14 +428,16 @@ type ComplexityRoot struct {
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
+		UpdateCountry               func(childComplexity int, countryID int, input ent.UpdateCountryInput) int
 		UpdateFileIdentity          func(childComplexity int, id int, input ent.UpdateFileIdentityInput) int
 		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
+		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
-		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
+		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) int
 	}
 
 	OauthClient struct {
@@ -611,6 +644,7 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission             func(childComplexity int, permission string) int
+		Countries                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
 		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
 		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
 		FileIdentityAccessKeySecret func(childComplexity int, id int) int
@@ -627,6 +661,7 @@ type ComplexityRoot struct {
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgUserPreference           func(childComplexity int) int
 		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		Regions                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
 		UserApps                    func(childComplexity int) int
 		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -636,8 +671,42 @@ type ComplexityRoot struct {
 		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
+	Region struct {
+		Children    func(childComplexity int) int
+		Country     func(childComplexity int) int
+		CountryID   func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		NameEn      func(childComplexity int) int
+		Parent      func(childComplexity int) int
+		ParentID    func(childComplexity int) int
+		ShortCode   func(childComplexity int) int
+		Status      func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+		ZipCode     func(childComplexity int) int
+	}
+
+	RegionConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	RegionEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	User struct {
+		Addrs             func(childComplexity int) int
 		Avatar            func(childComplexity int) int
+		BasicAddr         func(childComplexity int) int
+		Citizenship       func(childComplexity int) int
+		CitizenshipID     func(childComplexity int) int
 		Comments          func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
@@ -645,13 +714,16 @@ type ComplexityRoot struct {
 		DeletedAt         func(childComplexity int) int
 		Devices           func(childComplexity int) int
 		DisplayName       func(childComplexity int) int
-		Email             func(childComplexity int) int
+		FirstName         func(childComplexity int) int
+		Gender            func(childComplexity int) int
 		ID                func(childComplexity int) int
 		Identities        func(childComplexity int) int
 		IsAllowRevokeRole func(childComplexity int, orgRoleID int) int
 		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
+		Lang              func(childComplexity int) int
+		LastName          func(childComplexity int) int
 		LoginProfile      func(childComplexity int) int
-		Mobile            func(childComplexity int) int
+		MiddleName        func(childComplexity int) int
 		OauthClients      func(childComplexity int) int
 		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName     func(childComplexity int) int
@@ -660,6 +732,26 @@ type ComplexityRoot struct {
 		UpdatedAt         func(childComplexity int) int
 		UpdatedBy         func(childComplexity int) int
 		UserType          func(childComplexity int) int
+	}
+
+	UserAddr struct {
+		Addr      func(childComplexity int) int
+		AddrType  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		Email     func(childComplexity int) int
+		Fax       func(childComplexity int) int
+		ID        func(childComplexity int) int
+		IsDefault func(childComplexity int) int
+		Mobile    func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Region    func(childComplexity int) int
+		RegionID  func(childComplexity int) int
+		Tel       func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+		User      func(childComplexity int) int
+		UserID    func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -1793,6 +1885,118 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppRole.UpdatedBy(childComplexity), true
 
+	case "Country.code":
+		if e.complexity.Country.Code == nil {
+			break
+		}
+
+		return e.complexity.Country.Code(childComplexity), true
+
+	case "Country.createdAt":
+		if e.complexity.Country.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Country.CreatedAt(childComplexity), true
+
+	case "Country.createdBy":
+		if e.complexity.Country.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Country.CreatedBy(childComplexity), true
+
+	case "Country.displaySort":
+		if e.complexity.Country.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.Country.DisplaySort(childComplexity), true
+
+	case "Country.id":
+		if e.complexity.Country.ID == nil {
+			break
+		}
+
+		return e.complexity.Country.ID(childComplexity), true
+
+	case "Country.name":
+		if e.complexity.Country.Name == nil {
+			break
+		}
+
+		return e.complexity.Country.Name(childComplexity), true
+
+	case "Country.nameEn":
+		if e.complexity.Country.NameEn == nil {
+			break
+		}
+
+		return e.complexity.Country.NameEn(childComplexity), true
+
+	case "Country.regions":
+		if e.complexity.Country.Regions == nil {
+			break
+		}
+
+		return e.complexity.Country.Regions(childComplexity), true
+
+	case "Country.status":
+		if e.complexity.Country.Status == nil {
+			break
+		}
+
+		return e.complexity.Country.Status(childComplexity), true
+
+	case "Country.updatedAt":
+		if e.complexity.Country.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Country.UpdatedAt(childComplexity), true
+
+	case "Country.updatedBy":
+		if e.complexity.Country.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Country.UpdatedBy(childComplexity), true
+
+	case "CountryConnection.edges":
+		if e.complexity.CountryConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.Edges(childComplexity), true
+
+	case "CountryConnection.pageInfo":
+		if e.complexity.CountryConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.PageInfo(childComplexity), true
+
+	case "CountryConnection.totalCount":
+		if e.complexity.CountryConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.TotalCount(childComplexity), true
+
+	case "CountryEdge.cursor":
+		if e.complexity.CountryEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.CountryEdge.Cursor(childComplexity), true
+
+	case "CountryEdge.node":
+		if e.complexity.CountryEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.CountryEdge.Node(childComplexity), true
+
 	case "FileIdentity.accessKeyID":
 		if e.complexity.FileIdentity.AccessKeyID == nil {
 			break
@@ -2316,6 +2520,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
 
+	case "Mutation.createCountry":
+		if e.complexity.Mutation.CreateCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCountry(childComplexity, args["input"].(ent.CreateCountryInput)), true
+
 	case "Mutation.createFileIdentity":
 		if e.complexity.Mutation.CreateFileIdentity == nil {
 			break
@@ -2399,6 +2615,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput)), true
+
+	case "Mutation.createRegion":
+		if e.complexity.Mutation.CreateRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRegion(childComplexity, args["input"].(ent.CreateRegionInput)), true
 
 	case "Mutation.createRole":
 		if e.complexity.Mutation.CreateRole == nil {
@@ -2508,6 +2736,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
 
+	case "Mutation.deleteCountry":
+		if e.complexity.Mutation.DeleteCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCountry(childComplexity, args["countryID"].(int)), true
+
 	case "Mutation.deleteFileIdentity":
 		if e.complexity.Mutation.DeleteFileIdentity == nil {
 			break
@@ -2567,6 +2807,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteOrganizationPolicy(childComplexity, args["orgPolicyID"].(int)), true
+
+	case "Mutation.deleteRegion":
+		if e.complexity.Mutation.DeleteRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteRegion(childComplexity, args["regionID"].(int)), true
 
 	case "Mutation.deleteRole":
 		if e.complexity.Mutation.DeleteRole == nil {
@@ -2700,6 +2952,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MoveAppMenu(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
 
+	case "Mutation.moveCountry":
+		if e.complexity.Mutation.MoveCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveCountry(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.ListAction)), true
+
 	case "Mutation.moveOrganization":
 		if e.complexity.Mutation.MoveOrganization == nil {
 			break
@@ -2712,6 +2976,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MoveOrganization(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.TreeAction)), true
 
+	case "Mutation.moveRegion":
+		if e.complexity.Mutation.MoveRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveRegion(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.TreeAction)), true
+
 	case "Mutation.recoverOrgUser":
 		if e.complexity.Mutation.RecoverOrgUser == nil {
 			break
@@ -2722,7 +2998,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput)), true
+		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput), args["basicAddr"].(*ent.UpdateUserAddrInput)), true
 
 	case "Mutation.removeOrganizationUser":
 		if e.complexity.Mutation.RemoveOrganizationUser == nil {
@@ -2952,6 +3228,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
 
+	case "Mutation.updateCountry":
+		if e.complexity.Mutation.UpdateCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCountry(childComplexity, args["countryID"].(int), args["input"].(ent.UpdateCountryInput)), true
+
 	case "Mutation.updateFileIdentity":
 		if e.complexity.Mutation.UpdateFileIdentity == nil {
 			break
@@ -3024,6 +3312,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdatePermission(childComplexity, args["permissionID"].(int), args["input"].(ent.UpdatePermissionInput)), true
 
+	case "Mutation.updateRegion":
+		if e.complexity.Mutation.UpdateRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateRegion(childComplexity, args["regionID"].(int), args["input"].(ent.UpdateRegionInput)), true
+
 	case "Mutation.updateRole":
 		if e.complexity.Mutation.UpdateRole == nil {
 			break
@@ -3046,7 +3346,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["basicAddr"].(*ent.UpdateUserAddrInput)), true
 
 	case "OauthClient.clientID":
 		if e.complexity.OauthClient.ClientID == nil {
@@ -4155,6 +4455,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
+	case "Query.countries":
+		if e.complexity.Query.Countries == nil {
+			break
+		}
+
+		args, err := ec.field_Query_countries_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Countries(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.CountryOrder), args["where"].(*ent.CountryWhereInput)), true
+
 	case "Query.fileIdentities":
 		if e.complexity.Query.FileIdentities == nil {
 			break
@@ -4342,6 +4654,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.regions":
+		if e.complexity.Query.Regions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_regions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Regions(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.RegionOrder), args["where"].(*ent.RegionWhereInput)), true
+
 	case "Query.userApps":
 		if e.complexity.Query.UserApps == nil {
 			break
@@ -4416,12 +4740,187 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
+	case "Region.children":
+		if e.complexity.Region.Children == nil {
+			break
+		}
+
+		return e.complexity.Region.Children(childComplexity), true
+
+	case "Region.country":
+		if e.complexity.Region.Country == nil {
+			break
+		}
+
+		return e.complexity.Region.Country(childComplexity), true
+
+	case "Region.countryID":
+		if e.complexity.Region.CountryID == nil {
+			break
+		}
+
+		return e.complexity.Region.CountryID(childComplexity), true
+
+	case "Region.createdAt":
+		if e.complexity.Region.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Region.CreatedAt(childComplexity), true
+
+	case "Region.createdBy":
+		if e.complexity.Region.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Region.CreatedBy(childComplexity), true
+
+	case "Region.displaySort":
+		if e.complexity.Region.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.Region.DisplaySort(childComplexity), true
+
+	case "Region.id":
+		if e.complexity.Region.ID == nil {
+			break
+		}
+
+		return e.complexity.Region.ID(childComplexity), true
+
+	case "Region.name":
+		if e.complexity.Region.Name == nil {
+			break
+		}
+
+		return e.complexity.Region.Name(childComplexity), true
+
+	case "Region.nameEn":
+		if e.complexity.Region.NameEn == nil {
+			break
+		}
+
+		return e.complexity.Region.NameEn(childComplexity), true
+
+	case "Region.parent":
+		if e.complexity.Region.Parent == nil {
+			break
+		}
+
+		return e.complexity.Region.Parent(childComplexity), true
+
+	case "Region.parentID":
+		if e.complexity.Region.ParentID == nil {
+			break
+		}
+
+		return e.complexity.Region.ParentID(childComplexity), true
+
+	case "Region.shortCode":
+		if e.complexity.Region.ShortCode == nil {
+			break
+		}
+
+		return e.complexity.Region.ShortCode(childComplexity), true
+
+	case "Region.status":
+		if e.complexity.Region.Status == nil {
+			break
+		}
+
+		return e.complexity.Region.Status(childComplexity), true
+
+	case "Region.updatedAt":
+		if e.complexity.Region.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Region.UpdatedAt(childComplexity), true
+
+	case "Region.updatedBy":
+		if e.complexity.Region.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Region.UpdatedBy(childComplexity), true
+
+	case "Region.zipCode":
+		if e.complexity.Region.ZipCode == nil {
+			break
+		}
+
+		return e.complexity.Region.ZipCode(childComplexity), true
+
+	case "RegionConnection.edges":
+		if e.complexity.RegionConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.Edges(childComplexity), true
+
+	case "RegionConnection.pageInfo":
+		if e.complexity.RegionConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.PageInfo(childComplexity), true
+
+	case "RegionConnection.totalCount":
+		if e.complexity.RegionConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.TotalCount(childComplexity), true
+
+	case "RegionEdge.cursor":
+		if e.complexity.RegionEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.RegionEdge.Cursor(childComplexity), true
+
+	case "RegionEdge.node":
+		if e.complexity.RegionEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.RegionEdge.Node(childComplexity), true
+
+	case "User.addrs":
+		if e.complexity.User.Addrs == nil {
+			break
+		}
+
+		return e.complexity.User.Addrs(childComplexity), true
+
 	case "User.avatar":
 		if e.complexity.User.Avatar == nil {
 			break
 		}
 
 		return e.complexity.User.Avatar(childComplexity), true
+
+	case "User.basicAddr":
+		if e.complexity.User.BasicAddr == nil {
+			break
+		}
+
+		return e.complexity.User.BasicAddr(childComplexity), true
+
+	case "User.citizenship":
+		if e.complexity.User.Citizenship == nil {
+			break
+		}
+
+		return e.complexity.User.Citizenship(childComplexity), true
+
+	case "User.citizenshipID":
+		if e.complexity.User.CitizenshipID == nil {
+			break
+		}
+
+		return e.complexity.User.CitizenshipID(childComplexity), true
 
 	case "User.comments":
 		if e.complexity.User.Comments == nil {
@@ -4472,12 +4971,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.DisplayName(childComplexity), true
 
-	case "User.email":
-		if e.complexity.User.Email == nil {
+	case "User.firstName":
+		if e.complexity.User.FirstName == nil {
 			break
 		}
 
-		return e.complexity.User.Email(childComplexity), true
+		return e.complexity.User.FirstName(childComplexity), true
+
+	case "User.gender":
+		if e.complexity.User.Gender == nil {
+			break
+		}
+
+		return e.complexity.User.Gender(childComplexity), true
 
 	case "User.id":
 		if e.complexity.User.ID == nil {
@@ -4517,6 +5023,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.IsAssignOrgRole(childComplexity, args["orgRoleID"].(int)), true
 
+	case "User.lang":
+		if e.complexity.User.Lang == nil {
+			break
+		}
+
+		return e.complexity.User.Lang(childComplexity), true
+
+	case "User.lastName":
+		if e.complexity.User.LastName == nil {
+			break
+		}
+
+		return e.complexity.User.LastName(childComplexity), true
+
 	case "User.loginProfile":
 		if e.complexity.User.LoginProfile == nil {
 			break
@@ -4524,12 +5044,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.LoginProfile(childComplexity), true
 
-	case "User.mobile":
-		if e.complexity.User.Mobile == nil {
+	case "User.middleName":
+		if e.complexity.User.MiddleName == nil {
 			break
 		}
 
-		return e.complexity.User.Mobile(childComplexity), true
+		return e.complexity.User.MiddleName(childComplexity), true
 
 	case "User.oauthClients":
 		if e.complexity.User.OauthClients == nil {
@@ -4591,6 +5111,125 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.UserType(childComplexity), true
+
+	case "UserAddr.addr":
+		if e.complexity.UserAddr.Addr == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Addr(childComplexity), true
+
+	case "UserAddr.addrType":
+		if e.complexity.UserAddr.AddrType == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.AddrType(childComplexity), true
+
+	case "UserAddr.createdAt":
+		if e.complexity.UserAddr.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.CreatedAt(childComplexity), true
+
+	case "UserAddr.createdBy":
+		if e.complexity.UserAddr.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.CreatedBy(childComplexity), true
+
+	case "UserAddr.email":
+		if e.complexity.UserAddr.Email == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Email(childComplexity), true
+
+	case "UserAddr.fax":
+		if e.complexity.UserAddr.Fax == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Fax(childComplexity), true
+
+	case "UserAddr.id":
+		if e.complexity.UserAddr.ID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.ID(childComplexity), true
+
+	case "UserAddr.isDefault":
+		if e.complexity.UserAddr.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.IsDefault(childComplexity), true
+
+	case "UserAddr.mobile":
+		if e.complexity.UserAddr.Mobile == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Mobile(childComplexity), true
+
+	case "UserAddr.name":
+		if e.complexity.UserAddr.Name == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Name(childComplexity), true
+
+	case "UserAddr.region":
+		if e.complexity.UserAddr.Region == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Region(childComplexity), true
+
+	case "UserAddr.regionID":
+		if e.complexity.UserAddr.RegionID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.RegionID(childComplexity), true
+
+	case "UserAddr.tel":
+		if e.complexity.UserAddr.Tel == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Tel(childComplexity), true
+
+	case "UserAddr.updatedAt":
+		if e.complexity.UserAddr.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UpdatedAt(childComplexity), true
+
+	case "UserAddr.updatedBy":
+		if e.complexity.UserAddr.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UpdatedBy(childComplexity), true
+
+	case "UserAddr.user":
+		if e.complexity.UserAddr.User == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.User(childComplexity), true
+
+	case "UserAddr.userID":
+		if e.complexity.UserAddr.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UserID(childComplexity), true
 
 	case "UserConnection.edges":
 		if e.complexity.UserConnection.Edges == nil {
@@ -5004,6 +5643,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppRoleWhereInput,
 		ec.unmarshalInputAppWhereInput,
 		ec.unmarshalInputAssignRoleUserInput,
+		ec.unmarshalInputCountryOrder,
+		ec.unmarshalInputCountryWhereInput,
 		ec.unmarshalInputCreateAppActionInput,
 		ec.unmarshalInputCreateAppDictInput,
 		ec.unmarshalInputCreateAppDictItemInput,
@@ -5012,6 +5653,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppPolicyInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
+		ec.unmarshalInputCreateCountryInput,
 		ec.unmarshalInputCreateFileIdentityInput,
 		ec.unmarshalInputCreateFileSourceInput,
 		ec.unmarshalInputCreateOauthClientInput,
@@ -5021,6 +5663,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateOrgUserInput,
 		ec.unmarshalInputCreateOrgUserPreferenceInput,
 		ec.unmarshalInputCreatePermissionInput,
+		ec.unmarshalInputCreateRegionInput,
+		ec.unmarshalInputCreateUserAddrInput,
 		ec.unmarshalInputCreateUserIdentityInput,
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputCreateUserLoginProfileInput,
@@ -5049,6 +5693,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPermissionOrder,
 		ec.unmarshalInputPermissionWhereInput,
 		ec.unmarshalInputPolicyRuleInput,
+		ec.unmarshalInputRegionOrder,
+		ec.unmarshalInputRegionWhereInput,
 		ec.unmarshalInputUpdateAppActionInput,
 		ec.unmarshalInputUpdateAppDictInput,
 		ec.unmarshalInputUpdateAppDictItemInput,
@@ -5057,6 +5703,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppPolicyInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
+		ec.unmarshalInputUpdateCountryInput,
 		ec.unmarshalInputUpdateFileIdentityInput,
 		ec.unmarshalInputUpdateFileSourceInput,
 		ec.unmarshalInputUpdateOauthClientInput,
@@ -5066,10 +5713,14 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateOrgUserInput,
 		ec.unmarshalInputUpdateOrgUserPreferenceInput,
 		ec.unmarshalInputUpdatePermissionInput,
+		ec.unmarshalInputUpdateRegionInput,
+		ec.unmarshalInputUpdateUserAddrInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
 		ec.unmarshalInputUpdateUserInput,
 		ec.unmarshalInputUpdateUserLoginProfileInput,
 		ec.unmarshalInputUpdateUserPasswordInput,
+		ec.unmarshalInputUserAddrOrder,
+		ec.unmarshalInputUserAddrWhereInput,
 		ec.unmarshalInputUserDeviceOrder,
 		ec.unmarshalInputUserDeviceWhereInput,
 		ec.unmarshalInputUserIdentityOrder,
@@ -7303,6 +7954,227 @@ input AppWhereInput {
   hasDicts: Boolean
   hasDictsWith: [AppDictWhereInput!]
 }
+type Country implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  国家中文名称
+  """
+  name: String
+  """
+  国家英文名称
+  """
+  nameEn: String
+  """
+  国家代码
+  """
+  code: String!
+  displaySort: Int
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  """
+  地区信息
+  """
+  regions: [Region!]
+}
+"""
+A connection to a list of items.
+"""
+type CountryConnection {
+  """
+  A list of edges.
+  """
+  edges: [CountryEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type CountryEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Country
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Country connections
+"""
+input CountryOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Countries.
+  """
+  field: CountryOrderField!
+}
+"""
+Properties by which Country connections can be ordered.
+"""
+enum CountryOrderField {
+  createdAt
+  displaySort
+}
+"""
+CountrySimpleStatus is enum for the field status
+"""
+enum CountrySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+CountryWhereInput is used for filtering Country objects.
+Input was generated by ent.
+"""
+input CountryWhereInput {
+  not: CountryWhereInput
+  and: [CountryWhereInput!]
+  or: [CountryWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  name_en field predicates
+  """
+  nameEn: String
+  nameEnNEQ: String
+  nameEnIn: [String!]
+  nameEnNotIn: [String!]
+  nameEnGT: String
+  nameEnGTE: String
+  nameEnLT: String
+  nameEnLTE: String
+  nameEnContains: String
+  nameEnHasPrefix: String
+  nameEnHasSuffix: String
+  nameEnIsNil: Boolean
+  nameEnNotNil: Boolean
+  nameEnEqualFold: String
+  nameEnContainsFold: String
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  status field predicates
+  """
+  status: CountrySimpleStatus
+  statusNEQ: CountrySimpleStatus
+  statusIn: [CountrySimpleStatus!]
+  statusNotIn: [CountrySimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  regions edge predicates
+  """
+  hasRegions: Boolean
+  hasRegionsWith: [RegionWhereInput!]
+}
 """
 CreateAppActionInput is used for create AppAction object.
 Input was generated by ent.
@@ -7534,6 +8406,29 @@ input CreateAppRoleInput {
   appID: ID
 }
 """
+CreateCountryInput is used for create Country object.
+Input was generated by ent.
+"""
+input CreateCountryInput {
+  """
+  国家中文名称
+  """
+  name: String
+  """
+  国家英文名称
+  """
+  nameEn: String
+  """
+  国家代码
+  """
+  code: String!
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  regionIDs: [ID!]
+}
+"""
 CreateFileIdentityInput is used for create FileIdentity object.
 Input was generated by ent.
 """
@@ -7714,6 +8609,10 @@ input CreateOrgUserInput {
   在组织内的显示名称
   """
   displayName: String!
+  """
+  用户类型，区分内部及外部用户
+  """
+  userType: OrgUserUserType
   orgID: ID!
   userID: ID!
 }
@@ -7754,6 +8653,71 @@ input CreatePermissionInput {
   orgPolicyID: ID!
 }
 """
+CreateRegionInput is used for create Region object.
+Input was generated by ent.
+"""
+input CreateRegionInput {
+  """
+  地区中文名称
+  """
+  name: String
+  """
+  地区英文名称
+  """
+  nameEn: String
+  """
+  编码
+  """
+  shortCode: String
+  """
+  邮政编码
+  """
+  zipCode: String
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  parentID: ID
+  childIDs: [ID!]
+  countryID: ID
+}
+"""
+CreateUserAddrInput is used for create UserAddr object.
+Input was generated by ent.
+"""
+input CreateUserAddrInput {
+  """
+  详细地址
+  """
+  addr: String
+  """
+  邮箱
+  """
+  email: String
+  """
+  传真
+  """
+  fax: String
+  """
+  电话
+  """
+  tel: String
+  """
+  手机
+  """
+  mobile: String
+  """
+  联系人名称
+  """
+  name: String
+  """
+  是否默认地址，类型为addr时使用
+  """
+  isDefault: Boolean
+  userID: ID
+  regionID: ID
+}
+"""
 CreateUserIdentityInput is used for create UserIdentity object.
 Input was generated by ent.
 """
@@ -7790,14 +8754,6 @@ input CreateUserInput {
   """
   displayName: String!
   """
-  邮箱
-  """
-  email: String
-  """
-  手机
-  """
-  mobile: String
-  """
   状态
   """
   status: UserSimpleStatus
@@ -7809,11 +8765,33 @@ input CreateUserInput {
   头像地址
   """
   avatar: String
+  """
+  性别
+  """
+  gender: UserGender
+  """
+  名字
+  """
+  firstName: String
+  """
+  中间名
+  """
+  middleName: String
+  """
+  姓氏
+  """
+  lastName: String
+  """
+  语言
+  """
+  lang: String
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
   deviceIDs: [ID!]
   oauthClientIDs: [ID!]
+  addrIDs: [ID!]
+  citizenshipID: ID
 }
 """
 CreateUserLoginProfileInput is used for create UserLoginProfile object.
@@ -9517,6 +10495,13 @@ input OrgUserPreferenceWhereInput {
   hasOrgWith: [OrgWhereInput!]
 }
 """
+OrgUserUserType is enum for the field user_type
+"""
+enum OrgUserUserType @goModel(model: "github.com/woocoos/knockout/ent/orguser.UserType") {
+  internal
+  external
+}
+"""
 OrgUserWhereInput is used for filtering OrgUser objects.
 Input was generated by ent.
 """
@@ -9610,6 +10595,13 @@ input OrgUserWhereInput {
   displayNameHasSuffix: String
   displayNameEqualFold: String
   displayNameContainsFold: String
+  """
+  user_type field predicates
+  """
+  userType: OrgUserUserType
+  userTypeNEQ: OrgUserUserType
+  userTypeIn: [OrgUserUserType!]
+  userTypeNotIn: [OrgUserUserType!]
 }
 """
 OrgWhereInput is used for filtering Org objects.
@@ -10260,6 +11252,40 @@ type Query {
     where: AppDictWhereInput
   ): AppDictConnection!
   """
+  国家查询
+  """
+  countries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Countries returned from the connection.
+    """
+    orderBy: CountryOrder
+
+    """
+    Filtering options for Countries returned from the connection.
+    """
+    where: CountryWhereInput
+  ): CountryConnection!
+  """
   文件凭证
   """
   fileIdentities(
@@ -10358,6 +11384,40 @@ type Query {
     """
     where: OrgWhereInput
   ): OrgConnection!
+  """
+  地区查询
+  """
+  regions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Regions returned from the connection.
+    """
+    orderBy: RegionOrder
+
+    """
+    Filtering options for Regions returned from the connection.
+    """
+    where: RegionWhereInput
+  ): RegionConnection!
   users(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -10389,6 +11449,286 @@ type Query {
     """
     where: UserWhereInput
   ): UserConnection!
+}
+type Region implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  父id，0为顶级
+  """
+  parentID: ID
+  """
+  地区中文名称
+  """
+  name: String
+  """
+  地区英文名称
+  """
+  nameEn: String
+  """
+  编码
+  """
+  shortCode: String
+  """
+  邮政编码
+  """
+  zipCode: String
+  """
+  国家id
+  """
+  countryID: ID
+  displaySort: Int
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  parent: Region
+  children: [Region!]
+  country: Country
+}
+"""
+A connection to a list of items.
+"""
+type RegionConnection {
+  """
+  A list of edges.
+  """
+  edges: [RegionEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type RegionEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Region
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Region connections
+"""
+input RegionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Regions.
+  """
+  field: RegionOrderField!
+}
+"""
+Properties by which Region connections can be ordered.
+"""
+enum RegionOrderField {
+  createdAt
+  displaySort
+}
+"""
+RegionSimpleStatus is enum for the field status
+"""
+enum RegionSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+RegionWhereInput is used for filtering Region objects.
+Input was generated by ent.
+"""
+input RegionWhereInput {
+  not: RegionWhereInput
+  and: [RegionWhereInput!]
+  or: [RegionWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  parent_id field predicates
+  """
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
+  parentIDIsNil: Boolean
+  parentIDNotNil: Boolean
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  name_en field predicates
+  """
+  nameEn: String
+  nameEnNEQ: String
+  nameEnIn: [String!]
+  nameEnNotIn: [String!]
+  nameEnGT: String
+  nameEnGTE: String
+  nameEnLT: String
+  nameEnLTE: String
+  nameEnContains: String
+  nameEnHasPrefix: String
+  nameEnHasSuffix: String
+  nameEnIsNil: Boolean
+  nameEnNotNil: Boolean
+  nameEnEqualFold: String
+  nameEnContainsFold: String
+  """
+  short_code field predicates
+  """
+  shortCode: String
+  shortCodeNEQ: String
+  shortCodeIn: [String!]
+  shortCodeNotIn: [String!]
+  shortCodeGT: String
+  shortCodeGTE: String
+  shortCodeLT: String
+  shortCodeLTE: String
+  shortCodeContains: String
+  shortCodeHasPrefix: String
+  shortCodeHasSuffix: String
+  shortCodeIsNil: Boolean
+  shortCodeNotNil: Boolean
+  shortCodeEqualFold: String
+  shortCodeContainsFold: String
+  """
+  zip_code field predicates
+  """
+  zipCode: String
+  zipCodeNEQ: String
+  zipCodeIn: [String!]
+  zipCodeNotIn: [String!]
+  zipCodeGT: String
+  zipCodeGTE: String
+  zipCodeLT: String
+  zipCodeLTE: String
+  zipCodeContains: String
+  zipCodeHasPrefix: String
+  zipCodeHasSuffix: String
+  zipCodeIsNil: Boolean
+  zipCodeNotNil: Boolean
+  zipCodeEqualFold: String
+  zipCodeContainsFold: String
+  """
+  country_id field predicates
+  """
+  countryID: ID
+  countryIDNEQ: ID
+  countryIDIn: [ID!]
+  countryIDNotIn: [ID!]
+  countryIDIsNil: Boolean
+  countryIDNotNil: Boolean
+  """
+  status field predicates
+  """
+  status: RegionSimpleStatus
+  statusNEQ: RegionSimpleStatus
+  statusIn: [RegionSimpleStatus!]
+  statusNotIn: [RegionSimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [RegionWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [RegionWhereInput!]
+  """
+  country edge predicates
+  """
+  hasCountry: Boolean
+  hasCountryWith: [CountryWhereInput!]
 }
 """
 The builtin Time type
@@ -10636,6 +11976,34 @@ input UpdateAppRoleInput {
   editable: Boolean
 }
 """
+UpdateCountryInput is used for update Country object.
+Input was generated by ent.
+"""
+input UpdateCountryInput {
+  """
+  国家中文名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  国家英文名称
+  """
+  nameEn: String
+  clearNameEn: Boolean
+  """
+  国家代码
+  """
+  code: String
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  clearStatus: Boolean
+  addRegionIDs: [ID!]
+  removeRegionIDs: [ID!]
+  clearRegions: Boolean
+}
+"""
 UpdateFileIdentityInput is used for update FileIdentity object.
 Input was generated by ent.
 """
@@ -10845,6 +12213,10 @@ input UpdateOrgUserInput {
   在组织内的显示名称
   """
   displayName: String
+  """
+  用户类型，区分内部及外部用户
+  """
+  userType: OrgUserUserType
   orgID: ID
   userID: ID
 }
@@ -10888,6 +12260,86 @@ input UpdatePermissionInput {
   clearStatus: Boolean
 }
 """
+UpdateRegionInput is used for update Region object.
+Input was generated by ent.
+"""
+input UpdateRegionInput {
+  """
+  地区中文名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  地区英文名称
+  """
+  nameEn: String
+  clearNameEn: Boolean
+  """
+  编码
+  """
+  shortCode: String
+  clearShortCode: Boolean
+  """
+  邮政编码
+  """
+  zipCode: String
+  clearZipCode: Boolean
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  clearStatus: Boolean
+  parentID: ID
+  clearParent: Boolean
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
+  countryID: ID
+  clearCountry: Boolean
+}
+"""
+UpdateUserAddrInput is used for update UserAddr object.
+Input was generated by ent.
+"""
+input UpdateUserAddrInput {
+  """
+  详细地址
+  """
+  addr: String
+  clearAddr: Boolean
+  """
+  邮箱
+  """
+  email: String
+  clearEmail: Boolean
+  """
+  传真
+  """
+  fax: String
+  clearFax: Boolean
+  """
+  电话
+  """
+  tel: String
+  clearTel: Boolean
+  """
+  手机
+  """
+  mobile: String
+  clearMobile: Boolean
+  """
+  联系人名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  是否默认地址，类型为addr时使用
+  """
+  isDefault: Boolean
+  regionID: ID
+  clearRegion: Boolean
+}
+"""
 UpdateUserIdentityInput is used for update UserIdentity object.
 Input was generated by ent.
 """
@@ -10926,16 +12378,6 @@ input UpdateUserInput {
   """
   displayName: String
   """
-  邮箱
-  """
-  email: String
-  clearEmail: Boolean
-  """
-  手机
-  """
-  mobile: String
-  clearMobile: Boolean
-  """
   备注
   """
   comments: String
@@ -10945,6 +12387,30 @@ input UpdateUserInput {
   """
   avatar: String
   clearAvatar: Boolean
+  """
+  性别
+  """
+  gender: UserGender
+  """
+  名字
+  """
+  firstName: String
+  clearFirstName: Boolean
+  """
+  中间名
+  """
+  middleName: String
+  clearMiddleName: Boolean
+  """
+  姓氏
+  """
+  lastName: String
+  clearLastName: Boolean
+  """
+  语言
+  """
+  lang: String
+  clearLang: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -11006,14 +12472,6 @@ type User implements Node {
   """
   displayName: String!
   """
-  邮箱
-  """
-  email: String
-  """
-  手机
-  """
-  mobile: String
-  """
   用户类型
   """
   userType: UserUserType!
@@ -11037,6 +12495,30 @@ type User implements Node {
   头像地址
   """
   avatar: String
+  """
+  性别
+  """
+  gender: UserGender!
+  """
+  国籍
+  """
+  citizenshipID: ID
+  """
+  名字
+  """
+  firstName: String
+  """
+  中间名
+  """
+  middleName: String
+  """
+  姓氏
+  """
+  lastName: String
+  """
+  语言
+  """
+  lang: String
   """
   用户身份标识
   """
@@ -11084,6 +12566,305 @@ type User implements Node {
   用户AccessKey
   """
   oauthClients: [OauthClient!]
+  """
+  用户联系信息
+  """
+  addrs: [UserAddr!]
+  """
+  国籍信息
+  """
+  citizenship: Country
+}
+type UserAddr implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  userID: ID
+  """
+  地址类型，basic：基本信息，addr：收货地址
+  """
+  addrType: UserAddrAddrType!
+  """
+  地址地区
+  """
+  regionID: ID
+  """
+  详细地址
+  """
+  addr: String
+  """
+  邮箱
+  """
+  email: String
+  """
+  传真
+  """
+  fax: String
+  """
+  电话
+  """
+  tel: String
+  """
+  手机
+  """
+  mobile: String
+  """
+  联系人名称
+  """
+  name: String
+  """
+  是否默认地址，类型为addr时使用
+  """
+  isDefault: Boolean!
+  user: User
+  """
+  地区信息
+  """
+  region: Region
+}
+"""
+UserAddrAddrType is enum for the field addr_type
+"""
+enum UserAddrAddrType @goModel(model: "github.com/woocoos/knockout/ent/useraddr.AddrType") {
+  basic
+  addr
+}
+"""
+Ordering options for UserAddr connections
+"""
+input UserAddrOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order UserAddrs.
+  """
+  field: UserAddrOrderField!
+}
+"""
+Properties by which UserAddr connections can be ordered.
+"""
+enum UserAddrOrderField {
+  createdAt
+}
+"""
+UserAddrWhereInput is used for filtering UserAddr objects.
+Input was generated by ent.
+"""
+input UserAddrWhereInput {
+  not: UserAddrWhereInput
+  and: [UserAddrWhereInput!]
+  or: [UserAddrWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  user_id field predicates
+  """
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  userIDIsNil: Boolean
+  userIDNotNil: Boolean
+  """
+  addr_type field predicates
+  """
+  addrType: UserAddrAddrType
+  addrTypeNEQ: UserAddrAddrType
+  addrTypeIn: [UserAddrAddrType!]
+  addrTypeNotIn: [UserAddrAddrType!]
+  """
+  region_id field predicates
+  """
+  regionID: ID
+  regionIDNEQ: ID
+  regionIDIn: [ID!]
+  regionIDNotIn: [ID!]
+  regionIDIsNil: Boolean
+  regionIDNotNil: Boolean
+  """
+  addr field predicates
+  """
+  addr: String
+  addrNEQ: String
+  addrIn: [String!]
+  addrNotIn: [String!]
+  addrGT: String
+  addrGTE: String
+  addrLT: String
+  addrLTE: String
+  addrContains: String
+  addrHasPrefix: String
+  addrHasSuffix: String
+  addrIsNil: Boolean
+  addrNotNil: Boolean
+  addrEqualFold: String
+  addrContainsFold: String
+  """
+  email field predicates
+  """
+  email: String
+  emailNEQ: String
+  emailIn: [String!]
+  emailNotIn: [String!]
+  emailGT: String
+  emailGTE: String
+  emailLT: String
+  emailLTE: String
+  emailContains: String
+  emailHasPrefix: String
+  emailHasSuffix: String
+  emailIsNil: Boolean
+  emailNotNil: Boolean
+  emailEqualFold: String
+  emailContainsFold: String
+  """
+  fax field predicates
+  """
+  fax: String
+  faxNEQ: String
+  faxIn: [String!]
+  faxNotIn: [String!]
+  faxGT: String
+  faxGTE: String
+  faxLT: String
+  faxLTE: String
+  faxContains: String
+  faxHasPrefix: String
+  faxHasSuffix: String
+  faxIsNil: Boolean
+  faxNotNil: Boolean
+  faxEqualFold: String
+  faxContainsFold: String
+  """
+  tel field predicates
+  """
+  tel: String
+  telNEQ: String
+  telIn: [String!]
+  telNotIn: [String!]
+  telGT: String
+  telGTE: String
+  telLT: String
+  telLTE: String
+  telContains: String
+  telHasPrefix: String
+  telHasSuffix: String
+  telIsNil: Boolean
+  telNotNil: Boolean
+  telEqualFold: String
+  telContainsFold: String
+  """
+  mobile field predicates
+  """
+  mobile: String
+  mobileNEQ: String
+  mobileIn: [String!]
+  mobileNotIn: [String!]
+  mobileGT: String
+  mobileGTE: String
+  mobileLT: String
+  mobileLTE: String
+  mobileContains: String
+  mobileHasPrefix: String
+  mobileHasSuffix: String
+  mobileIsNil: Boolean
+  mobileNotNil: Boolean
+  mobileEqualFold: String
+  mobileContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  is_default field predicates
+  """
+  isDefault: Boolean
+  isDefaultNEQ: Boolean
+  """
+  user edge predicates
+  """
+  hasUser: Boolean
+  hasUserWith: [UserWhereInput!]
+  """
+  region edge predicates
+  """
+  hasRegion: Boolean
+  hasRegionWith: [RegionWhereInput!]
 }
 """
 A connection to a list of items.
@@ -11373,6 +13154,14 @@ type UserEdge {
   A cursor for use in pagination.
   """
   cursor: Cursor!
+}
+"""
+UserGender is enum for the field gender
+"""
+enum UserGender @goModel(model: "github.com/woocoos/knockout/ent/user.Gender") {
+  privacy
+  male
+  female
 }
 type UserIdentity implements Node {
   id: ID!
@@ -12066,42 +13855,6 @@ input UserWhereInput {
   displayNameEqualFold: String
   displayNameContainsFold: String
   """
-  email field predicates
-  """
-  email: String
-  emailNEQ: String
-  emailIn: [String!]
-  emailNotIn: [String!]
-  emailGT: String
-  emailGTE: String
-  emailLT: String
-  emailLTE: String
-  emailContains: String
-  emailHasPrefix: String
-  emailHasSuffix: String
-  emailIsNil: Boolean
-  emailNotNil: Boolean
-  emailEqualFold: String
-  emailContainsFold: String
-  """
-  mobile field predicates
-  """
-  mobile: String
-  mobileNEQ: String
-  mobileIn: [String!]
-  mobileNotIn: [String!]
-  mobileGT: String
-  mobileGTE: String
-  mobileLT: String
-  mobileLTE: String
-  mobileContains: String
-  mobileHasPrefix: String
-  mobileHasSuffix: String
-  mobileIsNil: Boolean
-  mobileNotNil: Boolean
-  mobileEqualFold: String
-  mobileContainsFold: String
-  """
   user_type field predicates
   """
   userType: UserUserType
@@ -12141,6 +13894,94 @@ input UserWhereInput {
   statusIsNil: Boolean
   statusNotNil: Boolean
   """
+  gender field predicates
+  """
+  gender: UserGender
+  genderNEQ: UserGender
+  genderIn: [UserGender!]
+  genderNotIn: [UserGender!]
+  """
+  citizenship_id field predicates
+  """
+  citizenshipID: ID
+  citizenshipIDNEQ: ID
+  citizenshipIDIn: [ID!]
+  citizenshipIDNotIn: [ID!]
+  citizenshipIDIsNil: Boolean
+  citizenshipIDNotNil: Boolean
+  """
+  first_name field predicates
+  """
+  firstName: String
+  firstNameNEQ: String
+  firstNameIn: [String!]
+  firstNameNotIn: [String!]
+  firstNameGT: String
+  firstNameGTE: String
+  firstNameLT: String
+  firstNameLTE: String
+  firstNameContains: String
+  firstNameHasPrefix: String
+  firstNameHasSuffix: String
+  firstNameIsNil: Boolean
+  firstNameNotNil: Boolean
+  firstNameEqualFold: String
+  firstNameContainsFold: String
+  """
+  middle_name field predicates
+  """
+  middleName: String
+  middleNameNEQ: String
+  middleNameIn: [String!]
+  middleNameNotIn: [String!]
+  middleNameGT: String
+  middleNameGTE: String
+  middleNameLT: String
+  middleNameLTE: String
+  middleNameContains: String
+  middleNameHasPrefix: String
+  middleNameHasSuffix: String
+  middleNameIsNil: Boolean
+  middleNameNotNil: Boolean
+  middleNameEqualFold: String
+  middleNameContainsFold: String
+  """
+  last_name field predicates
+  """
+  lastName: String
+  lastNameNEQ: String
+  lastNameIn: [String!]
+  lastNameNotIn: [String!]
+  lastNameGT: String
+  lastNameGTE: String
+  lastNameLT: String
+  lastNameLTE: String
+  lastNameContains: String
+  lastNameHasPrefix: String
+  lastNameHasSuffix: String
+  lastNameIsNil: Boolean
+  lastNameNotNil: Boolean
+  lastNameEqualFold: String
+  lastNameContainsFold: String
+  """
+  lang field predicates
+  """
+  lang: String
+  langNEQ: String
+  langIn: [String!]
+  langNotIn: [String!]
+  langGT: String
+  langGTE: String
+  langLT: String
+  langLTE: String
+  langContains: String
+  langHasPrefix: String
+  langHasSuffix: String
+  langIsNil: Boolean
+  langNotNil: Boolean
+  langEqualFold: String
+  langContainsFold: String
+  """
   identities edge predicates
   """
   hasIdentities: Boolean
@@ -12170,6 +14011,16 @@ input UserWhereInput {
   """
   hasOauthClients: Boolean
   hasOauthClientsWith: [OauthClientWhereInput!]
+  """
+  addrs edge predicates
+  """
+  hasAddrs: Boolean
+  hasAddrsWith: [UserAddrWhereInput!]
+  """
+  citizenship edge predicates
+  """
+  hasCitizenship: Boolean
+  hasCitizenshipWith: [CountryWhereInput!]
 }
 `, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
@@ -12182,6 +14033,8 @@ extend input CreateUserInput {
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
+    """地址信息"""
+    basicAddr: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -12198,6 +14051,14 @@ input AssignRoleUserInput {
 enum TreeAction {
     """作为子节点"""
     child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+"""列表操作类型"""
+enum ListAction {
     """上移"""
     up
     """下移"""
@@ -12250,6 +14111,8 @@ extend type User {
     isAssignOrgRole(orgRoleID:ID!): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
+    """地址信息"""
+    basicAddr: UserAddr
 }
 
 extend type Org {
@@ -12494,7 +14357,7 @@ type FileIdentityForApp implements Node{
         """用户ID"""
         userID:ID!): Boolean!
     """更新用户"""
-    updateUser(userID:ID!,input: UpdateUserInput!): User
+    updateUser(userID:ID!,input: UpdateUserInput!,basicAddr: UpdateUserAddrInput): User
     """用户登陆配置"""
     updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
@@ -12604,7 +14467,7 @@ type FileIdentityForApp implements Node{
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
-    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,basicAddr: UpdateUserAddrInput):User!
     """创建文件来源"""
     createFileSource(input: CreateFileSourceInput!): FileSource!
     """更新文件来源"""
@@ -12629,6 +14492,34 @@ type FileIdentityForApp implements Node{
     deleteOauthClient(id: ID!): Boolean!
     """保存组织用户偏好"""
     saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
+    """创建国家"""
+    createCountry(input: CreateCountryInput!): Country
+    """更新国家"""
+    updateCountry(countryID:ID!,input: UpdateCountryInput!): Country
+    """删除国家"""
+    deleteCountry(countryID:ID!): Boolean!
+    """国家位置调整，action: child, up, down"""
+    moveCountry(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:ListAction!
+    ): Boolean!
+    """创建地区"""
+    createRegion(input: CreateRegionInput!): Region
+    """更新地区"""
+    updateRegion(regionID:ID!,input: UpdateRegionInput!): Region
+    """删除地区"""
+    deleteRegion(regionID:ID!): Boolean!
+    """地区位置调整，action: child, up, down"""
+    moveRegion(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:TreeAction!
+    ): Boolean!
 }
 `, BuiltIn: false},
 }

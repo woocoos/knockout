@@ -8,6 +8,7 @@ import (
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/region"
 )
 
 // InitDisplaySortHook 初始化displaySort字段, 表需要有parent_id字段.
@@ -36,6 +37,9 @@ func InitDisplaySortHookEx(table, parentField string) ent.Hook {
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					case appdictitem.Table:
 						old, _ = mx.Client().AppDictItem.Query().Where(appdictitem.DictID(pid.(int))).
+							Aggregate(gen.Max(displayField)).Int(ctx)
+					case region.Table:
+						old, _ = mx.Client().Region.Query().Where(region.ParentID(pid.(int))).
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					}
 					mx.SetDisplaySort(int32(old + 1))

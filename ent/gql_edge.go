@@ -257,6 +257,18 @@ func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error
 	return result, err
 }
 
+func (c *Country) Regions(ctx context.Context) (result []*Region, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = c.NamedRegions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = c.Edges.RegionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = c.QueryRegions().All(ctx)
+	}
+	return result, err
+}
+
 func (fi *FileIdentity) Source(ctx context.Context) (*FileSource, error) {
 	result, err := fi.Edges.SourceOrErr()
 	if IsNotLoaded(err) {
@@ -473,6 +485,34 @@ func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
 	return result, err
 }
 
+func (r *Region) Parent(ctx context.Context) (*Region, error) {
+	result, err := r.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = r.QueryParent().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (r *Region) Children(ctx context.Context) (result []*Region, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = r.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = r.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = r.QueryChildren().All(ctx)
+	}
+	return result, err
+}
+
+func (r *Region) Country(ctx context.Context) (*Country, error) {
+	result, err := r.Edges.CountryOrErr()
+	if IsNotLoaded(err) {
+		result, err = r.QueryCountry().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (u *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = u.NamedIdentities(graphql.GetFieldContext(ctx).Field.Alias)
@@ -536,6 +576,42 @@ func (u *User) OauthClients(ctx context.Context) (result []*OauthClient, err err
 		result, err = u.QueryOauthClients().All(ctx)
 	}
 	return result, err
+}
+
+func (u *User) Addrs(ctx context.Context) (result []*UserAddr, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedAddrs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.AddrsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryAddrs().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) Citizenship(ctx context.Context) (*Country, error) {
+	result, err := u.Edges.CitizenshipOrErr()
+	if IsNotLoaded(err) {
+		result, err = u.QueryCitizenship().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ua *UserAddr) User(ctx context.Context) (*User, error) {
+	result, err := ua.Edges.UserOrErr()
+	if IsNotLoaded(err) {
+		result, err = ua.QueryUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ua *UserAddr) Region(ctx context.Context) (*Region, error) {
+	result, err := ua.Edges.RegionOrErr()
+	if IsNotLoaded(err) {
+		result, err = ua.QueryRegion().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (ud *UserDevice) User(ctx context.Context) (*User, error) {

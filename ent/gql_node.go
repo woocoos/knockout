@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -31,7 +32,9 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -84,6 +87,11 @@ var approleImplementors = []string{"AppRole", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*AppRole) IsNode() {}
 
+var countryImplementors = []string{"Country", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Country) IsNode() {}
+
 var fileidentityImplementors = []string{"FileIdentity", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -124,10 +132,20 @@ var permissionImplementors = []string{"Permission", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*Permission) IsNode() {}
 
+var regionImplementors = []string{"Region", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Region) IsNode() {}
+
 var userImplementors = []string{"User", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*User) IsNode() {}
+
+var useraddrImplementors = []string{"UserAddr", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserAddr) IsNode() {}
 
 var userdeviceImplementors = []string{"UserDevice", "Node"}
 
@@ -279,6 +297,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
+	case country.Table:
+		query := c.Country.Query().
+			Where(country.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, countryImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Country", id))
 	case fileidentity.Table:
 		query := c.FileIdentity.Query().
 			Where(fileidentity.ID(id))
@@ -351,6 +378,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
+	case region.Table:
+		query := c.Region.Query().
+			Where(region.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, regionImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Region", id))
 	case user.Table:
 		query := c.User.Query().
 			Where(user.ID(id))
@@ -360,6 +396,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "User", id))
+	case useraddr.Table:
+		query := c.UserAddr.Query().
+			Where(useraddr.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, useraddrImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserAddr", id))
 	case userdevice.Table:
 		query := c.UserDevice.Query().
 			Where(userdevice.ID(id))
@@ -597,6 +642,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
+	case country.Table:
+		query := c.Country.Query().
+			Where(country.IDIn(ids...))
+		query, err := query.CollectFields(ctx, countryImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case fileidentity.Table:
 		query := c.FileIdentity.Query().
 			Where(fileidentity.IDIn(ids...))
@@ -725,10 +786,42 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
+	case region.Table:
+		query := c.Region.Query().
+			Where(region.IDIn(ids...))
+		query, err := query.CollectFields(ctx, regionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case user.Table:
 		query := c.User.Query().
 			Where(user.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case useraddr.Table:
+		query := c.UserAddr.Query().
+			Where(useraddr.IDIn(ids...))
+		query, err := query.CollectFields(ctx, useraddrImplementors...)
 		if err != nil {
 			return nil, err
 		}

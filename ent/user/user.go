@@ -34,10 +34,6 @@ const (
 	FieldPrincipalName = "principal_name"
 	// FieldDisplayName holds the string denoting the display_name field in the database.
 	FieldDisplayName = "display_name"
-	// FieldEmail holds the string denoting the email field in the database.
-	FieldEmail = "email"
-	// FieldMobile holds the string denoting the mobile field in the database.
-	FieldMobile = "mobile"
 	// FieldUserType holds the string denoting the user_type field in the database.
 	FieldUserType = "user_type"
 	// FieldCreationType holds the string denoting the creation_type field in the database.
@@ -50,6 +46,18 @@ const (
 	FieldComments = "comments"
 	// FieldAvatar holds the string denoting the avatar field in the database.
 	FieldAvatar = "avatar"
+	// FieldGender holds the string denoting the gender field in the database.
+	FieldGender = "gender"
+	// FieldCitizenshipID holds the string denoting the citizenship_id field in the database.
+	FieldCitizenshipID = "citizenship_id"
+	// FieldFirstName holds the string denoting the first_name field in the database.
+	FieldFirstName = "first_name"
+	// FieldMiddleName holds the string denoting the middle_name field in the database.
+	FieldMiddleName = "middle_name"
+	// FieldLastName holds the string denoting the last_name field in the database.
+	FieldLastName = "last_name"
+	// FieldLang holds the string denoting the lang field in the database.
+	FieldLang = "lang"
 	// EdgeIdentities holds the string denoting the identities edge name in mutations.
 	EdgeIdentities = "identities"
 	// EdgeLoginProfile holds the string denoting the login_profile edge name in mutations.
@@ -64,6 +72,10 @@ const (
 	EdgePermissions = "permissions"
 	// EdgeOauthClients holds the string denoting the oauth_clients edge name in mutations.
 	EdgeOauthClients = "oauth_clients"
+	// EdgeAddrs holds the string denoting the addrs edge name in mutations.
+	EdgeAddrs = "addrs"
+	// EdgeCitizenship holds the string denoting the citizenship edge name in mutations.
+	EdgeCitizenship = "citizenship"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// Table holds the table name of the user in the database.
@@ -115,6 +127,20 @@ const (
 	OauthClientsInverseTable = "oauth_client"
 	// OauthClientsColumn is the table column denoting the oauth_clients relation/edge.
 	OauthClientsColumn = "user_id"
+	// AddrsTable is the table that holds the addrs relation/edge.
+	AddrsTable = "user_addr"
+	// AddrsInverseTable is the table name for the UserAddr entity.
+	// It exists in this package in order to avoid circular dependency with the "useraddr" package.
+	AddrsInverseTable = "user_addr"
+	// AddrsColumn is the table column denoting the addrs relation/edge.
+	AddrsColumn = "user_id"
+	// CitizenshipTable is the table that holds the citizenship relation/edge.
+	CitizenshipTable = "user"
+	// CitizenshipInverseTable is the table name for the Country entity.
+	// It exists in this package in order to avoid circular dependency with the "country" package.
+	CitizenshipInverseTable = "country"
+	// CitizenshipColumn is the table column denoting the citizenship relation/edge.
+	CitizenshipColumn = "citizenship_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -134,14 +160,18 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldPrincipalName,
 	FieldDisplayName,
-	FieldEmail,
-	FieldMobile,
 	FieldUserType,
 	FieldCreationType,
 	FieldRegisterIP,
 	FieldStatus,
 	FieldComments,
 	FieldAvatar,
+	FieldGender,
+	FieldCitizenshipID,
+	FieldFirstName,
+	FieldMiddleName,
+	FieldLastName,
+	FieldLang,
 }
 
 var (
@@ -170,16 +200,16 @@ var (
 	Interceptors [1]ent.Interceptor
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
-	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	EmailValidator func(string) error
-	// MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
-	MobileValidator func(string) error
 	// RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	RegisterIPValidator func(string) error
 	// AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
 	AvatarValidator func(string) error
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() int
+	// FirstNameValidator is a validator for the "first_name" field. It is called by the builders before save.
+	FirstNameValidator func(string) error
+	// MiddleNameValidator is a validator for the "middle_name" field. It is called by the builders before save.
+	MiddleNameValidator func(string) error
+	// LastNameValidator is a validator for the "last_name" field. It is called by the builders before save.
+	LastNameValidator func(string) error
 )
 
 // UserType defines the type for the "user_type" enum field.
@@ -239,6 +269,33 @@ func StatusValidator(s typex.SimpleStatus) error {
 	}
 }
 
+// Gender defines the type for the "gender" enum field.
+type Gender string
+
+// GenderPrivacy is the default value of the Gender enum.
+const DefaultGender = GenderPrivacy
+
+// Gender values.
+const (
+	GenderPrivacy Gender = "privacy"
+	GenderMale    Gender = "male"
+	GenderFemale  Gender = "female"
+)
+
+func (ge Gender) String() string {
+	return string(ge)
+}
+
+// GenderValidator is a validator for the "gender" field enum values. It is called by the builders before save.
+func GenderValidator(ge Gender) error {
+	switch ge {
+	case GenderPrivacy, GenderMale, GenderFemale:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for gender field: %q", ge)
+	}
+}
+
 // OrderOption defines the ordering options for the User queries.
 type OrderOption func(*sql.Selector)
 
@@ -282,16 +339,6 @@ func ByDisplayName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplayName, opts...).ToFunc()
 }
 
-// ByEmail orders the results by the email field.
-func ByEmail(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEmail, opts...).ToFunc()
-}
-
-// ByMobile orders the results by the mobile field.
-func ByMobile(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMobile, opts...).ToFunc()
-}
-
 // ByUserType orders the results by the user_type field.
 func ByUserType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserType, opts...).ToFunc()
@@ -320,6 +367,36 @@ func ByComments(opts ...sql.OrderTermOption) OrderOption {
 // ByAvatar orders the results by the avatar field.
 func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
+}
+
+// ByGender orders the results by the gender field.
+func ByGender(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGender, opts...).ToFunc()
+}
+
+// ByCitizenshipID orders the results by the citizenship_id field.
+func ByCitizenshipID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCitizenshipID, opts...).ToFunc()
+}
+
+// ByFirstName orders the results by the first_name field.
+func ByFirstName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFirstName, opts...).ToFunc()
+}
+
+// ByMiddleName orders the results by the middle_name field.
+func ByMiddleName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMiddleName, opts...).ToFunc()
+}
+
+// ByLastName orders the results by the last_name field.
+func ByLastName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLastName, opts...).ToFunc()
+}
+
+// ByLang orders the results by the lang field.
+func ByLang(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLang, opts...).ToFunc()
 }
 
 // ByIdentitiesCount orders the results by identities count.
@@ -413,6 +490,27 @@ func ByOauthClients(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByAddrsCount orders the results by addrs count.
+func ByAddrsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAddrsStep(), opts...)
+	}
+}
+
+// ByAddrs orders the results by addrs terms.
+func ByAddrs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAddrsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByCitizenshipField orders the results by citizenship field.
+func ByCitizenshipField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCitizenshipStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -475,6 +573,20 @@ func newOauthClientsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, OauthClientsTable, OauthClientsColumn),
 	)
 }
+func newAddrsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AddrsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AddrsTable, AddrsColumn),
+	)
+}
+func newCitizenshipStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CitizenshipInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, CitizenshipTable, CitizenshipColumn),
+	)
+}
 func newOrgUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -525,3 +637,21 @@ var (
 	// typex.SimpleStatus must implement graphql.Unmarshaler.
 	_ graphql.Unmarshaler = (*typex.SimpleStatus)(nil)
 )
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e Gender) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *Gender) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = Gender(str)
+	if err := GenderValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid Gender", str)
+	}
+	return nil
+}

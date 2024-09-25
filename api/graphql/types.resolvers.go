@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/useraddr"
 )
 
 // IsGrantAppRole is the resolver for the isGrantAppRole field.
@@ -111,6 +112,19 @@ func (r *userResolver) IsAllowRevokeRole(ctx context.Context, obj *ent.User, org
 	return r.resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
 }
 
+// BasicAddr is the resolver for the basicAddr field.
+func (r *userResolver) BasicAddr(ctx context.Context, obj *ent.User) (*ent.UserAddr, error) {
+	client := ent.FromContext(ctx)
+	if client == nil {
+		client = r.client
+	}
+	at, err := client.UserAddr.Query().Where(useraddr.UserID(obj.ID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, err
+	}
+	return at, nil
+}
+
 // LoginProfile is the resolver for the loginProfile field.
 func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error {
 	if data != nil {
@@ -131,6 +145,18 @@ func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateU
 			return err
 		}
 		obj.PasswordIDs = append(obj.PasswordIDs, row.ID)
+	}
+	return nil
+}
+
+// BasicAddr is the resolver for the basicAddr field.
+func (r *createUserInputResolver) BasicAddr(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error {
+	if data != nil {
+		row, err := ent.FromContext(ctx).UserAddr.Create().SetInput(*data).SetAddrType(useraddr.AddrTypeBasic).SetIsDefault(true).Save(ctx)
+		if err != nil {
+			return err
+		}
+		obj.AddrIDs = append(obj.AddrIDs, row.ID)
 	}
 	return nil
 }

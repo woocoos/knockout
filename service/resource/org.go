@@ -19,7 +19,9 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -166,7 +168,11 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 
 // generationAndSendUserPwd 自动生成密码并发邮件给用户
 func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) error {
-	if usr.Email == "" {
+	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is nil")
 	}
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -188,7 +194,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            usr.Email,
+				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.PrincipalName,
 				"password":      nPwd,
@@ -383,11 +389,16 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 }
 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
-func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
+func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
 	if input.PrincipalName != nil {
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
+	// 更新地址信息
+	err := client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).SetInput(*basicAddr).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
 }
 
@@ -629,7 +640,7 @@ func findMenuParents(appMenus, userMenus []*ent.AppMenu, parentMenus *[]*ent.App
 }
 
 // RecoverOrgUser 恢复删除用户
-func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
+func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -639,7 +650,11 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	if !has || err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
-
+	// 更新地址信息
+	err = client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).SetInput(*basicAddr).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
 	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(typex.SimpleStatusActive).ClearDeletedAt().Save(ctx)
 	if err != nil {
 		return nil, err
@@ -687,7 +702,11 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	if err != nil {
 		return err
 	}
-	if usr.Email == "" {
+	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is null")
 	}
 	if !usr.Edges.LoginProfile.MfaEnabled {
@@ -704,7 +723,7 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":          usr.Email,
+				"to":          addr.Email,
 				"displayName": usr.DisplayName,
 				"mfaSecret":   usr.Edges.LoginProfile.MfaSecret,
 			},
@@ -727,7 +746,11 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	if err != nil {
 		return err
 	}
-	if usr.Email == "" {
+	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is null")
 	}
 
@@ -752,7 +775,7 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            usr.Email,
+				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.Edges.Identities[0].Code,
 				"password":      newPwd,
@@ -817,4 +840,65 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 		update.SetMenuFavorite(input.MenuFavorite)
 	}
 	return update.Save(ctx)
+}
+
+// MoveCountry 移动国家.
+func (s *Service) MoveCountry(ctx context.Context, src, tar int, action model.ListAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarRegion := client.Country.GetX(ctx, tar)
+	builder := client.Country.UpdateOneID(src)
+	var start int32 = 0
+	switch action {
+	case model.ListActionUp:
+		start = tarRegion.DisplaySort
+		builder.SetDisplaySort(start)
+	case model.ListActionDown:
+		start = tarRegion.DisplaySort + 1
+		builder.SetDisplaySort(start)
+	}
+	err = client.Region.Update().Where(region.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+	if err != nil {
+		return
+	}
+	return builder.Exec(ctx)
+}
+
+// MoveRegion 移动地区目录.
+func (s *Service) MoveRegion(ctx context.Context, src, tar int, action model.TreeAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarRegion := client.Region.GetX(ctx, tar)
+	builder := client.Region.UpdateOneID(src)
+	var start int32 = 0
+	var resort = true
+	switch action {
+	case model.TreeActionChild:
+		var agg []struct {
+			Max *int32
+		}
+		err = client.Region.Query().Where(region.ParentID(tarRegion.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		if err != nil {
+			return err
+		}
+		if agg[0].Max == nil {
+			start = 1
+		} else {
+			start = *agg[0].Max + 1
+		}
+		builder.SetParentID(tarRegion.ID)
+		resort = false
+	case model.TreeActionUp:
+		start = tarRegion.DisplaySort
+		builder.SetParentID(tarRegion.ParentID).SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = tarRegion.DisplaySort + 1
+		builder.SetParentID(tarRegion.ParentID).SetDisplaySort(start)
+	}
+	if resort {
+		err = client.Region.Update().Where(region.ParentID(tarRegion.ParentID), region.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+		if err != nil {
+			return
+		}
+	}
+
+	return builder.Exec(ctx)
 }

@@ -25,6 +25,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -36,7 +37,9 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -66,6 +69,8 @@ type Client struct {
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
 	// FileIdentity is the client for interacting with the FileIdentity builders.
 	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
@@ -88,8 +93,12 @@ type Client struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAddr is the client for interacting with the UserAddr builders.
+	UserAddr *UserAddrClient
 	// UserDevice is the client for interacting with the UserDevice builders.
 	UserDevice *UserDeviceClient
 	// UserIdentity is the client for interacting with the UserIdentity builders.
@@ -120,6 +129,7 @@ func (c *Client) init() {
 	c.AppRes = NewAppResClient(c.config)
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
+	c.Country = NewCountryClient(c.config)
 	c.FileIdentity = NewFileIdentityClient(c.config)
 	c.FileSource = NewFileSourceClient(c.config)
 	c.OauthClient = NewOauthClientClient(c.config)
@@ -131,7 +141,9 @@ func (c *Client) init() {
 	c.OrgUser = NewOrgUserClient(c.config)
 	c.OrgUserPreference = NewOrgUserPreferenceClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
+	c.Region = NewRegionClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserAddr = NewUserAddrClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
 	c.UserIdentity = NewUserIdentityClient(c.config)
 	c.UserLoginProfile = NewUserLoginProfileClient(c.config)
@@ -237,6 +249,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppRes:            NewAppResClient(cfg),
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		Country:           NewCountryClient(cfg),
 		FileIdentity:      NewFileIdentityClient(cfg),
 		FileSource:        NewFileSourceClient(cfg),
 		OauthClient:       NewOauthClientClient(cfg),
@@ -248,7 +261,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		OrgUser:           NewOrgUserClient(cfg),
 		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
 		Permission:        NewPermissionClient(cfg),
+		Region:            NewRegionClient(cfg),
 		User:              NewUserClient(cfg),
+		UserAddr:          NewUserAddrClient(cfg),
 		UserDevice:        NewUserDeviceClient(cfg),
 		UserIdentity:      NewUserIdentityClient(cfg),
 		UserLoginProfile:  NewUserLoginProfileClient(cfg),
@@ -281,6 +296,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppRes:            NewAppResClient(cfg),
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
+		Country:           NewCountryClient(cfg),
 		FileIdentity:      NewFileIdentityClient(cfg),
 		FileSource:        NewFileSourceClient(cfg),
 		OauthClient:       NewOauthClientClient(cfg),
@@ -292,7 +308,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		OrgUser:           NewOrgUserClient(cfg),
 		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
 		Permission:        NewPermissionClient(cfg),
+		Region:            NewRegionClient(cfg),
 		User:              NewUserClient(cfg),
+		UserAddr:          NewUserAddrClient(cfg),
 		UserDevice:        NewUserDeviceClient(cfg),
 		UserIdentity:      NewUserIdentityClient(cfg),
 		UserLoginProfile:  NewUserLoginProfileClient(cfg),
@@ -327,10 +345,10 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.FileIdentity, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRole, c.AppRolePolicy, c.Country, c.FileIdentity, c.FileSource,
+		c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.OrgUserPreference, c.Permission, c.Region, c.User, c.UserAddr,
+		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -341,10 +359,10 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.FileIdentity, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.AppRole, c.AppRolePolicy, c.Country, c.FileIdentity, c.FileSource,
+		c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser,
+		c.OrgUser, c.OrgUserPreference, c.Permission, c.Region, c.User, c.UserAddr,
+		c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -371,6 +389,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppRole.mutate(ctx, m)
 	case *AppRolePolicyMutation:
 		return c.AppRolePolicy.mutate(ctx, m)
+	case *CountryMutation:
+		return c.Country.mutate(ctx, m)
 	case *FileIdentityMutation:
 		return c.FileIdentity.mutate(ctx, m)
 	case *FileSourceMutation:
@@ -393,8 +413,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgUserPreference.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
+	case *RegionMutation:
+		return c.Region.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserAddrMutation:
+		return c.UserAddr.mutate(ctx, m)
 	case *UserDeviceMutation:
 		return c.UserDevice.mutate(ctx, m)
 	case *UserIdentityMutation:
@@ -2011,6 +2035,156 @@ func (c *AppRolePolicyClient) mutate(ctx context.Context, m *AppRolePolicyMutati
 		return (&AppRolePolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppRolePolicy mutation op: %q", m.Op())
+	}
+}
+
+// CountryClient is a client for the Country schema.
+type CountryClient struct {
+	config
+}
+
+// NewCountryClient returns a client for the Country from the given config.
+func NewCountryClient(c config) *CountryClient {
+	return &CountryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `country.Hooks(f(g(h())))`.
+func (c *CountryClient) Use(hooks ...Hook) {
+	c.hooks.Country = append(c.hooks.Country, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `country.Intercept(f(g(h())))`.
+func (c *CountryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Country = append(c.inters.Country, interceptors...)
+}
+
+// Create returns a builder for creating a Country entity.
+func (c *CountryClient) Create() *CountryCreate {
+	mutation := newCountryMutation(c.config, OpCreate)
+	return &CountryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Country entities.
+func (c *CountryClient) CreateBulk(builders ...*CountryCreate) *CountryCreateBulk {
+	return &CountryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CountryClient) MapCreateBulk(slice any, setFunc func(*CountryCreate, int)) *CountryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CountryCreateBulk{err: fmt.Errorf("calling to CountryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CountryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CountryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Country.
+func (c *CountryClient) Update() *CountryUpdate {
+	mutation := newCountryMutation(c.config, OpUpdate)
+	return &CountryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CountryClient) UpdateOne(co *Country) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountry(co))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CountryClient) UpdateOneID(id int) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountryID(id))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Country.
+func (c *CountryClient) Delete() *CountryDelete {
+	mutation := newCountryMutation(c.config, OpDelete)
+	return &CountryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CountryClient) DeleteOne(co *Country) *CountryDeleteOne {
+	return c.DeleteOneID(co.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CountryClient) DeleteOneID(id int) *CountryDeleteOne {
+	builder := c.Delete().Where(country.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CountryDeleteOne{builder}
+}
+
+// Query returns a query builder for Country.
+func (c *CountryClient) Query() *CountryQuery {
+	return &CountryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCountry},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Country entity by its id.
+func (c *CountryClient) Get(ctx context.Context, id int) (*Country, error) {
+	return c.Query().Where(country.ID(id)).Only(entcache.WithEntryKey(ctx, "Country", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CountryClient) GetX(ctx context.Context, id int) *Country {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRegions queries the regions edge of a Country.
+func (c *CountryClient) QueryRegions(co *Country) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(country.Table, country.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, country.RegionsTable, country.RegionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CountryClient) Hooks() []Hook {
+	hooks := c.hooks.Country
+	return append(hooks[:len(hooks):len(hooks)], country.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *CountryClient) Interceptors() []Interceptor {
+	return c.inters.Country
+}
+
+func (c *CountryClient) mutate(ctx context.Context, m *CountryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CountryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CountryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CountryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Country mutation op: %q", m.Op())
 	}
 }
 
@@ -4066,6 +4240,188 @@ func (c *PermissionClient) mutate(ctx context.Context, m *PermissionMutation) (V
 	}
 }
 
+// RegionClient is a client for the Region schema.
+type RegionClient struct {
+	config
+}
+
+// NewRegionClient returns a client for the Region from the given config.
+func NewRegionClient(c config) *RegionClient {
+	return &RegionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `region.Hooks(f(g(h())))`.
+func (c *RegionClient) Use(hooks ...Hook) {
+	c.hooks.Region = append(c.hooks.Region, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `region.Intercept(f(g(h())))`.
+func (c *RegionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Region = append(c.inters.Region, interceptors...)
+}
+
+// Create returns a builder for creating a Region entity.
+func (c *RegionClient) Create() *RegionCreate {
+	mutation := newRegionMutation(c.config, OpCreate)
+	return &RegionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Region entities.
+func (c *RegionClient) CreateBulk(builders ...*RegionCreate) *RegionCreateBulk {
+	return &RegionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RegionClient) MapCreateBulk(slice any, setFunc func(*RegionCreate, int)) *RegionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RegionCreateBulk{err: fmt.Errorf("calling to RegionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RegionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RegionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Region.
+func (c *RegionClient) Update() *RegionUpdate {
+	mutation := newRegionMutation(c.config, OpUpdate)
+	return &RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RegionClient) UpdateOne(r *Region) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegion(r))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RegionClient) UpdateOneID(id int) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegionID(id))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Region.
+func (c *RegionClient) Delete() *RegionDelete {
+	mutation := newRegionMutation(c.config, OpDelete)
+	return &RegionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RegionClient) DeleteOne(r *Region) *RegionDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RegionClient) DeleteOneID(id int) *RegionDeleteOne {
+	builder := c.Delete().Where(region.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RegionDeleteOne{builder}
+}
+
+// Query returns a query builder for Region.
+func (c *RegionClient) Query() *RegionQuery {
+	return &RegionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRegion},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Region entity by its id.
+func (c *RegionClient) Get(ctx context.Context, id int) (*Region, error) {
+	return c.Query().Where(region.ID(id)).Only(entcache.WithEntryKey(ctx, "Region", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RegionClient) GetX(ctx context.Context, id int) *Region {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryParent queries the parent edge of a Region.
+func (c *RegionClient) QueryParent(r *Region) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, region.ParentTable, region.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a Region.
+func (c *RegionClient) QueryChildren(r *Region) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, region.ChildrenTable, region.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCountry queries the country edge of a Region.
+func (c *RegionClient) QueryCountry(r *Region) *CountryQuery {
+	query := (&CountryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, region.CountryTable, region.CountryColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *RegionClient) Hooks() []Hook {
+	hooks := c.hooks.Region
+	return append(hooks[:len(hooks):len(hooks)], region.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *RegionClient) Interceptors() []Interceptor {
+	return c.inters.Region
+}
+
+func (c *RegionClient) mutate(ctx context.Context, m *RegionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RegionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RegionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Region mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -4286,6 +4642,38 @@ func (c *UserClient) QueryOauthClients(u *User) *OauthClientQuery {
 	return query
 }
 
+// QueryAddrs queries the addrs edge of a User.
+func (c *UserClient) QueryAddrs(u *User) *UserAddrQuery {
+	query := (&UserAddrClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(useraddr.Table, useraddr.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AddrsTable, user.AddrsColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCitizenship queries the citizenship edge of a User.
+func (c *UserClient) QueryCitizenship(u *User) *CountryQuery {
+	query := (&CountryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, user.CitizenshipTable, user.CitizenshipColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgUser queries the org_user edge of a User.
 func (c *UserClient) QueryOrgUser(u *User) *OrgUserQuery {
 	query := (&OrgUserClient{config: c.config}).Query()
@@ -4326,6 +4714,172 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 		return (&UserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown User mutation op: %q", m.Op())
+	}
+}
+
+// UserAddrClient is a client for the UserAddr schema.
+type UserAddrClient struct {
+	config
+}
+
+// NewUserAddrClient returns a client for the UserAddr from the given config.
+func NewUserAddrClient(c config) *UserAddrClient {
+	return &UserAddrClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `useraddr.Hooks(f(g(h())))`.
+func (c *UserAddrClient) Use(hooks ...Hook) {
+	c.hooks.UserAddr = append(c.hooks.UserAddr, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `useraddr.Intercept(f(g(h())))`.
+func (c *UserAddrClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserAddr = append(c.inters.UserAddr, interceptors...)
+}
+
+// Create returns a builder for creating a UserAddr entity.
+func (c *UserAddrClient) Create() *UserAddrCreate {
+	mutation := newUserAddrMutation(c.config, OpCreate)
+	return &UserAddrCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserAddr entities.
+func (c *UserAddrClient) CreateBulk(builders ...*UserAddrCreate) *UserAddrCreateBulk {
+	return &UserAddrCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserAddrClient) MapCreateBulk(slice any, setFunc func(*UserAddrCreate, int)) *UserAddrCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserAddrCreateBulk{err: fmt.Errorf("calling to UserAddrClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserAddrCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserAddrCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserAddr.
+func (c *UserAddrClient) Update() *UserAddrUpdate {
+	mutation := newUserAddrMutation(c.config, OpUpdate)
+	return &UserAddrUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserAddrClient) UpdateOne(ua *UserAddr) *UserAddrUpdateOne {
+	mutation := newUserAddrMutation(c.config, OpUpdateOne, withUserAddr(ua))
+	return &UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserAddrClient) UpdateOneID(id int) *UserAddrUpdateOne {
+	mutation := newUserAddrMutation(c.config, OpUpdateOne, withUserAddrID(id))
+	return &UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserAddr.
+func (c *UserAddrClient) Delete() *UserAddrDelete {
+	mutation := newUserAddrMutation(c.config, OpDelete)
+	return &UserAddrDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserAddrClient) DeleteOne(ua *UserAddr) *UserAddrDeleteOne {
+	return c.DeleteOneID(ua.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserAddrClient) DeleteOneID(id int) *UserAddrDeleteOne {
+	builder := c.Delete().Where(useraddr.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserAddrDeleteOne{builder}
+}
+
+// Query returns a query builder for UserAddr.
+func (c *UserAddrClient) Query() *UserAddrQuery {
+	return &UserAddrQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserAddr},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserAddr entity by its id.
+func (c *UserAddrClient) Get(ctx context.Context, id int) (*UserAddr, error) {
+	return c.Query().Where(useraddr.ID(id)).Only(entcache.WithEntryKey(ctx, "UserAddr", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserAddrClient) GetX(ctx context.Context, id int) *UserAddr {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a UserAddr.
+func (c *UserAddrClient) QueryUser(ua *UserAddr) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ua.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(useraddr.Table, useraddr.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, useraddr.UserTable, useraddr.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(ua.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRegion queries the region edge of a UserAddr.
+func (c *UserAddrClient) QueryRegion(ua *UserAddr) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ua.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(useraddr.Table, useraddr.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, useraddr.RegionTable, useraddr.RegionColumn),
+		)
+		fromV = sqlgraph.Neighbors(ua.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserAddrClient) Hooks() []Hook {
+	hooks := c.hooks.UserAddr
+	return append(hooks[:len(hooks):len(hooks)], useraddr.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserAddrClient) Interceptors() []Interceptor {
+	return c.inters.UserAddr
+}
+
+func (c *UserAddrClient) mutate(ctx context.Context, m *UserAddrMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserAddrCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserAddrUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserAddrDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserAddr mutation op: %q", m.Op())
 	}
 }
 
@@ -4933,14 +5487,16 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 type (
 	hooks struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, FileIdentity, FileSource, OauthClient, Org, OrgApp, OrgPolicy,
-		OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		AppRolePolicy, Country, FileIdentity, FileSource, OauthClient, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission,
+		Region, User, UserAddr, UserDevice, UserIdentity, UserLoginProfile,
+		UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, FileIdentity, FileSource, OauthClient, Org, OrgApp, OrgPolicy,
-		OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
+		AppRolePolicy, Country, FileIdentity, FileSource, OauthClient, Org, OrgApp,
+		OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission,
+		Region, User, UserAddr, UserDevice, UserIdentity, UserLoginProfile,
+		UserPassword []ent.Interceptor
 	}
 )

@@ -1686,6 +1686,16 @@ func (ec *executionContext) marshalNFileIdentityForApp2ᚖgithubᚗcomᚋwoocoos
 	return ec._FileIdentityForApp(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx context.Context, v interface{}) (model.ListAction, error) {
+	var res model.ListAction
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx context.Context, sel ast.SelectionSet, v model.ListAction) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) marshalNMfa2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐMfa(ctx context.Context, sel ast.SelectionSet, v model.Mfa) graphql.Marshaler {
 	return ec._Mfa(ctx, sel, &v)
 }

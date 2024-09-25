@@ -40,7 +40,7 @@ func (Org) Annotations() []schema.Annotation {
 
 func (Org) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		schemax.SnowFlakeID{},
+		schemax.IntID{},
 		schemax.AuditMixin{},
 		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
 		schemax.NotifyMixin{},

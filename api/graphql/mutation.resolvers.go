@@ -13,9 +13,11 @@ import (
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/service/resource"
@@ -79,8 +81,8 @@ func (r *mutationResolver) RemoveOrganizationUser(ctx context.Context, orgID int
 }
 
 // UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
-	return r.resource.UpdateUser(ctx, userID, input)
+func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.UpdateUser(ctx, userID, input, basicAddr)
 }
 
 // UpdateLoginProfile is the resolver for the updateLoginProfile field.
@@ -373,8 +375,8 @@ func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input
 }
 
 // RecoverOrgUser is the resolver for the recoverOrgUser field.
-func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
-	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
+func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput, basicAddr)
 }
 
 // CreateFileSource is the resolver for the createFileSource field.
@@ -478,21 +480,69 @@ func (r *mutationResolver) SaveOrgUserPreference(ctx context.Context, input mode
 	return r.resource.SaveOrgUserPreference(ctx, input)
 }
 
+// CreateCountry is the resolver for the createCountry field.
+func (r *mutationResolver) CreateCountry(ctx context.Context, input ent.CreateCountryInput) (*ent.Country, error) {
+	return ent.FromContext(ctx).Country.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateCountry is the resolver for the updateCountry field.
+func (r *mutationResolver) UpdateCountry(ctx context.Context, countryID int, input ent.UpdateCountryInput) (*ent.Country, error) {
+	return ent.FromContext(ctx).Country.UpdateOneID(countryID).SetInput(input).Save(ctx)
+}
+
+// DeleteCountry is the resolver for the deleteCountry field.
+func (r *mutationResolver) DeleteCountry(ctx context.Context, countryID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 判断是否被引用
+	has, err := client.Country.Query().Where(country.HasRegionsWith(region.CountryID(countryID))).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("country has children")
+	}
+	err = client.Country.DeleteOneID(countryID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveCountry is the resolver for the moveCountry field.
+func (r *mutationResolver) MoveCountry(ctx context.Context, sourceID int, targetID int, action model.ListAction) (bool, error) {
+	err := r.resource.MoveCountry(ctx, sourceID, targetID, action)
+	return err == nil, err
+}
+
+// CreateRegion is the resolver for the createRegion field.
+func (r *mutationResolver) CreateRegion(ctx context.Context, input ent.CreateRegionInput) (*ent.Region, error) {
+	return ent.FromContext(ctx).Region.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateRegion is the resolver for the updateRegion field.
+func (r *mutationResolver) UpdateRegion(ctx context.Context, regionID int, input ent.UpdateRegionInput) (*ent.Region, error) {
+	return ent.FromContext(ctx).Region.UpdateOneID(regionID).SetInput(input).Save(ctx)
+}
+
+// DeleteRegion is the resolver for the deleteRegion field.
+func (r *mutationResolver) DeleteRegion(ctx context.Context, regionID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 判断是否被引用
+	has, err := client.Region.Query().Where(region.ParentID(regionID)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("region has children")
+	}
+	err = client.Region.DeleteOneID(regionID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveRegion is the resolver for the moveRegion field.
+func (r *mutationResolver) MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.resource.MoveRegion(ctx, sourceID, targetID, action)
+	return err == nil, err
+}
+
 // Mutation returns generated1.MutationResolver implementation.
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *mutationResolver) UpdateDefaultFileIdentity(ctx context.Context, identityID int, orgID *int) (bool, error) {
-	// 不传取默认
-	if orgID == nil {
-
-	}
-	panic("")
-}

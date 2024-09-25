@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -95,6 +96,8 @@ func InitBase(name, dsn string) {
 	ds.initUser(tx)
 	// 初始化组织
 	ds.initOrg(tx)
+	// 初始化国家地区
+	ds.initRegion(tx)
 }
 
 func (*dataset) initOrg(client *ent.Tx) {
@@ -127,17 +130,24 @@ func (*dataset) initOrg(client *ent.Tx) {
 
 func (*dataset) initUser(client *ent.Tx) {
 	ub := make([]*ent.UserCreate, 0)
+	ua := make([]*ent.UserAddrCreate, 0)
 	ulp := make([]*ent.UserLoginProfileCreate, 0)
 	up := make([]*ent.UserPasswordCreate, 0)
 	ui := make([]*ent.UserIdentityCreate, 0)
 	for i := 1; i < 4; i++ {
 		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
 			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
-			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1)
 		if i == 1 {
-			c.SetPrincipalName("admin").SetDisplayName("admin").SetEmail("admin@localhost")
+			c.SetPrincipalName("admin").SetDisplayName("admin")
 		}
 		ub = append(ub, c)
+
+		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeBasic).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+		if i == 1 {
+			a.SetEmail("admin@localhost")
+		}
+		ua = append(ua, a)
 
 		lp := client.UserLoginProfile.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
 			SetCanLogin(true).SetPasswordReset(false).SetMfaSecret("UWZLIIUMPX53NYXB").SetVerifyDevice(false)
@@ -155,6 +165,7 @@ func (*dataset) initUser(client *ent.Tx) {
 		ui = append(ui, id)
 	}
 	client.User.CreateBulk(ub...).ExecX(context.Background())
+	client.UserAddr.CreateBulk(ua...).ExecX(context.Background())
 	client.UserLoginProfile.CreateBulk(ulp...).ExecX(context.Background())
 	client.UserPassword.CreateBulk(up...).ExecX(context.Background())
 	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
@@ -557,4 +568,26 @@ func InitResourcePolicy(client *ent.Tx) {
 	aps = append(aps, KOResDictDel)
 	// 创建策略
 	client.AppPolicy.CreateBulk(aps...).ExecX(context.Background())
+}
+
+func (*dataset) initRegion(client *ent.Tx) {
+	// country
+	cnty := make([]*ent.CountryCreate, 0)
+	c1 := client.Country.Create().SetID(1).SetCreatedBy(1).SetName("中国").SetCode("86").SetNameEn("China")
+	c2 := client.Country.Create().SetID(2).SetCreatedBy(1).SetName("中国香港").SetCode("852").SetNameEn("HongKong")
+	cnty = append(cnty, c1, c2)
+	client.Country.CreateBulk(cnty...).ExecX(context.Background())
+	// region
+	regs := make([]*ent.RegionCreate, 0)
+	r1 := client.Region.Create().SetID(1).SetCreatedBy(1).SetName("北京").SetCountryID(1)
+	r2 := client.Region.Create().SetID(2).SetCreatedBy(1).SetName("北京市").SetParentID(1).SetCountryID(1)
+	r3 := client.Region.Create().SetID(3).SetCreatedBy(1).SetName("东城区").SetParentID(2).SetCountryID(1)
+	r4 := client.Region.Create().SetID(4).SetCreatedBy(1).SetName("西城区").SetParentID(2).SetCountryID(1)
+	regs = append(regs, r1, r2, r3, r4)
+	r5 := client.Region.Create().SetID(5).SetCreatedBy(1).SetName("香港特别行政区").SetCountryID(2)
+	r6 := client.Region.Create().SetID(6).SetCreatedBy(1).SetName("九龙").SetParentID(5).SetCountryID(2)
+	r7 := client.Region.Create().SetID(7).SetCreatedBy(1).SetName("香港岛").SetParentID(5).SetCountryID(2)
+	r8 := client.Region.Create().SetID(8).SetCreatedBy(1).SetName("新界").SetParentID(5).SetCountryID(2)
+	regs = append(regs, r5, r6, r7, r8)
+	client.Region.CreateBulk(regs...).ExecX(context.Background())
 }

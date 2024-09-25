@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -32,7 +33,9 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -106,6 +109,7 @@ func checkColumn(table, column string) error {
 			appres.Table:            appres.ValidColumn,
 			approle.Table:           approle.ValidColumn,
 			approlepolicy.Table:     approlepolicy.ValidColumn,
+			country.Table:           country.ValidColumn,
 			fileidentity.Table:      fileidentity.ValidColumn,
 			filesource.Table:        filesource.ValidColumn,
 			oauthclient.Table:       oauthclient.ValidColumn,
@@ -117,7 +121,9 @@ func checkColumn(table, column string) error {
 			orguser.Table:           orguser.ValidColumn,
 			orguserpreference.Table: orguserpreference.ValidColumn,
 			permission.Table:        permission.ValidColumn,
+			region.Table:            region.ValidColumn,
 			user.Table:              user.ValidColumn,
+			useraddr.Table:          useraddr.ValidColumn,
 			userdevice.Table:        userdevice.ValidColumn,
 			useridentity.Table:      useridentity.ValidColumn,
 			userloginprofile.Table:  userloginprofile.ValidColumn,

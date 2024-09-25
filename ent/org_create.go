@@ -259,14 +259,6 @@ func (oc *OrgCreate) SetID(i int) *OrgCreate {
 	return oc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableID(i *int) *OrgCreate {
-	if i != nil {
-		oc.SetID(*i)
-	}
-	return oc
-}
-
 // SetParent sets the "parent" edge to the Org entity.
 func (oc *OrgCreate) SetParent(o *Org) *OrgCreate {
 	return oc.SetParentID(o.ID)
@@ -467,13 +459,6 @@ func (oc *OrgCreate) defaults() error {
 	if _, ok := oc.mutation.Status(); !ok {
 		v := org.DefaultStatus
 		oc.mutation.SetStatus(v)
-	}
-	if _, ok := oc.mutation.ID(); !ok {
-		if org.DefaultID == nil {
-			return fmt.Errorf("ent: uninitialized org.DefaultID (forgotten import ent/runtime?)")
-		}
-		v := org.DefaultID()
-		oc.mutation.SetID(v)
 	}
 	return nil
 }

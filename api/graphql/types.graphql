@@ -8,6 +8,8 @@ extend input CreateUserInput {
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
+    """地址信息"""
+    basicAddr: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -24,6 +26,14 @@ input AssignRoleUserInput {
 enum TreeAction {
     """作为子节点"""
     child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+"""列表操作类型"""
+enum ListAction {
     """上移"""
     up
     """下移"""
@@ -76,6 +86,8 @@ extend type User {
     isAssignOrgRole(orgRoleID:ID!): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
+    """地址信息"""
+    basicAddr: UserAddr
 }
 
 extend type Org {

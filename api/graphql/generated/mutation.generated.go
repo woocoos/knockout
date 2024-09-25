@@ -29,7 +29,7 @@ type MutationResolver interface {
 	CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error)
 	AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) (bool, error)
 	RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
-	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error)
+	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error)
 	UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error)
 	DeleteUser(ctx context.Context, userID int) (bool, error)
 	BindUserIdentity(ctx context.Context, input ent.CreateUserIdentityInput) (*ent.UserIdentity, error)
@@ -82,7 +82,7 @@ type MutationResolver interface {
 	DisableMfa(ctx context.Context, userID int) (bool, error)
 	SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error)
 	UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error)
-	RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error)
+	RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error)
 	CreateFileSource(ctx context.Context, input ent.CreateFileSourceInput) (*ent.FileSource, error)
 	UpdateFileSource(ctx context.Context, fsID int, input ent.UpdateFileSourceInput) (*ent.FileSource, error)
 	DeleteFileSource(ctx context.Context, fsID int) (bool, error)
@@ -95,6 +95,14 @@ type MutationResolver interface {
 	DisableOauthClient(ctx context.Context, id int) (*ent.OauthClient, error)
 	DeleteOauthClient(ctx context.Context, id int) (bool, error)
 	SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error)
+	CreateCountry(ctx context.Context, input ent.CreateCountryInput) (*ent.Country, error)
+	UpdateCountry(ctx context.Context, countryID int, input ent.UpdateCountryInput) (*ent.Country, error)
+	DeleteCountry(ctx context.Context, countryID int) (bool, error)
+	MoveCountry(ctx context.Context, sourceID int, targetID int, action model.ListAction) (bool, error)
+	CreateRegion(ctx context.Context, input ent.CreateRegionInput) (*ent.Region, error)
+	UpdateRegion(ctx context.Context, regionID int, input ent.UpdateRegionInput) (*ent.Region, error)
+	DeleteRegion(ctx context.Context, regionID int) (bool, error)
+	MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -434,6 +442,21 @@ func (ec *executionContext) field_Mutation_createApp_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateCountryInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateCountryInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -549,6 +572,21 @@ func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.C
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 ent.CreateRegionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateRegionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -692,6 +730,21 @@ func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_deleteCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["countryID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["countryID"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_deleteFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -764,6 +817,21 @@ func (ec *executionContext) field_Mutation_deleteOrganization_args(ctx context.C
 		}
 	}
 	args["orgID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["regionID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["regionID"] = arg0
 	return args, nil
 }
 
@@ -968,7 +1036,73 @@ func (ec *executionContext) field_Mutation_moveAppMenu_args(ctx context.Context,
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_moveCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sourceID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["targetId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["targetId"] = arg1
+	var arg2 model.ListAction
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg2, err = ec.unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_moveOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sourceID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["targetId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["targetId"] = arg1
+	var arg2 model.TreeAction
+	if tmp, ok := rawArgs["action"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["action"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_moveRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -1040,6 +1174,15 @@ func (ec *executionContext) field_Mutation_recoverOrgUser_args(ctx context.Conte
 		}
 	}
 	args["pwdInput"] = arg3
+	var arg4 *ent.UpdateUserAddrInput
+	if tmp, ok := rawArgs["basicAddr"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAddr"))
+		arg4, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["basicAddr"] = arg4
 	return args, nil
 }
 
@@ -1481,6 +1624,30 @@ func (ec *executionContext) field_Mutation_updateApp_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["countryID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["countryID"] = arg0
+	var arg1 ent.UpdateCountryInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateCountryInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1625,6 +1792,30 @@ func (ec *executionContext) field_Mutation_updatePermission_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["regionID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["regionID"] = arg0
+	var arg1 ent.UpdateRegionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateRegionInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1670,6 +1861,15 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg1
+	var arg2 *ent.UpdateUserAddrInput
+	if tmp, ok := rawArgs["basicAddr"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAddr"))
+		arg2, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["basicAddr"] = arg2
 	return args, nil
 }
 
@@ -2275,10 +2475,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_principalName(ctx, field)
 			case "displayName":
 				return ec.fieldContext_User_displayName(ctx, field)
-			case "email":
-				return ec.fieldContext_User_email(ctx, field)
-			case "mobile":
-				return ec.fieldContext_User_mobile(ctx, field)
 			case "userType":
 				return ec.fieldContext_User_userType(ctx, field)
 			case "creationType":
@@ -2291,6 +2487,18 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
+			case "gender":
+				return ec.fieldContext_User_gender(ctx, field)
+			case "citizenshipID":
+				return ec.fieldContext_User_citizenshipID(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "middleName":
+				return ec.fieldContext_User_middleName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2301,10 +2509,16 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
+			case "addrs":
+				return ec.fieldContext_User_addrs(ctx, field)
+			case "citizenship":
+				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			case "basicAddr":
+				return ec.fieldContext_User_basicAddr(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2375,10 +2589,6 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_principalName(ctx, field)
 			case "displayName":
 				return ec.fieldContext_User_displayName(ctx, field)
-			case "email":
-				return ec.fieldContext_User_email(ctx, field)
-			case "mobile":
-				return ec.fieldContext_User_mobile(ctx, field)
 			case "userType":
 				return ec.fieldContext_User_userType(ctx, field)
 			case "creationType":
@@ -2391,6 +2601,18 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
+			case "gender":
+				return ec.fieldContext_User_gender(ctx, field)
+			case "citizenshipID":
+				return ec.fieldContext_User_citizenshipID(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "middleName":
+				return ec.fieldContext_User_middleName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2401,10 +2623,16 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
+			case "addrs":
+				return ec.fieldContext_User_addrs(ctx, field)
+			case "citizenship":
+				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			case "basicAddr":
+				return ec.fieldContext_User_basicAddr(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2547,7 +2775,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["userID"].(int), fc.Args["input"].(ent.UpdateUserInput))
+		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["userID"].(int), fc.Args["input"].(ent.UpdateUserInput), fc.Args["basicAddr"].(*ent.UpdateUserAddrInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2585,10 +2813,6 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_principalName(ctx, field)
 			case "displayName":
 				return ec.fieldContext_User_displayName(ctx, field)
-			case "email":
-				return ec.fieldContext_User_email(ctx, field)
-			case "mobile":
-				return ec.fieldContext_User_mobile(ctx, field)
 			case "userType":
 				return ec.fieldContext_User_userType(ctx, field)
 			case "creationType":
@@ -2601,6 +2825,18 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
+			case "gender":
+				return ec.fieldContext_User_gender(ctx, field)
+			case "citizenshipID":
+				return ec.fieldContext_User_citizenshipID(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "middleName":
+				return ec.fieldContext_User_middleName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -2611,10 +2847,16 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
+			case "addrs":
+				return ec.fieldContext_User_addrs(ctx, field)
+			case "citizenship":
+				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			case "basicAddr":
+				return ec.fieldContext_User_basicAddr(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -6156,7 +6398,7 @@ func (ec *executionContext) _Mutation_recoverOrgUser(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RecoverOrgUser(rctx, fc.Args["userID"].(int), fc.Args["userInput"].(ent.UpdateUserInput), fc.Args["pwdKind"].(userloginprofile.SetKind), fc.Args["pwdInput"].(*ent.CreateUserPasswordInput))
+		return ec.resolvers.Mutation().RecoverOrgUser(rctx, fc.Args["userID"].(int), fc.Args["userInput"].(ent.UpdateUserInput), fc.Args["pwdKind"].(userloginprofile.SetKind), fc.Args["pwdInput"].(*ent.CreateUserPasswordInput), fc.Args["basicAddr"].(*ent.UpdateUserAddrInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6197,10 +6439,6 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_principalName(ctx, field)
 			case "displayName":
 				return ec.fieldContext_User_displayName(ctx, field)
-			case "email":
-				return ec.fieldContext_User_email(ctx, field)
-			case "mobile":
-				return ec.fieldContext_User_mobile(ctx, field)
 			case "userType":
 				return ec.fieldContext_User_userType(ctx, field)
 			case "creationType":
@@ -6213,6 +6451,18 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_comments(ctx, field)
 			case "avatar":
 				return ec.fieldContext_User_avatar(ctx, field)
+			case "gender":
+				return ec.fieldContext_User_gender(ctx, field)
+			case "citizenshipID":
+				return ec.fieldContext_User_citizenshipID(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "middleName":
+				return ec.fieldContext_User_middleName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
 			case "identities":
 				return ec.fieldContext_User_identities(ctx, field)
 			case "loginProfile":
@@ -6223,10 +6473,16 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
+			case "addrs":
+				return ec.fieldContext_User_addrs(ctx, field)
+			case "citizenship":
+				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			case "basicAddr":
+				return ec.fieldContext_User_basicAddr(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -7133,6 +7389,550 @@ func (ec *executionContext) fieldContext_Mutation_saveOrgUserPreference(ctx cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createCountry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createCountry(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateCountry(rctx, fc.Args["input"].(ent.CreateCountryInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Country)
+	fc.Result = res
+	return ec.marshalOCountry2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCountry(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createCountry(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Country_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Country_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Country_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Country_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Country_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Country_name(ctx, field)
+			case "nameEn":
+				return ec.fieldContext_Country_nameEn(ctx, field)
+			case "code":
+				return ec.fieldContext_Country_code(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Country_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_Country_status(ctx, field)
+			case "regions":
+				return ec.fieldContext_Country_regions(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Country", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createCountry_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateCountry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateCountry(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateCountry(rctx, fc.Args["countryID"].(int), fc.Args["input"].(ent.UpdateCountryInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Country)
+	fc.Result = res
+	return ec.marshalOCountry2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCountry(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateCountry(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Country_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Country_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Country_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Country_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Country_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_Country_name(ctx, field)
+			case "nameEn":
+				return ec.fieldContext_Country_nameEn(ctx, field)
+			case "code":
+				return ec.fieldContext_Country_code(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Country_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_Country_status(ctx, field)
+			case "regions":
+				return ec.fieldContext_Country_regions(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Country", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateCountry_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteCountry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteCountry(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteCountry(rctx, fc.Args["countryID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteCountry(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteCountry_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_moveCountry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_moveCountry(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MoveCountry(rctx, fc.Args["sourceID"].(int), fc.Args["targetId"].(int), fc.Args["action"].(model.ListAction))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_moveCountry(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_moveCountry_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createRegion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createRegion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateRegion(rctx, fc.Args["input"].(ent.CreateRegionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Region)
+	fc.Result = res
+	return ec.marshalORegion2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐRegion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createRegion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Region_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Region_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Region_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Region_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Region_updatedAt(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Region_parentID(ctx, field)
+			case "name":
+				return ec.fieldContext_Region_name(ctx, field)
+			case "nameEn":
+				return ec.fieldContext_Region_nameEn(ctx, field)
+			case "shortCode":
+				return ec.fieldContext_Region_shortCode(ctx, field)
+			case "zipCode":
+				return ec.fieldContext_Region_zipCode(ctx, field)
+			case "countryID":
+				return ec.fieldContext_Region_countryID(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Region_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_Region_status(ctx, field)
+			case "parent":
+				return ec.fieldContext_Region_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Region_children(ctx, field)
+			case "country":
+				return ec.fieldContext_Region_country(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Region", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createRegion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateRegion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateRegion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateRegion(rctx, fc.Args["regionID"].(int), fc.Args["input"].(ent.UpdateRegionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Region)
+	fc.Result = res
+	return ec.marshalORegion2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐRegion(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateRegion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Region_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Region_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Region_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Region_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Region_updatedAt(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Region_parentID(ctx, field)
+			case "name":
+				return ec.fieldContext_Region_name(ctx, field)
+			case "nameEn":
+				return ec.fieldContext_Region_nameEn(ctx, field)
+			case "shortCode":
+				return ec.fieldContext_Region_shortCode(ctx, field)
+			case "zipCode":
+				return ec.fieldContext_Region_zipCode(ctx, field)
+			case "countryID":
+				return ec.fieldContext_Region_countryID(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Region_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_Region_status(ctx, field)
+			case "parent":
+				return ec.fieldContext_Region_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Region_children(ctx, field)
+			case "country":
+				return ec.fieldContext_Region_country(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Region", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateRegion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteRegion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteRegion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteRegion(rctx, fc.Args["regionID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteRegion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteRegion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_moveRegion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_moveRegion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MoveRegion(rctx, fc.Args["sourceID"].(int), fc.Args["targetId"].(int), fc.Args["action"].(model.TreeAction))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_moveRegion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_moveRegion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -7608,6 +8408,50 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "saveOrgUserPreference":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_saveOrgUserPreference(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createCountry":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createCountry(ctx, field)
+			})
+		case "updateCountry":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateCountry(ctx, field)
+			})
+		case "deleteCountry":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteCountry(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "moveCountry":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_moveCountry(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createRegion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createRegion(ctx, field)
+			})
+		case "updateRegion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateRegion(ctx, field)
+			})
+		case "deleteRegion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteRegion(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "moveRegion":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_moveRegion(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

@@ -35,7 +35,7 @@ type Mutation {
         """用户ID"""
         userID:ID!): Boolean!
     """更新用户"""
-    updateUser(userID:ID!,input: UpdateUserInput!): User
+    updateUser(userID:ID!,input: UpdateUserInput!,basicAddr: UpdateUserAddrInput): User
     """用户登陆配置"""
     updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
@@ -145,7 +145,7 @@ type Mutation {
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
-    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,basicAddr: UpdateUserAddrInput):User!
     """创建文件来源"""
     createFileSource(input: CreateFileSourceInput!): FileSource!
     """更新文件来源"""
@@ -170,4 +170,32 @@ type Mutation {
     deleteOauthClient(id: ID!): Boolean!
     """保存组织用户偏好"""
     saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
+    """创建国家"""
+    createCountry(input: CreateCountryInput!): Country
+    """更新国家"""
+    updateCountry(countryID:ID!,input: UpdateCountryInput!): Country
+    """删除国家"""
+    deleteCountry(countryID:ID!): Boolean!
+    """国家位置调整，action: child, up, down"""
+    moveCountry(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:ListAction!
+    ): Boolean!
+    """创建地区"""
+    createRegion(input: CreateRegionInput!): Region
+    """更新地区"""
+    updateRegion(regionID:ID!,input: UpdateRegionInput!): Region
+    """删除地区"""
+    deleteRegion(regionID:ID!): Boolean!
+    """地区位置调整，action: child, up, down"""
+    moveRegion(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:TreeAction!
+    ): Boolean!
 }

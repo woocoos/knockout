@@ -3,6 +3,9 @@
 package orguser
 
 import (
+	"fmt"
+	"io"
+	"strconv"
 	"time"
 
 	"entgo.io/ent"
@@ -31,6 +34,8 @@ const (
 	FieldJoinedAt = "joined_at"
 	// FieldDisplayName holds the string denoting the display_name field in the database.
 	FieldDisplayName = "display_name"
+	// FieldUserType holds the string denoting the user_type field in the database.
+	FieldUserType = "user_type"
 	// EdgeOrg holds the string denoting the org edge name in mutations.
 	EdgeOrg = "org"
 	// EdgeUser holds the string denoting the user edge name in mutations.
@@ -80,6 +85,7 @@ var Columns = []string{
 	FieldUserID,
 	FieldJoinedAt,
 	FieldDisplayName,
+	FieldUserType,
 }
 
 var (
@@ -110,6 +116,32 @@ var (
 	// DefaultJoinedAt holds the default value on creation for the "joined_at" field.
 	DefaultJoinedAt func() time.Time
 )
+
+// UserType defines the type for the "user_type" enum field.
+type UserType string
+
+// UserTypeExternal is the default value of the UserType enum.
+const DefaultUserType = UserTypeExternal
+
+// UserType values.
+const (
+	UserTypeInternal UserType = "internal"
+	UserTypeExternal UserType = "external"
+)
+
+func (ut UserType) String() string {
+	return string(ut)
+}
+
+// UserTypeValidator is a validator for the "user_type" field enum values. It is called by the builders before save.
+func UserTypeValidator(ut UserType) error {
+	switch ut {
+	case UserTypeInternal, UserTypeExternal:
+		return nil
+	default:
+		return fmt.Errorf("orguser: invalid enum value for user_type field: %q", ut)
+	}
+}
 
 // OrderOption defines the ordering options for the OrgUser queries.
 type OrderOption func(*sql.Selector)
@@ -157,6 +189,11 @@ func ByJoinedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByDisplayName orders the results by the display_name field.
 func ByDisplayName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplayName, opts...).ToFunc()
+}
+
+// ByUserType orders the results by the user_type field.
+func ByUserType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserType, opts...).ToFunc()
 }
 
 // ByOrgField orders the results by org field.
@@ -227,4 +264,22 @@ func newOrgRoleUserStep() *sqlgraph.Step {
 		sqlgraph.To(OrgRoleUserInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, OrgRoleUserTable, OrgRoleUserColumn),
 	)
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e UserType) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *UserType) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = UserType(str)
+	if err := UserTypeValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid UserType", str)
+	}
+	return nil
 }

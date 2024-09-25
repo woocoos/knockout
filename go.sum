@@ -365,6 +365,8 @@ github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2 h1:mfLV
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2/go.mod h1:v6b9mWRshfwNfMFZeC/zWUyVDZpD7OLPlUPQHFADa2c=
 github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5 h1:3RS4BJyTW6xnvRF30nZUQsp0eMbzpfUsMjvhtmvKmzs=
 github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5/go.mod h1:WGicpJtJzVJETrn/nL8ids3UZquQYLDNm1jpw5Et42M=
+github.com/woocoos/entco v0.0.0-20240411071658-1e7b23d4df15 h1:KKn47zIZlcVBWj7FwUjI22ojqodho9yFCzubu7DDJZw=
+github.com/woocoos/entco v0.0.0-20240411071658-1e7b23d4df15/go.mod h1:ruXsaYCt0SmH4vL9nJMk+j6+FMq0AKgyLl7AGt0zNXg=
 github.com/woocoos/knockout-go v0.0.0-20240831084203-f75e619750a2 h1:a3/Fuh2prrgMuexrQ0GbyknVemtOd6xXx0/FLPgh3WQ=
 github.com/woocoos/knockout-go v0.0.0-20240831084203-f75e619750a2/go.mod h1:5TbkFC9GwTSCVJmxVxbc3NOj1yTuM8RI3+OFlPGERQY=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

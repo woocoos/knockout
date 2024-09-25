@@ -36,6 +36,13 @@ func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int],
 		ent.WithAppDictFilter(where.Filter))
 }
 
+// Countries is the resolver for the countries field.
+func (r *queryResolver) Countries(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) (*ent.CountryConnection, error) {
+	return r.client.Country.Query().Paginate(ctx, after, first, before, last,
+		ent.WithCountryOrder(orderBy),
+		ent.WithCountryFilter(where.Filter))
+}
+
 // FileIdentities is the resolver for the fileIdentities field.
 func (r *queryResolver) FileIdentities(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) (*ent.FileIdentityConnection, error) {
 	return r.client.FileIdentity.Query().Paginate(ctx, after, first, before, last,
@@ -55,6 +62,13 @@ func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[
 	return r.client.Org.Query().Paginate(ctx, after, first, before, last,
 		ent.WithOrgOrder(orderBy),
 		ent.WithOrgFilter(where.Filter))
+}
+
+// Regions is the resolver for the regions field.
+func (r *queryResolver) Regions(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) (*ent.RegionConnection, error) {
+	return r.client.Region.Query().Paginate(ctx, after, first, before, last,
+		ent.WithRegionOrder(orderBy),
+		ent.WithRegionFilter(where.Filter))
 }
 
 // Users is the resolver for the users field.

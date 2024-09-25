@@ -135,6 +135,20 @@ func (ouu *OrgUserUpdate) SetNillableDisplayName(s *string) *OrgUserUpdate {
 	return ouu
 }
 
+// SetUserType sets the "user_type" field.
+func (ouu *OrgUserUpdate) SetUserType(ot orguser.UserType) *OrgUserUpdate {
+	ouu.mutation.SetUserType(ot)
+	return ouu
+}
+
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (ouu *OrgUserUpdate) SetNillableUserType(ot *orguser.UserType) *OrgUserUpdate {
+	if ot != nil {
+		ouu.SetUserType(*ot)
+	}
+	return ouu
+}
+
 // SetOrg sets the "org" edge to the Org entity.
 func (ouu *OrgUserUpdate) SetOrg(o *Org) *OrgUserUpdate {
 	return ouu.SetOrgID(o.ID)
@@ -263,6 +277,11 @@ func (ouu *OrgUserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ouu *OrgUserUpdate) check() error {
+	if v, ok := ouu.mutation.UserType(); ok {
+		if err := orguser.UserTypeValidator(v); err != nil {
+			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
+		}
+	}
 	if ouu.mutation.OrgCleared() && len(ouu.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
@@ -304,6 +323,9 @@ func (ouu *OrgUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ouu.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
+	}
+	if value, ok := ouu.mutation.UserType(); ok {
+		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
 	}
 	if ouu.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -588,6 +610,20 @@ func (ouuo *OrgUserUpdateOne) SetNillableDisplayName(s *string) *OrgUserUpdateOn
 	return ouuo
 }
 
+// SetUserType sets the "user_type" field.
+func (ouuo *OrgUserUpdateOne) SetUserType(ot orguser.UserType) *OrgUserUpdateOne {
+	ouuo.mutation.SetUserType(ot)
+	return ouuo
+}
+
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (ouuo *OrgUserUpdateOne) SetNillableUserType(ot *orguser.UserType) *OrgUserUpdateOne {
+	if ot != nil {
+		ouuo.SetUserType(*ot)
+	}
+	return ouuo
+}
+
 // SetOrg sets the "org" edge to the Org entity.
 func (ouuo *OrgUserUpdateOne) SetOrg(o *Org) *OrgUserUpdateOne {
 	return ouuo.SetOrgID(o.ID)
@@ -729,6 +765,11 @@ func (ouuo *OrgUserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (ouuo *OrgUserUpdateOne) check() error {
+	if v, ok := ouuo.mutation.UserType(); ok {
+		if err := orguser.UserTypeValidator(v); err != nil {
+			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
+		}
+	}
 	if ouuo.mutation.OrgCleared() && len(ouuo.mutation.OrgIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "OrgUser.org"`)
 	}
@@ -787,6 +828,9 @@ func (ouuo *OrgUserUpdateOne) sqlSave(ctx context.Context) (_node *OrgUser, err 
 	}
 	if value, ok := ouuo.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
+	}
+	if value, ok := ouuo.mutation.UserType(); ok {
+		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
 	}
 	if ouuo.mutation.OrgCleared() {
 		edge := &sqlgraph.EdgeSpec{

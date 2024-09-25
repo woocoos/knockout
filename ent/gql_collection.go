@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -27,7 +28,9 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -1774,6 +1777,147 @@ func newAppRolePaginateArgs(rv map[string]any) *approlePaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (c *CountryQuery) CollectFields(ctx context.Context, satisfies ...string) (*CountryQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return c, nil
+	}
+	if err := c.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *CountryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(country.Columns))
+		selectedFields = []string{country.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "regions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RegionClient{config: c.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, regionImplementors)...); err != nil {
+				return err
+			}
+			c.WithNamedRegions(alias, func(wq *RegionQuery) {
+				*wq = *query
+			})
+		case "createdBy":
+			if _, ok := fieldSeen[country.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, country.FieldCreatedBy)
+				fieldSeen[country.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[country.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, country.FieldCreatedAt)
+				fieldSeen[country.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[country.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, country.FieldUpdatedBy)
+				fieldSeen[country.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[country.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, country.FieldUpdatedAt)
+				fieldSeen[country.FieldUpdatedAt] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[country.FieldName]; !ok {
+				selectedFields = append(selectedFields, country.FieldName)
+				fieldSeen[country.FieldName] = struct{}{}
+			}
+		case "nameEn":
+			if _, ok := fieldSeen[country.FieldNameEn]; !ok {
+				selectedFields = append(selectedFields, country.FieldNameEn)
+				fieldSeen[country.FieldNameEn] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[country.FieldCode]; !ok {
+				selectedFields = append(selectedFields, country.FieldCode)
+				fieldSeen[country.FieldCode] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[country.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, country.FieldDisplaySort)
+				fieldSeen[country.FieldDisplaySort] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[country.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, country.FieldStatus)
+				fieldSeen[country.FieldStatus] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		c.Select(selectedFields...)
+	}
+	return nil
+}
+
+type countryPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []CountryPaginateOption
+}
+
+func newCountryPaginateArgs(rv map[string]any) *countryPaginateArgs {
+	args := &countryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &CountryOrder{Field: &CountryOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithCountryOrder(order))
+			}
+		case *CountryOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithCountryOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*CountryWhereInput); ok {
+		args.opts = append(args.opts, WithCountryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (fi *FileIdentityQuery) CollectFields(ctx context.Context, satisfies ...string) (*FileIdentityQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -3455,6 +3599,190 @@ func newPermissionPaginateArgs(rv map[string]any) *permissionPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (r *RegionQuery) CollectFields(ctx context.Context, satisfies ...string) (*RegionQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return r, nil
+	}
+	if err := r.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+func (r *RegionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(region.Columns))
+		selectedFields = []string{region.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "parent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RegionClient{config: r.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, regionImplementors)...); err != nil {
+				return err
+			}
+			r.withParent = query
+			if _, ok := fieldSeen[region.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, region.FieldParentID)
+				fieldSeen[region.FieldParentID] = struct{}{}
+			}
+		case "children":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RegionClient{config: r.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, regionImplementors)...); err != nil {
+				return err
+			}
+			r.WithNamedChildren(alias, func(wq *RegionQuery) {
+				*wq = *query
+			})
+		case "country":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CountryClient{config: r.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, countryImplementors)...); err != nil {
+				return err
+			}
+			r.withCountry = query
+			if _, ok := fieldSeen[region.FieldCountryID]; !ok {
+				selectedFields = append(selectedFields, region.FieldCountryID)
+				fieldSeen[region.FieldCountryID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[region.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, region.FieldCreatedBy)
+				fieldSeen[region.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[region.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, region.FieldCreatedAt)
+				fieldSeen[region.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[region.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, region.FieldUpdatedBy)
+				fieldSeen[region.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[region.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, region.FieldUpdatedAt)
+				fieldSeen[region.FieldUpdatedAt] = struct{}{}
+			}
+		case "parentID":
+			if _, ok := fieldSeen[region.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, region.FieldParentID)
+				fieldSeen[region.FieldParentID] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[region.FieldName]; !ok {
+				selectedFields = append(selectedFields, region.FieldName)
+				fieldSeen[region.FieldName] = struct{}{}
+			}
+		case "nameEn":
+			if _, ok := fieldSeen[region.FieldNameEn]; !ok {
+				selectedFields = append(selectedFields, region.FieldNameEn)
+				fieldSeen[region.FieldNameEn] = struct{}{}
+			}
+		case "shortCode":
+			if _, ok := fieldSeen[region.FieldShortCode]; !ok {
+				selectedFields = append(selectedFields, region.FieldShortCode)
+				fieldSeen[region.FieldShortCode] = struct{}{}
+			}
+		case "zipCode":
+			if _, ok := fieldSeen[region.FieldZipCode]; !ok {
+				selectedFields = append(selectedFields, region.FieldZipCode)
+				fieldSeen[region.FieldZipCode] = struct{}{}
+			}
+		case "countryID":
+			if _, ok := fieldSeen[region.FieldCountryID]; !ok {
+				selectedFields = append(selectedFields, region.FieldCountryID)
+				fieldSeen[region.FieldCountryID] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[region.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, region.FieldDisplaySort)
+				fieldSeen[region.FieldDisplaySort] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[region.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, region.FieldStatus)
+				fieldSeen[region.FieldStatus] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		r.Select(selectedFields...)
+	}
+	return nil
+}
+
+type regionPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []RegionPaginateOption
+}
+
+func newRegionPaginateArgs(rv map[string]any) *regionPaginateArgs {
+	args := &regionPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &RegionOrder{Field: &RegionOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithRegionOrder(order))
+			}
+		case *RegionOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithRegionOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*RegionWhereInput); ok {
+		args.opts = append(args.opts, WithRegionFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (u *UserQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -3609,6 +3937,32 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			u.WithNamedOauthClients(alias, func(wq *OauthClientQuery) {
 				*wq = *query
 			})
+		case "addrs":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserAddrClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, useraddrImplementors)...); err != nil {
+				return err
+			}
+			u.WithNamedAddrs(alias, func(wq *UserAddrQuery) {
+				*wq = *query
+			})
+		case "citizenship":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CountryClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, countryImplementors)...); err != nil {
+				return err
+			}
+			u.withCitizenship = query
+			if _, ok := fieldSeen[user.FieldCitizenshipID]; !ok {
+				selectedFields = append(selectedFields, user.FieldCitizenshipID)
+				fieldSeen[user.FieldCitizenshipID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[user.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, user.FieldCreatedBy)
@@ -3644,16 +3998,6 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				selectedFields = append(selectedFields, user.FieldDisplayName)
 				fieldSeen[user.FieldDisplayName] = struct{}{}
 			}
-		case "email":
-			if _, ok := fieldSeen[user.FieldEmail]; !ok {
-				selectedFields = append(selectedFields, user.FieldEmail)
-				fieldSeen[user.FieldEmail] = struct{}{}
-			}
-		case "mobile":
-			if _, ok := fieldSeen[user.FieldMobile]; !ok {
-				selectedFields = append(selectedFields, user.FieldMobile)
-				fieldSeen[user.FieldMobile] = struct{}{}
-			}
 		case "userType":
 			if _, ok := fieldSeen[user.FieldUserType]; !ok {
 				selectedFields = append(selectedFields, user.FieldUserType)
@@ -3683,6 +4027,36 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			if _, ok := fieldSeen[user.FieldAvatar]; !ok {
 				selectedFields = append(selectedFields, user.FieldAvatar)
 				fieldSeen[user.FieldAvatar] = struct{}{}
+			}
+		case "gender":
+			if _, ok := fieldSeen[user.FieldGender]; !ok {
+				selectedFields = append(selectedFields, user.FieldGender)
+				fieldSeen[user.FieldGender] = struct{}{}
+			}
+		case "citizenshipID":
+			if _, ok := fieldSeen[user.FieldCitizenshipID]; !ok {
+				selectedFields = append(selectedFields, user.FieldCitizenshipID)
+				fieldSeen[user.FieldCitizenshipID] = struct{}{}
+			}
+		case "firstName":
+			if _, ok := fieldSeen[user.FieldFirstName]; !ok {
+				selectedFields = append(selectedFields, user.FieldFirstName)
+				fieldSeen[user.FieldFirstName] = struct{}{}
+			}
+		case "middleName":
+			if _, ok := fieldSeen[user.FieldMiddleName]; !ok {
+				selectedFields = append(selectedFields, user.FieldMiddleName)
+				fieldSeen[user.FieldMiddleName] = struct{}{}
+			}
+		case "lastName":
+			if _, ok := fieldSeen[user.FieldLastName]; !ok {
+				selectedFields = append(selectedFields, user.FieldLastName)
+				fieldSeen[user.FieldLastName] = struct{}{}
+			}
+		case "lang":
+			if _, ok := fieldSeen[user.FieldLang]; !ok {
+				selectedFields = append(selectedFields, user.FieldLang)
+				fieldSeen[user.FieldLang] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3743,6 +4117,188 @@ func newUserPaginateArgs(rv map[string]any) *userPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*UserWhereInput); ok {
 		args.opts = append(args.opts, WithUserFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ua *UserAddrQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserAddrQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ua, nil
+	}
+	if err := ua.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ua, nil
+}
+
+func (ua *UserAddrQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(useraddr.Columns))
+		selectedFields = []string{useraddr.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "user":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: ua.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
+				return err
+			}
+			ua.withUser = query
+			if _, ok := fieldSeen[useraddr.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldUserID)
+				fieldSeen[useraddr.FieldUserID] = struct{}{}
+			}
+		case "region":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RegionClient{config: ua.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, regionImplementors)...); err != nil {
+				return err
+			}
+			ua.withRegion = query
+			if _, ok := fieldSeen[useraddr.FieldRegionID]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldRegionID)
+				fieldSeen[useraddr.FieldRegionID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[useraddr.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldCreatedBy)
+				fieldSeen[useraddr.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[useraddr.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldCreatedAt)
+				fieldSeen[useraddr.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[useraddr.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldUpdatedBy)
+				fieldSeen[useraddr.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[useraddr.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldUpdatedAt)
+				fieldSeen[useraddr.FieldUpdatedAt] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[useraddr.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldUserID)
+				fieldSeen[useraddr.FieldUserID] = struct{}{}
+			}
+		case "addrType":
+			if _, ok := fieldSeen[useraddr.FieldAddrType]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldAddrType)
+				fieldSeen[useraddr.FieldAddrType] = struct{}{}
+			}
+		case "regionID":
+			if _, ok := fieldSeen[useraddr.FieldRegionID]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldRegionID)
+				fieldSeen[useraddr.FieldRegionID] = struct{}{}
+			}
+		case "addr":
+			if _, ok := fieldSeen[useraddr.FieldAddr]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldAddr)
+				fieldSeen[useraddr.FieldAddr] = struct{}{}
+			}
+		case "email":
+			if _, ok := fieldSeen[useraddr.FieldEmail]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldEmail)
+				fieldSeen[useraddr.FieldEmail] = struct{}{}
+			}
+		case "fax":
+			if _, ok := fieldSeen[useraddr.FieldFax]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldFax)
+				fieldSeen[useraddr.FieldFax] = struct{}{}
+			}
+		case "tel":
+			if _, ok := fieldSeen[useraddr.FieldTel]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldTel)
+				fieldSeen[useraddr.FieldTel] = struct{}{}
+			}
+		case "mobile":
+			if _, ok := fieldSeen[useraddr.FieldMobile]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldMobile)
+				fieldSeen[useraddr.FieldMobile] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[useraddr.FieldName]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldName)
+				fieldSeen[useraddr.FieldName] = struct{}{}
+			}
+		case "isDefault":
+			if _, ok := fieldSeen[useraddr.FieldIsDefault]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldIsDefault)
+				fieldSeen[useraddr.FieldIsDefault] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ua.Select(selectedFields...)
+	}
+	return nil
+}
+
+type useraddrPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []UserAddrPaginateOption
+}
+
+func newUserAddrPaginateArgs(rv map[string]any) *useraddrPaginateArgs {
+	args := &useraddrPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &UserAddrOrder{Field: &UserAddrOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithUserAddrOrder(order))
+			}
+		case *UserAddrOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithUserAddrOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*UserAddrWhereInput); ok {
+		args.opts = append(args.opts, WithUserAddrFilter(v.Filter))
 	}
 	return args
 }

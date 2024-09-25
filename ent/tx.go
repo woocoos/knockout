@@ -30,6 +30,8 @@ type Tx struct {
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
 	// FileIdentity is the client for interacting with the FileIdentity builders.
 	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
@@ -52,8 +54,12 @@ type Tx struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAddr is the client for interacting with the UserAddr builders.
+	UserAddr *UserAddrClient
 	// UserDevice is the client for interacting with the UserDevice builders.
 	UserDevice *UserDeviceClient
 	// UserIdentity is the client for interacting with the UserIdentity builders.
@@ -202,6 +208,7 @@ func (tx *Tx) init() {
 	tx.AppRes = NewAppResClient(tx.config)
 	tx.AppRole = NewAppRoleClient(tx.config)
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)
+	tx.Country = NewCountryClient(tx.config)
 	tx.FileIdentity = NewFileIdentityClient(tx.config)
 	tx.FileSource = NewFileSourceClient(tx.config)
 	tx.OauthClient = NewOauthClientClient(tx.config)
@@ -213,7 +220,9 @@ func (tx *Tx) init() {
 	tx.OrgUser = NewOrgUserClient(tx.config)
 	tx.OrgUserPreference = NewOrgUserPreferenceClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
+	tx.Region = NewRegionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserAddr = NewUserAddrClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)
 	tx.UserIdentity = NewUserIdentityClient(tx.config)
 	tx.UserLoginProfile = NewUserLoginProfileClient(tx.config)

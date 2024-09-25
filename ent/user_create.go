@@ -12,11 +12,13 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -105,34 +107,6 @@ func (uc *UserCreate) SetDisplayName(s string) *UserCreate {
 	return uc
 }
 
-// SetEmail sets the "email" field.
-func (uc *UserCreate) SetEmail(s string) *UserCreate {
-	uc.mutation.SetEmail(s)
-	return uc
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uc *UserCreate) SetNillableEmail(s *string) *UserCreate {
-	if s != nil {
-		uc.SetEmail(*s)
-	}
-	return uc
-}
-
-// SetMobile sets the "mobile" field.
-func (uc *UserCreate) SetMobile(s string) *UserCreate {
-	uc.mutation.SetMobile(s)
-	return uc
-}
-
-// SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uc *UserCreate) SetNillableMobile(s *string) *UserCreate {
-	if s != nil {
-		uc.SetMobile(*s)
-	}
-	return uc
-}
-
 // SetUserType sets the "user_type" field.
 func (uc *UserCreate) SetUserType(ut user.UserType) *UserCreate {
 	uc.mutation.SetUserType(ut)
@@ -193,17 +167,93 @@ func (uc *UserCreate) SetNillableAvatar(s *string) *UserCreate {
 	return uc
 }
 
-// SetID sets the "id" field.
-func (uc *UserCreate) SetID(i int) *UserCreate {
-	uc.mutation.SetID(i)
+// SetGender sets the "gender" field.
+func (uc *UserCreate) SetGender(u user.Gender) *UserCreate {
+	uc.mutation.SetGender(u)
 	return uc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (uc *UserCreate) SetNillableID(i *int) *UserCreate {
-	if i != nil {
-		uc.SetID(*i)
+// SetNillableGender sets the "gender" field if the given value is not nil.
+func (uc *UserCreate) SetNillableGender(u *user.Gender) *UserCreate {
+	if u != nil {
+		uc.SetGender(*u)
 	}
+	return uc
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (uc *UserCreate) SetCitizenshipID(i int) *UserCreate {
+	uc.mutation.SetCitizenshipID(i)
+	return uc
+}
+
+// SetNillableCitizenshipID sets the "citizenship_id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableCitizenshipID(i *int) *UserCreate {
+	if i != nil {
+		uc.SetCitizenshipID(*i)
+	}
+	return uc
+}
+
+// SetFirstName sets the "first_name" field.
+func (uc *UserCreate) SetFirstName(s string) *UserCreate {
+	uc.mutation.SetFirstName(s)
+	return uc
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableFirstName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetFirstName(*s)
+	}
+	return uc
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (uc *UserCreate) SetMiddleName(s string) *UserCreate {
+	uc.mutation.SetMiddleName(s)
+	return uc
+}
+
+// SetNillableMiddleName sets the "middle_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableMiddleName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetMiddleName(*s)
+	}
+	return uc
+}
+
+// SetLastName sets the "last_name" field.
+func (uc *UserCreate) SetLastName(s string) *UserCreate {
+	uc.mutation.SetLastName(s)
+	return uc
+}
+
+// SetNillableLastName sets the "last_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableLastName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetLastName(*s)
+	}
+	return uc
+}
+
+// SetLang sets the "lang" field.
+func (uc *UserCreate) SetLang(s string) *UserCreate {
+	uc.mutation.SetLang(s)
+	return uc
+}
+
+// SetNillableLang sets the "lang" field if the given value is not nil.
+func (uc *UserCreate) SetNillableLang(s *string) *UserCreate {
+	if s != nil {
+		uc.SetLang(*s)
+	}
+	return uc
+}
+
+// SetID sets the "id" field.
+func (uc *UserCreate) SetID(i int) *UserCreate {
+	uc.mutation.SetID(i)
 	return uc
 }
 
@@ -316,6 +366,26 @@ func (uc *UserCreate) AddOauthClients(o ...*OauthClient) *UserCreate {
 	return uc.AddOauthClientIDs(ids...)
 }
 
+// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
+func (uc *UserCreate) AddAddrIDs(ids ...int) *UserCreate {
+	uc.mutation.AddAddrIDs(ids...)
+	return uc
+}
+
+// AddAddrs adds the "addrs" edges to the UserAddr entity.
+func (uc *UserCreate) AddAddrs(u ...*UserAddr) *UserCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uc.AddAddrIDs(ids...)
+}
+
+// SetCitizenship sets the "citizenship" edge to the Country entity.
+func (uc *UserCreate) SetCitizenship(c *Country) *UserCreate {
+	return uc.SetCitizenshipID(c.ID)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (uc *UserCreate) AddOrgUserIDs(ids ...int) *UserCreate {
 	uc.mutation.AddOrgUserIDs(ids...)
@@ -375,12 +445,9 @@ func (uc *UserCreate) defaults() error {
 		v := user.DefaultCreatedAt()
 		uc.mutation.SetCreatedAt(v)
 	}
-	if _, ok := uc.mutation.ID(); !ok {
-		if user.DefaultID == nil {
-			return fmt.Errorf("ent: uninitialized user.DefaultID (forgotten import ent/runtime?)")
-		}
-		v := user.DefaultID()
-		uc.mutation.SetID(v)
+	if _, ok := uc.mutation.Gender(); !ok {
+		v := user.DefaultGender
+		uc.mutation.SetGender(v)
 	}
 	return nil
 }
@@ -398,16 +465,6 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "User.display_name"`)}
-	}
-	if v, ok := uc.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
-		}
-	}
-	if v, ok := uc.mutation.Mobile(); ok {
-		if err := user.MobileValidator(v); err != nil {
-			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "User.mobile": %w`, err)}
-		}
 	}
 	if _, ok := uc.mutation.UserType(); !ok {
 		return &ValidationError{Name: "user_type", err: errors.New(`ent: missing required field "User.user_type"`)}
@@ -441,6 +498,29 @@ func (uc *UserCreate) check() error {
 	if v, ok := uc.mutation.Avatar(); ok {
 		if err := user.AvatarValidator(v); err != nil {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
+	if _, ok := uc.mutation.Gender(); !ok {
+		return &ValidationError{Name: "gender", err: errors.New(`ent: missing required field "User.gender"`)}
+	}
+	if v, ok := uc.mutation.Gender(); ok {
+		if err := user.GenderValidator(v); err != nil {
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "User.gender": %w`, err)}
+		}
+	}
+	if v, ok := uc.mutation.FirstName(); ok {
+		if err := user.FirstNameValidator(v); err != nil {
+			return &ValidationError{Name: "first_name", err: fmt.Errorf(`ent: validator failed for field "User.first_name": %w`, err)}
+		}
+	}
+	if v, ok := uc.mutation.MiddleName(); ok {
+		if err := user.MiddleNameValidator(v); err != nil {
+			return &ValidationError{Name: "middle_name", err: fmt.Errorf(`ent: validator failed for field "User.middle_name": %w`, err)}
+		}
+	}
+	if v, ok := uc.mutation.LastName(); ok {
+		if err := user.LastNameValidator(v); err != nil {
+			return &ValidationError{Name: "last_name", err: fmt.Errorf(`ent: validator failed for field "User.last_name": %w`, err)}
 		}
 	}
 	return nil
@@ -504,14 +584,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
 	}
-	if value, ok := uc.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-		_node.Email = value
-	}
-	if value, ok := uc.mutation.Mobile(); ok {
-		_spec.SetField(user.FieldMobile, field.TypeString, value)
-		_node.Mobile = value
-	}
 	if value, ok := uc.mutation.UserType(); ok {
 		_spec.SetField(user.FieldUserType, field.TypeEnum, value)
 		_node.UserType = value
@@ -535,6 +607,26 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Avatar(); ok {
 		_spec.SetField(user.FieldAvatar, field.TypeString, value)
 		_node.Avatar = value
+	}
+	if value, ok := uc.mutation.Gender(); ok {
+		_spec.SetField(user.FieldGender, field.TypeEnum, value)
+		_node.Gender = value
+	}
+	if value, ok := uc.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+		_node.FirstName = value
+	}
+	if value, ok := uc.mutation.MiddleName(); ok {
+		_spec.SetField(user.FieldMiddleName, field.TypeString, value)
+		_node.MiddleName = value
+	}
+	if value, ok := uc.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+		_node.LastName = value
+	}
+	if value, ok := uc.mutation.Lang(); ok {
+		_spec.SetField(user.FieldLang, field.TypeString, value)
+		_node.Lang = value
 	}
 	if nodes := uc.mutation.IdentitiesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -650,6 +742,39 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.AddrsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CitizenshipIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.CitizenshipTable,
+			Columns: []string{user.CitizenshipColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.CitizenshipID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.OrgUserIDs(); len(nodes) > 0 {
@@ -804,42 +929,6 @@ func (u *UserUpsert) UpdateDisplayName() *UserUpsert {
 	return u
 }
 
-// SetEmail sets the "email" field.
-func (u *UserUpsert) SetEmail(v string) *UserUpsert {
-	u.Set(user.FieldEmail, v)
-	return u
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *UserUpsert) UpdateEmail() *UserUpsert {
-	u.SetExcluded(user.FieldEmail)
-	return u
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *UserUpsert) ClearEmail() *UserUpsert {
-	u.SetNull(user.FieldEmail)
-	return u
-}
-
-// SetMobile sets the "mobile" field.
-func (u *UserUpsert) SetMobile(v string) *UserUpsert {
-	u.Set(user.FieldMobile, v)
-	return u
-}
-
-// UpdateMobile sets the "mobile" field to the value that was provided on create.
-func (u *UserUpsert) UpdateMobile() *UserUpsert {
-	u.SetExcluded(user.FieldMobile)
-	return u
-}
-
-// ClearMobile clears the value of the "mobile" field.
-func (u *UserUpsert) ClearMobile() *UserUpsert {
-	u.SetNull(user.FieldMobile)
-	return u
-}
-
 // SetUserType sets the "user_type" field.
 func (u *UserUpsert) SetUserType(v user.UserType) *UserUpsert {
 	u.Set(user.FieldUserType, v)
@@ -927,6 +1016,108 @@ func (u *UserUpsert) UpdateAvatar() *UserUpsert {
 // ClearAvatar clears the value of the "avatar" field.
 func (u *UserUpsert) ClearAvatar() *UserUpsert {
 	u.SetNull(user.FieldAvatar)
+	return u
+}
+
+// SetGender sets the "gender" field.
+func (u *UserUpsert) SetGender(v user.Gender) *UserUpsert {
+	u.Set(user.FieldGender, v)
+	return u
+}
+
+// UpdateGender sets the "gender" field to the value that was provided on create.
+func (u *UserUpsert) UpdateGender() *UserUpsert {
+	u.SetExcluded(user.FieldGender)
+	return u
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (u *UserUpsert) SetCitizenshipID(v int) *UserUpsert {
+	u.Set(user.FieldCitizenshipID, v)
+	return u
+}
+
+// UpdateCitizenshipID sets the "citizenship_id" field to the value that was provided on create.
+func (u *UserUpsert) UpdateCitizenshipID() *UserUpsert {
+	u.SetExcluded(user.FieldCitizenshipID)
+	return u
+}
+
+// ClearCitizenshipID clears the value of the "citizenship_id" field.
+func (u *UserUpsert) ClearCitizenshipID() *UserUpsert {
+	u.SetNull(user.FieldCitizenshipID)
+	return u
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsert) SetFirstName(v string) *UserUpsert {
+	u.Set(user.FieldFirstName, v)
+	return u
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsert) UpdateFirstName() *UserUpsert {
+	u.SetExcluded(user.FieldFirstName)
+	return u
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsert) ClearFirstName() *UserUpsert {
+	u.SetNull(user.FieldFirstName)
+	return u
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (u *UserUpsert) SetMiddleName(v string) *UserUpsert {
+	u.Set(user.FieldMiddleName, v)
+	return u
+}
+
+// UpdateMiddleName sets the "middle_name" field to the value that was provided on create.
+func (u *UserUpsert) UpdateMiddleName() *UserUpsert {
+	u.SetExcluded(user.FieldMiddleName)
+	return u
+}
+
+// ClearMiddleName clears the value of the "middle_name" field.
+func (u *UserUpsert) ClearMiddleName() *UserUpsert {
+	u.SetNull(user.FieldMiddleName)
+	return u
+}
+
+// SetLastName sets the "last_name" field.
+func (u *UserUpsert) SetLastName(v string) *UserUpsert {
+	u.Set(user.FieldLastName, v)
+	return u
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsert) UpdateLastName() *UserUpsert {
+	u.SetExcluded(user.FieldLastName)
+	return u
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *UserUpsert) ClearLastName() *UserUpsert {
+	u.SetNull(user.FieldLastName)
+	return u
+}
+
+// SetLang sets the "lang" field.
+func (u *UserUpsert) SetLang(v string) *UserUpsert {
+	u.Set(user.FieldLang, v)
+	return u
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *UserUpsert) UpdateLang() *UserUpsert {
+	u.SetExcluded(user.FieldLang)
+	return u
+}
+
+// ClearLang clears the value of the "lang" field.
+func (u *UserUpsert) ClearLang() *UserUpsert {
+	u.SetNull(user.FieldLang)
 	return u
 }
 
@@ -1082,48 +1273,6 @@ func (u *UserUpsertOne) UpdateDisplayName() *UserUpsertOne {
 	})
 }
 
-// SetEmail sets the "email" field.
-func (u *UserUpsertOne) SetEmail(v string) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.SetEmail(v)
-	})
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateEmail() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateEmail()
-	})
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *UserUpsertOne) ClearEmail() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearEmail()
-	})
-}
-
-// SetMobile sets the "mobile" field.
-func (u *UserUpsertOne) SetMobile(v string) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.SetMobile(v)
-	})
-}
-
-// UpdateMobile sets the "mobile" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateMobile() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateMobile()
-	})
-}
-
-// ClearMobile clears the value of the "mobile" field.
-func (u *UserUpsertOne) ClearMobile() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearMobile()
-	})
-}
-
 // SetUserType sets the "user_type" field.
 func (u *UserUpsertOne) SetUserType(v user.UserType) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
@@ -1226,6 +1375,125 @@ func (u *UserUpsertOne) UpdateAvatar() *UserUpsertOne {
 func (u *UserUpsertOne) ClearAvatar() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearAvatar()
+	})
+}
+
+// SetGender sets the "gender" field.
+func (u *UserUpsertOne) SetGender(v user.Gender) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetGender(v)
+	})
+}
+
+// UpdateGender sets the "gender" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateGender() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateGender()
+	})
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (u *UserUpsertOne) SetCitizenshipID(v int) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCitizenshipID(v)
+	})
+}
+
+// UpdateCitizenshipID sets the "citizenship_id" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateCitizenshipID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCitizenshipID()
+	})
+}
+
+// ClearCitizenshipID clears the value of the "citizenship_id" field.
+func (u *UserUpsertOne) ClearCitizenshipID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCitizenshipID()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsertOne) SetFirstName(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateFirstName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsertOne) ClearFirstName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearFirstName()
+	})
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (u *UserUpsertOne) SetMiddleName(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMiddleName(v)
+	})
+}
+
+// UpdateMiddleName sets the "middle_name" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateMiddleName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMiddleName()
+	})
+}
+
+// ClearMiddleName clears the value of the "middle_name" field.
+func (u *UserUpsertOne) ClearMiddleName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearMiddleName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *UserUpsertOne) SetLastName(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateLastName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *UserUpsertOne) ClearLastName() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLastName()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *UserUpsertOne) SetLang(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateLang() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// ClearLang clears the value of the "lang" field.
+func (u *UserUpsertOne) ClearLang() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLang()
 	})
 }
 
@@ -1547,48 +1815,6 @@ func (u *UserUpsertBulk) UpdateDisplayName() *UserUpsertBulk {
 	})
 }
 
-// SetEmail sets the "email" field.
-func (u *UserUpsertBulk) SetEmail(v string) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.SetEmail(v)
-	})
-}
-
-// UpdateEmail sets the "email" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateEmail() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateEmail()
-	})
-}
-
-// ClearEmail clears the value of the "email" field.
-func (u *UserUpsertBulk) ClearEmail() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearEmail()
-	})
-}
-
-// SetMobile sets the "mobile" field.
-func (u *UserUpsertBulk) SetMobile(v string) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.SetMobile(v)
-	})
-}
-
-// UpdateMobile sets the "mobile" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateMobile() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateMobile()
-	})
-}
-
-// ClearMobile clears the value of the "mobile" field.
-func (u *UserUpsertBulk) ClearMobile() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.ClearMobile()
-	})
-}
-
 // SetUserType sets the "user_type" field.
 func (u *UserUpsertBulk) SetUserType(v user.UserType) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
@@ -1691,6 +1917,125 @@ func (u *UserUpsertBulk) UpdateAvatar() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearAvatar() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearAvatar()
+	})
+}
+
+// SetGender sets the "gender" field.
+func (u *UserUpsertBulk) SetGender(v user.Gender) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetGender(v)
+	})
+}
+
+// UpdateGender sets the "gender" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateGender() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateGender()
+	})
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (u *UserUpsertBulk) SetCitizenshipID(v int) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetCitizenshipID(v)
+	})
+}
+
+// UpdateCitizenshipID sets the "citizenship_id" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateCitizenshipID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateCitizenshipID()
+	})
+}
+
+// ClearCitizenshipID clears the value of the "citizenship_id" field.
+func (u *UserUpsertBulk) ClearCitizenshipID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearCitizenshipID()
+	})
+}
+
+// SetFirstName sets the "first_name" field.
+func (u *UserUpsertBulk) SetFirstName(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetFirstName(v)
+	})
+}
+
+// UpdateFirstName sets the "first_name" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateFirstName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateFirstName()
+	})
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (u *UserUpsertBulk) ClearFirstName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearFirstName()
+	})
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (u *UserUpsertBulk) SetMiddleName(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMiddleName(v)
+	})
+}
+
+// UpdateMiddleName sets the "middle_name" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateMiddleName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMiddleName()
+	})
+}
+
+// ClearMiddleName clears the value of the "middle_name" field.
+func (u *UserUpsertBulk) ClearMiddleName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearMiddleName()
+	})
+}
+
+// SetLastName sets the "last_name" field.
+func (u *UserUpsertBulk) SetLastName(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLastName(v)
+	})
+}
+
+// UpdateLastName sets the "last_name" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateLastName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLastName()
+	})
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (u *UserUpsertBulk) ClearLastName() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLastName()
+	})
+}
+
+// SetLang sets the "lang" field.
+func (u *UserUpsertBulk) SetLang(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetLang(v)
+	})
+}
+
+// UpdateLang sets the "lang" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateLang() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateLang()
+	})
+}
+
+// ClearLang clears the value of the "lang" field.
+func (u *UserUpsertBulk) ClearLang() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearLang()
 	})
 }
 

@@ -35,6 +35,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -654,8 +655,12 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 	if u.Edges.LoginProfile.MfaEnabled {
 		verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
 	}
-	if &u.Email != nil {
-		verifies = append(verifies, &ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(u.Email)})
+	addr, err := u.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if &addr.Email != nil {
+		verifies = append(verifies, &ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(addr.Email)})
 	}
 	// 生成临时token
 	sid := uuid.New().String()
@@ -727,7 +732,11 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	if err != nil {
 		return "", err
 	}
-	if usr.Email == "" {
+	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	if addr.Email == "" {
 		return "", fmt.Errorf("email is nil")
 	}
 	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
@@ -738,7 +747,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            usr.Email,
+				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"captchaCode":   captchaCode,
 				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),

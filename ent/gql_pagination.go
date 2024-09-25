@@ -15,7 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/vektah/gqlparser/v2/gqlerror"
-	"github.com/woocoos/knockout-go/pkg/pagination"
+	"github.com/woocoos/entco/pkg/pagination"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -24,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -32,7 +33,9 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -2587,6 +2590,328 @@ func (ar *AppRole) ToEdge(order *AppRoleOrder) *AppRoleEdge {
 	}
 }
 
+// CountryEdge is the edge representation of Country.
+type CountryEdge struct {
+	Node   *Country `json:"node"`
+	Cursor Cursor   `json:"cursor"`
+}
+
+// CountryConnection is the connection containing edges to Country.
+type CountryConnection struct {
+	Edges      []*CountryEdge `json:"edges"`
+	PageInfo   PageInfo       `json:"pageInfo"`
+	TotalCount int            `json:"totalCount"`
+}
+
+func (c *CountryConnection) build(nodes []*Country, pager *countryPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Country
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Country {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Country {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*CountryEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &CountryEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// CountryPaginateOption enables pagination customization.
+type CountryPaginateOption func(*countryPager) error
+
+// WithCountryOrder configures pagination ordering.
+func WithCountryOrder(order *CountryOrder) CountryPaginateOption {
+	if order == nil {
+		order = DefaultCountryOrder
+	}
+	o := *order
+	return func(pager *countryPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultCountryOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithCountryFilter configures pagination filter.
+func WithCountryFilter(filter func(*CountryQuery) (*CountryQuery, error)) CountryPaginateOption {
+	return func(pager *countryPager) error {
+		if filter == nil {
+			return errors.New("CountryQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type countryPager struct {
+	reverse bool
+	order   *CountryOrder
+	filter  func(*CountryQuery) (*CountryQuery, error)
+}
+
+func newCountryPager(opts []CountryPaginateOption, reverse bool) (*countryPager, error) {
+	pager := &countryPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultCountryOrder
+	}
+	return pager, nil
+}
+
+func (p *countryPager) applyFilter(query *CountryQuery) (*CountryQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *countryPager) toCursor(c *Country) Cursor {
+	return p.order.Field.toCursor(c)
+}
+
+func (p *countryPager) applyCursors(query *CountryQuery, after, before *Cursor) (*CountryQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultCountryOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *countryPager) applyOrder(query *CountryQuery) *CountryQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultCountryOrder.Field {
+		query = query.Order(DefaultCountryOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *countryPager) orderExpr(query *CountryQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultCountryOrder.Field {
+			b.Comma().Ident(DefaultCountryOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Country.
+func (c *CountryQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...CountryPaginateOption,
+) (*CountryConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newCountryPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if c, err = pager.applyFilter(c); err != nil {
+		return nil, err
+	}
+	conn := &CountryConnection{Edges: []*CountryEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := c.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if c, err = pager.applyCursors(c, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		c.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			c.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			c.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := c.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	c = pager.applyOrder(c)
+	nodes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// CountryOrderFieldCreatedAt orders Country by created_at.
+	CountryOrderFieldCreatedAt = &CountryOrderField{
+		Value: func(c *Country) (ent.Value, error) {
+			return c.CreatedAt, nil
+		},
+		column: country.FieldCreatedAt,
+		toTerm: country.ByCreatedAt,
+		toCursor: func(c *Country) Cursor {
+			return Cursor{
+				ID:    c.ID,
+				Value: c.CreatedAt,
+			}
+		},
+	}
+	// CountryOrderFieldDisplaySort orders Country by display_sort.
+	CountryOrderFieldDisplaySort = &CountryOrderField{
+		Value: func(c *Country) (ent.Value, error) {
+			return c.DisplaySort, nil
+		},
+		column: country.FieldDisplaySort,
+		toTerm: country.ByDisplaySort,
+		toCursor: func(c *Country) Cursor {
+			return Cursor{
+				ID:    c.ID,
+				Value: c.DisplaySort,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f CountryOrderField) String() string {
+	var str string
+	switch f.column {
+	case CountryOrderFieldCreatedAt.column:
+		str = "createdAt"
+	case CountryOrderFieldDisplaySort.column:
+		str = "displaySort"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f CountryOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *CountryOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("CountryOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *CountryOrderFieldCreatedAt
+	case "displaySort":
+		*f = *CountryOrderFieldDisplaySort
+	default:
+		return fmt.Errorf("%s is not a valid CountryOrderField", str)
+	}
+	return nil
+}
+
+// CountryOrderField defines the ordering field of Country.
+type CountryOrderField struct {
+	// Value extracts the ordering value from the given Country.
+	Value    func(*Country) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) country.OrderOption
+	toCursor func(*Country) Cursor
+}
+
+// CountryOrder defines the ordering of Country.
+type CountryOrder struct {
+	Direction OrderDirection     `json:"direction"`
+	Field     *CountryOrderField `json:"field"`
+}
+
+// DefaultCountryOrder is the default ordering of Country.
+var DefaultCountryOrder = &CountryOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &CountryOrderField{
+		Value: func(c *Country) (ent.Value, error) {
+			return c.ID, nil
+		},
+		column: country.FieldID,
+		toTerm: country.ByID,
+		toCursor: func(c *Country) Cursor {
+			return Cursor{ID: c.ID}
+		},
+	},
+}
+
+// ToEdge converts Country into CountryEdge.
+func (c *Country) ToEdge(order *CountryOrder) *CountryEdge {
+	if order == nil {
+		order = DefaultCountryOrder
+	}
+	return &CountryEdge{
+		Node:   c,
+		Cursor: order.Field.toCursor(c),
+	}
+}
+
 // FileIdentityEdge is the edge representation of FileIdentity.
 type FileIdentityEdge struct {
 	Node   *FileIdentity `json:"node"`
@@ -5037,6 +5362,328 @@ func (pe *Permission) ToEdge(order *PermissionOrder) *PermissionEdge {
 	}
 }
 
+// RegionEdge is the edge representation of Region.
+type RegionEdge struct {
+	Node   *Region `json:"node"`
+	Cursor Cursor  `json:"cursor"`
+}
+
+// RegionConnection is the connection containing edges to Region.
+type RegionConnection struct {
+	Edges      []*RegionEdge `json:"edges"`
+	PageInfo   PageInfo      `json:"pageInfo"`
+	TotalCount int           `json:"totalCount"`
+}
+
+func (c *RegionConnection) build(nodes []*Region, pager *regionPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Region
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Region {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Region {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*RegionEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &RegionEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// RegionPaginateOption enables pagination customization.
+type RegionPaginateOption func(*regionPager) error
+
+// WithRegionOrder configures pagination ordering.
+func WithRegionOrder(order *RegionOrder) RegionPaginateOption {
+	if order == nil {
+		order = DefaultRegionOrder
+	}
+	o := *order
+	return func(pager *regionPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultRegionOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithRegionFilter configures pagination filter.
+func WithRegionFilter(filter func(*RegionQuery) (*RegionQuery, error)) RegionPaginateOption {
+	return func(pager *regionPager) error {
+		if filter == nil {
+			return errors.New("RegionQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type regionPager struct {
+	reverse bool
+	order   *RegionOrder
+	filter  func(*RegionQuery) (*RegionQuery, error)
+}
+
+func newRegionPager(opts []RegionPaginateOption, reverse bool) (*regionPager, error) {
+	pager := &regionPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultRegionOrder
+	}
+	return pager, nil
+}
+
+func (p *regionPager) applyFilter(query *RegionQuery) (*RegionQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *regionPager) toCursor(r *Region) Cursor {
+	return p.order.Field.toCursor(r)
+}
+
+func (p *regionPager) applyCursors(query *RegionQuery, after, before *Cursor) (*RegionQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultRegionOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *regionPager) applyOrder(query *RegionQuery) *RegionQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultRegionOrder.Field {
+		query = query.Order(DefaultRegionOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *regionPager) orderExpr(query *RegionQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultRegionOrder.Field {
+			b.Comma().Ident(DefaultRegionOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Region.
+func (r *RegionQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...RegionPaginateOption,
+) (*RegionConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newRegionPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if r, err = pager.applyFilter(r); err != nil {
+		return nil, err
+	}
+	conn := &RegionConnection{Edges: []*RegionEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := r.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if r, err = pager.applyCursors(r, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		r.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			r.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			r.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := r.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	r = pager.applyOrder(r)
+	nodes, err := r.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// RegionOrderFieldCreatedAt orders Region by created_at.
+	RegionOrderFieldCreatedAt = &RegionOrderField{
+		Value: func(r *Region) (ent.Value, error) {
+			return r.CreatedAt, nil
+		},
+		column: region.FieldCreatedAt,
+		toTerm: region.ByCreatedAt,
+		toCursor: func(r *Region) Cursor {
+			return Cursor{
+				ID:    r.ID,
+				Value: r.CreatedAt,
+			}
+		},
+	}
+	// RegionOrderFieldDisplaySort orders Region by display_sort.
+	RegionOrderFieldDisplaySort = &RegionOrderField{
+		Value: func(r *Region) (ent.Value, error) {
+			return r.DisplaySort, nil
+		},
+		column: region.FieldDisplaySort,
+		toTerm: region.ByDisplaySort,
+		toCursor: func(r *Region) Cursor {
+			return Cursor{
+				ID:    r.ID,
+				Value: r.DisplaySort,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f RegionOrderField) String() string {
+	var str string
+	switch f.column {
+	case RegionOrderFieldCreatedAt.column:
+		str = "createdAt"
+	case RegionOrderFieldDisplaySort.column:
+		str = "displaySort"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f RegionOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *RegionOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("RegionOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *RegionOrderFieldCreatedAt
+	case "displaySort":
+		*f = *RegionOrderFieldDisplaySort
+	default:
+		return fmt.Errorf("%s is not a valid RegionOrderField", str)
+	}
+	return nil
+}
+
+// RegionOrderField defines the ordering field of Region.
+type RegionOrderField struct {
+	// Value extracts the ordering value from the given Region.
+	Value    func(*Region) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) region.OrderOption
+	toCursor func(*Region) Cursor
+}
+
+// RegionOrder defines the ordering of Region.
+type RegionOrder struct {
+	Direction OrderDirection    `json:"direction"`
+	Field     *RegionOrderField `json:"field"`
+}
+
+// DefaultRegionOrder is the default ordering of Region.
+var DefaultRegionOrder = &RegionOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &RegionOrderField{
+		Value: func(r *Region) (ent.Value, error) {
+			return r.ID, nil
+		},
+		column: region.FieldID,
+		toTerm: region.ByID,
+		toCursor: func(r *Region) Cursor {
+			return Cursor{ID: r.ID}
+		},
+	},
+}
+
+// ToEdge converts Region into RegionEdge.
+func (r *Region) ToEdge(order *RegionOrder) *RegionEdge {
+	if order == nil {
+		order = DefaultRegionOrder
+	}
+	return &RegionEdge{
+		Node:   r,
+		Cursor: order.Field.toCursor(r),
+	}
+}
+
 // UserEdge is the edge representation of User.
 type UserEdge struct {
 	Node   *User  `json:"node"`
@@ -5338,6 +5985,310 @@ func (u *User) ToEdge(order *UserOrder) *UserEdge {
 	return &UserEdge{
 		Node:   u,
 		Cursor: order.Field.toCursor(u),
+	}
+}
+
+// UserAddrEdge is the edge representation of UserAddr.
+type UserAddrEdge struct {
+	Node   *UserAddr `json:"node"`
+	Cursor Cursor    `json:"cursor"`
+}
+
+// UserAddrConnection is the connection containing edges to UserAddr.
+type UserAddrConnection struct {
+	Edges      []*UserAddrEdge `json:"edges"`
+	PageInfo   PageInfo        `json:"pageInfo"`
+	TotalCount int             `json:"totalCount"`
+}
+
+func (c *UserAddrConnection) build(nodes []*UserAddr, pager *useraddrPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *UserAddr
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *UserAddr {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *UserAddr {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*UserAddrEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &UserAddrEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// UserAddrPaginateOption enables pagination customization.
+type UserAddrPaginateOption func(*useraddrPager) error
+
+// WithUserAddrOrder configures pagination ordering.
+func WithUserAddrOrder(order *UserAddrOrder) UserAddrPaginateOption {
+	if order == nil {
+		order = DefaultUserAddrOrder
+	}
+	o := *order
+	return func(pager *useraddrPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultUserAddrOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithUserAddrFilter configures pagination filter.
+func WithUserAddrFilter(filter func(*UserAddrQuery) (*UserAddrQuery, error)) UserAddrPaginateOption {
+	return func(pager *useraddrPager) error {
+		if filter == nil {
+			return errors.New("UserAddrQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type useraddrPager struct {
+	reverse bool
+	order   *UserAddrOrder
+	filter  func(*UserAddrQuery) (*UserAddrQuery, error)
+}
+
+func newUserAddrPager(opts []UserAddrPaginateOption, reverse bool) (*useraddrPager, error) {
+	pager := &useraddrPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultUserAddrOrder
+	}
+	return pager, nil
+}
+
+func (p *useraddrPager) applyFilter(query *UserAddrQuery) (*UserAddrQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *useraddrPager) toCursor(ua *UserAddr) Cursor {
+	return p.order.Field.toCursor(ua)
+}
+
+func (p *useraddrPager) applyCursors(query *UserAddrQuery, after, before *Cursor) (*UserAddrQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserAddrOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *useraddrPager) applyOrder(query *UserAddrQuery) *UserAddrQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultUserAddrOrder.Field {
+		query = query.Order(DefaultUserAddrOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *useraddrPager) orderExpr(query *UserAddrQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultUserAddrOrder.Field {
+			b.Comma().Ident(DefaultUserAddrOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to UserAddr.
+func (ua *UserAddrQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...UserAddrPaginateOption,
+) (*UserAddrConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newUserAddrPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if ua, err = pager.applyFilter(ua); err != nil {
+		return nil, err
+	}
+	conn := &UserAddrConnection{Edges: []*UserAddrEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := ua.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if ua, err = pager.applyCursors(ua, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		ua.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			ua.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			ua.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := ua.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	ua = pager.applyOrder(ua)
+	nodes, err := ua.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// UserAddrOrderFieldCreatedAt orders UserAddr by created_at.
+	UserAddrOrderFieldCreatedAt = &UserAddrOrderField{
+		Value: func(ua *UserAddr) (ent.Value, error) {
+			return ua.CreatedAt, nil
+		},
+		column: useraddr.FieldCreatedAt,
+		toTerm: useraddr.ByCreatedAt,
+		toCursor: func(ua *UserAddr) Cursor {
+			return Cursor{
+				ID:    ua.ID,
+				Value: ua.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f UserAddrOrderField) String() string {
+	var str string
+	switch f.column {
+	case UserAddrOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f UserAddrOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *UserAddrOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("UserAddrOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *UserAddrOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid UserAddrOrderField", str)
+	}
+	return nil
+}
+
+// UserAddrOrderField defines the ordering field of UserAddr.
+type UserAddrOrderField struct {
+	// Value extracts the ordering value from the given UserAddr.
+	Value    func(*UserAddr) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) useraddr.OrderOption
+	toCursor func(*UserAddr) Cursor
+}
+
+// UserAddrOrder defines the ordering of UserAddr.
+type UserAddrOrder struct {
+	Direction OrderDirection      `json:"direction"`
+	Field     *UserAddrOrderField `json:"field"`
+}
+
+// DefaultUserAddrOrder is the default ordering of UserAddr.
+var DefaultUserAddrOrder = &UserAddrOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &UserAddrOrderField{
+		Value: func(ua *UserAddr) (ent.Value, error) {
+			return ua.ID, nil
+		},
+		column: useraddr.FieldID,
+		toTerm: useraddr.ByID,
+		toCursor: func(ua *UserAddr) Cursor {
+			return Cursor{ID: ua.ID}
+		},
+	},
+}
+
+// ToEdge converts UserAddr into UserAddrEdge.
+func (ua *UserAddr) ToEdge(order *UserAddrOrder) *UserAddrEdge {
+	if order == nil {
+		order = DefaultUserAddrOrder
+	}
+	return &UserAddrEdge{
+		Node:   ua,
+		Cursor: order.Field.toCursor(ua),
 	}
 }
 

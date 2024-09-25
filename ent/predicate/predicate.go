@@ -33,6 +33,9 @@ type AppRole func(*sql.Selector)
 // AppRolePolicy is the predicate function for approlepolicy builders.
 type AppRolePolicy func(*sql.Selector)
 
+// Country is the predicate function for country builders.
+type Country func(*sql.Selector)
+
 // FileIdentity is the predicate function for fileidentity builders.
 type FileIdentity func(*sql.Selector)
 
@@ -66,8 +69,14 @@ type OrgUserPreference func(*sql.Selector)
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)
 
+// Region is the predicate function for region builders.
+type Region func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserAddr is the predicate function for useraddr builders.
+type UserAddr func(*sql.Selector)
 
 // UserDevice is the predicate function for userdevice builders.
 type UserDevice func(*sql.Selector)

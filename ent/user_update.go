@@ -12,12 +12,14 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -132,46 +134,6 @@ func (uu *UserUpdate) SetNillableDisplayName(s *string) *UserUpdate {
 	return uu
 }
 
-// SetEmail sets the "email" field.
-func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
-	uu.mutation.SetEmail(s)
-	return uu
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetEmail(*s)
-	}
-	return uu
-}
-
-// ClearEmail clears the value of the "email" field.
-func (uu *UserUpdate) ClearEmail() *UserUpdate {
-	uu.mutation.ClearEmail()
-	return uu
-}
-
-// SetMobile sets the "mobile" field.
-func (uu *UserUpdate) SetMobile(s string) *UserUpdate {
-	uu.mutation.SetMobile(s)
-	return uu
-}
-
-// SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableMobile(s *string) *UserUpdate {
-	if s != nil {
-		uu.SetMobile(*s)
-	}
-	return uu
-}
-
-// ClearMobile clears the value of the "mobile" field.
-func (uu *UserUpdate) ClearMobile() *UserUpdate {
-	uu.mutation.ClearMobile()
-	return uu
-}
-
 // SetUserType sets the "user_type" field.
 func (uu *UserUpdate) SetUserType(ut user.UserType) *UserUpdate {
 	uu.mutation.SetUserType(ut)
@@ -271,6 +233,120 @@ func (uu *UserUpdate) SetNillableAvatar(s *string) *UserUpdate {
 // ClearAvatar clears the value of the "avatar" field.
 func (uu *UserUpdate) ClearAvatar() *UserUpdate {
 	uu.mutation.ClearAvatar()
+	return uu
+}
+
+// SetGender sets the "gender" field.
+func (uu *UserUpdate) SetGender(u user.Gender) *UserUpdate {
+	uu.mutation.SetGender(u)
+	return uu
+}
+
+// SetNillableGender sets the "gender" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableGender(u *user.Gender) *UserUpdate {
+	if u != nil {
+		uu.SetGender(*u)
+	}
+	return uu
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (uu *UserUpdate) SetCitizenshipID(i int) *UserUpdate {
+	uu.mutation.SetCitizenshipID(i)
+	return uu
+}
+
+// SetNillableCitizenshipID sets the "citizenship_id" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableCitizenshipID(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetCitizenshipID(*i)
+	}
+	return uu
+}
+
+// ClearCitizenshipID clears the value of the "citizenship_id" field.
+func (uu *UserUpdate) ClearCitizenshipID() *UserUpdate {
+	uu.mutation.ClearCitizenshipID()
+	return uu
+}
+
+// SetFirstName sets the "first_name" field.
+func (uu *UserUpdate) SetFirstName(s string) *UserUpdate {
+	uu.mutation.SetFirstName(s)
+	return uu
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableFirstName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetFirstName(*s)
+	}
+	return uu
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (uu *UserUpdate) ClearFirstName() *UserUpdate {
+	uu.mutation.ClearFirstName()
+	return uu
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (uu *UserUpdate) SetMiddleName(s string) *UserUpdate {
+	uu.mutation.SetMiddleName(s)
+	return uu
+}
+
+// SetNillableMiddleName sets the "middle_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableMiddleName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetMiddleName(*s)
+	}
+	return uu
+}
+
+// ClearMiddleName clears the value of the "middle_name" field.
+func (uu *UserUpdate) ClearMiddleName() *UserUpdate {
+	uu.mutation.ClearMiddleName()
+	return uu
+}
+
+// SetLastName sets the "last_name" field.
+func (uu *UserUpdate) SetLastName(s string) *UserUpdate {
+	uu.mutation.SetLastName(s)
+	return uu
+}
+
+// SetNillableLastName sets the "last_name" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableLastName(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetLastName(*s)
+	}
+	return uu
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (uu *UserUpdate) ClearLastName() *UserUpdate {
+	uu.mutation.ClearLastName()
+	return uu
+}
+
+// SetLang sets the "lang" field.
+func (uu *UserUpdate) SetLang(s string) *UserUpdate {
+	uu.mutation.SetLang(s)
+	return uu
+}
+
+// SetNillableLang sets the "lang" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableLang(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetLang(*s)
+	}
+	return uu
+}
+
+// ClearLang clears the value of the "lang" field.
+func (uu *UserUpdate) ClearLang() *UserUpdate {
+	uu.mutation.ClearLang()
 	return uu
 }
 
@@ -381,6 +457,26 @@ func (uu *UserUpdate) AddOauthClients(o ...*OauthClient) *UserUpdate {
 		ids[i] = o[i].ID
 	}
 	return uu.AddOauthClientIDs(ids...)
+}
+
+// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
+func (uu *UserUpdate) AddAddrIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddAddrIDs(ids...)
+	return uu
+}
+
+// AddAddrs adds the "addrs" edges to the UserAddr entity.
+func (uu *UserUpdate) AddAddrs(u ...*UserAddr) *UserUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uu.AddAddrIDs(ids...)
+}
+
+// SetCitizenship sets the "citizenship" edge to the Country entity.
+func (uu *UserUpdate) SetCitizenship(c *Country) *UserUpdate {
+	return uu.SetCitizenshipID(c.ID)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -535,6 +631,33 @@ func (uu *UserUpdate) RemoveOauthClients(o ...*OauthClient) *UserUpdate {
 	return uu.RemoveOauthClientIDs(ids...)
 }
 
+// ClearAddrs clears all "addrs" edges to the UserAddr entity.
+func (uu *UserUpdate) ClearAddrs() *UserUpdate {
+	uu.mutation.ClearAddrs()
+	return uu
+}
+
+// RemoveAddrIDs removes the "addrs" edge to UserAddr entities by IDs.
+func (uu *UserUpdate) RemoveAddrIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveAddrIDs(ids...)
+	return uu
+}
+
+// RemoveAddrs removes "addrs" edges to UserAddr entities.
+func (uu *UserUpdate) RemoveAddrs(u ...*UserAddr) *UserUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uu.RemoveAddrIDs(ids...)
+}
+
+// ClearCitizenship clears the "citizenship" edge to the Country entity.
+func (uu *UserUpdate) ClearCitizenship() *UserUpdate {
+	uu.mutation.ClearCitizenship()
+	return uu
+}
+
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
 func (uu *UserUpdate) ClearOrgUser() *UserUpdate {
 	uu.mutation.ClearOrgUser()
@@ -585,16 +708,6 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uu *UserUpdate) check() error {
-	if v, ok := uu.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
-		}
-	}
-	if v, ok := uu.mutation.Mobile(); ok {
-		if err := user.MobileValidator(v); err != nil {
-			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "User.mobile": %w`, err)}
-		}
-	}
 	if v, ok := uu.mutation.UserType(); ok {
 		if err := user.UserTypeValidator(v); err != nil {
 			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "User.user_type": %w`, err)}
@@ -618,6 +731,26 @@ func (uu *UserUpdate) check() error {
 	if v, ok := uu.mutation.Avatar(); ok {
 		if err := user.AvatarValidator(v); err != nil {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Gender(); ok {
+		if err := user.GenderValidator(v); err != nil {
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "User.gender": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.FirstName(); ok {
+		if err := user.FirstNameValidator(v); err != nil {
+			return &ValidationError{Name: "first_name", err: fmt.Errorf(`ent: validator failed for field "User.first_name": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.MiddleName(); ok {
+		if err := user.MiddleNameValidator(v); err != nil {
+			return &ValidationError{Name: "middle_name", err: fmt.Errorf(`ent: validator failed for field "User.middle_name": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.LastName(); ok {
+		if err := user.LastNameValidator(v); err != nil {
+			return &ValidationError{Name: "last_name", err: fmt.Errorf(`ent: validator failed for field "User.last_name": %w`, err)}
 		}
 	}
 	return nil
@@ -662,18 +795,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.DisplayName(); ok {
 		_spec.SetField(user.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-	}
-	if uu.mutation.EmailCleared() {
-		_spec.ClearField(user.FieldEmail, field.TypeString)
-	}
-	if value, ok := uu.mutation.Mobile(); ok {
-		_spec.SetField(user.FieldMobile, field.TypeString, value)
-	}
-	if uu.mutation.MobileCleared() {
-		_spec.ClearField(user.FieldMobile, field.TypeString)
-	}
 	if value, ok := uu.mutation.UserType(); ok {
 		_spec.SetField(user.FieldUserType, field.TypeEnum, value)
 	}
@@ -700,6 +821,33 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeString)
+	}
+	if value, ok := uu.mutation.Gender(); ok {
+		_spec.SetField(user.FieldGender, field.TypeEnum, value)
+	}
+	if value, ok := uu.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+	}
+	if uu.mutation.FirstNameCleared() {
+		_spec.ClearField(user.FieldFirstName, field.TypeString)
+	}
+	if value, ok := uu.mutation.MiddleName(); ok {
+		_spec.SetField(user.FieldMiddleName, field.TypeString, value)
+	}
+	if uu.mutation.MiddleNameCleared() {
+		_spec.ClearField(user.FieldMiddleName, field.TypeString)
+	}
+	if value, ok := uu.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+	}
+	if uu.mutation.LastNameCleared() {
+		_spec.ClearField(user.FieldLastName, field.TypeString)
+	}
+	if value, ok := uu.mutation.Lang(); ok {
+		_spec.SetField(user.FieldLang, field.TypeString, value)
+	}
+	if uu.mutation.LangCleared() {
+		_spec.ClearField(user.FieldLang, field.TypeString)
 	}
 	if uu.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1012,6 +1160,80 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.AddrsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedAddrsIDs(); len(nodes) > 0 && !uu.mutation.AddrsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.AddrsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.CitizenshipCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.CitizenshipTable,
+			Columns: []string{user.CitizenshipColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.CitizenshipIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.CitizenshipTable,
+			Columns: []string{user.CitizenshipColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1172,46 +1394,6 @@ func (uuo *UserUpdateOne) SetNillableDisplayName(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// SetEmail sets the "email" field.
-func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
-	uuo.mutation.SetEmail(s)
-	return uuo
-}
-
-// SetNillableEmail sets the "email" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetEmail(*s)
-	}
-	return uuo
-}
-
-// ClearEmail clears the value of the "email" field.
-func (uuo *UserUpdateOne) ClearEmail() *UserUpdateOne {
-	uuo.mutation.ClearEmail()
-	return uuo
-}
-
-// SetMobile sets the "mobile" field.
-func (uuo *UserUpdateOne) SetMobile(s string) *UserUpdateOne {
-	uuo.mutation.SetMobile(s)
-	return uuo
-}
-
-// SetNillableMobile sets the "mobile" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableMobile(s *string) *UserUpdateOne {
-	if s != nil {
-		uuo.SetMobile(*s)
-	}
-	return uuo
-}
-
-// ClearMobile clears the value of the "mobile" field.
-func (uuo *UserUpdateOne) ClearMobile() *UserUpdateOne {
-	uuo.mutation.ClearMobile()
-	return uuo
-}
-
 // SetUserType sets the "user_type" field.
 func (uuo *UserUpdateOne) SetUserType(ut user.UserType) *UserUpdateOne {
 	uuo.mutation.SetUserType(ut)
@@ -1311,6 +1493,120 @@ func (uuo *UserUpdateOne) SetNillableAvatar(s *string) *UserUpdateOne {
 // ClearAvatar clears the value of the "avatar" field.
 func (uuo *UserUpdateOne) ClearAvatar() *UserUpdateOne {
 	uuo.mutation.ClearAvatar()
+	return uuo
+}
+
+// SetGender sets the "gender" field.
+func (uuo *UserUpdateOne) SetGender(u user.Gender) *UserUpdateOne {
+	uuo.mutation.SetGender(u)
+	return uuo
+}
+
+// SetNillableGender sets the "gender" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGender(u *user.Gender) *UserUpdateOne {
+	if u != nil {
+		uuo.SetGender(*u)
+	}
+	return uuo
+}
+
+// SetCitizenshipID sets the "citizenship_id" field.
+func (uuo *UserUpdateOne) SetCitizenshipID(i int) *UserUpdateOne {
+	uuo.mutation.SetCitizenshipID(i)
+	return uuo
+}
+
+// SetNillableCitizenshipID sets the "citizenship_id" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableCitizenshipID(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetCitizenshipID(*i)
+	}
+	return uuo
+}
+
+// ClearCitizenshipID clears the value of the "citizenship_id" field.
+func (uuo *UserUpdateOne) ClearCitizenshipID() *UserUpdateOne {
+	uuo.mutation.ClearCitizenshipID()
+	return uuo
+}
+
+// SetFirstName sets the "first_name" field.
+func (uuo *UserUpdateOne) SetFirstName(s string) *UserUpdateOne {
+	uuo.mutation.SetFirstName(s)
+	return uuo
+}
+
+// SetNillableFirstName sets the "first_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableFirstName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetFirstName(*s)
+	}
+	return uuo
+}
+
+// ClearFirstName clears the value of the "first_name" field.
+func (uuo *UserUpdateOne) ClearFirstName() *UserUpdateOne {
+	uuo.mutation.ClearFirstName()
+	return uuo
+}
+
+// SetMiddleName sets the "middle_name" field.
+func (uuo *UserUpdateOne) SetMiddleName(s string) *UserUpdateOne {
+	uuo.mutation.SetMiddleName(s)
+	return uuo
+}
+
+// SetNillableMiddleName sets the "middle_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableMiddleName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetMiddleName(*s)
+	}
+	return uuo
+}
+
+// ClearMiddleName clears the value of the "middle_name" field.
+func (uuo *UserUpdateOne) ClearMiddleName() *UserUpdateOne {
+	uuo.mutation.ClearMiddleName()
+	return uuo
+}
+
+// SetLastName sets the "last_name" field.
+func (uuo *UserUpdateOne) SetLastName(s string) *UserUpdateOne {
+	uuo.mutation.SetLastName(s)
+	return uuo
+}
+
+// SetNillableLastName sets the "last_name" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableLastName(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetLastName(*s)
+	}
+	return uuo
+}
+
+// ClearLastName clears the value of the "last_name" field.
+func (uuo *UserUpdateOne) ClearLastName() *UserUpdateOne {
+	uuo.mutation.ClearLastName()
+	return uuo
+}
+
+// SetLang sets the "lang" field.
+func (uuo *UserUpdateOne) SetLang(s string) *UserUpdateOne {
+	uuo.mutation.SetLang(s)
+	return uuo
+}
+
+// SetNillableLang sets the "lang" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableLang(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetLang(*s)
+	}
+	return uuo
+}
+
+// ClearLang clears the value of the "lang" field.
+func (uuo *UserUpdateOne) ClearLang() *UserUpdateOne {
+	uuo.mutation.ClearLang()
 	return uuo
 }
 
@@ -1421,6 +1717,26 @@ func (uuo *UserUpdateOne) AddOauthClients(o ...*OauthClient) *UserUpdateOne {
 		ids[i] = o[i].ID
 	}
 	return uuo.AddOauthClientIDs(ids...)
+}
+
+// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
+func (uuo *UserUpdateOne) AddAddrIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddAddrIDs(ids...)
+	return uuo
+}
+
+// AddAddrs adds the "addrs" edges to the UserAddr entity.
+func (uuo *UserUpdateOne) AddAddrs(u ...*UserAddr) *UserUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uuo.AddAddrIDs(ids...)
+}
+
+// SetCitizenship sets the "citizenship" edge to the Country entity.
+func (uuo *UserUpdateOne) SetCitizenship(c *Country) *UserUpdateOne {
+	return uuo.SetCitizenshipID(c.ID)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -1575,6 +1891,33 @@ func (uuo *UserUpdateOne) RemoveOauthClients(o ...*OauthClient) *UserUpdateOne {
 	return uuo.RemoveOauthClientIDs(ids...)
 }
 
+// ClearAddrs clears all "addrs" edges to the UserAddr entity.
+func (uuo *UserUpdateOne) ClearAddrs() *UserUpdateOne {
+	uuo.mutation.ClearAddrs()
+	return uuo
+}
+
+// RemoveAddrIDs removes the "addrs" edge to UserAddr entities by IDs.
+func (uuo *UserUpdateOne) RemoveAddrIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveAddrIDs(ids...)
+	return uuo
+}
+
+// RemoveAddrs removes "addrs" edges to UserAddr entities.
+func (uuo *UserUpdateOne) RemoveAddrs(u ...*UserAddr) *UserUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uuo.RemoveAddrIDs(ids...)
+}
+
+// ClearCitizenship clears the "citizenship" edge to the Country entity.
+func (uuo *UserUpdateOne) ClearCitizenship() *UserUpdateOne {
+	uuo.mutation.ClearCitizenship()
+	return uuo
+}
+
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
 func (uuo *UserUpdateOne) ClearOrgUser() *UserUpdateOne {
 	uuo.mutation.ClearOrgUser()
@@ -1638,16 +1981,6 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (uuo *UserUpdateOne) check() error {
-	if v, ok := uuo.mutation.Email(); ok {
-		if err := user.EmailValidator(v); err != nil {
-			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
-		}
-	}
-	if v, ok := uuo.mutation.Mobile(); ok {
-		if err := user.MobileValidator(v); err != nil {
-			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "User.mobile": %w`, err)}
-		}
-	}
 	if v, ok := uuo.mutation.UserType(); ok {
 		if err := user.UserTypeValidator(v); err != nil {
 			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "User.user_type": %w`, err)}
@@ -1671,6 +2004,26 @@ func (uuo *UserUpdateOne) check() error {
 	if v, ok := uuo.mutation.Avatar(); ok {
 		if err := user.AvatarValidator(v); err != nil {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Gender(); ok {
+		if err := user.GenderValidator(v); err != nil {
+			return &ValidationError{Name: "gender", err: fmt.Errorf(`ent: validator failed for field "User.gender": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.FirstName(); ok {
+		if err := user.FirstNameValidator(v); err != nil {
+			return &ValidationError{Name: "first_name", err: fmt.Errorf(`ent: validator failed for field "User.first_name": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.MiddleName(); ok {
+		if err := user.MiddleNameValidator(v); err != nil {
+			return &ValidationError{Name: "middle_name", err: fmt.Errorf(`ent: validator failed for field "User.middle_name": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.LastName(); ok {
+		if err := user.LastNameValidator(v); err != nil {
+			return &ValidationError{Name: "last_name", err: fmt.Errorf(`ent: validator failed for field "User.last_name": %w`, err)}
 		}
 	}
 	return nil
@@ -1732,18 +2085,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.DisplayName(); ok {
 		_spec.SetField(user.FieldDisplayName, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.Email(); ok {
-		_spec.SetField(user.FieldEmail, field.TypeString, value)
-	}
-	if uuo.mutation.EmailCleared() {
-		_spec.ClearField(user.FieldEmail, field.TypeString)
-	}
-	if value, ok := uuo.mutation.Mobile(); ok {
-		_spec.SetField(user.FieldMobile, field.TypeString, value)
-	}
-	if uuo.mutation.MobileCleared() {
-		_spec.ClearField(user.FieldMobile, field.TypeString)
-	}
 	if value, ok := uuo.mutation.UserType(); ok {
 		_spec.SetField(user.FieldUserType, field.TypeEnum, value)
 	}
@@ -1770,6 +2111,33 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeString)
+	}
+	if value, ok := uuo.mutation.Gender(); ok {
+		_spec.SetField(user.FieldGender, field.TypeEnum, value)
+	}
+	if value, ok := uuo.mutation.FirstName(); ok {
+		_spec.SetField(user.FieldFirstName, field.TypeString, value)
+	}
+	if uuo.mutation.FirstNameCleared() {
+		_spec.ClearField(user.FieldFirstName, field.TypeString)
+	}
+	if value, ok := uuo.mutation.MiddleName(); ok {
+		_spec.SetField(user.FieldMiddleName, field.TypeString, value)
+	}
+	if uuo.mutation.MiddleNameCleared() {
+		_spec.ClearField(user.FieldMiddleName, field.TypeString)
+	}
+	if value, ok := uuo.mutation.LastName(); ok {
+		_spec.SetField(user.FieldLastName, field.TypeString, value)
+	}
+	if uuo.mutation.LastNameCleared() {
+		_spec.ClearField(user.FieldLastName, field.TypeString)
+	}
+	if value, ok := uuo.mutation.Lang(); ok {
+		_spec.SetField(user.FieldLang, field.TypeString, value)
+	}
+	if uuo.mutation.LangCleared() {
+		_spec.ClearField(user.FieldLang, field.TypeString)
 	}
 	if uuo.mutation.IdentitiesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2075,6 +2443,80 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(oauthclient.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.AddrsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedAddrsIDs(); len(nodes) > 0 && !uuo.mutation.AddrsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.AddrsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AddrsTable,
+			Columns: []string{user.AddrsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.CitizenshipCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.CitizenshipTable,
+			Columns: []string{user.CitizenshipColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.CitizenshipIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   user.CitizenshipTable,
+			Columns: []string{user.CitizenshipColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
