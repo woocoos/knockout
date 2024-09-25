@@ -31,7 +31,7 @@ type UserAddr struct {
 	UserID int `json:"user_id,omitempty"`
 	// 地址类型，basic：基本信息，addr：收货地址
 	AddrType useraddr.AddrType `json:"addr_type,omitempty"`
-	// 地址地区
+	// 地址地区：市
 	RegionID int `json:"region_id,omitempty"`
 	// 详细地址
 	Addr string `json:"addr,omitempty"`
@@ -39,6 +39,8 @@ type UserAddr struct {
 	Email string `json:"email,omitempty"`
 	// 传真
 	Fax string `json:"fax,omitempty"`
+	// 邮编
+	ZipCode string `json:"zip_code,omitempty"`
 	// 电话
 	Tel string `json:"tel,omitempty"`
 	// 手机
@@ -97,7 +99,7 @@ func (*UserAddr) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case useraddr.FieldID, useraddr.FieldCreatedBy, useraddr.FieldUpdatedBy, useraddr.FieldUserID, useraddr.FieldRegionID:
 			values[i] = new(sql.NullInt64)
-		case useraddr.FieldAddrType, useraddr.FieldAddr, useraddr.FieldEmail, useraddr.FieldFax, useraddr.FieldTel, useraddr.FieldMobile, useraddr.FieldName:
+		case useraddr.FieldAddrType, useraddr.FieldAddr, useraddr.FieldEmail, useraddr.FieldFax, useraddr.FieldZipCode, useraddr.FieldTel, useraddr.FieldMobile, useraddr.FieldName:
 			values[i] = new(sql.NullString)
 		case useraddr.FieldCreatedAt, useraddr.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -181,6 +183,12 @@ func (ua *UserAddr) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field fax", values[i])
 			} else if value.Valid {
 				ua.Fax = value.String
+			}
+		case useraddr.FieldZipCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field zip_code", values[i])
+			} else if value.Valid {
+				ua.ZipCode = value.String
 			}
 		case useraddr.FieldTel:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -281,6 +289,9 @@ func (ua *UserAddr) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("fax=")
 	builder.WriteString(ua.Fax)
+	builder.WriteString(", ")
+	builder.WriteString("zip_code=")
+	builder.WriteString(ua.ZipCode)
 	builder.WriteString(", ")
 	builder.WriteString("tel=")
 	builder.WriteString(ua.Tel)

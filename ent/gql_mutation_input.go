@@ -2078,6 +2078,7 @@ type CreateUserAddrInput struct {
 	Addr      *string
 	Email     *string
 	Fax       *string
+	ZipCode   *string
 	Tel       *string
 	Mobile    *string
 	Name      *string
@@ -2096,6 +2097,9 @@ func (i *CreateUserAddrInput) Mutate(m *UserAddrMutation) {
 	}
 	if v := i.Fax; v != nil {
 		m.SetFax(*v)
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
 	}
 	if v := i.Tel; v != nil {
 		m.SetTel(*v)
@@ -2125,21 +2129,23 @@ func (c *UserAddrCreate) SetInput(i CreateUserAddrInput) *UserAddrCreate {
 
 // UpdateUserAddrInput represents a mutation input for updating useraddrs.
 type UpdateUserAddrInput struct {
-	ClearAddr   bool
-	Addr        *string
-	ClearEmail  bool
-	Email       *string
-	ClearFax    bool
-	Fax         *string
-	ClearTel    bool
-	Tel         *string
-	ClearMobile bool
-	Mobile      *string
-	ClearName   bool
-	Name        *string
-	IsDefault   *bool
-	ClearRegion bool
-	RegionID    *int
+	ClearAddr    bool
+	Addr         *string
+	ClearEmail   bool
+	Email        *string
+	ClearFax     bool
+	Fax          *string
+	ClearZipCode bool
+	ZipCode      *string
+	ClearTel     bool
+	Tel          *string
+	ClearMobile  bool
+	Mobile       *string
+	ClearName    bool
+	Name         *string
+	IsDefault    *bool
+	ClearRegion  bool
+	RegionID     *int
 }
 
 // Mutate applies the UpdateUserAddrInput on the UserAddrMutation builder.
@@ -2161,6 +2167,12 @@ func (i *UpdateUserAddrInput) Mutate(m *UserAddrMutation) {
 	}
 	if v := i.Fax; v != nil {
 		m.SetFax(*v)
+	}
+	if i.ClearZipCode {
+		m.ClearZipCode()
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
 	}
 	if i.ClearTel {
 		m.ClearTel()

@@ -752,6 +752,7 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 		User      func(childComplexity int) int
 		UserID    func(childComplexity int) int
+		ZipCode   func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -5231,6 +5232,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAddr.UserID(childComplexity), true
 
+	case "UserAddr.zipCode":
+		if e.complexity.UserAddr.ZipCode == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.ZipCode(childComplexity), true
+
 	case "UserConnection.edges":
 		if e.complexity.UserConnection.Edges == nil {
 			break
@@ -8698,6 +8706,10 @@ input CreateUserAddrInput {
   传真
   """
   fax: String
+  """
+  邮编
+  """
+  zipCode: String
   """
   电话
   """
@@ -12318,6 +12330,11 @@ input UpdateUserAddrInput {
   fax: String
   clearFax: Boolean
   """
+  邮编
+  """
+  zipCode: String
+  clearZipCode: Boolean
+  """
   电话
   """
   tel: String
@@ -12587,7 +12604,7 @@ type UserAddr implements Node {
   """
   addrType: UserAddrAddrType!
   """
-  地址地区
+  地址地区：市
   """
   regionID: ID
   """
@@ -12602,6 +12619,10 @@ type UserAddr implements Node {
   传真
   """
   fax: String
+  """
+  邮编
+  """
+  zipCode: String
   """
   电话
   """
@@ -12796,6 +12817,24 @@ input UserAddrWhereInput {
   faxNotNil: Boolean
   faxEqualFold: String
   faxContainsFold: String
+  """
+  zip_code field predicates
+  """
+  zipCode: String
+  zipCodeNEQ: String
+  zipCodeIn: [String!]
+  zipCodeNotIn: [String!]
+  zipCodeGT: String
+  zipCodeGTE: String
+  zipCodeLT: String
+  zipCodeLTE: String
+  zipCodeContains: String
+  zipCodeHasPrefix: String
+  zipCodeHasSuffix: String
+  zipCodeIsNil: Boolean
+  zipCodeNotNil: Boolean
+  zipCodeEqualFold: String
+  zipCodeContainsFold: String
   """
   tel field predicates
   """

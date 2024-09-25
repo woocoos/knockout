@@ -38,6 +38,8 @@ const (
 	FieldEmail = "email"
 	// FieldFax holds the string denoting the fax field in the database.
 	FieldFax = "fax"
+	// FieldZipCode holds the string denoting the zip_code field in the database.
+	FieldZipCode = "zip_code"
 	// FieldTel holds the string denoting the tel field in the database.
 	FieldTel = "tel"
 	// FieldMobile holds the string denoting the mobile field in the database.
@@ -81,6 +83,7 @@ var Columns = []string{
 	FieldAddr,
 	FieldEmail,
 	FieldFax,
+	FieldZipCode,
 	FieldTel,
 	FieldMobile,
 	FieldName,
@@ -110,6 +113,8 @@ var (
 	EmailValidator func(string) error
 	// FaxValidator is a validator for the "fax" field. It is called by the builders before save.
 	FaxValidator func(string) error
+	// ZipCodeValidator is a validator for the "zip_code" field. It is called by the builders before save.
+	ZipCodeValidator func(string) error
 	// TelValidator is a validator for the "tel" field. It is called by the builders before save.
 	TelValidator func(string) error
 	// MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
@@ -199,6 +204,11 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByFax orders the results by the fax field.
 func ByFax(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFax, opts...).ToFunc()
+}
+
+// ByZipCode orders the results by the zip_code field.
+func ByZipCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldZipCode, opts...).ToFunc()
 }
 
 // ByTel orders the results by the tel field.

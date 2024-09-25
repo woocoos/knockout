@@ -29812,6 +29812,7 @@ type UserAddrMutation struct {
 	addr          *string
 	email         *string
 	fax           *string
+	zip_code      *string
 	tel           *string
 	mobile        *string
 	name          *string
@@ -30422,6 +30423,55 @@ func (m *UserAddrMutation) ResetFax() {
 	delete(m.clearedFields, useraddr.FieldFax)
 }
 
+// SetZipCode sets the "zip_code" field.
+func (m *UserAddrMutation) SetZipCode(s string) {
+	m.zip_code = &s
+}
+
+// ZipCode returns the value of the "zip_code" field in the mutation.
+func (m *UserAddrMutation) ZipCode() (r string, exists bool) {
+	v := m.zip_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldZipCode returns the old "zip_code" field's value of the UserAddr entity.
+// If the UserAddr object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserAddrMutation) OldZipCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldZipCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldZipCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldZipCode: %w", err)
+	}
+	return oldValue.ZipCode, nil
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (m *UserAddrMutation) ClearZipCode() {
+	m.zip_code = nil
+	m.clearedFields[useraddr.FieldZipCode] = struct{}{}
+}
+
+// ZipCodeCleared returns if the "zip_code" field was cleared in this mutation.
+func (m *UserAddrMutation) ZipCodeCleared() bool {
+	_, ok := m.clearedFields[useraddr.FieldZipCode]
+	return ok
+}
+
+// ResetZipCode resets all changes to the "zip_code" field.
+func (m *UserAddrMutation) ResetZipCode() {
+	m.zip_code = nil
+	delete(m.clearedFields, useraddr.FieldZipCode)
+}
+
 // SetTel sets the "tel" field.
 func (m *UserAddrMutation) SetTel(s string) {
 	m.tel = &s
@@ -30693,7 +30743,7 @@ func (m *UserAddrMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserAddrMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.created_by != nil {
 		fields = append(fields, useraddr.FieldCreatedBy)
 	}
@@ -30723,6 +30773,9 @@ func (m *UserAddrMutation) Fields() []string {
 	}
 	if m.fax != nil {
 		fields = append(fields, useraddr.FieldFax)
+	}
+	if m.zip_code != nil {
+		fields = append(fields, useraddr.FieldZipCode)
 	}
 	if m.tel != nil {
 		fields = append(fields, useraddr.FieldTel)
@@ -30764,6 +30817,8 @@ func (m *UserAddrMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case useraddr.FieldFax:
 		return m.Fax()
+	case useraddr.FieldZipCode:
+		return m.ZipCode()
 	case useraddr.FieldTel:
 		return m.Tel()
 	case useraddr.FieldMobile:
@@ -30801,6 +30856,8 @@ func (m *UserAddrMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEmail(ctx)
 	case useraddr.FieldFax:
 		return m.OldFax(ctx)
+	case useraddr.FieldZipCode:
+		return m.OldZipCode(ctx)
 	case useraddr.FieldTel:
 		return m.OldTel(ctx)
 	case useraddr.FieldMobile:
@@ -30887,6 +30944,13 @@ func (m *UserAddrMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFax(v)
+		return nil
+	case useraddr.FieldZipCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetZipCode(v)
 		return nil
 	case useraddr.FieldTel:
 		v, ok := value.(string)
@@ -30994,6 +31058,9 @@ func (m *UserAddrMutation) ClearedFields() []string {
 	if m.FieldCleared(useraddr.FieldFax) {
 		fields = append(fields, useraddr.FieldFax)
 	}
+	if m.FieldCleared(useraddr.FieldZipCode) {
+		fields = append(fields, useraddr.FieldZipCode)
+	}
 	if m.FieldCleared(useraddr.FieldTel) {
 		fields = append(fields, useraddr.FieldTel)
 	}
@@ -31037,6 +31104,9 @@ func (m *UserAddrMutation) ClearField(name string) error {
 		return nil
 	case useraddr.FieldFax:
 		m.ClearFax()
+		return nil
+	case useraddr.FieldZipCode:
+		m.ClearZipCode()
 		return nil
 	case useraddr.FieldTel:
 		m.ClearTel()
@@ -31084,6 +31154,9 @@ func (m *UserAddrMutation) ResetField(name string) error {
 		return nil
 	case useraddr.FieldFax:
 		m.ResetFax()
+		return nil
+	case useraddr.FieldZipCode:
+		m.ResetZipCode()
 		return nil
 	case useraddr.FieldTel:
 		m.ResetTel()

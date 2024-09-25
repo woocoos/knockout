@@ -12558,6 +12558,23 @@ type UserAddrWhereInput struct {
 	FaxEqualFold    *string  `json:"faxEqualFold,omitempty"`
 	FaxContainsFold *string  `json:"faxContainsFold,omitempty"`
 
+	// "zip_code" field predicates.
+	ZipCode             *string  `json:"zipCode,omitempty"`
+	ZipCodeNEQ          *string  `json:"zipCodeNEQ,omitempty"`
+	ZipCodeIn           []string `json:"zipCodeIn,omitempty"`
+	ZipCodeNotIn        []string `json:"zipCodeNotIn,omitempty"`
+	ZipCodeGT           *string  `json:"zipCodeGT,omitempty"`
+	ZipCodeGTE          *string  `json:"zipCodeGTE,omitempty"`
+	ZipCodeLT           *string  `json:"zipCodeLT,omitempty"`
+	ZipCodeLTE          *string  `json:"zipCodeLTE,omitempty"`
+	ZipCodeContains     *string  `json:"zipCodeContains,omitempty"`
+	ZipCodeHasPrefix    *string  `json:"zipCodeHasPrefix,omitempty"`
+	ZipCodeHasSuffix    *string  `json:"zipCodeHasSuffix,omitempty"`
+	ZipCodeIsNil        bool     `json:"zipCodeIsNil,omitempty"`
+	ZipCodeNotNil       bool     `json:"zipCodeNotNil,omitempty"`
+	ZipCodeEqualFold    *string  `json:"zipCodeEqualFold,omitempty"`
+	ZipCodeContainsFold *string  `json:"zipCodeContainsFold,omitempty"`
+
 	// "tel" field predicates.
 	Tel             *string  `json:"tel,omitempty"`
 	TelNEQ          *string  `json:"telNEQ,omitempty"`
@@ -13007,6 +13024,51 @@ func (i *UserAddrWhereInput) P() (predicate.UserAddr, error) {
 	}
 	if i.FaxContainsFold != nil {
 		predicates = append(predicates, useraddr.FaxContainsFold(*i.FaxContainsFold))
+	}
+	if i.ZipCode != nil {
+		predicates = append(predicates, useraddr.ZipCodeEQ(*i.ZipCode))
+	}
+	if i.ZipCodeNEQ != nil {
+		predicates = append(predicates, useraddr.ZipCodeNEQ(*i.ZipCodeNEQ))
+	}
+	if len(i.ZipCodeIn) > 0 {
+		predicates = append(predicates, useraddr.ZipCodeIn(i.ZipCodeIn...))
+	}
+	if len(i.ZipCodeNotIn) > 0 {
+		predicates = append(predicates, useraddr.ZipCodeNotIn(i.ZipCodeNotIn...))
+	}
+	if i.ZipCodeGT != nil {
+		predicates = append(predicates, useraddr.ZipCodeGT(*i.ZipCodeGT))
+	}
+	if i.ZipCodeGTE != nil {
+		predicates = append(predicates, useraddr.ZipCodeGTE(*i.ZipCodeGTE))
+	}
+	if i.ZipCodeLT != nil {
+		predicates = append(predicates, useraddr.ZipCodeLT(*i.ZipCodeLT))
+	}
+	if i.ZipCodeLTE != nil {
+		predicates = append(predicates, useraddr.ZipCodeLTE(*i.ZipCodeLTE))
+	}
+	if i.ZipCodeContains != nil {
+		predicates = append(predicates, useraddr.ZipCodeContains(*i.ZipCodeContains))
+	}
+	if i.ZipCodeHasPrefix != nil {
+		predicates = append(predicates, useraddr.ZipCodeHasPrefix(*i.ZipCodeHasPrefix))
+	}
+	if i.ZipCodeHasSuffix != nil {
+		predicates = append(predicates, useraddr.ZipCodeHasSuffix(*i.ZipCodeHasSuffix))
+	}
+	if i.ZipCodeIsNil {
+		predicates = append(predicates, useraddr.ZipCodeIsNil())
+	}
+	if i.ZipCodeNotNil {
+		predicates = append(predicates, useraddr.ZipCodeNotNil())
+	}
+	if i.ZipCodeEqualFold != nil {
+		predicates = append(predicates, useraddr.ZipCodeEqualFold(*i.ZipCodeEqualFold))
+	}
+	if i.ZipCodeContainsFold != nil {
+		predicates = append(predicates, useraddr.ZipCodeContainsFold(*i.ZipCodeContainsFold))
 	}
 	if i.Tel != nil {
 		predicates = append(predicates, useraddr.TelEQ(*i.Tel))

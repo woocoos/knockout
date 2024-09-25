@@ -691,20 +691,24 @@ func init() {
 	useraddrDescFax := useraddrFields[5].Descriptor()
 	// useraddr.FaxValidator is a validator for the "fax" field. It is called by the builders before save.
 	useraddr.FaxValidator = useraddrDescFax.Validators[0].(func(string) error)
+	// useraddrDescZipCode is the schema descriptor for zip_code field.
+	useraddrDescZipCode := useraddrFields[6].Descriptor()
+	// useraddr.ZipCodeValidator is a validator for the "zip_code" field. It is called by the builders before save.
+	useraddr.ZipCodeValidator = useraddrDescZipCode.Validators[0].(func(string) error)
 	// useraddrDescTel is the schema descriptor for tel field.
-	useraddrDescTel := useraddrFields[6].Descriptor()
+	useraddrDescTel := useraddrFields[7].Descriptor()
 	// useraddr.TelValidator is a validator for the "tel" field. It is called by the builders before save.
 	useraddr.TelValidator = useraddrDescTel.Validators[0].(func(string) error)
 	// useraddrDescMobile is the schema descriptor for mobile field.
-	useraddrDescMobile := useraddrFields[7].Descriptor()
+	useraddrDescMobile := useraddrFields[8].Descriptor()
 	// useraddr.MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
 	useraddr.MobileValidator = useraddrDescMobile.Validators[0].(func(string) error)
 	// useraddrDescName is the schema descriptor for name field.
-	useraddrDescName := useraddrFields[8].Descriptor()
+	useraddrDescName := useraddrFields[9].Descriptor()
 	// useraddr.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	useraddr.NameValidator = useraddrDescName.Validators[0].(func(string) error)
 	// useraddrDescIsDefault is the schema descriptor for is_default field.
-	useraddrDescIsDefault := useraddrFields[9].Descriptor()
+	useraddrDescIsDefault := useraddrFields[10].Descriptor()
 	// useraddr.DefaultIsDefault holds the default value on creation for the is_default field.
 	useraddr.DefaultIsDefault = useraddrDescIsDefault.Default.(bool)
 	userdeviceMixin := schema.UserDevice{}.Mixin()

@@ -813,6 +813,7 @@ var (
 		{Name: "addr", Type: field.TypeString, Nullable: true},
 		{Name: "email", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "fax", Type: field.TypeString, Nullable: true, Size: 45},
+		{Name: "zip_code", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "tel", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "mobile", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "name", Type: field.TypeString, Nullable: true, Size: 45},
@@ -828,13 +829,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_addr_user_addrs",
-				Columns:    []*schema.Column{UserAddrColumns[13]},
+				Columns:    []*schema.Column{UserAddrColumns[14]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "user_addr_region_region",
-				Columns:    []*schema.Column{UserAddrColumns[14]},
+				Columns:    []*schema.Column{UserAddrColumns[15]},
 				RefColumns: []*schema.Column{RegionColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

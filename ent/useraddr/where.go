@@ -100,6 +100,11 @@ func Fax(v string) predicate.UserAddr {
 	return predicate.UserAddr(sql.FieldEQ(FieldFax, v))
 }
 
+// ZipCode applies equality check predicate on the "zip_code" field. It's identical to ZipCodeEQ.
+func ZipCode(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldEQ(FieldZipCode, v))
+}
+
 // Tel applies equality check predicate on the "tel" field. It's identical to TelEQ.
 func Tel(v string) predicate.UserAddr {
 	return predicate.UserAddr(sql.FieldEQ(FieldTel, v))
@@ -603,6 +608,81 @@ func FaxEqualFold(v string) predicate.UserAddr {
 // FaxContainsFold applies the ContainsFold predicate on the "fax" field.
 func FaxContainsFold(v string) predicate.UserAddr {
 	return predicate.UserAddr(sql.FieldContainsFold(FieldFax, v))
+}
+
+// ZipCodeEQ applies the EQ predicate on the "zip_code" field.
+func ZipCodeEQ(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldEQ(FieldZipCode, v))
+}
+
+// ZipCodeNEQ applies the NEQ predicate on the "zip_code" field.
+func ZipCodeNEQ(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldNEQ(FieldZipCode, v))
+}
+
+// ZipCodeIn applies the In predicate on the "zip_code" field.
+func ZipCodeIn(vs ...string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldIn(FieldZipCode, vs...))
+}
+
+// ZipCodeNotIn applies the NotIn predicate on the "zip_code" field.
+func ZipCodeNotIn(vs ...string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldNotIn(FieldZipCode, vs...))
+}
+
+// ZipCodeGT applies the GT predicate on the "zip_code" field.
+func ZipCodeGT(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldGT(FieldZipCode, v))
+}
+
+// ZipCodeGTE applies the GTE predicate on the "zip_code" field.
+func ZipCodeGTE(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldGTE(FieldZipCode, v))
+}
+
+// ZipCodeLT applies the LT predicate on the "zip_code" field.
+func ZipCodeLT(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldLT(FieldZipCode, v))
+}
+
+// ZipCodeLTE applies the LTE predicate on the "zip_code" field.
+func ZipCodeLTE(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldLTE(FieldZipCode, v))
+}
+
+// ZipCodeContains applies the Contains predicate on the "zip_code" field.
+func ZipCodeContains(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldContains(FieldZipCode, v))
+}
+
+// ZipCodeHasPrefix applies the HasPrefix predicate on the "zip_code" field.
+func ZipCodeHasPrefix(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldHasPrefix(FieldZipCode, v))
+}
+
+// ZipCodeHasSuffix applies the HasSuffix predicate on the "zip_code" field.
+func ZipCodeHasSuffix(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldHasSuffix(FieldZipCode, v))
+}
+
+// ZipCodeIsNil applies the IsNil predicate on the "zip_code" field.
+func ZipCodeIsNil() predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldIsNull(FieldZipCode))
+}
+
+// ZipCodeNotNil applies the NotNil predicate on the "zip_code" field.
+func ZipCodeNotNil() predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldNotNull(FieldZipCode))
+}
+
+// ZipCodeEqualFold applies the EqualFold predicate on the "zip_code" field.
+func ZipCodeEqualFold(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldEqualFold(FieldZipCode, v))
+}
+
+// ZipCodeContainsFold applies the ContainsFold predicate on the "zip_code" field.
+func ZipCodeContainsFold(v string) predicate.UserAddr {
+	return predicate.UserAddr(sql.FieldContainsFold(FieldZipCode, v))
 }
 
 // TelEQ applies the EQ predicate on the "tel" field.

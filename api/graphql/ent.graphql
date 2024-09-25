@@ -2869,6 +2869,10 @@ input CreateUserAddrInput {
   """
   fax: String
   """
+  邮编
+  """
+  zipCode: String
+  """
   电话
   """
   tel: String
@@ -6488,6 +6492,11 @@ input UpdateUserAddrInput {
   fax: String
   clearFax: Boolean
   """
+  邮编
+  """
+  zipCode: String
+  clearZipCode: Boolean
+  """
   电话
   """
   tel: String
@@ -6757,7 +6766,7 @@ type UserAddr implements Node {
   """
   addrType: UserAddrAddrType!
   """
-  地址地区
+  地址地区：市
   """
   regionID: ID
   """
@@ -6772,6 +6781,10 @@ type UserAddr implements Node {
   传真
   """
   fax: String
+  """
+  邮编
+  """
+  zipCode: String
   """
   电话
   """
@@ -6966,6 +6979,24 @@ input UserAddrWhereInput {
   faxNotNil: Boolean
   faxEqualFold: String
   faxContainsFold: String
+  """
+  zip_code field predicates
+  """
+  zipCode: String
+  zipCodeNEQ: String
+  zipCodeIn: [String!]
+  zipCodeNotIn: [String!]
+  zipCodeGT: String
+  zipCodeGTE: String
+  zipCodeLT: String
+  zipCodeLTE: String
+  zipCodeContains: String
+  zipCodeHasPrefix: String
+  zipCodeHasSuffix: String
+  zipCodeIsNil: Boolean
+  zipCodeNotNil: Boolean
+  zipCodeEqualFold: String
+  zipCodeContainsFold: String
   """
   tel field predicates
   """

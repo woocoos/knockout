@@ -22857,6 +22857,8 @@ func (ec *executionContext) fieldContext_User_addrs(_ context.Context, field gra
 				return ec.fieldContext_UserAddr_email(ctx, field)
 			case "fax":
 				return ec.fieldContext_UserAddr_fax(ctx, field)
+			case "zipCode":
+				return ec.fieldContext_UserAddr_zipCode(ctx, field)
 			case "tel":
 				return ec.fieldContext_UserAddr_tel(ctx, field)
 			case "mobile":
@@ -23109,6 +23111,8 @@ func (ec *executionContext) fieldContext_User_basicAddr(_ context.Context, field
 				return ec.fieldContext_UserAddr_email(ctx, field)
 			case "fax":
 				return ec.fieldContext_UserAddr_fax(ctx, field)
+			case "zipCode":
+				return ec.fieldContext_UserAddr_zipCode(ctx, field)
 			case "tel":
 				return ec.fieldContext_UserAddr_tel(ctx, field)
 			case "mobile":
@@ -23579,6 +23583,47 @@ func (ec *executionContext) _UserAddr_fax(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) fieldContext_UserAddr_fax(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserAddr",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAddr_zipCode(ctx context.Context, field graphql.CollectedField, obj *ent.UserAddr) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAddr_zipCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ZipCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserAddr_zipCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserAddr",
 		Field:      field,
@@ -35311,7 +35356,7 @@ func (ec *executionContext) unmarshalInputCreateUserAddrInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"addr", "email", "fax", "tel", "mobile", "name", "isDefault", "userID", "regionID"}
+	fieldsInOrder := [...]string{"addr", "email", "fax", "zipCode", "tel", "mobile", "name", "isDefault", "userID", "regionID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35339,6 +35384,13 @@ func (ec *executionContext) unmarshalInputCreateUserAddrInput(ctx context.Contex
 				return it, err
 			}
 			it.Fax = data
+		case "zipCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCode"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCode = data
 		case "tel":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -45766,7 +45818,7 @@ func (ec *executionContext) unmarshalInputUpdateUserAddrInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"addr", "clearAddr", "email", "clearEmail", "fax", "clearFax", "tel", "clearTel", "mobile", "clearMobile", "name", "clearName", "isDefault", "regionID", "clearRegion"}
+	fieldsInOrder := [...]string{"addr", "clearAddr", "email", "clearEmail", "fax", "clearFax", "zipCode", "clearZipCode", "tel", "clearTel", "mobile", "clearMobile", "name", "clearName", "isDefault", "regionID", "clearRegion"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -45815,6 +45867,20 @@ func (ec *executionContext) unmarshalInputUpdateUserAddrInput(ctx context.Contex
 				return it, err
 			}
 			it.ClearFax = data
+		case "zipCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCode"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCode = data
+		case "clearZipCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearZipCode"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearZipCode = data
 		case "tel":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -46240,7 +46306,7 @@ func (ec *executionContext) unmarshalInputUserAddrWhereInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "addrType", "addrTypeNEQ", "addrTypeIn", "addrTypeNotIn", "regionID", "regionIDNEQ", "regionIDIn", "regionIDNotIn", "regionIDIsNil", "regionIDNotNil", "addr", "addrNEQ", "addrIn", "addrNotIn", "addrGT", "addrGTE", "addrLT", "addrLTE", "addrContains", "addrHasPrefix", "addrHasSuffix", "addrIsNil", "addrNotNil", "addrEqualFold", "addrContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailIsNil", "emailNotNil", "emailEqualFold", "emailContainsFold", "fax", "faxNEQ", "faxIn", "faxNotIn", "faxGT", "faxGTE", "faxLT", "faxLTE", "faxContains", "faxHasPrefix", "faxHasSuffix", "faxIsNil", "faxNotNil", "faxEqualFold", "faxContainsFold", "tel", "telNEQ", "telIn", "telNotIn", "telGT", "telGTE", "telLT", "telLTE", "telContains", "telHasPrefix", "telHasSuffix", "telIsNil", "telNotNil", "telEqualFold", "telContainsFold", "mobile", "mobileNEQ", "mobileIn", "mobileNotIn", "mobileGT", "mobileGTE", "mobileLT", "mobileLTE", "mobileContains", "mobileHasPrefix", "mobileHasSuffix", "mobileIsNil", "mobileNotNil", "mobileEqualFold", "mobileContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameIsNil", "nameNotNil", "nameEqualFold", "nameContainsFold", "isDefault", "isDefaultNEQ", "hasUser", "hasUserWith", "hasRegion", "hasRegionWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "addrType", "addrTypeNEQ", "addrTypeIn", "addrTypeNotIn", "regionID", "regionIDNEQ", "regionIDIn", "regionIDNotIn", "regionIDIsNil", "regionIDNotNil", "addr", "addrNEQ", "addrIn", "addrNotIn", "addrGT", "addrGTE", "addrLT", "addrLTE", "addrContains", "addrHasPrefix", "addrHasSuffix", "addrIsNil", "addrNotNil", "addrEqualFold", "addrContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailIsNil", "emailNotNil", "emailEqualFold", "emailContainsFold", "fax", "faxNEQ", "faxIn", "faxNotIn", "faxGT", "faxGTE", "faxLT", "faxLTE", "faxContains", "faxHasPrefix", "faxHasSuffix", "faxIsNil", "faxNotNil", "faxEqualFold", "faxContainsFold", "zipCode", "zipCodeNEQ", "zipCodeIn", "zipCodeNotIn", "zipCodeGT", "zipCodeGTE", "zipCodeLT", "zipCodeLTE", "zipCodeContains", "zipCodeHasPrefix", "zipCodeHasSuffix", "zipCodeIsNil", "zipCodeNotNil", "zipCodeEqualFold", "zipCodeContainsFold", "tel", "telNEQ", "telIn", "telNotIn", "telGT", "telGTE", "telLT", "telLTE", "telContains", "telHasPrefix", "telHasSuffix", "telIsNil", "telNotNil", "telEqualFold", "telContainsFold", "mobile", "mobileNEQ", "mobileIn", "mobileNotIn", "mobileGT", "mobileGTE", "mobileLT", "mobileLTE", "mobileContains", "mobileHasPrefix", "mobileHasSuffix", "mobileIsNil", "mobileNotNil", "mobileEqualFold", "mobileContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameIsNil", "nameNotNil", "nameEqualFold", "nameContainsFold", "isDefault", "isDefaultNEQ", "hasUser", "hasUserWith", "hasRegion", "hasRegionWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -47003,6 +47069,111 @@ func (ec *executionContext) unmarshalInputUserAddrWhereInput(ctx context.Context
 				return it, err
 			}
 			it.FaxContainsFold = data
+		case "zipCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCode"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCode = data
+		case "zipCodeNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeNEQ = data
+		case "zipCodeIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeIn = data
+		case "zipCodeNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeNotIn = data
+		case "zipCodeGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeGT = data
+		case "zipCodeGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeGTE = data
+		case "zipCodeLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeLT = data
+		case "zipCodeLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeLTE = data
+		case "zipCodeContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeContains = data
+		case "zipCodeHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeHasPrefix = data
+		case "zipCodeHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeHasSuffix = data
+		case "zipCodeIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeIsNil = data
+		case "zipCodeNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeNotNil = data
+		case "zipCodeEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeEqualFold = data
+		case "zipCodeContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("zipCodeContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ZipCodeContainsFold = data
 		case "tel":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -57599,6 +57770,8 @@ func (ec *executionContext) _UserAddr(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = ec._UserAddr_email(ctx, field, obj)
 		case "fax":
 			out.Values[i] = ec._UserAddr_fax(ctx, field, obj)
+		case "zipCode":
+			out.Values[i] = ec._UserAddr_zipCode(ctx, field, obj)
 		case "tel":
 			out.Values[i] = ec._UserAddr_tel(ctx, field, obj)
 		case "mobile":

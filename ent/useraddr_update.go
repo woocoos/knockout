@@ -170,6 +170,26 @@ func (uau *UserAddrUpdate) ClearFax() *UserAddrUpdate {
 	return uau
 }
 
+// SetZipCode sets the "zip_code" field.
+func (uau *UserAddrUpdate) SetZipCode(s string) *UserAddrUpdate {
+	uau.mutation.SetZipCode(s)
+	return uau
+}
+
+// SetNillableZipCode sets the "zip_code" field if the given value is not nil.
+func (uau *UserAddrUpdate) SetNillableZipCode(s *string) *UserAddrUpdate {
+	if s != nil {
+		uau.SetZipCode(*s)
+	}
+	return uau
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (uau *UserAddrUpdate) ClearZipCode() *UserAddrUpdate {
+	uau.mutation.ClearZipCode()
+	return uau
+}
+
 // SetTel sets the "tel" field.
 func (uau *UserAddrUpdate) SetTel(s string) *UserAddrUpdate {
 	uau.mutation.SetTel(s)
@@ -304,6 +324,11 @@ func (uau *UserAddrUpdate) check() error {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
+	if v, ok := uau.mutation.ZipCode(); ok {
+		if err := useraddr.ZipCodeValidator(v); err != nil {
+			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
+		}
+	}
 	if v, ok := uau.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
@@ -369,6 +394,12 @@ func (uau *UserAddrUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uau.mutation.FaxCleared() {
 		_spec.ClearField(useraddr.FieldFax, field.TypeString)
+	}
+	if value, ok := uau.mutation.ZipCode(); ok {
+		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
+	}
+	if uau.mutation.ZipCodeCleared() {
+		_spec.ClearField(useraddr.FieldZipCode, field.TypeString)
 	}
 	if value, ok := uau.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)
@@ -581,6 +612,26 @@ func (uauo *UserAddrUpdateOne) ClearFax() *UserAddrUpdateOne {
 	return uauo
 }
 
+// SetZipCode sets the "zip_code" field.
+func (uauo *UserAddrUpdateOne) SetZipCode(s string) *UserAddrUpdateOne {
+	uauo.mutation.SetZipCode(s)
+	return uauo
+}
+
+// SetNillableZipCode sets the "zip_code" field if the given value is not nil.
+func (uauo *UserAddrUpdateOne) SetNillableZipCode(s *string) *UserAddrUpdateOne {
+	if s != nil {
+		uauo.SetZipCode(*s)
+	}
+	return uauo
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (uauo *UserAddrUpdateOne) ClearZipCode() *UserAddrUpdateOne {
+	uauo.mutation.ClearZipCode()
+	return uauo
+}
+
 // SetTel sets the "tel" field.
 func (uauo *UserAddrUpdateOne) SetTel(s string) *UserAddrUpdateOne {
 	uauo.mutation.SetTel(s)
@@ -728,6 +779,11 @@ func (uauo *UserAddrUpdateOne) check() error {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
+	if v, ok := uauo.mutation.ZipCode(); ok {
+		if err := useraddr.ZipCodeValidator(v); err != nil {
+			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
+		}
+	}
 	if v, ok := uauo.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
@@ -810,6 +866,12 @@ func (uauo *UserAddrUpdateOne) sqlSave(ctx context.Context) (_node *UserAddr, er
 	}
 	if uauo.mutation.FaxCleared() {
 		_spec.ClearField(useraddr.FieldFax, field.TypeString)
+	}
+	if value, ok := uauo.mutation.ZipCode(); ok {
+		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
+	}
+	if uauo.mutation.ZipCodeCleared() {
+		_spec.ClearField(useraddr.FieldZipCode, field.TypeString)
 	}
 	if value, ok := uauo.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)

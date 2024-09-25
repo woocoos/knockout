@@ -148,6 +148,20 @@ func (uac *UserAddrCreate) SetNillableFax(s *string) *UserAddrCreate {
 	return uac
 }
 
+// SetZipCode sets the "zip_code" field.
+func (uac *UserAddrCreate) SetZipCode(s string) *UserAddrCreate {
+	uac.mutation.SetZipCode(s)
+	return uac
+}
+
+// SetNillableZipCode sets the "zip_code" field if the given value is not nil.
+func (uac *UserAddrCreate) SetNillableZipCode(s *string) *UserAddrCreate {
+	if s != nil {
+		uac.SetZipCode(*s)
+	}
+	return uac
+}
+
 // SetTel sets the "tel" field.
 func (uac *UserAddrCreate) SetTel(s string) *UserAddrCreate {
 	uac.mutation.SetTel(s)
@@ -297,6 +311,11 @@ func (uac *UserAddrCreate) check() error {
 			return &ValidationError{Name: "fax", err: fmt.Errorf(`ent: validator failed for field "UserAddr.fax": %w`, err)}
 		}
 	}
+	if v, ok := uac.mutation.ZipCode(); ok {
+		if err := useraddr.ZipCodeValidator(v); err != nil {
+			return &ValidationError{Name: "zip_code", err: fmt.Errorf(`ent: validator failed for field "UserAddr.zip_code": %w`, err)}
+		}
+	}
 	if v, ok := uac.mutation.Tel(); ok {
 		if err := useraddr.TelValidator(v); err != nil {
 			return &ValidationError{Name: "tel", err: fmt.Errorf(`ent: validator failed for field "UserAddr.tel": %w`, err)}
@@ -379,6 +398,10 @@ func (uac *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
 	if value, ok := uac.mutation.Fax(); ok {
 		_spec.SetField(useraddr.FieldFax, field.TypeString, value)
 		_node.Fax = value
+	}
+	if value, ok := uac.mutation.ZipCode(); ok {
+		_spec.SetField(useraddr.FieldZipCode, field.TypeString, value)
+		_node.ZipCode = value
 	}
 	if value, ok := uac.mutation.Tel(); ok {
 		_spec.SetField(useraddr.FieldTel, field.TypeString, value)
@@ -605,6 +628,24 @@ func (u *UserAddrUpsert) UpdateFax() *UserAddrUpsert {
 // ClearFax clears the value of the "fax" field.
 func (u *UserAddrUpsert) ClearFax() *UserAddrUpsert {
 	u.SetNull(useraddr.FieldFax)
+	return u
+}
+
+// SetZipCode sets the "zip_code" field.
+func (u *UserAddrUpsert) SetZipCode(v string) *UserAddrUpsert {
+	u.Set(useraddr.FieldZipCode, v)
+	return u
+}
+
+// UpdateZipCode sets the "zip_code" field to the value that was provided on create.
+func (u *UserAddrUpsert) UpdateZipCode() *UserAddrUpsert {
+	u.SetExcluded(useraddr.FieldZipCode)
+	return u
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (u *UserAddrUpsert) ClearZipCode() *UserAddrUpsert {
+	u.SetNull(useraddr.FieldZipCode)
 	return u
 }
 
@@ -875,6 +916,27 @@ func (u *UserAddrUpsertOne) UpdateFax() *UserAddrUpsertOne {
 func (u *UserAddrUpsertOne) ClearFax() *UserAddrUpsertOne {
 	return u.Update(func(s *UserAddrUpsert) {
 		s.ClearFax()
+	})
+}
+
+// SetZipCode sets the "zip_code" field.
+func (u *UserAddrUpsertOne) SetZipCode(v string) *UserAddrUpsertOne {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.SetZipCode(v)
+	})
+}
+
+// UpdateZipCode sets the "zip_code" field to the value that was provided on create.
+func (u *UserAddrUpsertOne) UpdateZipCode() *UserAddrUpsertOne {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.UpdateZipCode()
+	})
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (u *UserAddrUpsertOne) ClearZipCode() *UserAddrUpsertOne {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.ClearZipCode()
 	})
 }
 
@@ -1322,6 +1384,27 @@ func (u *UserAddrUpsertBulk) UpdateFax() *UserAddrUpsertBulk {
 func (u *UserAddrUpsertBulk) ClearFax() *UserAddrUpsertBulk {
 	return u.Update(func(s *UserAddrUpsert) {
 		s.ClearFax()
+	})
+}
+
+// SetZipCode sets the "zip_code" field.
+func (u *UserAddrUpsertBulk) SetZipCode(v string) *UserAddrUpsertBulk {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.SetZipCode(v)
+	})
+}
+
+// UpdateZipCode sets the "zip_code" field to the value that was provided on create.
+func (u *UserAddrUpsertBulk) UpdateZipCode() *UserAddrUpsertBulk {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.UpdateZipCode()
+	})
+}
+
+// ClearZipCode clears the value of the "zip_code" field.
+func (u *UserAddrUpsertBulk) ClearZipCode() *UserAddrUpsertBulk {
+	return u.Update(func(s *UserAddrUpsert) {
+		s.ClearZipCode()
 	})
 }
 

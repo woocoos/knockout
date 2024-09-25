@@ -45,10 +45,11 @@ func (UserAddr) Fields() []ent.Field {
 			"addr", "addr",
 		).Comment("地址类型，basic：基本信息，addr：收货地址").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
-		field.Int("region_id").Optional().Comment("地址地区"),
+		field.Int("region_id").Optional().Comment("地址地区：市"),
 		field.String("addr").Optional().Comment("详细地址"),
 		field.String("email").MaxLen(45).Optional().Comment("邮箱"),
 		field.String("fax").MaxLen(45).Optional().Comment("传真"),
+		field.String("zip_code").MaxLen(45).Optional().Comment("邮编"),
 		field.String("tel").MaxLen(45).Optional().Comment("电话"),
 		field.String("mobile").MaxLen(45).Optional().Comment("手机"),
 		field.String("name").MaxLen(45).Optional().Comment("联系人名称"),

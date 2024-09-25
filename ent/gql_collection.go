@@ -4220,6 +4220,11 @@ func (ua *UserAddrQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 				selectedFields = append(selectedFields, useraddr.FieldFax)
 				fieldSeen[useraddr.FieldFax] = struct{}{}
 			}
+		case "zipCode":
+			if _, ok := fieldSeen[useraddr.FieldZipCode]; !ok {
+				selectedFields = append(selectedFields, useraddr.FieldZipCode)
+				fieldSeen[useraddr.FieldZipCode] = struct{}{}
+			}
 		case "tel":
 			if _, ok := fieldSeen[useraddr.FieldTel]; !ok {
 				selectedFields = append(selectedFields, useraddr.FieldTel)
