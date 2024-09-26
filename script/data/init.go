@@ -143,7 +143,7 @@ func (*dataset) initUser(client *ent.Tx) {
 		}
 		ub = append(ub, c)
 
-		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeBasic).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).SetEmail("user" + strconv.Itoa(i) + "@localhost")
 		if i == 1 {
 			a.SetEmail("admin@localhost")
 		}

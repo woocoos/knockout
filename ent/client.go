@@ -4642,15 +4642,15 @@ func (c *UserClient) QueryOauthClients(u *User) *OauthClientQuery {
 	return query
 }
 
-// QueryAddrs queries the addrs edge of a User.
-func (c *UserClient) QueryAddrs(u *User) *UserAddrQuery {
+// QueryAddresses queries the addresses edge of a User.
+func (c *UserClient) QueryAddresses(u *User) *UserAddrQuery {
 	query := (&UserAddrClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(useraddr.Table, useraddr.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AddrsTable, user.AddrsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AddressesTable, user.AddressesColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

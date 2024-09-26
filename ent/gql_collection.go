@@ -3937,7 +3937,7 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			u.WithNamedOauthClients(alias, func(wq *OauthClientQuery) {
 				*wq = *query
 			})
-		case "addrs":
+		case "addresses":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
@@ -3946,7 +3946,7 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, useraddrImplementors)...); err != nil {
 				return err
 			}
-			u.WithNamedAddrs(alias, func(wq *UserAddrQuery) {
+			u.WithNamedAddresses(alias, func(wq *UserAddrQuery) {
 				*wq = *query
 			})
 		case "citizenship":

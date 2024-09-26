@@ -93,13 +93,13 @@ type QueryResolver interface {
 type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
 	IsAllowRevokeRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
-	BasicAddr(ctx context.Context, obj *ent.User) (*ent.UserAddr, error)
+	Contact(ctx context.Context, obj *ent.User) (*ent.UserAddr, error)
 }
 
 type CreateUserInputResolver interface {
 	LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error
 	Password(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserPasswordInput) error
-	BasicAddr(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error
+	Contact(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -12415,16 +12415,16 @@ func (ec *executionContext) fieldContext_OauthClient_user(_ context.Context, fie
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -13471,16 +13471,16 @@ func (ec *executionContext) fieldContext_Org_owner(_ context.Context, field grap
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -16345,16 +16345,16 @@ func (ec *executionContext) fieldContext_OrgUserPreference_user(_ context.Contex
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -17623,16 +17623,16 @@ func (ec *executionContext) fieldContext_Permission_user(_ context.Context, fiel
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -21030,9 +21030,9 @@ func (ec *executionContext) _Region_countryID(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Region_countryID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22274,9 +22274,9 @@ func (ec *executionContext) _User_citizenshipID(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_citizenshipID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22799,8 +22799,8 @@ func (ec *executionContext) fieldContext_User_oauthClients(_ context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _User_addrs(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_addrs(ctx, field)
+func (ec *executionContext) _User_addresses(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_addresses(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -22813,7 +22813,7 @@ func (ec *executionContext) _User_addrs(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Addrs(ctx)
+		return obj.Addresses(ctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22827,7 +22827,7 @@ func (ec *executionContext) _User_addrs(ctx context.Context, field graphql.Colle
 	return ec.marshalOUserAddr2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserAddrᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_addrs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_addresses(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -23053,8 +23053,8 @@ func (ec *executionContext) fieldContext_User_isAllowRevokeRole(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _User_basicAddr(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_basicAddr(ctx, field)
+func (ec *executionContext) _User_contact(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_contact(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -23067,7 +23067,7 @@ func (ec *executionContext) _User_basicAddr(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().BasicAddr(rctx, obj)
+		return ec.resolvers.User().Contact(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -23081,7 +23081,7 @@ func (ec *executionContext) _User_basicAddr(ctx context.Context, field graphql.C
 	return ec.marshalOUserAddr2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserAddr(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_basicAddr(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_contact(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -23454,9 +23454,9 @@ func (ec *executionContext) _UserAddr_regionID(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAddr_regionID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23889,16 +23889,16 @@ func (ec *executionContext) fieldContext_UserAddr_user(_ context.Context, field 
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -24798,16 +24798,16 @@ func (ec *executionContext) fieldContext_UserDevice_user(_ context.Context, fiel
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -24901,16 +24901,16 @@ func (ec *executionContext) fieldContext_UserEdge_node(_ context.Context, field 
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -25470,16 +25470,16 @@ func (ec *executionContext) fieldContext_UserIdentity_user(_ context.Context, fi
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -26162,16 +26162,16 @@ func (ec *executionContext) fieldContext_UserLoginProfile_user(_ context.Context
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -26605,16 +26605,16 @@ func (ec *executionContext) fieldContext_UserPassword_user(_ context.Context, fi
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -35501,7 +35501,7 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"principalName", "displayName", "status", "comments", "avatar", "gender", "firstName", "middleName", "lastName", "lang", "identityIDs", "loginProfileID", "passwordIDs", "deviceIDs", "oauthClientIDs", "addrIDs", "citizenshipID", "loginProfile", "password", "basicAddr"}
+	fieldsInOrder := [...]string{"principalName", "displayName", "status", "comments", "avatar", "gender", "firstName", "middleName", "lastName", "lang", "identityIDs", "loginProfileID", "passwordIDs", "deviceIDs", "oauthClientIDs", "addressIDs", "citizenshipID", "loginProfile", "password", "contact"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35613,13 +35613,13 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 				return it, err
 			}
 			it.OauthClientIDs = data
-		case "addrIDs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addrIDs"))
+		case "addressIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addressIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AddrIDs = data
+			it.AddressIDs = data
 		case "citizenshipID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("citizenshipID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -35645,13 +35645,13 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 			if err = ec.resolvers.CreateUserInput().Password(ctx, &it, data); err != nil {
 				return it, err
 			}
-		case "basicAddr":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAddr"))
+		case "contact":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
 			data, err := ec.unmarshalOCreateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserAddrInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.CreateUserInput().BasicAddr(ctx, &it, data); err != nil {
+			if err = ec.resolvers.CreateUserInput().Contact(ctx, &it, data); err != nil {
 				return it, err
 			}
 		}
@@ -46026,7 +46026,7 @@ func (ec *executionContext) unmarshalInputUpdateUserInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"principalName", "displayName", "comments", "clearComments", "avatar", "clearAvatar", "gender", "firstName", "clearFirstName", "middleName", "clearMiddleName", "lastName", "clearLastName", "lang", "clearLang"}
+	fieldsInOrder := [...]string{"principalName", "displayName", "comments", "clearComments", "avatar", "clearAvatar", "gender", "firstName", "clearFirstName", "middleName", "clearMiddleName", "lastName", "clearLastName", "lang", "clearLang", "citizenshipID", "clearCitizenship"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -46138,6 +46138,20 @@ func (ec *executionContext) unmarshalInputUpdateUserInput(ctx context.Context, o
 				return it, err
 			}
 			it.ClearLang = data
+		case "citizenshipID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("citizenshipID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CitizenshipID = data
+		case "clearCitizenship":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearCitizenship"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearCitizenship = data
 		}
 	}
 
@@ -50530,7 +50544,7 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "principalName", "principalNameNEQ", "principalNameIn", "principalNameNotIn", "principalNameGT", "principalNameGTE", "principalNameLT", "principalNameLTE", "principalNameContains", "principalNameHasPrefix", "principalNameHasSuffix", "principalNameEqualFold", "principalNameContainsFold", "displayName", "displayNameNEQ", "displayNameIn", "displayNameNotIn", "displayNameGT", "displayNameGTE", "displayNameLT", "displayNameLTE", "displayNameContains", "displayNameHasPrefix", "displayNameHasSuffix", "displayNameEqualFold", "displayNameContainsFold", "userType", "userTypeNEQ", "userTypeIn", "userTypeNotIn", "creationType", "creationTypeNEQ", "creationTypeIn", "creationTypeNotIn", "registerIP", "registerIPNEQ", "registerIPIn", "registerIPNotIn", "registerIPGT", "registerIPGTE", "registerIPLT", "registerIPLTE", "registerIPContains", "registerIPHasPrefix", "registerIPHasSuffix", "registerIPEqualFold", "registerIPContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "gender", "genderNEQ", "genderIn", "genderNotIn", "citizenshipID", "citizenshipIDNEQ", "citizenshipIDIn", "citizenshipIDNotIn", "citizenshipIDIsNil", "citizenshipIDNotNil", "firstName", "firstNameNEQ", "firstNameIn", "firstNameNotIn", "firstNameGT", "firstNameGTE", "firstNameLT", "firstNameLTE", "firstNameContains", "firstNameHasPrefix", "firstNameHasSuffix", "firstNameIsNil", "firstNameNotNil", "firstNameEqualFold", "firstNameContainsFold", "middleName", "middleNameNEQ", "middleNameIn", "middleNameNotIn", "middleNameGT", "middleNameGTE", "middleNameLT", "middleNameLTE", "middleNameContains", "middleNameHasPrefix", "middleNameHasSuffix", "middleNameIsNil", "middleNameNotNil", "middleNameEqualFold", "middleNameContainsFold", "lastName", "lastNameNEQ", "lastNameIn", "lastNameNotIn", "lastNameGT", "lastNameGTE", "lastNameLT", "lastNameLTE", "lastNameContains", "lastNameHasPrefix", "lastNameHasSuffix", "lastNameIsNil", "lastNameNotNil", "lastNameEqualFold", "lastNameContainsFold", "lang", "langNEQ", "langIn", "langNotIn", "langGT", "langGTE", "langLT", "langLTE", "langContains", "langHasPrefix", "langHasSuffix", "langIsNil", "langNotNil", "langEqualFold", "langContainsFold", "hasIdentities", "hasIdentitiesWith", "hasLoginProfile", "hasLoginProfileWith", "hasPasswords", "hasPasswordsWith", "hasDevices", "hasDevicesWith", "hasPermissions", "hasPermissionsWith", "hasOauthClients", "hasOauthClientsWith", "hasAddrs", "hasAddrsWith", "hasCitizenship", "hasCitizenshipWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "principalName", "principalNameNEQ", "principalNameIn", "principalNameNotIn", "principalNameGT", "principalNameGTE", "principalNameLT", "principalNameLTE", "principalNameContains", "principalNameHasPrefix", "principalNameHasSuffix", "principalNameEqualFold", "principalNameContainsFold", "displayName", "displayNameNEQ", "displayNameIn", "displayNameNotIn", "displayNameGT", "displayNameGTE", "displayNameLT", "displayNameLTE", "displayNameContains", "displayNameHasPrefix", "displayNameHasSuffix", "displayNameEqualFold", "displayNameContainsFold", "userType", "userTypeNEQ", "userTypeIn", "userTypeNotIn", "creationType", "creationTypeNEQ", "creationTypeIn", "creationTypeNotIn", "registerIP", "registerIPNEQ", "registerIPIn", "registerIPNotIn", "registerIPGT", "registerIPGTE", "registerIPLT", "registerIPLTE", "registerIPContains", "registerIPHasPrefix", "registerIPHasSuffix", "registerIPEqualFold", "registerIPContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "gender", "genderNEQ", "genderIn", "genderNotIn", "citizenshipID", "citizenshipIDNEQ", "citizenshipIDIn", "citizenshipIDNotIn", "citizenshipIDIsNil", "citizenshipIDNotNil", "firstName", "firstNameNEQ", "firstNameIn", "firstNameNotIn", "firstNameGT", "firstNameGTE", "firstNameLT", "firstNameLTE", "firstNameContains", "firstNameHasPrefix", "firstNameHasSuffix", "firstNameIsNil", "firstNameNotNil", "firstNameEqualFold", "firstNameContainsFold", "middleName", "middleNameNEQ", "middleNameIn", "middleNameNotIn", "middleNameGT", "middleNameGTE", "middleNameLT", "middleNameLTE", "middleNameContains", "middleNameHasPrefix", "middleNameHasSuffix", "middleNameIsNil", "middleNameNotNil", "middleNameEqualFold", "middleNameContainsFold", "lastName", "lastNameNEQ", "lastNameIn", "lastNameNotIn", "lastNameGT", "lastNameGTE", "lastNameLT", "lastNameLTE", "lastNameContains", "lastNameHasPrefix", "lastNameHasSuffix", "lastNameIsNil", "lastNameNotNil", "lastNameEqualFold", "lastNameContainsFold", "lang", "langNEQ", "langIn", "langNotIn", "langGT", "langGTE", "langLT", "langLTE", "langContains", "langHasPrefix", "langHasSuffix", "langIsNil", "langNotNil", "langEqualFold", "langContainsFold", "hasIdentities", "hasIdentitiesWith", "hasLoginProfile", "hasLoginProfileWith", "hasPasswords", "hasPasswordsWith", "hasDevices", "hasDevicesWith", "hasPermissions", "hasPermissionsWith", "hasOauthClients", "hasOauthClientsWith", "hasAddresses", "hasAddressesWith", "hasCitizenship", "hasCitizenshipWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -51881,20 +51895,20 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.HasOauthClientsWith = data
-		case "hasAddrs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAddrs"))
+		case "hasAddresses":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAddresses"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.HasAddrs = data
-		case "hasAddrsWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAddrsWith"))
+			it.HasAddresses = data
+		case "hasAddressesWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAddressesWith"))
 			data, err := ec.unmarshalOUserAddrWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserAddrWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.HasAddrsWith = data
+			it.HasAddressesWith = data
 		case "hasCitizenship":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasCitizenship"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -57531,7 +57545,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "addrs":
+		case "addresses":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -57540,7 +57554,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._User_addrs(ctx, field, obj)
+				res = ec._User_addresses(ctx, field, obj)
 				return res
 			}
 
@@ -57669,7 +57683,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "basicAddr":
+		case "contact":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -57678,7 +57692,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._User_basicAddr(ctx, field, obj)
+				res = ec._User_contact(ctx, field, obj)
 				return res
 			}
 

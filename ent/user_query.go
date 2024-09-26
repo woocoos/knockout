@@ -40,7 +40,7 @@ type UserQuery struct {
 	withOrgs              *OrgQuery
 	withPermissions       *PermissionQuery
 	withOauthClients      *OauthClientQuery
-	withAddrs             *UserAddrQuery
+	withAddresses         *UserAddrQuery
 	withCitizenship       *CountryQuery
 	withOrgUser           *OrgUserQuery
 	modifiers             []func(*sql.Selector)
@@ -51,7 +51,7 @@ type UserQuery struct {
 	withNamedOrgs         map[string]*OrgQuery
 	withNamedPermissions  map[string]*PermissionQuery
 	withNamedOauthClients map[string]*OauthClientQuery
-	withNamedAddrs        map[string]*UserAddrQuery
+	withNamedAddresses    map[string]*UserAddrQuery
 	withNamedOrgUser      map[string]*OrgUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -243,8 +243,8 @@ func (uq *UserQuery) QueryOauthClients() *OauthClientQuery {
 	return query
 }
 
-// QueryAddrs chains the current query on the "addrs" edge.
-func (uq *UserQuery) QueryAddrs() *UserAddrQuery {
+// QueryAddresses chains the current query on the "addresses" edge.
+func (uq *UserQuery) QueryAddresses() *UserAddrQuery {
 	query := (&UserAddrClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -257,7 +257,7 @@ func (uq *UserQuery) QueryAddrs() *UserAddrQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(useraddr.Table, useraddr.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AddrsTable, user.AddrsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AddressesTable, user.AddressesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -508,7 +508,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withOrgs:         uq.withOrgs.Clone(),
 		withPermissions:  uq.withPermissions.Clone(),
 		withOauthClients: uq.withOauthClients.Clone(),
-		withAddrs:        uq.withAddrs.Clone(),
+		withAddresses:    uq.withAddresses.Clone(),
 		withCitizenship:  uq.withCitizenship.Clone(),
 		withOrgUser:      uq.withOrgUser.Clone(),
 		// clone intermediate query.
@@ -594,14 +594,14 @@ func (uq *UserQuery) WithOauthClients(opts ...func(*OauthClientQuery)) *UserQuer
 	return uq
 }
 
-// WithAddrs tells the query-builder to eager-load the nodes that are connected to
-// the "addrs" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithAddrs(opts ...func(*UserAddrQuery)) *UserQuery {
+// WithAddresses tells the query-builder to eager-load the nodes that are connected to
+// the "addresses" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithAddresses(opts ...func(*UserAddrQuery)) *UserQuery {
 	query := (&UserAddrClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withAddrs = query
+	uq.withAddresses = query
 	return uq
 }
 
@@ -713,7 +713,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withOrgs != nil,
 			uq.withPermissions != nil,
 			uq.withOauthClients != nil,
-			uq.withAddrs != nil,
+			uq.withAddresses != nil,
 			uq.withCitizenship != nil,
 			uq.withOrgUser != nil,
 		}
@@ -787,10 +787,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withAddrs; query != nil {
-		if err := uq.loadAddrs(ctx, query, nodes,
-			func(n *User) { n.Edges.Addrs = []*UserAddr{} },
-			func(n *User, e *UserAddr) { n.Edges.Addrs = append(n.Edges.Addrs, e) }); err != nil {
+	if query := uq.withAddresses; query != nil {
+		if err := uq.loadAddresses(ctx, query, nodes,
+			func(n *User) { n.Edges.Addresses = []*UserAddr{} },
+			func(n *User, e *UserAddr) { n.Edges.Addresses = append(n.Edges.Addresses, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -849,10 +849,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	for name, query := range uq.withNamedAddrs {
-		if err := uq.loadAddrs(ctx, query, nodes,
-			func(n *User) { n.appendNamedAddrs(name) },
-			func(n *User, e *UserAddr) { n.appendNamedAddrs(name, e) }); err != nil {
+	for name, query := range uq.withNamedAddresses {
+		if err := uq.loadAddresses(ctx, query, nodes,
+			func(n *User) { n.appendNamedAddresses(name) },
+			func(n *User, e *UserAddr) { n.appendNamedAddresses(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1109,7 +1109,7 @@ func (uq *UserQuery) loadOauthClients(ctx context.Context, query *OauthClientQue
 	}
 	return nil
 }
-func (uq *UserQuery) loadAddrs(ctx context.Context, query *UserAddrQuery, nodes []*User, init func(*User), assign func(*User, *UserAddr)) error {
+func (uq *UserQuery) loadAddresses(ctx context.Context, query *UserAddrQuery, nodes []*User, init func(*User), assign func(*User, *UserAddr)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
 	for i := range nodes {
@@ -1123,7 +1123,7 @@ func (uq *UserQuery) loadAddrs(ctx context.Context, query *UserAddrQuery, nodes 
 		query.ctx.AppendFieldOnce(useraddr.FieldUserID)
 	}
 	query.Where(predicate.UserAddr(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.AddrsColumn), fks...))
+		s.Where(sql.InValues(s.C(user.AddressesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1143,7 +1143,10 @@ func (uq *UserQuery) loadCitizenship(ctx context.Context, query *CountryQuery, n
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*User)
 	for i := range nodes {
-		fk := nodes[i].CitizenshipID
+		if nodes[i].CitizenshipID == nil {
+			continue
+		}
+		fk := *nodes[i].CitizenshipID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -1370,17 +1373,17 @@ func (uq *UserQuery) WithNamedOauthClients(name string, opts ...func(*OauthClien
 	return uq
 }
 
-// WithNamedAddrs tells the query-builder to eager-load the nodes that are connected to the "addrs"
+// WithNamedAddresses tells the query-builder to eager-load the nodes that are connected to the "addresses"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithNamedAddrs(name string, opts ...func(*UserAddrQuery)) *UserQuery {
+func (uq *UserQuery) WithNamedAddresses(name string, opts ...func(*UserAddrQuery)) *UserQuery {
 	query := (&UserAddrClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if uq.withNamedAddrs == nil {
-		uq.withNamedAddrs = make(map[string]*UserAddrQuery)
+	if uq.withNamedAddresses == nil {
+		uq.withNamedAddresses = make(map[string]*UserAddrQuery)
 	}
-	uq.withNamedAddrs[name] = query
+	uq.withNamedAddresses[name] = query
 	return uq
 }
 

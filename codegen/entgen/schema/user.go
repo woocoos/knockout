@@ -96,7 +96,7 @@ func (User) Fields() []ent.Field {
 				"male":    1,
 				"female":  2,
 			})),
-		field.Int("citizenship_id").Optional().Comment("国籍").Annotations(entproto.Field(14)),
+		field.Int("citizenship_id").Optional().Nillable().Comment("国籍").Annotations(entproto.Field(14)),
 		field.String("first_name").MaxLen(45).Optional().Comment("名字").Annotations(entproto.Field(15)),
 		field.String("middle_name").MaxLen(45).Optional().Comment("中间名").Annotations(entproto.Field(16)),
 		field.String("last_name").MaxLen(45).Optional().Comment("姓氏").Annotations(entproto.Field(17)),
@@ -123,9 +123,9 @@ func (User) Edges() []ent.Edge {
 				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		edge.To("oauth_clients", OauthClient.Type).Comment("用户AccessKey").
 			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
-		edge.To("addrs", UserAddr.Type).Comment("用户联系信息").
+		edge.To("addresses", UserAddr.Type).Comment("用户联系信息").
 			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 		edge.To("citizenship", Country.Type).Field("citizenship_id").Unique().Comment("国籍信息").
-			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
+			Annotations(entproto.Skip()),
 	}
 }

@@ -459,19 +459,19 @@ func (uu *UserUpdate) AddOauthClients(o ...*OauthClient) *UserUpdate {
 	return uu.AddOauthClientIDs(ids...)
 }
 
-// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
-func (uu *UserUpdate) AddAddrIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddAddrIDs(ids...)
+// AddAddressIDs adds the "addresses" edge to the UserAddr entity by IDs.
+func (uu *UserUpdate) AddAddressIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddAddressIDs(ids...)
 	return uu
 }
 
-// AddAddrs adds the "addrs" edges to the UserAddr entity.
-func (uu *UserUpdate) AddAddrs(u ...*UserAddr) *UserUpdate {
+// AddAddresses adds the "addresses" edges to the UserAddr entity.
+func (uu *UserUpdate) AddAddresses(u ...*UserAddr) *UserUpdate {
 	ids := make([]int, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uu.AddAddrIDs(ids...)
+	return uu.AddAddressIDs(ids...)
 }
 
 // SetCitizenship sets the "citizenship" edge to the Country entity.
@@ -631,25 +631,25 @@ func (uu *UserUpdate) RemoveOauthClients(o ...*OauthClient) *UserUpdate {
 	return uu.RemoveOauthClientIDs(ids...)
 }
 
-// ClearAddrs clears all "addrs" edges to the UserAddr entity.
-func (uu *UserUpdate) ClearAddrs() *UserUpdate {
-	uu.mutation.ClearAddrs()
+// ClearAddresses clears all "addresses" edges to the UserAddr entity.
+func (uu *UserUpdate) ClearAddresses() *UserUpdate {
+	uu.mutation.ClearAddresses()
 	return uu
 }
 
-// RemoveAddrIDs removes the "addrs" edge to UserAddr entities by IDs.
-func (uu *UserUpdate) RemoveAddrIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveAddrIDs(ids...)
+// RemoveAddressIDs removes the "addresses" edge to UserAddr entities by IDs.
+func (uu *UserUpdate) RemoveAddressIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveAddressIDs(ids...)
 	return uu
 }
 
-// RemoveAddrs removes "addrs" edges to UserAddr entities.
-func (uu *UserUpdate) RemoveAddrs(u ...*UserAddr) *UserUpdate {
+// RemoveAddresses removes "addresses" edges to UserAddr entities.
+func (uu *UserUpdate) RemoveAddresses(u ...*UserAddr) *UserUpdate {
 	ids := make([]int, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uu.RemoveAddrIDs(ids...)
+	return uu.RemoveAddressIDs(ids...)
 }
 
 // ClearCitizenship clears the "citizenship" edge to the Country entity.
@@ -1160,12 +1160,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.AddrsCleared() {
+	if uu.mutation.AddressesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -1173,12 +1173,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedAddrsIDs(); len(nodes) > 0 && !uu.mutation.AddrsCleared() {
+	if nodes := uu.mutation.RemovedAddressesIDs(); len(nodes) > 0 && !uu.mutation.AddressesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -1189,12 +1189,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.AddrsIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.AddressesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -1719,19 +1719,19 @@ func (uuo *UserUpdateOne) AddOauthClients(o ...*OauthClient) *UserUpdateOne {
 	return uuo.AddOauthClientIDs(ids...)
 }
 
-// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
-func (uuo *UserUpdateOne) AddAddrIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddAddrIDs(ids...)
+// AddAddressIDs adds the "addresses" edge to the UserAddr entity by IDs.
+func (uuo *UserUpdateOne) AddAddressIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddAddressIDs(ids...)
 	return uuo
 }
 
-// AddAddrs adds the "addrs" edges to the UserAddr entity.
-func (uuo *UserUpdateOne) AddAddrs(u ...*UserAddr) *UserUpdateOne {
+// AddAddresses adds the "addresses" edges to the UserAddr entity.
+func (uuo *UserUpdateOne) AddAddresses(u ...*UserAddr) *UserUpdateOne {
 	ids := make([]int, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uuo.AddAddrIDs(ids...)
+	return uuo.AddAddressIDs(ids...)
 }
 
 // SetCitizenship sets the "citizenship" edge to the Country entity.
@@ -1891,25 +1891,25 @@ func (uuo *UserUpdateOne) RemoveOauthClients(o ...*OauthClient) *UserUpdateOne {
 	return uuo.RemoveOauthClientIDs(ids...)
 }
 
-// ClearAddrs clears all "addrs" edges to the UserAddr entity.
-func (uuo *UserUpdateOne) ClearAddrs() *UserUpdateOne {
-	uuo.mutation.ClearAddrs()
+// ClearAddresses clears all "addresses" edges to the UserAddr entity.
+func (uuo *UserUpdateOne) ClearAddresses() *UserUpdateOne {
+	uuo.mutation.ClearAddresses()
 	return uuo
 }
 
-// RemoveAddrIDs removes the "addrs" edge to UserAddr entities by IDs.
-func (uuo *UserUpdateOne) RemoveAddrIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveAddrIDs(ids...)
+// RemoveAddressIDs removes the "addresses" edge to UserAddr entities by IDs.
+func (uuo *UserUpdateOne) RemoveAddressIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveAddressIDs(ids...)
 	return uuo
 }
 
-// RemoveAddrs removes "addrs" edges to UserAddr entities.
-func (uuo *UserUpdateOne) RemoveAddrs(u ...*UserAddr) *UserUpdateOne {
+// RemoveAddresses removes "addresses" edges to UserAddr entities.
+func (uuo *UserUpdateOne) RemoveAddresses(u ...*UserAddr) *UserUpdateOne {
 	ids := make([]int, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uuo.RemoveAddrIDs(ids...)
+	return uuo.RemoveAddressIDs(ids...)
 }
 
 // ClearCitizenship clears the "citizenship" edge to the Country entity.
@@ -2450,12 +2450,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.AddrsCleared() {
+	if uuo.mutation.AddressesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -2463,12 +2463,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedAddrsIDs(); len(nodes) > 0 && !uuo.mutation.AddrsCleared() {
+	if nodes := uuo.mutation.RemovedAddressesIDs(); len(nodes) > 0 && !uuo.mutation.AddressesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -2479,12 +2479,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.AddrsIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.AddressesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),

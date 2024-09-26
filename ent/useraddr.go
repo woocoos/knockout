@@ -29,10 +29,10 @@ type UserAddr struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID int `json:"user_id,omitempty"`
-	// 地址类型，basic：基本信息，addr：收货地址
+	// 地址类型，contact：基本信息，delivery：收货地址
 	AddrType useraddr.AddrType `json:"addr_type,omitempty"`
 	// 地址地区：市
-	RegionID int `json:"region_id,omitempty"`
+	RegionID *int `json:"region_id,omitempty"`
 	// 详细地址
 	Addr string `json:"addr,omitempty"`
 	// 邮箱
@@ -47,7 +47,7 @@ type UserAddr struct {
 	Mobile string `json:"mobile,omitempty"`
 	// 联系人名称
 	Name string `json:"name,omitempty"`
-	// 是否默认地址，类型为addr时使用
+	// 是否默认地址，类型为delivery时使用
 	IsDefault bool `json:"is_default,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserAddrQuery when eager-loading is set.
@@ -164,7 +164,8 @@ func (ua *UserAddr) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field region_id", values[i])
 			} else if value.Valid {
-				ua.RegionID = int(value.Int64)
+				ua.RegionID = new(int)
+				*ua.RegionID = int(value.Int64)
 			}
 		case useraddr.FieldAddr:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -278,8 +279,10 @@ func (ua *UserAddr) String() string {
 	builder.WriteString("addr_type=")
 	builder.WriteString(fmt.Sprintf("%v", ua.AddrType))
 	builder.WriteString(", ")
-	builder.WriteString("region_id=")
-	builder.WriteString(fmt.Sprintf("%v", ua.RegionID))
+	if v := ua.RegionID; v != nil {
+		builder.WriteString("region_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("addr=")
 	builder.WriteString(ua.Addr)

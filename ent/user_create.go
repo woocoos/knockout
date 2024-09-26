@@ -366,19 +366,19 @@ func (uc *UserCreate) AddOauthClients(o ...*OauthClient) *UserCreate {
 	return uc.AddOauthClientIDs(ids...)
 }
 
-// AddAddrIDs adds the "addrs" edge to the UserAddr entity by IDs.
-func (uc *UserCreate) AddAddrIDs(ids ...int) *UserCreate {
-	uc.mutation.AddAddrIDs(ids...)
+// AddAddressIDs adds the "addresses" edge to the UserAddr entity by IDs.
+func (uc *UserCreate) AddAddressIDs(ids ...int) *UserCreate {
+	uc.mutation.AddAddressIDs(ids...)
 	return uc
 }
 
-// AddAddrs adds the "addrs" edges to the UserAddr entity.
-func (uc *UserCreate) AddAddrs(u ...*UserAddr) *UserCreate {
+// AddAddresses adds the "addresses" edges to the UserAddr entity.
+func (uc *UserCreate) AddAddresses(u ...*UserAddr) *UserCreate {
 	ids := make([]int, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uc.AddAddrIDs(ids...)
+	return uc.AddAddressIDs(ids...)
 }
 
 // SetCitizenship sets the "citizenship" edge to the Country entity.
@@ -744,12 +744,12 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.AddrsIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.AddressesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AddrsTable,
-			Columns: []string{user.AddrsColumn},
+			Table:   user.AddressesTable,
+			Columns: []string{user.AddressesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(useraddr.FieldID, field.TypeInt),
@@ -774,7 +774,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.CitizenshipID = nodes[0]
+		_node.CitizenshipID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.OrgUserIDs(); len(nodes) > 0 {

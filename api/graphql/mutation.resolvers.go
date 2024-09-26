@@ -81,8 +81,8 @@ func (r *mutationResolver) RemoveOrganizationUser(ctx context.Context, orgID int
 }
 
 // UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
-	return r.resource.UpdateUser(ctx, userID, input, basicAddr)
+func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.UpdateUser(ctx, userID, input, contact)
 }
 
 // UpdateLoginProfile is the resolver for the updateLoginProfile field.
@@ -375,8 +375,8 @@ func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input
 }
 
 // RecoverOrgUser is the resolver for the recoverOrgUser field.
-func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
-	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput, basicAddr)
+func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput, contact)
 }
 
 // CreateFileSource is the resolver for the createFileSource field.

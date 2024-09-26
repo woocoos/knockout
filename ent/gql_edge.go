@@ -578,14 +578,14 @@ func (u *User) OauthClients(ctx context.Context) (result []*OauthClient, err err
 	return result, err
 }
 
-func (u *User) Addrs(ctx context.Context) (result []*UserAddr, err error) {
+func (u *User) Addresses(ctx context.Context) (result []*UserAddr, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedAddrs(graphql.GetFieldContext(ctx).Field.Alias)
+		result, err = u.NamedAddresses(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
-		result, err = u.Edges.AddrsOrErr()
+		result, err = u.Edges.AddressesOrErr()
 	}
 	if IsNotLoaded(err) {
-		result, err = u.QueryAddrs().All(ctx)
+		result, err = u.QueryAddresses().All(ctx)
 	}
 	return result, err
 }

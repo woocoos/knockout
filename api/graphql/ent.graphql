@@ -2885,7 +2885,7 @@ input CreateUserAddrInput {
   """
   name: String
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean
   userID: ID
@@ -2964,7 +2964,7 @@ input CreateUserInput {
   passwordIDs: [ID!]
   deviceIDs: [ID!]
   oauthClientIDs: [ID!]
-  addrIDs: [ID!]
+  addressIDs: [ID!]
   citizenshipID: ID
 }
 """
@@ -6512,7 +6512,7 @@ input UpdateUserAddrInput {
   name: String
   clearName: Boolean
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean
   regionID: ID
@@ -6590,6 +6590,8 @@ input UpdateUserInput {
   """
   lang: String
   clearLang: Boolean
+  citizenshipID: ID
+  clearCitizenship: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -6748,7 +6750,7 @@ type User implements Node {
   """
   用户联系信息
   """
-  addrs: [UserAddr!]
+  addresses: [UserAddr!]
   """
   国籍信息
   """
@@ -6762,7 +6764,7 @@ type UserAddr implements Node {
   updatedAt: Time
   userID: ID
   """
-  地址类型，basic：基本信息，addr：收货地址
+  地址类型，contact：基本信息，delivery：收货地址
   """
   addrType: UserAddrAddrType!
   """
@@ -6798,7 +6800,7 @@ type UserAddr implements Node {
   """
   name: String
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean!
   user: User
@@ -6811,8 +6813,8 @@ type UserAddr implements Node {
 UserAddrAddrType is enum for the field addr_type
 """
 enum UserAddrAddrType @goModel(model: "github.com/woocoos/knockout/ent/useraddr.AddrType") {
-  basic
-  addr
+  contact
+  delivery
 }
 """
 Ordering options for UserAddr connections
@@ -8213,10 +8215,10 @@ input UserWhereInput {
   hasOauthClients: Boolean
   hasOauthClientsWith: [OauthClientWhereInput!]
   """
-  addrs edge predicates
+  addresses edge predicates
   """
-  hasAddrs: Boolean
-  hasAddrsWith: [UserAddrWhereInput!]
+  hasAddresses: Boolean
+  hasAddressesWith: [UserAddrWhereInput!]
   """
   citizenship edge predicates
   """

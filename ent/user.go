@@ -49,7 +49,7 @@ type User struct {
 	// 性别
 	Gender user.Gender `json:"gender,omitempty"`
 	// 国籍
-	CitizenshipID int `json:"citizenship_id,omitempty"`
+	CitizenshipID *int `json:"citizenship_id,omitempty"`
 	// 名字
 	FirstName string `json:"first_name,omitempty"`
 	// 中间名
@@ -81,7 +81,7 @@ type UserEdges struct {
 	// 用户AccessKey
 	OauthClients []*OauthClient `json:"oauth_clients,omitempty"`
 	// 用户联系信息
-	Addrs []*UserAddr `json:"addrs,omitempty"`
+	Addresses []*UserAddr `json:"addresses,omitempty"`
 	// 国籍信息
 	Citizenship *Country `json:"citizenship,omitempty"`
 	// OrgUser holds the value of the org_user edge.
@@ -98,7 +98,7 @@ type UserEdges struct {
 	namedOrgs         map[string][]*Org
 	namedPermissions  map[string][]*Permission
 	namedOauthClients map[string][]*OauthClient
-	namedAddrs        map[string][]*UserAddr
+	namedAddresses    map[string][]*UserAddr
 	namedOrgUser      map[string][]*OrgUser
 }
 
@@ -167,13 +167,13 @@ func (e UserEdges) OauthClientsOrErr() ([]*OauthClient, error) {
 	return nil, &NotLoadedError{edge: "oauth_clients"}
 }
 
-// AddrsOrErr returns the Addrs value or an error if the edge
+// AddressesOrErr returns the Addresses value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) AddrsOrErr() ([]*UserAddr, error) {
+func (e UserEdges) AddressesOrErr() ([]*UserAddr, error) {
 	if e.loadedTypes[7] {
-		return e.Addrs, nil
+		return e.Addresses, nil
 	}
-	return nil, &NotLoadedError{edge: "addrs"}
+	return nil, &NotLoadedError{edge: "addresses"}
 }
 
 // CitizenshipOrErr returns the Citizenship value or an error if the edge
@@ -317,7 +317,8 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field citizenship_id", values[i])
 			} else if value.Valid {
-				u.CitizenshipID = int(value.Int64)
+				u.CitizenshipID = new(int)
+				*u.CitizenshipID = int(value.Int64)
 			}
 		case user.FieldFirstName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -391,9 +392,9 @@ func (u *User) QueryOauthClients() *OauthClientQuery {
 	return NewUserClient(u.config).QueryOauthClients(u)
 }
 
-// QueryAddrs queries the "addrs" edge of the User entity.
-func (u *User) QueryAddrs() *UserAddrQuery {
-	return NewUserClient(u.config).QueryAddrs(u)
+// QueryAddresses queries the "addresses" edge of the User entity.
+func (u *User) QueryAddresses() *UserAddrQuery {
+	return NewUserClient(u.config).QueryAddresses(u)
 }
 
 // QueryCitizenship queries the "citizenship" edge of the User entity.
@@ -473,8 +474,10 @@ func (u *User) String() string {
 	builder.WriteString("gender=")
 	builder.WriteString(fmt.Sprintf("%v", u.Gender))
 	builder.WriteString(", ")
-	builder.WriteString("citizenship_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.CitizenshipID))
+	if v := u.CitizenshipID; v != nil {
+		builder.WriteString("citizenship_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("first_name=")
 	builder.WriteString(u.FirstName)
@@ -635,27 +638,27 @@ func (u *User) appendNamedOauthClients(name string, edges ...*OauthClient) {
 	}
 }
 
-// NamedAddrs returns the Addrs named value or an error if the edge was not
+// NamedAddresses returns the Addresses named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (u *User) NamedAddrs(name string) ([]*UserAddr, error) {
-	if u.Edges.namedAddrs == nil {
+func (u *User) NamedAddresses(name string) ([]*UserAddr, error) {
+	if u.Edges.namedAddresses == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := u.Edges.namedAddrs[name]
+	nodes, ok := u.Edges.namedAddresses[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (u *User) appendNamedAddrs(name string, edges ...*UserAddr) {
-	if u.Edges.namedAddrs == nil {
-		u.Edges.namedAddrs = make(map[string][]*UserAddr)
+func (u *User) appendNamedAddresses(name string, edges ...*UserAddr) {
+	if u.Edges.namedAddresses == nil {
+		u.Edges.namedAddresses = make(map[string][]*UserAddr)
 	}
 	if len(edges) == 0 {
-		u.Edges.namedAddrs[name] = []*UserAddr{}
+		u.Edges.namedAddresses[name] = []*UserAddr{}
 	} else {
-		u.Edges.namedAddrs[name] = append(u.Edges.namedAddrs[name], edges...)
+		u.Edges.namedAddresses[name] = append(u.Edges.namedAddresses[name], edges...)
 	}
 }
 

@@ -1932,7 +1932,7 @@ type CreateUserInput struct {
 	PasswordIDs    []int
 	DeviceIDs      []int
 	OauthClientIDs []int
-	AddrIDs        []int
+	AddressIDs     []int
 	CitizenshipID  *int
 }
 
@@ -1979,8 +1979,8 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.OauthClientIDs; len(v) > 0 {
 		m.AddOauthClientIDs(v...)
 	}
-	if v := i.AddrIDs; len(v) > 0 {
-		m.AddAddrIDs(v...)
+	if v := i.AddressIDs; len(v) > 0 {
+		m.AddAddressIDs(v...)
 	}
 	if v := i.CitizenshipID; v != nil {
 		m.SetCitizenshipID(*v)
@@ -1995,21 +1995,23 @@ func (c *UserCreate) SetInput(i CreateUserInput) *UserCreate {
 
 // UpdateUserInput represents a mutation input for updating users.
 type UpdateUserInput struct {
-	PrincipalName   *string
-	DisplayName     *string
-	ClearComments   bool
-	Comments        *string
-	ClearAvatar     bool
-	Avatar          *string
-	Gender          *user.Gender
-	ClearFirstName  bool
-	FirstName       *string
-	ClearMiddleName bool
-	MiddleName      *string
-	ClearLastName   bool
-	LastName        *string
-	ClearLang       bool
-	Lang            *string
+	PrincipalName    *string
+	DisplayName      *string
+	ClearComments    bool
+	Comments         *string
+	ClearAvatar      bool
+	Avatar           *string
+	Gender           *user.Gender
+	ClearFirstName   bool
+	FirstName        *string
+	ClearMiddleName  bool
+	MiddleName       *string
+	ClearLastName    bool
+	LastName         *string
+	ClearLang        bool
+	Lang             *string
+	ClearCitizenship bool
+	CitizenshipID    *int
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -2058,6 +2060,12 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Lang; v != nil {
 		m.SetLang(*v)
+	}
+	if i.ClearCitizenship {
+		m.ClearCitizenship()
+	}
+	if v := i.CitizenshipID; v != nil {
+		m.SetCitizenshipID(*v)
 	}
 }
 

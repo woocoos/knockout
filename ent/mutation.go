@@ -26632,7 +26632,7 @@ func (m *RegionMutation) CountryID() (r int, exists bool) {
 // OldCountryID returns the old "country_id" field's value of the Region entity.
 // If the Region object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RegionMutation) OldCountryID(ctx context.Context) (v int, err error) {
+func (m *RegionMutation) OldCountryID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCountryID is only allowed on UpdateOne operations")
 	}
@@ -27478,9 +27478,9 @@ type UserMutation struct {
 	oauth_clients        map[int]struct{}
 	removedoauth_clients map[int]struct{}
 	clearedoauth_clients bool
-	addrs                map[int]struct{}
-	removedaddrs         map[int]struct{}
-	clearedaddrs         bool
+	addresses            map[int]struct{}
+	removedaddresses     map[int]struct{}
+	clearedaddresses     bool
 	citizenship          *int
 	clearedcitizenship   bool
 	org_user             map[int]struct{}
@@ -28235,7 +28235,7 @@ func (m *UserMutation) CitizenshipID() (r int, exists bool) {
 // OldCitizenshipID returns the old "citizenship_id" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldCitizenshipID(ctx context.Context) (v int, err error) {
+func (m *UserMutation) OldCitizenshipID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCitizenshipID is only allowed on UpdateOne operations")
 	}
@@ -28826,58 +28826,58 @@ func (m *UserMutation) ResetOauthClients() {
 	m.removedoauth_clients = nil
 }
 
-// AddAddrIDs adds the "addrs" edge to the UserAddr entity by ids.
-func (m *UserMutation) AddAddrIDs(ids ...int) {
-	if m.addrs == nil {
-		m.addrs = make(map[int]struct{})
+// AddAddressIDs adds the "addresses" edge to the UserAddr entity by ids.
+func (m *UserMutation) AddAddressIDs(ids ...int) {
+	if m.addresses == nil {
+		m.addresses = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.addrs[ids[i]] = struct{}{}
+		m.addresses[ids[i]] = struct{}{}
 	}
 }
 
-// ClearAddrs clears the "addrs" edge to the UserAddr entity.
-func (m *UserMutation) ClearAddrs() {
-	m.clearedaddrs = true
+// ClearAddresses clears the "addresses" edge to the UserAddr entity.
+func (m *UserMutation) ClearAddresses() {
+	m.clearedaddresses = true
 }
 
-// AddrsCleared reports if the "addrs" edge to the UserAddr entity was cleared.
-func (m *UserMutation) AddrsCleared() bool {
-	return m.clearedaddrs
+// AddressesCleared reports if the "addresses" edge to the UserAddr entity was cleared.
+func (m *UserMutation) AddressesCleared() bool {
+	return m.clearedaddresses
 }
 
-// RemoveAddrIDs removes the "addrs" edge to the UserAddr entity by IDs.
-func (m *UserMutation) RemoveAddrIDs(ids ...int) {
-	if m.removedaddrs == nil {
-		m.removedaddrs = make(map[int]struct{})
+// RemoveAddressIDs removes the "addresses" edge to the UserAddr entity by IDs.
+func (m *UserMutation) RemoveAddressIDs(ids ...int) {
+	if m.removedaddresses == nil {
+		m.removedaddresses = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.addrs, ids[i])
-		m.removedaddrs[ids[i]] = struct{}{}
+		delete(m.addresses, ids[i])
+		m.removedaddresses[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedAddrs returns the removed IDs of the "addrs" edge to the UserAddr entity.
-func (m *UserMutation) RemovedAddrsIDs() (ids []int) {
-	for id := range m.removedaddrs {
+// RemovedAddresses returns the removed IDs of the "addresses" edge to the UserAddr entity.
+func (m *UserMutation) RemovedAddressesIDs() (ids []int) {
+	for id := range m.removedaddresses {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// AddrsIDs returns the "addrs" edge IDs in the mutation.
-func (m *UserMutation) AddrsIDs() (ids []int) {
-	for id := range m.addrs {
+// AddressesIDs returns the "addresses" edge IDs in the mutation.
+func (m *UserMutation) AddressesIDs() (ids []int) {
+	for id := range m.addresses {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetAddrs resets all changes to the "addrs" edge.
-func (m *UserMutation) ResetAddrs() {
-	m.addrs = nil
-	m.clearedaddrs = false
-	m.removedaddrs = nil
+// ResetAddresses resets all changes to the "addresses" edge.
+func (m *UserMutation) ResetAddresses() {
+	m.addresses = nil
+	m.clearedaddresses = false
+	m.removedaddresses = nil
 }
 
 // ClearCitizenship clears the "citizenship" edge to the Country entity.
@@ -29518,8 +29518,8 @@ func (m *UserMutation) AddedEdges() []string {
 	if m.oauth_clients != nil {
 		edges = append(edges, user.EdgeOauthClients)
 	}
-	if m.addrs != nil {
-		edges = append(edges, user.EdgeAddrs)
+	if m.addresses != nil {
+		edges = append(edges, user.EdgeAddresses)
 	}
 	if m.citizenship != nil {
 		edges = append(edges, user.EdgeCitizenship)
@@ -29574,9 +29574,9 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeAddrs:
-		ids := make([]ent.Value, 0, len(m.addrs))
-		for id := range m.addrs {
+	case user.EdgeAddresses:
+		ids := make([]ent.Value, 0, len(m.addresses))
+		for id := range m.addresses {
 			ids = append(ids, id)
 		}
 		return ids
@@ -29615,8 +29615,8 @@ func (m *UserMutation) RemovedEdges() []string {
 	if m.removedoauth_clients != nil {
 		edges = append(edges, user.EdgeOauthClients)
 	}
-	if m.removedaddrs != nil {
-		edges = append(edges, user.EdgeAddrs)
+	if m.removedaddresses != nil {
+		edges = append(edges, user.EdgeAddresses)
 	}
 	if m.removedorg_user != nil {
 		edges = append(edges, user.EdgeOrgUser)
@@ -29664,9 +29664,9 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeAddrs:
-		ids := make([]ent.Value, 0, len(m.removedaddrs))
-		for id := range m.removedaddrs {
+	case user.EdgeAddresses:
+		ids := make([]ent.Value, 0, len(m.removedaddresses))
+		for id := range m.removedaddresses {
 			ids = append(ids, id)
 		}
 		return ids
@@ -29704,8 +29704,8 @@ func (m *UserMutation) ClearedEdges() []string {
 	if m.clearedoauth_clients {
 		edges = append(edges, user.EdgeOauthClients)
 	}
-	if m.clearedaddrs {
-		edges = append(edges, user.EdgeAddrs)
+	if m.clearedaddresses {
+		edges = append(edges, user.EdgeAddresses)
 	}
 	if m.clearedcitizenship {
 		edges = append(edges, user.EdgeCitizenship)
@@ -29734,8 +29734,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedpermissions
 	case user.EdgeOauthClients:
 		return m.clearedoauth_clients
-	case user.EdgeAddrs:
-		return m.clearedaddrs
+	case user.EdgeAddresses:
+		return m.clearedaddresses
 	case user.EdgeCitizenship:
 		return m.clearedcitizenship
 	case user.EdgeOrgUser:
@@ -29783,8 +29783,8 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgeOauthClients:
 		m.ResetOauthClients()
 		return nil
-	case user.EdgeAddrs:
-		m.ResetAddrs()
+	case user.EdgeAddresses:
+		m.ResetAddresses()
 		return nil
 	case user.EdgeCitizenship:
 		m.ResetCitizenship()
@@ -30244,7 +30244,7 @@ func (m *UserAddrMutation) RegionID() (r int, exists bool) {
 // OldRegionID returns the old "region_id" field's value of the UserAddr entity.
 // If the UserAddr object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserAddrMutation) OldRegionID(ctx context.Context) (v int, err error) {
+func (m *UserAddrMutation) OldRegionID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRegionID is only allowed on UpdateOne operations")
 	}

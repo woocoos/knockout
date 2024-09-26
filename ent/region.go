@@ -38,7 +38,7 @@ type Region struct {
 	// 邮政编码
 	ZipCode string `json:"zip_code,omitempty"`
 	// 国家id
-	CountryID int `json:"country_id,omitempty"`
+	CountryID *int `json:"country_id,omitempty"`
 	// DisplaySort holds the value of the "display_sort" field.
 	DisplaySort int32 `json:"display_sort,omitempty"`
 	// 状态
@@ -187,7 +187,8 @@ func (r *Region) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field country_id", values[i])
 			} else if value.Valid {
-				r.CountryID = int(value.Int64)
+				r.CountryID = new(int)
+				*r.CountryID = int(value.Int64)
 			}
 		case region.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -279,8 +280,10 @@ func (r *Region) String() string {
 	builder.WriteString("zip_code=")
 	builder.WriteString(r.ZipCode)
 	builder.WriteString(", ")
-	builder.WriteString("country_id=")
-	builder.WriteString(fmt.Sprintf("%v", r.CountryID))
+	if v := r.CountryID; v != nil {
+		builder.WriteString("country_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
 	builder.WriteString(fmt.Sprintf("%v", r.DisplaySort))

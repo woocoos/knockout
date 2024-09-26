@@ -29,7 +29,7 @@ type MutationResolver interface {
 	CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error)
 	AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) (bool, error)
 	RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
-	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error)
+	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error)
 	UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error)
 	DeleteUser(ctx context.Context, userID int) (bool, error)
 	BindUserIdentity(ctx context.Context, input ent.CreateUserIdentityInput) (*ent.UserIdentity, error)
@@ -82,7 +82,7 @@ type MutationResolver interface {
 	DisableMfa(ctx context.Context, userID int) (bool, error)
 	SendMFAToUserByEmail(ctx context.Context, userID int) (bool, error)
 	UpdateAppRes(ctx context.Context, appResID int, input ent.UpdateAppResInput) (*ent.AppRes, error)
-	RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error)
+	RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) (*ent.User, error)
 	CreateFileSource(ctx context.Context, input ent.CreateFileSourceInput) (*ent.FileSource, error)
 	UpdateFileSource(ctx context.Context, fsID int, input ent.UpdateFileSourceInput) (*ent.FileSource, error)
 	DeleteFileSource(ctx context.Context, fsID int) (bool, error)
@@ -1175,14 +1175,14 @@ func (ec *executionContext) field_Mutation_recoverOrgUser_args(ctx context.Conte
 	}
 	args["pwdInput"] = arg3
 	var arg4 *ent.UpdateUserAddrInput
-	if tmp, ok := rawArgs["basicAddr"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAddr"))
+	if tmp, ok := rawArgs["contact"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
 		arg4, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["basicAddr"] = arg4
+	args["contact"] = arg4
 	return args, nil
 }
 
@@ -1862,14 +1862,14 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 	}
 	args["input"] = arg1
 	var arg2 *ent.UpdateUserAddrInput
-	if tmp, ok := rawArgs["basicAddr"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAddr"))
+	if tmp, ok := rawArgs["contact"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
 		arg2, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["basicAddr"] = arg2
+	args["contact"] = arg2
 	return args, nil
 }
 
@@ -2509,16 +2509,16 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2623,16 +2623,16 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2775,7 +2775,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["userID"].(int), fc.Args["input"].(ent.UpdateUserInput), fc.Args["basicAddr"].(*ent.UpdateUserAddrInput))
+		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["userID"].(int), fc.Args["input"].(ent.UpdateUserInput), fc.Args["contact"].(*ent.UpdateUserAddrInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2847,16 +2847,16 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -6398,7 +6398,7 @@ func (ec *executionContext) _Mutation_recoverOrgUser(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RecoverOrgUser(rctx, fc.Args["userID"].(int), fc.Args["userInput"].(ent.UpdateUserInput), fc.Args["pwdKind"].(userloginprofile.SetKind), fc.Args["pwdInput"].(*ent.CreateUserPasswordInput), fc.Args["basicAddr"].(*ent.UpdateUserAddrInput))
+		return ec.resolvers.Mutation().RecoverOrgUser(rctx, fc.Args["userID"].(int), fc.Args["userInput"].(ent.UpdateUserInput), fc.Args["pwdKind"].(userloginprofile.SetKind), fc.Args["pwdInput"].(*ent.CreateUserPasswordInput), fc.Args["contact"].(*ent.UpdateUserAddrInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6473,16 +6473,16 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_permissions(ctx, field)
 			case "oauthClients":
 				return ec.fieldContext_User_oauthClients(ctx, field)
-			case "addrs":
-				return ec.fieldContext_User_addrs(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
-			case "basicAddr":
-				return ec.fieldContext_User_basicAddr(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},

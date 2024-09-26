@@ -72,8 +72,8 @@ const (
 	EdgePermissions = "permissions"
 	// EdgeOauthClients holds the string denoting the oauth_clients edge name in mutations.
 	EdgeOauthClients = "oauth_clients"
-	// EdgeAddrs holds the string denoting the addrs edge name in mutations.
-	EdgeAddrs = "addrs"
+	// EdgeAddresses holds the string denoting the addresses edge name in mutations.
+	EdgeAddresses = "addresses"
 	// EdgeCitizenship holds the string denoting the citizenship edge name in mutations.
 	EdgeCitizenship = "citizenship"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
@@ -127,13 +127,13 @@ const (
 	OauthClientsInverseTable = "oauth_client"
 	// OauthClientsColumn is the table column denoting the oauth_clients relation/edge.
 	OauthClientsColumn = "user_id"
-	// AddrsTable is the table that holds the addrs relation/edge.
-	AddrsTable = "user_addr"
-	// AddrsInverseTable is the table name for the UserAddr entity.
+	// AddressesTable is the table that holds the addresses relation/edge.
+	AddressesTable = "user_addr"
+	// AddressesInverseTable is the table name for the UserAddr entity.
 	// It exists in this package in order to avoid circular dependency with the "useraddr" package.
-	AddrsInverseTable = "user_addr"
-	// AddrsColumn is the table column denoting the addrs relation/edge.
-	AddrsColumn = "user_id"
+	AddressesInverseTable = "user_addr"
+	// AddressesColumn is the table column denoting the addresses relation/edge.
+	AddressesColumn = "user_id"
 	// CitizenshipTable is the table that holds the citizenship relation/edge.
 	CitizenshipTable = "user"
 	// CitizenshipInverseTable is the table name for the Country entity.
@@ -490,17 +490,17 @@ func ByOauthClients(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByAddrsCount orders the results by addrs count.
-func ByAddrsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByAddressesCount orders the results by addresses count.
+func ByAddressesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAddrsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newAddressesStep(), opts...)
 	}
 }
 
-// ByAddrs orders the results by addrs terms.
-func ByAddrs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByAddresses orders the results by addresses terms.
+func ByAddresses(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAddrsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newAddressesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -573,11 +573,11 @@ func newOauthClientsStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, OauthClientsTable, OauthClientsColumn),
 	)
 }
-func newAddrsStep() *sqlgraph.Step {
+func newAddressesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AddrsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AddrsTable, AddrsColumn),
+		sqlgraph.To(AddressesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AddressesTable, AddressesColumn),
 	)
 }
 func newCitizenshipStep() *sqlgraph.Step {

@@ -568,7 +568,10 @@ func (rq *RegionQuery) loadCountry(ctx context.Context, query *CountryQuery, nod
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Region)
 	for i := range nodes {
-		fk := nodes[i].CountryID
+		if nodes[i].CountryID == nil {
+			continue
+		}
+		fk := *nodes[i].CountryID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

@@ -408,7 +408,7 @@ type ComplexityRoot struct {
 		MoveCountry                 func(childComplexity int, sourceID int, targetID int, action model.ListAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveRegion                  func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
-		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) int
+		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) int
 		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
 		Revoke                      func(childComplexity int, orgID int, permissionID int) int
@@ -437,7 +437,7 @@ type ComplexityRoot struct {
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
 		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
-		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) int
+		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
 	}
 
 	OauthClient struct {
@@ -702,12 +702,12 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Addrs             func(childComplexity int) int
+		Addresses         func(childComplexity int) int
 		Avatar            func(childComplexity int) int
-		BasicAddr         func(childComplexity int) int
 		Citizenship       func(childComplexity int) int
 		CitizenshipID     func(childComplexity int) int
 		Comments          func(childComplexity int) int
+		Contact           func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
 		CreationType      func(childComplexity int) int
@@ -2999,7 +2999,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput), args["basicAddr"].(*ent.UpdateUserAddrInput)), true
+		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput), args["contact"].(*ent.UpdateUserAddrInput)), true
 
 	case "Mutation.removeOrganizationUser":
 		if e.complexity.Mutation.RemoveOrganizationUser == nil {
@@ -3347,7 +3347,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["basicAddr"].(*ent.UpdateUserAddrInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["contact"].(*ent.UpdateUserAddrInput)), true
 
 	case "OauthClient.clientID":
 		if e.complexity.OauthClient.ClientID == nil {
@@ -4888,12 +4888,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.RegionEdge.Node(childComplexity), true
 
-	case "User.addrs":
-		if e.complexity.User.Addrs == nil {
+	case "User.addresses":
+		if e.complexity.User.Addresses == nil {
 			break
 		}
 
-		return e.complexity.User.Addrs(childComplexity), true
+		return e.complexity.User.Addresses(childComplexity), true
 
 	case "User.avatar":
 		if e.complexity.User.Avatar == nil {
@@ -4901,13 +4901,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Avatar(childComplexity), true
-
-	case "User.basicAddr":
-		if e.complexity.User.BasicAddr == nil {
-			break
-		}
-
-		return e.complexity.User.BasicAddr(childComplexity), true
 
 	case "User.citizenship":
 		if e.complexity.User.Citizenship == nil {
@@ -4929,6 +4922,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Comments(childComplexity), true
+
+	case "User.contact":
+		if e.complexity.User.Contact == nil {
+			break
+		}
+
+		return e.complexity.User.Contact(childComplexity), true
 
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
@@ -8723,7 +8723,7 @@ input CreateUserAddrInput {
   """
   name: String
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean
   userID: ID
@@ -8802,7 +8802,7 @@ input CreateUserInput {
   passwordIDs: [ID!]
   deviceIDs: [ID!]
   oauthClientIDs: [ID!]
-  addrIDs: [ID!]
+  addressIDs: [ID!]
   citizenshipID: ID
 }
 """
@@ -12350,7 +12350,7 @@ input UpdateUserAddrInput {
   name: String
   clearName: Boolean
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean
   regionID: ID
@@ -12428,6 +12428,8 @@ input UpdateUserInput {
   """
   lang: String
   clearLang: Boolean
+  citizenshipID: ID
+  clearCitizenship: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -12586,7 +12588,7 @@ type User implements Node {
   """
   用户联系信息
   """
-  addrs: [UserAddr!]
+  addresses: [UserAddr!]
   """
   国籍信息
   """
@@ -12600,7 +12602,7 @@ type UserAddr implements Node {
   updatedAt: Time
   userID: ID
   """
-  地址类型，basic：基本信息，addr：收货地址
+  地址类型，contact：基本信息，delivery：收货地址
   """
   addrType: UserAddrAddrType!
   """
@@ -12636,7 +12638,7 @@ type UserAddr implements Node {
   """
   name: String
   """
-  是否默认地址，类型为addr时使用
+  是否默认地址，类型为delivery时使用
   """
   isDefault: Boolean!
   user: User
@@ -12649,8 +12651,8 @@ type UserAddr implements Node {
 UserAddrAddrType is enum for the field addr_type
 """
 enum UserAddrAddrType @goModel(model: "github.com/woocoos/knockout/ent/useraddr.AddrType") {
-  basic
-  addr
+  contact
+  delivery
 }
 """
 Ordering options for UserAddr connections
@@ -14051,10 +14053,10 @@ input UserWhereInput {
   hasOauthClients: Boolean
   hasOauthClientsWith: [OauthClientWhereInput!]
   """
-  addrs edge predicates
+  addresses edge predicates
   """
-  hasAddrs: Boolean
-  hasAddrsWith: [UserAddrWhereInput!]
+  hasAddresses: Boolean
+  hasAddressesWith: [UserAddrWhereInput!]
   """
   citizenship edge predicates
   """
@@ -14073,7 +14075,7 @@ extend input CreateUserInput {
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
     """地址信息"""
-    basicAddr: CreateUserAddrInput
+    contact: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -14151,7 +14153,7 @@ extend type User {
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
-    basicAddr: UserAddr
+    contact: UserAddr
 }
 
 extend type Org {
@@ -14396,7 +14398,7 @@ type FileIdentityForApp implements Node{
         """用户ID"""
         userID:ID!): Boolean!
     """更新用户"""
-    updateUser(userID:ID!,input: UpdateUserInput!,basicAddr: UpdateUserAddrInput): User
+    updateUser(userID:ID!,input: UpdateUserInput!,contact: UpdateUserAddrInput): User
     """用户登陆配置"""
     updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
@@ -14506,7 +14508,7 @@ type FileIdentityForApp implements Node{
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
-    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,basicAddr: UpdateUserAddrInput):User!
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,contact: UpdateUserAddrInput):User!
     """创建文件来源"""
     createFileSource(input: CreateFileSourceInput!): FileSource!
     """更新文件来源"""

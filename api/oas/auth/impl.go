@@ -655,7 +655,7 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 	if u.Edges.LoginProfile.MfaEnabled {
 		verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
 	}
-	addr, err := u.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	addr, err := u.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -732,7 +732,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	if err != nil {
 		return "", err
 	}
-	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil {
 		return "", err
 	}

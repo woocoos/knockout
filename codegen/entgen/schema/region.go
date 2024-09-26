@@ -44,7 +44,7 @@ func (Region) Fields() []ent.Field {
 		field.String("name_en").MaxLen(100).Optional().Comment("地区英文名称"),
 		field.String("short_code").MaxLen(50).Optional().Comment("编码"),
 		field.String("zip_code").MaxLen(10).Optional().Comment("邮政编码"),
-		field.Int("country_id").Optional().Comment("国家id"),
+		field.Int("country_id").Optional().Nillable().Comment("国家id"),
 		field.Int32("display_sort").Optional().
 			Annotations(entgql.OrderField("displaySort"), entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),

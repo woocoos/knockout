@@ -35,7 +35,7 @@ type Mutation {
         """用户ID"""
         userID:ID!): Boolean!
     """更新用户"""
-    updateUser(userID:ID!,input: UpdateUserInput!,basicAddr: UpdateUserAddrInput): User
+    updateUser(userID:ID!,input: UpdateUserInput!,contact: UpdateUserAddrInput): User
     """用户登陆配置"""
     updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
     """删除用户"""
@@ -145,7 +145,7 @@ type Mutation {
     """修改资源名称"""
     updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
     """恢复用户"""
-    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,basicAddr: UpdateUserAddrInput):User!
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,contact: UpdateUserAddrInput):User!
     """创建文件来源"""
     createFileSource(input: CreateFileSourceInput!): FileSource!
     """更新文件来源"""

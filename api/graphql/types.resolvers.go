@@ -112,13 +112,13 @@ func (r *userResolver) IsAllowRevokeRole(ctx context.Context, obj *ent.User, org
 	return r.resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
 }
 
-// BasicAddr is the resolver for the basicAddr field.
-func (r *userResolver) BasicAddr(ctx context.Context, obj *ent.User) (*ent.UserAddr, error) {
+// Contact is the resolver for the contact field.
+func (r *userResolver) Contact(ctx context.Context, obj *ent.User) (*ent.UserAddr, error) {
 	client := ent.FromContext(ctx)
 	if client == nil {
 		client = r.client
 	}
-	at, err := client.UserAddr.Query().Where(useraddr.UserID(obj.ID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	at, err := client.UserAddr.Query().Where(useraddr.UserID(obj.ID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil && !ent.IsNotFound(err) {
 		return nil, err
 	}
@@ -149,14 +149,14 @@ func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateU
 	return nil
 }
 
-// BasicAddr is the resolver for the basicAddr field.
-func (r *createUserInputResolver) BasicAddr(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error {
+// Contact is the resolver for the Contact field.
+func (r *createUserInputResolver) Contact(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error {
 	if data != nil {
-		row, err := ent.FromContext(ctx).UserAddr.Create().SetInput(*data).SetAddrType(useraddr.AddrTypeBasic).SetIsDefault(true).Save(ctx)
+		row, err := ent.FromContext(ctx).UserAddr.Create().SetInput(*data).SetAddrType(useraddr.AddrTypeContact).SetIsDefault(true).Save(ctx)
 		if err != nil {
 			return err
 		}
-		obj.AddrIDs = append(obj.AddrIDs, row.ID)
+		obj.AddressIDs = append(obj.AddressIDs, row.ID)
 	}
 	return nil
 }

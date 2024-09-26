@@ -11658,9 +11658,9 @@ type UserWhereInput struct {
 	HasOauthClients     *bool                    `json:"hasOauthClients,omitempty"`
 	HasOauthClientsWith []*OauthClientWhereInput `json:"hasOauthClientsWith,omitempty"`
 
-	// "addrs" edge predicates.
-	HasAddrs     *bool                 `json:"hasAddrs,omitempty"`
-	HasAddrsWith []*UserAddrWhereInput `json:"hasAddrsWith,omitempty"`
+	// "addresses" edge predicates.
+	HasAddresses     *bool                 `json:"hasAddresses,omitempty"`
+	HasAddressesWith []*UserAddrWhereInput `json:"hasAddressesWith,omitempty"`
 
 	// "citizenship" edge predicates.
 	HasCitizenship     *bool                `json:"hasCitizenship,omitempty"`
@@ -12378,23 +12378,23 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 		}
 		predicates = append(predicates, user.HasOauthClientsWith(with...))
 	}
-	if i.HasAddrs != nil {
-		p := user.HasAddrs()
-		if !*i.HasAddrs {
+	if i.HasAddresses != nil {
+		p := user.HasAddresses()
+		if !*i.HasAddresses {
 			p = user.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasAddrsWith) > 0 {
-		with := make([]predicate.UserAddr, 0, len(i.HasAddrsWith))
-		for _, w := range i.HasAddrsWith {
+	if len(i.HasAddressesWith) > 0 {
+		with := make([]predicate.UserAddr, 0, len(i.HasAddressesWith))
+		for _, w := range i.HasAddressesWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasAddrsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasAddressesWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, user.HasAddrsWith(with...))
+		predicates = append(predicates, user.HasAddressesWith(with...))
 	}
 	if i.HasCitizenship != nil {
 		p := user.HasCitizenship()

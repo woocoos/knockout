@@ -168,7 +168,7 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 
 // generationAndSendUserPwd 自动生成密码并发邮件给用户
 func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) error {
-	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil {
 		return err
 	}
@@ -389,13 +389,13 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 }
 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
-func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
+func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
 	if input.PrincipalName != nil {
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
 	// 更新地址信息
-	err := client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).SetInput(*basicAddr).Exec(ctx)
+	err := client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).SetInput(*contact).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -640,7 +640,7 @@ func findMenuParents(appMenus, userMenus []*ent.AppMenu, parentMenus *[]*ent.App
 }
 
 // RecoverOrgUser 恢复删除用户
-func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, basicAddr *ent.UpdateUserAddrInput) (*ent.User, error) {
+func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -651,7 +651,7 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
 	// 更新地址信息
-	err = client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).SetInput(*basicAddr).Exec(ctx)
+	err = client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).SetInput(*contact).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -702,7 +702,7 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	if err != nil {
 		return err
 	}
-	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil {
 		return err
 	}
@@ -746,7 +746,7 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	if err != nil {
 		return err
 	}
-	addr, err := usr.QueryAddrs().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeBasic)).Only(ctx)
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
 	if err != nil {
 		return err
 	}

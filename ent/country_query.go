@@ -443,9 +443,12 @@ func (cq *CountryQuery) loadRegions(ctx context.Context, query *RegionQuery, nod
 	}
 	for _, n := range neighbors {
 		fk := n.CountryID
-		node, ok := nodeids[fk]
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "country_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "country_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "country_id" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

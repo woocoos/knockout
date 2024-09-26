@@ -9,7 +9,7 @@ extend input CreateUserInput {
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
     """地址信息"""
-    basicAddr: CreateUserAddrInput
+    contact: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -87,7 +87,7 @@ extend type User {
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
-    basicAddr: UserAddr
+    contact: UserAddr
 }
 
 extend type Org {

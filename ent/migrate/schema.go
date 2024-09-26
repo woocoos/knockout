@@ -809,7 +809,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "addr_type", Type: field.TypeEnum, Enums: []string{"basic", "addr"}},
+		{Name: "addr_type", Type: field.TypeEnum, Enums: []string{"contact", "delivery"}},
 		{Name: "addr", Type: field.TypeString, Nullable: true},
 		{Name: "email", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "fax", Type: field.TypeString, Nullable: true, Size: 45},
@@ -828,7 +828,7 @@ var (
 		PrimaryKey: []*schema.Column{UserAddrColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "user_addr_user_addrs",
+				Symbol:     "user_addr_user_addresses",
 				Columns:    []*schema.Column{UserAddrColumns[14]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,

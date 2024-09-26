@@ -130,8 +130,8 @@ type AddrType string
 
 // AddrType values.
 const (
-	AddrTypeBasic AddrType = "basic"
-	AddrTypeAddr  AddrType = "addr"
+	AddrTypeContact  AddrType = "contact"
+	AddrTypeDelivery AddrType = "delivery"
 )
 
 func (at AddrType) String() string {
@@ -141,7 +141,7 @@ func (at AddrType) String() string {
 // AddrTypeValidator is a validator for the "addr_type" field enum values. It is called by the builders before save.
 func AddrTypeValidator(at AddrType) error {
 	switch at {
-	case AddrTypeBasic, AddrTypeAddr:
+	case AddrTypeContact, AddrTypeDelivery:
 		return nil
 	default:
 		return fmt.Errorf("useraddr: invalid enum value for addr_type field: %q", at)

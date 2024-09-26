@@ -1297,21 +1297,21 @@ func HasOauthClientsWith(preds ...predicate.OauthClient) predicate.User {
 	})
 }
 
-// HasAddrs applies the HasEdge predicate on the "addrs" edge.
-func HasAddrs() predicate.User {
+// HasAddresses applies the HasEdge predicate on the "addresses" edge.
+func HasAddresses() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AddrsTable, AddrsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, AddressesTable, AddressesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasAddrsWith applies the HasEdge predicate on the "addrs" edge with a given conditions (other predicates).
-func HasAddrsWith(preds ...predicate.UserAddr) predicate.User {
+// HasAddressesWith applies the HasEdge predicate on the "addresses" edge with a given conditions (other predicates).
+func HasAddressesWith(preds ...predicate.UserAddr) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newAddrsStep()
+		step := newAddressesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

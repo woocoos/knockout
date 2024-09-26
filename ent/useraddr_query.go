@@ -487,7 +487,10 @@ func (uaq *UserAddrQuery) loadRegion(ctx context.Context, query *RegionQuery, no
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*UserAddr)
 	for i := range nodes {
-		fk := nodes[i].RegionID
+		if nodes[i].RegionID == nil {
+			continue
+		}
+		fk := *nodes[i].RegionID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

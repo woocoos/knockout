@@ -450,7 +450,7 @@ func (uac *UserAddrCreate) createSpec() (*UserAddr, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.RegionID = nodes[0]
+		_node.RegionID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
