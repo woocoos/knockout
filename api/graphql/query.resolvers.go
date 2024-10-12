@@ -165,6 +165,11 @@ func (r *queryResolver) CheckPermission(ctx context.Context, permission string) 
 	return r.resource.CheckPermission(ctx, permission)
 }
 
+// CheckPermissionByJwt is the resolver for the checkPermissionByJwt field.
+func (r *queryResolver) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
+	return r.resource.CheckPermissionByJwt(ctx, jwtStr, orgID, action, appCode)
+}
+
 // OrgAppActions is the resolver for the orgAppActions field.
 func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string) ([]*ent.AppAction, error) {
 	//获取跟用户ID
@@ -297,4 +302,16 @@ func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.Fil
 // FileIdentityAccessKeySecret is the resolver for the fileIdentityAccessKeySecret field.
 func (r *queryResolver) FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error) {
 	return r.client.FileIdentity.Query().Where(fileidentity.ID(id)).Select(fileidentity.FieldAccessKeySecret).String(ctx)
+}
+
+// UserMembers is the resolver for the UserMembers field.
+func (r *queryResolver) UserMembers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+	}
+	return r.client.User.Query().WithOrgUser(func(query *ent.OrgUserQuery) {
+		query.Where(orguser.UserTypeEQ(orguser.UserTypeInternal), orguser.OrgID(tid))
+	}).Paginate(ctx, after, first, before, last,
+		ent.WithUserOrder(orderBy),
+		ent.WithUserFilter(where.Filter))
 }

@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -17,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -64,8 +66,8 @@ func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, rootOr
 }
 
 // CreateOrganizationUser is the resolver for the createOrganizationUser field.
-func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error) {
-	return r.resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember)
+func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) (*ent.User, error) {
+	return r.resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember, orgUserType)
 }
 
 // AllotOrganizationUser is the resolver for the allotOrganizationUser field.
@@ -540,6 +542,20 @@ func (r *mutationResolver) DeleteRegion(ctx context.Context, regionID int) (bool
 func (r *mutationResolver) MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
 	err := r.resource.MoveRegion(ctx, sourceID, targetID, action)
 	return err == nil, err
+}
+
+// ChangeOrgUserType is the resolver for the changeOrgUserType field.
+func (r *mutationResolver) ChangeOrgUserType(ctx context.Context, userID int, userType orguser.UserType) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	client := ent.FromContext(ctx)
+	err = client.OrgUser.Update().Where(orguser.UserID(userID), orguser.OrgID(tid)).SetUserType(userType).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Mutation returns generated1.MutationResolver implementation.

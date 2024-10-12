@@ -15,6 +15,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
@@ -361,6 +362,7 @@ type ComplexityRoot struct {
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
+		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
@@ -376,7 +378,7 @@ type ComplexityRoot struct {
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
-		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
+		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) int
 		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
@@ -644,6 +646,7 @@ type ComplexityRoot struct {
 		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		CheckPermission             func(childComplexity int, permission string) int
+		CheckPermissionByJwt        func(childComplexity int, jwtStr string, orgID int, action string, appCode string) int
 		Countries                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
 		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
 		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
@@ -665,6 +668,7 @@ type ComplexityRoot struct {
 		UserApps                    func(childComplexity int) int
 		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		UserMenus                   func(childComplexity int, appCode string) int
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
 		UserRootOrgs                func(childComplexity int) int
@@ -2425,6 +2429,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.BindUserIdentity(childComplexity, args["input"].(ent.CreateUserIdentityInput)), true
 
+	case "Mutation.changeOrgUserType":
+		if e.complexity.Mutation.ChangeOrgUserType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_changeOrgUserType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ChangeOrgUserType(childComplexity, args["userID"].(int), args["userType"].(orguser.UserType)), true
+
 	case "Mutation.changePassword":
 		if e.complexity.Mutation.ChangePassword == nil {
 			break
@@ -2615,7 +2631,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput)), true
+		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput), args["orgUserType"].(*orguser.UserType)), true
 
 	case "Mutation.createRegion":
 		if e.complexity.Mutation.CreateRegion == nil {
@@ -4456,6 +4472,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
 
+	case "Query.checkPermissionByJwt":
+		if e.complexity.Query.CheckPermissionByJwt == nil {
+			break
+		}
+
+		args, err := ec.field_Query_checkPermissionByJwt_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CheckPermissionByJwt(childComplexity, args["jwtStr"].(string), args["orgID"].(int), args["action"].(string), args["appCode"].(string)), true
+
 	case "Query.countries":
 		if e.complexity.Query.Countries == nil {
 			break
@@ -4697,6 +4725,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.UserMembers":
+		if e.complexity.Query.UserMembers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserMembers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserMembers(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
 	case "Query.userMenus":
 		if e.complexity.Query.UserMenus == nil {
@@ -14327,6 +14367,13 @@ type FileIdentityForApp implements Node{
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
+    """检测权限 ko-proxy使用"""
+    checkPermissionByJwt(
+        jwtStr:String!
+        orgID:ID!
+        action:String!
+        appCode:String!
+    ):Boolean!
     """组织策略可授权的appActions"""
     orgAppActions(appCode:String!):[AppAction!]!
     """用户加入的root组织"""
@@ -14360,6 +14407,15 @@ type FileIdentityForApp implements Node{
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
+    """成员列表"""
+    UserMembers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
 }`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
@@ -14388,7 +14444,10 @@ type FileIdentityForApp implements Node{
     createOrganizationUser(
         """根组织ID"""
         rootOrgID:ID!,
-        input: CreateUserInput!): User
+        input: CreateUserInput!
+        """用户类型"""
+        orgUserType: OrgUserUserType
+    ): User
     """将用户分配到组织下"""
     allotOrganizationUser(input: CreateOrgUserInput!): Boolean!
     """从组织目录中移除用户"""
@@ -14561,6 +14620,8 @@ type FileIdentityForApp implements Node{
         targetId:ID!,
         action:TreeAction!
     ): Boolean!
+    """更改组织用户类型"""
+    changeOrgUserType(userID:ID!,userType:OrgUserUserType!):Boolean!
 }
 `, BuiltIn: false},
 }

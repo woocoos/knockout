@@ -92,6 +92,13 @@ extend type Query {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
+    """检测权限 ko-proxy使用"""
+    checkPermissionByJwt(
+        jwtStr:String!
+        orgID:ID!
+        action:String!
+        appCode:String!
+    ):Boolean!
     """组织策略可授权的appActions"""
     orgAppActions(appCode:String!):[AppAction!]!
     """用户加入的root组织"""
@@ -125,4 +132,13 @@ extend type Query {
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
+    """成员列表"""
+    UserMembers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
 }

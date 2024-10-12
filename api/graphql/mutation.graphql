@@ -25,7 +25,10 @@ type Mutation {
     createOrganizationUser(
         """根组织ID"""
         rootOrgID:ID!,
-        input: CreateUserInput!): User
+        input: CreateUserInput!
+        """用户类型"""
+        orgUserType: OrgUserUserType
+    ): User
     """将用户分配到组织下"""
     allotOrganizationUser(input: CreateOrgUserInput!): Boolean!
     """从组织目录中移除用户"""
@@ -198,4 +201,6 @@ type Mutation {
         targetId:ID!,
         action:TreeAction!
     ): Boolean!
+    """更改组织用户类型"""
+    changeOrgUserType(userID:ID!,userType:OrgUserUserType!):Boolean!
 }

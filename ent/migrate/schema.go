@@ -73,7 +73,7 @@ var (
 	}
 	// AppDictColumns holds the columns for the "app_dict" table.
 	AppDictColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -106,7 +106,7 @@ var (
 	}
 	// AppDictItemColumns holds the columns for the "app_dict_item" table.
 	AppDictItemColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -117,8 +117,8 @@ var (
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "inactive"},
-		{Name: "dict_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "dict_id", Type: field.TypeInt, Nullable: true},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// AppDictItemTable holds the schema information for the "app_dict_item" table.
 	AppDictItemTable = &schema.Table{
@@ -268,7 +268,7 @@ var (
 	}
 	// AppRolePolicyColumns holds the columns for the "app_role_policy" table.
 	AppRolePolicyColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -306,7 +306,7 @@ var (
 	}
 	// CountryColumns holds the columns for the "country" table.
 	CountryColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -325,7 +325,7 @@ var (
 	}
 	// FileIdentityColumns holds the columns for the "file_identity" table.
 	FileIdentityColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -337,8 +337,8 @@ var (
 		{Name: "duration_seconds", Type: field.TypeInt, Nullable: true, Default: 3600},
 		{Name: "is_default", Type: field.TypeBool, Default: false},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "file_source_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "tenant_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "file_source_id", Type: field.TypeInt},
+		{Name: "tenant_id", Type: field.TypeInt},
 	}
 	// FileIdentityTable holds the schema information for the "file_identity" table.
 	FileIdentityTable = &schema.Table{
@@ -362,7 +362,7 @@ var (
 	}
 	// FileSourceColumns holds the columns for the "file_source" table.
 	FileSourceColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -402,7 +402,7 @@ var (
 		{Name: "grant_types", Type: field.TypeEnum, Enums: []string{"client_credentials"}},
 		{Name: "last_auth_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
-		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// OauthClientTable holds the schema information for the "oauth_client" table.
 	OauthClientTable = &schema.Table{
@@ -420,7 +420,7 @@ var (
 	}
 	// OrgColumns holds the columns for the "org" table.
 	OrgColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -436,8 +436,8 @@ var (
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "country_code", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "timezone", Type: field.TypeString, Nullable: true, Size: 45},
-		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "owner_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0},
+		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
 	// OrgTable holds the schema information for the "org" table.
 	OrgTable = &schema.Table{
@@ -461,13 +461,13 @@ var (
 	}
 	// OrgAppColumns holds the columns for the "org_app" table.
 	OrgAppColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt},
 	}
 	// OrgAppTable holds the schema information for the "org_app" table.
 	OrgAppTable = &schema.Table{
@@ -508,7 +508,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
-		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// OrgPolicyTable holds the schema information for the "org_policy" table.
 	OrgPolicyTable = &schema.Table{
@@ -526,7 +526,7 @@ var (
 	}
 	// OrgRoleColumns holds the columns for the "org_role" table.
 	OrgRoleColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -535,7 +535,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "app_role_id", Type: field.TypeInt, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "org_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// OrgRoleTable holds the schema information for the "org_role" table.
 	OrgRoleTable = &schema.Table{
@@ -560,15 +560,15 @@ var (
 	}
 	// OrgRoleUserColumns holds the columns for the "org_role_user" table.
 	OrgRoleUserColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "org_role_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "org_user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_role_id", Type: field.TypeInt},
+		{Name: "org_user_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "org_id", Type: field.TypeInt},
 	}
 	// OrgRoleUserTable holds the schema information for the "org_role_user" table.
 	OrgRoleUserTable = &schema.Table{
@@ -611,7 +611,7 @@ var (
 	}
 	// OrgUserColumns holds the columns for the "org_user" table.
 	OrgUserColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -619,8 +619,8 @@ var (
 		{Name: "joined_at", Type: field.TypeTime},
 		{Name: "display_name", Type: field.TypeString},
 		{Name: "user_type", Type: field.TypeEnum, Enums: []string{"internal", "external"}, Default: "external"},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// OrgUserTable holds the schema information for the "org_user" table.
 	OrgUserTable = &schema.Table{
@@ -651,15 +651,15 @@ var (
 	}
 	// OrgUserPreferenceColumns holds the columns for the "org_user_preference" table.
 	OrgUserPreferenceColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "menu_favorite", Type: field.TypeJSON, Nullable: true},
 		{Name: "menu_recent", Type: field.TypeJSON, Nullable: true},
-		{Name: "user_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt},
+		{Name: "org_id", Type: field.TypeInt},
 	}
 	// OrgUserPreferenceTable holds the schema information for the "org_user_preference" table.
 	OrgUserPreferenceTable = &schema.Table{
@@ -692,10 +692,10 @@ var (
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
-		{Name: "org_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "org_id", Type: field.TypeInt},
 		{Name: "org_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
-		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "role_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "role_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PermissionTable holds the schema information for the "permission" table.
 	PermissionTable = &schema.Table{
@@ -731,7 +731,7 @@ var (
 	}
 	// RegionColumns holds the columns for the "region" table.
 	RegionColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -742,8 +742,8 @@ var (
 		{Name: "zip_code", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
-		{Name: "country_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "country_id", Type: field.TypeInt, Nullable: true},
+		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0},
 	}
 	// RegionTable holds the schema information for the "region" table.
 	RegionTable = &schema.Table{
@@ -767,7 +767,7 @@ var (
 	}
 	// UserColumns holds the columns for the "user" table.
 	UserColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -786,7 +786,7 @@ var (
 		{Name: "middle_name", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "last_name", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "lang", Type: field.TypeString, Nullable: true},
-		{Name: "citizenship_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "citizenship_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserTable holds the schema information for the "user" table.
 	UserTable = &schema.Table{
@@ -804,7 +804,7 @@ var (
 	}
 	// UserAddrColumns holds the columns for the "user_addr" table.
 	UserAddrColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -818,8 +818,8 @@ var (
 		{Name: "mobile", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "name", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "is_default", Type: field.TypeBool, Default: false},
-		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
-		{Name: "region_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
+		{Name: "region_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserAddrTable holds the schema information for the "user_addr" table.
 	UserAddrTable = &schema.Table{
@@ -843,7 +843,7 @@ var (
 	}
 	// UserDeviceColumns holds the columns for the "user_device" table.
 	UserDeviceColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -856,7 +856,7 @@ var (
 		{Name: "device_model", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
-		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserDeviceTable holds the schema information for the "user_device" table.
 	UserDeviceTable = &schema.Table{
@@ -874,7 +874,7 @@ var (
 	}
 	// UserIdentityColumns holds the columns for the "user_identity" table.
 	UserIdentityColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -883,7 +883,7 @@ var (
 		{Name: "code", Type: field.TypeString, Nullable: true},
 		{Name: "code_extend", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
-		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserIdentityTable holds the schema information for the "user_identity" table.
 	UserIdentityTable = &schema.Table{
@@ -901,7 +901,7 @@ var (
 	}
 	// UserLoginProfileColumns holds the columns for the "user_login_profile" table.
 	UserLoginProfileColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -915,7 +915,7 @@ var (
 		{Name: "mfa_enabled", Type: field.TypeBool, Nullable: true},
 		{Name: "mfa_secret", Type: field.TypeString, Nullable: true, Size: 100},
 		{Name: "mfa_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
-		{Name: "user_id", Type: field.TypeInt, Unique: true, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// UserLoginProfileTable holds the schema information for the "user_login_profile" table.
 	UserLoginProfileTable = &schema.Table{
@@ -933,7 +933,7 @@ var (
 	}
 	// UserPasswordColumns holds the columns for the "user_password" table.
 	UserPasswordColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -942,7 +942,7 @@ var (
 		{Name: "password", Type: field.TypeString, Nullable: true},
 		{Name: "salt", Type: field.TypeString, Size: 45},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
-		{Name: "user_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "int"}},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// UserPasswordTable holds the schema information for the "user_password" table.
 	UserPasswordTable = &schema.Table{

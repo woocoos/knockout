@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout/ent"
 )
@@ -9,4 +10,5 @@ import (
 type Service struct {
 	Client *ent.Client
 	KOSDK  *api.SDK
+	Cfg    *conf.AppConfiguration
 }

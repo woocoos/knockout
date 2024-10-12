@@ -6,7 +6,7 @@ require (
 	entgo.io/contrib v0.6.0
 	entgo.io/ent v0.14.0
 	github.com/99designs/gqlgen v0.17.48
-	github.com/alicebob/miniredis/v2 v2.30.5
+	github.com/alicebob/miniredis/v2 v2.33.0
 	github.com/dchest/captcha v1.0.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-sql-driver/mysql v1.8.1
@@ -15,14 +15,14 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tsingsun/woocoo v0.4.4-0.20240521081855-d699f57712f0
+	github.com/tsingsun/woocoo v0.5.1-0.20240926160447-a49fd651e06f
 	github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20240522021626-a2b6e6d10802
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.5-0.20240522021626-a2b6e6d10802
 	github.com/vektah/gqlparser/v2 v2.5.12
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5
 	github.com/woocoos/entco v0.0.0-20240411071658-1e7b23d4df15
-	github.com/woocoos/knockout-go v0.0.0-20240831084203-f75e619750a2
+	github.com/woocoos/knockout-go v0.0.0-20241009033425-e367ecc5b921
 	go.opentelemetry.io/contrib/propagators/b3 v1.26.0
 	golang.org/x/sync v0.7.0
 )
@@ -69,7 +69,7 @@ require (
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
-	github.com/gin-contrib/cors v1.4.0 // indirect
+	github.com/gin-contrib/cors v1.7.2 // indirect
 	github.com/go-test/deep v1.0.8 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/hashicorp/go-envparse v0.1.0 // indirect
@@ -89,7 +89,7 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tjfoc/gmsm v1.3.2 // indirect
 	github.com/vmihailenco/go-tinylfu v0.2.2 // indirect
-	github.com/yuin/gopher-lua v1.1.0 // indirect
+	github.com/yuin/gopher-lua v1.1.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.51.0 // indirect
 	go.opentelemetry.io/otel v1.26.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.26.0 // indirect
@@ -103,11 +103,10 @@ require (
 	go.opentelemetry.io/otel/trace v1.26.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.2.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/oauth2 v0.17.0 // indirect
+	golang.org/x/oauth2 v0.20.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240401170217-c3f982113cda // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 )
 
@@ -122,7 +121,7 @@ require (
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/casbin/casbin/v2 v2.77.2
 	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -141,7 +140,7 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -168,7 +167,7 @@ require (
 	golang.org/x/sys v0.20.0 // indirect; indirectgo
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/tools v0.21.0 // indirect
-	google.golang.org/grpc v1.63.2
+	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

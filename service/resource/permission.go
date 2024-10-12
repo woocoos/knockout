@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
@@ -866,6 +867,30 @@ func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {
 	return s.Client.App.Query().Where(app.CodeIn(acs...)).All(ctx)
 }
 
+func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, appCode string) (bool, error) {
+	has, err := s.Client.AppAction.Query().Where(appaction.Name(action), appaction.HasAppWith(app.Code(appCode))).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, fmt.Errorf("invalid permission")
+	}
+	rule := []any{
+		strconv.Itoa(uid),
+		strconv.Itoa(tid),
+		fmt.Sprintf("%s%s%s", appCode, ArnSplit, action),
+		"read",
+	}
+	has, err = security.CheckUserPermission(rule...)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, nil
+	}
+	return true, nil
+}
+
 func (s *Service) CheckPermission(ctx context.Context, permission string) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -880,28 +905,23 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	if len(parts) != 2 {
 		return false, fmt.Errorf("invalid permission")
 	}
-	has, err := s.Client.AppAction.Query().Where(appaction.Name(parts[1]), appaction.HasAppWith(app.Code(parts[0]))).Exist(ctx)
-	if err != nil {
-		return false, err
-	}
-	if !has {
-		return false, fmt.Errorf("invalid permission")
-	}
+	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
+}
 
-	rule := []any{
-		strconv.Itoa(uid),
-		strconv.Itoa(tid),
-		permission,
-		"read",
+func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
+	token, err := jwt.ParseWithClaims(jwtStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token.Method = jwt.GetSigningMethod(s.Cfg.Sub("jwt").String("signingMethod"))
+		return []byte(s.Cfg.Sub("jwt").String("signingKey")), nil
+	})
+	if err != nil || !token.Valid {
+		return false, err
 	}
-	has, err = security.CheckUserPermission(rule...)
+	subject := token.Claims.(*jwt.RegisteredClaims).Subject
+	uid, err := strconv.Atoi(subject)
 	if err != nil {
 		return false, err
 	}
-	if !has {
-		return false, nil
-	}
-	return true, nil
+	return s.doCheckPermission(ctx, uid, orgID, action, appCode)
 }
 
 // GetOrgDomain 获取组织域名.orgID为根组织.

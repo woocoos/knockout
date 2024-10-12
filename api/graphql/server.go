@@ -75,7 +75,7 @@ func (s *Server) buildWebEngine(app *woocoo.App) {
 	)
 
 	gqlSrv := handler.NewDefaultServer(NewSchema(WithClient(s.portalClient),
-		WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk}),
+		WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk, Cfg: cnf}),
 	))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction

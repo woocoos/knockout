@@ -13,6 +13,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
@@ -26,7 +27,7 @@ type MutationResolver interface {
 	DeleteOrganization(ctx context.Context, orgID int) (bool, error)
 	MoveOrganization(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
 	CreateOrganizationAccount(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error)
-	CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error)
+	CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) (*ent.User, error)
 	AllotOrganizationUser(ctx context.Context, input ent.CreateOrgUserInput) (bool, error)
 	RemoveOrganizationUser(ctx context.Context, orgID int, userID int) (bool, error)
 	UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error)
@@ -103,6 +104,7 @@ type MutationResolver interface {
 	UpdateRegion(ctx context.Context, regionID int, input ent.UpdateRegionInput) (*ent.Region, error)
 	DeleteRegion(ctx context.Context, regionID int) (bool, error)
 	MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
+	ChangeOrgUserType(ctx context.Context, userID int, userType orguser.UserType) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -256,6 +258,30 @@ func (ec *executionContext) field_Mutation_bindUserIdentity_args(ctx context.Con
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_changeOrgUserType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["userID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userID"] = arg0
+	var arg1 orguser.UserType
+	if tmp, ok := rawArgs["userType"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userType"))
+		arg1, err = ec.unmarshalNOrgUserUserType2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userType"] = arg1
 	return args, nil
 }
 
@@ -562,6 +588,15 @@ func (ec *executionContext) field_Mutation_createOrganizationUser_args(ctx conte
 		}
 	}
 	args["input"] = arg1
+	var arg2 *orguser.UserType
+	if tmp, ok := rawArgs["orgUserType"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgUserType"))
+		arg2, err = ec.unmarshalOOrgUserUserType2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgUserType"] = arg2
 	return args, nil
 }
 
@@ -2551,7 +2586,7 @@ func (ec *executionContext) _Mutation_createOrganizationUser(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateOrganizationUser(rctx, fc.Args["rootOrgID"].(int), fc.Args["input"].(ent.CreateUserInput))
+		return ec.resolvers.Mutation().CreateOrganizationUser(rctx, fc.Args["rootOrgID"].(int), fc.Args["input"].(ent.CreateUserInput), fc.Args["orgUserType"].(*orguser.UserType))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7933,6 +7968,61 @@ func (ec *executionContext) fieldContext_Mutation_moveRegion(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_changeOrgUserType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_changeOrgUserType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ChangeOrgUserType(rctx, fc.Args["userID"].(int), fc.Args["userType"].(orguser.UserType))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_changeOrgUserType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_changeOrgUserType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -8452,6 +8542,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "moveRegion":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_moveRegion(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "changeOrgUserType":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_changeOrgUserType(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

@@ -117,17 +117,24 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 //
 // - 管理员账户才能创建下级组织目录的账户
 func (s *Service) CreateOrganizationAccount(ctx context.Context, orgId int, input ent.CreateUserInput) (*ent.User, error) {
-	return s.CreateOrganizationUser(ctx, orgId, input, user.UserTypeAccount)
+	var external = orguser.UserTypeExternal
+	return s.CreateOrganizationUser(ctx, orgId, input, user.UserTypeAccount, &external)
 }
 
 // CreateOrganizationUser 创建组织目录用户
 //
 // TODO 新用户需要激活,如在国内,用户往往需要绑定手机或邮箱,然后通过邮件或短信激活.
-func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input ent.CreateUserInput, ut user.UserType) (*ent.User, error) {
+func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input ent.CreateUserInput, ut user.UserType, orgUserType *orguser.UserType) (*ent.User, error) {
 	client := ent.FromContext(ctx)
 	_, err := client.Org.Query().Where(org.ID(orgId), org.StatusEQ(typex.SimpleStatusActive)).Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
+	}
+
+	// 默认创建为外部用户
+	if orgUserType == nil {
+		var external = orguser.UserTypeExternal
+		orgUserType = &external
 	}
 
 	us, err := client.User.Create().SetInput(input).
@@ -146,7 +153,7 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	}
 
 	if ut != user.UserTypeAccount {
-		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetUserType(*orgUserType).SetDisplayName(us.DisplayName).Save(ctx)
 		if err != nil {
 			return nil, err
 		}
