@@ -69,6 +69,7 @@ func (Org) Fields() []ent.Field {
 			Annotations(entgql.OrderField("displaySort"), entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("country_code").MaxLen(10).Optional().Comment("国家或地区2字码"),
 		field.String("timezone").MaxLen(45).Optional().Comment("时区"),
+		field.String("base_currency").MaxLen(10).Optional().Comment("组织本位币"),
 	}
 }
 

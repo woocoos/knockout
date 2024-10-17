@@ -1988,6 +1988,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Org_baseCurrency(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -2096,6 +2098,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Org_baseCurrency(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -2204,6 +2208,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Org_baseCurrency(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -2312,6 +2318,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Org_baseCurrency(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":

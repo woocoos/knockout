@@ -493,6 +493,10 @@ func init() {
 	orgDescTimezone := orgFields[11].Descriptor()
 	// org.TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	org.TimezoneValidator = orgDescTimezone.Validators[0].(func(string) error)
+	// orgDescBaseCurrency is the schema descriptor for base_currency field.
+	orgDescBaseCurrency := orgFields[12].Descriptor()
+	// org.BaseCurrencyValidator is a validator for the "base_currency" field. It is called by the builders before save.
+	org.BaseCurrencyValidator = orgDescBaseCurrency.Validators[0].(func(string) error)
 	orgappMixin := schema.OrgApp{}.Mixin()
 	orgappMixinHooks1 := orgappMixin[1].Hooks()
 	orgappMixinHooks2 := orgappMixin[2].Hooks()

@@ -131,6 +131,11 @@ func Timezone(v string) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldTimezone, v))
 }
 
+// BaseCurrency applies equality check predicate on the "base_currency" field. It's identical to BaseCurrencyEQ.
+func BaseCurrency(v string) predicate.Org {
+	return predicate.Org(sql.FieldEQ(FieldBaseCurrency, v))
+}
+
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldCreatedBy, v))
@@ -1034,6 +1039,81 @@ func TimezoneEqualFold(v string) predicate.Org {
 // TimezoneContainsFold applies the ContainsFold predicate on the "timezone" field.
 func TimezoneContainsFold(v string) predicate.Org {
 	return predicate.Org(sql.FieldContainsFold(FieldTimezone, v))
+}
+
+// BaseCurrencyEQ applies the EQ predicate on the "base_currency" field.
+func BaseCurrencyEQ(v string) predicate.Org {
+	return predicate.Org(sql.FieldEQ(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyNEQ applies the NEQ predicate on the "base_currency" field.
+func BaseCurrencyNEQ(v string) predicate.Org {
+	return predicate.Org(sql.FieldNEQ(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyIn applies the In predicate on the "base_currency" field.
+func BaseCurrencyIn(vs ...string) predicate.Org {
+	return predicate.Org(sql.FieldIn(FieldBaseCurrency, vs...))
+}
+
+// BaseCurrencyNotIn applies the NotIn predicate on the "base_currency" field.
+func BaseCurrencyNotIn(vs ...string) predicate.Org {
+	return predicate.Org(sql.FieldNotIn(FieldBaseCurrency, vs...))
+}
+
+// BaseCurrencyGT applies the GT predicate on the "base_currency" field.
+func BaseCurrencyGT(v string) predicate.Org {
+	return predicate.Org(sql.FieldGT(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyGTE applies the GTE predicate on the "base_currency" field.
+func BaseCurrencyGTE(v string) predicate.Org {
+	return predicate.Org(sql.FieldGTE(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyLT applies the LT predicate on the "base_currency" field.
+func BaseCurrencyLT(v string) predicate.Org {
+	return predicate.Org(sql.FieldLT(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyLTE applies the LTE predicate on the "base_currency" field.
+func BaseCurrencyLTE(v string) predicate.Org {
+	return predicate.Org(sql.FieldLTE(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyContains applies the Contains predicate on the "base_currency" field.
+func BaseCurrencyContains(v string) predicate.Org {
+	return predicate.Org(sql.FieldContains(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyHasPrefix applies the HasPrefix predicate on the "base_currency" field.
+func BaseCurrencyHasPrefix(v string) predicate.Org {
+	return predicate.Org(sql.FieldHasPrefix(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyHasSuffix applies the HasSuffix predicate on the "base_currency" field.
+func BaseCurrencyHasSuffix(v string) predicate.Org {
+	return predicate.Org(sql.FieldHasSuffix(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyIsNil applies the IsNil predicate on the "base_currency" field.
+func BaseCurrencyIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldBaseCurrency))
+}
+
+// BaseCurrencyNotNil applies the NotNil predicate on the "base_currency" field.
+func BaseCurrencyNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldBaseCurrency))
+}
+
+// BaseCurrencyEqualFold applies the EqualFold predicate on the "base_currency" field.
+func BaseCurrencyEqualFold(v string) predicate.Org {
+	return predicate.Org(sql.FieldEqualFold(FieldBaseCurrency, v))
+}
+
+// BaseCurrencyContainsFold applies the ContainsFold predicate on the "base_currency" field.
+func BaseCurrencyContainsFold(v string) predicate.Org {
+	return predicate.Org(sql.FieldContainsFold(FieldBaseCurrency, v))
 }
 
 // HasParent applies the HasEdge predicate on the "parent" edge.

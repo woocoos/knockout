@@ -333,6 +333,26 @@ func (ou *OrgUpdate) ClearTimezone() *OrgUpdate {
 	return ou
 }
 
+// SetBaseCurrency sets the "base_currency" field.
+func (ou *OrgUpdate) SetBaseCurrency(s string) *OrgUpdate {
+	ou.mutation.SetBaseCurrency(s)
+	return ou
+}
+
+// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
+func (ou *OrgUpdate) SetNillableBaseCurrency(s *string) *OrgUpdate {
+	if s != nil {
+		ou.SetBaseCurrency(*s)
+	}
+	return ou
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (ou *OrgUpdate) ClearBaseCurrency() *OrgUpdate {
+	ou.mutation.ClearBaseCurrency()
+	return ou
+}
+
 // SetParent sets the "parent" edge to the Org entity.
 func (ou *OrgUpdate) SetParent(o *Org) *OrgUpdate {
 	return ou.SetParentID(o.ID)
@@ -748,6 +768,11 @@ func (ou *OrgUpdate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
+	if v, ok := ou.mutation.BaseCurrency(); ok {
+		if err := org.BaseCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+		}
+	}
 	if ou.mutation.ParentCleared() && len(ou.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
@@ -843,6 +868,12 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ou.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
+	}
+	if value, ok := ou.mutation.BaseCurrency(); ok {
+		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
+	}
+	if ou.mutation.BaseCurrencyCleared() {
+		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
 	}
 	if ou.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1647,6 +1678,26 @@ func (ouo *OrgUpdateOne) ClearTimezone() *OrgUpdateOne {
 	return ouo
 }
 
+// SetBaseCurrency sets the "base_currency" field.
+func (ouo *OrgUpdateOne) SetBaseCurrency(s string) *OrgUpdateOne {
+	ouo.mutation.SetBaseCurrency(s)
+	return ouo
+}
+
+// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
+func (ouo *OrgUpdateOne) SetNillableBaseCurrency(s *string) *OrgUpdateOne {
+	if s != nil {
+		ouo.SetBaseCurrency(*s)
+	}
+	return ouo
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (ouo *OrgUpdateOne) ClearBaseCurrency() *OrgUpdateOne {
+	ouo.mutation.ClearBaseCurrency()
+	return ouo
+}
+
 // SetParent sets the "parent" edge to the Org entity.
 func (ouo *OrgUpdateOne) SetParent(o *Org) *OrgUpdateOne {
 	return ouo.SetParentID(o.ID)
@@ -2075,6 +2126,11 @@ func (ouo *OrgUpdateOne) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
+	if v, ok := ouo.mutation.BaseCurrency(); ok {
+		if err := org.BaseCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+		}
+	}
 	if ouo.mutation.ParentCleared() && len(ouo.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
@@ -2187,6 +2243,12 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	}
 	if ouo.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
+	}
+	if value, ok := ouo.mutation.BaseCurrency(); ok {
+		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
+	}
+	if ouo.mutation.BaseCurrencyCleared() {
+		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
 	}
 	if ouo.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -15965,6 +15965,7 @@ type OrgMutation struct {
 	adddisplay_sort         *int32
 	country_code            *string
 	timezone                *string
+	base_currency           *string
 	clearedFields           map[string]struct{}
 	parent                  *int
 	clearedparent           bool
@@ -16936,6 +16937,55 @@ func (m *OrgMutation) ResetTimezone() {
 	delete(m.clearedFields, org.FieldTimezone)
 }
 
+// SetBaseCurrency sets the "base_currency" field.
+func (m *OrgMutation) SetBaseCurrency(s string) {
+	m.base_currency = &s
+}
+
+// BaseCurrency returns the value of the "base_currency" field in the mutation.
+func (m *OrgMutation) BaseCurrency() (r string, exists bool) {
+	v := m.base_currency
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBaseCurrency returns the old "base_currency" field's value of the Org entity.
+// If the Org object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgMutation) OldBaseCurrency(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBaseCurrency is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBaseCurrency requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBaseCurrency: %w", err)
+	}
+	return oldValue.BaseCurrency, nil
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (m *OrgMutation) ClearBaseCurrency() {
+	m.base_currency = nil
+	m.clearedFields[org.FieldBaseCurrency] = struct{}{}
+}
+
+// BaseCurrencyCleared returns if the "base_currency" field was cleared in this mutation.
+func (m *OrgMutation) BaseCurrencyCleared() bool {
+	_, ok := m.clearedFields[org.FieldBaseCurrency]
+	return ok
+}
+
+// ResetBaseCurrency resets all changes to the "base_currency" field.
+func (m *OrgMutation) ResetBaseCurrency() {
+	m.base_currency = nil
+	delete(m.clearedFields, org.FieldBaseCurrency)
+}
+
 // ClearParent clears the "parent" edge to the Org entity.
 func (m *OrgMutation) ClearParent() {
 	m.clearedparent = true
@@ -17510,7 +17560,7 @@ func (m *OrgMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.created_by != nil {
 		fields = append(fields, org.FieldCreatedBy)
 	}
@@ -17562,6 +17612,9 @@ func (m *OrgMutation) Fields() []string {
 	if m.timezone != nil {
 		fields = append(fields, org.FieldTimezone)
 	}
+	if m.base_currency != nil {
+		fields = append(fields, org.FieldBaseCurrency)
+	}
 	return fields
 }
 
@@ -17604,6 +17657,8 @@ func (m *OrgMutation) Field(name string) (ent.Value, bool) {
 		return m.CountryCode()
 	case org.FieldTimezone:
 		return m.Timezone()
+	case org.FieldBaseCurrency:
+		return m.BaseCurrency()
 	}
 	return nil, false
 }
@@ -17647,6 +17702,8 @@ func (m *OrgMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldCountryCode(ctx)
 	case org.FieldTimezone:
 		return m.OldTimezone(ctx)
+	case org.FieldBaseCurrency:
+		return m.OldBaseCurrency(ctx)
 	}
 	return nil, fmt.Errorf("unknown Org field %s", name)
 }
@@ -17775,6 +17832,13 @@ func (m *OrgMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTimezone(v)
 		return nil
+	case org.FieldBaseCurrency:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBaseCurrency(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Org field %s", name)
 }
@@ -17880,6 +17944,9 @@ func (m *OrgMutation) ClearedFields() []string {
 	if m.FieldCleared(org.FieldTimezone) {
 		fields = append(fields, org.FieldTimezone)
 	}
+	if m.FieldCleared(org.FieldBaseCurrency) {
+		fields = append(fields, org.FieldBaseCurrency)
+	}
 	return fields
 }
 
@@ -17929,6 +17996,9 @@ func (m *OrgMutation) ClearField(name string) error {
 		return nil
 	case org.FieldTimezone:
 		m.ClearTimezone()
+		return nil
+	case org.FieldBaseCurrency:
+		m.ClearBaseCurrency()
 		return nil
 	}
 	return fmt.Errorf("unknown Org nullable field %s", name)
@@ -17988,6 +18058,9 @@ func (m *OrgMutation) ResetField(name string) error {
 		return nil
 	case org.FieldTimezone:
 		m.ResetTimezone()
+		return nil
+	case org.FieldBaseCurrency:
+		m.ResetBaseCurrency()
 		return nil
 	}
 	return fmt.Errorf("unknown Org field %s", name)

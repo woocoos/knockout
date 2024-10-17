@@ -460,6 +460,7 @@ type ComplexityRoot struct {
 
 	Org struct {
 		Apps                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		BaseCurrency           func(childComplexity int) int
 		Children               func(childComplexity int) int
 		Code                   func(childComplexity int) int
 		CountryCode            func(childComplexity int) int
@@ -3467,6 +3468,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.Apps(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppOrder), args["where"].(*ent.AppWhereInput)), true
+
+	case "Org.baseCurrency":
+		if e.complexity.Org.BaseCurrency == nil {
+			break
+		}
+
+		return e.complexity.Org.BaseCurrency(childComplexity), true
 
 	case "Org.children":
 		if e.complexity.Org.Children == nil {
@@ -8591,6 +8599,10 @@ input CreateOrgInput {
   时区
   """
   timezone: String
+  """
+  组织本位币
+  """
+  baseCurrency: String
   parentID: ID!
   childIDs: [ID!]
   ownerID: ID
@@ -9659,6 +9671,10 @@ type Org implements Node {
   时区
   """
   timezone: String
+  """
+  组织本位币
+  """
+  baseCurrency: String
   parent: Org!
   children: [Org!]
   """
@@ -10873,6 +10889,24 @@ input OrgWhereInput {
   timezoneNotNil: Boolean
   timezoneEqualFold: String
   timezoneContainsFold: String
+  """
+  base_currency field predicates
+  """
+  baseCurrency: String
+  baseCurrencyNEQ: String
+  baseCurrencyIn: [String!]
+  baseCurrencyNotIn: [String!]
+  baseCurrencyGT: String
+  baseCurrencyGTE: String
+  baseCurrencyLT: String
+  baseCurrencyLTE: String
+  baseCurrencyContains: String
+  baseCurrencyHasPrefix: String
+  baseCurrencyHasSuffix: String
+  baseCurrencyIsNil: Boolean
+  baseCurrencyNotNil: Boolean
+  baseCurrencyEqualFold: String
+  baseCurrencyContainsFold: String
   """
   parent edge predicates
   """
@@ -12180,6 +12214,11 @@ input UpdateOrgInput {
   """
   timezone: String
   clearTimezone: Boolean
+  """
+  组织本位币
+  """
+  baseCurrency: String
+  clearBaseCurrency: Boolean
   parentID: ID
   addChildIDs: [ID!]
   removeChildIDs: [ID!]

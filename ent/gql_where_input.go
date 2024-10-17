@@ -7161,6 +7161,23 @@ type OrgWhereInput struct {
 	TimezoneEqualFold    *string  `json:"timezoneEqualFold,omitempty"`
 	TimezoneContainsFold *string  `json:"timezoneContainsFold,omitempty"`
 
+	// "base_currency" field predicates.
+	BaseCurrency             *string  `json:"baseCurrency,omitempty"`
+	BaseCurrencyNEQ          *string  `json:"baseCurrencyNEQ,omitempty"`
+	BaseCurrencyIn           []string `json:"baseCurrencyIn,omitempty"`
+	BaseCurrencyNotIn        []string `json:"baseCurrencyNotIn,omitempty"`
+	BaseCurrencyGT           *string  `json:"baseCurrencyGT,omitempty"`
+	BaseCurrencyGTE          *string  `json:"baseCurrencyGTE,omitempty"`
+	BaseCurrencyLT           *string  `json:"baseCurrencyLT,omitempty"`
+	BaseCurrencyLTE          *string  `json:"baseCurrencyLTE,omitempty"`
+	BaseCurrencyContains     *string  `json:"baseCurrencyContains,omitempty"`
+	BaseCurrencyHasPrefix    *string  `json:"baseCurrencyHasPrefix,omitempty"`
+	BaseCurrencyHasSuffix    *string  `json:"baseCurrencyHasSuffix,omitempty"`
+	BaseCurrencyIsNil        bool     `json:"baseCurrencyIsNil,omitempty"`
+	BaseCurrencyNotNil       bool     `json:"baseCurrencyNotNil,omitempty"`
+	BaseCurrencyEqualFold    *string  `json:"baseCurrencyEqualFold,omitempty"`
+	BaseCurrencyContainsFold *string  `json:"baseCurrencyContainsFold,omitempty"`
+
 	// "parent" edge predicates.
 	HasParent     *bool            `json:"hasParent,omitempty"`
 	HasParentWith []*OrgWhereInput `json:"hasParentWith,omitempty"`
@@ -7758,6 +7775,51 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 	}
 	if i.TimezoneContainsFold != nil {
 		predicates = append(predicates, org.TimezoneContainsFold(*i.TimezoneContainsFold))
+	}
+	if i.BaseCurrency != nil {
+		predicates = append(predicates, org.BaseCurrencyEQ(*i.BaseCurrency))
+	}
+	if i.BaseCurrencyNEQ != nil {
+		predicates = append(predicates, org.BaseCurrencyNEQ(*i.BaseCurrencyNEQ))
+	}
+	if len(i.BaseCurrencyIn) > 0 {
+		predicates = append(predicates, org.BaseCurrencyIn(i.BaseCurrencyIn...))
+	}
+	if len(i.BaseCurrencyNotIn) > 0 {
+		predicates = append(predicates, org.BaseCurrencyNotIn(i.BaseCurrencyNotIn...))
+	}
+	if i.BaseCurrencyGT != nil {
+		predicates = append(predicates, org.BaseCurrencyGT(*i.BaseCurrencyGT))
+	}
+	if i.BaseCurrencyGTE != nil {
+		predicates = append(predicates, org.BaseCurrencyGTE(*i.BaseCurrencyGTE))
+	}
+	if i.BaseCurrencyLT != nil {
+		predicates = append(predicates, org.BaseCurrencyLT(*i.BaseCurrencyLT))
+	}
+	if i.BaseCurrencyLTE != nil {
+		predicates = append(predicates, org.BaseCurrencyLTE(*i.BaseCurrencyLTE))
+	}
+	if i.BaseCurrencyContains != nil {
+		predicates = append(predicates, org.BaseCurrencyContains(*i.BaseCurrencyContains))
+	}
+	if i.BaseCurrencyHasPrefix != nil {
+		predicates = append(predicates, org.BaseCurrencyHasPrefix(*i.BaseCurrencyHasPrefix))
+	}
+	if i.BaseCurrencyHasSuffix != nil {
+		predicates = append(predicates, org.BaseCurrencyHasSuffix(*i.BaseCurrencyHasSuffix))
+	}
+	if i.BaseCurrencyIsNil {
+		predicates = append(predicates, org.BaseCurrencyIsNil())
+	}
+	if i.BaseCurrencyNotNil {
+		predicates = append(predicates, org.BaseCurrencyNotNil())
+	}
+	if i.BaseCurrencyEqualFold != nil {
+		predicates = append(predicates, org.BaseCurrencyEqualFold(*i.BaseCurrencyEqualFold))
+	}
+	if i.BaseCurrencyContainsFold != nil {
+		predicates = append(predicates, org.BaseCurrencyContainsFold(*i.BaseCurrencyContainsFold))
 	}
 
 	if i.HasParent != nil {

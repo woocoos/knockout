@@ -2904,6 +2904,11 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				selectedFields = append(selectedFields, org.FieldTimezone)
 				fieldSeen[org.FieldTimezone] = struct{}{}
 			}
+		case "baseCurrency":
+			if _, ok := fieldSeen[org.FieldBaseCurrency]; !ok {
+				selectedFields = append(selectedFields, org.FieldBaseCurrency)
+				fieldSeen[org.FieldBaseCurrency] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

@@ -53,6 +53,8 @@ type Org struct {
 	CountryCode string `json:"country_code,omitempty"`
 	// 时区
 	Timezone string `json:"timezone,omitempty"`
+	// 组织本位币
+	BaseCurrency string `json:"base_currency,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgQuery when eager-loading is set.
 	Edges        OrgEdges `json:"edges"`
@@ -210,7 +212,7 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case org.FieldID, org.FieldCreatedBy, org.FieldUpdatedBy, org.FieldOwnerID, org.FieldParentID, org.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone:
+		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone, org.FieldBaseCurrency:
 			values[i] = new(sql.NullString)
 		case org.FieldCreatedAt, org.FieldUpdatedAt, org.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -337,6 +339,12 @@ func (o *Org) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field timezone", values[i])
 			} else if value.Valid {
 				o.Timezone = value.String
+			}
+		case org.FieldBaseCurrency:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field base_currency", values[i])
+			} else if value.Valid {
+				o.BaseCurrency = value.String
 			}
 		default:
 			o.selectValues.Set(columns[i], values[i])
@@ -481,6 +489,9 @@ func (o *Org) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("timezone=")
 	builder.WriteString(o.Timezone)
+	builder.WriteString(", ")
+	builder.WriteString("base_currency=")
+	builder.WriteString(o.BaseCurrency)
 	builder.WriteByte(')')
 	return builder.String()
 }

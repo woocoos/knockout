@@ -54,6 +54,8 @@ const (
 	FieldCountryCode = "country_code"
 	// FieldTimezone holds the string denoting the timezone field in the database.
 	FieldTimezone = "timezone"
+	// FieldBaseCurrency holds the string denoting the base_currency field in the database.
+	FieldBaseCurrency = "base_currency"
 	// EdgeParent holds the string denoting the parent edge name in mutations.
 	EdgeParent = "parent"
 	// EdgeChildren holds the string denoting the children edge name in mutations.
@@ -167,6 +169,7 @@ var Columns = []string{
 	FieldDisplaySort,
 	FieldCountryCode,
 	FieldTimezone,
+	FieldBaseCurrency,
 }
 
 var (
@@ -210,6 +213,8 @@ var (
 	CountryCodeValidator func(string) error
 	// TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	TimezoneValidator func(string) error
+	// BaseCurrencyValidator is a validator for the "base_currency" field. It is called by the builders before save.
+	BaseCurrencyValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -341,6 +346,11 @@ func ByCountryCode(opts ...sql.OrderTermOption) OrderOption {
 // ByTimezone orders the results by the timezone field.
 func ByTimezone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTimezone, opts...).ToFunc()
+}
+
+// ByBaseCurrency orders the results by the base_currency field.
+func ByBaseCurrency(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBaseCurrency, opts...).ToFunc()
 }
 
 // ByParentField orders the results by parent field.

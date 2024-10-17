@@ -436,6 +436,7 @@ var (
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "country_code", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "timezone", Type: field.TypeString, Nullable: true, Size: 45},
+		{Name: "base_currency", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},
 	}
@@ -447,13 +448,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_org_children",
-				Columns:    []*schema.Column{OrgColumns[16]},
+				Columns:    []*schema.Column{OrgColumns[17]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "org_user_owner",
-				Columns:    []*schema.Column{OrgColumns[17]},
+				Columns:    []*schema.Column{OrgColumns[18]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

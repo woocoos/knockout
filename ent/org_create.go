@@ -253,6 +253,20 @@ func (oc *OrgCreate) SetNillableTimezone(s *string) *OrgCreate {
 	return oc
 }
 
+// SetBaseCurrency sets the "base_currency" field.
+func (oc *OrgCreate) SetBaseCurrency(s string) *OrgCreate {
+	oc.mutation.SetBaseCurrency(s)
+	return oc
+}
+
+// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
+func (oc *OrgCreate) SetNillableBaseCurrency(s *string) *OrgCreate {
+	if s != nil {
+		oc.SetBaseCurrency(*s)
+	}
+	return oc
+}
+
 // SetID sets the "id" field.
 func (oc *OrgCreate) SetID(i int) *OrgCreate {
 	oc.mutation.SetID(i)
@@ -515,6 +529,11 @@ func (oc *OrgCreate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
+	if v, ok := oc.mutation.BaseCurrency(); ok {
+		if err := org.BaseCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+		}
+	}
 	if len(oc.mutation.ParentIDs()) == 0 {
 		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "Org.parent"`)}
 	}
@@ -610,6 +629,10 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	if value, ok := oc.mutation.Timezone(); ok {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 		_node.Timezone = value
+	}
+	if value, ok := oc.mutation.BaseCurrency(); ok {
+		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
+		_node.BaseCurrency = value
 	}
 	if nodes := oc.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1113,6 +1136,24 @@ func (u *OrgUpsert) ClearTimezone() *OrgUpsert {
 	return u
 }
 
+// SetBaseCurrency sets the "base_currency" field.
+func (u *OrgUpsert) SetBaseCurrency(v string) *OrgUpsert {
+	u.Set(org.FieldBaseCurrency, v)
+	return u
+}
+
+// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateBaseCurrency() *OrgUpsert {
+	u.SetExcluded(org.FieldBaseCurrency)
+	return u
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (u *OrgUpsert) ClearBaseCurrency() *OrgUpsert {
+	u.SetNull(org.FieldBaseCurrency)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1472,6 +1513,27 @@ func (u *OrgUpsertOne) UpdateTimezone() *OrgUpsertOne {
 func (u *OrgUpsertOne) ClearTimezone() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearTimezone()
+	})
+}
+
+// SetBaseCurrency sets the "base_currency" field.
+func (u *OrgUpsertOne) SetBaseCurrency(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetBaseCurrency(v)
+	})
+}
+
+// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateBaseCurrency() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateBaseCurrency()
+	})
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (u *OrgUpsertOne) ClearBaseCurrency() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearBaseCurrency()
 	})
 }
 
@@ -2000,6 +2062,27 @@ func (u *OrgUpsertBulk) UpdateTimezone() *OrgUpsertBulk {
 func (u *OrgUpsertBulk) ClearTimezone() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearTimezone()
+	})
+}
+
+// SetBaseCurrency sets the "base_currency" field.
+func (u *OrgUpsertBulk) SetBaseCurrency(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetBaseCurrency(v)
+	})
+}
+
+// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateBaseCurrency() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateBaseCurrency()
+	})
+}
+
+// ClearBaseCurrency clears the value of the "base_currency" field.
+func (u *OrgUpsertBulk) ClearBaseCurrency() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearBaseCurrency()
 	})
 }
 
