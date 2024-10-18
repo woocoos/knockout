@@ -473,6 +473,7 @@ type ComplexityRoot struct {
 		ID                     func(childComplexity int) int
 		IsAllowRevokeAppPolicy func(childComplexity int, appPolicyID int) int
 		Kind                   func(childComplexity int) int
+		Logo                   func(childComplexity int) int
 		Name                   func(childComplexity int) int
 		Owner                  func(childComplexity int) int
 		OwnerID                func(childComplexity int) int
@@ -511,6 +512,12 @@ type ComplexityRoot struct {
 		TenantID     func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
 		UpdatedBy    func(childComplexity int) int
+	}
+
+	OrgLogo struct {
+		Favicon   func(childComplexity int) int
+		Logo      func(childComplexity int) int
+		ThumbLogo func(childComplexity int) int
 	}
 
 	OrgPolicy struct {
@@ -3565,6 +3572,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.Kind(childComplexity), true
 
+	case "Org.logo":
+		if e.complexity.Org.Logo == nil {
+			break
+		}
+
+		return e.complexity.Org.Logo(childComplexity), true
+
 	case "Org.name":
 		if e.complexity.Org.Name == nil {
 			break
@@ -3782,6 +3796,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgFileIdentity.UpdatedBy(childComplexity), true
+
+	case "OrgLogo.favicon":
+		if e.complexity.OrgLogo.Favicon == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.Favicon(childComplexity), true
+
+	case "OrgLogo.logo":
+		if e.complexity.OrgLogo.Logo == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.Logo(childComplexity), true
+
+	case "OrgLogo.thumbLogo":
+		if e.complexity.OrgLogo.ThumbLogo == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.ThumbLogo(childComplexity), true
 
 	case "OrgPolicy.appPolicyID":
 		if e.complexity.OrgPolicy.AppPolicyID == nil {
@@ -4734,12 +4769,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
-	case "Query.UserMembers":
+	case "Query.userMembers":
 		if e.complexity.Query.UserMembers == nil {
 			break
 		}
 
-		args, err := ec.field_Query_UserMembers_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_userMembers_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -5733,6 +5768,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputGrantInput,
 		ec.unmarshalInputOauthClientOrder,
 		ec.unmarshalInputOauthClientWhereInput,
+		ec.unmarshalInputOrgLogoInput,
 		ec.unmarshalInputOrgOrder,
 		ec.unmarshalInputOrgPolicyOrder,
 		ec.unmarshalInputOrgPolicyWhereInput,
@@ -8603,6 +8639,10 @@ input CreateOrgInput {
   组织本位币
   """
   baseCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
   parentID: ID!
   childIDs: [ID!]
   ownerID: ID
@@ -9675,6 +9715,10 @@ type Org implements Node {
   组织本位币
   """
   baseCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogo
   parent: Org!
   children: [Org!]
   """
@@ -12219,6 +12263,11 @@ input UpdateOrgInput {
   """
   baseCurrency: String
   clearBaseCurrency: Boolean
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
+  clearLogo: Boolean
   parentID: ID
   addChildIDs: [ID!]
   removeChildIDs: [ID!]
@@ -14311,6 +14360,18 @@ type FileIdentityForApp implements Node{
     """
     isDefault: Boolean!
     source: FileSource!
+}
+
+type OrgLogo {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+
+input OrgLogoInput {
+    logo: String
+    thumbLogo: String
+    favicon: String
 }`, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
@@ -14447,7 +14508,7 @@ type FileIdentityForApp implements Node{
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
     """成员列表"""
-    UserMembers(
+    userMembers(
         after: Cursor
         first: Int
         before: Cursor

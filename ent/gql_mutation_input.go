@@ -1188,6 +1188,7 @@ type CreateOrgInput struct {
 	CountryCode      *string
 	Timezone         *string
 	BaseCurrency     *string
+	Logo             *types.OrgLogo
 	ParentID         int
 	ChildIDs         []int
 	OwnerID          *int
@@ -1219,6 +1220,9 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.BaseCurrency; v != nil {
 		m.SetBaseCurrency(*v)
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(v)
 	}
 	m.SetParentID(i.ParentID)
 	if v := i.ChildIDs; len(v) > 0 {
@@ -1268,6 +1272,8 @@ type UpdateOrgInput struct {
 	Timezone               *string
 	ClearBaseCurrency      bool
 	BaseCurrency           *string
+	ClearLogo              bool
+	Logo                   *types.OrgLogo
 	ParentID               *int
 	ClearChildren          bool
 	AddChildIDs            []int
@@ -1334,6 +1340,12 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.BaseCurrency; v != nil {
 		m.SetBaseCurrency(*v)
+	}
+	if i.ClearLogo {
+		m.ClearLogo()
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(v)
 	}
 	if v := i.ParentID; v != nil {
 		m.SetParentID(*v)

@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
 )
@@ -55,6 +57,8 @@ type Org struct {
 	Timezone string `json:"timezone,omitempty"`
 	// 组织本位币
 	BaseCurrency string `json:"base_currency,omitempty"`
+	// 组织图标
+	Logo *types.OrgLogo `json:"logo,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgQuery when eager-loading is set.
 	Edges        OrgEdges `json:"edges"`
@@ -210,6 +214,8 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case org.FieldLogo:
+			values[i] = new([]byte)
 		case org.FieldID, org.FieldCreatedBy, org.FieldUpdatedBy, org.FieldOwnerID, org.FieldParentID, org.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
 		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone, org.FieldBaseCurrency:
@@ -345,6 +351,14 @@ func (o *Org) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field base_currency", values[i])
 			} else if value.Valid {
 				o.BaseCurrency = value.String
+			}
+		case org.FieldLogo:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &o.Logo); err != nil {
+					return fmt.Errorf("unmarshal field logo: %w", err)
+				}
 			}
 		default:
 			o.selectValues.Set(columns[i], values[i])
@@ -492,6 +506,9 @@ func (o *Org) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("base_currency=")
 	builder.WriteString(o.BaseCurrency)
+	builder.WriteString(", ")
+	builder.WriteString("logo=")
+	builder.WriteString(fmt.Sprintf("%v", o.Logo))
 	builder.WriteByte(')')
 	return builder.String()
 }

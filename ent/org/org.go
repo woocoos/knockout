@@ -56,6 +56,8 @@ const (
 	FieldTimezone = "timezone"
 	// FieldBaseCurrency holds the string denoting the base_currency field in the database.
 	FieldBaseCurrency = "base_currency"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// EdgeParent holds the string denoting the parent edge name in mutations.
 	EdgeParent = "parent"
 	// EdgeChildren holds the string denoting the children edge name in mutations.
@@ -170,6 +172,7 @@ var Columns = []string{
 	FieldCountryCode,
 	FieldTimezone,
 	FieldBaseCurrency,
+	FieldLogo,
 }
 
 var (

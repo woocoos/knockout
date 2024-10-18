@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
@@ -350,6 +351,18 @@ func (ou *OrgUpdate) SetNillableBaseCurrency(s *string) *OrgUpdate {
 // ClearBaseCurrency clears the value of the "base_currency" field.
 func (ou *OrgUpdate) ClearBaseCurrency() *OrgUpdate {
 	ou.mutation.ClearBaseCurrency()
+	return ou
+}
+
+// SetLogo sets the "logo" field.
+func (ou *OrgUpdate) SetLogo(tl *types.OrgLogo) *OrgUpdate {
+	ou.mutation.SetLogo(tl)
+	return ou
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (ou *OrgUpdate) ClearLogo() *OrgUpdate {
+	ou.mutation.ClearLogo()
 	return ou
 }
 
@@ -874,6 +887,12 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ou.mutation.BaseCurrencyCleared() {
 		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
+	}
+	if value, ok := ou.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+	}
+	if ou.mutation.LogoCleared() {
+		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
 	if ou.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1698,6 +1717,18 @@ func (ouo *OrgUpdateOne) ClearBaseCurrency() *OrgUpdateOne {
 	return ouo
 }
 
+// SetLogo sets the "logo" field.
+func (ouo *OrgUpdateOne) SetLogo(tl *types.OrgLogo) *OrgUpdateOne {
+	ouo.mutation.SetLogo(tl)
+	return ouo
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (ouo *OrgUpdateOne) ClearLogo() *OrgUpdateOne {
+	ouo.mutation.ClearLogo()
+	return ouo
+}
+
 // SetParent sets the "parent" edge to the Org entity.
 func (ouo *OrgUpdateOne) SetParent(o *Org) *OrgUpdateOne {
 	return ouo.SetParentID(o.ID)
@@ -2249,6 +2280,12 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	}
 	if ouo.mutation.BaseCurrencyCleared() {
 		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
+	}
+	if value, ok := ouo.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+	}
+	if ouo.mutation.LogoCleared() {
+		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
 	if ouo.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -997,6 +997,129 @@ func (ec *executionContext) fieldContext_OrgFileIdentity_source(_ context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _OrgLogo_logo(ctx context.Context, field graphql.CollectedField, obj *types.OrgLogo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgLogo_logo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Logo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgLogo_logo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgLogo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgLogo_thumbLogo(ctx context.Context, field graphql.CollectedField, obj *types.OrgLogo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgLogo_thumbLogo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ThumbLogo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgLogo_thumbLogo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgLogo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgLogo_favicon(ctx context.Context, field graphql.CollectedField, obj *types.OrgLogo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgLogo_favicon(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Favicon, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgLogo_favicon(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgLogo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PolicyRule_effect(ctx context.Context, field graphql.CollectedField, obj *types.PolicyRule) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PolicyRule_effect(ctx, field)
 	if err != nil {
@@ -1291,6 +1414,47 @@ func (ec *executionContext) unmarshalInputGrantInput(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputOrgLogoInput(ctx context.Context, obj interface{}) (types.OrgLogo, error) {
+	var it types.OrgLogo
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"logo", "thumbLogo", "favicon"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "logo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Logo = data
+		case "thumbLogo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("thumbLogo"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ThumbLogo = data
+		case "favicon":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("favicon"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Favicon = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Context, obj interface{}) (model.OrgUserPreferenceInput, error) {
 	var it model.OrgUserPreferenceInput
 	asMap := map[string]interface{}{}
@@ -1573,6 +1737,46 @@ func (ec *executionContext) _OrgFileIdentity(ctx context.Context, sel ast.Select
 	return out
 }
 
+var orgLogoImplementors = []string{"OrgLogo"}
+
+func (ec *executionContext) _OrgLogo(ctx context.Context, sel ast.SelectionSet, obj *types.OrgLogo) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, orgLogoImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("OrgLogo")
+		case "logo":
+			out.Values[i] = ec._OrgLogo_logo(ctx, field, obj)
+		case "thumbLogo":
+			out.Values[i] = ec._OrgLogo_thumbLogo(ctx, field, obj)
+		case "favicon":
+			out.Values[i] = ec._OrgLogo_favicon(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var policyRuleImplementors = []string{"PolicyRule"}
 
 func (ec *executionContext) _PolicyRule(ctx context.Context, sel ast.SelectionSet, obj *types.PolicyRule) graphql.Marshaler {
@@ -1788,6 +1992,21 @@ func (ec *executionContext) unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknocko
 
 func (ec *executionContext) marshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx context.Context, sel ast.SelectionSet, v model.TreeAction) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalOOrgLogo2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx context.Context, sel ast.SelectionSet, v *types.OrgLogo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._OrgLogo(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx context.Context, v interface{}) (*types.OrgLogo, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputOrgLogoInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOPolicyRule2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐPolicyRule(ctx context.Context, sel ast.SelectionSet, v *types.PolicyRule) graphql.Marshaler {

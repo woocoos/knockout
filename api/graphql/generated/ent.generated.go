@@ -723,66 +723,6 @@ func (ec *executionContext) field_Org_users_args(ctx context.Context, rawArgs ma
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_UserMembers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *entgql.Cursor[int]
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg0
-	var arg1 *int
-	if tmp, ok := rawArgs["first"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["first"] = arg1
-	var arg2 *entgql.Cursor[int]
-	if tmp, ok := rawArgs["before"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["before"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["last"] = arg3
-	var arg4 *ent.UserOrder
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
-		arg4, err = ec.unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrder(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg4
-	var arg5 *ent.UserWhereInput
-	if tmp, ok := rawArgs["where"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-		arg5, err = ec.unmarshalOUserWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["where"] = arg5
-	return args, nil
-}
-
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2058,6 +1998,66 @@ func (ec *executionContext) field_Query_userGroups_args(ctx context.Context, raw
 		}
 	}
 	args["where"] = arg6
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_userMembers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["after"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+		arg0, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg0
+	var arg1 *int
+	if tmp, ok := rawArgs["first"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+		arg1, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg1
+	var arg2 *entgql.Cursor[int]
+	if tmp, ok := rawArgs["before"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+		arg2, err = ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg2
+	var arg3 *int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	var arg4 *ent.UserOrder
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg4, err = ec.unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrder(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg4
+	var arg5 *ent.UserWhereInput
+	if tmp, ok := rawArgs["where"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+		arg5, err = ec.unmarshalOUserWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["where"] = arg5
 	return args, nil
 }
 
@@ -5904,6 +5904,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -10807,6 +10809,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -13337,6 +13341,55 @@ func (ec *executionContext) fieldContext_Org_baseCurrency(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_logo(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_logo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Logo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*types.OrgLogo)
+	fc.Result = res
+	return ec.marshalOOrgLogo2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_logo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "logo":
+				return ec.fieldContext_OrgLogo_logo(ctx, field)
+			case "thumbLogo":
+				return ec.fieldContext_OrgLogo_thumbLogo(ctx, field)
+			case "favicon":
+				return ec.fieldContext_OrgLogo_favicon(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgLogo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_parent(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_parent(ctx, field)
 	if err != nil {
@@ -13414,6 +13467,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -13513,6 +13568,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -14240,6 +14297,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -14818,6 +14877,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -16596,6 +16657,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -17673,6 +17736,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -19181,6 +19246,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -19294,6 +19361,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -20083,6 +20152,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_timezone(ctx, field)
 			case "baseCurrency":
 				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
 				return ec.fieldContext_Org_parent(ctx, field)
 			case "children":
@@ -20681,8 +20752,8 @@ func (ec *executionContext) fieldContext_Query_fileIdentityAccessKeySecret(ctx c
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_UserMembers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_UserMembers(ctx, field)
+func (ec *executionContext) _Query_userMembers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userMembers(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -20712,7 +20783,7 @@ func (ec *executionContext) _Query_UserMembers(ctx context.Context, field graphq
 	return ec.marshalNUserConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserConnection(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_UserMembers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_userMembers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -20737,7 +20808,7 @@ func (ec *executionContext) fieldContext_Query_UserMembers(ctx context.Context, 
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_UserMembers_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_userMembers_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -35172,7 +35243,7 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "baseCurrency", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs"}
+	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "baseCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35228,6 +35299,13 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.BaseCurrency = data
+		case "logo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			data, err := ec.unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Logo = data
 		case "parentID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
 			data, err := ec.unmarshalNID2int(ctx, v)
@@ -45494,7 +45572,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "baseCurrency", "clearBaseCurrency", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "baseCurrency", "clearBaseCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -45592,6 +45670,20 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearBaseCurrency = data
+		case "logo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			data, err := ec.unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Logo = data
+		case "clearLogo":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearLogo"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearLogo = data
 		case "parentID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -55110,6 +55202,8 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 			out.Values[i] = ec._Org_timezone(ctx, field, obj)
 		case "baseCurrency":
 			out.Values[i] = ec._Org_baseCurrency(ctx, field, obj)
+		case "logo":
+			out.Values[i] = ec._Org_logo(ctx, field, obj)
 		case "parent":
 			field := field
 
@@ -57448,7 +57542,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "UserMembers":
+		case "userMembers":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -57457,7 +57551,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_UserMembers(ctx, field)
+				res = ec._Query_userMembers(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

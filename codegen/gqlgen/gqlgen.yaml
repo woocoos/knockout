@@ -54,6 +54,12 @@ models:
   PolicyEffect:
     model:
       - github.com/woocoos/knockout/codegen/entgen/types.PolicyEffect
+  OrgLogo:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.OrgLogo
+  OrgLogoInput:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.OrgLogo
 directives:
   constraint:
     skip_runtime: true

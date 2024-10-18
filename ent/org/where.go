@@ -1116,6 +1116,16 @@ func BaseCurrencyContainsFold(v string) predicate.Org {
 	return predicate.Org(sql.FieldContainsFold(FieldBaseCurrency, v))
 }
 
+// LogoIsNil applies the IsNil predicate on the "logo" field.
+func LogoIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldLogo))
+}
+
+// LogoNotNil applies the NotNil predicate on the "logo" field.
+func LogoNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldLogo))
+}
+
 // HasParent applies the HasEdge predicate on the "parent" edge.
 func HasParent() predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {

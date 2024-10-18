@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/intercept"
@@ -70,6 +71,7 @@ func (Org) Fields() []ent.Field {
 		field.String("country_code").MaxLen(10).Optional().Comment("国家或地区2字码"),
 		field.String("timezone").MaxLen(45).Optional().Comment("时区"),
 		field.String("base_currency").MaxLen(10).Optional().Comment("组织本位币"),
+		field.JSON("logo", &types.OrgLogo{}).Optional().Comment("组织图标"),
 	}
 }
 

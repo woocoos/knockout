@@ -167,3 +167,15 @@ type FileIdentityForApp implements Node{
     isDefault: Boolean!
     source: FileSource!
 }
+
+type OrgLogo {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+
+input OrgLogoInput {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}

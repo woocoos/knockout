@@ -133,7 +133,7 @@ extend type Query {
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
     """成员列表"""
-    UserMembers(
+    userMembers(
         after: Cursor
         first: Int
         before: Cursor

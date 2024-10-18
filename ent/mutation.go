@@ -15966,6 +15966,7 @@ type OrgMutation struct {
 	country_code            *string
 	timezone                *string
 	base_currency           *string
+	logo                    **types.OrgLogo
 	clearedFields           map[string]struct{}
 	parent                  *int
 	clearedparent           bool
@@ -16986,6 +16987,55 @@ func (m *OrgMutation) ResetBaseCurrency() {
 	delete(m.clearedFields, org.FieldBaseCurrency)
 }
 
+// SetLogo sets the "logo" field.
+func (m *OrgMutation) SetLogo(tl *types.OrgLogo) {
+	m.logo = &tl
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *OrgMutation) Logo() (r *types.OrgLogo, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the Org entity.
+// If the Org object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgMutation) OldLogo(ctx context.Context) (v *types.OrgLogo, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (m *OrgMutation) ClearLogo() {
+	m.logo = nil
+	m.clearedFields[org.FieldLogo] = struct{}{}
+}
+
+// LogoCleared returns if the "logo" field was cleared in this mutation.
+func (m *OrgMutation) LogoCleared() bool {
+	_, ok := m.clearedFields[org.FieldLogo]
+	return ok
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *OrgMutation) ResetLogo() {
+	m.logo = nil
+	delete(m.clearedFields, org.FieldLogo)
+}
+
 // ClearParent clears the "parent" edge to the Org entity.
 func (m *OrgMutation) ClearParent() {
 	m.clearedparent = true
@@ -17560,7 +17610,7 @@ func (m *OrgMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.created_by != nil {
 		fields = append(fields, org.FieldCreatedBy)
 	}
@@ -17615,6 +17665,9 @@ func (m *OrgMutation) Fields() []string {
 	if m.base_currency != nil {
 		fields = append(fields, org.FieldBaseCurrency)
 	}
+	if m.logo != nil {
+		fields = append(fields, org.FieldLogo)
+	}
 	return fields
 }
 
@@ -17659,6 +17712,8 @@ func (m *OrgMutation) Field(name string) (ent.Value, bool) {
 		return m.Timezone()
 	case org.FieldBaseCurrency:
 		return m.BaseCurrency()
+	case org.FieldLogo:
+		return m.Logo()
 	}
 	return nil, false
 }
@@ -17704,6 +17759,8 @@ func (m *OrgMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldTimezone(ctx)
 	case org.FieldBaseCurrency:
 		return m.OldBaseCurrency(ctx)
+	case org.FieldLogo:
+		return m.OldLogo(ctx)
 	}
 	return nil, fmt.Errorf("unknown Org field %s", name)
 }
@@ -17839,6 +17896,13 @@ func (m *OrgMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBaseCurrency(v)
 		return nil
+	case org.FieldLogo:
+		v, ok := value.(*types.OrgLogo)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Org field %s", name)
 }
@@ -17947,6 +18011,9 @@ func (m *OrgMutation) ClearedFields() []string {
 	if m.FieldCleared(org.FieldBaseCurrency) {
 		fields = append(fields, org.FieldBaseCurrency)
 	}
+	if m.FieldCleared(org.FieldLogo) {
+		fields = append(fields, org.FieldLogo)
+	}
 	return fields
 }
 
@@ -17999,6 +18066,9 @@ func (m *OrgMutation) ClearField(name string) error {
 		return nil
 	case org.FieldBaseCurrency:
 		m.ClearBaseCurrency()
+		return nil
+	case org.FieldLogo:
+		m.ClearLogo()
 		return nil
 	}
 	return fmt.Errorf("unknown Org nullable field %s", name)
@@ -18061,6 +18131,9 @@ func (m *OrgMutation) ResetField(name string) error {
 		return nil
 	case org.FieldBaseCurrency:
 		m.ResetBaseCurrency()
+		return nil
+	case org.FieldLogo:
+		m.ResetLogo()
 		return nil
 	}
 	return fmt.Errorf("unknown Org field %s", name)

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
@@ -264,6 +265,12 @@ func (oc *OrgCreate) SetNillableBaseCurrency(s *string) *OrgCreate {
 	if s != nil {
 		oc.SetBaseCurrency(*s)
 	}
+	return oc
+}
+
+// SetLogo sets the "logo" field.
+func (oc *OrgCreate) SetLogo(tl *types.OrgLogo) *OrgCreate {
+	oc.mutation.SetLogo(tl)
 	return oc
 }
 
@@ -633,6 +640,10 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	if value, ok := oc.mutation.BaseCurrency(); ok {
 		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
 		_node.BaseCurrency = value
+	}
+	if value, ok := oc.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+		_node.Logo = value
 	}
 	if nodes := oc.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1154,6 +1165,24 @@ func (u *OrgUpsert) ClearBaseCurrency() *OrgUpsert {
 	return u
 }
 
+// SetLogo sets the "logo" field.
+func (u *OrgUpsert) SetLogo(v *types.OrgLogo) *OrgUpsert {
+	u.Set(org.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateLogo() *OrgUpsert {
+	u.SetExcluded(org.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsert) ClearLogo() *OrgUpsert {
+	u.SetNull(org.FieldLogo)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -1534,6 +1563,27 @@ func (u *OrgUpsertOne) UpdateBaseCurrency() *OrgUpsertOne {
 func (u *OrgUpsertOne) ClearBaseCurrency() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearBaseCurrency()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *OrgUpsertOne) SetLogo(v *types.OrgLogo) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateLogo() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsertOne) ClearLogo() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLogo()
 	})
 }
 
@@ -2083,6 +2133,27 @@ func (u *OrgUpsertBulk) UpdateBaseCurrency() *OrgUpsertBulk {
 func (u *OrgUpsertBulk) ClearBaseCurrency() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearBaseCurrency()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *OrgUpsertBulk) SetLogo(v *types.OrgLogo) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateLogo() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsertBulk) ClearLogo() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLogo()
 	})
 }
 

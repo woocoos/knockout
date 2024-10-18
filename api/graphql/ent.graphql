@@ -2717,6 +2717,10 @@ input CreateOrgInput {
   组织本位币
   """
   baseCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
   parentID: ID!
   childIDs: [ID!]
   ownerID: ID
@@ -3789,6 +3793,10 @@ type Org implements Node {
   组织本位币
   """
   baseCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogo
   parent: Org!
   children: [Org!]
   """
@@ -6333,6 +6341,11 @@ input UpdateOrgInput {
   """
   baseCurrency: String
   clearBaseCurrency: Boolean
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
+  clearLogo: Boolean
   parentID: ID
   addChildIDs: [ID!]
   removeChildIDs: [ID!]
