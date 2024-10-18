@@ -2570,6 +2570,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2684,6 +2686,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2908,6 +2912,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -6534,6 +6540,8 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},

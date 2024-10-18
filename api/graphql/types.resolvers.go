@@ -6,7 +6,6 @@ package graphql
 
 import (
 	"context"
-
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -123,6 +122,15 @@ func (r *userResolver) Contact(ctx context.Context, obj *ent.User) (*ent.UserAdd
 		return nil, err
 	}
 	return at, nil
+}
+
+// OrgUserType is the resolver for the orgUserType field.
+func (r *userResolver) OrgUserType(ctx context.Context, obj *ent.User, orgID int) (orguser.UserType, error) {
+	ou, err := r.client.OrgUser.Query().Select(orguser.FieldUserType).Where(orguser.UserID(obj.ID), orguser.OrgID(orgID)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	return ou.UserType, nil
 }
 
 // LoginProfile is the resolver for the loginProfile field.

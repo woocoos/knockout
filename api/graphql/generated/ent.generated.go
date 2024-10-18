@@ -96,6 +96,7 @@ type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
 	IsAllowRevokeRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
 	Contact(ctx context.Context, obj *ent.User) (*ent.UserAddr, error)
+	OrgUserType(ctx context.Context, obj *ent.User, orgID int) (orguser.UserType, error)
 }
 
 type CreateUserInputResolver interface {
@@ -2178,6 +2179,21 @@ func (ec *executionContext) field_User_isAssignOrgRole_args(ctx context.Context,
 		}
 	}
 	args["orgRoleID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_User_orgUserType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["orgID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orgID"] = arg0
 	return args, nil
 }
 
@@ -12537,6 +12553,8 @@ func (ec *executionContext) fieldContext_OauthClient_user(_ context.Context, fie
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -13691,6 +13709,8 @@ func (ec *executionContext) fieldContext_Org_owner(_ context.Context, field grap
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -16573,6 +16593,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_user(_ context.Contex
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -17859,6 +17881,8 @@ func (ec *executionContext) fieldContext_Permission_user(_ context.Context, fiel
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -23488,6 +23512,61 @@ func (ec *executionContext) fieldContext_User_contact(_ context.Context, field g
 	return fc, nil
 }
 
+func (ec *executionContext) _User_orgUserType(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_orgUserType(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().OrgUserType(rctx, obj, fc.Args["orgID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(orguser.UserType)
+	fc.Result = res
+	return ec.marshalNOrgUserUserType2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_orgUserType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type OrgUserUserType does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_User_orgUserType_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _UserAddr_id(ctx context.Context, field graphql.CollectedField, obj *ent.UserAddr) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_UserAddr_id(ctx, field)
 	if err != nil {
@@ -24255,6 +24334,8 @@ func (ec *executionContext) fieldContext_UserAddr_user(_ context.Context, field 
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -25164,6 +25245,8 @@ func (ec *executionContext) fieldContext_UserDevice_user(_ context.Context, fiel
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -25267,6 +25350,8 @@ func (ec *executionContext) fieldContext_UserEdge_node(_ context.Context, field 
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -25836,6 +25921,8 @@ func (ec *executionContext) fieldContext_UserIdentity_user(_ context.Context, fi
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -26528,6 +26615,8 @@ func (ec *executionContext) fieldContext_UserLoginProfile_user(_ context.Context
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -26971,6 +27060,8 @@ func (ec *executionContext) fieldContext_UserPassword_user(_ context.Context, fi
 				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
 			case "contact":
 				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -58244,6 +58335,42 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_contact(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "orgUserType":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_orgUserType(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

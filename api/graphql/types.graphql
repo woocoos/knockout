@@ -88,6 +88,8 @@ extend type User {
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
     contact: UserAddr
+    """组织用户类型"""
+    orgUserType(orgID:ID!): OrgUserUserType!
 }
 
 extend type Org {

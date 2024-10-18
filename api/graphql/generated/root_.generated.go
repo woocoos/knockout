@@ -737,6 +737,7 @@ type ComplexityRoot struct {
 		LoginProfile      func(childComplexity int) int
 		MiddleName        func(childComplexity int) int
 		OauthClients      func(childComplexity int) int
+		OrgUserType       func(childComplexity int, orgID int) int
 		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName     func(childComplexity int) int
 		RegisterIP        func(childComplexity int) int
@@ -5141,6 +5142,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.OauthClients(childComplexity), true
+
+	case "User.orgUserType":
+		if e.complexity.User.OrgUserType == nil {
+			break
+		}
+
+		args, err := ec.field_User_orgUserType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.OrgUserType(childComplexity, args["orgID"].(int)), true
 
 	case "User.permissions":
 		if e.complexity.User.Permissions == nil {
@@ -14282,6 +14295,8 @@ extend type User {
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
     contact: UserAddr
+    """组织用户类型"""
+    orgUserType(orgID:ID!): OrgUserUserType!
 }
 
 extend type Org {
