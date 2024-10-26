@@ -69,6 +69,11 @@ type Mfa{
     account: String!
 }
 
+extend type Org {
+    """获取顶级组织"""
+    TopOrg: Org
+}
+
 extend type OrgRole {
     """是否系统角色"""
     isAppRole: Boolean!

@@ -26,6 +26,11 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 	return exist, nil
 }
 
+// TopOrg is the resolver for the TopOrg field.
+func (r *orgResolver) TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error) {
+	return r.resource.GetTopOrg(ctx, obj.ID)
+}
+
 // IsAllowRevokeAppPolicy is the resolver for the isAllowRevokeAppPolicy field.
 func (r *orgResolver) IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error) {
 	return r.resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)

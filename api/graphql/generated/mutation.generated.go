@@ -2008,6 +2008,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2120,6 +2122,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2232,6 +2236,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -2344,6 +2350,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}

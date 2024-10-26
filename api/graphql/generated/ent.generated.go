@@ -41,6 +41,7 @@ type AppPolicyResolver interface {
 	IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error)
 }
 type OrgResolver interface {
+	TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error)
 	IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error)
 }
 type OrgPolicyResolver interface {
@@ -5938,6 +5939,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -10843,6 +10846,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -13503,6 +13508,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -13604,6 +13611,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -14043,6 +14052,109 @@ func (ec *executionContext) fieldContext_Org_fileIdentities(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_TopOrg(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_TopOrg(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Org().TopOrg(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Org)
+	fc.Result = res
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_TopOrg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Org_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Org_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Org_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Org_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Org_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Org_deletedAt(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Org_parentID(ctx, field)
+			case "domain":
+				return ec.fieldContext_Org_domain(ctx, field)
+			case "code":
+				return ec.fieldContext_Org_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Org_name(ctx, field)
+			case "profile":
+				return ec.fieldContext_Org_profile(ctx, field)
+			case "status":
+				return ec.fieldContext_Org_status(ctx, field)
+			case "path":
+				return ec.fieldContext_Org_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Org_displaySort(ctx, field)
+			case "countryCode":
+				return ec.fieldContext_Org_countryCode(ctx, field)
+			case "timezone":
+				return ec.fieldContext_Org_timezone(ctx, field)
+			case "baseCurrency":
+				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
+			case "parent":
+				return ec.fieldContext_Org_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
+			case "users":
+				return ec.fieldContext_Org_users(ctx, field)
+			case "permissions":
+				return ec.fieldContext_Org_permissions(ctx, field)
+			case "policies":
+				return ec.fieldContext_Org_policies(ctx, field)
+			case "apps":
+				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_isAllowRevokeAppPolicy(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 	if err != nil {
@@ -14335,6 +14447,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -14915,6 +15029,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -16697,6 +16813,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -17776,6 +17894,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -19288,6 +19408,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -19403,6 +19525,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -20194,6 +20318,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
 			}
@@ -55551,6 +55677,39 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 					}
 				}()
 				res = ec._Org_fileIdentities(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "TopOrg":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Org_TopOrg(ctx, field, obj)
 				return res
 			}
 

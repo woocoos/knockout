@@ -909,3 +909,14 @@ func (s *Service) MoveRegion(ctx context.Context, src, tar int, action model.Tre
 
 	return builder.Exec(ctx)
 }
+
+func (s *Service) GetTopOrg(ctx context.Context, orgID int) (*ent.Org, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if o.ParentID == 0 {
+		return o, nil
+	}
+	return s.GetTopOrg(ctx, o.ParentID)
+}

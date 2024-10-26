@@ -485,6 +485,7 @@ type ComplexityRoot struct {
 		Profile                func(childComplexity int) int
 		Status                 func(childComplexity int) int
 		Timezone               func(childComplexity int) int
+		TopOrg                 func(childComplexity int) int
 		UpdatedAt              func(childComplexity int) int
 		UpdatedBy              func(childComplexity int) int
 		Users                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
@@ -3666,6 +3667,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.Timezone(childComplexity), true
+
+	case "Org.TopOrg":
+		if e.complexity.Org.TopOrg == nil {
+			break
+		}
+
+		return e.complexity.Org.TopOrg(childComplexity), true
 
 	case "Org.updatedAt":
 		if e.complexity.Org.UpdatedAt == nil {
@@ -14274,6 +14282,11 @@ input GrantInput {
 type Mfa{
     secret: String!
     account: String!
+}
+
+extend type Org {
+    """获取顶级组织"""
+    TopOrg: Org
 }
 
 extend type OrgRole {
