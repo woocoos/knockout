@@ -13,8 +13,9 @@ type Captcha struct {
 }
 
 type Domain struct {
-	ID   int    `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	ID        int        `json:"id,omitempty"`
+	Name      string     `json:"name,omitempty"`
+	TopDomain *TopDomain `json:"top_domain,omitempty"`
 }
 
 type Error struct {
@@ -80,6 +81,11 @@ type Mfa struct {
 	// StateToken when need MFA or Change PWD. use the state token to request callback_url
 	StateToken    string  `json:"stateToken,omitempty"`
 	StateTokenTTL float64 `json:"stateTokenTTL,omitempty"`
+}
+
+type TopDomain struct {
+	ID   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
 }
 
 type User struct {

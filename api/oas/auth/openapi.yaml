@@ -638,6 +638,15 @@ components:
           type: integer
         name:
           type: string
+        top_domain:
+          $ref: "#/components/schemas/TopDomain"
+    TopDomain:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
     ErrorResponse:
       type: object
       properties:

@@ -111,11 +111,17 @@ func pathHook() ent.Hook {
 				if _, ok := mutation.Path(); ok {
 					return next.Mutate(ctx, mutation)
 				}
+				// 采用IntID，优先执行才有数据库id
+				value, err := next.Mutate(ctx, mutation)
+				if err != nil {
+					return nil, err
+				}
 				if pid, ok := mutation.ParentID(); ok {
 					id, _ := mutation.ID()
 					code := strconv.FormatInt(int64(id), 36)
+					update := mutation.Client().Org.UpdateOneID(id)
 					if pid == 0 {
-						mutation.SetPath(code)
+						update.SetPath(code)
 					} else {
 						parentPath := ""
 						prow, err := mutation.Client().Org.Query().Where(org.ID(pid)).
@@ -128,13 +134,17 @@ func pathHook() ent.Hook {
 						} else {
 							parentPath = prow.Path + "/"
 						}
-						mutation.SetPath(parentPath + code)
+						update.SetPath(parentPath + code)
 					}
 					if c, _ := mutation.Code(); c == "" {
-						mutation.SetCode(code)
+						update.SetCode(code)
+					}
+					err = update.Exec(ctx)
+					if err != nil {
+						return nil, err
 					}
 				}
-				return next.Mutate(ctx, mutation)
+				return value, nil
 			})
 		}, ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne)
 }

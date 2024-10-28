@@ -4,6 +4,8 @@ package data
 import (
 	"context"
 	"entgo.io/ent/dialect/sql"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tsingsun/woocoo/pkg/security"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -105,11 +107,12 @@ func (*dataset) initOrg(client *ent.Tx) {
 	for i := 1; i < 4; i++ {
 		// 由于path字段是计算字段，所以这里不需要设置,但需要对org独立保存.
 		c := client.Org.Create().SetID(i).SetKind(org.KindOrganization).SetParentID(i - 1).SetStatus(typex.SimpleStatusActive).
-			SetCreatedBy(1).SetName("org" + strconv.Itoa(i))
+			SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(i))
 		if i == 1 {
 			c.SetKind(org.KindRoot).SetDomain("woocoo.com").SetOwnerID(1)
 		}
-		if err := c.Exec(context.Background()); err != nil {
+		ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
+		if err := c.Exec(ctx); err != nil {
 			panic(err)
 		}
 
