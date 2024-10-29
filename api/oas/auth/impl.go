@@ -406,37 +406,34 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		return nil, err
 	}
 
-	var domains []*Domain
-	err = s.db.Org.Query().Where(
+	ros, err := s.db.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
-	).Select(org.FieldID, org.FieldName).Scan(ctx, &domains)
+	).Select(org.FieldID, org.FieldName, org.FieldPath).All(ctx)
 	if err != nil {
 		return nil, err
 	}
+	var domains []*Domain
 	// 查询顶级组织
-	for _, i := range domains {
-		path, err := s.db.Org.Query().Where(org.ID(i.ID)).Select(org.FieldPath).String(ctx)
-		if err != nil {
-			return nil, err
-		}
+	for _, o := range ros {
 		// 根据/截取path的第一项
-		code := strings.Split(path, "/")[0]
+		code := strings.Split(o.Path, "/")[0]
 		// 转换成十进制id
 		oID, err := strconv.ParseInt(code, 32, 64)
 		if err != nil {
 			return nil, err
 		}
-		o, err := s.db.Org.Query().Where(org.ID(int(oID))).Select(org.FieldID, org.FieldName).Only(ctx)
+		to, err := s.db.Org.Query().Where(org.ID(int(oID))).Select(org.FieldID).Only(ctx)
 		if err != nil {
 			return nil, err
 		}
-		i.TopDomain = &TopDomain{
-			ID:   o.ID,
-			Name: o.Name,
-		}
+		domains = append(domains, &Domain{
+			ID:       o.ID,
+			Name:     o.Name,
+			ParentID: to.ID,
+		})
 	}
 	return &LoginResponse{
 		AccessToken:  tstr,
