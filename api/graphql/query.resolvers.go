@@ -309,9 +309,12 @@ func (r *queryResolver) UserMembers(ctx context.Context, after *entgql.Cursor[in
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 	}
-	return r.client.User.Query().WithOrgUser(func(query *ent.OrgUserQuery) {
-		query.Where(orguser.UserTypeEQ(orguser.UserTypeInternal), orguser.OrgID(tid))
-	}).Paginate(ctx, after, first, before, last,
+	return r.client.User.Query().Where(
+		user.HasOrgUserWith(
+			orguser.UserTypeEQ(orguser.UserTypeInternal),
+			orguser.OrgID(tid),
+		),
+	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))
 }

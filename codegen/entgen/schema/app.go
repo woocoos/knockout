@@ -55,7 +55,7 @@ func (App) Mixin() []ent.Mixin {
 func (App) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").MaxLen(45).Unique().Comment("名称"),
-		field.String("code").MinLen(3).MaxLen(10).Immutable().Unique().Comment("用于标识应用资源的唯一代码,尽量简短"),
+		field.String("code").MinLen(3).MaxLen(45).Immutable().Unique().Comment("用于标识应用资源的唯一代码,尽量简短"),
 		field.Enum("kind").NamedValues(
 			"web", "web",
 			"native", "native",

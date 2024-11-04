@@ -17,7 +17,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 45},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 10},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 45},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"web", "native", "server"}},
 		{Name: "redirect_uri", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "app_key", Type: field.TypeString, Nullable: true},
