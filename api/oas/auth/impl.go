@@ -401,7 +401,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		return nil, err
 	}
 
-	err = s.cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	err = s.cache.Set(ctx, tid, strconv.Itoa(uid), cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
