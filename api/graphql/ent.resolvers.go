@@ -43,6 +43,13 @@ func (r *queryResolver) Countries(ctx context.Context, after *entgql.Cursor[int]
 		ent.WithCountryFilter(where.Filter))
 }
 
+// Currencies is the resolver for the currencies field.
+func (r *queryResolver) Currencies(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) (*ent.CurrencyConnection, error) {
+	return r.client.Currency.Query().Paginate(ctx, after, first, before, last,
+		ent.WithCurrencyOrder(orderBy),
+		ent.WithCurrencyFilter(where.Filter))
+}
+
 // FileIdentities is the resolver for the fileIdentities field.
 func (r *queryResolver) FileIdentities(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) (*ent.FileIdentityConnection, error) {
 	return r.client.FileIdentity.Query().Paginate(ctx, after, first, before, last,

@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -110,6 +111,7 @@ func checkColumn(table, column string) error {
 			approle.Table:           approle.ValidColumn,
 			approlepolicy.Table:     approlepolicy.ValidColumn,
 			country.Table:           country.ValidColumn,
+			currency.Table:          currency.ValidColumn,
 			fileidentity.Table:      fileidentity.ValidColumn,
 			filesource.Table:        filesource.ValidColumn,
 			oauthclient.Table:       oauthclient.ValidColumn,

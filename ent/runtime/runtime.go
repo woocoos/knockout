@@ -16,6 +16,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -342,6 +343,29 @@ func init() {
 	countryDescCode := countryFields[2].Descriptor()
 	// country.CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	country.CodeValidator = countryDescCode.Validators[0].(func(string) error)
+	currencyMixin := schema.Currency{}.Mixin()
+	currencyMixinHooks1 := currencyMixin[1].Hooks()
+	currency.Hooks[0] = currencyMixinHooks1[0]
+	currencyMixinFields1 := currencyMixin[1].Fields()
+	_ = currencyMixinFields1
+	currencyFields := schema.Currency{}.Fields()
+	_ = currencyFields
+	// currencyDescCreatedAt is the schema descriptor for created_at field.
+	currencyDescCreatedAt := currencyMixinFields1[1].Descriptor()
+	// currency.DefaultCreatedAt holds the default value on creation for the created_at field.
+	currency.DefaultCreatedAt = currencyDescCreatedAt.Default.(func() time.Time)
+	// currencyDescCode is the schema descriptor for code field.
+	currencyDescCode := currencyFields[0].Descriptor()
+	// currency.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	currency.CodeValidator = currencyDescCode.Validators[0].(func(string) error)
+	// currencyDescName is the schema descriptor for name field.
+	currencyDescName := currencyFields[1].Descriptor()
+	// currency.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	currency.NameValidator = currencyDescName.Validators[0].(func(string) error)
+	// currencyDescSign is the schema descriptor for sign field.
+	currencyDescSign := currencyFields[2].Descriptor()
+	// currency.SignValidator is a validator for the "sign" field. It is called by the builders before save.
+	currency.SignValidator = currencyDescSign.Validators[0].(func(string) error)
 	fileidentityMixin := schema.FileIdentity{}.Mixin()
 	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
 	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()

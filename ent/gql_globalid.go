@@ -68,6 +68,12 @@ func (c *Country) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given Currency node.
+func (c *Currency) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Currency:%d", c.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given FileIdentity node.
 func (fi *FileIdentity) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("FileIdentity:%d", fi.ID)
@@ -192,6 +198,8 @@ func GlobalID(tp, id string) (string, error) {
 	case "AppRole":
 		break
 	case "Country":
+		break
+	case "Currency":
 		break
 	case "FileIdentity":
 		break

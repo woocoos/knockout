@@ -558,6 +558,22 @@ func (r *mutationResolver) ChangeOrgUserType(ctx context.Context, userID int, us
 	return true, nil
 }
 
+// CreateCurrency is the resolver for the createCurrency field.
+func (r *mutationResolver) CreateCurrency(ctx context.Context, input ent.CreateCurrencyInput) (*ent.Currency, error) {
+	return ent.FromContext(ctx).Currency.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateCurrency is the resolver for the updateCurrency field.
+func (r *mutationResolver) UpdateCurrency(ctx context.Context, currencyID int, input ent.UpdateCurrencyInput) (*ent.Currency, error) {
+	return ent.FromContext(ctx).Currency.UpdateOneID(currencyID).SetInput(input).Save(ctx)
+}
+
+// DeleteCurrency is the resolver for the deleteCurrency field.
+func (r *mutationResolver) DeleteCurrency(ctx context.Context, currencyID int) (bool, error) {
+	err := ent.FromContext(ctx).Currency.DeleteOneID(currencyID).Exec(ctx)
+	return err == nil, err
+}
+
 // Mutation returns generated1.MutationResolver implementation.
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 

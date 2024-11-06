@@ -36,6 +36,9 @@ type AppRolePolicy func(*sql.Selector)
 // Country is the predicate function for country builders.
 type Country func(*sql.Selector)
 
+// Currency is the predicate function for currency builders.
+type Currency func(*sql.Selector)
+
 // FileIdentity is the predicate function for fileidentity builders.
 type FileIdentity func(*sql.Selector)
 

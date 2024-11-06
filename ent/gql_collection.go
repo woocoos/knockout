@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -1913,6 +1914,130 @@ func newCountryPaginateArgs(rv map[string]any) *countryPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*CountryWhereInput); ok {
 		args.opts = append(args.opts, WithCountryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (c *CurrencyQuery) CollectFields(ctx context.Context, satisfies ...string) (*CurrencyQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return c, nil
+	}
+	if err := c.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *CurrencyQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(currency.Columns))
+		selectedFields = []string{currency.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "createdBy":
+			if _, ok := fieldSeen[currency.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, currency.FieldCreatedBy)
+				fieldSeen[currency.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[currency.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, currency.FieldCreatedAt)
+				fieldSeen[currency.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[currency.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, currency.FieldUpdatedBy)
+				fieldSeen[currency.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[currency.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, currency.FieldUpdatedAt)
+				fieldSeen[currency.FieldUpdatedAt] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[currency.FieldCode]; !ok {
+				selectedFields = append(selectedFields, currency.FieldCode)
+				fieldSeen[currency.FieldCode] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[currency.FieldName]; !ok {
+				selectedFields = append(selectedFields, currency.FieldName)
+				fieldSeen[currency.FieldName] = struct{}{}
+			}
+		case "sign":
+			if _, ok := fieldSeen[currency.FieldSign]; !ok {
+				selectedFields = append(selectedFields, currency.FieldSign)
+				fieldSeen[currency.FieldSign] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[currency.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, currency.FieldStatus)
+				fieldSeen[currency.FieldStatus] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		c.Select(selectedFields...)
+	}
+	return nil
+}
+
+type currencyPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []CurrencyPaginateOption
+}
+
+func newCurrencyPaginateArgs(rv map[string]any) *currencyPaginateArgs {
+	args := &currencyPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &CurrencyOrder{Field: &CurrencyOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithCurrencyOrder(order))
+			}
+		case *CurrencyOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithCurrencyOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*CurrencyWhereInput); ok {
+		args.opts = append(args.opts, WithCurrencyFilter(v.Filter))
 	}
 	return args
 }

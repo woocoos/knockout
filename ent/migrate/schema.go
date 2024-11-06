@@ -323,6 +323,24 @@ var (
 		Columns:    CountryColumns,
 		PrimaryKey: []*schema.Column{CountryColumns[0]},
 	}
+	// CurrencyColumns holds the columns for the "currency" table.
+	CurrencyColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "code", Type: field.TypeString, Size: 45},
+		{Name: "name", Type: field.TypeString, Size: 45},
+		{Name: "sign", Type: field.TypeString, Nullable: true, Size: 45},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
+	}
+	// CurrencyTable holds the schema information for the "currency" table.
+	CurrencyTable = &schema.Table{
+		Name:       "currency",
+		Columns:    CurrencyColumns,
+		PrimaryKey: []*schema.Column{CurrencyColumns[0]},
+	}
 	// FileIdentityColumns holds the columns for the "file_identity" table.
 	FileIdentityColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -972,6 +990,7 @@ var (
 		AppRoleTable,
 		AppRolePolicyTable,
 		CountryTable,
+		CurrencyTable,
 		FileIdentityTable,
 		FileSourceTable,
 		OauthClientTable,
@@ -1034,6 +1053,9 @@ func init() {
 	}
 	CountryTable.Annotation = &entsql.Annotation{
 		Table: "country",
+	}
+	CurrencyTable.Annotation = &entsql.Annotation{
+		Table: "currency",
 	}
 	FileIdentityTable.ForeignKeys[0].RefTable = FileSourceTable
 	FileIdentityTable.ForeignKeys[1].RefTable = OrgTable

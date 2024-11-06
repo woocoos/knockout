@@ -925,6 +925,72 @@ func (c *CountryUpdateOne) SetInput(i UpdateCountryInput) *CountryUpdateOne {
 	return c
 }
 
+// CreateCurrencyInput represents a mutation input for creating currencies.
+type CreateCurrencyInput struct {
+	Code   string
+	Name   string
+	Sign   *string
+	Status *typex.SimpleStatus
+}
+
+// Mutate applies the CreateCurrencyInput on the CurrencyMutation builder.
+func (i *CreateCurrencyInput) Mutate(m *CurrencyMutation) {
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Sign; v != nil {
+		m.SetSign(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateCurrencyInput on the CurrencyCreate builder.
+func (c *CurrencyCreate) SetInput(i CreateCurrencyInput) *CurrencyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCurrencyInput represents a mutation input for updating currencies.
+type UpdateCurrencyInput struct {
+	Code      *string
+	Name      *string
+	ClearSign bool
+	Sign      *string
+	Status    *typex.SimpleStatus
+}
+
+// Mutate applies the UpdateCurrencyInput on the CurrencyMutation builder.
+func (i *UpdateCurrencyInput) Mutate(m *CurrencyMutation) {
+	if v := i.Code; v != nil {
+		m.SetCode(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearSign {
+		m.ClearSign()
+	}
+	if v := i.Sign; v != nil {
+		m.SetSign(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCurrencyInput on the CurrencyUpdate builder.
+func (c *CurrencyUpdate) SetInput(i UpdateCurrencyInput) *CurrencyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCurrencyInput on the CurrencyUpdateOne builder.
+func (c *CurrencyUpdateOne) SetInput(i UpdateCurrencyInput) *CurrencyUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateFileIdentityInput represents a mutation input for creating fileidentities.
 type CreateFileIdentityInput struct {
 	AccessKeyID     string

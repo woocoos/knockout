@@ -281,6 +281,29 @@ type ComplexityRoot struct {
 		Node   func(childComplexity int) int
 	}
 
+	Currency struct {
+		Code      func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Sign      func(childComplexity int) int
+		Status    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	CurrencyConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	CurrencyEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	FileIdentity struct {
 		AccessKeyID     func(childComplexity int) int
 		Comments        func(childComplexity int) int
@@ -372,6 +395,7 @@ type ComplexityRoot struct {
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateCountry               func(childComplexity int, input ent.CreateCountryInput) int
+		CreateCurrency              func(childComplexity int, input ent.CreateCurrencyInput) int
 		CreateFileIdentity          func(childComplexity int, input ent.CreateFileIdentityInput) int
 		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
 		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
@@ -390,6 +414,7 @@ type ComplexityRoot struct {
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
 		DeleteCountry               func(childComplexity int, countryID int) int
+		DeleteCurrency              func(childComplexity int, currencyID int) int
 		DeleteFileIdentity          func(childComplexity int, id int) int
 		DeleteFileSource            func(childComplexity int, fsID int) int
 		DeleteOauthClient           func(childComplexity int, id int) int
@@ -431,6 +456,7 @@ type ComplexityRoot struct {
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
 		UpdateCountry               func(childComplexity int, countryID int, input ent.UpdateCountryInput) int
+		UpdateCurrency              func(childComplexity int, currencyID int, input ent.UpdateCurrencyInput) int
 		UpdateFileIdentity          func(childComplexity int, id int, input ent.UpdateFileIdentityInput) int
 		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
@@ -657,6 +683,7 @@ type ComplexityRoot struct {
 		CheckPermission             func(childComplexity int, permission string) int
 		CheckPermissionByJwt        func(childComplexity int, jwtStr string, orgID int, action string, appCode string) int
 		Countries                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
+		Currencies                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) int
 		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
 		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
 		FileIdentityAccessKeySecret func(childComplexity int, id int) int
@@ -2012,6 +2039,104 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.CountryEdge.Node(childComplexity), true
 
+	case "Currency.code":
+		if e.complexity.Currency.Code == nil {
+			break
+		}
+
+		return e.complexity.Currency.Code(childComplexity), true
+
+	case "Currency.createdAt":
+		if e.complexity.Currency.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Currency.CreatedAt(childComplexity), true
+
+	case "Currency.createdBy":
+		if e.complexity.Currency.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Currency.CreatedBy(childComplexity), true
+
+	case "Currency.id":
+		if e.complexity.Currency.ID == nil {
+			break
+		}
+
+		return e.complexity.Currency.ID(childComplexity), true
+
+	case "Currency.name":
+		if e.complexity.Currency.Name == nil {
+			break
+		}
+
+		return e.complexity.Currency.Name(childComplexity), true
+
+	case "Currency.sign":
+		if e.complexity.Currency.Sign == nil {
+			break
+		}
+
+		return e.complexity.Currency.Sign(childComplexity), true
+
+	case "Currency.status":
+		if e.complexity.Currency.Status == nil {
+			break
+		}
+
+		return e.complexity.Currency.Status(childComplexity), true
+
+	case "Currency.updatedAt":
+		if e.complexity.Currency.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Currency.UpdatedAt(childComplexity), true
+
+	case "Currency.updatedBy":
+		if e.complexity.Currency.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Currency.UpdatedBy(childComplexity), true
+
+	case "CurrencyConnection.edges":
+		if e.complexity.CurrencyConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.Edges(childComplexity), true
+
+	case "CurrencyConnection.pageInfo":
+		if e.complexity.CurrencyConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.PageInfo(childComplexity), true
+
+	case "CurrencyConnection.totalCount":
+		if e.complexity.CurrencyConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.TotalCount(childComplexity), true
+
+	case "CurrencyEdge.cursor":
+		if e.complexity.CurrencyEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.CurrencyEdge.Cursor(childComplexity), true
+
+	case "CurrencyEdge.node":
+		if e.complexity.CurrencyEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.CurrencyEdge.Node(childComplexity), true
+
 	case "FileIdentity.accessKeyID":
 		if e.complexity.FileIdentity.AccessKeyID == nil {
 			break
@@ -2559,6 +2684,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateCountry(childComplexity, args["input"].(ent.CreateCountryInput)), true
 
+	case "Mutation.createCurrency":
+		if e.complexity.Mutation.CreateCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCurrency(childComplexity, args["input"].(ent.CreateCurrencyInput)), true
+
 	case "Mutation.createFileIdentity":
 		if e.complexity.Mutation.CreateFileIdentity == nil {
 			break
@@ -2774,6 +2911,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteCountry(childComplexity, args["countryID"].(int)), true
+
+	case "Mutation.deleteCurrency":
+		if e.complexity.Mutation.DeleteCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCurrency(childComplexity, args["currencyID"].(int)), true
 
 	case "Mutation.deleteFileIdentity":
 		if e.complexity.Mutation.DeleteFileIdentity == nil {
@@ -3266,6 +3415,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateCountry(childComplexity, args["countryID"].(int), args["input"].(ent.UpdateCountryInput)), true
+
+	case "Mutation.updateCurrency":
+		if e.complexity.Mutation.UpdateCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCurrency(childComplexity, args["currencyID"].(int), args["input"].(ent.UpdateCurrencyInput)), true
 
 	case "Mutation.updateFileIdentity":
 		if e.complexity.Mutation.UpdateFileIdentity == nil {
@@ -4548,6 +4709,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Countries(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.CountryOrder), args["where"].(*ent.CountryWhereInput)), true
 
+	case "Query.currencies":
+		if e.complexity.Query.Currencies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_currencies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Currencies(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.CurrencyOrder), args["where"].(*ent.CurrencyWhereInput)), true
+
 	case "Query.fileIdentities":
 		if e.complexity.Query.FileIdentities == nil {
 			break
@@ -5766,6 +5939,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateCountryInput,
+		ec.unmarshalInputCreateCurrencyInput,
 		ec.unmarshalInputCreateFileIdentityInput,
 		ec.unmarshalInputCreateFileSourceInput,
 		ec.unmarshalInputCreateOauthClientInput,
@@ -5781,6 +5955,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputCreateUserLoginProfileInput,
 		ec.unmarshalInputCreateUserPasswordInput,
+		ec.unmarshalInputCurrencyOrder,
+		ec.unmarshalInputCurrencyWhereInput,
 		ec.unmarshalInputEnableDirectoryInput,
 		ec.unmarshalInputFileIdentityOrder,
 		ec.unmarshalInputFileIdentityWhereInput,
@@ -5817,6 +5993,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
 		ec.unmarshalInputUpdateCountryInput,
+		ec.unmarshalInputUpdateCurrencyInput,
 		ec.unmarshalInputUpdateFileIdentityInput,
 		ec.unmarshalInputUpdateFileSourceInput,
 		ec.unmarshalInputUpdateOauthClientInput,
@@ -8542,6 +8719,28 @@ input CreateCountryInput {
   regionIDs: [ID!]
 }
 """
+CreateCurrencyInput is used for create Currency object.
+Input was generated by ent.
+"""
+input CreateCurrencyInput {
+  """
+  代码
+  """
+  code: String!
+  """
+  中文名称
+  """
+  name: String!
+  """
+  货币符号
+  """
+  sign: String
+  """
+  状态
+  """
+  status: CurrencySimpleStatus
+}
+"""
 CreateFileIdentityInput is used for create FileIdentity object.
 Input was generated by ent.
 """
@@ -8959,6 +9158,212 @@ input CreateUserPasswordInput {
   """
   status: UserPasswordSimpleStatus
   userID: ID
+}
+type Currency implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  代码
+  """
+  code: String!
+  """
+  中文名称
+  """
+  name: String!
+  """
+  货币符号
+  """
+  sign: String
+  """
+  状态
+  """
+  status: CurrencySimpleStatus!
+}
+"""
+A connection to a list of items.
+"""
+type CurrencyConnection {
+  """
+  A list of edges.
+  """
+  edges: [CurrencyEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type CurrencyEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Currency
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Currency connections
+"""
+input CurrencyOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Currencies.
+  """
+  field: CurrencyOrderField!
+}
+"""
+Properties by which Currency connections can be ordered.
+"""
+enum CurrencyOrderField {
+  createdAt
+}
+"""
+CurrencySimpleStatus is enum for the field status
+"""
+enum CurrencySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+CurrencyWhereInput is used for filtering Currency objects.
+Input was generated by ent.
+"""
+input CurrencyWhereInput {
+  not: CurrencyWhereInput
+  and: [CurrencyWhereInput!]
+  or: [CurrencyWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  sign field predicates
+  """
+  sign: String
+  signNEQ: String
+  signIn: [String!]
+  signNotIn: [String!]
+  signGT: String
+  signGTE: String
+  signLT: String
+  signLTE: String
+  signContains: String
+  signHasPrefix: String
+  signHasSuffix: String
+  signIsNil: Boolean
+  signNotNil: Boolean
+  signEqualFold: String
+  signContainsFold: String
+  """
+  status field predicates
+  """
+  status: CurrencySimpleStatus
+  statusNEQ: CurrencySimpleStatus
+  statusIn: [CurrencySimpleStatus!]
+  statusNotIn: [CurrencySimpleStatus!]
 }
 """
 Define a Relay Cursor type:
@@ -11437,6 +11842,40 @@ type Query {
     where: CountryWhereInput
   ): CountryConnection!
   """
+  货币查询
+  """
+  currencies(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Currencies returned from the connection.
+    """
+    orderBy: CurrencyOrder
+
+    """
+    Filtering options for Currencies returned from the connection.
+    """
+    where: CurrencyWhereInput
+  ): CurrencyConnection!
+  """
   文件凭证
   """
   fileIdentities(
@@ -12153,6 +12592,29 @@ input UpdateCountryInput {
   addRegionIDs: [ID!]
   removeRegionIDs: [ID!]
   clearRegions: Boolean
+}
+"""
+UpdateCurrencyInput is used for update Currency object.
+Input was generated by ent.
+"""
+input UpdateCurrencyInput {
+  """
+  代码
+  """
+  code: String
+  """
+  中文名称
+  """
+  name: String
+  """
+  货币符号
+  """
+  sign: String
+  clearSign: Boolean
+  """
+  状态
+  """
+  status: CurrencySimpleStatus
 }
 """
 UpdateFileIdentityInput is used for update FileIdentity object.
@@ -14750,6 +15212,12 @@ input OrgLogoInput {
     ): Boolean!
     """更改组织用户类型"""
     changeOrgUserType(userID:ID!,userType:OrgUserUserType!):Boolean!
+    """创建货币"""
+    createCurrency(input: CreateCurrencyInput!): Currency
+    """更新货币"""
+    updateCurrency(currencyID:ID!,input: UpdateCurrencyInput!): Currency
+    """删除货币"""
+    deleteCurrency(currencyID:ID!): Boolean!
 }
 `, BuiltIn: false},
 }

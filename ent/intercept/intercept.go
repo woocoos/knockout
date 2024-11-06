@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -363,6 +364,33 @@ func (f TraverseCountry) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.CountryQuery", q)
+}
+
+// The CurrencyFunc type is an adapter to allow the use of ordinary function as a Querier.
+type CurrencyFunc func(context.Context, *ent.CurrencyQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f CurrencyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.CurrencyQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
+}
+
+// The TraverseCurrency type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseCurrency func(context.Context, *ent.CurrencyQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseCurrency) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseCurrency) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CurrencyQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
 }
 
 // The FileIdentityFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -874,6 +902,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.OrderOption]{typ: ent.TypeAppRolePolicy, tq: q}, nil
 	case *ent.CountryQuery:
 		return &query[*ent.CountryQuery, predicate.Country, country.OrderOption]{typ: ent.TypeCountry, tq: q}, nil
+	case *ent.CurrencyQuery:
+		return &query[*ent.CurrencyQuery, predicate.Currency, currency.OrderOption]{typ: ent.TypeCurrency, tq: q}, nil
 	case *ent.FileIdentityQuery:
 		return &query[*ent.FileIdentityQuery, predicate.FileIdentity, fileidentity.OrderOption]{typ: ent.TypeFileIdentity, tq: q}, nil
 	case *ent.FileSourceQuery:

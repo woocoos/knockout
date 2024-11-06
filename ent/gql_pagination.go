@@ -25,6 +25,7 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -2907,6 +2908,310 @@ func (c *Country) ToEdge(order *CountryOrder) *CountryEdge {
 		order = DefaultCountryOrder
 	}
 	return &CountryEdge{
+		Node:   c,
+		Cursor: order.Field.toCursor(c),
+	}
+}
+
+// CurrencyEdge is the edge representation of Currency.
+type CurrencyEdge struct {
+	Node   *Currency `json:"node"`
+	Cursor Cursor    `json:"cursor"`
+}
+
+// CurrencyConnection is the connection containing edges to Currency.
+type CurrencyConnection struct {
+	Edges      []*CurrencyEdge `json:"edges"`
+	PageInfo   PageInfo        `json:"pageInfo"`
+	TotalCount int             `json:"totalCount"`
+}
+
+func (c *CurrencyConnection) build(nodes []*Currency, pager *currencyPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Currency
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Currency {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Currency {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*CurrencyEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &CurrencyEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// CurrencyPaginateOption enables pagination customization.
+type CurrencyPaginateOption func(*currencyPager) error
+
+// WithCurrencyOrder configures pagination ordering.
+func WithCurrencyOrder(order *CurrencyOrder) CurrencyPaginateOption {
+	if order == nil {
+		order = DefaultCurrencyOrder
+	}
+	o := *order
+	return func(pager *currencyPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultCurrencyOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithCurrencyFilter configures pagination filter.
+func WithCurrencyFilter(filter func(*CurrencyQuery) (*CurrencyQuery, error)) CurrencyPaginateOption {
+	return func(pager *currencyPager) error {
+		if filter == nil {
+			return errors.New("CurrencyQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type currencyPager struct {
+	reverse bool
+	order   *CurrencyOrder
+	filter  func(*CurrencyQuery) (*CurrencyQuery, error)
+}
+
+func newCurrencyPager(opts []CurrencyPaginateOption, reverse bool) (*currencyPager, error) {
+	pager := &currencyPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultCurrencyOrder
+	}
+	return pager, nil
+}
+
+func (p *currencyPager) applyFilter(query *CurrencyQuery) (*CurrencyQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *currencyPager) toCursor(c *Currency) Cursor {
+	return p.order.Field.toCursor(c)
+}
+
+func (p *currencyPager) applyCursors(query *CurrencyQuery, after, before *Cursor) (*CurrencyQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultCurrencyOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *currencyPager) applyOrder(query *CurrencyQuery) *CurrencyQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultCurrencyOrder.Field {
+		query = query.Order(DefaultCurrencyOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *currencyPager) orderExpr(query *CurrencyQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultCurrencyOrder.Field {
+			b.Comma().Ident(DefaultCurrencyOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Currency.
+func (c *CurrencyQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...CurrencyPaginateOption,
+) (*CurrencyConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newCurrencyPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if c, err = pager.applyFilter(c); err != nil {
+		return nil, err
+	}
+	conn := &CurrencyConnection{Edges: []*CurrencyEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := c.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if c, err = pager.applyCursors(c, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		c.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			c.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			c.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := c.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	c = pager.applyOrder(c)
+	nodes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// CurrencyOrderFieldCreatedAt orders Currency by created_at.
+	CurrencyOrderFieldCreatedAt = &CurrencyOrderField{
+		Value: func(c *Currency) (ent.Value, error) {
+			return c.CreatedAt, nil
+		},
+		column: currency.FieldCreatedAt,
+		toTerm: currency.ByCreatedAt,
+		toCursor: func(c *Currency) Cursor {
+			return Cursor{
+				ID:    c.ID,
+				Value: c.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f CurrencyOrderField) String() string {
+	var str string
+	switch f.column {
+	case CurrencyOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f CurrencyOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *CurrencyOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("CurrencyOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *CurrencyOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid CurrencyOrderField", str)
+	}
+	return nil
+}
+
+// CurrencyOrderField defines the ordering field of Currency.
+type CurrencyOrderField struct {
+	// Value extracts the ordering value from the given Currency.
+	Value    func(*Currency) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) currency.OrderOption
+	toCursor func(*Currency) Cursor
+}
+
+// CurrencyOrder defines the ordering of Currency.
+type CurrencyOrder struct {
+	Direction OrderDirection      `json:"direction"`
+	Field     *CurrencyOrderField `json:"field"`
+}
+
+// DefaultCurrencyOrder is the default ordering of Currency.
+var DefaultCurrencyOrder = &CurrencyOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &CurrencyOrderField{
+		Value: func(c *Currency) (ent.Value, error) {
+			return c.ID, nil
+		},
+		column: currency.FieldID,
+		toTerm: currency.ByID,
+		toCursor: func(c *Currency) Cursor {
+			return Cursor{ID: c.ID}
+		},
+	},
+}
+
+// ToEdge converts Currency into CurrencyEdge.
+func (c *Currency) ToEdge(order *CurrencyOrder) *CurrencyEdge {
+	if order == nil {
+		order = DefaultCurrencyOrder
+	}
+	return &CurrencyEdge{
 		Node:   c,
 		Cursor: order.Field.toCursor(c),
 	}
