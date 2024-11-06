@@ -269,7 +269,7 @@ func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	err = s.cache.Set(ctx, tid, uid, cache.WithTTL(s.Options.JWT.TokenTTL))
+	err = s.cache.Set(ctx, tid, strconv.Itoa(uid), cache.WithTTL(s.Options.JWT.TokenTTL))
 	if err != nil {
 		return nil, err
 	}
