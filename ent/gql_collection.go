@@ -135,12 +135,8 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, app.MenusColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, app.MenusColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -223,12 +219,8 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, app.ActionsColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, app.ActionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -311,12 +303,8 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, app.ResourcesColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, app.ResourcesColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -427,12 +415,8 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, app.OrgsPrimaryKey[1], limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, app.OrgsPrimaryKey[1], limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -515,12 +499,8 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, app.DictsColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, app.DictsColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -2652,12 +2632,8 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, org.UsersPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, org.UsersPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -2740,12 +2716,8 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, org.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, org.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -2828,12 +2800,8 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, org.PoliciesColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, org.PoliciesColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -2920,12 +2888,8 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, org.AppsPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, org.AppsPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
@@ -4048,12 +4012,8 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if oneNode {
-					pager.applyOrder(query.Limit(limit))
-				} else {
-					modify := pagination.LimitPerRow(ctx, user.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
-					query.modifiers = append(query.modifiers, modify)
-				}
+				modify := pagination.LimitPerRow(ctx, user.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+				query.modifiers = append(query.modifiers, modify)
 			} else {
 				query = pager.applyOrder(query)
 			}
