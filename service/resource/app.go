@@ -29,7 +29,7 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 	if err != nil {
 		return nil, err
 	}
-	return client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).Save(ctx)
+	return client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetOrgPrivate(false).Save(ctx)
 }
 
 // CreateAppActions 创建应用权限

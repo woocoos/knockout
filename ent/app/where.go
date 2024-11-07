@@ -126,9 +126,9 @@ func Comments(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldComments, v))
 }
 
-// Private applies equality check predicate on the "private" field. It's identical to PrivateEQ.
-func Private(v bool) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldPrivate, v))
+// OrgPrivate applies equality check predicate on the "org_private" field. It's identical to OrgPrivateEQ.
+func OrgPrivate(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldOrgPrivate, v))
 }
 
 // OwnerOrgID applies equality check predicate on the "owner_org_id" field. It's identical to OwnerOrgIDEQ.
@@ -1056,24 +1056,24 @@ func StatusNotNil() predicate.App {
 	return predicate.App(sql.FieldNotNull(FieldStatus))
 }
 
-// PrivateEQ applies the EQ predicate on the "private" field.
-func PrivateEQ(v bool) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldPrivate, v))
+// OrgPrivateEQ applies the EQ predicate on the "org_private" field.
+func OrgPrivateEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldOrgPrivate, v))
 }
 
-// PrivateNEQ applies the NEQ predicate on the "private" field.
-func PrivateNEQ(v bool) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldPrivate, v))
+// OrgPrivateNEQ applies the NEQ predicate on the "org_private" field.
+func OrgPrivateNEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldOrgPrivate, v))
 }
 
-// PrivateIsNil applies the IsNil predicate on the "private" field.
-func PrivateIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldPrivate))
+// OrgPrivateIsNil applies the IsNil predicate on the "org_private" field.
+func OrgPrivateIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldOrgPrivate))
 }
 
-// PrivateNotNil applies the NotNil predicate on the "private" field.
-func PrivateNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldPrivate))
+// OrgPrivateNotNil applies the NotNil predicate on the "org_private" field.
+func OrgPrivateNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldOrgPrivate))
 }
 
 // OwnerOrgIDEQ applies the EQ predicate on the "owner_org_id" field.

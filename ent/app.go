@@ -51,7 +51,7 @@ type App struct {
 	// 状态
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 私有App,表示由组织创建
-	Private bool `json:"private,omitempty"`
+	OrgPrivate bool `json:"org_private,omitempty"`
 	// 创建的根组织ID
 	OwnerOrgID int `json:"owner_org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -171,7 +171,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case app.FieldPrivate:
+		case app.FieldOrgPrivate:
 			values[i] = new(sql.NullBool)
 		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldOwnerOrgID:
 			values[i] = new(sql.NullInt64)
@@ -296,11 +296,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Status = typex.SimpleStatus(value.String)
 			}
-		case app.FieldPrivate:
+		case app.FieldOrgPrivate:
 			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field private", values[i])
+				return fmt.Errorf("unexpected type %T for field org_private", values[i])
 			} else if value.Valid {
-				a.Private = value.Bool
+				a.OrgPrivate = value.Bool
 			}
 		case app.FieldOwnerOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -432,8 +432,8 @@ func (a *App) String() string {
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", a.Status))
 	builder.WriteString(", ")
-	builder.WriteString("private=")
-	builder.WriteString(fmt.Sprintf("%v", a.Private))
+	builder.WriteString("org_private=")
+	builder.WriteString(fmt.Sprintf("%v", a.OrgPrivate))
 	builder.WriteString(", ")
 	builder.WriteString("owner_org_id=")
 	builder.WriteString(fmt.Sprintf("%v", a.OwnerOrgID))

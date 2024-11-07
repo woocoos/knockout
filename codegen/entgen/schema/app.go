@@ -38,7 +38,7 @@ func (App) Annotations() []schema.Annotation {
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
 		),
-		schemax.Resources([]string{"private"}),
+		schemax.Resources([]string{"org_private"}),
 		schemax.TenantField("owner_org_id"),
 	}
 }
@@ -71,7 +71,7 @@ func (App) Fields() []ent.Field {
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
-		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").
+		field.Bool("org_private").Optional().Default(false).Comment("私有App,表示由组织创建").
 			Annotations(entgql.Skip(entgql.SkipAll)),
 		field.Int("owner_org_id").Optional().Comment("创建的根组织ID").Annotations(entgql.Skip(entgql.SkipAll)),
 	}
@@ -102,7 +102,7 @@ func (App) Hooks() []ent.Hook {
 				if err != nil {
 					return nil, err
 				}
-				if apl.Private != true {
+				if apl.OrgPrivate != true {
 					has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(id))).Exist(ctx)
 					if err != nil {
 						return nil, err

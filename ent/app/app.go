@@ -52,8 +52,8 @@ const (
 	FieldComments = "comments"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
-	// FieldPrivate holds the string denoting the private field in the database.
-	FieldPrivate = "private"
+	// FieldOrgPrivate holds the string denoting the org_private field in the database.
+	FieldOrgPrivate = "org_private"
 	// FieldOwnerOrgID holds the string denoting the owner_org_id field in the database.
 	FieldOwnerOrgID = "owner_org_id"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
@@ -149,7 +149,7 @@ var Columns = []string{
 	FieldLogo,
 	FieldComments,
 	FieldStatus,
-	FieldPrivate,
+	FieldOrgPrivate,
 	FieldOwnerOrgID,
 }
 
@@ -190,8 +190,8 @@ var (
 	ScopesValidator func(string) error
 	// LogoValidator is a validator for the "logo" field. It is called by the builders before save.
 	LogoValidator func(string) error
-	// DefaultPrivate holds the default value on creation for the "private" field.
-	DefaultPrivate bool
+	// DefaultOrgPrivate holds the default value on creation for the "org_private" field.
+	DefaultOrgPrivate bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() int
 )
@@ -320,9 +320,9 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
-// ByPrivate orders the results by the private field.
-func ByPrivate(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPrivate, opts...).ToFunc()
+// ByOrgPrivate orders the results by the org_private field.
+func ByOrgPrivate(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOrgPrivate, opts...).ToFunc()
 }
 
 // ByOwnerOrgID orders the results by the owner_org_id field.

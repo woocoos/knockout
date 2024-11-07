@@ -28,7 +28,7 @@ var (
 		{Name: "logo", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
-		{Name: "private", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "org_private", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "owner_org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// AppTable holds the schema information for the "app" table.

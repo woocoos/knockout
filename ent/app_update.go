@@ -306,23 +306,23 @@ func (au *AppUpdate) ClearStatus() *AppUpdate {
 	return au
 }
 
-// SetPrivate sets the "private" field.
-func (au *AppUpdate) SetPrivate(b bool) *AppUpdate {
-	au.mutation.SetPrivate(b)
+// SetOrgPrivate sets the "org_private" field.
+func (au *AppUpdate) SetOrgPrivate(b bool) *AppUpdate {
+	au.mutation.SetOrgPrivate(b)
 	return au
 }
 
-// SetNillablePrivate sets the "private" field if the given value is not nil.
-func (au *AppUpdate) SetNillablePrivate(b *bool) *AppUpdate {
+// SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
+func (au *AppUpdate) SetNillableOrgPrivate(b *bool) *AppUpdate {
 	if b != nil {
-		au.SetPrivate(*b)
+		au.SetOrgPrivate(*b)
 	}
 	return au
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (au *AppUpdate) ClearPrivate() *AppUpdate {
-	au.mutation.ClearPrivate()
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (au *AppUpdate) ClearOrgPrivate() *AppUpdate {
+	au.mutation.ClearOrgPrivate()
 	return au
 }
 
@@ -806,11 +806,11 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := au.mutation.Private(); ok {
-		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
+	if value, ok := au.mutation.OrgPrivate(); ok {
+		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if au.mutation.PrivateCleared() {
-		_spec.ClearField(app.FieldPrivate, field.TypeBool)
+	if au.mutation.OrgPrivateCleared() {
+		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
 	if value, ok := au.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
@@ -1482,23 +1482,23 @@ func (auo *AppUpdateOne) ClearStatus() *AppUpdateOne {
 	return auo
 }
 
-// SetPrivate sets the "private" field.
-func (auo *AppUpdateOne) SetPrivate(b bool) *AppUpdateOne {
-	auo.mutation.SetPrivate(b)
+// SetOrgPrivate sets the "org_private" field.
+func (auo *AppUpdateOne) SetOrgPrivate(b bool) *AppUpdateOne {
+	auo.mutation.SetOrgPrivate(b)
 	return auo
 }
 
-// SetNillablePrivate sets the "private" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillablePrivate(b *bool) *AppUpdateOne {
+// SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableOrgPrivate(b *bool) *AppUpdateOne {
 	if b != nil {
-		auo.SetPrivate(*b)
+		auo.SetOrgPrivate(*b)
 	}
 	return auo
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (auo *AppUpdateOne) ClearPrivate() *AppUpdateOne {
-	auo.mutation.ClearPrivate()
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (auo *AppUpdateOne) ClearOrgPrivate() *AppUpdateOne {
+	auo.mutation.ClearOrgPrivate()
 	return auo
 }
 
@@ -2012,11 +2012,11 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := auo.mutation.Private(); ok {
-		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
+	if value, ok := auo.mutation.OrgPrivate(); ok {
+		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if auo.mutation.PrivateCleared() {
-		_spec.ClearField(app.FieldPrivate, field.TypeBool)
+	if auo.mutation.OrgPrivateCleared() {
+		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
 	if value, ok := auo.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)

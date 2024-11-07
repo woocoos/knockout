@@ -111,7 +111,7 @@ type AppMutation struct {
 	logo                      *string
 	comments                  *string
 	status                    *typex.SimpleStatus
-	private                   *bool
+	org_private               *bool
 	owner_org_id              *int
 	addowner_org_id           *int
 	clearedFields             map[string]struct{}
@@ -1050,53 +1050,53 @@ func (m *AppMutation) ResetStatus() {
 	delete(m.clearedFields, app.FieldStatus)
 }
 
-// SetPrivate sets the "private" field.
-func (m *AppMutation) SetPrivate(b bool) {
-	m.private = &b
+// SetOrgPrivate sets the "org_private" field.
+func (m *AppMutation) SetOrgPrivate(b bool) {
+	m.org_private = &b
 }
 
-// Private returns the value of the "private" field in the mutation.
-func (m *AppMutation) Private() (r bool, exists bool) {
-	v := m.private
+// OrgPrivate returns the value of the "org_private" field in the mutation.
+func (m *AppMutation) OrgPrivate() (r bool, exists bool) {
+	v := m.org_private
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPrivate returns the old "private" field's value of the App entity.
+// OldOrgPrivate returns the old "org_private" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldPrivate(ctx context.Context) (v bool, err error) {
+func (m *AppMutation) OldOrgPrivate(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrivate is only allowed on UpdateOne operations")
+		return v, errors.New("OldOrgPrivate is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrivate requires an ID field in the mutation")
+		return v, errors.New("OldOrgPrivate requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrivate: %w", err)
+		return v, fmt.Errorf("querying old value for OldOrgPrivate: %w", err)
 	}
-	return oldValue.Private, nil
+	return oldValue.OrgPrivate, nil
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (m *AppMutation) ClearPrivate() {
-	m.private = nil
-	m.clearedFields[app.FieldPrivate] = struct{}{}
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (m *AppMutation) ClearOrgPrivate() {
+	m.org_private = nil
+	m.clearedFields[app.FieldOrgPrivate] = struct{}{}
 }
 
-// PrivateCleared returns if the "private" field was cleared in this mutation.
-func (m *AppMutation) PrivateCleared() bool {
-	_, ok := m.clearedFields[app.FieldPrivate]
+// OrgPrivateCleared returns if the "org_private" field was cleared in this mutation.
+func (m *AppMutation) OrgPrivateCleared() bool {
+	_, ok := m.clearedFields[app.FieldOrgPrivate]
 	return ok
 }
 
-// ResetPrivate resets all changes to the "private" field.
-func (m *AppMutation) ResetPrivate() {
-	m.private = nil
-	delete(m.clearedFields, app.FieldPrivate)
+// ResetOrgPrivate resets all changes to the "org_private" field.
+func (m *AppMutation) ResetOrgPrivate() {
+	m.org_private = nil
+	delete(m.clearedFields, app.FieldOrgPrivate)
 }
 
 // SetOwnerOrgID sets the "owner_org_id" field.
@@ -1684,8 +1684,8 @@ func (m *AppMutation) Fields() []string {
 	if m.status != nil {
 		fields = append(fields, app.FieldStatus)
 	}
-	if m.private != nil {
-		fields = append(fields, app.FieldPrivate)
+	if m.org_private != nil {
+		fields = append(fields, app.FieldOrgPrivate)
 	}
 	if m.owner_org_id != nil {
 		fields = append(fields, app.FieldOwnerOrgID)
@@ -1730,8 +1730,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Comments()
 	case app.FieldStatus:
 		return m.Status()
-	case app.FieldPrivate:
-		return m.Private()
+	case app.FieldOrgPrivate:
+		return m.OrgPrivate()
 	case app.FieldOwnerOrgID:
 		return m.OwnerOrgID()
 	}
@@ -1775,8 +1775,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldComments(ctx)
 	case app.FieldStatus:
 		return m.OldStatus(ctx)
-	case app.FieldPrivate:
-		return m.OldPrivate(ctx)
+	case app.FieldOrgPrivate:
+		return m.OldOrgPrivate(ctx)
 	case app.FieldOwnerOrgID:
 		return m.OldOwnerOrgID(ctx)
 	}
@@ -1900,12 +1900,12 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStatus(v)
 		return nil
-	case app.FieldPrivate:
+	case app.FieldOrgPrivate:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPrivate(v)
+		m.SetOrgPrivate(v)
 		return nil
 	case app.FieldOwnerOrgID:
 		v, ok := value.(int)
@@ -2040,8 +2040,8 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldStatus) {
 		fields = append(fields, app.FieldStatus)
 	}
-	if m.FieldCleared(app.FieldPrivate) {
-		fields = append(fields, app.FieldPrivate)
+	if m.FieldCleared(app.FieldOrgPrivate) {
+		fields = append(fields, app.FieldOrgPrivate)
 	}
 	if m.FieldCleared(app.FieldOwnerOrgID) {
 		fields = append(fields, app.FieldOwnerOrgID)
@@ -2093,8 +2093,8 @@ func (m *AppMutation) ClearField(name string) error {
 	case app.FieldStatus:
 		m.ClearStatus()
 		return nil
-	case app.FieldPrivate:
-		m.ClearPrivate()
+	case app.FieldOrgPrivate:
+		m.ClearOrgPrivate()
 		return nil
 	case app.FieldOwnerOrgID:
 		m.ClearOwnerOrgID()
@@ -2155,8 +2155,8 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldStatus:
 		m.ResetStatus()
 		return nil
-	case app.FieldPrivate:
-		m.ResetPrivate()
+	case app.FieldOrgPrivate:
+		m.ResetOrgPrivate()
 		return nil
 	case app.FieldOwnerOrgID:
 		m.ResetOwnerOrgID()

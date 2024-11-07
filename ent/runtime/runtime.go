@@ -96,10 +96,10 @@ func init() {
 	appDescLogo := appFields[9].Descriptor()
 	// app.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
 	app.LogoValidator = appDescLogo.Validators[0].(func(string) error)
-	// appDescPrivate is the schema descriptor for private field.
-	appDescPrivate := appFields[12].Descriptor()
-	// app.DefaultPrivate holds the default value on creation for the private field.
-	app.DefaultPrivate = appDescPrivate.Default.(bool)
+	// appDescOrgPrivate is the schema descriptor for org_private field.
+	appDescOrgPrivate := appFields[12].Descriptor()
+	// app.DefaultOrgPrivate holds the default value on creation for the org_private field.
+	app.DefaultOrgPrivate = appDescOrgPrivate.Default.(bool)
 	// appDescID is the schema descriptor for id field.
 	appDescID := appMixinFields0[0].Descriptor()
 	// app.DefaultID holds the default value on creation for the id field.

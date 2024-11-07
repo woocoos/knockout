@@ -223,16 +223,16 @@ func (ac *AppCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppCreate {
 	return ac
 }
 
-// SetPrivate sets the "private" field.
-func (ac *AppCreate) SetPrivate(b bool) *AppCreate {
-	ac.mutation.SetPrivate(b)
+// SetOrgPrivate sets the "org_private" field.
+func (ac *AppCreate) SetOrgPrivate(b bool) *AppCreate {
+	ac.mutation.SetOrgPrivate(b)
 	return ac
 }
 
-// SetNillablePrivate sets the "private" field if the given value is not nil.
-func (ac *AppCreate) SetNillablePrivate(b *bool) *AppCreate {
+// SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
+func (ac *AppCreate) SetNillableOrgPrivate(b *bool) *AppCreate {
 	if b != nil {
-		ac.SetPrivate(*b)
+		ac.SetOrgPrivate(*b)
 	}
 	return ac
 }
@@ -433,9 +433,9 @@ func (ac *AppCreate) defaults() error {
 		v := app.DefaultStatus
 		ac.mutation.SetStatus(v)
 	}
-	if _, ok := ac.mutation.Private(); !ok {
-		v := app.DefaultPrivate
-		ac.mutation.SetPrivate(v)
+	if _, ok := ac.mutation.OrgPrivate(); !ok {
+		v := app.DefaultOrgPrivate
+		ac.mutation.SetOrgPrivate(v)
 	}
 	if _, ok := ac.mutation.ID(); !ok {
 		if app.DefaultID == nil {
@@ -601,9 +601,9 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
 	}
-	if value, ok := ac.mutation.Private(); ok {
-		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
-		_node.Private = value
+	if value, ok := ac.mutation.OrgPrivate(); ok {
+		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
+		_node.OrgPrivate = value
 	}
 	if value, ok := ac.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
@@ -1033,21 +1033,21 @@ func (u *AppUpsert) ClearStatus() *AppUpsert {
 	return u
 }
 
-// SetPrivate sets the "private" field.
-func (u *AppUpsert) SetPrivate(v bool) *AppUpsert {
-	u.Set(app.FieldPrivate, v)
+// SetOrgPrivate sets the "org_private" field.
+func (u *AppUpsert) SetOrgPrivate(v bool) *AppUpsert {
+	u.Set(app.FieldOrgPrivate, v)
 	return u
 }
 
-// UpdatePrivate sets the "private" field to the value that was provided on create.
-func (u *AppUpsert) UpdatePrivate() *AppUpsert {
-	u.SetExcluded(app.FieldPrivate)
+// UpdateOrgPrivate sets the "org_private" field to the value that was provided on create.
+func (u *AppUpsert) UpdateOrgPrivate() *AppUpsert {
+	u.SetExcluded(app.FieldOrgPrivate)
 	return u
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (u *AppUpsert) ClearPrivate() *AppUpsert {
-	u.SetNull(app.FieldPrivate)
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (u *AppUpsert) ClearOrgPrivate() *AppUpsert {
+	u.SetNull(app.FieldOrgPrivate)
 	return u
 }
 
@@ -1412,24 +1412,24 @@ func (u *AppUpsertOne) ClearStatus() *AppUpsertOne {
 	})
 }
 
-// SetPrivate sets the "private" field.
-func (u *AppUpsertOne) SetPrivate(v bool) *AppUpsertOne {
+// SetOrgPrivate sets the "org_private" field.
+func (u *AppUpsertOne) SetOrgPrivate(v bool) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetPrivate(v)
+		s.SetOrgPrivate(v)
 	})
 }
 
-// UpdatePrivate sets the "private" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdatePrivate() *AppUpsertOne {
+// UpdateOrgPrivate sets the "org_private" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateOrgPrivate() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdatePrivate()
+		s.UpdateOrgPrivate()
 	})
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (u *AppUpsertOne) ClearPrivate() *AppUpsertOne {
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (u *AppUpsertOne) ClearOrgPrivate() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearPrivate()
+		s.ClearOrgPrivate()
 	})
 }
 
@@ -1964,24 +1964,24 @@ func (u *AppUpsertBulk) ClearStatus() *AppUpsertBulk {
 	})
 }
 
-// SetPrivate sets the "private" field.
-func (u *AppUpsertBulk) SetPrivate(v bool) *AppUpsertBulk {
+// SetOrgPrivate sets the "org_private" field.
+func (u *AppUpsertBulk) SetOrgPrivate(v bool) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetPrivate(v)
+		s.SetOrgPrivate(v)
 	})
 }
 
-// UpdatePrivate sets the "private" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdatePrivate() *AppUpsertBulk {
+// UpdateOrgPrivate sets the "org_private" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateOrgPrivate() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdatePrivate()
+		s.UpdateOrgPrivate()
 	})
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (u *AppUpsertBulk) ClearPrivate() *AppUpsertBulk {
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (u *AppUpsertBulk) ClearOrgPrivate() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearPrivate()
+		s.ClearOrgPrivate()
 	})
 }
 
