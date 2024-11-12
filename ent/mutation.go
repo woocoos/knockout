@@ -16807,7 +16807,7 @@ type OrgMutation struct {
 	adddisplay_sort         *int32
 	country_code            *string
 	timezone                *string
-	base_currency           *string
+	local_currency          *string
 	logo                    **types.OrgLogo
 	clearedFields           map[string]struct{}
 	parent                  *int
@@ -17780,53 +17780,53 @@ func (m *OrgMutation) ResetTimezone() {
 	delete(m.clearedFields, org.FieldTimezone)
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (m *OrgMutation) SetBaseCurrency(s string) {
-	m.base_currency = &s
+// SetLocalCurrency sets the "local_currency" field.
+func (m *OrgMutation) SetLocalCurrency(s string) {
+	m.local_currency = &s
 }
 
-// BaseCurrency returns the value of the "base_currency" field in the mutation.
-func (m *OrgMutation) BaseCurrency() (r string, exists bool) {
-	v := m.base_currency
+// LocalCurrency returns the value of the "local_currency" field in the mutation.
+func (m *OrgMutation) LocalCurrency() (r string, exists bool) {
+	v := m.local_currency
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBaseCurrency returns the old "base_currency" field's value of the Org entity.
+// OldLocalCurrency returns the old "local_currency" field's value of the Org entity.
 // If the Org object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrgMutation) OldBaseCurrency(ctx context.Context) (v string, err error) {
+func (m *OrgMutation) OldLocalCurrency(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBaseCurrency is only allowed on UpdateOne operations")
+		return v, errors.New("OldLocalCurrency is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBaseCurrency requires an ID field in the mutation")
+		return v, errors.New("OldLocalCurrency requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBaseCurrency: %w", err)
+		return v, fmt.Errorf("querying old value for OldLocalCurrency: %w", err)
 	}
-	return oldValue.BaseCurrency, nil
+	return oldValue.LocalCurrency, nil
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (m *OrgMutation) ClearBaseCurrency() {
-	m.base_currency = nil
-	m.clearedFields[org.FieldBaseCurrency] = struct{}{}
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (m *OrgMutation) ClearLocalCurrency() {
+	m.local_currency = nil
+	m.clearedFields[org.FieldLocalCurrency] = struct{}{}
 }
 
-// BaseCurrencyCleared returns if the "base_currency" field was cleared in this mutation.
-func (m *OrgMutation) BaseCurrencyCleared() bool {
-	_, ok := m.clearedFields[org.FieldBaseCurrency]
+// LocalCurrencyCleared returns if the "local_currency" field was cleared in this mutation.
+func (m *OrgMutation) LocalCurrencyCleared() bool {
+	_, ok := m.clearedFields[org.FieldLocalCurrency]
 	return ok
 }
 
-// ResetBaseCurrency resets all changes to the "base_currency" field.
-func (m *OrgMutation) ResetBaseCurrency() {
-	m.base_currency = nil
-	delete(m.clearedFields, org.FieldBaseCurrency)
+// ResetLocalCurrency resets all changes to the "local_currency" field.
+func (m *OrgMutation) ResetLocalCurrency() {
+	m.local_currency = nil
+	delete(m.clearedFields, org.FieldLocalCurrency)
 }
 
 // SetLogo sets the "logo" field.
@@ -18504,8 +18504,8 @@ func (m *OrgMutation) Fields() []string {
 	if m.timezone != nil {
 		fields = append(fields, org.FieldTimezone)
 	}
-	if m.base_currency != nil {
-		fields = append(fields, org.FieldBaseCurrency)
+	if m.local_currency != nil {
+		fields = append(fields, org.FieldLocalCurrency)
 	}
 	if m.logo != nil {
 		fields = append(fields, org.FieldLogo)
@@ -18552,8 +18552,8 @@ func (m *OrgMutation) Field(name string) (ent.Value, bool) {
 		return m.CountryCode()
 	case org.FieldTimezone:
 		return m.Timezone()
-	case org.FieldBaseCurrency:
-		return m.BaseCurrency()
+	case org.FieldLocalCurrency:
+		return m.LocalCurrency()
 	case org.FieldLogo:
 		return m.Logo()
 	}
@@ -18599,8 +18599,8 @@ func (m *OrgMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldCountryCode(ctx)
 	case org.FieldTimezone:
 		return m.OldTimezone(ctx)
-	case org.FieldBaseCurrency:
-		return m.OldBaseCurrency(ctx)
+	case org.FieldLocalCurrency:
+		return m.OldLocalCurrency(ctx)
 	case org.FieldLogo:
 		return m.OldLogo(ctx)
 	}
@@ -18731,12 +18731,12 @@ func (m *OrgMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTimezone(v)
 		return nil
-	case org.FieldBaseCurrency:
+	case org.FieldLocalCurrency:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBaseCurrency(v)
+		m.SetLocalCurrency(v)
 		return nil
 	case org.FieldLogo:
 		v, ok := value.(*types.OrgLogo)
@@ -18850,8 +18850,8 @@ func (m *OrgMutation) ClearedFields() []string {
 	if m.FieldCleared(org.FieldTimezone) {
 		fields = append(fields, org.FieldTimezone)
 	}
-	if m.FieldCleared(org.FieldBaseCurrency) {
-		fields = append(fields, org.FieldBaseCurrency)
+	if m.FieldCleared(org.FieldLocalCurrency) {
+		fields = append(fields, org.FieldLocalCurrency)
 	}
 	if m.FieldCleared(org.FieldLogo) {
 		fields = append(fields, org.FieldLogo)
@@ -18906,8 +18906,8 @@ func (m *OrgMutation) ClearField(name string) error {
 	case org.FieldTimezone:
 		m.ClearTimezone()
 		return nil
-	case org.FieldBaseCurrency:
-		m.ClearBaseCurrency()
+	case org.FieldLocalCurrency:
+		m.ClearLocalCurrency()
 		return nil
 	case org.FieldLogo:
 		m.ClearLogo()
@@ -18971,8 +18971,8 @@ func (m *OrgMutation) ResetField(name string) error {
 	case org.FieldTimezone:
 		m.ResetTimezone()
 		return nil
-	case org.FieldBaseCurrency:
-		m.ResetBaseCurrency()
+	case org.FieldLocalCurrency:
+		m.ResetLocalCurrency()
 		return nil
 	case org.FieldLogo:
 		m.ResetLogo()

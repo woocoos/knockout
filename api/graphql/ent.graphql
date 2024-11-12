@@ -2738,7 +2738,7 @@ input CreateOrgInput {
   """
   组织本位币
   """
-  baseCurrency: String
+  localCurrency: String
   """
   组织图标
   """
@@ -4020,7 +4020,7 @@ type Org implements Node {
   """
   组织本位币
   """
-  baseCurrency: String
+  localCurrency: String
   """
   组织图标
   """
@@ -5240,23 +5240,23 @@ input OrgWhereInput {
   timezoneEqualFold: String
   timezoneContainsFold: String
   """
-  base_currency field predicates
+  local_currency field predicates
   """
-  baseCurrency: String
-  baseCurrencyNEQ: String
-  baseCurrencyIn: [String!]
-  baseCurrencyNotIn: [String!]
-  baseCurrencyGT: String
-  baseCurrencyGTE: String
-  baseCurrencyLT: String
-  baseCurrencyLTE: String
-  baseCurrencyContains: String
-  baseCurrencyHasPrefix: String
-  baseCurrencyHasSuffix: String
-  baseCurrencyIsNil: Boolean
-  baseCurrencyNotNil: Boolean
-  baseCurrencyEqualFold: String
-  baseCurrencyContainsFold: String
+  localCurrency: String
+  localCurrencyNEQ: String
+  localCurrencyIn: [String!]
+  localCurrencyNotIn: [String!]
+  localCurrencyGT: String
+  localCurrencyGTE: String
+  localCurrencyLT: String
+  localCurrencyLTE: String
+  localCurrencyContains: String
+  localCurrencyHasPrefix: String
+  localCurrencyHasSuffix: String
+  localCurrencyIsNil: Boolean
+  localCurrencyNotNil: Boolean
+  localCurrencyEqualFold: String
+  localCurrencyContainsFold: String
   """
   parent edge predicates
   """
@@ -6624,8 +6624,8 @@ input UpdateOrgInput {
   """
   组织本位币
   """
-  baseCurrency: String
-  clearBaseCurrency: Boolean
+  localCurrency: String
+  clearLocalCurrency: Boolean
   """
   组织图标
   """

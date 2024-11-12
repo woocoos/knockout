@@ -54,8 +54,8 @@ const (
 	FieldCountryCode = "country_code"
 	// FieldTimezone holds the string denoting the timezone field in the database.
 	FieldTimezone = "timezone"
-	// FieldBaseCurrency holds the string denoting the base_currency field in the database.
-	FieldBaseCurrency = "base_currency"
+	// FieldLocalCurrency holds the string denoting the local_currency field in the database.
+	FieldLocalCurrency = "local_currency"
 	// FieldLogo holds the string denoting the logo field in the database.
 	FieldLogo = "logo"
 	// EdgeParent holds the string denoting the parent edge name in mutations.
@@ -171,7 +171,7 @@ var Columns = []string{
 	FieldDisplaySort,
 	FieldCountryCode,
 	FieldTimezone,
-	FieldBaseCurrency,
+	FieldLocalCurrency,
 	FieldLogo,
 }
 
@@ -216,8 +216,8 @@ var (
 	CountryCodeValidator func(string) error
 	// TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	TimezoneValidator func(string) error
-	// BaseCurrencyValidator is a validator for the "base_currency" field. It is called by the builders before save.
-	BaseCurrencyValidator func(string) error
+	// LocalCurrencyValidator is a validator for the "local_currency" field. It is called by the builders before save.
+	LocalCurrencyValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -351,9 +351,9 @@ func ByTimezone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTimezone, opts...).ToFunc()
 }
 
-// ByBaseCurrency orders the results by the base_currency field.
-func ByBaseCurrency(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBaseCurrency, opts...).ToFunc()
+// ByLocalCurrency orders the results by the local_currency field.
+func ByLocalCurrency(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLocalCurrency, opts...).ToFunc()
 }
 
 // ByParentField orders the results by parent field.

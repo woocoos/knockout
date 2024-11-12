@@ -56,7 +56,7 @@ type Org struct {
 	// 时区
 	Timezone string `json:"timezone,omitempty"`
 	// 组织本位币
-	BaseCurrency string `json:"base_currency,omitempty"`
+	LocalCurrency string `json:"local_currency,omitempty"`
 	// 组织图标
 	Logo *types.OrgLogo `json:"logo,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -218,7 +218,7 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case org.FieldID, org.FieldCreatedBy, org.FieldUpdatedBy, org.FieldOwnerID, org.FieldParentID, org.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone, org.FieldBaseCurrency:
+		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone, org.FieldLocalCurrency:
 			values[i] = new(sql.NullString)
 		case org.FieldCreatedAt, org.FieldUpdatedAt, org.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -346,11 +346,11 @@ func (o *Org) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				o.Timezone = value.String
 			}
-		case org.FieldBaseCurrency:
+		case org.FieldLocalCurrency:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field base_currency", values[i])
+				return fmt.Errorf("unexpected type %T for field local_currency", values[i])
 			} else if value.Valid {
-				o.BaseCurrency = value.String
+				o.LocalCurrency = value.String
 			}
 		case org.FieldLogo:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -504,8 +504,8 @@ func (o *Org) String() string {
 	builder.WriteString("timezone=")
 	builder.WriteString(o.Timezone)
 	builder.WriteString(", ")
-	builder.WriteString("base_currency=")
-	builder.WriteString(o.BaseCurrency)
+	builder.WriteString("local_currency=")
+	builder.WriteString(o.LocalCurrency)
 	builder.WriteString(", ")
 	builder.WriteString("logo=")
 	builder.WriteString(fmt.Sprintf("%v", o.Logo))

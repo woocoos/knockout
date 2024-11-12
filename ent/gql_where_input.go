@@ -7626,22 +7626,22 @@ type OrgWhereInput struct {
 	TimezoneEqualFold    *string  `json:"timezoneEqualFold,omitempty"`
 	TimezoneContainsFold *string  `json:"timezoneContainsFold,omitempty"`
 
-	// "base_currency" field predicates.
-	BaseCurrency             *string  `json:"baseCurrency,omitempty"`
-	BaseCurrencyNEQ          *string  `json:"baseCurrencyNEQ,omitempty"`
-	BaseCurrencyIn           []string `json:"baseCurrencyIn,omitempty"`
-	BaseCurrencyNotIn        []string `json:"baseCurrencyNotIn,omitempty"`
-	BaseCurrencyGT           *string  `json:"baseCurrencyGT,omitempty"`
-	BaseCurrencyGTE          *string  `json:"baseCurrencyGTE,omitempty"`
-	BaseCurrencyLT           *string  `json:"baseCurrencyLT,omitempty"`
-	BaseCurrencyLTE          *string  `json:"baseCurrencyLTE,omitempty"`
-	BaseCurrencyContains     *string  `json:"baseCurrencyContains,omitempty"`
-	BaseCurrencyHasPrefix    *string  `json:"baseCurrencyHasPrefix,omitempty"`
-	BaseCurrencyHasSuffix    *string  `json:"baseCurrencyHasSuffix,omitempty"`
-	BaseCurrencyIsNil        bool     `json:"baseCurrencyIsNil,omitempty"`
-	BaseCurrencyNotNil       bool     `json:"baseCurrencyNotNil,omitempty"`
-	BaseCurrencyEqualFold    *string  `json:"baseCurrencyEqualFold,omitempty"`
-	BaseCurrencyContainsFold *string  `json:"baseCurrencyContainsFold,omitempty"`
+	// "local_currency" field predicates.
+	LocalCurrency             *string  `json:"localCurrency,omitempty"`
+	LocalCurrencyNEQ          *string  `json:"localCurrencyNEQ,omitempty"`
+	LocalCurrencyIn           []string `json:"localCurrencyIn,omitempty"`
+	LocalCurrencyNotIn        []string `json:"localCurrencyNotIn,omitempty"`
+	LocalCurrencyGT           *string  `json:"localCurrencyGT,omitempty"`
+	LocalCurrencyGTE          *string  `json:"localCurrencyGTE,omitempty"`
+	LocalCurrencyLT           *string  `json:"localCurrencyLT,omitempty"`
+	LocalCurrencyLTE          *string  `json:"localCurrencyLTE,omitempty"`
+	LocalCurrencyContains     *string  `json:"localCurrencyContains,omitempty"`
+	LocalCurrencyHasPrefix    *string  `json:"localCurrencyHasPrefix,omitempty"`
+	LocalCurrencyHasSuffix    *string  `json:"localCurrencyHasSuffix,omitempty"`
+	LocalCurrencyIsNil        bool     `json:"localCurrencyIsNil,omitempty"`
+	LocalCurrencyNotNil       bool     `json:"localCurrencyNotNil,omitempty"`
+	LocalCurrencyEqualFold    *string  `json:"localCurrencyEqualFold,omitempty"`
+	LocalCurrencyContainsFold *string  `json:"localCurrencyContainsFold,omitempty"`
 
 	// "parent" edge predicates.
 	HasParent     *bool            `json:"hasParent,omitempty"`
@@ -8241,50 +8241,50 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 	if i.TimezoneContainsFold != nil {
 		predicates = append(predicates, org.TimezoneContainsFold(*i.TimezoneContainsFold))
 	}
-	if i.BaseCurrency != nil {
-		predicates = append(predicates, org.BaseCurrencyEQ(*i.BaseCurrency))
+	if i.LocalCurrency != nil {
+		predicates = append(predicates, org.LocalCurrencyEQ(*i.LocalCurrency))
 	}
-	if i.BaseCurrencyNEQ != nil {
-		predicates = append(predicates, org.BaseCurrencyNEQ(*i.BaseCurrencyNEQ))
+	if i.LocalCurrencyNEQ != nil {
+		predicates = append(predicates, org.LocalCurrencyNEQ(*i.LocalCurrencyNEQ))
 	}
-	if len(i.BaseCurrencyIn) > 0 {
-		predicates = append(predicates, org.BaseCurrencyIn(i.BaseCurrencyIn...))
+	if len(i.LocalCurrencyIn) > 0 {
+		predicates = append(predicates, org.LocalCurrencyIn(i.LocalCurrencyIn...))
 	}
-	if len(i.BaseCurrencyNotIn) > 0 {
-		predicates = append(predicates, org.BaseCurrencyNotIn(i.BaseCurrencyNotIn...))
+	if len(i.LocalCurrencyNotIn) > 0 {
+		predicates = append(predicates, org.LocalCurrencyNotIn(i.LocalCurrencyNotIn...))
 	}
-	if i.BaseCurrencyGT != nil {
-		predicates = append(predicates, org.BaseCurrencyGT(*i.BaseCurrencyGT))
+	if i.LocalCurrencyGT != nil {
+		predicates = append(predicates, org.LocalCurrencyGT(*i.LocalCurrencyGT))
 	}
-	if i.BaseCurrencyGTE != nil {
-		predicates = append(predicates, org.BaseCurrencyGTE(*i.BaseCurrencyGTE))
+	if i.LocalCurrencyGTE != nil {
+		predicates = append(predicates, org.LocalCurrencyGTE(*i.LocalCurrencyGTE))
 	}
-	if i.BaseCurrencyLT != nil {
-		predicates = append(predicates, org.BaseCurrencyLT(*i.BaseCurrencyLT))
+	if i.LocalCurrencyLT != nil {
+		predicates = append(predicates, org.LocalCurrencyLT(*i.LocalCurrencyLT))
 	}
-	if i.BaseCurrencyLTE != nil {
-		predicates = append(predicates, org.BaseCurrencyLTE(*i.BaseCurrencyLTE))
+	if i.LocalCurrencyLTE != nil {
+		predicates = append(predicates, org.LocalCurrencyLTE(*i.LocalCurrencyLTE))
 	}
-	if i.BaseCurrencyContains != nil {
-		predicates = append(predicates, org.BaseCurrencyContains(*i.BaseCurrencyContains))
+	if i.LocalCurrencyContains != nil {
+		predicates = append(predicates, org.LocalCurrencyContains(*i.LocalCurrencyContains))
 	}
-	if i.BaseCurrencyHasPrefix != nil {
-		predicates = append(predicates, org.BaseCurrencyHasPrefix(*i.BaseCurrencyHasPrefix))
+	if i.LocalCurrencyHasPrefix != nil {
+		predicates = append(predicates, org.LocalCurrencyHasPrefix(*i.LocalCurrencyHasPrefix))
 	}
-	if i.BaseCurrencyHasSuffix != nil {
-		predicates = append(predicates, org.BaseCurrencyHasSuffix(*i.BaseCurrencyHasSuffix))
+	if i.LocalCurrencyHasSuffix != nil {
+		predicates = append(predicates, org.LocalCurrencyHasSuffix(*i.LocalCurrencyHasSuffix))
 	}
-	if i.BaseCurrencyIsNil {
-		predicates = append(predicates, org.BaseCurrencyIsNil())
+	if i.LocalCurrencyIsNil {
+		predicates = append(predicates, org.LocalCurrencyIsNil())
 	}
-	if i.BaseCurrencyNotNil {
-		predicates = append(predicates, org.BaseCurrencyNotNil())
+	if i.LocalCurrencyNotNil {
+		predicates = append(predicates, org.LocalCurrencyNotNil())
 	}
-	if i.BaseCurrencyEqualFold != nil {
-		predicates = append(predicates, org.BaseCurrencyEqualFold(*i.BaseCurrencyEqualFold))
+	if i.LocalCurrencyEqualFold != nil {
+		predicates = append(predicates, org.LocalCurrencyEqualFold(*i.LocalCurrencyEqualFold))
 	}
-	if i.BaseCurrencyContainsFold != nil {
-		predicates = append(predicates, org.BaseCurrencyContainsFold(*i.BaseCurrencyContainsFold))
+	if i.LocalCurrencyContainsFold != nil {
+		predicates = append(predicates, org.LocalCurrencyContainsFold(*i.LocalCurrencyContainsFold))
 	}
 
 	if i.HasParent != nil {

@@ -486,7 +486,6 @@ type ComplexityRoot struct {
 
 	Org struct {
 		Apps                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		BaseCurrency           func(childComplexity int) int
 		Children               func(childComplexity int) int
 		Code                   func(childComplexity int) int
 		CountryCode            func(childComplexity int) int
@@ -499,6 +498,7 @@ type ComplexityRoot struct {
 		ID                     func(childComplexity int) int
 		IsAllowRevokeAppPolicy func(childComplexity int, appPolicyID int) int
 		Kind                   func(childComplexity int) int
+		LocalCurrency          func(childComplexity int) int
 		Logo                   func(childComplexity int) int
 		Name                   func(childComplexity int) int
 		Owner                  func(childComplexity int) int
@@ -3639,13 +3639,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.Apps(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppOrder), args["where"].(*ent.AppWhereInput)), true
 
-	case "Org.baseCurrency":
-		if e.complexity.Org.BaseCurrency == nil {
-			break
-		}
-
-		return e.complexity.Org.BaseCurrency(childComplexity), true
-
 	case "Org.children":
 		if e.complexity.Org.Children == nil {
 			break
@@ -3734,6 +3727,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.Kind(childComplexity), true
+
+	case "Org.localCurrency":
+		if e.complexity.Org.LocalCurrency == nil {
+			break
+		}
+
+		return e.complexity.Org.LocalCurrency(childComplexity), true
 
 	case "Org.logo":
 		if e.complexity.Org.Logo == nil {
@@ -8858,7 +8858,7 @@ input CreateOrgInput {
   """
   组织本位币
   """
-  baseCurrency: String
+  localCurrency: String
   """
   组织图标
   """
@@ -10140,7 +10140,7 @@ type Org implements Node {
   """
   组织本位币
   """
-  baseCurrency: String
+  localCurrency: String
   """
   组织图标
   """
@@ -11360,23 +11360,23 @@ input OrgWhereInput {
   timezoneEqualFold: String
   timezoneContainsFold: String
   """
-  base_currency field predicates
+  local_currency field predicates
   """
-  baseCurrency: String
-  baseCurrencyNEQ: String
-  baseCurrencyIn: [String!]
-  baseCurrencyNotIn: [String!]
-  baseCurrencyGT: String
-  baseCurrencyGTE: String
-  baseCurrencyLT: String
-  baseCurrencyLTE: String
-  baseCurrencyContains: String
-  baseCurrencyHasPrefix: String
-  baseCurrencyHasSuffix: String
-  baseCurrencyIsNil: Boolean
-  baseCurrencyNotNil: Boolean
-  baseCurrencyEqualFold: String
-  baseCurrencyContainsFold: String
+  localCurrency: String
+  localCurrencyNEQ: String
+  localCurrencyIn: [String!]
+  localCurrencyNotIn: [String!]
+  localCurrencyGT: String
+  localCurrencyGTE: String
+  localCurrencyLT: String
+  localCurrencyLTE: String
+  localCurrencyContains: String
+  localCurrencyHasPrefix: String
+  localCurrencyHasSuffix: String
+  localCurrencyIsNil: Boolean
+  localCurrencyNotNil: Boolean
+  localCurrencyEqualFold: String
+  localCurrencyContainsFold: String
   """
   parent edge predicates
   """
@@ -12744,8 +12744,8 @@ input UpdateOrgInput {
   """
   组织本位币
   """
-  baseCurrency: String
-  clearBaseCurrency: Boolean
+  localCurrency: String
+  clearLocalCurrency: Boolean
   """
   组织图标
   """

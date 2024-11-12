@@ -334,23 +334,23 @@ func (ou *OrgUpdate) ClearTimezone() *OrgUpdate {
 	return ou
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (ou *OrgUpdate) SetBaseCurrency(s string) *OrgUpdate {
-	ou.mutation.SetBaseCurrency(s)
+// SetLocalCurrency sets the "local_currency" field.
+func (ou *OrgUpdate) SetLocalCurrency(s string) *OrgUpdate {
+	ou.mutation.SetLocalCurrency(s)
 	return ou
 }
 
-// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
-func (ou *OrgUpdate) SetNillableBaseCurrency(s *string) *OrgUpdate {
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (ou *OrgUpdate) SetNillableLocalCurrency(s *string) *OrgUpdate {
 	if s != nil {
-		ou.SetBaseCurrency(*s)
+		ou.SetLocalCurrency(*s)
 	}
 	return ou
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (ou *OrgUpdate) ClearBaseCurrency() *OrgUpdate {
-	ou.mutation.ClearBaseCurrency()
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (ou *OrgUpdate) ClearLocalCurrency() *OrgUpdate {
+	ou.mutation.ClearLocalCurrency()
 	return ou
 }
 
@@ -781,9 +781,9 @@ func (ou *OrgUpdate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := ou.mutation.BaseCurrency(); ok {
-		if err := org.BaseCurrencyValidator(v); err != nil {
-			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+	if v, ok := ou.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
 	if ou.mutation.ParentCleared() && len(ou.mutation.ParentIDs()) > 0 {
@@ -882,11 +882,11 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if ou.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
 	}
-	if value, ok := ou.mutation.BaseCurrency(); ok {
-		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
+	if value, ok := ou.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
 	}
-	if ou.mutation.BaseCurrencyCleared() {
-		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
+	if ou.mutation.LocalCurrencyCleared() {
+		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
 	}
 	if value, ok := ou.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
@@ -1697,23 +1697,23 @@ func (ouo *OrgUpdateOne) ClearTimezone() *OrgUpdateOne {
 	return ouo
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (ouo *OrgUpdateOne) SetBaseCurrency(s string) *OrgUpdateOne {
-	ouo.mutation.SetBaseCurrency(s)
+// SetLocalCurrency sets the "local_currency" field.
+func (ouo *OrgUpdateOne) SetLocalCurrency(s string) *OrgUpdateOne {
+	ouo.mutation.SetLocalCurrency(s)
 	return ouo
 }
 
-// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
-func (ouo *OrgUpdateOne) SetNillableBaseCurrency(s *string) *OrgUpdateOne {
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (ouo *OrgUpdateOne) SetNillableLocalCurrency(s *string) *OrgUpdateOne {
 	if s != nil {
-		ouo.SetBaseCurrency(*s)
+		ouo.SetLocalCurrency(*s)
 	}
 	return ouo
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (ouo *OrgUpdateOne) ClearBaseCurrency() *OrgUpdateOne {
-	ouo.mutation.ClearBaseCurrency()
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (ouo *OrgUpdateOne) ClearLocalCurrency() *OrgUpdateOne {
+	ouo.mutation.ClearLocalCurrency()
 	return ouo
 }
 
@@ -2157,9 +2157,9 @@ func (ouo *OrgUpdateOne) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := ouo.mutation.BaseCurrency(); ok {
-		if err := org.BaseCurrencyValidator(v); err != nil {
-			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+	if v, ok := ouo.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
 	if ouo.mutation.ParentCleared() && len(ouo.mutation.ParentIDs()) > 0 {
@@ -2275,11 +2275,11 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	if ouo.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
 	}
-	if value, ok := ouo.mutation.BaseCurrency(); ok {
-		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
+	if value, ok := ouo.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
 	}
-	if ouo.mutation.BaseCurrencyCleared() {
-		_spec.ClearField(org.FieldBaseCurrency, field.TypeString)
+	if ouo.mutation.LocalCurrencyCleared() {
+		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
 	}
 	if value, ok := ouo.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)

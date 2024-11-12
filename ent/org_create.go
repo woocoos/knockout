@@ -254,16 +254,16 @@ func (oc *OrgCreate) SetNillableTimezone(s *string) *OrgCreate {
 	return oc
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (oc *OrgCreate) SetBaseCurrency(s string) *OrgCreate {
-	oc.mutation.SetBaseCurrency(s)
+// SetLocalCurrency sets the "local_currency" field.
+func (oc *OrgCreate) SetLocalCurrency(s string) *OrgCreate {
+	oc.mutation.SetLocalCurrency(s)
 	return oc
 }
 
-// SetNillableBaseCurrency sets the "base_currency" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableBaseCurrency(s *string) *OrgCreate {
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (oc *OrgCreate) SetNillableLocalCurrency(s *string) *OrgCreate {
 	if s != nil {
-		oc.SetBaseCurrency(*s)
+		oc.SetLocalCurrency(*s)
 	}
 	return oc
 }
@@ -536,9 +536,9 @@ func (oc *OrgCreate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
-	if v, ok := oc.mutation.BaseCurrency(); ok {
-		if err := org.BaseCurrencyValidator(v); err != nil {
-			return &ValidationError{Name: "base_currency", err: fmt.Errorf(`ent: validator failed for field "Org.base_currency": %w`, err)}
+	if v, ok := oc.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
 	if len(oc.mutation.ParentIDs()) == 0 {
@@ -637,9 +637,9 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 		_node.Timezone = value
 	}
-	if value, ok := oc.mutation.BaseCurrency(); ok {
-		_spec.SetField(org.FieldBaseCurrency, field.TypeString, value)
-		_node.BaseCurrency = value
+	if value, ok := oc.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
+		_node.LocalCurrency = value
 	}
 	if value, ok := oc.mutation.Logo(); ok {
 		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
@@ -1147,21 +1147,21 @@ func (u *OrgUpsert) ClearTimezone() *OrgUpsert {
 	return u
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (u *OrgUpsert) SetBaseCurrency(v string) *OrgUpsert {
-	u.Set(org.FieldBaseCurrency, v)
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsert) SetLocalCurrency(v string) *OrgUpsert {
+	u.Set(org.FieldLocalCurrency, v)
 	return u
 }
 
-// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
-func (u *OrgUpsert) UpdateBaseCurrency() *OrgUpsert {
-	u.SetExcluded(org.FieldBaseCurrency)
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateLocalCurrency() *OrgUpsert {
+	u.SetExcluded(org.FieldLocalCurrency)
 	return u
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (u *OrgUpsert) ClearBaseCurrency() *OrgUpsert {
-	u.SetNull(org.FieldBaseCurrency)
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsert) ClearLocalCurrency() *OrgUpsert {
+	u.SetNull(org.FieldLocalCurrency)
 	return u
 }
 
@@ -1545,24 +1545,24 @@ func (u *OrgUpsertOne) ClearTimezone() *OrgUpsertOne {
 	})
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (u *OrgUpsertOne) SetBaseCurrency(v string) *OrgUpsertOne {
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsertOne) SetLocalCurrency(v string) *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
-		s.SetBaseCurrency(v)
+		s.SetLocalCurrency(v)
 	})
 }
 
-// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
-func (u *OrgUpsertOne) UpdateBaseCurrency() *OrgUpsertOne {
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateLocalCurrency() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
-		s.UpdateBaseCurrency()
+		s.UpdateLocalCurrency()
 	})
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (u *OrgUpsertOne) ClearBaseCurrency() *OrgUpsertOne {
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsertOne) ClearLocalCurrency() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
-		s.ClearBaseCurrency()
+		s.ClearLocalCurrency()
 	})
 }
 
@@ -2115,24 +2115,24 @@ func (u *OrgUpsertBulk) ClearTimezone() *OrgUpsertBulk {
 	})
 }
 
-// SetBaseCurrency sets the "base_currency" field.
-func (u *OrgUpsertBulk) SetBaseCurrency(v string) *OrgUpsertBulk {
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsertBulk) SetLocalCurrency(v string) *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
-		s.SetBaseCurrency(v)
+		s.SetLocalCurrency(v)
 	})
 }
 
-// UpdateBaseCurrency sets the "base_currency" field to the value that was provided on create.
-func (u *OrgUpsertBulk) UpdateBaseCurrency() *OrgUpsertBulk {
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateLocalCurrency() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
-		s.UpdateBaseCurrency()
+		s.UpdateLocalCurrency()
 	})
 }
 
-// ClearBaseCurrency clears the value of the "base_currency" field.
-func (u *OrgUpsertBulk) ClearBaseCurrency() *OrgUpsertBulk {
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsertBulk) ClearLocalCurrency() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
-		s.ClearBaseCurrency()
+		s.ClearLocalCurrency()
 	})
 }
 

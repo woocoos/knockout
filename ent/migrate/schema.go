@@ -454,7 +454,7 @@ var (
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "country_code", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "timezone", Type: field.TypeString, Nullable: true, Size: 45},
-		{Name: "base_currency", Type: field.TypeString, Nullable: true, Size: 10},
+		{Name: "local_currency", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "logo", Type: field.TypeJSON, Nullable: true},
 		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0},
 		{Name: "owner_id", Type: field.TypeInt, Nullable: true},

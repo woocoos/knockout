@@ -5980,8 +5980,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -11524,8 +11524,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -14021,8 +14021,8 @@ func (ec *executionContext) fieldContext_Org_timezone(_ context.Context, field g
 	return fc, nil
 }
 
-func (ec *executionContext) _Org_baseCurrency(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Org_baseCurrency(ctx, field)
+func (ec *executionContext) _Org_localCurrency(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_localCurrency(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -14035,7 +14035,7 @@ func (ec *executionContext) _Org_baseCurrency(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.BaseCurrency, nil
+		return obj.LocalCurrency, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14049,7 +14049,7 @@ func (ec *executionContext) _Org_baseCurrency(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Org_baseCurrency(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Org_localCurrency(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Org",
 		Field:      field,
@@ -14186,8 +14186,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -14289,8 +14289,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -14822,8 +14822,8 @@ func (ec *executionContext) fieldContext_Org_TopOrg(_ context.Context, field gra
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -15125,8 +15125,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -15707,8 +15707,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -17491,8 +17491,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -18572,8 +18572,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -20149,8 +20149,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -20266,8 +20266,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -21059,8 +21059,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_countryCode(ctx, field)
 			case "timezone":
 				return ec.fieldContext_Org_timezone(ctx, field)
-			case "baseCurrency":
-				return ec.fieldContext_Org_baseCurrency(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
 			case "logo":
 				return ec.fieldContext_Org_logo(ctx, field)
 			case "parent":
@@ -36269,7 +36269,7 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "baseCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs"}
+	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "localCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -36318,13 +36318,13 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.Timezone = data
-		case "baseCurrency":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrency"))
+		case "localCurrency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrency"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrency = data
+			it.LocalCurrency = data
 		case "logo":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
 			data, err := ec.unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx, v)
@@ -43032,7 +43032,7 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "baseCurrency", "baseCurrencyNEQ", "baseCurrencyIn", "baseCurrencyNotIn", "baseCurrencyGT", "baseCurrencyGTE", "baseCurrencyLT", "baseCurrencyLTE", "baseCurrencyContains", "baseCurrencyHasPrefix", "baseCurrencyHasSuffix", "baseCurrencyIsNil", "baseCurrencyNotNil", "baseCurrencyEqualFold", "baseCurrencyContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasFileIdentities", "hasFileIdentitiesWith", "hasOrgUser", "hasOrgUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "localCurrency", "localCurrencyNEQ", "localCurrencyIn", "localCurrencyNotIn", "localCurrencyGT", "localCurrencyGTE", "localCurrencyLT", "localCurrencyLTE", "localCurrencyContains", "localCurrencyHasPrefix", "localCurrencyHasSuffix", "localCurrencyIsNil", "localCurrencyNotNil", "localCurrencyEqualFold", "localCurrencyContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasFileIdentities", "hasFileIdentitiesWith", "hasOrgUser", "hasOrgUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -44194,111 +44194,111 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 				return it, err
 			}
 			it.TimezoneContainsFold = data
-		case "baseCurrency":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrency"))
+		case "localCurrency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrency"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrency = data
-		case "baseCurrencyNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyNEQ"))
+			it.LocalCurrency = data
+		case "localCurrencyNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyNEQ"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyNEQ = data
-		case "baseCurrencyIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyIn"))
+			it.LocalCurrencyNEQ = data
+		case "localCurrencyIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyIn = data
-		case "baseCurrencyNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyNotIn"))
+			it.LocalCurrencyIn = data
+		case "localCurrencyNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyNotIn"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyNotIn = data
-		case "baseCurrencyGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyGT"))
+			it.LocalCurrencyNotIn = data
+		case "localCurrencyGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyGT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyGT = data
-		case "baseCurrencyGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyGTE"))
+			it.LocalCurrencyGT = data
+		case "localCurrencyGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyGTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyGTE = data
-		case "baseCurrencyLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyLT"))
+			it.LocalCurrencyGTE = data
+		case "localCurrencyLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyLT"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyLT = data
-		case "baseCurrencyLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyLTE"))
+			it.LocalCurrencyLT = data
+		case "localCurrencyLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyLTE"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyLTE = data
-		case "baseCurrencyContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyContains"))
+			it.LocalCurrencyLTE = data
+		case "localCurrencyContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyContains"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyContains = data
-		case "baseCurrencyHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyHasPrefix"))
+			it.LocalCurrencyContains = data
+		case "localCurrencyHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyHasPrefix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyHasPrefix = data
-		case "baseCurrencyHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyHasSuffix"))
+			it.LocalCurrencyHasPrefix = data
+		case "localCurrencyHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyHasSuffix"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyHasSuffix = data
-		case "baseCurrencyIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyIsNil"))
+			it.LocalCurrencyHasSuffix = data
+		case "localCurrencyIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyIsNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyIsNil = data
-		case "baseCurrencyNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyNotNil"))
+			it.LocalCurrencyIsNil = data
+		case "localCurrencyNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyNotNil"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyNotNil = data
-		case "baseCurrencyEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyEqualFold"))
+			it.LocalCurrencyNotNil = data
+		case "localCurrencyEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyEqualFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyEqualFold = data
-		case "baseCurrencyContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrencyContainsFold"))
+			it.LocalCurrencyEqualFold = data
+		case "localCurrencyContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrencyContainsFold"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrencyContainsFold = data
+			it.LocalCurrencyContainsFold = data
 		case "hasParent":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasParent"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -47355,7 +47355,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "baseCurrency", "clearBaseCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "localCurrency", "clearLocalCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -47439,20 +47439,20 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearTimezone = data
-		case "baseCurrency":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("baseCurrency"))
+		case "localCurrency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("localCurrency"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.BaseCurrency = data
-		case "clearBaseCurrency":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearBaseCurrency"))
+			it.LocalCurrency = data
+		case "clearLocalCurrency":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearLocalCurrency"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ClearBaseCurrency = data
+			it.ClearLocalCurrency = data
 		case "logo":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
 			data, err := ec.unmarshalOOrgLogoInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx, v)
@@ -57145,8 +57145,8 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 			out.Values[i] = ec._Org_countryCode(ctx, field, obj)
 		case "timezone":
 			out.Values[i] = ec._Org_timezone(ctx, field, obj)
-		case "baseCurrency":
-			out.Values[i] = ec._Org_baseCurrency(ctx, field, obj)
+		case "localCurrency":
+			out.Values[i] = ec._Org_localCurrency(ctx, field, obj)
 		case "logo":
 			out.Values[i] = ec._Org_logo(ctx, field, obj)
 		case "parent":

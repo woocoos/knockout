@@ -1253,7 +1253,7 @@ type CreateOrgInput struct {
 	Status           *typex.SimpleStatus
 	CountryCode      *string
 	Timezone         *string
-	BaseCurrency     *string
+	LocalCurrency    *string
 	Logo             *types.OrgLogo
 	ParentID         int
 	ChildIDs         []int
@@ -1284,8 +1284,8 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.Timezone; v != nil {
 		m.SetTimezone(*v)
 	}
-	if v := i.BaseCurrency; v != nil {
-		m.SetBaseCurrency(*v)
+	if v := i.LocalCurrency; v != nil {
+		m.SetLocalCurrency(*v)
 	}
 	if v := i.Logo; v != nil {
 		m.SetLogo(v)
@@ -1336,8 +1336,8 @@ type UpdateOrgInput struct {
 	CountryCode            *string
 	ClearTimezone          bool
 	Timezone               *string
-	ClearBaseCurrency      bool
-	BaseCurrency           *string
+	ClearLocalCurrency     bool
+	LocalCurrency          *string
 	ClearLogo              bool
 	Logo                   *types.OrgLogo
 	ParentID               *int
@@ -1401,11 +1401,11 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.Timezone; v != nil {
 		m.SetTimezone(*v)
 	}
-	if i.ClearBaseCurrency {
-		m.ClearBaseCurrency()
+	if i.ClearLocalCurrency {
+		m.ClearLocalCurrency()
 	}
-	if v := i.BaseCurrency; v != nil {
-		m.SetBaseCurrency(*v)
+	if v := i.LocalCurrency; v != nil {
+		m.SetLocalCurrency(*v)
 	}
 	if i.ClearLogo {
 		m.ClearLogo()
