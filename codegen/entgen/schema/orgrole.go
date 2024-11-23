@@ -26,7 +26,7 @@ func (OrgRole) Annotations() []schema.Annotation {
 
 func (OrgRole) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		schemax.IntID{},
+		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
 		schemax.NotifyMixin{},
 	}

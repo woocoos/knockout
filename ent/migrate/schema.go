@@ -546,7 +546,7 @@ var (
 	}
 	// OrgRoleColumns holds the columns for the "org_role" table.
 	OrgRoleColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "created_by", Type: field.TypeInt},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
@@ -585,7 +585,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "org_role_id", Type: field.TypeInt},
+		{Name: "org_role_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "org_user_id", Type: field.TypeInt},
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "org_id", Type: field.TypeInt},
@@ -715,7 +715,7 @@ var (
 		{Name: "org_id", Type: field.TypeInt},
 		{Name: "org_policy_id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "user_id", Type: field.TypeInt, Nullable: true},
-		{Name: "role_id", Type: field.TypeInt, Nullable: true},
+		{Name: "role_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// PermissionTable holds the schema information for the "permission" table.
 	PermissionTable = &schema.Table{

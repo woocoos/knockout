@@ -560,6 +560,8 @@ func init() {
 	orgroleMixinHooks2 := orgroleMixin[2].Hooks()
 	orgrole.Hooks[0] = orgroleMixinHooks1[0]
 	orgrole.Hooks[1] = orgroleMixinHooks2[0]
+	orgroleMixinFields0 := orgroleMixin[0].Fields()
+	_ = orgroleMixinFields0
 	orgroleMixinFields1 := orgroleMixin[1].Fields()
 	_ = orgroleMixinFields1
 	orgroleFields := schema.OrgRole{}.Fields()
@@ -568,6 +570,10 @@ func init() {
 	orgroleDescCreatedAt := orgroleMixinFields1[1].Descriptor()
 	// orgrole.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgrole.DefaultCreatedAt = orgroleDescCreatedAt.Default.(func() time.Time)
+	// orgroleDescID is the schema descriptor for id field.
+	orgroleDescID := orgroleMixinFields0[0].Descriptor()
+	// orgrole.DefaultID holds the default value on creation for the id field.
+	orgrole.DefaultID = orgroleDescID.Default.(func() int)
 	orgroleuserMixin := schema.OrgRoleUser{}.Mixin()
 	orgroleuserMixinHooks1 := orgroleuserMixin[1].Hooks()
 	orgroleuser.Hooks[0] = orgroleuserMixinHooks1[0]

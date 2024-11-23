@@ -133,6 +133,14 @@ func (orc *OrgRoleCreate) SetID(i int) *OrgRoleCreate {
 	return orc
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (orc *OrgRoleCreate) SetNillableID(i *int) *OrgRoleCreate {
+	if i != nil {
+		orc.SetID(*i)
+	}
+	return orc
+}
+
 // SetOrg sets the "org" edge to the Org entity.
 func (orc *OrgRoleCreate) SetOrg(o *Org) *OrgRoleCreate {
 	return orc.SetOrgID(o.ID)
@@ -211,6 +219,13 @@ func (orc *OrgRoleCreate) defaults() error {
 		}
 		v := orgrole.DefaultCreatedAt()
 		orc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := orc.mutation.ID(); !ok {
+		if orgrole.DefaultID == nil {
+			return fmt.Errorf("ent: uninitialized orgrole.DefaultID (forgotten import ent/runtime?)")
+		}
+		v := orgrole.DefaultID()
+		orc.mutation.SetID(v)
 	}
 	return nil
 }

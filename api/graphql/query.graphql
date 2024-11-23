@@ -128,6 +128,8 @@ extend type Query {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
+    """检测应用登录授权,针对获取token处理"""
+    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
     """获取文件凭证"""
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""

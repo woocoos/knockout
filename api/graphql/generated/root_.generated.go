@@ -673,6 +673,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AppAccess                   func(childComplexity int, appCode string) int
+		AppAccessForToken           func(childComplexity int, appCode string, clientID string, clientSecret string) int
 		AppDictByRefCode            func(childComplexity int, refCodes []string) int
 		AppDictItemByRefCode        func(childComplexity int, refCode string) int
 		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
@@ -4588,6 +4589,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.AppAccess(childComplexity, args["appCode"].(string)), true
+
+	case "Query.appAccessForToken":
+		if e.complexity.Query.AppAccessForToken == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appAccessForToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppAccessForToken(childComplexity, args["appCode"].(string), args["clientID"].(string), args["clientSecret"].(string)), true
 
 	case "Query.appDictByRefCode":
 		if e.complexity.Query.AppDictByRefCode == nil {
@@ -14993,6 +15006,8 @@ input OrgLogoInput {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
+    """检测应用登录授权,针对获取token处理"""
+    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
     """获取文件凭证"""
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""

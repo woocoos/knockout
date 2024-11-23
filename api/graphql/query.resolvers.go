@@ -7,6 +7,7 @@ package graphql
 import (
 	"context"
 	"fmt"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
@@ -272,6 +273,25 @@ func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, er
 		return false, nil
 	}
 	return has, nil
+}
+
+// AppAccessForToken is the resolver for the appAccessForToken field.
+func (r *queryResolver) AppAccessForToken(ctx context.Context, appCode string, clientID string, clientSecret string) (bool, error) {
+	oc, err := r.client.OauthClient.Query().Where(oauthclient.ClientID(clientID), oauthclient.ClientSecret(clientSecret)).Only(ctx)
+	if err != nil {
+		return false, err
+	}
+	orgIDs, err := r.client.Org.Query().Where(org.HasOrgUserWith(orguser.UserID(oc.UserID))).Select(org.FieldID).Ints(ctx)
+	for _, orgID := range orgIDs {
+		has, err := r.resource.CheckPermissionByOrgIDAndUserID(ctx, appCode+":login", orgID, oc.UserID)
+		if err != nil {
+			return false, nil
+		}
+		if has {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 // FileIdentitiesForApp is the resolver for the fileIdentitiesForApp field.

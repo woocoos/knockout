@@ -908,6 +908,15 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
 }
 
+func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permission string, orgID int, userID int) (bool, error) {
+	// 检查permission有效
+	parts := strings.SplitN(permission, ":", 2)
+	if len(parts) != 2 {
+		return false, fmt.Errorf("invalid permission")
+	}
+	return s.doCheckPermission(ctx, userID, orgID, parts[1], parts[0])
+}
+
 func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
 	token, err := jwt.ParseWithClaims(jwtStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.Cfg.Sub("jwt").String("signingMethod"))

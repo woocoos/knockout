@@ -104,6 +104,8 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() int
 )
 
 // Kind defines the type for the "kind" enum field.
