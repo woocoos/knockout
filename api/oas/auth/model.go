@@ -13,10 +13,14 @@ type Captcha struct {
 }
 
 type Domain struct {
-	ID   int    `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	ID             int    `json:"id,omitempty"`
+	LocalCurrency  string `json:"local_currency,omitempty"`
+	Name           string `json:"name,omitempty"`
+	ParentCurrency string `json:"parent_currency,omitempty"`
 	// ParentID the top-level parent domain id
 	ParentID int `json:"parent_id,omitempty"`
+	// ParentName the top-level parent domain name
+	ParentName string `json:"parent_name,omitempty"`
 }
 
 type Error struct {

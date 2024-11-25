@@ -250,6 +250,40 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	return s.loginToken(ctx, pwd.UserID)
 }
 
+func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
+	// TODO 验证登录权限
+
+	// 验证密码
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
+	if err != nil {
+		return nil, fmt.Errorf("username or password error")
+	}
+
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !profile.CanLogin {
+		return nil, errors.New("user not allowed to login")
+	}
+
+	if profile.MfaEnabled {
+		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
+			return nil, errors.New("invalid code")
+		}
+	} else {
+		return nil, fmt.Errorf("mfa is disabled")
+	}
+
+	if profile.PasswordReset {
+		return s.resetPasswordPrepare(ctx, profile)
+	}
+
+	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	return s.loginToken(ctx, pwd.UserID)
+}
+
 func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*LoginResponse, error) {
 	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
@@ -411,7 +445,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
-	).Select(org.FieldID, org.FieldName, org.FieldPath).All(ctx)
+	).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -425,14 +459,17 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		if err != nil {
 			return nil, err
 		}
-		to, err := s.db.Org.Query().Where(org.ID(int(oID))).Select(org.FieldID).Only(ctx)
+		to, err := s.db.Org.Query().Where(org.ID(int(oID))).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).Only(ctx)
 		if err != nil {
 			return nil, err
 		}
 		domains = append(domains, &Domain{
-			ID:       o.ID,
-			Name:     o.Name,
-			ParentID: to.ID,
+			ID:             o.ID,
+			Name:           o.Name,
+			LocalCurrency:  o.LocalCurrency,
+			ParentID:       to.ID,
+			ParentName:     to.Name,
+			ParentCurrency: to.LocalCurrency,
 		})
 	}
 	return &LoginResponse{

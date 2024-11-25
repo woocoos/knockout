@@ -61,6 +61,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /login/old-auth:
+    post:
+      summary: use this API to compatible old app login
+      description: use this API to compatible old app login
+      deprecated: true
+      tags:
+        - auth
+      operationId: oldLoginForApp
+      requestBody:
+        description: Login with username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: username or email
+                password:
+                  type: string
+                  description: hashed password
+                otpToken:
+                  type: string
+                  description: mfa random code
+                appCode:
+                  type: string
+                  description: app code,verify login permissions
+              required:
+                - username
+                - password
+                - otpToken
+                - appCode
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /login/refresh-token:
     post:
       summary: Use this API to refresh token
@@ -638,9 +686,16 @@ components:
           type: integer
         name:
           type: string
+        local_currency:
+          type: string
         parent_id:
           description: the top-level parent domain id
           type: integer
+        parent_name:
+          description: the top-level parent domain name
+          type: string
+        parent_currency:
+          type: string
 
     ErrorResponse:
       type: object

@@ -106,6 +106,18 @@ type LoginRequest struct {
 	Username string `binding:"required" json:"username"`
 }
 
+// OldLoginForAppRequest is the request object for (POST /login/old-auth)
+type OldLoginForAppRequest struct {
+	// AppCode app code,verify login permissions
+	AppCode string `binding:"required" json:"appCode"`
+	// OtpToken mfa random code
+	OtpToken string `binding:"required" json:"otpToken"`
+	// Password hashed password
+	Password string `binding:"required" json:"password"`
+	// Username username or email
+	Username string `binding:"required" json:"username"`
+}
+
 // RefreshTokenRequest is the request object for (POST /login/refresh-token)
 type RefreshTokenRequest struct {
 	// RefreshToken the refreshToken

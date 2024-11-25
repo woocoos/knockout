@@ -48,6 +48,7 @@ web:
                 #tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
+                  - "/login/old-auth"
                   - "/login/mfaqr.png"
                   - "/login/verify-factor"
                   - "/login/reset-password"

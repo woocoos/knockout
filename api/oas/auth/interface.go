@@ -52,6 +52,9 @@ type AuthServer interface {
 	// Logout log out a user
 	// (POST /logout)
 	Logout(*gin.Context) error
+	// OldLoginForApp use this API to compatible old app login
+	// (POST /login/old-auth)
+	OldLoginForApp(*gin.Context, *OldLoginForAppRequest) (*LoginResponse, error)
 	// RefreshToken Use this API to refresh token
 	// (POST /login/refresh-token)
 	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
@@ -139,6 +142,11 @@ func (UnimplementedAuthServer) Login(c *gin.Context, req *LoginRequest) (_ *Logi
 
 func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) OldLoginForApp(c *gin.Context, req *OldLoginForAppRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method OldLoginForApp not implemented")
 	return
 }
 
