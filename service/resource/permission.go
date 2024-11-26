@@ -293,6 +293,36 @@ func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUser
 	return s.assignRoleUserByTid(ctx, input, tid)
 }
 
+func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) error {
+	client := ent.FromContext(ctx)
+	// 获取可自动授权的角色
+	rIDs, err := client.AppRole.Query().Where(approle.AutoGrant(true), approle.HasAppWith(app.Code(appCode))).Select(approle.FieldID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	if rIDs != nil && len(rIDs) == 0 {
+		return fmt.Errorf("no authorized roles")
+	}
+	// 根据可授权角色查询组织角色
+	orIDs, err := client.OrgRole.Query().Where(orgrole.OrgID(orgID), orgrole.AppRoleIDIn(rIDs...)).Select(orgrole.FieldID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	if orIDs != nil && len(orIDs) == 0 {
+		return fmt.Errorf("no authorized roles")
+	}
+	for _, orID := range orIDs {
+		err = s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
+			OrgRoleID: orID,
+			UserID:    userID,
+		}, orgID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) error {
 	client := ent.FromContext(ctx)

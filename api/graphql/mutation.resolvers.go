@@ -574,6 +574,15 @@ func (r *mutationResolver) DeleteCurrency(ctx context.Context, currencyID int) (
 	return err == nil, err
 }
 
+// AutoGrantApp is the resolver for the AutoGrantApp field.
+func (r *mutationResolver) AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) (bool, error) {
+	err := r.resource.AutoGrantApp(ctx, appCode, orgID, userID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // Mutation returns generated1.MutationResolver implementation.
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 

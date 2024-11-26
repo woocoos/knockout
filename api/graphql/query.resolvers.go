@@ -7,7 +7,6 @@ package graphql
 import (
 	"context"
 	"fmt"
-	"github.com/woocoos/knockout/ent/oauthclient"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
@@ -22,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/fileidentity"
+	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"

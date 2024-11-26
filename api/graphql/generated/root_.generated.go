@@ -384,6 +384,7 @@ type ComplexityRoot struct {
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
+		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
@@ -2552,6 +2553,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AssignRoleUser(childComplexity, args["input"].(model.AssignRoleUserInput)), true
+
+	case "Mutation.autoGrantApp":
+		if e.complexity.Mutation.AutoGrantApp == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_autoGrantApp_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AutoGrantApp(childComplexity, args["appCode"].(string), args["orgID"].(int), args["userID"].(int)), true
 
 	case "Mutation.bindUserIdentity":
 		if e.complexity.Mutation.BindUserIdentity == nil {
@@ -15233,6 +15246,8 @@ input OrgLogoInput {
     updateCurrency(currencyID:ID!,input: UpdateCurrencyInput!): Currency
     """删除货币"""
     deleteCurrency(currencyID:ID!): Boolean!
+    """自动授权应用，系统开户、创建web交易用户使用"""
+    autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
 }
 `, BuiltIn: false},
 }

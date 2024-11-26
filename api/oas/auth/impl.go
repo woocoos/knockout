@@ -276,10 +276,6 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 		return nil, fmt.Errorf("mfa is disabled")
 	}
 
-	if profile.PasswordReset {
-		return s.resetPasswordPrepare(ctx, profile)
-	}
-
 	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, pwd.UserID)
 }

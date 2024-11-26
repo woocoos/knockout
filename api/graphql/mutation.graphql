@@ -209,4 +209,6 @@ type Mutation {
     updateCurrency(currencyID:ID!,input: UpdateCurrencyInput!): Currency
     """删除货币"""
     deleteCurrency(currencyID:ID!): Boolean!
+    """自动授权应用，系统开户、创建web交易用户使用"""
+    autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
 }
