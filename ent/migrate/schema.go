@@ -161,6 +161,7 @@ var (
 		{Name: "route", Type: field.TypeString, Nullable: true},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "action_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
@@ -172,13 +173,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_menu_app_menus",
-				Columns:    []*schema.Column{AppMenuColumns[12]},
+				Columns:    []*schema.Column{AppMenuColumns[13]},
 				RefColumns: []*schema.Column{AppColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "app_menu_app_action_menus",
-				Columns:    []*schema.Column{AppMenuColumns[13]},
+				Columns:    []*schema.Column{AppMenuColumns[14]},
 				RefColumns: []*schema.Column{AppActionColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

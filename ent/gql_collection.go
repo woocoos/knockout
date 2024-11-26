@@ -1261,6 +1261,11 @@ func (am *AppMenuQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 				selectedFields = append(selectedFields, appmenu.FieldDisplaySort)
 				fieldSeen[appmenu.FieldDisplaySort] = struct{}{}
 			}
+		case "status":
+			if _, ok := fieldSeen[appmenu.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldStatus)
+				fieldSeen[appmenu.FieldStatus] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

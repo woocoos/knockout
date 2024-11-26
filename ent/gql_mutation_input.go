@@ -513,6 +513,7 @@ type CreateAppMenuInput struct {
 	Icon     *string
 	Route    *string
 	Comments *string
+	Status   *typex.SimpleStatus
 	AppID    *int
 	ActionID *int
 }
@@ -530,6 +531,9 @@ func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
 	}
 	if v := i.AppID; v != nil {
 		m.SetAppID(*v)
@@ -556,6 +560,8 @@ type UpdateAppMenuInput struct {
 	Route         *string
 	ClearComments bool
 	Comments      *string
+	ClearStatus   bool
+	Status        *typex.SimpleStatus
 	ClearAction   bool
 	ActionID      *int
 }
@@ -588,6 +594,12 @@ func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
 	}
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
 	}
 	if i.ClearAction {
 		m.ClearAction()

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -174,6 +175,20 @@ func (amc *AppMenuCreate) SetNillableDisplaySort(i *int32) *AppMenuCreate {
 	return amc
 }
 
+// SetStatus sets the "status" field.
+func (amc *AppMenuCreate) SetStatus(ts typex.SimpleStatus) *AppMenuCreate {
+	amc.mutation.SetStatus(ts)
+	return amc
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (amc *AppMenuCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuCreate {
+	if ts != nil {
+		amc.SetStatus(*ts)
+	}
+	return amc
+}
+
 // SetID sets the "id" field.
 func (amc *AppMenuCreate) SetID(i int) *AppMenuCreate {
 	amc.mutation.SetID(i)
@@ -242,6 +257,10 @@ func (amc *AppMenuCreate) defaults() error {
 		v := appmenu.DefaultCreatedAt()
 		amc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := amc.mutation.Status(); !ok {
+		v := appmenu.DefaultStatus
+		amc.mutation.SetStatus(v)
+	}
 	if _, ok := amc.mutation.ID(); !ok {
 		if appmenu.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appmenu.DefaultID (forgotten import ent/runtime?)")
@@ -273,6 +292,11 @@ func (amc *AppMenuCreate) check() error {
 	}
 	if _, ok := amc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppMenu.name"`)}
+	}
+	if v, ok := amc.mutation.Status(); ok {
+		if err := appmenu.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -350,6 +374,10 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 	if value, ok := amc.mutation.DisplaySort(); ok {
 		_spec.SetField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
+	}
+	if value, ok := amc.mutation.Status(); ok {
+		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
+		_node.Status = value
 	}
 	if nodes := amc.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -617,6 +645,24 @@ func (u *AppMenuUpsert) ClearDisplaySort() *AppMenuUpsert {
 	return u
 }
 
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsert) SetStatus(v typex.SimpleStatus) *AppMenuUpsert {
+	u.Set(appmenu.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateStatus() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsert) ClearStatus() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldStatus)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -881,6 +927,27 @@ func (u *AppMenuUpsertOne) UpdateDisplaySort() *AppMenuUpsertOne {
 func (u *AppMenuUpsertOne) ClearDisplaySort() *AppMenuUpsertOne {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsertOne) SetStatus(v typex.SimpleStatus) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateStatus() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsertOne) ClearStatus() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearStatus()
 	})
 }
 
@@ -1314,6 +1381,27 @@ func (u *AppMenuUpsertBulk) UpdateDisplaySort() *AppMenuUpsertBulk {
 func (u *AppMenuUpsertBulk) ClearDisplaySort() *AppMenuUpsertBulk {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsertBulk) SetStatus(v typex.SimpleStatus) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateStatus() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsertBulk) ClearStatus() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearStatus()
 	})
 }
 

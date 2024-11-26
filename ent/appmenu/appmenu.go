@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 )
 
 const (
@@ -44,6 +46,8 @@ const (
 	FieldComments = "comments"
 	// FieldDisplaySort holds the string denoting the display_sort field in the database.
 	FieldDisplaySort = "display_sort"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// EdgeApp holds the string denoting the app edge name in mutations.
 	EdgeApp = "app"
 	// EdgeAction holds the string denoting the action edge name in mutations.
@@ -82,6 +86,7 @@ var Columns = []string{
 	FieldActionID,
 	FieldComments,
 	FieldDisplaySort,
+	FieldStatus,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -127,6 +132,18 @@ func KindValidator(k Kind) error {
 		return nil
 	default:
 		return fmt.Errorf("appmenu: invalid enum value for kind field: %q", k)
+	}
+}
+
+const DefaultStatus typex.SimpleStatus = "active"
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s typex.SimpleStatus) error {
+	switch s.String() {
+	case "active", "inactive", "processing", "disabled":
+		return nil
+	default:
+		return fmt.Errorf("appmenu: invalid enum value for status field: %q", s)
 	}
 }
 
@@ -203,6 +220,11 @@ func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
 }
 
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
 // ByAppField orders the results by app field.
 func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -248,3 +270,10 @@ func (e *Kind) UnmarshalGQL(val interface{}) error {
 	}
 	return nil
 }
+
+var (
+	// typex.SimpleStatus must implement graphql.Marshaler.
+	_ graphql.Marshaler = (*typex.SimpleStatus)(nil)
+	// typex.SimpleStatus must implement graphql.Unmarshaler.
+	_ graphql.Unmarshaler = (*typex.SimpleStatus)(nil)
+)

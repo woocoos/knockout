@@ -431,6 +431,8 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 
 	_, err = client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
 		SetPassword(n).Save(ctx)
+	// 更新PasswordReset
+	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
 	return err
 }
 
@@ -585,7 +587,7 @@ func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 }
 
 func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
-	ams, err := s.Client.AppMenu.Query().Where(appmenu.HasAppWith(app.Code(appCode))).All(ctx)
+	ams, err := s.Client.AppMenu.Query().Where(appmenu.StatusEQ(typex.SimpleStatusActive), appmenu.HasAppWith(app.Code(appCode))).All(ctx)
 	if err != nil {
 		return nil, err
 	}

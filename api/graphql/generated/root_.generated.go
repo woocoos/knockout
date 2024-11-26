@@ -174,6 +174,7 @@ type ComplexityRoot struct {
 		Name        func(childComplexity int) int
 		ParentID    func(childComplexity int) int
 		Route       func(childComplexity int) int
+		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
 	}
@@ -1552,6 +1553,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppMenu.Route(childComplexity), true
+
+	case "AppMenu.status":
+		if e.complexity.AppMenu.Status == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Status(childComplexity), true
 
 	case "AppMenu.updatedAt":
 		if e.complexity.AppMenu.UpdatedAt == nil {
@@ -7054,6 +7062,10 @@ type AppMenu implements Node {
   """
   comments: String
   displaySort: Int
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
   app: App
   """
   需要权限控制时对应的权限
@@ -7116,6 +7128,15 @@ Properties by which AppMenu connections can be ordered.
 enum AppMenuOrderField {
   createdAt
   displaySort
+}
+"""
+AppMenuSimpleStatus is enum for the field status
+"""
+enum AppMenuSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
 }
 """
 AppMenuWhereInput is used for filtering AppMenu objects.
@@ -7263,6 +7284,15 @@ input AppMenuWhereInput {
   routeNotNil: Boolean
   routeEqualFold: String
   routeContainsFold: String
+  """
+  status field predicates
+  """
+  status: AppMenuSimpleStatus
+  statusNEQ: AppMenuSimpleStatus
+  statusIn: [AppMenuSimpleStatus!]
+  statusNotIn: [AppMenuSimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
   """
   app edge predicates
   """
@@ -8648,6 +8678,10 @@ input CreateAppMenuInput {
   备注
   """
   comments: String
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
   appID: ID
   actionID: ID
 }
@@ -12523,6 +12557,11 @@ input UpdateAppMenuInput {
   """
   comments: String
   clearComments: Boolean
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
+  clearStatus: Boolean
   actionID: ID
   clearAction: Boolean
 }

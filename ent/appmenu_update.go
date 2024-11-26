@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -232,6 +233,26 @@ func (amu *AppMenuUpdate) ClearDisplaySort() *AppMenuUpdate {
 	return amu
 }
 
+// SetStatus sets the "status" field.
+func (amu *AppMenuUpdate) SetStatus(ts typex.SimpleStatus) *AppMenuUpdate {
+	amu.mutation.SetStatus(ts)
+	return amu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (amu *AppMenuUpdate) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuUpdate {
+	if ts != nil {
+		amu.SetStatus(*ts)
+	}
+	return amu
+}
+
+// ClearStatus clears the value of the "status" field.
+func (amu *AppMenuUpdate) ClearStatus() *AppMenuUpdate {
+	amu.mutation.ClearStatus()
+	return amu
+}
+
 // SetAction sets the "action" edge to the AppAction entity.
 func (amu *AppMenuUpdate) SetAction(a *AppAction) *AppMenuUpdate {
 	return amu.SetActionID(a.ID)
@@ -280,6 +301,11 @@ func (amu *AppMenuUpdate) check() error {
 	if v, ok := amu.mutation.Kind(); ok {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
+		}
+	}
+	if v, ok := amu.mutation.Status(); ok {
+		if err := appmenu.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
 	return nil
@@ -350,6 +376,12 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if amu.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
+	}
+	if value, ok := amu.mutation.Status(); ok {
+		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
+	}
+	if amu.mutation.StatusCleared() {
+		_spec.ClearField(appmenu.FieldStatus, field.TypeEnum)
 	}
 	if amu.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -603,6 +635,26 @@ func (amuo *AppMenuUpdateOne) ClearDisplaySort() *AppMenuUpdateOne {
 	return amuo
 }
 
+// SetStatus sets the "status" field.
+func (amuo *AppMenuUpdateOne) SetStatus(ts typex.SimpleStatus) *AppMenuUpdateOne {
+	amuo.mutation.SetStatus(ts)
+	return amuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (amuo *AppMenuUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuUpdateOne {
+	if ts != nil {
+		amuo.SetStatus(*ts)
+	}
+	return amuo
+}
+
+// ClearStatus clears the value of the "status" field.
+func (amuo *AppMenuUpdateOne) ClearStatus() *AppMenuUpdateOne {
+	amuo.mutation.ClearStatus()
+	return amuo
+}
+
 // SetAction sets the "action" edge to the AppAction entity.
 func (amuo *AppMenuUpdateOne) SetAction(a *AppAction) *AppMenuUpdateOne {
 	return amuo.SetActionID(a.ID)
@@ -664,6 +716,11 @@ func (amuo *AppMenuUpdateOne) check() error {
 	if v, ok := amuo.mutation.Kind(); ok {
 		if err := appmenu.KindValidator(v); err != nil {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppMenu.kind": %w`, err)}
+		}
+	}
+	if v, ok := amuo.mutation.Status(); ok {
+		if err := appmenu.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
 	return nil
@@ -751,6 +808,12 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 	}
 	if amuo.mutation.DisplaySortCleared() {
 		_spec.ClearField(appmenu.FieldDisplaySort, field.TypeInt32)
+	}
+	if value, ok := amuo.mutation.Status(); ok {
+		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
+	}
+	if amuo.mutation.StatusCleared() {
+		_spec.ClearField(appmenu.FieldStatus, field.TypeEnum)
 	}
 	if amuo.mutation.ActionCleared() {
 		edge := &sqlgraph.EdgeSpec{

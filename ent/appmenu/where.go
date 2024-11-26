@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -753,6 +754,46 @@ func DisplaySortIsNil() predicate.AppMenu {
 // DisplaySortNotNil applies the NotNil predicate on the "display_sort" field.
 func DisplaySortNotNil() predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldNotNull(FieldDisplaySort))
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v typex.SimpleStatus) predicate.AppMenu {
+	vc := v
+	return predicate.AppMenu(sql.FieldEQ(FieldStatus, vc))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v typex.SimpleStatus) predicate.AppMenu {
+	vc := v
+	return predicate.AppMenu(sql.FieldNEQ(FieldStatus, vc))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...typex.SimpleStatus) predicate.AppMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppMenu(sql.FieldIn(FieldStatus, v...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...typex.SimpleStatus) predicate.AppMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppMenu(sql.FieldNotIn(FieldStatus, v...))
+}
+
+// StatusIsNil applies the IsNil predicate on the "status" field.
+func StatusIsNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIsNull(FieldStatus))
+}
+
+// StatusNotNil applies the NotNil predicate on the "status" field.
+func StatusNotNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotNull(FieldStatus))
 }
 
 // HasApp applies the HasEdge predicate on the "app" edge.

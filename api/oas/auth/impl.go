@@ -276,7 +276,10 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 		return nil, fmt.Errorf("mfa is disabled")
 	}
 
-	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	cip := ctx.ClientIP()
+	// no mater what, update last login time and ip
+	err = s.db.UserLoginProfile.Update().Where(userloginprofile.UserID(profile.UserID)).
+		SetLastLoginIP(cip).SetUpdatedBy(profile.UserID).SetLastLoginAt(time.Now()).Exec(ctx)
 	return s.loginToken(ctx, pwd.UserID)
 }
 

@@ -2545,6 +2545,14 @@ type AppMenuWhereInput struct {
 	RouteEqualFold    *string  `json:"routeEqualFold,omitempty"`
 	RouteContainsFold *string  `json:"routeContainsFold,omitempty"`
 
+	// "status" field predicates.
+	Status       *typex.SimpleStatus  `json:"status,omitempty"`
+	StatusNEQ    *typex.SimpleStatus  `json:"statusNEQ,omitempty"`
+	StatusIn     []typex.SimpleStatus `json:"statusIn,omitempty"`
+	StatusNotIn  []typex.SimpleStatus `json:"statusNotIn,omitempty"`
+	StatusIsNil  bool                 `json:"statusIsNil,omitempty"`
+	StatusNotNil bool                 `json:"statusNotNil,omitempty"`
+
 	// "app" edge predicates.
 	HasApp     *bool            `json:"hasApp,omitempty"`
 	HasAppWith []*AppWhereInput `json:"hasAppWith,omitempty"`
@@ -2939,6 +2947,24 @@ func (i *AppMenuWhereInput) P() (predicate.AppMenu, error) {
 	}
 	if i.RouteContainsFold != nil {
 		predicates = append(predicates, appmenu.RouteContainsFold(*i.RouteContainsFold))
+	}
+	if i.Status != nil {
+		predicates = append(predicates, appmenu.StatusEQ(*i.Status))
+	}
+	if i.StatusNEQ != nil {
+		predicates = append(predicates, appmenu.StatusNEQ(*i.StatusNEQ))
+	}
+	if len(i.StatusIn) > 0 {
+		predicates = append(predicates, appmenu.StatusIn(i.StatusIn...))
+	}
+	if len(i.StatusNotIn) > 0 {
+		predicates = append(predicates, appmenu.StatusNotIn(i.StatusNotIn...))
+	}
+	if i.StatusIsNil {
+		predicates = append(predicates, appmenu.StatusIsNil())
+	}
+	if i.StatusNotNil {
+		predicates = append(predicates, appmenu.StatusNotNil())
 	}
 
 	if i.HasApp != nil {

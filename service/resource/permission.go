@@ -66,13 +66,13 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 		return err
 	}
 
-	// 应用策略
-	ps, err := ap.Policies(ctx)
+	// 应用auto_grant=true策略
+	ps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appID), apppolicy.AutoGrant(true)).All(ctx)
 	if err != nil {
 		return err
 	}
-	// 角色
-	rs, err := ap.Roles(ctx)
+	// 角色auto_grant=true
+	rs, err := client.AppRole.Query().Where(approle.AppID(appID), approle.AutoGrant(true)).All(ctx)
 	if err != nil {
 		return err
 	}

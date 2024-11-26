@@ -4170,6 +4170,8 @@ func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Con
 				return ec.fieldContext_AppMenu_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
 			case "app":
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
@@ -4256,6 +4258,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppMenu(ctx context.Cont
 				return ec.fieldContext_AppMenu_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
 			case "app":
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":

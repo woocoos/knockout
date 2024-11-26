@@ -4112,6 +4112,8 @@ func (ec *executionContext) fieldContext_AppAction_menus(_ context.Context, fiel
 				return ec.fieldContext_AppMenu_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
 			case "app":
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
@@ -6772,6 +6774,47 @@ func (ec *executionContext) fieldContext_AppMenu_displaySort(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _AppMenu_status(ctx context.Context, field graphql.CollectedField, obj *ent.AppMenu) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppMenu_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(typex.SimpleStatus)
+	fc.Result = res
+	return ec.marshalOAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppMenu_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppMenu",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type AppMenuSimpleStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AppMenu_app(ctx context.Context, field graphql.CollectedField, obj *ent.AppMenu) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AppMenu_app(ctx, field)
 	if err != nil {
@@ -7139,6 +7182,8 @@ func (ec *executionContext) fieldContext_AppMenuEdge_node(_ context.Context, fie
 				return ec.fieldContext_AppMenu_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
 			case "app":
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
@@ -20724,6 +20769,8 @@ func (ec *executionContext) fieldContext_Query_userMenus(ctx context.Context, fi
 				return ec.fieldContext_AppMenu_comments(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
 			case "app":
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
@@ -30060,7 +30107,7 @@ func (ec *executionContext) unmarshalInputAppMenuWhereInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "parentIDGT", "parentIDGTE", "parentIDLT", "parentIDLTE", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "icon", "iconNEQ", "iconIn", "iconNotIn", "iconGT", "iconGTE", "iconLT", "iconLTE", "iconContains", "iconHasPrefix", "iconHasSuffix", "iconIsNil", "iconNotNil", "iconEqualFold", "iconContainsFold", "route", "routeNEQ", "routeIn", "routeNotIn", "routeGT", "routeGTE", "routeLT", "routeLTE", "routeContains", "routeHasPrefix", "routeHasSuffix", "routeIsNil", "routeNotNil", "routeEqualFold", "routeContainsFold", "hasApp", "hasAppWith", "hasAction", "hasActionWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "parentIDGT", "parentIDGTE", "parentIDLT", "parentIDLTE", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "icon", "iconNEQ", "iconIn", "iconNotIn", "iconGT", "iconGTE", "iconLT", "iconLTE", "iconContains", "iconHasPrefix", "iconHasSuffix", "iconIsNil", "iconNotNil", "iconEqualFold", "iconContainsFold", "route", "routeNEQ", "routeIn", "routeNotIn", "routeGT", "routeGTE", "routeLT", "routeLTE", "routeContains", "routeHasPrefix", "routeHasSuffix", "routeIsNil", "routeNotNil", "routeEqualFold", "routeContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasApp", "hasAppWith", "hasAction", "hasActionWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -30823,6 +30870,48 @@ func (ec *executionContext) unmarshalInputAppMenuWhereInput(ctx context.Context,
 				return it, err
 			}
 			it.RouteContainsFold = data
+		case "status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "statusNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNEQ"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusNEQ = data
+		case "statusIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusIn"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusIn = data
+		case "statusNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNotIn"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusNotIn = data
+		case "statusIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusIsNil = data
+		case "statusNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusNotNil = data
 		case "hasApp":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasApp"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -35807,7 +35896,7 @@ func (ec *executionContext) unmarshalInputCreateAppMenuInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "route", "comments", "appID", "actionID"}
+	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "route", "comments", "status", "appID", "actionID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35856,6 +35945,13 @@ func (ec *executionContext) unmarshalInputCreateAppMenuInput(ctx context.Context
 				return it, err
 			}
 			it.Comments = data
+		case "status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
 		case "appID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -46788,7 +46884,7 @@ func (ec *executionContext) unmarshalInputUpdateAppMenuInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "clearIcon", "route", "clearRoute", "comments", "clearComments", "actionID", "clearAction"}
+	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "clearIcon", "route", "clearRoute", "comments", "clearComments", "status", "clearStatus", "actionID", "clearAction"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -46858,6 +46954,20 @@ func (ec *executionContext) unmarshalInputUpdateAppMenuInput(ctx context.Context
 				return it, err
 			}
 			it.ClearComments = data
+		case "status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "clearStatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearStatus"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearStatus = data
 		case "actionID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -55518,6 +55628,8 @@ func (ec *executionContext) _AppMenu(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._AppMenu_comments(ctx, field, obj)
 		case "displaySort":
 			out.Values[i] = ec._AppMenu_displaySort(ctx, field, obj)
+		case "status":
+			out.Values[i] = ec._AppMenu_status(ctx, field, obj)
 		case "app":
 			field := field
 
@@ -61609,6 +61721,16 @@ func (ec *executionContext) marshalNAppMenuOrderField2ᚖgithubᚗcomᚋwoocoos�
 	return v
 }
 
+func (ec *executionContext) unmarshalNAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {
+	var res typex.SimpleStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v typex.SimpleStatus) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNAppMenuWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuWhereInput(ctx context.Context, v interface{}) (*ent.AppMenuWhereInput, error) {
 	res, err := ec.unmarshalInputAppMenuWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -63885,6 +64007,99 @@ func (ec *executionContext) unmarshalOAppMenuOrder2ᚖgithubᚗcomᚋwoocoosᚋk
 	}
 	res, err := ec.unmarshalInputAppMenuOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {
+	var res typex.SimpleStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v typex.SimpleStatus) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalOAppMenuSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx context.Context, v interface{}) ([]typex.SimpleStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]typex.SimpleStatus, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOAppMenuSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []typex.SimpleStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAppMenuSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (*typex.SimpleStatus, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(typex.SimpleStatus)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAppMenuSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v *typex.SimpleStatus) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOAppMenuWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.AppMenuWhereInput, error) {

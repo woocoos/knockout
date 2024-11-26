@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -45,6 +46,8 @@ type AppMenu struct {
 	Comments string `json:"comments,omitempty"`
 	// DisplaySort holds the value of the "display_sort" field.
 	DisplaySort int32 `json:"display_sort,omitempty"`
+	// 状态
+	Status typex.SimpleStatus `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppMenuQuery when eager-loading is set.
 	Edges        AppMenuEdges `json:"edges"`
@@ -93,7 +96,7 @@ func (*AppMenu) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case appmenu.FieldID, appmenu.FieldCreatedBy, appmenu.FieldUpdatedBy, appmenu.FieldAppID, appmenu.FieldParentID, appmenu.FieldActionID, appmenu.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case appmenu.FieldKind, appmenu.FieldName, appmenu.FieldIcon, appmenu.FieldRoute, appmenu.FieldComments:
+		case appmenu.FieldKind, appmenu.FieldName, appmenu.FieldIcon, appmenu.FieldRoute, appmenu.FieldComments, appmenu.FieldStatus:
 			values[i] = new(sql.NullString)
 		case appmenu.FieldCreatedAt, appmenu.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -197,6 +200,12 @@ func (am *AppMenu) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				am.DisplaySort = int32(value.Int64)
 			}
+		case appmenu.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				am.Status = typex.SimpleStatus(value.String)
+			}
 		default:
 			am.selectValues.Set(columns[i], values[i])
 		}
@@ -283,6 +292,9 @@ func (am *AppMenu) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
 	builder.WriteString(fmt.Sprintf("%v", am.DisplaySort))
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", am.Status))
 	builder.WriteByte(')')
 	return builder.String()
 }
