@@ -19,6 +19,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -26,9 +27,13 @@ import (
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/authz"
+	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -40,6 +45,7 @@ import (
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/service/resource"
 	"image/png"
 	"net/http"
@@ -93,7 +99,9 @@ type Options struct {
 // ServerImpl is the server API for service.
 type ServerImpl struct {
 	Options
-	db    *ent.Client
+	db           *ent.Client
+	casbinClient *casbinent.Client
+
 	cache cache.Cache
 
 	kosdk *api.SDK
@@ -112,11 +120,15 @@ func NewServer(app *woocoo.App) *ServerImpl {
 	cnf := app.AppConfiguration()
 	s := &ServerImpl{}
 	ents := koapp.BuildEntComponents(cnf)
+	drv := ents["portal"]
 	if cnf.Development {
-		s.db = ent.NewClient(ent.Driver(ents["portal"]), ent.Debug())
+		s.db = ent.NewClient(ent.Driver(drv), ent.Debug())
+		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
 	} else {
-		s.db = ent.NewClient(ent.Driver(ents["portal"]))
+		s.db = ent.NewClient(ent.Driver(drv))
+		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv))
 	}
+	buildCashbin(cnf, s.casbinClient)
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
 		panic(err)
 	}
@@ -147,6 +159,13 @@ func (s *ServerImpl) buildWebServer(app *woocoo.App) *web.Server {
 	return s.webServer
 }
 
+func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
+	err := casbin.SetAuthorizer(cnf.Sub("authz"), client)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 	s.Options = Options{
 		CacheDriverName:   "redis",
@@ -175,6 +194,7 @@ func (s *ServerImpl) Start(ctx context.Context) error {
 }
 
 func (s *ServerImpl) Stop(ctx context.Context) error {
+	s.casbinClient.Close()
 	return s.db.Close()
 }
 
@@ -251,8 +271,6 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 }
 
 func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
-	// TODO 验证登录权限
-
 	// 验证密码
 	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
@@ -266,6 +284,34 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 
 	if !profile.CanLogin {
 		return nil, errors.New("user not allowed to login")
+	}
+
+	roIDs, err := s.db.Org.Query().Where(
+		org.HasOrgUserWith(orguser.UserID(pwd.UserID)),
+		org.StatusEQ(typex.SimpleStatusActive),
+		org.DomainNotNil(),
+		org.KindEQ(org.KindRoot),
+	).Select(org.FieldID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if roIDs == nil || len(roIDs) == 0 {
+		return nil, fmt.Errorf("user organization not found")
+	}
+	appAccess := false
+	for _, roID := range roIDs {
+		// 验证登录权限
+		has, err := s.doCheckPermission(ctx, pwd.UserID, roID, "login", req.AppCode)
+		if err != nil {
+			return nil, err
+		}
+		if has {
+			appAccess = true
+			break
+		}
+	}
+	if !appAccess {
+		return nil, fmt.Errorf("user does not authorize the app")
 	}
 
 	if profile.MfaEnabled {
@@ -1143,4 +1189,28 @@ func (s *ServerImpl) toProviderConfig(fi *ent.FileIdentity) *fs.ProviderConfig {
 		RoleArn:           fi.RoleArn,
 		DurationSeconds:   fi.DurationSeconds,
 	}
+}
+
+func (s *ServerImpl) doCheckPermission(ctx context.Context, uid, tid int, action, appCode string) (bool, error) {
+	has, err := s.db.AppAction.Query().Where(appaction.Name(action), appaction.HasAppWith(app.Code(appCode))).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, fmt.Errorf("invalid permission")
+	}
+	rule := []any{
+		strconv.Itoa(uid),
+		strconv.Itoa(tid),
+		fmt.Sprintf("%s%s%s", appCode, authz.ArnSplit, action),
+		"read",
+	}
+	has, err = security.CheckUserPermission(rule...)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, nil
+	}
+	return true, nil
 }

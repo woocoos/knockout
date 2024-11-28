@@ -239,7 +239,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "App", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, app.Table, id))
 	case appaction.Table:
 		query := c.AppAction.Query().
 			Where(appaction.ID(id))
@@ -248,7 +248,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppAction", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, appaction.Table, id))
 	case appdict.Table:
 		query := c.AppDict.Query().
 			Where(appdict.ID(id))
@@ -257,7 +257,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppDict", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, appdict.Table, id))
 	case appdictitem.Table:
 		query := c.AppDictItem.Query().
 			Where(appdictitem.ID(id))
@@ -266,7 +266,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppDictItem", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, appdictitem.Table, id))
 	case appmenu.Table:
 		query := c.AppMenu.Query().
 			Where(appmenu.ID(id))
@@ -275,7 +275,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppMenu", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, appmenu.Table, id))
 	case apppolicy.Table:
 		query := c.AppPolicy.Query().
 			Where(apppolicy.ID(id))
@@ -284,7 +284,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppPolicy", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, apppolicy.Table, id))
 	case appres.Table:
 		query := c.AppRes.Query().
 			Where(appres.ID(id))
@@ -293,7 +293,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppRes", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, appres.Table, id))
 	case approle.Table:
 		query := c.AppRole.Query().
 			Where(approle.ID(id))
@@ -302,7 +302,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, approle.Table, id))
 	case country.Table:
 		query := c.Country.Query().
 			Where(country.ID(id))
@@ -311,7 +311,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "Country", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, country.Table, id))
 	case currency.Table:
 		query := c.Currency.Query().
 			Where(currency.ID(id))
@@ -320,7 +320,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "Currency", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, currency.Table, id))
 	case fileidentity.Table:
 		query := c.FileIdentity.Query().
 			Where(fileidentity.ID(id))
@@ -329,7 +329,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "FileIdentity", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, fileidentity.Table, id))
 	case filesource.Table:
 		query := c.FileSource.Query().
 			Where(filesource.ID(id))
@@ -338,7 +338,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "FileSource", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, filesource.Table, id))
 	case oauthclient.Table:
 		query := c.OauthClient.Query().
 			Where(oauthclient.ID(id))
@@ -347,7 +347,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "OauthClient", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, oauthclient.Table, id))
 	case org.Table:
 		query := c.Org.Query().
 			Where(org.ID(id))
@@ -356,7 +356,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "Org", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, org.Table, id))
 	case orgpolicy.Table:
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.ID(id))
@@ -365,7 +365,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "OrgPolicy", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, orgpolicy.Table, id))
 	case orgrole.Table:
 		query := c.OrgRole.Query().
 			Where(orgrole.ID(id))
@@ -374,7 +374,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "OrgRole", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, orgrole.Table, id))
 	case orguserpreference.Table:
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.ID(id))
@@ -383,7 +383,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "OrgUserPreference", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, orguserpreference.Table, id))
 	case permission.Table:
 		query := c.Permission.Query().
 			Where(permission.ID(id))
@@ -392,7 +392,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, permission.Table, id))
 	case region.Table:
 		query := c.Region.Query().
 			Where(region.ID(id))
@@ -401,7 +401,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "Region", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, region.Table, id))
 	case user.Table:
 		query := c.User.Query().
 			Where(user.ID(id))
@@ -410,7 +410,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "User", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, user.Table, id))
 	case useraddr.Table:
 		query := c.UserAddr.Query().
 			Where(useraddr.ID(id))
@@ -419,7 +419,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "UserAddr", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, useraddr.Table, id))
 	case userdevice.Table:
 		query := c.UserDevice.Query().
 			Where(userdevice.ID(id))
@@ -428,7 +428,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "UserDevice", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, userdevice.Table, id))
 	case useridentity.Table:
 		query := c.UserIdentity.Query().
 			Where(useridentity.ID(id))
@@ -437,7 +437,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "UserIdentity", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, useridentity.Table, id))
 	case userloginprofile.Table:
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.ID(id))
@@ -446,7 +446,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "UserLoginProfile", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, userloginprofile.Table, id))
 	case userpassword.Table:
 		query := c.UserPassword.Query().
 			Where(userpassword.ID(id))
@@ -455,7 +455,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 				return nil, err
 			}
 		}
-		return query.Only(entcache.WithRefEntryKey(ctx, "UserPassword", id))
+		return query.Only(entcache.WithRefEntryKey(ctx, userpassword.Table, id))
 	default:
 		return nil, fmt.Errorf("cannot resolve noder from table %q: %w", table, errNodeInvalidID)
 	}

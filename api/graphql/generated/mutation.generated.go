@@ -118,1885 +118,4496 @@ type MutationResolver interface {
 func (ec *executionContext) field_Mutation_allotOrganizationUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrgUserInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrgUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_allotOrganizationUser_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_allotOrganizationUser_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOrgUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOrgUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOrgUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgUserInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOrgUserInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_assignAppRolePolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_assignAppRolePolicy_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_assignAppRolePolicy_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg1
-	var arg2 []int
-	if tmp, ok := rawArgs["policyIDs"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyIDs"))
-		arg2, err = ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_assignAppRolePolicy_argsPolicyIDs(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["policyIDs"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_assignAppRolePolicy_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignAppRolePolicy_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignAppRolePolicy_argsPolicyIDs(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["policyIDs"]
+	if !ok {
+		var zeroVal []int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("policyIDs"))
+	if tmp, ok := rawArgs["policyIDs"]; ok {
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
+	}
+
+	var zeroVal []int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_assignOrganizationAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_assignOrganizationAppPolicy_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appPolicyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_assignOrganizationAppPolicy_argsAppPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appPolicyID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_assignOrganizationAppPolicy_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignOrganizationAppPolicy_argsAppPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appPolicyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
+	if tmp, ok := rawArgs["appPolicyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_assignOrganizationAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_assignOrganizationAppRole_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appRoleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_assignOrganizationAppRole_argsAppRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appRoleID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_assignOrganizationAppRole_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignOrganizationAppRole_argsAppRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appRoleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
+	if tmp, ok := rawArgs["appRoleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_assignOrganizationApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_assignOrganizationApp_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_assignOrganizationApp_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_assignOrganizationApp_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignOrganizationApp_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_assignRoleUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.AssignRoleUserInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_assignRoleUser_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_assignRoleUser_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.AssignRoleUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal model.AssignRoleUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx, tmp)
+	}
+
+	var zeroVal model.AssignRoleUserInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_autoGrantApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["appCode"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_autoGrantApp_argsAppCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appCode"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_autoGrantApp_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg1
-	var arg2 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg2, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_autoGrantApp_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_autoGrantApp_argsAppCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appCode"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+	if tmp, ok := rawArgs["appCode"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_autoGrantApp_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_autoGrantApp_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_bindUserIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateUserIdentityInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateUserIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserIdentityInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_bindUserIdentity_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_bindUserIdentity_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateUserIdentityInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateUserIdentityInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateUserIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserIdentityInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateUserIdentityInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_changeOrgUserType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_changeOrgUserType_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
-	var arg1 orguser.UserType
-	if tmp, ok := rawArgs["userType"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userType"))
-		arg1, err = ec.unmarshalNOrgUserUserType2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_changeOrgUserType_argsUserType(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userType"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_changeOrgUserType_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_changeOrgUserType_argsUserType(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (orguser.UserType, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userType"]
+	if !ok {
+		var zeroVal orguser.UserType
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userType"))
+	if tmp, ok := rawArgs["userType"]; ok {
+		return ec.unmarshalNOrgUserUserType2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
+	}
+
+	var zeroVal orguser.UserType
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_changePassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["oldPwd"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("oldPwd"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_changePassword_argsOldPwd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["oldPwd"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["newPwd"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newPwd"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_changePassword_argsNewPwd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["newPwd"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_changePassword_argsOldPwd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["oldPwd"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("oldPwd"))
+	if tmp, ok := rawArgs["oldPwd"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_changePassword_argsNewPwd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["newPwd"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("newPwd"))
+	if tmp, ok := rawArgs["newPwd"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppActions_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppActions_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 []*ent.CreateAppActionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOCreateAppActionInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppActionInputᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppActions_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppActions_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppActions_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]*ent.CreateAppActionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal []*ent.CreateAppActionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalOCreateAppActionInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppActionInputᚄ(ctx, tmp)
+	}
+
+	var zeroVal []*ent.CreateAppActionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["dictID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppDictItem_argsDictID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["dictID"] = arg0
-	var arg1 ent.CreateAppDictItemInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictItemInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppDictItem_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppDictItem_argsDictID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["dictID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+	if tmp, ok := rawArgs["dictID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppDictItem_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateAppDictItemInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateAppDictItemInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictItemInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateAppDictItemInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppDict_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 ent.CreateAppDictInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppDict_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppDict_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppDict_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateAppDictInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateAppDictInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppDictInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateAppDictInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppMenus_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppMenus_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 []*ent.CreateAppMenuInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalOCreateAppMenuInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppMenuInputᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppMenus_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppMenus_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppMenus_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]*ent.CreateAppMenuInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal []*ent.CreateAppMenuInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalOCreateAppMenuInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppMenuInputᚄ(ctx, tmp)
+	}
+
+	var zeroVal []*ent.CreateAppMenuInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppPolicy_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 ent.CreateAppPolicyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppPolicy_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateAppPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateAppPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateAppPolicyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createAppRole_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 ent.CreateAppRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppRoleInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createAppRole_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAppRole_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createAppRole_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateAppRoleInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateAppRoleInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppRoleInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateAppRoleInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateAppInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateAppInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createApp_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createApp_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateAppInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateAppInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateAppInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateAppInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateAppInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateCountryInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateCountryInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createCountry_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createCountry_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateCountryInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateCountryInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateCountryInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateCountryInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createCurrency_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateCurrencyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateCurrencyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateCurrencyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createCurrency_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createCurrency_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateCurrencyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateCurrencyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateCurrencyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateCurrencyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateCurrencyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateFileIdentityInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateFileIdentityInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createFileIdentity_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createFileIdentity_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateFileIdentityInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateFileIdentityInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateFileIdentityInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateFileIdentityInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createFileSource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateFileSourceInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateFileSourceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateFileSourceInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createFileSource_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createFileSource_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateFileSourceInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateFileSourceInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateFileSourceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateFileSourceInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateFileSourceInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOauthClientInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOauthClientInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOauthClientInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createOauthClient_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createOauthClient_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOauthClientInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOauthClientInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOauthClientInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOauthClientInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOauthClientInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createOrganizationAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["rootOrgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rootOrgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createOrganizationAccount_argsRootOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["rootOrgID"] = arg0
-	var arg1 ent.CreateUserInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createOrganizationAccount_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createOrganizationAccount_argsRootOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["rootOrgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("rootOrgID"))
+	if tmp, ok := rawArgs["rootOrgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createOrganizationAccount_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateUserInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrgPolicyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgPolicyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createOrganizationPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createOrganizationPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOrgPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOrgPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOrgPolicyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createOrganizationUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["rootOrgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rootOrgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createOrganizationUser_argsRootOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["rootOrgID"] = arg0
-	var arg1 ent.CreateUserInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNCreateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_createOrganizationUser_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
-	var arg2 *orguser.UserType
-	if tmp, ok := rawArgs["orgUserType"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgUserType"))
-		arg2, err = ec.unmarshalOOrgUserUserType2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_createOrganizationUser_argsOrgUserType(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgUserType"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createOrganizationUser_argsRootOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["rootOrgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("rootOrgID"))
+	if tmp, ok := rawArgs["rootOrgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createOrganizationUser_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateUserInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createOrganizationUser_argsOrgUserType(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*orguser.UserType, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgUserType"]
+	if !ok {
+		var zeroVal *orguser.UserType
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgUserType"))
+	if tmp, ok := rawArgs["orgUserType"]; ok {
+		return ec.unmarshalOOrgUserUserType2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋorguserᚐUserType(ctx, tmp)
+	}
+
+	var zeroVal *orguser.UserType
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrgInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createOrganization_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createOrganization_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOrgInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOrgInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOrgInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateRegionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateRegionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createRegion_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createRegion_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateRegionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateRegionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateRegionInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateRegionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrgRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgRoleInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createRole_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createRole_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOrgRoleInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOrgRoleInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgRoleInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOrgRoleInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_createRoot_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreateOrgInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_createRoot_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_createRoot_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateOrgInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateOrgInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateOrgInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateOrgInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppAction_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["actionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppAction_argsActionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["actionID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppAction_argsActionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["actionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
+	if tmp, ok := rawArgs["actionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["itemID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppDictItem_argsItemID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["itemID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppDictItem_argsItemID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["itemID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
+	if tmp, ok := rawArgs["itemID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["dictID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppDict_argsDictID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["dictID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppDict_argsDictID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["dictID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+	if tmp, ok := rawArgs["dictID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["menuID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppMenu_argsMenuID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["menuID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppMenu_argsMenuID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["menuID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
+	if tmp, ok := rawArgs["menuID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["policyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppPolicy_argsPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["policyID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppPolicy_argsPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["policyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+	if tmp, ok := rawArgs["policyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteAppRole_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteAppRole_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteApp_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteApp_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["countryID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteCountry_argsCountryID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["countryID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteCountry_argsCountryID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["countryID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
+	if tmp, ok := rawArgs["countryID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteCurrency_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["currencyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currencyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteCurrency_argsCurrencyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["currencyID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteCurrency_argsCurrencyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["currencyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("currencyID"))
+	if tmp, ok := rawArgs["currencyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteFileIdentity_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteFileIdentity_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteFileSource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["fsID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fsID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteFileSource_argsFsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["fsID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteFileSource_argsFsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["fsID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fsID"))
+	if tmp, ok := rawArgs["fsID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteOauthClient_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteOauthClient_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgPolicyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteOrganizationPolicy_argsOrgPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgPolicyID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteOrganizationPolicy_argsOrgPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgPolicyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
+	if tmp, ok := rawArgs["orgPolicyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteOrganization_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteOrganization_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["regionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteRegion_argsRegionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["regionID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteRegion_argsRegionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["regionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
+	if tmp, ok := rawArgs["regionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteRole_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteRole_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteUserIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteUserIdentity_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteUserIdentity_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_deleteUser_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteUser_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_disableMFA_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_disableMFA_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_disableMFA_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_disableOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_disableOauthClient_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_disableOauthClient_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_enableDirectory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.EnableDirectoryInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_enableDirectory_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_enableDirectory_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.EnableDirectoryInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal model.EnableDirectoryInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx, tmp)
+	}
+
+	var zeroVal model.EnableDirectoryInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_enableMFA_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_enableMFA_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_enableMFA_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_enableOauthClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_enableOauthClient_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_enableOauthClient_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_grant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 ent.CreatePermissionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCreatePermissionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreatePermissionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_grant_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_grant_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreatePermissionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreatePermissionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreatePermissionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreatePermissionInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreatePermissionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_moveAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_moveAppDictItem_argsSourceID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["sourceID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_moveAppDictItem_argsTargetID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["targetID"] = arg1
-	var arg2 model.TreeAction
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_moveAppDictItem_argsAction(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["action"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_moveAppDictItem_argsSourceID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sourceID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppDictItem_argsTargetID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["targetID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
+	if tmp, ok := rawArgs["targetID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppDictItem_argsAction(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.TreeAction, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["action"]
+	if !ok {
+		var zeroVal model.TreeAction
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+	if tmp, ok := rawArgs["action"]; ok {
+		return ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+	}
+
+	var zeroVal model.TreeAction
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_moveAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_moveAppMenu_argsSourceID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["sourceID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_moveAppMenu_argsTargetID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["targetID"] = arg1
-	var arg2 model.TreeAction
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_moveAppMenu_argsAction(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["action"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_moveAppMenu_argsSourceID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sourceID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppMenu_argsTargetID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["targetID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("targetID"))
+	if tmp, ok := rawArgs["targetID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveAppMenu_argsAction(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.TreeAction, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["action"]
+	if !ok {
+		var zeroVal model.TreeAction
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+	if tmp, ok := rawArgs["action"]; ok {
+		return ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+	}
+
+	var zeroVal model.TreeAction
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_moveCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_moveCountry_argsSourceID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["sourceID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_moveCountry_argsTargetID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["targetId"] = arg1
-	var arg2 model.ListAction
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_moveCountry_argsAction(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["action"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_moveCountry_argsSourceID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sourceID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveCountry_argsTargetID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["targetId"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+	if tmp, ok := rawArgs["targetId"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveCountry_argsAction(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.ListAction, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["action"]
+	if !ok {
+		var zeroVal model.ListAction
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+	if tmp, ok := rawArgs["action"]; ok {
+		return ec.unmarshalNListAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐListAction(ctx, tmp)
+	}
+
+	var zeroVal model.ListAction
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_moveOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_moveOrganization_argsSourceID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["sourceID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_moveOrganization_argsTargetID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["targetId"] = arg1
-	var arg2 model.TreeAction
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_moveOrganization_argsAction(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["action"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_moveOrganization_argsSourceID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sourceID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveOrganization_argsTargetID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["targetId"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+	if tmp, ok := rawArgs["targetId"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveOrganization_argsAction(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.TreeAction, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["action"]
+	if !ok {
+		var zeroVal model.TreeAction
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+	if tmp, ok := rawArgs["action"]; ok {
+		return ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+	}
+
+	var zeroVal model.TreeAction
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_moveRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["sourceID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_moveRegion_argsSourceID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["sourceID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["targetId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_moveRegion_argsTargetID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["targetId"] = arg1
-	var arg2 model.TreeAction
-	if tmp, ok := rawArgs["action"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-		arg2, err = ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_moveRegion_argsAction(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["action"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_moveRegion_argsSourceID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sourceID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceID"))
+	if tmp, ok := rawArgs["sourceID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveRegion_argsTargetID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["targetId"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("targetId"))
+	if tmp, ok := rawArgs["targetId"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_moveRegion_argsAction(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.TreeAction, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["action"]
+	if !ok {
+		var zeroVal model.TreeAction
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
+	if tmp, ok := rawArgs["action"]; ok {
+		return ec.unmarshalNTreeAction2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐTreeAction(ctx, tmp)
+	}
+
+	var zeroVal model.TreeAction
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_recoverOrgUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_recoverOrgUser_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
-	var arg1 ent.UpdateUserInput
-	if tmp, ok := rawArgs["userInput"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userInput"))
-		arg1, err = ec.unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_recoverOrgUser_argsUserInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userInput"] = arg1
-	var arg2 userloginprofile.SetKind
-	if tmp, ok := rawArgs["pwdKind"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdKind"))
-		arg2, err = ec.unmarshalNUserLoginProfileSetKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_recoverOrgUser_argsPwdKind(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["pwdKind"] = arg2
-	var arg3 *ent.CreateUserPasswordInput
-	if tmp, ok := rawArgs["pwdInput"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdInput"))
-		arg3, err = ec.unmarshalOCreateUserPasswordInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserPasswordInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg3, err := ec.field_Mutation_recoverOrgUser_argsPwdInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["pwdInput"] = arg3
-	var arg4 *ent.UpdateUserAddrInput
-	if tmp, ok := rawArgs["contact"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
-		arg4, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg4, err := ec.field_Mutation_recoverOrgUser_argsContact(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["contact"] = arg4
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_recoverOrgUser_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_recoverOrgUser_argsUserInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userInput"]
+	if !ok {
+		var zeroVal ent.UpdateUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userInput"))
+	if tmp, ok := rawArgs["userInput"]; ok {
+		return ec.unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateUserInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_recoverOrgUser_argsPwdKind(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (userloginprofile.SetKind, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["pwdKind"]
+	if !ok {
+		var zeroVal userloginprofile.SetKind
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdKind"))
+	if tmp, ok := rawArgs["pwdKind"]; ok {
+		return ec.unmarshalNUserLoginProfileSetKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, tmp)
+	}
+
+	var zeroVal userloginprofile.SetKind
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_recoverOrgUser_argsPwdInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.CreateUserPasswordInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["pwdInput"]
+	if !ok {
+		var zeroVal *ent.CreateUserPasswordInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("pwdInput"))
+	if tmp, ok := rawArgs["pwdInput"]; ok {
+		return ec.unmarshalOCreateUserPasswordInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserPasswordInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.CreateUserPasswordInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_recoverOrgUser_argsContact(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UpdateUserAddrInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["contact"]
+	if !ok {
+		var zeroVal *ent.UpdateUserAddrInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
+	if tmp, ok := rawArgs["contact"]; ok {
+		return ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.UpdateUserAddrInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_removeOrganizationUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_removeOrganizationUser_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_removeOrganizationUser_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_removeOrganizationUser_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_removeOrganizationUser_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_resetUserPasswordByEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_resetUserPasswordByEmail_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userId"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_resetUserPasswordByEmail_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userId"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revokeAppRolePolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revokeAppRolePolicy_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revokeAppRolePolicy_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg1
-	var arg2 []int
-	if tmp, ok := rawArgs["policyIDs"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyIDs"))
-		arg2, err = ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_revokeAppRolePolicy_argsPolicyIDs(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["policyIDs"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revokeAppRolePolicy_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeAppRolePolicy_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeAppRolePolicy_argsPolicyIDs(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["policyIDs"]
+	if !ok {
+		var zeroVal []int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("policyIDs"))
+	if tmp, ok := rawArgs["policyIDs"]; ok {
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
+	}
+
+	var zeroVal []int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revokeOrganizationAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revokeOrganizationAppPolicy_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appPolicyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revokeOrganizationAppPolicy_argsAppPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appPolicyID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revokeOrganizationAppPolicy_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeOrganizationAppPolicy_argsAppPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appPolicyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyID"))
+	if tmp, ok := rawArgs["appPolicyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revokeOrganizationAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revokeOrganizationAppRole_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appRoleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revokeOrganizationAppRole_argsAppRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appRoleID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revokeOrganizationAppRole_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeOrganizationAppRole_argsAppRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appRoleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
+	if tmp, ok := rawArgs["appRoleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revokeOrganizationApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revokeOrganizationApp_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revokeOrganizationApp_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revokeOrganizationApp_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeOrganizationApp_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revokeRoleUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revokeRoleUser_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revokeRoleUser_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revokeRoleUser_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revokeRoleUser_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_revoke_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_revoke_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["permissionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_revoke_argsPermissionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["permissionID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_revoke_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_revoke_argsPermissionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["permissionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
+	if tmp, ok := rawArgs["permissionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_saveOrgUserPreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.OrgUserPreferenceInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_saveOrgUserPreference_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_saveOrgUserPreference_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.OrgUserPreferenceInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal model.OrgUserPreferenceInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNOrgUserPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐOrgUserPreferenceInput(ctx, tmp)
+	}
+
+	var zeroVal model.OrgUserPreferenceInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_sendMFAToUserByEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_sendMFAToUserByEmail_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_sendMFAToUserByEmail_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_setDefaultFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["identityID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("identityID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_setDefaultFileIdentity_argsIdentityID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["identityID"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_setDefaultFileIdentity_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_setDefaultFileIdentity_argsIdentityID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["identityID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("identityID"))
+	if tmp, ok := rawArgs["identityID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_setDefaultFileIdentity_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppAction_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["actionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppAction_argsActionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["actionID"] = arg0
-	var arg1 ent.UpdateAppActionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppActionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppActionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppAction_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppAction_argsActionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["actionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actionID"))
+	if tmp, ok := rawArgs["actionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppAction_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppActionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppActionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppActionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppActionInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppActionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppDictItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["itemID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppDictItem_argsItemID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["itemID"] = arg0
-	var arg1 ent.UpdateAppDictItemInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictItemInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppDictItem_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppDictItem_argsItemID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["itemID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("itemID"))
+	if tmp, ok := rawArgs["itemID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppDictItem_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppDictItemInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppDictItemInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppDictItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictItemInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppDictItemInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppDict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["dictID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppDict_argsDictID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["dictID"] = arg0
-	var arg1 ent.UpdateAppDictInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppDict_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppDict_argsDictID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["dictID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("dictID"))
+	if tmp, ok := rawArgs["dictID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppDict_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppDictInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppDictInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppDictInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppDictInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppDictInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppMenu_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["menuID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppMenu_argsMenuID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["menuID"] = arg0
-	var arg1 ent.UpdateAppMenuInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppMenuInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppMenuInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppMenu_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppMenu_argsMenuID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["menuID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("menuID"))
+	if tmp, ok := rawArgs["menuID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppMenu_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppMenuInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppMenuInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppMenuInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppMenuInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppMenuInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["policyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppPolicy_argsPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["policyID"] = arg0
-	var arg1 ent.UpdateAppPolicyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppPolicyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppPolicy_argsPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["policyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("policyID"))
+	if tmp, ok := rawArgs["policyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppPolicyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppRes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appResID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appResID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppRes_argsAppResID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appResID"] = arg0
-	var arg1 ent.UpdateAppResInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppResInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppResInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppRes_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppRes_argsAppResID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appResID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appResID"))
+	if tmp, ok := rawArgs["appResID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppRes_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppResInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppResInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppResInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppResInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppResInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateAppRole_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg0
-	var arg1 ent.UpdateAppRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppRoleInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateAppRole_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateAppRole_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateAppRole_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppRoleInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppRoleInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppRoleInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppRoleInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateApp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["appID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateApp_argsAppID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["appID"] = arg0
-	var arg1 ent.UpdateAppInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateAppInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateApp_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateApp_argsAppID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+	if tmp, ok := rawArgs["appID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateApp_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateAppInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateAppInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateAppInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateAppInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateAppInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateCountry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["countryID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateCountry_argsCountryID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["countryID"] = arg0
-	var arg1 ent.UpdateCountryInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateCountryInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateCountry_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateCountry_argsCountryID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["countryID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("countryID"))
+	if tmp, ok := rawArgs["countryID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCountry_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateCountryInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateCountryInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateCountryInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateCountryInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateCountryInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateCurrency_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["currencyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("currencyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateCurrency_argsCurrencyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["currencyID"] = arg0
-	var arg1 ent.UpdateCurrencyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateCurrencyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateCurrencyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateCurrency_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateCurrency_argsCurrencyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["currencyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("currencyID"))
+	if tmp, ok := rawArgs["currencyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateCurrency_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateCurrencyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateCurrencyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateCurrencyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateCurrencyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateCurrencyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateFileIdentity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateFileIdentity_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["id"] = arg0
-	var arg1 ent.UpdateFileIdentityInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateFileIdentityInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateFileIdentity_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateFileIdentity_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateFileIdentity_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateFileIdentityInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateFileIdentityInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateFileIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateFileIdentityInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateFileIdentityInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateFileSource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["fsID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fsID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateFileSource_argsFsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["fsID"] = arg0
-	var arg1 ent.UpdateFileSourceInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateFileSourceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateFileSourceInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateFileSource_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateFileSource_argsFsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["fsID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fsID"))
+	if tmp, ok := rawArgs["fsID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateFileSource_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateFileSourceInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateFileSourceInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateFileSourceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateFileSourceInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateFileSourceInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateLoginProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateLoginProfile_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
-	var arg1 ent.UpdateUserLoginProfileInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateUserLoginProfileInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserLoginProfileInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateLoginProfile_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateLoginProfile_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateLoginProfile_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateUserLoginProfileInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateUserLoginProfileInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateUserLoginProfileInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserLoginProfileInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateUserLoginProfileInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateOrganizationPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgPolicyID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateOrganizationPolicy_argsOrgPolicyID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgPolicyID"] = arg0
-	var arg1 ent.UpdateOrgPolicyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgPolicyInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateOrganizationPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateOrganizationPolicy_argsOrgPolicyID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgPolicyID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyID"))
+	if tmp, ok := rawArgs["orgPolicyID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateOrganizationPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateOrgPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateOrgPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateOrgPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateOrgPolicyInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateOrganization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["orgID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateOrganization_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["orgID"] = arg0
-	var arg1 ent.UpdateOrgInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateOrganization_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateOrganization_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateOrganization_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateOrgInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateOrgInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateOrgInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateOrgInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updatePermission_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["permissionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updatePermission_argsPermissionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["permissionID"] = arg0
-	var arg1 ent.UpdatePermissionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdatePermissionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdatePermissionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updatePermission_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updatePermission_argsPermissionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["permissionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("permissionID"))
+	if tmp, ok := rawArgs["permissionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updatePermission_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdatePermissionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdatePermissionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdatePermissionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdatePermissionInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdatePermissionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["regionID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateRegion_argsRegionID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["regionID"] = arg0
-	var arg1 ent.UpdateRegionInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateRegionInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateRegion_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateRegion_argsRegionID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["regionID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("regionID"))
+	if tmp, ok := rawArgs["regionID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateRegion_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateRegionInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateRegionInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateRegionInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateRegionInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateRegionInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["roleID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateRole_argsRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["roleID"] = arg0
-	var arg1 ent.UpdateOrgRoleInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgRoleInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateRole_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateRole_argsRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["roleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("roleID"))
+	if tmp, ok := rawArgs["roleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateRole_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateOrgRoleInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateOrgRoleInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateOrgRoleInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateOrgRoleInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateOrgRoleInput
+	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["userID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg0, err := ec.field_Mutation_updateUser_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["userID"] = arg0
-	var arg1 ent.UpdateUserInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg1, err := ec.field_Mutation_updateUser_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["input"] = arg1
-	var arg2 *ent.UpdateUserAddrInput
-	if tmp, ok := rawArgs["contact"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
-		arg2, err = ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
+	arg2, err := ec.field_Mutation_updateUser_argsContact(ctx, rawArgs)
+	if err != nil {
+		return nil, err
 	}
 	args["contact"] = arg2
 	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateUser_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateUser_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateUserInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateUserInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateUserInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateUser_argsContact(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UpdateUserAddrInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["contact"]
+	if !ok {
+		var zeroVal *ent.UpdateUserAddrInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("contact"))
+	if tmp, ok := rawArgs["contact"]; ok {
+		return ec.unmarshalOUpdateUserAddrInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserAddrInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.UpdateUserAddrInput
+	return zeroVal, nil
 }
 
 // endregion ***************************** args.gotpl *****************************

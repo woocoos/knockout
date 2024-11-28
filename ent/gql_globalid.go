@@ -12,6 +12,31 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appaction"
+	"github.com/woocoos/knockout/ent/appdict"
+	"github.com/woocoos/knockout/ent/appdictitem"
+	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/appres"
+	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
+	"github.com/woocoos/knockout/ent/fileidentity"
+	"github.com/woocoos/knockout/ent/filesource"
+	"github.com/woocoos/knockout/ent/oauthclient"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguserpreference"
+	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
+	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
+	"github.com/woocoos/knockout/ent/userdevice"
+	"github.com/woocoos/knockout/ent/useridentity"
+	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/ent/userpassword"
 )
 
 // GlobalID returns the global identifier for the given App node.
@@ -181,55 +206,55 @@ func FromGlobalID(s string) (*ResolvedGlobal, error) {
 // GlobalID returns the global identifier for the given type and id.
 func GlobalID(tp, id string) (string, error) {
 	switch tp {
-	case "App":
+	case app.Table:
 		break
-	case "AppAction":
+	case appaction.Table:
 		break
-	case "AppDict":
+	case appdict.Table:
 		break
-	case "AppDictItem":
+	case appdictitem.Table:
 		break
-	case "AppMenu":
+	case appmenu.Table:
 		break
-	case "AppPolicy":
+	case apppolicy.Table:
 		break
-	case "AppRes":
+	case appres.Table:
 		break
-	case "AppRole":
+	case approle.Table:
 		break
-	case "Country":
+	case country.Table:
 		break
-	case "Currency":
+	case currency.Table:
 		break
-	case "FileIdentity":
+	case fileidentity.Table:
 		break
-	case "FileSource":
+	case filesource.Table:
 		break
-	case "OauthClient":
+	case oauthclient.Table:
 		break
-	case "Org":
+	case org.Table:
 		break
-	case "OrgPolicy":
+	case orgpolicy.Table:
 		break
-	case "OrgRole":
+	case orgrole.Table:
 		break
-	case "OrgUserPreference":
+	case orguserpreference.Table:
 		break
-	case "Permission":
+	case permission.Table:
 		break
-	case "Region":
+	case region.Table:
 		break
-	case "User":
+	case user.Table:
 		break
-	case "UserAddr":
+	case useraddr.Table:
 		break
-	case "UserDevice":
+	case userdevice.Table:
 		break
-	case "UserIdentity":
+	case useridentity.Table:
 		break
-	case "UserLoginProfile":
+	case userloginprofile.Table:
 		break
-	case "UserPassword":
+	case userpassword.Table:
 		break
 	default:
 		return "", fmt.Errorf("invalid type %q", tp)

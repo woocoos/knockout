@@ -35,13 +35,15 @@ func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, princi
 	for _, rule := range rules {
 		for _, action := range rule.Actions {
 			p := []string{role, tenant, action, "read", rule.Effect.String()}
-			if !authorizer.Enforcer.HasPolicy(p) {
+			has, _ := authorizer.Enforcer.HasPolicy(p)
+			if !has {
 				pls = append(pls, p)
 			}
 		}
 		for _, resource := range rule.Resources {
 			p := []string{role, tenant, resource, "read", rule.Effect.String()}
-			if !authorizer.Enforcer.HasPolicy(p) {
+			has, _ := authorizer.Enforcer.HasPolicy(p)
+			if !has {
 				pls = append(pls, p)
 			}
 		}

@@ -300,7 +300,7 @@ func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, u
 	if err != nil {
 		return err
 	}
-	if rIDs != nil && len(rIDs) == 0 {
+	if rIDs == nil || len(rIDs) == 0 {
 		return fmt.Errorf("no authorized roles")
 	}
 	// 根据可授权角色查询组织角色
@@ -308,7 +308,7 @@ func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, u
 	if err != nil {
 		return err
 	}
-	if orIDs != nil && len(orIDs) == 0 {
+	if orIDs == nil || len(orIDs) == 0 {
 		return fmt.Errorf("no authorized roles")
 	}
 	for _, orID := range orIDs {

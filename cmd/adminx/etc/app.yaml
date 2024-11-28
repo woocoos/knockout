@@ -20,11 +20,14 @@ log:
 #      dialOption:
 #        - timeout: 5s
 authz:
+  expireTime: 10s
   autoSave: true
   watcherOptions:
     options:
       addr: "127.0.0.1:6379"
-      channel: "/casbin"
+      db: 1
+    ignoreSelf: true
+    channel: "/casbin"
   model: "etc/rbac_model.conf"
 
 jwt: &jwt
