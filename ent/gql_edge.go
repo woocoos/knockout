@@ -485,6 +485,43 @@ func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
 	return result, err
 }
 
+func (q *Quota) Org(ctx context.Context) (*Org, error) {
+	result, err := q.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryOrg().Only(ctx)
+	}
+	return result, err
+}
+
+func (q *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
+	result, err := q.Edges.QuotaItemOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaItem().Only(ctx)
+	}
+	return result, err
+}
+
+func (qi *QuotaItem) Quota(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *QuotaOrder, where *QuotaWhereInput,
+) (*QuotaConnection, error) {
+	opts := []QuotaPaginateOption{
+		WithQuotaOrder(orderBy),
+		WithQuotaFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := qi.Edges.totalCount[0][alias]
+	if nodes, err := qi.NamedQuota(alias); err == nil || hasTotalCount {
+		pager, err := newQuotaPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &QuotaConnection{Edges: []*QuotaEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return qi.QueryQuota().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (r *Region) Parent(ctx context.Context) (*Region, error) {
 	result, err := r.Edges.ParentOrErr()
 	if IsNotLoaded(err) {

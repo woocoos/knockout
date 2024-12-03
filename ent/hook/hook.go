@@ -273,6 +273,30 @@ func (f PermissionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PermissionMutation", m)
 }
 
+// The QuotaFunc type is an adapter to allow the use of ordinary
+// function as Quota mutator.
+type QuotaFunc func(context.Context, *ent.QuotaMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f QuotaFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.QuotaMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.QuotaMutation", m)
+}
+
+// The QuotaItemFunc type is an adapter to allow the use of ordinary
+// function as QuotaItem mutator.
+type QuotaItemFunc func(context.Context, *ent.QuotaItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f QuotaItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.QuotaItemMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.QuotaItemMutation", m)
+}
+
 // The RegionFunc type is an adapter to allow the use of ordinary
 // function as Region mutator.
 type RegionFunc func(context.Context, *ent.RegionMutation) (ent.Value, error)

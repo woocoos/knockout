@@ -38,6 +38,8 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -96,6 +98,10 @@ type Client struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Quota is the client for interacting with the Quota builders.
+	Quota *QuotaClient
+	// QuotaItem is the client for interacting with the QuotaItem builders.
+	QuotaItem *QuotaItemClient
 	// Region is the client for interacting with the Region builders.
 	Region *RegionClient
 	// User is the client for interacting with the User builders.
@@ -145,6 +151,8 @@ func (c *Client) init() {
 	c.OrgUser = NewOrgUserClient(c.config)
 	c.OrgUserPreference = NewOrgUserPreferenceClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
+	c.Quota = NewQuotaClient(c.config)
+	c.QuotaItem = NewQuotaItemClient(c.config)
 	c.Region = NewRegionClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserAddr = NewUserAddrClient(c.config)
@@ -266,6 +274,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		OrgUser:           NewOrgUserClient(cfg),
 		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
 		Permission:        NewPermissionClient(cfg),
+		Quota:             NewQuotaClient(cfg),
+		QuotaItem:         NewQuotaItemClient(cfg),
 		Region:            NewRegionClient(cfg),
 		User:              NewUserClient(cfg),
 		UserAddr:          NewUserAddrClient(cfg),
@@ -314,6 +324,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		OrgUser:           NewOrgUserClient(cfg),
 		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
 		Permission:        NewPermissionClient(cfg),
+		Quota:             NewQuotaClient(cfg),
+		QuotaItem:         NewQuotaItemClient(cfg),
 		Region:            NewRegionClient(cfg),
 		User:              NewUserClient(cfg),
 		UserAddr:          NewUserAddrClient(cfg),
@@ -353,8 +365,9 @@ func (c *Client) Use(hooks ...Hook) {
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
 		c.AppRole, c.AppRolePolicy, c.Country, c.Currency, c.FileIdentity,
 		c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Region, c.User,
-		c.UserAddr, c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Quota,
+		c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -367,8 +380,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
 		c.AppRole, c.AppRolePolicy, c.Country, c.Currency, c.FileIdentity,
 		c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Region, c.User,
-		c.UserAddr, c.UserDevice, c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Quota,
+		c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice, c.UserIdentity,
+		c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -421,6 +435,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgUserPreference.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
+	case *QuotaMutation:
+		return c.Quota.mutate(ctx, m)
+	case *QuotaItemMutation:
+		return c.QuotaItem.mutate(ctx, m)
 	case *RegionMutation:
 		return c.Region.mutate(ctx, m)
 	case *UserMutation:
@@ -4382,6 +4400,322 @@ func (c *PermissionClient) mutate(ctx context.Context, m *PermissionMutation) (V
 	}
 }
 
+// QuotaClient is a client for the Quota schema.
+type QuotaClient struct {
+	config
+}
+
+// NewQuotaClient returns a client for the Quota from the given config.
+func NewQuotaClient(c config) *QuotaClient {
+	return &QuotaClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `quota.Hooks(f(g(h())))`.
+func (c *QuotaClient) Use(hooks ...Hook) {
+	c.hooks.Quota = append(c.hooks.Quota, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `quota.Intercept(f(g(h())))`.
+func (c *QuotaClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Quota = append(c.inters.Quota, interceptors...)
+}
+
+// Create returns a builder for creating a Quota entity.
+func (c *QuotaClient) Create() *QuotaCreate {
+	mutation := newQuotaMutation(c.config, OpCreate)
+	return &QuotaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Quota entities.
+func (c *QuotaClient) CreateBulk(builders ...*QuotaCreate) *QuotaCreateBulk {
+	return &QuotaCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *QuotaClient) MapCreateBulk(slice any, setFunc func(*QuotaCreate, int)) *QuotaCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &QuotaCreateBulk{err: fmt.Errorf("calling to QuotaClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*QuotaCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &QuotaCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Quota.
+func (c *QuotaClient) Update() *QuotaUpdate {
+	mutation := newQuotaMutation(c.config, OpUpdate)
+	return &QuotaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *QuotaClient) UpdateOne(q *Quota) *QuotaUpdateOne {
+	mutation := newQuotaMutation(c.config, OpUpdateOne, withQuota(q))
+	return &QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *QuotaClient) UpdateOneID(id int) *QuotaUpdateOne {
+	mutation := newQuotaMutation(c.config, OpUpdateOne, withQuotaID(id))
+	return &QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Quota.
+func (c *QuotaClient) Delete() *QuotaDelete {
+	mutation := newQuotaMutation(c.config, OpDelete)
+	return &QuotaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *QuotaClient) DeleteOne(q *Quota) *QuotaDeleteOne {
+	return c.DeleteOneID(q.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *QuotaClient) DeleteOneID(id int) *QuotaDeleteOne {
+	builder := c.Delete().Where(quota.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &QuotaDeleteOne{builder}
+}
+
+// Query returns a query builder for Quota.
+func (c *QuotaClient) Query() *QuotaQuery {
+	return &QuotaQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeQuota},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Quota entity by its id.
+func (c *QuotaClient) Get(ctx context.Context, id int) (*Quota, error) {
+	return c.Query().Where(quota.ID(id)).Only(entcache.WithEntryKey(ctx, "Quota", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *QuotaClient) GetX(ctx context.Context, id int) *Quota {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOrg queries the org edge of a Quota.
+func (c *QuotaClient) QueryOrg(q *Quota) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, quota.OrgTable, quota.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQuotaItem queries the quota_item edge of a Quota.
+func (c *QuotaClient) QueryQuotaItem(q *Quota) *QuotaItemQuery {
+	query := (&QuotaItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(quotaitem.Table, quotaitem.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaItemTable, quota.QuotaItemColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *QuotaClient) Hooks() []Hook {
+	hooks := c.hooks.Quota
+	return append(hooks[:len(hooks):len(hooks)], quota.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *QuotaClient) Interceptors() []Interceptor {
+	return c.inters.Quota
+}
+
+func (c *QuotaClient) mutate(ctx context.Context, m *QuotaMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&QuotaCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&QuotaUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&QuotaDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Quota mutation op: %q", m.Op())
+	}
+}
+
+// QuotaItemClient is a client for the QuotaItem schema.
+type QuotaItemClient struct {
+	config
+}
+
+// NewQuotaItemClient returns a client for the QuotaItem from the given config.
+func NewQuotaItemClient(c config) *QuotaItemClient {
+	return &QuotaItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `quotaitem.Hooks(f(g(h())))`.
+func (c *QuotaItemClient) Use(hooks ...Hook) {
+	c.hooks.QuotaItem = append(c.hooks.QuotaItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `quotaitem.Intercept(f(g(h())))`.
+func (c *QuotaItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.QuotaItem = append(c.inters.QuotaItem, interceptors...)
+}
+
+// Create returns a builder for creating a QuotaItem entity.
+func (c *QuotaItemClient) Create() *QuotaItemCreate {
+	mutation := newQuotaItemMutation(c.config, OpCreate)
+	return &QuotaItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of QuotaItem entities.
+func (c *QuotaItemClient) CreateBulk(builders ...*QuotaItemCreate) *QuotaItemCreateBulk {
+	return &QuotaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *QuotaItemClient) MapCreateBulk(slice any, setFunc func(*QuotaItemCreate, int)) *QuotaItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &QuotaItemCreateBulk{err: fmt.Errorf("calling to QuotaItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*QuotaItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &QuotaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for QuotaItem.
+func (c *QuotaItemClient) Update() *QuotaItemUpdate {
+	mutation := newQuotaItemMutation(c.config, OpUpdate)
+	return &QuotaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *QuotaItemClient) UpdateOne(qi *QuotaItem) *QuotaItemUpdateOne {
+	mutation := newQuotaItemMutation(c.config, OpUpdateOne, withQuotaItem(qi))
+	return &QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *QuotaItemClient) UpdateOneID(id int) *QuotaItemUpdateOne {
+	mutation := newQuotaItemMutation(c.config, OpUpdateOne, withQuotaItemID(id))
+	return &QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for QuotaItem.
+func (c *QuotaItemClient) Delete() *QuotaItemDelete {
+	mutation := newQuotaItemMutation(c.config, OpDelete)
+	return &QuotaItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *QuotaItemClient) DeleteOne(qi *QuotaItem) *QuotaItemDeleteOne {
+	return c.DeleteOneID(qi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *QuotaItemClient) DeleteOneID(id int) *QuotaItemDeleteOne {
+	builder := c.Delete().Where(quotaitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &QuotaItemDeleteOne{builder}
+}
+
+// Query returns a query builder for QuotaItem.
+func (c *QuotaItemClient) Query() *QuotaItemQuery {
+	return &QuotaItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeQuotaItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a QuotaItem entity by its id.
+func (c *QuotaItemClient) Get(ctx context.Context, id int) (*QuotaItem, error) {
+	return c.Query().Where(quotaitem.ID(id)).Only(entcache.WithEntryKey(ctx, "QuotaItem", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *QuotaItemClient) GetX(ctx context.Context, id int) *QuotaItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryQuota queries the quota edge of a QuotaItem.
+func (c *QuotaItemClient) QueryQuota(qi *QuotaItem) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := qi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quotaitem.Table, quotaitem.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, quotaitem.QuotaTable, quotaitem.QuotaColumn),
+		)
+		fromV = sqlgraph.Neighbors(qi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *QuotaItemClient) Hooks() []Hook {
+	hooks := c.hooks.QuotaItem
+	return append(hooks[:len(hooks):len(hooks)], quotaitem.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *QuotaItemClient) Interceptors() []Interceptor {
+	return c.inters.QuotaItem
+}
+
+func (c *QuotaItemClient) mutate(ctx context.Context, m *QuotaItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&QuotaItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&QuotaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&QuotaItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown QuotaItem mutation op: %q", m.Op())
+	}
+}
+
 // RegionClient is a client for the Region schema.
 type RegionClient struct {
 	config
@@ -5631,14 +5965,14 @@ type (
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
 		AppRolePolicy, Country, Currency, FileIdentity, FileSource, OauthClient, Org,
 		OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference,
-		Permission, Region, User, UserAddr, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Hook
+		Permission, Quota, QuotaItem, Region, User, UserAddr, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
 		AppRolePolicy, Country, Currency, FileIdentity, FileSource, OauthClient, Org,
 		OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference,
-		Permission, Region, User, UserAddr, UserDevice, UserIdentity, UserLoginProfile,
-		UserPassword []ent.Interceptor
+		Permission, Quota, QuotaItem, Region, User, UserAddr, UserDevice, UserIdentity,
+		UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )

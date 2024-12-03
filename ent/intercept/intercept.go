@@ -31,6 +31,8 @@ import (
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -690,6 +692,60 @@ func (f TraversePermission) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.PermissionQuery", q)
 }
 
+// The QuotaFunc type is an adapter to allow the use of ordinary function as a Querier.
+type QuotaFunc func(context.Context, *ent.QuotaQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f QuotaFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.QuotaQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.QuotaQuery", q)
+}
+
+// The TraverseQuota type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseQuota func(context.Context, *ent.QuotaQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseQuota) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseQuota) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.QuotaQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.QuotaQuery", q)
+}
+
+// The QuotaItemFunc type is an adapter to allow the use of ordinary function as a Querier.
+type QuotaItemFunc func(context.Context, *ent.QuotaItemQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f QuotaItemFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.QuotaItemQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.QuotaItemQuery", q)
+}
+
+// The TraverseQuotaItem type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseQuotaItem func(context.Context, *ent.QuotaItemQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseQuotaItem) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseQuotaItem) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.QuotaItemQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.QuotaItemQuery", q)
+}
+
 // The RegionFunc type is an adapter to allow the use of ordinary function as a Querier.
 type RegionFunc func(context.Context, *ent.RegionQuery) (ent.Value, error)
 
@@ -926,6 +982,10 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.OrgUserPreferenceQuery, predicate.OrgUserPreference, orguserpreference.OrderOption]{typ: ent.TypeOrgUserPreference, tq: q}, nil
 	case *ent.PermissionQuery:
 		return &query[*ent.PermissionQuery, predicate.Permission, permission.OrderOption]{typ: ent.TypePermission, tq: q}, nil
+	case *ent.QuotaQuery:
+		return &query[*ent.QuotaQuery, predicate.Quota, quota.OrderOption]{typ: ent.TypeQuota, tq: q}, nil
+	case *ent.QuotaItemQuery:
+		return &query[*ent.QuotaItemQuery, predicate.QuotaItem, quotaitem.OrderOption]{typ: ent.TypeQuotaItem, tq: q}, nil
 	case *ent.RegionQuery:
 		return &query[*ent.RegionQuery, predicate.Region, region.OrderOption]{typ: ent.TypeRegion, tq: q}, nil
 	case *ent.UserQuery:

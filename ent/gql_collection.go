@@ -29,6 +29,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -3734,6 +3736,390 @@ func newPermissionPaginateArgs(rv map[string]any) *permissionPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*PermissionWhereInput); ok {
 		args.opts = append(args.opts, WithPermissionFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (q *QuotaQuery) CollectFields(ctx context.Context, satisfies ...string) (*QuotaQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return q, nil
+	}
+	if err := q.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return q, nil
+}
+
+func (q *QuotaQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(quota.Columns))
+		selectedFields = []string{quota.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			q.withOrg = query
+			if _, ok := fieldSeen[quota.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldOrgID)
+				fieldSeen[quota.FieldOrgID] = struct{}{}
+			}
+		case "quotaItem":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&QuotaItemClient{config: q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, quotaitemImplementors)...); err != nil {
+				return err
+			}
+			q.withQuotaItem = query
+			if _, ok := fieldSeen[quota.FieldQuotaItemID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldQuotaItemID)
+				fieldSeen[quota.FieldQuotaItemID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[quota.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, quota.FieldCreatedBy)
+				fieldSeen[quota.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[quota.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, quota.FieldCreatedAt)
+				fieldSeen[quota.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[quota.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, quota.FieldUpdatedBy)
+				fieldSeen[quota.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[quota.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, quota.FieldUpdatedAt)
+				fieldSeen[quota.FieldUpdatedAt] = struct{}{}
+			}
+		case "orgID":
+			if _, ok := fieldSeen[quota.FieldOrgID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldOrgID)
+				fieldSeen[quota.FieldOrgID] = struct{}{}
+			}
+		case "quotaItemID":
+			if _, ok := fieldSeen[quota.FieldQuotaItemID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldQuotaItemID)
+				fieldSeen[quota.FieldQuotaItemID] = struct{}{}
+			}
+		case "limit":
+			if _, ok := fieldSeen[quota.FieldLimit]; !ok {
+				selectedFields = append(selectedFields, quota.FieldLimit)
+				fieldSeen[quota.FieldLimit] = struct{}{}
+			}
+		case "used":
+			if _, ok := fieldSeen[quota.FieldUsed]; !ok {
+				selectedFields = append(selectedFields, quota.FieldUsed)
+				fieldSeen[quota.FieldUsed] = struct{}{}
+			}
+		case "startAt":
+			if _, ok := fieldSeen[quota.FieldStartAt]; !ok {
+				selectedFields = append(selectedFields, quota.FieldStartAt)
+				fieldSeen[quota.FieldStartAt] = struct{}{}
+			}
+		case "endAt":
+			if _, ok := fieldSeen[quota.FieldEndAt]; !ok {
+				selectedFields = append(selectedFields, quota.FieldEndAt)
+				fieldSeen[quota.FieldEndAt] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		q.Select(selectedFields...)
+	}
+	return nil
+}
+
+type quotaPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []QuotaPaginateOption
+}
+
+func newQuotaPaginateArgs(rv map[string]any) *quotaPaginateArgs {
+	args := &quotaPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &QuotaOrder{Field: &QuotaOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithQuotaOrder(order))
+			}
+		case *QuotaOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithQuotaOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*QuotaWhereInput); ok {
+		args.opts = append(args.opts, WithQuotaFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (qi *QuotaItemQuery) CollectFields(ctx context.Context, satisfies ...string) (*QuotaItemQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return qi, nil
+	}
+	if err := qi.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return qi, nil
+}
+
+func (qi *QuotaItemQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(quotaitem.Columns))
+		selectedFields = []string{quotaitem.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "quota":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&QuotaClient{config: qi.config}).Query()
+			)
+			args := newQuotaPaginateArgs(fieldArgs(ctx, new(QuotaWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newQuotaPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					qi.loadTotal = append(qi.loadTotal, func(ctx context.Context, nodes []*QuotaItem) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID int `sql:"quota_item_id"`
+							Count  int `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(quotaitem.QuotaColumn), ids...))
+						})
+						if err := query.GroupBy(quotaitem.QuotaColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[int]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				} else {
+					qi.loadTotal = append(qi.loadTotal, func(_ context.Context, nodes []*QuotaItem) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.Quota)
+							if nodes[i].Edges.totalCount[0] == nil {
+								nodes[i].Edges.totalCount[0] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[0][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, quotaImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if args.after == nil && args.last == nil {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := pagination.LimitPerRow(ctx, quotaitem.QuotaColumn, limit, args.first, args.last, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			qi.WithNamedQuota(alias, func(wq *QuotaQuery) {
+				*wq = *query
+			})
+		case "createdBy":
+			if _, ok := fieldSeen[quotaitem.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldCreatedBy)
+				fieldSeen[quotaitem.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[quotaitem.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldCreatedAt)
+				fieldSeen[quotaitem.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[quotaitem.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldUpdatedBy)
+				fieldSeen[quotaitem.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[quotaitem.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldUpdatedAt)
+				fieldSeen[quotaitem.FieldUpdatedAt] = struct{}{}
+			}
+		case "code":
+			if _, ok := fieldSeen[quotaitem.FieldCode]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldCode)
+				fieldSeen[quotaitem.FieldCode] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[quotaitem.FieldName]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldName)
+				fieldSeen[quotaitem.FieldName] = struct{}{}
+			}
+		case "description":
+			if _, ok := fieldSeen[quotaitem.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldDescription)
+				fieldSeen[quotaitem.FieldDescription] = struct{}{}
+			}
+		case "resourceType":
+			if _, ok := fieldSeen[quotaitem.FieldResourceType]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldResourceType)
+				fieldSeen[quotaitem.FieldResourceType] = struct{}{}
+			}
+		case "unit":
+			if _, ok := fieldSeen[quotaitem.FieldUnit]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldUnit)
+				fieldSeen[quotaitem.FieldUnit] = struct{}{}
+			}
+		case "active":
+			if _, ok := fieldSeen[quotaitem.FieldActive]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldActive)
+				fieldSeen[quotaitem.FieldActive] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		qi.Select(selectedFields...)
+	}
+	return nil
+}
+
+type quotaitemPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []QuotaItemPaginateOption
+}
+
+func newQuotaItemPaginateArgs(rv map[string]any) *quotaitemPaginateArgs {
+	args := &quotaitemPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &QuotaItemOrder{Field: &QuotaItemOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithQuotaItemOrder(order))
+			}
+		case *QuotaItemOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithQuotaItemOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*QuotaItemWhereInput); ok {
+		args.opts = append(args.opts, WithQuotaItemFilter(v.Filter))
 	}
 	return args
 }

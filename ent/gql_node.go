@@ -33,6 +33,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -137,6 +139,16 @@ var permissionImplementors = []string{"Permission", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*Permission) IsNode() {}
+
+var quotaImplementors = []string{"Quota", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Quota) IsNode() {}
+
+var quotaitemImplementors = []string{"QuotaItem", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*QuotaItem) IsNode() {}
 
 var regionImplementors = []string{"Region", "Node"}
 
@@ -393,6 +405,24 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, permission.Table, id))
+	case quota.Table:
+		query := c.Quota.Query().
+			Where(quota.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, quotaImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, quota.Table, id))
+	case quotaitem.Table:
+		query := c.QuotaItem.Query().
+			Where(quotaitem.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, quotaitemImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, quotaitem.Table, id))
 	case region.Table:
 		query := c.Region.Query().
 			Where(region.ID(id))
@@ -805,6 +835,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.Permission.Query().
 			Where(permission.IDIn(ids...))
 		query, err := query.CollectFields(ctx, permissionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case quota.Table:
+		query := c.Quota.Query().
+			Where(quota.IDIn(ids...))
+		query, err := query.CollectFields(ctx, quotaImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case quotaitem.Table:
+		query := c.QuotaItem.Query().
+			Where(quotaitem.IDIn(ids...))
+		query, err := query.CollectFields(ctx, quotaitemImplementors...)
 		if err != nil {
 			return nil, err
 		}

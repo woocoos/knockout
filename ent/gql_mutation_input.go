@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -1879,6 +1880,190 @@ func (c *PermissionUpdate) SetInput(i UpdatePermissionInput) *PermissionUpdate {
 
 // SetInput applies the change-set in the UpdatePermissionInput on the PermissionUpdateOne builder.
 func (c *PermissionUpdateOne) SetInput(i UpdatePermissionInput) *PermissionUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateQuotaInput represents a mutation input for creating quotaslice.
+type CreateQuotaInput struct {
+	Limit       int64
+	Used        *int64
+	StartAt     *time.Time
+	EndAt       *time.Time
+	OrgID       int
+	QuotaItemID int
+}
+
+// Mutate applies the CreateQuotaInput on the QuotaMutation builder.
+func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
+	m.SetLimit(i.Limit)
+	if v := i.Used; v != nil {
+		m.SetUsed(*v)
+	}
+	if v := i.StartAt; v != nil {
+		m.SetStartAt(*v)
+	}
+	if v := i.EndAt; v != nil {
+		m.SetEndAt(*v)
+	}
+	m.SetOrgID(i.OrgID)
+	m.SetQuotaItemID(i.QuotaItemID)
+}
+
+// SetInput applies the change-set in the CreateQuotaInput on the QuotaCreate builder.
+func (c *QuotaCreate) SetInput(i CreateQuotaInput) *QuotaCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateQuotaInput represents a mutation input for updating quotaslice.
+type UpdateQuotaInput struct {
+	Limit        *int64
+	Used         *int64
+	ClearStartAt bool
+	StartAt      *time.Time
+	ClearEndAt   bool
+	EndAt        *time.Time
+	OrgID        *int
+	QuotaItemID  *int
+}
+
+// Mutate applies the UpdateQuotaInput on the QuotaMutation builder.
+func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
+	if v := i.Limit; v != nil {
+		m.SetLimit(*v)
+	}
+	if v := i.Used; v != nil {
+		m.SetUsed(*v)
+	}
+	if i.ClearStartAt {
+		m.ClearStartAt()
+	}
+	if v := i.StartAt; v != nil {
+		m.SetStartAt(*v)
+	}
+	if i.ClearEndAt {
+		m.ClearEndAt()
+	}
+	if v := i.EndAt; v != nil {
+		m.SetEndAt(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
+	if v := i.QuotaItemID; v != nil {
+		m.SetQuotaItemID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateQuotaInput on the QuotaUpdate builder.
+func (c *QuotaUpdate) SetInput(i UpdateQuotaInput) *QuotaUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateQuotaInput on the QuotaUpdateOne builder.
+func (c *QuotaUpdateOne) SetInput(i UpdateQuotaInput) *QuotaUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateQuotaItemInput represents a mutation input for creating quotaitems.
+type CreateQuotaItemInput struct {
+	Code         string
+	Name         string
+	Description  *string
+	ResourceType quotaitem.ResourceType
+	Unit         *string
+	Active       *bool
+	QuotumIDs    []int
+}
+
+// Mutate applies the CreateQuotaItemInput on the QuotaItemMutation builder.
+func (i *CreateQuotaItemInput) Mutate(m *QuotaItemMutation) {
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Description; v != nil {
+		m.SetDescription(*v)
+	}
+	m.SetResourceType(i.ResourceType)
+	if v := i.Unit; v != nil {
+		m.SetUnit(*v)
+	}
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if v := i.QuotumIDs; len(v) > 0 {
+		m.AddQuotumIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateQuotaItemInput on the QuotaItemCreate builder.
+func (c *QuotaItemCreate) SetInput(i CreateQuotaItemInput) *QuotaItemCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateQuotaItemInput represents a mutation input for updating quotaitems.
+type UpdateQuotaItemInput struct {
+	Code             *string
+	Name             *string
+	ClearDescription bool
+	Description      *string
+	ResourceType     *quotaitem.ResourceType
+	ClearUnit        bool
+	Unit             *string
+	Active           *bool
+	ClearQuota       bool
+	AddQuotumIDs     []int
+	RemoveQuotumIDs  []int
+}
+
+// Mutate applies the UpdateQuotaItemInput on the QuotaItemMutation builder.
+func (i *UpdateQuotaItemInput) Mutate(m *QuotaItemMutation) {
+	if v := i.Code; v != nil {
+		m.SetCode(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearDescription {
+		m.ClearDescription()
+	}
+	if v := i.Description; v != nil {
+		m.SetDescription(*v)
+	}
+	if v := i.ResourceType; v != nil {
+		m.SetResourceType(*v)
+	}
+	if i.ClearUnit {
+		m.ClearUnit()
+	}
+	if v := i.Unit; v != nil {
+		m.SetUnit(*v)
+	}
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if i.ClearQuota {
+		m.ClearQuota()
+	}
+	if v := i.AddQuotumIDs; len(v) > 0 {
+		m.AddQuotumIDs(v...)
+	}
+	if v := i.RemoveQuotumIDs; len(v) > 0 {
+		m.RemoveQuotumIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateQuotaItemInput on the QuotaItemUpdate builder.
+func (c *QuotaItemUpdate) SetInput(i UpdateQuotaItemInput) *QuotaItemUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateQuotaItemInput on the QuotaItemUpdateOne builder.
+func (c *QuotaItemUpdateOne) SetInput(i UpdateQuotaItemInput) *QuotaItemUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

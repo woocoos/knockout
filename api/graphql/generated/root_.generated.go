@@ -405,6 +405,8 @@ type ComplexityRoot struct {
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
 		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) int
+		CreateQuota                 func(childComplexity int, input ent.CreateQuotaInput) int
+		CreateQuotaItem             func(childComplexity int, input ent.CreateQuotaItemInput) int
 		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
@@ -422,6 +424,8 @@ type ComplexityRoot struct {
 		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
+		DeleteQuota                 func(childComplexity int, id int) int
+		DeleteQuotaItem             func(childComplexity int, id int) int
 		DeleteRegion                func(childComplexity int, regionID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
@@ -465,6 +469,8 @@ type ComplexityRoot struct {
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
+		UpdateQuota                 func(childComplexity int, id int, input ent.UpdateQuotaInput) int
+		UpdateQuotaItem             func(childComplexity int, id int, input ent.UpdateQuotaItemInput) int
 		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
@@ -703,6 +709,8 @@ type ComplexityRoot struct {
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgUserPreference           func(childComplexity int) int
 		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		QuotaItems                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
+		Quotas                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
 		Regions                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
 		UserApps                    func(childComplexity int) int
 		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
@@ -712,6 +720,59 @@ type ComplexityRoot struct {
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
 		UserRootOrgs                func(childComplexity int) int
 		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+	}
+
+	Quota struct {
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		EndAt       func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Limit       func(childComplexity int) int
+		Org         func(childComplexity int) int
+		OrgID       func(childComplexity int) int
+		QuotaItem   func(childComplexity int) int
+		QuotaItemID func(childComplexity int) int
+		StartAt     func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+		Used        func(childComplexity int) int
+	}
+
+	QuotaConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	QuotaEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	QuotaItem struct {
+		Active       func(childComplexity int) int
+		Code         func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		Description  func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Quota        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
+		ResourceType func(childComplexity int) int
+		Unit         func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+	}
+
+	QuotaItemConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	QuotaItemEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	Region struct {
@@ -2802,6 +2863,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput), args["orgUserType"].(*orguser.UserType)), true
 
+	case "Mutation.createQuota":
+		if e.complexity.Mutation.CreateQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuota(childComplexity, args["input"].(ent.CreateQuotaInput)), true
+
+	case "Mutation.createQuotaItem":
+		if e.complexity.Mutation.CreateQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuotaItem(childComplexity, args["input"].(ent.CreateQuotaItemInput)), true
+
 	case "Mutation.createRegion":
 		if e.complexity.Mutation.CreateRegion == nil {
 			break
@@ -3005,6 +3090,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteOrganizationPolicy(childComplexity, args["orgPolicyID"].(int)), true
+
+	case "Mutation.deleteQuota":
+		if e.complexity.Mutation.DeleteQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteQuota(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteQuotaItem":
+		if e.complexity.Mutation.DeleteQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteQuotaItem(childComplexity, args["id"].(int)), true
 
 	case "Mutation.deleteRegion":
 		if e.complexity.Mutation.DeleteRegion == nil {
@@ -3521,6 +3630,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdatePermission(childComplexity, args["permissionID"].(int), args["input"].(ent.UpdatePermissionInput)), true
+
+	case "Mutation.updateQuota":
+		if e.complexity.Mutation.UpdateQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuota(childComplexity, args["id"].(int), args["input"].(ent.UpdateQuotaInput)), true
+
+	case "Mutation.updateQuotaItem":
+		if e.complexity.Mutation.UpdateQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuotaItem(childComplexity, args["id"].(int), args["input"].(ent.UpdateQuotaItemInput)), true
 
 	case "Mutation.updateRegion":
 		if e.complexity.Mutation.UpdateRegion == nil {
@@ -4942,6 +5075,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.quotaItems":
+		if e.complexity.Query.QuotaItems == nil {
+			break
+		}
+
+		args, err := ec.field_Query_quotaItems_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.QuotaItems(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaItemOrder), args["where"].(*ent.QuotaItemWhereInput)), true
+
+	case "Query.quotas":
+		if e.complexity.Query.Quotas == nil {
+			break
+		}
+
+		args, err := ec.field_Query_quotas_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Quotas(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaOrder), args["where"].(*ent.QuotaWhereInput)), true
+
 	case "Query.regions":
 		if e.complexity.Query.Regions == nil {
 			break
@@ -5039,6 +5196,256 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+
+	case "Quota.createdAt":
+		if e.complexity.Quota.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.CreatedAt(childComplexity), true
+
+	case "Quota.createdBy":
+		if e.complexity.Quota.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Quota.CreatedBy(childComplexity), true
+
+	case "Quota.endAt":
+		if e.complexity.Quota.EndAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.EndAt(childComplexity), true
+
+	case "Quota.id":
+		if e.complexity.Quota.ID == nil {
+			break
+		}
+
+		return e.complexity.Quota.ID(childComplexity), true
+
+	case "Quota.limit":
+		if e.complexity.Quota.Limit == nil {
+			break
+		}
+
+		return e.complexity.Quota.Limit(childComplexity), true
+
+	case "Quota.org":
+		if e.complexity.Quota.Org == nil {
+			break
+		}
+
+		return e.complexity.Quota.Org(childComplexity), true
+
+	case "Quota.orgID":
+		if e.complexity.Quota.OrgID == nil {
+			break
+		}
+
+		return e.complexity.Quota.OrgID(childComplexity), true
+
+	case "Quota.quotaItem":
+		if e.complexity.Quota.QuotaItem == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaItem(childComplexity), true
+
+	case "Quota.quotaItemID":
+		if e.complexity.Quota.QuotaItemID == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaItemID(childComplexity), true
+
+	case "Quota.startAt":
+		if e.complexity.Quota.StartAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.StartAt(childComplexity), true
+
+	case "Quota.updatedAt":
+		if e.complexity.Quota.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.UpdatedAt(childComplexity), true
+
+	case "Quota.updatedBy":
+		if e.complexity.Quota.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Quota.UpdatedBy(childComplexity), true
+
+	case "Quota.used":
+		if e.complexity.Quota.Used == nil {
+			break
+		}
+
+		return e.complexity.Quota.Used(childComplexity), true
+
+	case "QuotaConnection.edges":
+		if e.complexity.QuotaConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.Edges(childComplexity), true
+
+	case "QuotaConnection.pageInfo":
+		if e.complexity.QuotaConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.PageInfo(childComplexity), true
+
+	case "QuotaConnection.totalCount":
+		if e.complexity.QuotaConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.TotalCount(childComplexity), true
+
+	case "QuotaEdge.cursor":
+		if e.complexity.QuotaEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.QuotaEdge.Cursor(childComplexity), true
+
+	case "QuotaEdge.node":
+		if e.complexity.QuotaEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.QuotaEdge.Node(childComplexity), true
+
+	case "QuotaItem.active":
+		if e.complexity.QuotaItem.Active == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Active(childComplexity), true
+
+	case "QuotaItem.code":
+		if e.complexity.QuotaItem.Code == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Code(childComplexity), true
+
+	case "QuotaItem.createdAt":
+		if e.complexity.QuotaItem.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.CreatedAt(childComplexity), true
+
+	case "QuotaItem.createdBy":
+		if e.complexity.QuotaItem.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.CreatedBy(childComplexity), true
+
+	case "QuotaItem.description":
+		if e.complexity.QuotaItem.Description == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Description(childComplexity), true
+
+	case "QuotaItem.id":
+		if e.complexity.QuotaItem.ID == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.ID(childComplexity), true
+
+	case "QuotaItem.name":
+		if e.complexity.QuotaItem.Name == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Name(childComplexity), true
+
+	case "QuotaItem.quota":
+		if e.complexity.QuotaItem.Quota == nil {
+			break
+		}
+
+		args, err := ec.field_QuotaItem_quota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.QuotaItem.Quota(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaOrder), args["where"].(*ent.QuotaWhereInput)), true
+
+	case "QuotaItem.resourceType":
+		if e.complexity.QuotaItem.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.ResourceType(childComplexity), true
+
+	case "QuotaItem.unit":
+		if e.complexity.QuotaItem.Unit == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Unit(childComplexity), true
+
+	case "QuotaItem.updatedAt":
+		if e.complexity.QuotaItem.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.UpdatedAt(childComplexity), true
+
+	case "QuotaItem.updatedBy":
+		if e.complexity.QuotaItem.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.UpdatedBy(childComplexity), true
+
+	case "QuotaItemConnection.edges":
+		if e.complexity.QuotaItemConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.Edges(childComplexity), true
+
+	case "QuotaItemConnection.pageInfo":
+		if e.complexity.QuotaItemConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.PageInfo(childComplexity), true
+
+	case "QuotaItemConnection.totalCount":
+		if e.complexity.QuotaItemConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.TotalCount(childComplexity), true
+
+	case "QuotaItemEdge.cursor":
+		if e.complexity.QuotaItemEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemEdge.Cursor(childComplexity), true
+
+	case "QuotaItemEdge.node":
+		if e.complexity.QuotaItemEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemEdge.Node(childComplexity), true
 
 	case "Region.children":
 		if e.complexity.Region.Children == nil {
@@ -5983,6 +6390,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateOrgUserInput,
 		ec.unmarshalInputCreateOrgUserPreferenceInput,
 		ec.unmarshalInputCreatePermissionInput,
+		ec.unmarshalInputCreateQuotaInput,
+		ec.unmarshalInputCreateQuotaItemInput,
 		ec.unmarshalInputCreateRegionInput,
 		ec.unmarshalInputCreateUserAddrInput,
 		ec.unmarshalInputCreateUserIdentityInput,
@@ -6016,6 +6425,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPermissionOrder,
 		ec.unmarshalInputPermissionWhereInput,
 		ec.unmarshalInputPolicyRuleInput,
+		ec.unmarshalInputQuotaItemOrder,
+		ec.unmarshalInputQuotaItemWhereInput,
+		ec.unmarshalInputQuotaOrder,
+		ec.unmarshalInputQuotaWhereInput,
 		ec.unmarshalInputRegionOrder,
 		ec.unmarshalInputRegionWhereInput,
 		ec.unmarshalInputUpdateAppActionInput,
@@ -6037,6 +6450,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateOrgUserInput,
 		ec.unmarshalInputUpdateOrgUserPreferenceInput,
 		ec.unmarshalInputUpdatePermissionInput,
+		ec.unmarshalInputUpdateQuotaInput,
+		ec.unmarshalInputUpdateQuotaItemInput,
 		ec.unmarshalInputUpdateRegionInput,
 		ec.unmarshalInputUpdateUserAddrInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
@@ -9031,6 +9446,61 @@ input CreatePermissionInput {
   userID: ID
   roleID: ID
   orgPolicyID: ID!
+}
+"""
+CreateQuotaInput is used for create Quota object.
+Input was generated by ent.
+"""
+input CreateQuotaInput {
+  """
+  限制值
+  """
+  limit: Int!
+  """
+  已使用值
+  """
+  used: Int
+  """
+  生效时间
+  """
+  startAt: Time
+  """
+  过期时间
+  """
+  endAt: Time
+  orgID: ID!
+  quotaItemID: ID!
+}
+"""
+CreateQuotaItemInput is used for create QuotaItem object.
+Input was generated by ent.
+"""
+input CreateQuotaItemInput {
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String!
+  """
+  配额项名称
+  """
+  name: String!
+  """
+  描述
+  """
+  description: String
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType!
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  """
+  是否启用
+  """
+  active: Boolean
+  quotumIDs: [ID!]
 }
 """
 CreateRegionInput is used for create Region object.
@@ -12035,6 +12505,74 @@ type Query {
     where: OrgWhereInput
   ): OrgConnection!
   """
+  配额管理
+  """
+  quotas(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaSlice returned from the connection.
+    """
+    orderBy: QuotaOrder
+
+    """
+    Filtering options for QuotaSlice returned from the connection.
+    """
+    where: QuotaWhereInput
+  ): QuotaConnection!
+  """
+  配额定义
+  """
+  quotaItems(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaItems returned from the connection.
+    """
+    orderBy: QuotaItemOrder
+
+    """
+    Filtering options for QuotaItems returned from the connection.
+    """
+    where: QuotaItemWhereInput
+  ): QuotaItemConnection!
+  """
   地区查询
   """
   regions(
@@ -12099,6 +12637,445 @@ type Query {
     """
     where: UserWhereInput
   ): UserConnection!
+}
+type Quota implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  组织ID,为root型组织
+  """
+  orgID: ID!
+  """
+  配额项ID
+  """
+  quotaItemID: ID!
+  """
+  限制值
+  """
+  limit: Int!
+  """
+  已使用值
+  """
+  used: Int!
+  """
+  生效时间
+  """
+  startAt: Time
+  """
+  过期时间
+  """
+  endAt: Time
+  org: Org!
+  """
+  配额定义
+  """
+  quotaItem: QuotaItem!
+}
+"""
+A connection to a list of items.
+"""
+type QuotaConnection {
+  """
+  A list of edges.
+  """
+  edges: [QuotaEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type QuotaEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Quota
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+type QuotaItem implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String!
+  """
+  配额项名称
+  """
+  name: String!
+  """
+  描述
+  """
+  description: String
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType!
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  """
+  是否启用
+  """
+  active: Boolean!
+  quota(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaSlice returned from the connection.
+    """
+    orderBy: QuotaOrder
+
+    """
+    Filtering options for QuotaSlice returned from the connection.
+    """
+    where: QuotaWhereInput
+  ): QuotaConnection!
+}
+"""
+A connection to a list of items.
+"""
+type QuotaItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [QuotaItemEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type QuotaItemEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: QuotaItem
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for QuotaItem connections
+"""
+input QuotaItemOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order QuotaItems.
+  """
+  field: QuotaItemOrderField!
+}
+"""
+Properties by which QuotaItem connections can be ordered.
+"""
+enum QuotaItemOrderField {
+  createdAt
+}
+"""
+QuotaItemResourceType is enum for the field resource_type
+"""
+enum QuotaItemResourceType @goModel(model: "github.com/woocoos/knockout/ent/quotaitem.ResourceType") {
+  number
+  storage
+  network
+}
+"""
+QuotaItemWhereInput is used for filtering QuotaItem objects.
+Input was generated by ent.
+"""
+input QuotaItemWhereInput {
+  not: QuotaItemWhereInput
+  and: [QuotaItemWhereInput!]
+  or: [QuotaItemWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  resource_type field predicates
+  """
+  resourceType: QuotaItemResourceType
+  resourceTypeNEQ: QuotaItemResourceType
+  resourceTypeIn: [QuotaItemResourceType!]
+  resourceTypeNotIn: [QuotaItemResourceType!]
+  """
+  active field predicates
+  """
+  active: Boolean
+  activeNEQ: Boolean
+  """
+  quota edge predicates
+  """
+  hasQuota: Boolean
+  hasQuotaWith: [QuotaWhereInput!]
+}
+"""
+Ordering options for Quota connections
+"""
+input QuotaOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order QuotaSlice.
+  """
+  field: QuotaOrderField!
+}
+"""
+Properties by which Quota connections can be ordered.
+"""
+enum QuotaOrderField {
+  createdAt
+}
+"""
+QuotaWhereInput is used for filtering Quota objects.
+Input was generated by ent.
+"""
+input QuotaWhereInput {
+  not: QuotaWhereInput
+  and: [QuotaWhereInput!]
+  or: [QuotaWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  org_id field predicates
+  """
+  orgID: ID
+  orgIDNEQ: ID
+  orgIDIn: [ID!]
+  orgIDNotIn: [ID!]
+  """
+  quota_item_id field predicates
+  """
+  quotaItemID: ID
+  quotaItemIDNEQ: ID
+  quotaItemIDIn: [ID!]
+  quotaItemIDNotIn: [ID!]
+  """
+  start_at field predicates
+  """
+  startAt: Time
+  startAtNEQ: Time
+  startAtIn: [Time!]
+  startAtNotIn: [Time!]
+  startAtGT: Time
+  startAtGTE: Time
+  startAtLT: Time
+  startAtLTE: Time
+  startAtIsNil: Boolean
+  startAtNotNil: Boolean
+  """
+  end_at field predicates
+  """
+  endAt: Time
+  endAtNEQ: Time
+  endAtIn: [Time!]
+  endAtNotIn: [Time!]
+  endAtGT: Time
+  endAtGTE: Time
+  endAtLT: Time
+  endAtLTE: Time
+  endAtIsNil: Boolean
+  endAtNotNil: Boolean
+  """
+  org edge predicates
+  """
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
+  """
+  quota_item edge predicates
+  """
+  hasQuotaItem: Boolean
+  hasQuotaItemWith: [QuotaItemWhereInput!]
 }
 type Region implements Node {
   id: ID!
@@ -12946,6 +13923,67 @@ input UpdatePermissionInput {
   """
   status: PermissionSimpleStatus
   clearStatus: Boolean
+}
+"""
+UpdateQuotaInput is used for update Quota object.
+Input was generated by ent.
+"""
+input UpdateQuotaInput {
+  """
+  限制值
+  """
+  limit: Int
+  """
+  已使用值
+  """
+  used: Int
+  """
+  生效时间
+  """
+  startAt: Time
+  clearStartAt: Boolean
+  """
+  过期时间
+  """
+  endAt: Time
+  clearEndAt: Boolean
+  orgID: ID
+  quotaItemID: ID
+}
+"""
+UpdateQuotaItemInput is used for update QuotaItem object.
+Input was generated by ent.
+"""
+input UpdateQuotaItemInput {
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String
+  """
+  配额项名称
+  """
+  name: String
+  """
+  描述
+  """
+  description: String
+  clearDescription: Boolean
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  clearUnit: Boolean
+  """
+  是否启用
+  """
+  active: Boolean
+  addQuotumIDs: [ID!]
+  removeQuotumIDs: [ID!]
+  clearQuota: Boolean
 }
 """
 UpdateRegionInput is used for update Region object.
@@ -14740,340 +15778,6 @@ input UserWhereInput {
   hasCitizenshipWith: [CountryWhereInput!]
 }
 `, BuiltIn: false},
-	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
-    """域名"""
-    domain: String!
-    name: String!
-}
-
-extend input CreateUserInput {
-    loginProfile: CreateUserLoginProfileInput
-    """如指定密码则填入,否则由系统自动生成密码"""
-    password: CreateUserPasswordInput
-    """地址信息"""
-    contact: CreateUserAddrInput
-}
-
-input AssignRoleUserInput {
-    """授权类型为角色或用户组的ID"""
-    orgRoleID: ID!
-    userID: ID!
-    """生效开始时间"""
-    startAt: Time
-    """生效结束时间"""
-    endAt: Time
-}
-
-"""树操作类型"""
-enum TreeAction {
-    """作为子节点"""
-    child
-    """上移"""
-    up
-    """下移"""
-    down
-}
-
-"""列表操作类型"""
-enum ListAction {
-    """上移"""
-    up
-    """下移"""
-    down
-}
-
-enum PolicyEffect {
-    allow
-    deny
-}
-type PolicyRule {
-    effect: PolicyEffect!
-    actions: [String!]
-    resources: [String!]
-    conditions: [String!]
-}
-
-input PolicyRuleInput {
-    effect: PolicyEffect!
-    actions: [String!]
-    resources: [String!]
-    conditions: [String!]
-}
-
-input GrantInput {
-    principal: GID!
-    orgScope: ID!
-    policyID: ID!
-}
-
-type Mfa{
-    secret: String!
-    account: String!
-}
-
-extend type Org {
-    """获取顶级组织"""
-    TopOrg: Org
-}
-
-extend type OrgRole {
-    """是否系统角色"""
-    isAppRole: Boolean!
-}
-
-extend type OrgPolicy {
-    """是否授权role"""
-    isGrantRole(roleID:ID!): Boolean!
-    """是否授权user"""
-    isGrantUser(userID:ID!): Boolean!
-}
-
-extend type User {
-    """是否分配role"""
-    isAssignOrgRole(orgRoleID:ID!): Boolean!
-    """是否允许解除角色授权"""
-    isAllowRevokeRole(orgRoleID:ID!):Boolean!
-    """地址信息"""
-    contact: UserAddr
-    """组织用户类型"""
-    orgUserType(orgID:ID!): OrgUserUserType!
-}
-
-extend type Org {
-    """是否允许解除应用策略"""
-    isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
-}
-
-extend type OrgRole {
-    """是否分配给user"""
-    isGrantUser(userID:ID!): Boolean!
-}
-
-extend type AppPolicy {
-    """是否授权role"""
-    isGrantAppRole(appRoleID:ID!): Boolean!
-}
-
-extend type Permission {
-    """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
-    isAllowRevoke:Boolean!
-}
-
-input OrgUserPreferenceInput {
-    """用户收藏菜单"""
-    menuFavorite: [ID!]
-    """用户最近访问菜单"""
-    menuRecent: [ID!]
-}
-
-"""业务调用的fileIdentity"""
-type OrgFileIdentity {
-    id: ID!
-    createdBy: Int!
-    createdAt: Time!
-    updatedBy: Int
-    updatedAt: Time
-    """
-    组织ID
-    """
-    tenantID: ID!
-    """
-    文件来源ID
-    """
-    fileSourceID: ID!
-    """
-    租户默认的凭证
-    """
-    isDefault: Boolean!
-    """
-    备注
-    """
-    comments: String
-    source: FileSource!
-}
-
-"""内部调用fileIdentity"""
-type FileIdentityForApp implements Node{
-    id: ID!
-    tenantID: ID!
-    accessKeyID: String!
-    accessKeySecret: String!
-    """
-    角色的资源名称(ARN)，用于STS
-    """
-    roleArn: String!
-    """
-    指定返回的STS令牌的权限的策略
-    """
-    policy: String
-    """
-    STS令牌的有效期，默认3600s
-    """
-    durationSeconds: Int
-    """
-    租户默认的凭证
-    """
-    isDefault: Boolean!
-    source: FileSource!
-}
-
-type OrgLogo {
-    logo: String
-    thumbLogo: String
-    favicon: String
-}
-
-input OrgLogoInput {
-    logo: String
-    thumbLogo: String
-    favicon: String
-}`, BuiltIn: false},
-	{Name: "../query.graphql", Input: `extend type Query {
-    """获取全局ID,开发用途"""
-    globalID(type: String!, id: ID!): GID
-    """用户组"""
-    orgGroups(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ): OrgRoleConnection!
-    """用户组组成员"""
-    orgRoleUsers(
-        roleID: ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: UserOrder
-        where: UserWhereInput
-    ): UserConnection!
-    """角色"""
-    orgRoles(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ): OrgRoleConnection!
-    """应用角色授权的组织列表"""
-    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
-    """应用策略授权的组织列表"""
-    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
-    """权限策略引用列表"""
-    orgPolicyReferences(
-        policyID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: PermissionOrder
-        where: PermissionWhereInput
-    ):PermissionConnection!
-    """获取应用资源模板"""
-    appResources(
-        appID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: AppResOrder
-        where: AppResWhereInput
-    ):AppResConnection!
-    """获取组织应用资源模板"""
-    orgAppResources(
-        appID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: AppResOrder
-        where: AppResWhereInput
-    ):AppResConnection!
-    """用户加入的用户组"""
-    userGroups(
-        userID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ):OrgRoleConnection!
-    """用户继承用户组的权限策略"""
-    userExtendGroupPolicies(
-        userID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: PermissionOrder
-        where: PermissionWhereInput
-    ):PermissionConnection!
-    """用户菜单"""
-    userMenus(appCode:String!):[AppMenu!]!
-    """获取用户所有权限"""
-    userPermissions(where: AppActionWhereInput):[AppAction!]!
-    """检测权限"""
-    checkPermission(
-        """appCode + ":" + action"""
-        permission:String!
-    ):Boolean!
-    """检测权限 ko-proxy使用"""
-    checkPermissionByJwt(
-        jwtStr:String!
-        orgID:ID!
-        action:String!
-        appCode:String!
-    ):Boolean!
-    """组织策略可授权的appActions"""
-    orgAppActions(appCode:String!):[AppAction!]!
-    """用户加入的root组织"""
-    userRootOrgs:[Org!]!
-    """组织回收站列表"""
-    orgRecycleUsers(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: UserOrder
-        where: UserWhereInput
-    ):UserConnection!
-    """获取组织用户偏好"""
-    orgUserPreference: OrgUserPreference
-    """用户授权的应用列表"""
-    userApps: [App!]!
-    """根据ref_code获取数据字典,用于批量获取"""
-    appDictByRefCode(
-        """ref_code规则：<appCode:appDictCode>"""
-        refCodes: [String!]!
-    ): [AppDict!]!
-    """根据ref_code获取数据字典值"""
-    appDictItemByRefCode(
-        """ref_code规则：<appCode:appDictCode>"""
-        refCode: String!
-    ):[AppDictItem!]!
-    """检测应用登录授权"""
-    appAccess(appCode:String!):Boolean!
-    """检测应用登录授权,针对获取token处理"""
-    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
-    """获取文件凭证"""
-    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
-    """获取凭证AccessKeySecret"""
-    fileIdentityAccessKeySecret(id: ID!): String!
-    """成员列表"""
-    userMembers(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: UserOrder
-        where: UserWhereInput
-    ):UserConnection!
-}`, BuiltIn: false},
 	{Name: "../mutation.graphql", Input: `type Mutation {
     """启用目录管理,返回根节点组织信息"""
     enableDirectory(input: EnableDirectoryInput!):Org
@@ -15287,7 +15991,354 @@ input OrgLogoInput {
     deleteCurrency(currencyID:ID!): Boolean!
     """自动授权应用，系统开户、创建web交易用户使用"""
     autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
+    # 创建配额项
+    createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
+    # 更新配额项
+    updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!
+    # 删除配额项
+    deleteQuotaItem(id: ID!): Boolean!
+    # 设置配额
+    createQuota(input: CreateQuotaInput!): Quota!
+    # 更新配额
+    updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
+    # 删除配额
+    deleteQuota(id: ID!): Boolean!
+
 }
 `, BuiltIn: false},
+	{Name: "../query.graphql", Input: `extend type Query {
+    """获取全局ID,开发用途"""
+    globalID(type: String!, id: ID!): GID
+    """用户组"""
+    orgGroups(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户组组成员"""
+    orgRoleUsers(
+        roleID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ): UserConnection!
+    """角色"""
+    orgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """应用角色授权的组织列表"""
+    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
+    """应用策略授权的组织列表"""
+    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
+    """权限策略引用列表"""
+    orgPolicyReferences(
+        policyID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """获取应用资源模板"""
+    appResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """获取组织应用资源模板"""
+    orgAppResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """用户加入的用户组"""
+    userGroups(
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户继承用户组的权限策略"""
+    userExtendGroupPolicies(
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户菜单"""
+    userMenus(appCode:String!):[AppMenu!]!
+    """获取用户所有权限"""
+    userPermissions(where: AppActionWhereInput):[AppAction!]!
+    """检测权限"""
+    checkPermission(
+        """appCode + ":" + action"""
+        permission:String!
+    ):Boolean!
+    """检测权限 ko-proxy使用"""
+    checkPermissionByJwt(
+        jwtStr:String!
+        orgID:ID!
+        action:String!
+        appCode:String!
+    ):Boolean!
+    """组织策略可授权的appActions"""
+    orgAppActions(appCode:String!):[AppAction!]!
+    """用户加入的root组织"""
+    userRootOrgs:[Org!]!
+    """组织回收站列表"""
+    orgRecycleUsers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """获取组织用户偏好"""
+    orgUserPreference: OrgUserPreference
+    """用户授权的应用列表"""
+    userApps: [App!]!
+    """根据ref_code获取数据字典,用于批量获取"""
+    appDictByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCodes: [String!]!
+    ): [AppDict!]!
+    """根据ref_code获取数据字典值"""
+    appDictItemByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCode: String!
+    ):[AppDictItem!]!
+    """检测应用登录授权"""
+    appAccess(appCode:String!):Boolean!
+    """检测应用登录授权,针对获取token处理"""
+    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
+    """获取文件凭证"""
+    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
+    """获取凭证AccessKeySecret"""
+    fileIdentityAccessKeySecret(id: ID!): String!
+    """成员列表"""
+    userMembers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+}`, BuiltIn: false},
+	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
+    """域名"""
+    domain: String!
+    name: String!
+}
+
+extend input CreateUserInput {
+    loginProfile: CreateUserLoginProfileInput
+    """如指定密码则填入,否则由系统自动生成密码"""
+    password: CreateUserPasswordInput
+    """地址信息"""
+    contact: CreateUserAddrInput
+}
+
+input AssignRoleUserInput {
+    """授权类型为角色或用户组的ID"""
+    orgRoleID: ID!
+    userID: ID!
+    """生效开始时间"""
+    startAt: Time
+    """生效结束时间"""
+    endAt: Time
+}
+
+"""树操作类型"""
+enum TreeAction {
+    """作为子节点"""
+    child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+"""列表操作类型"""
+enum ListAction {
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+enum PolicyEffect {
+    allow
+    deny
+}
+type PolicyRule {
+    effect: PolicyEffect!
+    actions: [String!]
+    resources: [String!]
+    conditions: [String!]
+}
+
+input PolicyRuleInput {
+    effect: PolicyEffect!
+    actions: [String!]
+    resources: [String!]
+    conditions: [String!]
+}
+
+input GrantInput {
+    principal: GID!
+    orgScope: ID!
+    policyID: ID!
+}
+
+type Mfa{
+    secret: String!
+    account: String!
+}
+
+extend type Org {
+    """获取顶级组织"""
+    TopOrg: Org
+}
+
+extend type OrgRole {
+    """是否系统角色"""
+    isAppRole: Boolean!
+}
+
+extend type OrgPolicy {
+    """是否授权role"""
+    isGrantRole(roleID:ID!): Boolean!
+    """是否授权user"""
+    isGrantUser(userID:ID!): Boolean!
+}
+
+extend type User {
+    """是否分配role"""
+    isAssignOrgRole(orgRoleID:ID!): Boolean!
+    """是否允许解除角色授权"""
+    isAllowRevokeRole(orgRoleID:ID!):Boolean!
+    """地址信息"""
+    contact: UserAddr
+    """组织用户类型"""
+    orgUserType(orgID:ID!): OrgUserUserType!
+}
+
+extend type Org {
+    """是否允许解除应用策略"""
+    isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
+}
+
+extend type OrgRole {
+    """是否分配给user"""
+    isGrantUser(userID:ID!): Boolean!
+}
+
+extend type AppPolicy {
+    """是否授权role"""
+    isGrantAppRole(appRoleID:ID!): Boolean!
+}
+
+extend type Permission {
+    """是否允许撤销：根用户授权及系统角色授权不允许撤销"""
+    isAllowRevoke:Boolean!
+}
+
+input OrgUserPreferenceInput {
+    """用户收藏菜单"""
+    menuFavorite: [ID!]
+    """用户最近访问菜单"""
+    menuRecent: [ID!]
+}
+
+"""业务调用的fileIdentity"""
+type OrgFileIdentity {
+    id: ID!
+    createdBy: Int!
+    createdAt: Time!
+    updatedBy: Int
+    updatedAt: Time
+    """
+    组织ID
+    """
+    tenantID: ID!
+    """
+    文件来源ID
+    """
+    fileSourceID: ID!
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    """
+    备注
+    """
+    comments: String
+    source: FileSource!
+}
+
+"""内部调用fileIdentity"""
+type FileIdentityForApp implements Node{
+    id: ID!
+    tenantID: ID!
+    accessKeyID: String!
+    accessKeySecret: String!
+    """
+    角色的资源名称(ARN)，用于STS
+    """
+    roleArn: String!
+    """
+    指定返回的STS令牌的权限的策略
+    """
+    policy: String
+    """
+    STS令牌的有效期，默认3600s
+    """
+    durationSeconds: Int
+    """
+    租户默认的凭证
+    """
+    isDefault: Boolean!
+    source: FileSource!
+}
+
+type OrgLogo {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+
+input OrgLogoInput {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

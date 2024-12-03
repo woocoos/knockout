@@ -1,8 +1,5 @@
 schema:
-  - api/graphql/ent.graphql
-  - api/graphql/types.graphql
-  - api/graphql/query.graphql
-  - api/graphql/mutation.graphql
+  - api/graphql/*.graphql
 
 # Where should the generated server code go?
 exec:

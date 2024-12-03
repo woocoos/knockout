@@ -28,6 +28,8 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -632,6 +634,36 @@ func init() {
 	permissionDescID := permissionMixinFields0[0].Descriptor()
 	// permission.DefaultID holds the default value on creation for the id field.
 	permission.DefaultID = permissionDescID.Default.(func() int)
+	quotaMixin := schema.Quota{}.Mixin()
+	quotaMixinHooks1 := quotaMixin[1].Hooks()
+	quota.Hooks[0] = quotaMixinHooks1[0]
+	quotaMixinFields1 := quotaMixin[1].Fields()
+	_ = quotaMixinFields1
+	quotaFields := schema.Quota{}.Fields()
+	_ = quotaFields
+	// quotaDescCreatedAt is the schema descriptor for created_at field.
+	quotaDescCreatedAt := quotaMixinFields1[1].Descriptor()
+	// quota.DefaultCreatedAt holds the default value on creation for the created_at field.
+	quota.DefaultCreatedAt = quotaDescCreatedAt.Default.(func() time.Time)
+	// quotaDescUsed is the schema descriptor for used field.
+	quotaDescUsed := quotaFields[3].Descriptor()
+	// quota.DefaultUsed holds the default value on creation for the used field.
+	quota.DefaultUsed = quotaDescUsed.Default.(int64)
+	quotaitemMixin := schema.QuotaItem{}.Mixin()
+	quotaitemMixinHooks1 := quotaitemMixin[1].Hooks()
+	quotaitem.Hooks[0] = quotaitemMixinHooks1[0]
+	quotaitemMixinFields1 := quotaitemMixin[1].Fields()
+	_ = quotaitemMixinFields1
+	quotaitemFields := schema.QuotaItem{}.Fields()
+	_ = quotaitemFields
+	// quotaitemDescCreatedAt is the schema descriptor for created_at field.
+	quotaitemDescCreatedAt := quotaitemMixinFields1[1].Descriptor()
+	// quotaitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	quotaitem.DefaultCreatedAt = quotaitemDescCreatedAt.Default.(func() time.Time)
+	// quotaitemDescActive is the schema descriptor for active field.
+	quotaitemDescActive := quotaitemFields[5].Descriptor()
+	// quotaitem.DefaultActive holds the default value on creation for the active field.
+	quotaitem.DefaultActive = quotaitemDescActive.Default.(bool)
 	regionMixin := schema.Region{}.Mixin()
 	regionMixinHooks1 := regionMixin[1].Hooks()
 	regionHooks := schema.Region{}.Hooks()

@@ -30,6 +30,8 @@ import (
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -11296,6 +11298,880 @@ func (i *PermissionWhereInput) P() (predicate.Permission, error) {
 		return predicates[0], nil
 	default:
 		return permission.And(predicates...), nil
+	}
+}
+
+// QuotaWhereInput represents a where input for filtering Quota queries.
+type QuotaWhereInput struct {
+	Predicates []predicate.Quota  `json:"-"`
+	Not        *QuotaWhereInput   `json:"not,omitempty"`
+	Or         []*QuotaWhereInput `json:"or,omitempty"`
+	And        []*QuotaWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_by" field predicates.
+	CreatedBy      *int  `json:"createdBy,omitempty"`
+	CreatedByNEQ   *int  `json:"createdByNEQ,omitempty"`
+	CreatedByIn    []int `json:"createdByIn,omitempty"`
+	CreatedByNotIn []int `json:"createdByNotIn,omitempty"`
+	CreatedByGT    *int  `json:"createdByGT,omitempty"`
+	CreatedByGTE   *int  `json:"createdByGTE,omitempty"`
+	CreatedByLT    *int  `json:"createdByLT,omitempty"`
+	CreatedByLTE   *int  `json:"createdByLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_by" field predicates.
+	UpdatedBy       *int  `json:"updatedBy,omitempty"`
+	UpdatedByNEQ    *int  `json:"updatedByNEQ,omitempty"`
+	UpdatedByIn     []int `json:"updatedByIn,omitempty"`
+	UpdatedByNotIn  []int `json:"updatedByNotIn,omitempty"`
+	UpdatedByGT     *int  `json:"updatedByGT,omitempty"`
+	UpdatedByGTE    *int  `json:"updatedByGTE,omitempty"`
+	UpdatedByLT     *int  `json:"updatedByLT,omitempty"`
+	UpdatedByLTE    *int  `json:"updatedByLTE,omitempty"`
+	UpdatedByIsNil  bool  `json:"updatedByIsNil,omitempty"`
+	UpdatedByNotNil bool  `json:"updatedByNotNil,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt       *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ    *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn     []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn  []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT     *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE    *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT     *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE    *time.Time  `json:"updatedAtLTE,omitempty"`
+	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
+	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
+
+	// "org_id" field predicates.
+	OrgID      *int  `json:"orgID,omitempty"`
+	OrgIDNEQ   *int  `json:"orgIDNEQ,omitempty"`
+	OrgIDIn    []int `json:"orgIDIn,omitempty"`
+	OrgIDNotIn []int `json:"orgIDNotIn,omitempty"`
+
+	// "quota_item_id" field predicates.
+	QuotaItemID      *int  `json:"quotaItemID,omitempty"`
+	QuotaItemIDNEQ   *int  `json:"quotaItemIDNEQ,omitempty"`
+	QuotaItemIDIn    []int `json:"quotaItemIDIn,omitempty"`
+	QuotaItemIDNotIn []int `json:"quotaItemIDNotIn,omitempty"`
+
+	// "start_at" field predicates.
+	StartAt       *time.Time  `json:"startAt,omitempty"`
+	StartAtNEQ    *time.Time  `json:"startAtNEQ,omitempty"`
+	StartAtIn     []time.Time `json:"startAtIn,omitempty"`
+	StartAtNotIn  []time.Time `json:"startAtNotIn,omitempty"`
+	StartAtGT     *time.Time  `json:"startAtGT,omitempty"`
+	StartAtGTE    *time.Time  `json:"startAtGTE,omitempty"`
+	StartAtLT     *time.Time  `json:"startAtLT,omitempty"`
+	StartAtLTE    *time.Time  `json:"startAtLTE,omitempty"`
+	StartAtIsNil  bool        `json:"startAtIsNil,omitempty"`
+	StartAtNotNil bool        `json:"startAtNotNil,omitempty"`
+
+	// "end_at" field predicates.
+	EndAt       *time.Time  `json:"endAt,omitempty"`
+	EndAtNEQ    *time.Time  `json:"endAtNEQ,omitempty"`
+	EndAtIn     []time.Time `json:"endAtIn,omitempty"`
+	EndAtNotIn  []time.Time `json:"endAtNotIn,omitempty"`
+	EndAtGT     *time.Time  `json:"endAtGT,omitempty"`
+	EndAtGTE    *time.Time  `json:"endAtGTE,omitempty"`
+	EndAtLT     *time.Time  `json:"endAtLT,omitempty"`
+	EndAtLTE    *time.Time  `json:"endAtLTE,omitempty"`
+	EndAtIsNil  bool        `json:"endAtIsNil,omitempty"`
+	EndAtNotNil bool        `json:"endAtNotNil,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
+
+	// "quota_item" edge predicates.
+	HasQuotaItem     *bool                  `json:"hasQuotaItem,omitempty"`
+	HasQuotaItemWith []*QuotaItemWhereInput `json:"hasQuotaItemWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *QuotaWhereInput) AddPredicates(predicates ...predicate.Quota) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the QuotaWhereInput filter on the QuotaQuery builder.
+func (i *QuotaWhereInput) Filter(q *QuotaQuery) (*QuotaQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyQuotaWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyQuotaWhereInput is returned in case the QuotaWhereInput is empty.
+var ErrEmptyQuotaWhereInput = errors.New("ent: empty predicate QuotaWhereInput")
+
+// P returns a predicate for filtering quotaslice.
+// An error is returned if the input is empty or invalid.
+func (i *QuotaWhereInput) P() (predicate.Quota, error) {
+	var predicates []predicate.Quota
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, quota.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.Quota, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, quota.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.Quota, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, quota.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, quota.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, quota.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, quota.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, quota.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, quota.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, quota.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, quota.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, quota.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedBy != nil {
+		predicates = append(predicates, quota.CreatedByEQ(*i.CreatedBy))
+	}
+	if i.CreatedByNEQ != nil {
+		predicates = append(predicates, quota.CreatedByNEQ(*i.CreatedByNEQ))
+	}
+	if len(i.CreatedByIn) > 0 {
+		predicates = append(predicates, quota.CreatedByIn(i.CreatedByIn...))
+	}
+	if len(i.CreatedByNotIn) > 0 {
+		predicates = append(predicates, quota.CreatedByNotIn(i.CreatedByNotIn...))
+	}
+	if i.CreatedByGT != nil {
+		predicates = append(predicates, quota.CreatedByGT(*i.CreatedByGT))
+	}
+	if i.CreatedByGTE != nil {
+		predicates = append(predicates, quota.CreatedByGTE(*i.CreatedByGTE))
+	}
+	if i.CreatedByLT != nil {
+		predicates = append(predicates, quota.CreatedByLT(*i.CreatedByLT))
+	}
+	if i.CreatedByLTE != nil {
+		predicates = append(predicates, quota.CreatedByLTE(*i.CreatedByLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, quota.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, quota.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, quota.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, quota.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, quota.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, quota.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, quota.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, quota.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedBy != nil {
+		predicates = append(predicates, quota.UpdatedByEQ(*i.UpdatedBy))
+	}
+	if i.UpdatedByNEQ != nil {
+		predicates = append(predicates, quota.UpdatedByNEQ(*i.UpdatedByNEQ))
+	}
+	if len(i.UpdatedByIn) > 0 {
+		predicates = append(predicates, quota.UpdatedByIn(i.UpdatedByIn...))
+	}
+	if len(i.UpdatedByNotIn) > 0 {
+		predicates = append(predicates, quota.UpdatedByNotIn(i.UpdatedByNotIn...))
+	}
+	if i.UpdatedByGT != nil {
+		predicates = append(predicates, quota.UpdatedByGT(*i.UpdatedByGT))
+	}
+	if i.UpdatedByGTE != nil {
+		predicates = append(predicates, quota.UpdatedByGTE(*i.UpdatedByGTE))
+	}
+	if i.UpdatedByLT != nil {
+		predicates = append(predicates, quota.UpdatedByLT(*i.UpdatedByLT))
+	}
+	if i.UpdatedByLTE != nil {
+		predicates = append(predicates, quota.UpdatedByLTE(*i.UpdatedByLTE))
+	}
+	if i.UpdatedByIsNil {
+		predicates = append(predicates, quota.UpdatedByIsNil())
+	}
+	if i.UpdatedByNotNil {
+		predicates = append(predicates, quota.UpdatedByNotNil())
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, quota.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, quota.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, quota.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, quota.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, quota.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, quota.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, quota.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, quota.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.UpdatedAtIsNil {
+		predicates = append(predicates, quota.UpdatedAtIsNil())
+	}
+	if i.UpdatedAtNotNil {
+		predicates = append(predicates, quota.UpdatedAtNotNil())
+	}
+	if i.OrgID != nil {
+		predicates = append(predicates, quota.OrgIDEQ(*i.OrgID))
+	}
+	if i.OrgIDNEQ != nil {
+		predicates = append(predicates, quota.OrgIDNEQ(*i.OrgIDNEQ))
+	}
+	if len(i.OrgIDIn) > 0 {
+		predicates = append(predicates, quota.OrgIDIn(i.OrgIDIn...))
+	}
+	if len(i.OrgIDNotIn) > 0 {
+		predicates = append(predicates, quota.OrgIDNotIn(i.OrgIDNotIn...))
+	}
+	if i.QuotaItemID != nil {
+		predicates = append(predicates, quota.QuotaItemIDEQ(*i.QuotaItemID))
+	}
+	if i.QuotaItemIDNEQ != nil {
+		predicates = append(predicates, quota.QuotaItemIDNEQ(*i.QuotaItemIDNEQ))
+	}
+	if len(i.QuotaItemIDIn) > 0 {
+		predicates = append(predicates, quota.QuotaItemIDIn(i.QuotaItemIDIn...))
+	}
+	if len(i.QuotaItemIDNotIn) > 0 {
+		predicates = append(predicates, quota.QuotaItemIDNotIn(i.QuotaItemIDNotIn...))
+	}
+	if i.StartAt != nil {
+		predicates = append(predicates, quota.StartAtEQ(*i.StartAt))
+	}
+	if i.StartAtNEQ != nil {
+		predicates = append(predicates, quota.StartAtNEQ(*i.StartAtNEQ))
+	}
+	if len(i.StartAtIn) > 0 {
+		predicates = append(predicates, quota.StartAtIn(i.StartAtIn...))
+	}
+	if len(i.StartAtNotIn) > 0 {
+		predicates = append(predicates, quota.StartAtNotIn(i.StartAtNotIn...))
+	}
+	if i.StartAtGT != nil {
+		predicates = append(predicates, quota.StartAtGT(*i.StartAtGT))
+	}
+	if i.StartAtGTE != nil {
+		predicates = append(predicates, quota.StartAtGTE(*i.StartAtGTE))
+	}
+	if i.StartAtLT != nil {
+		predicates = append(predicates, quota.StartAtLT(*i.StartAtLT))
+	}
+	if i.StartAtLTE != nil {
+		predicates = append(predicates, quota.StartAtLTE(*i.StartAtLTE))
+	}
+	if i.StartAtIsNil {
+		predicates = append(predicates, quota.StartAtIsNil())
+	}
+	if i.StartAtNotNil {
+		predicates = append(predicates, quota.StartAtNotNil())
+	}
+	if i.EndAt != nil {
+		predicates = append(predicates, quota.EndAtEQ(*i.EndAt))
+	}
+	if i.EndAtNEQ != nil {
+		predicates = append(predicates, quota.EndAtNEQ(*i.EndAtNEQ))
+	}
+	if len(i.EndAtIn) > 0 {
+		predicates = append(predicates, quota.EndAtIn(i.EndAtIn...))
+	}
+	if len(i.EndAtNotIn) > 0 {
+		predicates = append(predicates, quota.EndAtNotIn(i.EndAtNotIn...))
+	}
+	if i.EndAtGT != nil {
+		predicates = append(predicates, quota.EndAtGT(*i.EndAtGT))
+	}
+	if i.EndAtGTE != nil {
+		predicates = append(predicates, quota.EndAtGTE(*i.EndAtGTE))
+	}
+	if i.EndAtLT != nil {
+		predicates = append(predicates, quota.EndAtLT(*i.EndAtLT))
+	}
+	if i.EndAtLTE != nil {
+		predicates = append(predicates, quota.EndAtLTE(*i.EndAtLTE))
+	}
+	if i.EndAtIsNil {
+		predicates = append(predicates, quota.EndAtIsNil())
+	}
+	if i.EndAtNotNil {
+		predicates = append(predicates, quota.EndAtNotNil())
+	}
+
+	if i.HasOrg != nil {
+		p := quota.HasOrg()
+		if !*i.HasOrg {
+			p = quota.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, quota.HasOrgWith(with...))
+	}
+	if i.HasQuotaItem != nil {
+		p := quota.HasQuotaItem()
+		if !*i.HasQuotaItem {
+			p = quota.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQuotaItemWith) > 0 {
+		with := make([]predicate.QuotaItem, 0, len(i.HasQuotaItemWith))
+		for _, w := range i.HasQuotaItemWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasQuotaItemWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, quota.HasQuotaItemWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyQuotaWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return quota.And(predicates...), nil
+	}
+}
+
+// QuotaItemWhereInput represents a where input for filtering QuotaItem queries.
+type QuotaItemWhereInput struct {
+	Predicates []predicate.QuotaItem  `json:"-"`
+	Not        *QuotaItemWhereInput   `json:"not,omitempty"`
+	Or         []*QuotaItemWhereInput `json:"or,omitempty"`
+	And        []*QuotaItemWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_by" field predicates.
+	CreatedBy      *int  `json:"createdBy,omitempty"`
+	CreatedByNEQ   *int  `json:"createdByNEQ,omitempty"`
+	CreatedByIn    []int `json:"createdByIn,omitempty"`
+	CreatedByNotIn []int `json:"createdByNotIn,omitempty"`
+	CreatedByGT    *int  `json:"createdByGT,omitempty"`
+	CreatedByGTE   *int  `json:"createdByGTE,omitempty"`
+	CreatedByLT    *int  `json:"createdByLT,omitempty"`
+	CreatedByLTE   *int  `json:"createdByLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_by" field predicates.
+	UpdatedBy       *int  `json:"updatedBy,omitempty"`
+	UpdatedByNEQ    *int  `json:"updatedByNEQ,omitempty"`
+	UpdatedByIn     []int `json:"updatedByIn,omitempty"`
+	UpdatedByNotIn  []int `json:"updatedByNotIn,omitempty"`
+	UpdatedByGT     *int  `json:"updatedByGT,omitempty"`
+	UpdatedByGTE    *int  `json:"updatedByGTE,omitempty"`
+	UpdatedByLT     *int  `json:"updatedByLT,omitempty"`
+	UpdatedByLTE    *int  `json:"updatedByLTE,omitempty"`
+	UpdatedByIsNil  bool  `json:"updatedByIsNil,omitempty"`
+	UpdatedByNotNil bool  `json:"updatedByNotNil,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt       *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ    *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn     []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn  []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT     *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE    *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT     *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE    *time.Time  `json:"updatedAtLTE,omitempty"`
+	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
+	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
+
+	// "code" field predicates.
+	Code             *string  `json:"code,omitempty"`
+	CodeNEQ          *string  `json:"codeNEQ,omitempty"`
+	CodeIn           []string `json:"codeIn,omitempty"`
+	CodeNotIn        []string `json:"codeNotIn,omitempty"`
+	CodeGT           *string  `json:"codeGT,omitempty"`
+	CodeGTE          *string  `json:"codeGTE,omitempty"`
+	CodeLT           *string  `json:"codeLT,omitempty"`
+	CodeLTE          *string  `json:"codeLTE,omitempty"`
+	CodeContains     *string  `json:"codeContains,omitempty"`
+	CodeHasPrefix    *string  `json:"codeHasPrefix,omitempty"`
+	CodeHasSuffix    *string  `json:"codeHasSuffix,omitempty"`
+	CodeEqualFold    *string  `json:"codeEqualFold,omitempty"`
+	CodeContainsFold *string  `json:"codeContainsFold,omitempty"`
+
+	// "name" field predicates.
+	Name             *string  `json:"name,omitempty"`
+	NameNEQ          *string  `json:"nameNEQ,omitempty"`
+	NameIn           []string `json:"nameIn,omitempty"`
+	NameNotIn        []string `json:"nameNotIn,omitempty"`
+	NameGT           *string  `json:"nameGT,omitempty"`
+	NameGTE          *string  `json:"nameGTE,omitempty"`
+	NameLT           *string  `json:"nameLT,omitempty"`
+	NameLTE          *string  `json:"nameLTE,omitempty"`
+	NameContains     *string  `json:"nameContains,omitempty"`
+	NameHasPrefix    *string  `json:"nameHasPrefix,omitempty"`
+	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
+	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
+	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "resource_type" field predicates.
+	ResourceType      *quotaitem.ResourceType  `json:"resourceType,omitempty"`
+	ResourceTypeNEQ   *quotaitem.ResourceType  `json:"resourceTypeNEQ,omitempty"`
+	ResourceTypeIn    []quotaitem.ResourceType `json:"resourceTypeIn,omitempty"`
+	ResourceTypeNotIn []quotaitem.ResourceType `json:"resourceTypeNotIn,omitempty"`
+
+	// "active" field predicates.
+	Active    *bool `json:"active,omitempty"`
+	ActiveNEQ *bool `json:"activeNEQ,omitempty"`
+
+	// "quota" edge predicates.
+	HasQuota     *bool              `json:"hasQuota,omitempty"`
+	HasQuotaWith []*QuotaWhereInput `json:"hasQuotaWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *QuotaItemWhereInput) AddPredicates(predicates ...predicate.QuotaItem) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the QuotaItemWhereInput filter on the QuotaItemQuery builder.
+func (i *QuotaItemWhereInput) Filter(q *QuotaItemQuery) (*QuotaItemQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyQuotaItemWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyQuotaItemWhereInput is returned in case the QuotaItemWhereInput is empty.
+var ErrEmptyQuotaItemWhereInput = errors.New("ent: empty predicate QuotaItemWhereInput")
+
+// P returns a predicate for filtering quotaitems.
+// An error is returned if the input is empty or invalid.
+func (i *QuotaItemWhereInput) P() (predicate.QuotaItem, error) {
+	var predicates []predicate.QuotaItem
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, quotaitem.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.QuotaItem, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, quotaitem.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.QuotaItem, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, quotaitem.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, quotaitem.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, quotaitem.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, quotaitem.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, quotaitem.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, quotaitem.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, quotaitem.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, quotaitem.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, quotaitem.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedBy != nil {
+		predicates = append(predicates, quotaitem.CreatedByEQ(*i.CreatedBy))
+	}
+	if i.CreatedByNEQ != nil {
+		predicates = append(predicates, quotaitem.CreatedByNEQ(*i.CreatedByNEQ))
+	}
+	if len(i.CreatedByIn) > 0 {
+		predicates = append(predicates, quotaitem.CreatedByIn(i.CreatedByIn...))
+	}
+	if len(i.CreatedByNotIn) > 0 {
+		predicates = append(predicates, quotaitem.CreatedByNotIn(i.CreatedByNotIn...))
+	}
+	if i.CreatedByGT != nil {
+		predicates = append(predicates, quotaitem.CreatedByGT(*i.CreatedByGT))
+	}
+	if i.CreatedByGTE != nil {
+		predicates = append(predicates, quotaitem.CreatedByGTE(*i.CreatedByGTE))
+	}
+	if i.CreatedByLT != nil {
+		predicates = append(predicates, quotaitem.CreatedByLT(*i.CreatedByLT))
+	}
+	if i.CreatedByLTE != nil {
+		predicates = append(predicates, quotaitem.CreatedByLTE(*i.CreatedByLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, quotaitem.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, quotaitem.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, quotaitem.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, quotaitem.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, quotaitem.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, quotaitem.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, quotaitem.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, quotaitem.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedBy != nil {
+		predicates = append(predicates, quotaitem.UpdatedByEQ(*i.UpdatedBy))
+	}
+	if i.UpdatedByNEQ != nil {
+		predicates = append(predicates, quotaitem.UpdatedByNEQ(*i.UpdatedByNEQ))
+	}
+	if len(i.UpdatedByIn) > 0 {
+		predicates = append(predicates, quotaitem.UpdatedByIn(i.UpdatedByIn...))
+	}
+	if len(i.UpdatedByNotIn) > 0 {
+		predicates = append(predicates, quotaitem.UpdatedByNotIn(i.UpdatedByNotIn...))
+	}
+	if i.UpdatedByGT != nil {
+		predicates = append(predicates, quotaitem.UpdatedByGT(*i.UpdatedByGT))
+	}
+	if i.UpdatedByGTE != nil {
+		predicates = append(predicates, quotaitem.UpdatedByGTE(*i.UpdatedByGTE))
+	}
+	if i.UpdatedByLT != nil {
+		predicates = append(predicates, quotaitem.UpdatedByLT(*i.UpdatedByLT))
+	}
+	if i.UpdatedByLTE != nil {
+		predicates = append(predicates, quotaitem.UpdatedByLTE(*i.UpdatedByLTE))
+	}
+	if i.UpdatedByIsNil {
+		predicates = append(predicates, quotaitem.UpdatedByIsNil())
+	}
+	if i.UpdatedByNotNil {
+		predicates = append(predicates, quotaitem.UpdatedByNotNil())
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, quotaitem.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, quotaitem.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, quotaitem.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.UpdatedAtIsNil {
+		predicates = append(predicates, quotaitem.UpdatedAtIsNil())
+	}
+	if i.UpdatedAtNotNil {
+		predicates = append(predicates, quotaitem.UpdatedAtNotNil())
+	}
+	if i.Code != nil {
+		predicates = append(predicates, quotaitem.CodeEQ(*i.Code))
+	}
+	if i.CodeNEQ != nil {
+		predicates = append(predicates, quotaitem.CodeNEQ(*i.CodeNEQ))
+	}
+	if len(i.CodeIn) > 0 {
+		predicates = append(predicates, quotaitem.CodeIn(i.CodeIn...))
+	}
+	if len(i.CodeNotIn) > 0 {
+		predicates = append(predicates, quotaitem.CodeNotIn(i.CodeNotIn...))
+	}
+	if i.CodeGT != nil {
+		predicates = append(predicates, quotaitem.CodeGT(*i.CodeGT))
+	}
+	if i.CodeGTE != nil {
+		predicates = append(predicates, quotaitem.CodeGTE(*i.CodeGTE))
+	}
+	if i.CodeLT != nil {
+		predicates = append(predicates, quotaitem.CodeLT(*i.CodeLT))
+	}
+	if i.CodeLTE != nil {
+		predicates = append(predicates, quotaitem.CodeLTE(*i.CodeLTE))
+	}
+	if i.CodeContains != nil {
+		predicates = append(predicates, quotaitem.CodeContains(*i.CodeContains))
+	}
+	if i.CodeHasPrefix != nil {
+		predicates = append(predicates, quotaitem.CodeHasPrefix(*i.CodeHasPrefix))
+	}
+	if i.CodeHasSuffix != nil {
+		predicates = append(predicates, quotaitem.CodeHasSuffix(*i.CodeHasSuffix))
+	}
+	if i.CodeEqualFold != nil {
+		predicates = append(predicates, quotaitem.CodeEqualFold(*i.CodeEqualFold))
+	}
+	if i.CodeContainsFold != nil {
+		predicates = append(predicates, quotaitem.CodeContainsFold(*i.CodeContainsFold))
+	}
+	if i.Name != nil {
+		predicates = append(predicates, quotaitem.NameEQ(*i.Name))
+	}
+	if i.NameNEQ != nil {
+		predicates = append(predicates, quotaitem.NameNEQ(*i.NameNEQ))
+	}
+	if len(i.NameIn) > 0 {
+		predicates = append(predicates, quotaitem.NameIn(i.NameIn...))
+	}
+	if len(i.NameNotIn) > 0 {
+		predicates = append(predicates, quotaitem.NameNotIn(i.NameNotIn...))
+	}
+	if i.NameGT != nil {
+		predicates = append(predicates, quotaitem.NameGT(*i.NameGT))
+	}
+	if i.NameGTE != nil {
+		predicates = append(predicates, quotaitem.NameGTE(*i.NameGTE))
+	}
+	if i.NameLT != nil {
+		predicates = append(predicates, quotaitem.NameLT(*i.NameLT))
+	}
+	if i.NameLTE != nil {
+		predicates = append(predicates, quotaitem.NameLTE(*i.NameLTE))
+	}
+	if i.NameContains != nil {
+		predicates = append(predicates, quotaitem.NameContains(*i.NameContains))
+	}
+	if i.NameHasPrefix != nil {
+		predicates = append(predicates, quotaitem.NameHasPrefix(*i.NameHasPrefix))
+	}
+	if i.NameHasSuffix != nil {
+		predicates = append(predicates, quotaitem.NameHasSuffix(*i.NameHasSuffix))
+	}
+	if i.NameEqualFold != nil {
+		predicates = append(predicates, quotaitem.NameEqualFold(*i.NameEqualFold))
+	}
+	if i.NameContainsFold != nil {
+		predicates = append(predicates, quotaitem.NameContainsFold(*i.NameContainsFold))
+	}
+	if i.ResourceType != nil {
+		predicates = append(predicates, quotaitem.ResourceTypeEQ(*i.ResourceType))
+	}
+	if i.ResourceTypeNEQ != nil {
+		predicates = append(predicates, quotaitem.ResourceTypeNEQ(*i.ResourceTypeNEQ))
+	}
+	if len(i.ResourceTypeIn) > 0 {
+		predicates = append(predicates, quotaitem.ResourceTypeIn(i.ResourceTypeIn...))
+	}
+	if len(i.ResourceTypeNotIn) > 0 {
+		predicates = append(predicates, quotaitem.ResourceTypeNotIn(i.ResourceTypeNotIn...))
+	}
+	if i.Active != nil {
+		predicates = append(predicates, quotaitem.ActiveEQ(*i.Active))
+	}
+	if i.ActiveNEQ != nil {
+		predicates = append(predicates, quotaitem.ActiveNEQ(*i.ActiveNEQ))
+	}
+
+	if i.HasQuota != nil {
+		p := quotaitem.HasQuota()
+		if !*i.HasQuota {
+			p = quotaitem.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQuotaWith) > 0 {
+		with := make([]predicate.Quota, 0, len(i.HasQuotaWith))
+		for _, w := range i.HasQuotaWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasQuotaWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, quotaitem.HasQuotaWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyQuotaItemWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return quotaitem.And(predicates...), nil
 	}
 }
 

@@ -583,6 +583,38 @@ func (r *mutationResolver) AutoGrantApp(ctx context.Context, appCode string, org
 	return true, nil
 }
 
+// CreateQuotaItem is the resolver for the createQuotaItem field.
+func (r *mutationResolver) CreateQuotaItem(ctx context.Context, input ent.CreateQuotaItemInput) (*ent.QuotaItem, error) {
+	return ent.FromContext(ctx).QuotaItem.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateQuotaItem is the resolver for the updateQuotaItem field.
+func (r *mutationResolver) UpdateQuotaItem(ctx context.Context, id int, input ent.UpdateQuotaItemInput) (*ent.QuotaItem, error) {
+	return ent.FromContext(ctx).QuotaItem.UpdateOneID(id).SetInput(input).Save(ctx)
+}
+
+// DeleteQuotaItem is the resolver for the deleteQuotaItem field.
+func (r *mutationResolver) DeleteQuotaItem(ctx context.Context, id int) (bool, error) {
+	err := ent.FromContext(ctx).QuotaItem.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateQuota is the resolver for the createQuota field.
+func (r *mutationResolver) CreateQuota(ctx context.Context, input ent.CreateQuotaInput) (*ent.Quota, error) {
+	return ent.FromContext(ctx).Quota.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateQuota is the resolver for the updateQuota field.
+func (r *mutationResolver) UpdateQuota(ctx context.Context, id int, input ent.UpdateQuotaInput) (*ent.Quota, error) {
+	return ent.FromContext(ctx).Quota.UpdateOneID(id).SetInput(input).Save(ctx)
+}
+
+// DeleteQuota is the resolver for the deleteQuota field.
+func (r *mutationResolver) DeleteQuota(ctx context.Context, id int) (bool, error) {
+	err := ent.FromContext(ctx).Quota.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
+}
+
 // Mutation returns generated1.MutationResolver implementation.
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 

@@ -34,6 +34,8 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -123,6 +125,8 @@ func checkColumn(table, column string) error {
 			orguser.Table:           orguser.ValidColumn,
 			orguserpreference.Table: orguserpreference.ValidColumn,
 			permission.Table:        permission.ValidColumn,
+			quota.Table:             quota.ValidColumn,
+			quotaitem.Table:         quotaitem.ValidColumn,
 			region.Table:            region.ValidColumn,
 			user.Table:              user.ValidColumn,
 			useraddr.Table:          useraddr.ValidColumn,

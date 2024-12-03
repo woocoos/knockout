@@ -109,6 +109,12 @@ type MutationResolver interface {
 	UpdateCurrency(ctx context.Context, currencyID int, input ent.UpdateCurrencyInput) (*ent.Currency, error)
 	DeleteCurrency(ctx context.Context, currencyID int) (bool, error)
 	AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) (bool, error)
+	CreateQuotaItem(ctx context.Context, input ent.CreateQuotaItemInput) (*ent.QuotaItem, error)
+	UpdateQuotaItem(ctx context.Context, id int, input ent.UpdateQuotaItemInput) (*ent.QuotaItem, error)
+	DeleteQuotaItem(ctx context.Context, id int) (bool, error)
+	CreateQuota(ctx context.Context, input ent.CreateQuotaInput) (*ent.Quota, error)
+	UpdateQuota(ctx context.Context, id int, input ent.UpdateQuotaInput) (*ent.Quota, error)
+	DeleteQuota(ctx context.Context, id int) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -1433,6 +1439,70 @@ func (ec *executionContext) field_Mutation_createOrganization_argsInput(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_createQuotaItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_createQuotaItem_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_createQuotaItem_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateQuotaItemInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateQuotaItemInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateQuotaItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateQuotaItemInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateQuotaItemInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createQuota_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_createQuota_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_createQuota_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateQuotaInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateQuotaInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateQuotaInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateQuotaInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateQuotaInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_createRegion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1970,6 +2040,70 @@ func (ec *executionContext) field_Mutation_deleteOrganization_argsOrgID(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
 	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteQuotaItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_deleteQuotaItem_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteQuotaItem_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteQuota_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_deleteQuota_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_deleteQuota_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
 		return ec.unmarshalNID2int(ctx, tmp)
 	}
 
@@ -4403,6 +4537,124 @@ func (ec *executionContext) field_Mutation_updatePermission_argsInput(
 	}
 
 	var zeroVal ent.UpdatePermissionInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateQuotaItem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_updateQuotaItem_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := ec.field_Mutation_updateQuotaItem_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateQuotaItem_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateQuotaItem_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateQuotaItemInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateQuotaItemInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateQuotaItemInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateQuotaItemInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateQuotaItemInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateQuota_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_updateQuota_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	arg1, err := ec.field_Mutation_updateQuota_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateQuota_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_updateQuota_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateQuotaInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateQuotaInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateQuotaInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateQuotaInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateQuotaInput
 	return zeroVal, nil
 }
 
@@ -11015,6 +11267,444 @@ func (ec *executionContext) fieldContext_Mutation_autoGrantApp(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createQuotaItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createQuotaItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateQuotaItem(rctx, fc.Args["input"].(ent.CreateQuotaItemInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.QuotaItem)
+	fc.Result = res
+	return ec.marshalNQuotaItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createQuotaItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_QuotaItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_QuotaItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_QuotaItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_QuotaItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_QuotaItem_updatedAt(ctx, field)
+			case "code":
+				return ec.fieldContext_QuotaItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_QuotaItem_name(ctx, field)
+			case "description":
+				return ec.fieldContext_QuotaItem_description(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_QuotaItem_resourceType(ctx, field)
+			case "unit":
+				return ec.fieldContext_QuotaItem_unit(ctx, field)
+			case "active":
+				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "quota":
+				return ec.fieldContext_QuotaItem_quota(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuotaItem", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createQuotaItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateQuotaItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateQuotaItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateQuotaItem(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateQuotaItemInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.QuotaItem)
+	fc.Result = res
+	return ec.marshalNQuotaItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaItem(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateQuotaItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_QuotaItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_QuotaItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_QuotaItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_QuotaItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_QuotaItem_updatedAt(ctx, field)
+			case "code":
+				return ec.fieldContext_QuotaItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_QuotaItem_name(ctx, field)
+			case "description":
+				return ec.fieldContext_QuotaItem_description(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_QuotaItem_resourceType(ctx, field)
+			case "unit":
+				return ec.fieldContext_QuotaItem_unit(ctx, field)
+			case "active":
+				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "quota":
+				return ec.fieldContext_QuotaItem_quota(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type QuotaItem", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateQuotaItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteQuotaItem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteQuotaItem(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteQuotaItem(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteQuotaItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteQuotaItem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createQuota(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createQuota(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateQuota(rctx, fc.Args["input"].(ent.CreateQuotaInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Quota)
+	fc.Result = res
+	return ec.marshalNQuota2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuota(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createQuota(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Quota_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Quota_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Quota_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Quota_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Quota_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_Quota_orgID(ctx, field)
+			case "quotaItemID":
+				return ec.fieldContext_Quota_quotaItemID(ctx, field)
+			case "limit":
+				return ec.fieldContext_Quota_limit(ctx, field)
+			case "used":
+				return ec.fieldContext_Quota_used(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Quota_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Quota_endAt(ctx, field)
+			case "org":
+				return ec.fieldContext_Quota_org(ctx, field)
+			case "quotaItem":
+				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createQuota_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateQuota(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateQuota(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateQuota(rctx, fc.Args["id"].(int), fc.Args["input"].(ent.UpdateQuotaInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Quota)
+	fc.Result = res
+	return ec.marshalNQuota2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuota(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateQuota(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Quota_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Quota_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Quota_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Quota_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Quota_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_Quota_orgID(ctx, field)
+			case "quotaItemID":
+				return ec.fieldContext_Quota_quotaItemID(ctx, field)
+			case "limit":
+				return ec.fieldContext_Quota_limit(ctx, field)
+			case "used":
+				return ec.fieldContext_Quota_used(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Quota_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Quota_endAt(ctx, field)
+			case "org":
+				return ec.fieldContext_Quota_org(ctx, field)
+			case "quotaItem":
+				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateQuota_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteQuota(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteQuota(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteQuota(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteQuota(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteQuota_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -11563,6 +12253,48 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "autoGrantApp":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_autoGrantApp(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createQuotaItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createQuotaItem(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateQuotaItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateQuotaItem(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteQuotaItem":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteQuotaItem(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createQuota":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createQuota(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateQuota":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateQuota(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteQuota":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteQuota(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

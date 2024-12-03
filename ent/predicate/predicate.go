@@ -72,6 +72,12 @@ type OrgUserPreference func(*sql.Selector)
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)
 
+// Quota is the predicate function for quota builders.
+type Quota func(*sql.Selector)
+
+// QuotaItem is the predicate function for quotaitem builders.
+type QuotaItem func(*sql.Selector)
+
 // Region is the predicate function for region builders.
 type Region func(*sql.Selector)
 

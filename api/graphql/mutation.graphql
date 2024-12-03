@@ -211,4 +211,17 @@ type Mutation {
     deleteCurrency(currencyID:ID!): Boolean!
     """自动授权应用，系统开户、创建web交易用户使用"""
     autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
+    # 创建配额项
+    createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
+    # 更新配额项
+    updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!
+    # 删除配额项
+    deleteQuotaItem(id: ID!): Boolean!
+    # 设置配额
+    createQuota(input: CreateQuotaInput!): Quota!
+    # 更新配额
+    updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
+    # 删除配额
+    deleteQuota(id: ID!): Boolean!
+
 }

@@ -71,6 +71,20 @@ func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[
 		ent.WithOrgFilter(where.Filter))
 }
 
+// Quotas is the resolver for the quotas field.
+func (r *queryResolver) Quotas(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) (*ent.QuotaConnection, error) {
+	return r.client.Quota.Query().Paginate(ctx, after, first, before, last,
+		ent.WithQuotaOrder(orderBy),
+		ent.WithQuotaFilter(where.Filter))
+}
+
+// QuotaItems is the resolver for the quotaItems field.
+func (r *queryResolver) QuotaItems(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) (*ent.QuotaItemConnection, error) {
+	return r.client.QuotaItem.Query().Paginate(ctx, after, first, before, last,
+		ent.WithQuotaItemOrder(orderBy),
+		ent.WithQuotaItemFilter(where.Filter))
+}
+
 // Regions is the resolver for the regions field.
 func (r *queryResolver) Regions(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) (*ent.RegionConnection, error) {
 	return r.client.Region.Query().Paginate(ctx, after, first, before, last,

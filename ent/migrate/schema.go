@@ -750,6 +750,67 @@ var (
 			},
 		},
 	}
+	// QuotaColumns holds the columns for the "quota" table.
+	QuotaColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "limit", Type: field.TypeInt64},
+		{Name: "used", Type: field.TypeInt64, Default: 0},
+		{Name: "start_at", Type: field.TypeTime, Nullable: true},
+		{Name: "end_at", Type: field.TypeTime, Nullable: true},
+		{Name: "org_id", Type: field.TypeInt},
+		{Name: "quota_item_id", Type: field.TypeInt},
+	}
+	// QuotaTable holds the schema information for the "quota" table.
+	QuotaTable = &schema.Table{
+		Name:       "quota",
+		Columns:    QuotaColumns,
+		PrimaryKey: []*schema.Column{QuotaColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "quota_org_org",
+				Columns:    []*schema.Column{QuotaColumns[9]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "quota_quota_item_quota",
+				Columns:    []*schema.Column{QuotaColumns[10]},
+				RefColumns: []*schema.Column{QuotaItemColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "quota_org_id_quota_item_id",
+				Unique:  true,
+				Columns: []*schema.Column{QuotaColumns[9], QuotaColumns[10]},
+			},
+		},
+	}
+	// QuotaItemColumns holds the columns for the "quota_item" table.
+	QuotaItemColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "code", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "resource_type", Type: field.TypeEnum, Enums: []string{"number", "storage", "network"}},
+		{Name: "unit", Type: field.TypeString, Nullable: true},
+		{Name: "active", Type: field.TypeBool, Default: true},
+	}
+	// QuotaItemTable holds the schema information for the "quota_item" table.
+	QuotaItemTable = &schema.Table{
+		Name:       "quota_item",
+		Columns:    QuotaItemColumns,
+		PrimaryKey: []*schema.Column{QuotaItemColumns[0]},
+	}
 	// RegionColumns holds the columns for the "region" table.
 	RegionColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -1003,6 +1064,8 @@ var (
 		OrgUserTable,
 		OrgUserPreferenceTable,
 		PermissionTable,
+		QuotaTable,
+		QuotaItemTable,
 		RegionTable,
 		UserTable,
 		UserAddrTable,
@@ -1111,6 +1174,14 @@ func init() {
 	PermissionTable.ForeignKeys[3].RefTable = OrgRoleTable
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
+	}
+	QuotaTable.ForeignKeys[0].RefTable = OrgTable
+	QuotaTable.ForeignKeys[1].RefTable = QuotaItemTable
+	QuotaTable.Annotation = &entsql.Annotation{
+		Table: "quota",
+	}
+	QuotaItemTable.Annotation = &entsql.Annotation{
+		Table: "quota_item",
 	}
 	RegionTable.ForeignKeys[0].RefTable = CountryTable
 	RegionTable.ForeignKeys[1].RefTable = RegionTable

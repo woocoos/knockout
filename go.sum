@@ -315,10 +315,10 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/tjfoc/gmsm v1.3.2 h1:7JVkAn5bvUJ7HtU08iW6UiD+UTmJTIToHCfeFzkcCxM=
 github.com/tjfoc/gmsm v1.3.2/go.mod h1:HaUcFuY0auTiaHB9MHFGCPx5IaLhTUd2atbCFBQXn9w=
-github.com/tsingsun/woocoo v0.5.1 h1:Yb34bGPRV3//PQrtz0omy0dSBp/d99i41V+SrmUSyjM=
-github.com/tsingsun/woocoo v0.5.1/go.mod h1:vfgL54er0eeiUY+61btgKFvYuKOLrEaoJOc81wRnfMo=
-github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20240522021626-a2b6e6d10802 h1:d8rSTif183w+99Dnq4VbAbeKjyaHzoyRxyDMgVLTE2M=
-github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20240522021626-a2b6e6d10802/go.mod h1:wXf9uZH32ZH5lrAZh2BIbROhPA3VlSOSTrfOg4+k+7M=
+github.com/tsingsun/woocoo v0.5.2-0.20241202093219-65c540512afa h1:z1a+q4mwJ+mWI4+WuUKfTivI2FaCPftlnhNzdT6Bzd8=
+github.com/tsingsun/woocoo v0.5.2-0.20241202093219-65c540512afa/go.mod h1:vfgL54er0eeiUY+61btgKFvYuKOLrEaoJOc81wRnfMo=
+github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20241202100427-ec3ba92be926 h1:I4CwjlYyJzmVJNiJtzAi7QqG5EjSSI6GOdcWswhbEuk=
+github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20241202100427-ec3ba92be926/go.mod h1:yzm/LW0wn4S3BqTKUgbFAASql7AGRtngoaxSY7QjWL0=
 github.com/tsingsun/woocoo/contrib/telemetry v0.1.5-0.20240522021626-a2b6e6d10802 h1:xbyL638daBY3IHDl4vIYSG171zd4zBWar4mP4o7hrDc=
 github.com/tsingsun/woocoo/contrib/telemetry v0.1.5-0.20240522021626-a2b6e6d10802/go.mod h1:rYV7G9kw7bqXV5p2oadk4yLmcYAT1OOhvrHgaQt5qeo=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
@@ -337,8 +337,8 @@ github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2 h1:mfLV
 github.com/woocoos/casbin-ent-adapter v0.0.0-20230511021958-49eb39a7aea2/go.mod h1:v6b9mWRshfwNfMFZeC/zWUyVDZpD7OLPlUPQHFADa2c=
 github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5 h1:3RS4BJyTW6xnvRF30nZUQsp0eMbzpfUsMjvhtmvKmzs=
 github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5/go.mod h1:WGicpJtJzVJETrn/nL8ids3UZquQYLDNm1jpw5Et42M=
-github.com/woocoos/knockout-go v0.0.0-20241121125016-ba353fd1b173 h1:hCbF2zQCH+eLy/kwNzJ8VLgr4MWShWYUhoYdiayHfYE=
-github.com/woocoos/knockout-go v0.0.0-20241121125016-ba353fd1b173/go.mod h1:jgZKFTfhkr5ztJPoEOhzcN8jY2ekd4pUHfuJyTGYn1s=
+github.com/woocoos/knockout-go v0.0.0-20241203080144-fa10498c6af0 h1:BJjsTnJRMEGAfI6KS3uHWGsjzlpsUhRtNCQH1MSjSVY=
+github.com/woocoos/knockout-go v0.0.0-20241203080144-fa10498c6af0/go.mod h1:YQxXwx6UhS96RsdHh0xDsYL8IlAHFkxtz+rPlV5tX7k=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.30/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=

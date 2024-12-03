@@ -56,6 +56,10 @@ type Tx struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Quota is the client for interacting with the Quota builders.
+	Quota *QuotaClient
+	// QuotaItem is the client for interacting with the QuotaItem builders.
+	QuotaItem *QuotaItemClient
 	// Region is the client for interacting with the Region builders.
 	Region *RegionClient
 	// User is the client for interacting with the User builders.
@@ -223,6 +227,8 @@ func (tx *Tx) init() {
 	tx.OrgUser = NewOrgUserClient(tx.config)
 	tx.OrgUserPreference = NewOrgUserPreferenceClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
+	tx.Quota = NewQuotaClient(tx.config)
+	tx.QuotaItem = NewQuotaItemClient(tx.config)
 	tx.Region = NewRegionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserAddr = NewUserAddrClient(tx.config)

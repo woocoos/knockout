@@ -34,6 +34,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -5664,6 +5666,614 @@ func (pe *Permission) ToEdge(order *PermissionOrder) *PermissionEdge {
 	return &PermissionEdge{
 		Node:   pe,
 		Cursor: order.Field.toCursor(pe),
+	}
+}
+
+// QuotaEdge is the edge representation of Quota.
+type QuotaEdge struct {
+	Node   *Quota `json:"node"`
+	Cursor Cursor `json:"cursor"`
+}
+
+// QuotaConnection is the connection containing edges to Quota.
+type QuotaConnection struct {
+	Edges      []*QuotaEdge `json:"edges"`
+	PageInfo   PageInfo     `json:"pageInfo"`
+	TotalCount int          `json:"totalCount"`
+}
+
+func (c *QuotaConnection) build(nodes []*Quota, pager *quotaPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Quota
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Quota {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Quota {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*QuotaEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &QuotaEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// QuotaPaginateOption enables pagination customization.
+type QuotaPaginateOption func(*quotaPager) error
+
+// WithQuotaOrder configures pagination ordering.
+func WithQuotaOrder(order *QuotaOrder) QuotaPaginateOption {
+	if order == nil {
+		order = DefaultQuotaOrder
+	}
+	o := *order
+	return func(pager *quotaPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultQuotaOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithQuotaFilter configures pagination filter.
+func WithQuotaFilter(filter func(*QuotaQuery) (*QuotaQuery, error)) QuotaPaginateOption {
+	return func(pager *quotaPager) error {
+		if filter == nil {
+			return errors.New("QuotaQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type quotaPager struct {
+	reverse bool
+	order   *QuotaOrder
+	filter  func(*QuotaQuery) (*QuotaQuery, error)
+}
+
+func newQuotaPager(opts []QuotaPaginateOption, reverse bool) (*quotaPager, error) {
+	pager := &quotaPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultQuotaOrder
+	}
+	return pager, nil
+}
+
+func (p *quotaPager) applyFilter(query *QuotaQuery) (*QuotaQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *quotaPager) toCursor(q *Quota) Cursor {
+	return p.order.Field.toCursor(q)
+}
+
+func (p *quotaPager) applyCursors(query *QuotaQuery, after, before *Cursor) (*QuotaQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultQuotaOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *quotaPager) applyOrder(query *QuotaQuery) *QuotaQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultQuotaOrder.Field {
+		query = query.Order(DefaultQuotaOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *quotaPager) orderExpr(query *QuotaQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultQuotaOrder.Field {
+			b.Comma().Ident(DefaultQuotaOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Quota.
+func (q *QuotaQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...QuotaPaginateOption,
+) (*QuotaConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newQuotaPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if q, err = pager.applyFilter(q); err != nil {
+		return nil, err
+	}
+	conn := &QuotaConnection{Edges: []*QuotaEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := q.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if q, err = pager.applyCursors(q, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		q.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			q.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			q.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := q.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	q = pager.applyOrder(q)
+	nodes, err := q.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// QuotaOrderFieldCreatedAt orders Quota by created_at.
+	QuotaOrderFieldCreatedAt = &QuotaOrderField{
+		Value: func(q *Quota) (ent.Value, error) {
+			return q.CreatedAt, nil
+		},
+		column: quota.FieldCreatedAt,
+		toTerm: quota.ByCreatedAt,
+		toCursor: func(q *Quota) Cursor {
+			return Cursor{
+				ID:    q.ID,
+				Value: q.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f QuotaOrderField) String() string {
+	var str string
+	switch f.column {
+	case QuotaOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f QuotaOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *QuotaOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("QuotaOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *QuotaOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid QuotaOrderField", str)
+	}
+	return nil
+}
+
+// QuotaOrderField defines the ordering field of Quota.
+type QuotaOrderField struct {
+	// Value extracts the ordering value from the given Quota.
+	Value    func(*Quota) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) quota.OrderOption
+	toCursor func(*Quota) Cursor
+}
+
+// QuotaOrder defines the ordering of Quota.
+type QuotaOrder struct {
+	Direction OrderDirection   `json:"direction"`
+	Field     *QuotaOrderField `json:"field"`
+}
+
+// DefaultQuotaOrder is the default ordering of Quota.
+var DefaultQuotaOrder = &QuotaOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &QuotaOrderField{
+		Value: func(q *Quota) (ent.Value, error) {
+			return q.ID, nil
+		},
+		column: quota.FieldID,
+		toTerm: quota.ByID,
+		toCursor: func(q *Quota) Cursor {
+			return Cursor{ID: q.ID}
+		},
+	},
+}
+
+// ToEdge converts Quota into QuotaEdge.
+func (q *Quota) ToEdge(order *QuotaOrder) *QuotaEdge {
+	if order == nil {
+		order = DefaultQuotaOrder
+	}
+	return &QuotaEdge{
+		Node:   q,
+		Cursor: order.Field.toCursor(q),
+	}
+}
+
+// QuotaItemEdge is the edge representation of QuotaItem.
+type QuotaItemEdge struct {
+	Node   *QuotaItem `json:"node"`
+	Cursor Cursor     `json:"cursor"`
+}
+
+// QuotaItemConnection is the connection containing edges to QuotaItem.
+type QuotaItemConnection struct {
+	Edges      []*QuotaItemEdge `json:"edges"`
+	PageInfo   PageInfo         `json:"pageInfo"`
+	TotalCount int              `json:"totalCount"`
+}
+
+func (c *QuotaItemConnection) build(nodes []*QuotaItem, pager *quotaitemPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *QuotaItem
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *QuotaItem {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *QuotaItem {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*QuotaItemEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &QuotaItemEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// QuotaItemPaginateOption enables pagination customization.
+type QuotaItemPaginateOption func(*quotaitemPager) error
+
+// WithQuotaItemOrder configures pagination ordering.
+func WithQuotaItemOrder(order *QuotaItemOrder) QuotaItemPaginateOption {
+	if order == nil {
+		order = DefaultQuotaItemOrder
+	}
+	o := *order
+	return func(pager *quotaitemPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultQuotaItemOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithQuotaItemFilter configures pagination filter.
+func WithQuotaItemFilter(filter func(*QuotaItemQuery) (*QuotaItemQuery, error)) QuotaItemPaginateOption {
+	return func(pager *quotaitemPager) error {
+		if filter == nil {
+			return errors.New("QuotaItemQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type quotaitemPager struct {
+	reverse bool
+	order   *QuotaItemOrder
+	filter  func(*QuotaItemQuery) (*QuotaItemQuery, error)
+}
+
+func newQuotaItemPager(opts []QuotaItemPaginateOption, reverse bool) (*quotaitemPager, error) {
+	pager := &quotaitemPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultQuotaItemOrder
+	}
+	return pager, nil
+}
+
+func (p *quotaitemPager) applyFilter(query *QuotaItemQuery) (*QuotaItemQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *quotaitemPager) toCursor(qi *QuotaItem) Cursor {
+	return p.order.Field.toCursor(qi)
+}
+
+func (p *quotaitemPager) applyCursors(query *QuotaItemQuery, after, before *Cursor) (*QuotaItemQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultQuotaItemOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *quotaitemPager) applyOrder(query *QuotaItemQuery) *QuotaItemQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultQuotaItemOrder.Field {
+		query = query.Order(DefaultQuotaItemOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *quotaitemPager) orderExpr(query *QuotaItemQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultQuotaItemOrder.Field {
+			b.Comma().Ident(DefaultQuotaItemOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to QuotaItem.
+func (qi *QuotaItemQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...QuotaItemPaginateOption,
+) (*QuotaItemConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newQuotaItemPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if qi, err = pager.applyFilter(qi); err != nil {
+		return nil, err
+	}
+	conn := &QuotaItemConnection{Edges: []*QuotaItemEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := qi.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if qi, err = pager.applyCursors(qi, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		qi.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			qi.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			qi.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := qi.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	qi = pager.applyOrder(qi)
+	nodes, err := qi.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// QuotaItemOrderFieldCreatedAt orders QuotaItem by created_at.
+	QuotaItemOrderFieldCreatedAt = &QuotaItemOrderField{
+		Value: func(qi *QuotaItem) (ent.Value, error) {
+			return qi.CreatedAt, nil
+		},
+		column: quotaitem.FieldCreatedAt,
+		toTerm: quotaitem.ByCreatedAt,
+		toCursor: func(qi *QuotaItem) Cursor {
+			return Cursor{
+				ID:    qi.ID,
+				Value: qi.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f QuotaItemOrderField) String() string {
+	var str string
+	switch f.column {
+	case QuotaItemOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f QuotaItemOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *QuotaItemOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("QuotaItemOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *QuotaItemOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid QuotaItemOrderField", str)
+	}
+	return nil
+}
+
+// QuotaItemOrderField defines the ordering field of QuotaItem.
+type QuotaItemOrderField struct {
+	// Value extracts the ordering value from the given QuotaItem.
+	Value    func(*QuotaItem) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) quotaitem.OrderOption
+	toCursor func(*QuotaItem) Cursor
+}
+
+// QuotaItemOrder defines the ordering of QuotaItem.
+type QuotaItemOrder struct {
+	Direction OrderDirection       `json:"direction"`
+	Field     *QuotaItemOrderField `json:"field"`
+}
+
+// DefaultQuotaItemOrder is the default ordering of QuotaItem.
+var DefaultQuotaItemOrder = &QuotaItemOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &QuotaItemOrderField{
+		Value: func(qi *QuotaItem) (ent.Value, error) {
+			return qi.ID, nil
+		},
+		column: quotaitem.FieldID,
+		toTerm: quotaitem.ByID,
+		toCursor: func(qi *QuotaItem) Cursor {
+			return Cursor{ID: qi.ID}
+		},
+	},
+}
+
+// ToEdge converts QuotaItem into QuotaItemEdge.
+func (qi *QuotaItem) ToEdge(order *QuotaItemOrder) *QuotaItemEdge {
+	if order == nil {
+		order = DefaultQuotaItemOrder
+	}
+	return &QuotaItemEdge{
+		Node:   qi,
+		Cursor: order.Field.toCursor(qi),
 	}
 }
 

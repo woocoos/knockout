@@ -30,6 +30,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -147,6 +149,18 @@ func (pe *Permission) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given Quota node.
+func (q *Quota) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Quota:%d", q.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given QuotaItem node.
+func (qi *QuotaItem) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("QuotaItem:%d", qi.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given Region node.
 func (r *Region) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("Region:%d", r.ID)
@@ -241,6 +255,10 @@ func GlobalID(tp, id string) (string, error) {
 	case orguserpreference.Table:
 		break
 	case permission.Table:
+		break
+	case quota.Table:
+		break
+	case quotaitem.Table:
 		break
 	case region.Table:
 		break
