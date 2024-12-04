@@ -135,10 +135,10 @@ func (t *graphqlSuite) TestQuota() {
 			SetCreatedBy(1).SaveX(ctx),
 	}
 
-	t.Client.Quota.Create().SetID(1).SetOrgID(1).SetQuotaItem(quotaItems[0]).SetLimit(100).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
-	t.Client.Quota.Create().SetID(2).SetOrgID(1).SetQuotaItem(quotaItems[1]).SetLimit(1000).SetStartAt(time.Now().AddDate(0, 0, -1)).
+	t.Client.Quota.Create().SetID(1).SetTenantID(1).SetUserID(0).SetQuotaItem(quotaItems[0]).SetLimit(100).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
+	t.Client.Quota.Create().SetID(2).SetTenantID(1).SetUserID(0).SetQuotaItem(quotaItems[1]).SetLimit(1000).SetStartAt(time.Now().AddDate(0, 0, -1)).
 		SetEndAt(time.Now().AddDate(0, 1, 0)).SetCreatedBy(1).SaveX(ctx)
-	t.Client.Quota.Create().SetID(3).SetOrgID(1).SetQuotaItem(quotaItems[2]).SetLimit(1).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
+	t.Client.Quota.Create().SetID(3).SetTenantID(1).SetUserID(0).SetQuotaItem(quotaItems[2]).SetLimit(1).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
 	t.Run("query quota items", func() {
 		const query = `
             query {
@@ -191,9 +191,6 @@ func (t *graphqlSuite) TestQuota() {
                                 code
                                 name
                             }
-                            org {
-                                name
-                            }
                         }
                     }
                 }
@@ -207,13 +204,10 @@ func (t *graphqlSuite) TestQuota() {
 						ID        string
 						Limit     int64
 						Used      int64
-						StartAt   time.Time
-						EndAt     *time.Time
+						StartAt   string
+						EndAt     string
 						QuotaItem struct {
 							Code string
-							Name string
-						}
-						Org struct {
 							Name string
 						}
 					}
@@ -223,7 +217,7 @@ func (t *graphqlSuite) TestQuota() {
 
 		err := t.gqlClient.Post(query, &resp)
 		t.Require().NoError(err)
-		t.Require().Len(resp.Quotas.Edges, 2)
+		t.Require().Len(resp.Quotas.Edges, 3)
 	})
 
 	t.Run("create quota item", func() {
@@ -264,44 +258,6 @@ func (t *graphqlSuite) TestQuota() {
 		err := t.gqlClient.Post(mutation, &resp, client.Var("input", variables["input"]))
 		t.Require().NoError(err)
 		t.Require().Equal("api-calls", resp.CreateQuotaItem.Code)
-	})
-
-	t.Run("set org quota", func() {
-		const mutation = `
-            mutation SetOrgQuota($input: SetOrgQuotaInput!) {
-                setOrgQuota(input: $input) {
-                    id
-                    limit
-                    used
-                    startAt
-                    endAt
-                }
-            }
-        `
-
-		variables := map[string]interface{}{
-			"input": map[string]interface{}{
-				"orgId":       1,
-				"quotaItemId": 1,
-				"limit":       200,
-				"startAt":     time.Now().Format(time.RFC3339),
-			},
-		}
-
-		var resp struct {
-			SetOrgQuota struct {
-				ID      string
-				Limit   int64
-				Used    int64
-				StartAt time.Time
-				EndAt   *time.Time
-			}
-		}
-
-		err := t.gqlClient.Post(mutation, &resp, client.Var("input", variables["input"]))
-		t.Require().NoError(err)
-		t.Require().Equal(int64(200), resp.SetOrgQuota.Limit)
-		t.Require().Equal(int64(200), resp.SetOrgQuota.Used) // 因为在生效期内
 	})
 }
 
