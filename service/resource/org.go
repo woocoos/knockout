@@ -12,6 +12,8 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -921,4 +923,81 @@ func (s *Service) GetTopOrg(ctx context.Context, orgID int) (*ent.Org, error) {
 		return o, nil
 	}
 	return s.GetTopOrg(ctx, o.ParentID)
+}
+
+func (s *Service) OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
+	// 获取用户在当前组织的策略视图
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 用户授权的角色
+	rIDs, err := s.Client.OrgRoleUser.Query().Where(
+		orgroleuser.OrgID(tid),
+		orgroleuser.UserID(uid),
+	).Select(orgroleuser.FieldOrgRoleID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 获取用户所有策略视图相关的应用权限策略
+	apIDs, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.HasPermissionsWith(
+			permission.OrgID(tid),
+			permission.HasOrgPolicyWith(
+				orgpolicy.AppPolicyIDNotNil(),
+				orgpolicy.HasAppPolicyWith(
+					apppolicy.KindEQ(apppolicy.KindView),
+					apppolicy.HasAppWith(app.Code(appCode)),
+				),
+			),
+			permission.Or(
+				permission.UserID(uid),
+				permission.RoleIDIn(rIDs...),
+			),
+		),
+	).Select(orgpolicy.FieldAppPolicyID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 根据用户的应用权限策略获取用户策略视图
+	uapvs, err := s.Client.AppPolicyView.Query().Where(
+		apppolicyview.HasAppPolicyWith(
+			apppolicy.IDIn(apIDs...),
+		),
+	).All(ctx)
+	// 获取应用的策略视图
+	apvs, err := s.Client.AppPolicyView.Query().Where(apppolicyview.HasAppWith(app.Code(appCode))).All(ctx)
+	// 找出视图的父节点
+	papvs := make([]*ent.AppPolicyView, 0)
+	findAppPolicyViewParents(apvs, uapvs, &papvs)
+	// pms 去重
+	temp := make(map[string]bool)
+	result := make([]*ent.AppPolicyView, 0, len(papvs))
+	for _, v := range papvs {
+		key := strconv.Itoa(v.ID)
+		if _, ok := temp[key]; !ok {
+			temp[key] = true
+			result = append(result, v)
+		}
+	}
+	uapvs = append(uapvs, result...)
+	return uapvs, nil
+}
+
+func findAppPolicyViewParents(appPolicyViews, userPolicyViews []*ent.AppPolicyView, parent *[]*ent.AppPolicyView) {
+	for _, upv := range userPolicyViews {
+		for _, apv := range appPolicyViews {
+			if upv.ParentID == apv.ID {
+				*parent = append(*parent, apv)
+				if upv.ParentID != 0 {
+					findAppPolicyViewParents(appPolicyViews, []*ent.AppPolicyView{apv}, parent)
+				}
+				continue
+			}
+		}
+	}
 }

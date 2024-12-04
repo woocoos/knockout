@@ -15,8 +15,10 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
@@ -576,5 +578,45 @@ func (s *Service) MoveAppDictItem(ctx context.Context, sourceID int, targetID in
 	if err != nil {
 		return err
 	}
+	return builder.Exec(ctx)
+}
+
+// MoveAppPolicyView 移动地区目录.
+func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action model.TreeAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarPolicyView := client.AppPolicyView.GetX(ctx, tar)
+	builder := client.AppPolicyView.UpdateOneID(src)
+	var start int32 = 0
+	var resort = true
+	switch action {
+	case model.TreeActionChild:
+		var agg []struct {
+			Max *int32
+		}
+		err = client.AppPolicyView.Query().Where(apppolicyview.ParentID(tarPolicyView.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		if err != nil {
+			return err
+		}
+		if agg[0].Max == nil {
+			start = 1
+		} else {
+			start = *agg[0].Max + 1
+		}
+		builder.SetParentID(tarPolicyView.ID)
+		resort = false
+	case model.TreeActionUp:
+		start = tarPolicyView.DisplaySort
+		builder.SetParentID(tarPolicyView.ParentID).SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = tarPolicyView.DisplaySort + 1
+		builder.SetParentID(tarPolicyView.ParentID).SetDisplaySort(start)
+	}
+	if resort {
+		err = client.AppPolicyView.Update().Where(apppolicyview.ParentID(tarPolicyView.ParentID), apppolicyview.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+		if err != nil {
+			return
+		}
+	}
+
 	return builder.Exec(ctx)
 }

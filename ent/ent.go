@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -109,6 +110,7 @@ func checkColumn(table, column string) error {
 			appdictitem.Table:       appdictitem.ValidColumn,
 			appmenu.Table:           appmenu.ValidColumn,
 			apppolicy.Table:         apppolicy.ValidColumn,
+			apppolicyview.Table:     apppolicyview.ValidColumn,
 			appres.Table:            appres.ValidColumn,
 			approle.Table:           approle.ValidColumn,
 			approlepolicy.Table:     approlepolicy.ValidColumn,

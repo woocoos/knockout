@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
@@ -338,6 +339,21 @@ func (ac *AppCreate) AddPolicies(a ...*AppPolicy) *AppCreate {
 		ids[i] = a[i].ID
 	}
 	return ac.AddPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (ac *AppCreate) AddPolicyViewIDs(ids ...int) *AppCreate {
+	ac.mutation.AddPolicyViewIDs(ids...)
+	return ac
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (ac *AppCreate) AddPolicyViews(a ...*AppPolicyView) *AppCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
@@ -682,6 +698,22 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

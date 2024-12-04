@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -68,6 +69,8 @@ type Client struct {
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
 	AppPolicy *AppPolicyClient
+	// AppPolicyView is the client for interacting with the AppPolicyView builders.
+	AppPolicyView *AppPolicyViewClient
 	// AppRes is the client for interacting with the AppRes builders.
 	AppRes *AppResClient
 	// AppRole is the client for interacting with the AppRole builders.
@@ -137,6 +140,7 @@ func (c *Client) init() {
 	c.AppDictItem = NewAppDictItemClient(c.config)
 	c.AppMenu = NewAppMenuClient(c.config)
 	c.AppPolicy = NewAppPolicyClient(c.config)
+	c.AppPolicyView = NewAppPolicyViewClient(c.config)
 	c.AppRes = NewAppResClient(c.config)
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
@@ -260,6 +264,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppDictItem:       NewAppDictItemClient(cfg),
 		AppMenu:           NewAppMenuClient(cfg),
 		AppPolicy:         NewAppPolicyClient(cfg),
+		AppPolicyView:     NewAppPolicyViewClient(cfg),
 		AppRes:            NewAppResClient(cfg),
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
@@ -310,6 +315,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppDictItem:       NewAppDictItemClient(cfg),
 		AppMenu:           NewAppMenuClient(cfg),
 		AppPolicy:         NewAppPolicyClient(cfg),
+		AppPolicyView:     NewAppPolicyViewClient(cfg),
 		AppRes:            NewAppResClient(cfg),
 		AppRole:           NewAppRoleClient(cfg),
 		AppRolePolicy:     NewAppRolePolicyClient(cfg),
@@ -364,12 +370,12 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.Country, c.Currency, c.FileIdentity,
-		c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Quota,
-		c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy,
+		c.AppPolicyView, c.AppRes, c.AppRole, c.AppRolePolicy, c.Country, c.Currency,
+		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
+		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
+		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Use(hooks...)
 	}
@@ -379,12 +385,12 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.Country, c.Currency, c.FileIdentity,
-		c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy, c.OrgRole,
-		c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission, c.Quota,
-		c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy,
+		c.AppPolicyView, c.AppRes, c.AppRole, c.AppRolePolicy, c.Country, c.Currency,
+		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
+		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
+		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -405,6 +411,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppMenu.mutate(ctx, m)
 	case *AppPolicyMutation:
 		return c.AppPolicy.mutate(ctx, m)
+	case *AppPolicyViewMutation:
+		return c.AppPolicyView.mutate(ctx, m)
 	case *AppResMutation:
 		return c.AppRes.mutate(ctx, m)
 	case *AppRoleMutation:
@@ -641,6 +649,22 @@ func (c *AppClient) QueryPolicies(a *App) *AppPolicyQuery {
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.PoliciesTable, app.PoliciesColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPolicyViews queries the policy_views edge of a App.
+func (c *AppClient) QueryPolicyViews(a *App) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.PolicyViewsTable, app.PolicyViewsColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -1526,6 +1550,38 @@ func (c *AppPolicyClient) QueryRoles(ap *AppPolicy) *AppRoleQuery {
 	return query
 }
 
+// QueryOrgPolicies queries the org_policies edge of a AppPolicy.
+func (c *AppPolicyClient) QueryOrgPolicies(ap *AppPolicy) *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, id),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.OrgPoliciesTable, apppolicy.OrgPoliciesColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPolicyViews queries the policy_views edge of a AppPolicy.
+func (c *AppPolicyClient) QueryPolicyViews(ap *AppPolicy) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.PolicyViewsTable, apppolicy.PolicyViewsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryAppRolePolicy queries the app_role_policy edge of a AppPolicy.
 func (c *AppPolicyClient) QueryAppRolePolicy(ap *AppPolicy) *AppRolePolicyQuery {
 	query := (&AppRolePolicyClient{config: c.config}).Query()
@@ -1565,6 +1621,172 @@ func (c *AppPolicyClient) mutate(ctx context.Context, m *AppPolicyMutation) (Val
 		return (&AppPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppPolicy mutation op: %q", m.Op())
+	}
+}
+
+// AppPolicyViewClient is a client for the AppPolicyView schema.
+type AppPolicyViewClient struct {
+	config
+}
+
+// NewAppPolicyViewClient returns a client for the AppPolicyView from the given config.
+func NewAppPolicyViewClient(c config) *AppPolicyViewClient {
+	return &AppPolicyViewClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `apppolicyview.Hooks(f(g(h())))`.
+func (c *AppPolicyViewClient) Use(hooks ...Hook) {
+	c.hooks.AppPolicyView = append(c.hooks.AppPolicyView, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `apppolicyview.Intercept(f(g(h())))`.
+func (c *AppPolicyViewClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppPolicyView = append(c.inters.AppPolicyView, interceptors...)
+}
+
+// Create returns a builder for creating a AppPolicyView entity.
+func (c *AppPolicyViewClient) Create() *AppPolicyViewCreate {
+	mutation := newAppPolicyViewMutation(c.config, OpCreate)
+	return &AppPolicyViewCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppPolicyView entities.
+func (c *AppPolicyViewClient) CreateBulk(builders ...*AppPolicyViewCreate) *AppPolicyViewCreateBulk {
+	return &AppPolicyViewCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppPolicyViewClient) MapCreateBulk(slice any, setFunc func(*AppPolicyViewCreate, int)) *AppPolicyViewCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppPolicyViewCreateBulk{err: fmt.Errorf("calling to AppPolicyViewClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppPolicyViewCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppPolicyViewCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppPolicyView.
+func (c *AppPolicyViewClient) Update() *AppPolicyViewUpdate {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdate)
+	return &AppPolicyViewUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppPolicyViewClient) UpdateOne(apv *AppPolicyView) *AppPolicyViewUpdateOne {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdateOne, withAppPolicyView(apv))
+	return &AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppPolicyViewClient) UpdateOneID(id int) *AppPolicyViewUpdateOne {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdateOne, withAppPolicyViewID(id))
+	return &AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppPolicyView.
+func (c *AppPolicyViewClient) Delete() *AppPolicyViewDelete {
+	mutation := newAppPolicyViewMutation(c.config, OpDelete)
+	return &AppPolicyViewDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppPolicyViewClient) DeleteOne(apv *AppPolicyView) *AppPolicyViewDeleteOne {
+	return c.DeleteOneID(apv.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppPolicyViewClient) DeleteOneID(id int) *AppPolicyViewDeleteOne {
+	builder := c.Delete().Where(apppolicyview.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppPolicyViewDeleteOne{builder}
+}
+
+// Query returns a query builder for AppPolicyView.
+func (c *AppPolicyViewClient) Query() *AppPolicyViewQuery {
+	return &AppPolicyViewQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppPolicyView},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppPolicyView entity by its id.
+func (c *AppPolicyViewClient) Get(ctx context.Context, id int) (*AppPolicyView, error) {
+	return c.Query().Where(apppolicyview.ID(id)).Only(entcache.WithEntryKey(ctx, "AppPolicyView", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppPolicyViewClient) GetX(ctx context.Context, id int) *AppPolicyView {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryApp queries the app edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryApp(apv *AppPolicyView) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppTable, apppolicyview.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPolicy queries the app_policy edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryAppPolicy(apv *AppPolicyView) *AppPolicyQuery {
+	query := (&AppPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppPolicyTable, apppolicyview.AppPolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AppPolicyViewClient) Hooks() []Hook {
+	hooks := c.hooks.AppPolicyView
+	return append(hooks[:len(hooks):len(hooks)], apppolicyview.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppPolicyViewClient) Interceptors() []Interceptor {
+	return c.inters.AppPolicyView
+}
+
+func (c *AppPolicyViewClient) mutate(ctx context.Context, m *AppPolicyViewMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppPolicyViewCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppPolicyViewUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppPolicyViewDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppPolicyView mutation op: %q", m.Op())
 	}
 }
 
@@ -3427,6 +3649,22 @@ func (c *OrgPolicyClient) QueryPermissions(op *OrgPolicy) *PermissionQuery {
 			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
 			sqlgraph.To(permission.Table, permission.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, orgpolicy.PermissionsTable, orgpolicy.PermissionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPolicy queries the app_policy edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryAppPolicy(op *OrgPolicy) *AppPolicyQuery {
+	query := (&AppPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.AppPolicyTable, orgpolicy.AppPolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
 		return fromV, nil
@@ -5964,18 +6202,18 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, Country, Currency, FileIdentity, FileSource, OauthClient, Org,
-		OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference,
-		Permission, Quota, QuotaItem, Region, User, UserAddr, UserDevice, UserIdentity,
-		UserLoginProfile, UserPassword []ent.Hook
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppPolicyView, AppRes,
+		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
+		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Hook
 	}
 	inters struct {
-		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, Country, Currency, FileIdentity, FileSource, OauthClient, Org,
-		OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser, OrgUserPreference,
-		Permission, Quota, QuotaItem, Region, User, UserAddr, UserDevice, UserIdentity,
-		UserLoginProfile, UserPassword []ent.Interceptor
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppPolicyView, AppRes,
+		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
+		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
 	}
 )
 

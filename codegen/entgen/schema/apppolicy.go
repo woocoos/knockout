@@ -46,6 +46,7 @@ func (AppPolicy) Mixin() []ent.Mixin {
 func (AppPolicy) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("app_id").Optional().Immutable().Comment("所属应用"),
+		field.Enum("kind").Values("app", "view").Comment("分类：app-应用策略、view-策略视图"),
 		field.String("name").Comment("策略名称"),
 		field.String("comments").Optional().Comment("描述"),
 		field.JSON("rules", []*types.PolicyRule{}).Comment("策略规则"),
@@ -61,6 +62,8 @@ func (AppPolicy) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("app", App.Type).Ref("policies").Unique().Immutable().Field("app_id"),
 		edge.From("roles", AppRole.Type).Ref("policies").Through("app_role_policy", AppRolePolicy.Type),
+		edge.To("org_policies", OrgPolicy.Type).Comment("策略授权的组织策略"),
+		edge.To("policy_views", AppPolicyView.Type).Comment("策略视图"),
 	}
 }
 

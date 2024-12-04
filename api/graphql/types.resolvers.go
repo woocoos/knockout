@@ -7,9 +7,11 @@ package graphql
 import (
 	"context"
 
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -25,6 +27,60 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 		return false, err
 	}
 	return exist, nil
+}
+
+// OrgPolicy is the resolver for the orgPolicy field.
+func (r *appPolicyViewResolver) OrgPolicy(ctx context.Context, obj *ent.AppPolicyView) (*ent.OrgPolicy, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.client.OrgPolicy.Query().Where(
+		orgpolicy.OrgID(tid),
+		orgpolicy.AppPolicyID(obj.PolicyID),
+		orgpolicy.AppID(obj.AppID),
+	).Only(ctx)
+}
+
+// AppRoleAssigned is the resolver for the appRoleAssigned field.
+func (r *appPolicyViewResolver) AppRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, appRoleID int) (bool, error) {
+	return r.client.AppRolePolicy.Query().Where(
+		approlepolicy.AppID(obj.AppID),
+		approlepolicy.AppRoleID(appRoleID),
+		approlepolicy.AppPolicyID(obj.PolicyID),
+	).Exist(ctx)
+}
+
+// OrgRoleAssigned is the resolver for the orgRoleAssigned field.
+func (r *appPolicyViewResolver) OrgRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, orgRoleID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	orgPolicy, err := r.OrgPolicy(ctx, obj)
+	return r.client.Permission.Query().Where(
+		permission.RoleID(orgRoleID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyID(orgPolicy.ID),
+	).Exist(ctx)
+}
+
+// OrgUserAssigned is the resolver for the orgUserAssigned field.
+func (r *appPolicyViewResolver) OrgUserAssigned(ctx context.Context, obj *ent.AppPolicyView, userID int) (bool, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	orgPolicy, err := r.OrgPolicy(ctx, obj)
+	return r.client.Permission.Query().Where(
+		permission.UserID(userID),
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyID(orgPolicy.ID),
+	).Exist(ctx)
 }
 
 // TopOrg is the resolver for the TopOrg field.

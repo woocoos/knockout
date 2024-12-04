@@ -167,7 +167,7 @@ func Test_CreateToken(t *testing.T) {
 	opts := Options{
 		JWT: jwtOpt{
 			SigningMethod:   "HS256",
-			SigningKey:      "secret",
+			SigningKey:      "e262608e-926d-4a4a-9b53-a25a96b95689",
 			TokenTTL:        time.Hour * 10000,
 			RefreshTokenTTL: time.Hour * 10000,
 		},

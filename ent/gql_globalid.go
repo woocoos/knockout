@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
@@ -74,6 +75,12 @@ func (am *AppMenu) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given AppPolicy node.
 func (ap *AppPolicy) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("AppPolicy:%d", ap.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given AppPolicyView node.
+func (apv *AppPolicyView) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppPolicyView:%d", apv.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -231,6 +238,8 @@ func GlobalID(tp, id string) (string, error) {
 	case appmenu.Table:
 		break
 	case apppolicy.Table:
+		break
+	case apppolicyview.Table:
 		break
 	case appres.Table:
 		break

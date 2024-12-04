@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
@@ -52,11 +53,13 @@ type OrgPolicyEdges struct {
 	Org *Org `json:"org,omitempty"`
 	// Permissions holds the value of the permissions edge.
 	Permissions []*Permission `json:"permissions,omitempty"`
+	// AppPolicy holds the value of the app_policy edge.
+	AppPolicy *AppPolicy `json:"app_policy,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 
 	namedPermissions map[string][]*Permission
 }
@@ -79,6 +82,17 @@ func (e OrgPolicyEdges) PermissionsOrErr() ([]*Permission, error) {
 		return e.Permissions, nil
 	}
 	return nil, &NotLoadedError{edge: "permissions"}
+}
+
+// AppPolicyOrErr returns the AppPolicy value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgPolicyEdges) AppPolicyOrErr() (*AppPolicy, error) {
+	if e.AppPolicy != nil {
+		return e.AppPolicy, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: apppolicy.Label}
+	}
+	return nil, &NotLoadedError{edge: "app_policy"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -198,6 +212,11 @@ func (op *OrgPolicy) QueryOrg() *OrgQuery {
 // QueryPermissions queries the "permissions" edge of the OrgPolicy entity.
 func (op *OrgPolicy) QueryPermissions() *PermissionQuery {
 	return NewOrgPolicyClient(op.config).QueryPermissions(op)
+}
+
+// QueryAppPolicy queries the "app_policy" edge of the OrgPolicy entity.
+func (op *OrgPolicy) QueryAppPolicy() *AppPolicyQuery {
+	return NewOrgPolicyClient(op.config).QueryAppPolicy(op)
 }
 
 // Update returns a builder for updating this OrgPolicy.

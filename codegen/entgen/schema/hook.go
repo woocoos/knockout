@@ -6,6 +6,7 @@ import (
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/region"
@@ -40,6 +41,9 @@ func InitDisplaySortHookEx(table, parentField string) ent.Hook {
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					case region.Table:
 						old, _ = mx.Client().Region.Query().Where(region.ParentID(pid.(int))).
+							Aggregate(gen.Max(displayField)).Int(ctx)
+					case apppolicyview.Table:
+						old, _ = mx.Client().AppPolicyView.Query().Where(apppolicyview.ParentID(pid.(int))).
 							Aggregate(gen.Max(displayField)).Int(ctx)
 					}
 					mx.SetDisplaySort(int32(old + 1))

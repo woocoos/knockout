@@ -192,6 +192,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"app", "view"}},
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
@@ -208,8 +209,43 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_policy_app_policies",
-				Columns:    []*schema.Column{AppPolicyColumns[11]},
+				Columns:    []*schema.Column{AppPolicyColumns[12]},
 				RefColumns: []*schema.Column{AppColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// AppPolicyViewColumns holds the columns for the "app_policy_view" table.
+	AppPolicyViewColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "parent_id", Type: field.TypeInt, Default: 0},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"dir", "policy"}},
+		{Name: "name", Type: field.TypeString},
+		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "policy_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+	}
+	// AppPolicyViewTable holds the schema information for the "app_policy_view" table.
+	AppPolicyViewTable = &schema.Table{
+		Name:       "app_policy_view",
+		Columns:    AppPolicyViewColumns,
+		PrimaryKey: []*schema.Column{AppPolicyViewColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_policy_view_app_policy_views",
+				Columns:    []*schema.Column{AppPolicyViewColumns[10]},
+				RefColumns: []*schema.Column{AppColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_policy_view_app_policy_policy_views",
+				Columns:    []*schema.Column{AppPolicyViewColumns[11]},
+				RefColumns: []*schema.Column{AppPolicyColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -525,10 +561,10 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true},
-		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
+		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "org_id", Type: field.TypeInt, Nullable: true},
 	}
 	// OrgPolicyTable holds the schema information for the "org_policy" table.
@@ -537,6 +573,12 @@ var (
 		Columns:    OrgPolicyColumns,
 		PrimaryKey: []*schema.Column{OrgPolicyColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "org_policy_app_policy_org_policies",
+				Columns:    []*schema.Column{OrgPolicyColumns[9]},
+				RefColumns: []*schema.Column{AppPolicyColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
 			{
 				Symbol:     "org_policy_org_policies",
 				Columns:    []*schema.Column{OrgPolicyColumns[10]},
@@ -1048,6 +1090,7 @@ var (
 		AppDictItemTable,
 		AppMenuTable,
 		AppPolicyTable,
+		AppPolicyViewTable,
 		AppResTable,
 		AppRoleTable,
 		AppRolePolicyTable,
@@ -1102,6 +1145,11 @@ func init() {
 	AppPolicyTable.Annotation = &entsql.Annotation{
 		Table: "app_policy",
 	}
+	AppPolicyViewTable.ForeignKeys[0].RefTable = AppTable
+	AppPolicyViewTable.ForeignKeys[1].RefTable = AppPolicyTable
+	AppPolicyViewTable.Annotation = &entsql.Annotation{
+		Table: "app_policy_view",
+	}
 	AppResTable.ForeignKeys[0].RefTable = AppTable
 	AppResTable.Annotation = &entsql.Annotation{
 		Table: "app_res",
@@ -1143,7 +1191,8 @@ func init() {
 	OrgAppTable.Annotation = &entsql.Annotation{
 		Table: "org_app",
 	}
-	OrgPolicyTable.ForeignKeys[0].RefTable = OrgTable
+	OrgPolicyTable.ForeignKeys[0].RefTable = AppPolicyTable
+	OrgPolicyTable.ForeignKeys[1].RefTable = OrgTable
 	OrgPolicyTable.Annotation = &entsql.Annotation{
 		Table: "org_policy",
 	}

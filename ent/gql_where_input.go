@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -274,6 +275,10 @@ type AppWhereInput struct {
 	// "policies" edge predicates.
 	HasPolicies     *bool                  `json:"hasPolicies,omitempty"`
 	HasPoliciesWith []*AppPolicyWhereInput `json:"hasPoliciesWith,omitempty"`
+
+	// "policy_views" edge predicates.
+	HasPolicyViews     *bool                      `json:"hasPolicyViews,omitempty"`
+	HasPolicyViewsWith []*AppPolicyViewWhereInput `json:"hasPolicyViewsWith,omitempty"`
 
 	// "orgs" edge predicates.
 	HasOrgs     *bool            `json:"hasOrgs,omitempty"`
@@ -970,6 +975,24 @@ func (i *AppWhereInput) P() (predicate.App, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, app.HasPoliciesWith(with...))
+	}
+	if i.HasPolicyViews != nil {
+		p := app.HasPolicyViews()
+		if !*i.HasPolicyViews {
+			p = app.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasPolicyViewsWith) > 0 {
+		with := make([]predicate.AppPolicyView, 0, len(i.HasPolicyViewsWith))
+		for _, w := range i.HasPolicyViewsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasPolicyViewsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, app.HasPolicyViewsWith(with...))
 	}
 	if i.HasOrgs != nil {
 		p := app.HasOrgs()
@@ -3084,6 +3107,12 @@ type AppPolicyWhereInput struct {
 	AppIDIsNil  bool  `json:"appIDIsNil,omitempty"`
 	AppIDNotNil bool  `json:"appIDNotNil,omitempty"`
 
+	// "kind" field predicates.
+	Kind      *apppolicy.Kind  `json:"kind,omitempty"`
+	KindNEQ   *apppolicy.Kind  `json:"kindNEQ,omitempty"`
+	KindIn    []apppolicy.Kind `json:"kindIn,omitempty"`
+	KindNotIn []apppolicy.Kind `json:"kindNotIn,omitempty"`
+
 	// "name" field predicates.
 	Name             *string  `json:"name,omitempty"`
 	NameNEQ          *string  `json:"nameNEQ,omitempty"`
@@ -3135,6 +3164,14 @@ type AppPolicyWhereInput struct {
 	// "roles" edge predicates.
 	HasRoles     *bool                `json:"hasRoles,omitempty"`
 	HasRolesWith []*AppRoleWhereInput `json:"hasRolesWith,omitempty"`
+
+	// "org_policies" edge predicates.
+	HasOrgPolicies     *bool                  `json:"hasOrgPolicies,omitempty"`
+	HasOrgPoliciesWith []*OrgPolicyWhereInput `json:"hasOrgPoliciesWith,omitempty"`
+
+	// "policy_views" edge predicates.
+	HasPolicyViews     *bool                      `json:"hasPolicyViews,omitempty"`
+	HasPolicyViewsWith []*AppPolicyViewWhereInput `json:"hasPolicyViewsWith,omitempty"`
 
 	// "app_role_policy" edge predicates.
 	HasAppRolePolicy     *bool                      `json:"hasAppRolePolicy,omitempty"`
@@ -3362,6 +3399,18 @@ func (i *AppPolicyWhereInput) P() (predicate.AppPolicy, error) {
 	if i.AppIDNotNil {
 		predicates = append(predicates, apppolicy.AppIDNotNil())
 	}
+	if i.Kind != nil {
+		predicates = append(predicates, apppolicy.KindEQ(*i.Kind))
+	}
+	if i.KindNEQ != nil {
+		predicates = append(predicates, apppolicy.KindNEQ(*i.KindNEQ))
+	}
+	if len(i.KindIn) > 0 {
+		predicates = append(predicates, apppolicy.KindIn(i.KindIn...))
+	}
+	if len(i.KindNotIn) > 0 {
+		predicates = append(predicates, apppolicy.KindNotIn(i.KindNotIn...))
+	}
 	if i.Name != nil {
 		predicates = append(predicates, apppolicy.NameEQ(*i.Name))
 	}
@@ -3507,6 +3556,42 @@ func (i *AppPolicyWhereInput) P() (predicate.AppPolicy, error) {
 		}
 		predicates = append(predicates, apppolicy.HasRolesWith(with...))
 	}
+	if i.HasOrgPolicies != nil {
+		p := apppolicy.HasOrgPolicies()
+		if !*i.HasOrgPolicies {
+			p = apppolicy.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgPoliciesWith) > 0 {
+		with := make([]predicate.OrgPolicy, 0, len(i.HasOrgPoliciesWith))
+		for _, w := range i.HasOrgPoliciesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgPoliciesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, apppolicy.HasOrgPoliciesWith(with...))
+	}
+	if i.HasPolicyViews != nil {
+		p := apppolicy.HasPolicyViews()
+		if !*i.HasPolicyViews {
+			p = apppolicy.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasPolicyViewsWith) > 0 {
+		with := make([]predicate.AppPolicyView, 0, len(i.HasPolicyViewsWith))
+		for _, w := range i.HasPolicyViewsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasPolicyViewsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, apppolicy.HasPolicyViewsWith(with...))
+	}
 	if i.HasAppRolePolicy != nil {
 		p := apppolicy.HasAppRolePolicy()
 		if !*i.HasAppRolePolicy {
@@ -3532,6 +3617,484 @@ func (i *AppPolicyWhereInput) P() (predicate.AppPolicy, error) {
 		return predicates[0], nil
 	default:
 		return apppolicy.And(predicates...), nil
+	}
+}
+
+// AppPolicyViewWhereInput represents a where input for filtering AppPolicyView queries.
+type AppPolicyViewWhereInput struct {
+	Predicates []predicate.AppPolicyView  `json:"-"`
+	Not        *AppPolicyViewWhereInput   `json:"not,omitempty"`
+	Or         []*AppPolicyViewWhereInput `json:"or,omitempty"`
+	And        []*AppPolicyViewWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_by" field predicates.
+	CreatedBy      *int  `json:"createdBy,omitempty"`
+	CreatedByNEQ   *int  `json:"createdByNEQ,omitempty"`
+	CreatedByIn    []int `json:"createdByIn,omitempty"`
+	CreatedByNotIn []int `json:"createdByNotIn,omitempty"`
+	CreatedByGT    *int  `json:"createdByGT,omitempty"`
+	CreatedByGTE   *int  `json:"createdByGTE,omitempty"`
+	CreatedByLT    *int  `json:"createdByLT,omitempty"`
+	CreatedByLTE   *int  `json:"createdByLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_by" field predicates.
+	UpdatedBy       *int  `json:"updatedBy,omitempty"`
+	UpdatedByNEQ    *int  `json:"updatedByNEQ,omitempty"`
+	UpdatedByIn     []int `json:"updatedByIn,omitempty"`
+	UpdatedByNotIn  []int `json:"updatedByNotIn,omitempty"`
+	UpdatedByGT     *int  `json:"updatedByGT,omitempty"`
+	UpdatedByGTE    *int  `json:"updatedByGTE,omitempty"`
+	UpdatedByLT     *int  `json:"updatedByLT,omitempty"`
+	UpdatedByLTE    *int  `json:"updatedByLTE,omitempty"`
+	UpdatedByIsNil  bool  `json:"updatedByIsNil,omitempty"`
+	UpdatedByNotNil bool  `json:"updatedByNotNil,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt       *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ    *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn     []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn  []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT     *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE    *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT     *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE    *time.Time  `json:"updatedAtLTE,omitempty"`
+	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
+	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
+
+	// "app_id" field predicates.
+	AppID       *int  `json:"appID,omitempty"`
+	AppIDNEQ    *int  `json:"appIDNEQ,omitempty"`
+	AppIDIn     []int `json:"appIDIn,omitempty"`
+	AppIDNotIn  []int `json:"appIDNotIn,omitempty"`
+	AppIDIsNil  bool  `json:"appIDIsNil,omitempty"`
+	AppIDNotNil bool  `json:"appIDNotNil,omitempty"`
+
+	// "parent_id" field predicates.
+	ParentID      *int  `json:"parentID,omitempty"`
+	ParentIDNEQ   *int  `json:"parentIDNEQ,omitempty"`
+	ParentIDIn    []int `json:"parentIDIn,omitempty"`
+	ParentIDNotIn []int `json:"parentIDNotIn,omitempty"`
+	ParentIDGT    *int  `json:"parentIDGT,omitempty"`
+	ParentIDGTE   *int  `json:"parentIDGTE,omitempty"`
+	ParentIDLT    *int  `json:"parentIDLT,omitempty"`
+	ParentIDLTE   *int  `json:"parentIDLTE,omitempty"`
+
+	// "kind" field predicates.
+	Kind      *apppolicyview.Kind  `json:"kind,omitempty"`
+	KindNEQ   *apppolicyview.Kind  `json:"kindNEQ,omitempty"`
+	KindIn    []apppolicyview.Kind `json:"kindIn,omitempty"`
+	KindNotIn []apppolicyview.Kind `json:"kindNotIn,omitempty"`
+
+	// "name" field predicates.
+	Name             *string  `json:"name,omitempty"`
+	NameNEQ          *string  `json:"nameNEQ,omitempty"`
+	NameIn           []string `json:"nameIn,omitempty"`
+	NameNotIn        []string `json:"nameNotIn,omitempty"`
+	NameGT           *string  `json:"nameGT,omitempty"`
+	NameGTE          *string  `json:"nameGTE,omitempty"`
+	NameLT           *string  `json:"nameLT,omitempty"`
+	NameLTE          *string  `json:"nameLTE,omitempty"`
+	NameContains     *string  `json:"nameContains,omitempty"`
+	NameHasPrefix    *string  `json:"nameHasPrefix,omitempty"`
+	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
+	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
+	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "policy_id" field predicates.
+	PolicyID       *int  `json:"policyID,omitempty"`
+	PolicyIDNEQ    *int  `json:"policyIDNEQ,omitempty"`
+	PolicyIDIn     []int `json:"policyIDIn,omitempty"`
+	PolicyIDNotIn  []int `json:"policyIDNotIn,omitempty"`
+	PolicyIDIsNil  bool  `json:"policyIDIsNil,omitempty"`
+	PolicyIDNotNil bool  `json:"policyIDNotNil,omitempty"`
+
+	// "app" edge predicates.
+	HasApp     *bool            `json:"hasApp,omitempty"`
+	HasAppWith []*AppWhereInput `json:"hasAppWith,omitempty"`
+
+	// "app_policy" edge predicates.
+	HasAppPolicy     *bool                  `json:"hasAppPolicy,omitempty"`
+	HasAppPolicyWith []*AppPolicyWhereInput `json:"hasAppPolicyWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *AppPolicyViewWhereInput) AddPredicates(predicates ...predicate.AppPolicyView) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the AppPolicyViewWhereInput filter on the AppPolicyViewQuery builder.
+func (i *AppPolicyViewWhereInput) Filter(q *AppPolicyViewQuery) (*AppPolicyViewQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyAppPolicyViewWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyAppPolicyViewWhereInput is returned in case the AppPolicyViewWhereInput is empty.
+var ErrEmptyAppPolicyViewWhereInput = errors.New("ent: empty predicate AppPolicyViewWhereInput")
+
+// P returns a predicate for filtering apppolicyviews.
+// An error is returned if the input is empty or invalid.
+func (i *AppPolicyViewWhereInput) P() (predicate.AppPolicyView, error) {
+	var predicates []predicate.AppPolicyView
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, apppolicyview.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.AppPolicyView, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, apppolicyview.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.AppPolicyView, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, apppolicyview.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, apppolicyview.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, apppolicyview.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, apppolicyview.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, apppolicyview.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, apppolicyview.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, apppolicyview.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, apppolicyview.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedBy != nil {
+		predicates = append(predicates, apppolicyview.CreatedByEQ(*i.CreatedBy))
+	}
+	if i.CreatedByNEQ != nil {
+		predicates = append(predicates, apppolicyview.CreatedByNEQ(*i.CreatedByNEQ))
+	}
+	if len(i.CreatedByIn) > 0 {
+		predicates = append(predicates, apppolicyview.CreatedByIn(i.CreatedByIn...))
+	}
+	if len(i.CreatedByNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.CreatedByNotIn(i.CreatedByNotIn...))
+	}
+	if i.CreatedByGT != nil {
+		predicates = append(predicates, apppolicyview.CreatedByGT(*i.CreatedByGT))
+	}
+	if i.CreatedByGTE != nil {
+		predicates = append(predicates, apppolicyview.CreatedByGTE(*i.CreatedByGTE))
+	}
+	if i.CreatedByLT != nil {
+		predicates = append(predicates, apppolicyview.CreatedByLT(*i.CreatedByLT))
+	}
+	if i.CreatedByLTE != nil {
+		predicates = append(predicates, apppolicyview.CreatedByLTE(*i.CreatedByLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, apppolicyview.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, apppolicyview.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedBy != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByEQ(*i.UpdatedBy))
+	}
+	if i.UpdatedByNEQ != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByNEQ(*i.UpdatedByNEQ))
+	}
+	if len(i.UpdatedByIn) > 0 {
+		predicates = append(predicates, apppolicyview.UpdatedByIn(i.UpdatedByIn...))
+	}
+	if len(i.UpdatedByNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.UpdatedByNotIn(i.UpdatedByNotIn...))
+	}
+	if i.UpdatedByGT != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByGT(*i.UpdatedByGT))
+	}
+	if i.UpdatedByGTE != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByGTE(*i.UpdatedByGTE))
+	}
+	if i.UpdatedByLT != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByLT(*i.UpdatedByLT))
+	}
+	if i.UpdatedByLTE != nil {
+		predicates = append(predicates, apppolicyview.UpdatedByLTE(*i.UpdatedByLTE))
+	}
+	if i.UpdatedByIsNil {
+		predicates = append(predicates, apppolicyview.UpdatedByIsNil())
+	}
+	if i.UpdatedByNotNil {
+		predicates = append(predicates, apppolicyview.UpdatedByNotNil())
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, apppolicyview.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, apppolicyview.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.UpdatedAtIsNil {
+		predicates = append(predicates, apppolicyview.UpdatedAtIsNil())
+	}
+	if i.UpdatedAtNotNil {
+		predicates = append(predicates, apppolicyview.UpdatedAtNotNil())
+	}
+	if i.AppID != nil {
+		predicates = append(predicates, apppolicyview.AppIDEQ(*i.AppID))
+	}
+	if i.AppIDNEQ != nil {
+		predicates = append(predicates, apppolicyview.AppIDNEQ(*i.AppIDNEQ))
+	}
+	if len(i.AppIDIn) > 0 {
+		predicates = append(predicates, apppolicyview.AppIDIn(i.AppIDIn...))
+	}
+	if len(i.AppIDNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.AppIDNotIn(i.AppIDNotIn...))
+	}
+	if i.AppIDIsNil {
+		predicates = append(predicates, apppolicyview.AppIDIsNil())
+	}
+	if i.AppIDNotNil {
+		predicates = append(predicates, apppolicyview.AppIDNotNil())
+	}
+	if i.ParentID != nil {
+		predicates = append(predicates, apppolicyview.ParentIDEQ(*i.ParentID))
+	}
+	if i.ParentIDNEQ != nil {
+		predicates = append(predicates, apppolicyview.ParentIDNEQ(*i.ParentIDNEQ))
+	}
+	if len(i.ParentIDIn) > 0 {
+		predicates = append(predicates, apppolicyview.ParentIDIn(i.ParentIDIn...))
+	}
+	if len(i.ParentIDNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.ParentIDNotIn(i.ParentIDNotIn...))
+	}
+	if i.ParentIDGT != nil {
+		predicates = append(predicates, apppolicyview.ParentIDGT(*i.ParentIDGT))
+	}
+	if i.ParentIDGTE != nil {
+		predicates = append(predicates, apppolicyview.ParentIDGTE(*i.ParentIDGTE))
+	}
+	if i.ParentIDLT != nil {
+		predicates = append(predicates, apppolicyview.ParentIDLT(*i.ParentIDLT))
+	}
+	if i.ParentIDLTE != nil {
+		predicates = append(predicates, apppolicyview.ParentIDLTE(*i.ParentIDLTE))
+	}
+	if i.Kind != nil {
+		predicates = append(predicates, apppolicyview.KindEQ(*i.Kind))
+	}
+	if i.KindNEQ != nil {
+		predicates = append(predicates, apppolicyview.KindNEQ(*i.KindNEQ))
+	}
+	if len(i.KindIn) > 0 {
+		predicates = append(predicates, apppolicyview.KindIn(i.KindIn...))
+	}
+	if len(i.KindNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.KindNotIn(i.KindNotIn...))
+	}
+	if i.Name != nil {
+		predicates = append(predicates, apppolicyview.NameEQ(*i.Name))
+	}
+	if i.NameNEQ != nil {
+		predicates = append(predicates, apppolicyview.NameNEQ(*i.NameNEQ))
+	}
+	if len(i.NameIn) > 0 {
+		predicates = append(predicates, apppolicyview.NameIn(i.NameIn...))
+	}
+	if len(i.NameNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.NameNotIn(i.NameNotIn...))
+	}
+	if i.NameGT != nil {
+		predicates = append(predicates, apppolicyview.NameGT(*i.NameGT))
+	}
+	if i.NameGTE != nil {
+		predicates = append(predicates, apppolicyview.NameGTE(*i.NameGTE))
+	}
+	if i.NameLT != nil {
+		predicates = append(predicates, apppolicyview.NameLT(*i.NameLT))
+	}
+	if i.NameLTE != nil {
+		predicates = append(predicates, apppolicyview.NameLTE(*i.NameLTE))
+	}
+	if i.NameContains != nil {
+		predicates = append(predicates, apppolicyview.NameContains(*i.NameContains))
+	}
+	if i.NameHasPrefix != nil {
+		predicates = append(predicates, apppolicyview.NameHasPrefix(*i.NameHasPrefix))
+	}
+	if i.NameHasSuffix != nil {
+		predicates = append(predicates, apppolicyview.NameHasSuffix(*i.NameHasSuffix))
+	}
+	if i.NameEqualFold != nil {
+		predicates = append(predicates, apppolicyview.NameEqualFold(*i.NameEqualFold))
+	}
+	if i.NameContainsFold != nil {
+		predicates = append(predicates, apppolicyview.NameContainsFold(*i.NameContainsFold))
+	}
+	if i.PolicyID != nil {
+		predicates = append(predicates, apppolicyview.PolicyIDEQ(*i.PolicyID))
+	}
+	if i.PolicyIDNEQ != nil {
+		predicates = append(predicates, apppolicyview.PolicyIDNEQ(*i.PolicyIDNEQ))
+	}
+	if len(i.PolicyIDIn) > 0 {
+		predicates = append(predicates, apppolicyview.PolicyIDIn(i.PolicyIDIn...))
+	}
+	if len(i.PolicyIDNotIn) > 0 {
+		predicates = append(predicates, apppolicyview.PolicyIDNotIn(i.PolicyIDNotIn...))
+	}
+	if i.PolicyIDIsNil {
+		predicates = append(predicates, apppolicyview.PolicyIDIsNil())
+	}
+	if i.PolicyIDNotNil {
+		predicates = append(predicates, apppolicyview.PolicyIDNotNil())
+	}
+
+	if i.HasApp != nil {
+		p := apppolicyview.HasApp()
+		if !*i.HasApp {
+			p = apppolicyview.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAppWith) > 0 {
+		with := make([]predicate.App, 0, len(i.HasAppWith))
+		for _, w := range i.HasAppWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAppWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, apppolicyview.HasAppWith(with...))
+	}
+	if i.HasAppPolicy != nil {
+		p := apppolicyview.HasAppPolicy()
+		if !*i.HasAppPolicy {
+			p = apppolicyview.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAppPolicyWith) > 0 {
+		with := make([]predicate.AppPolicy, 0, len(i.HasAppPolicyWith))
+		for _, w := range i.HasAppPolicyWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAppPolicyWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, apppolicyview.HasAppPolicyWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyAppPolicyViewWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return apppolicyview.And(predicates...), nil
 	}
 }
 
@@ -8579,10 +9142,6 @@ type OrgPolicyWhereInput struct {
 	AppPolicyIDNEQ    *int  `json:"appPolicyIDNEQ,omitempty"`
 	AppPolicyIDIn     []int `json:"appPolicyIDIn,omitempty"`
 	AppPolicyIDNotIn  []int `json:"appPolicyIDNotIn,omitempty"`
-	AppPolicyIDGT     *int  `json:"appPolicyIDGT,omitempty"`
-	AppPolicyIDGTE    *int  `json:"appPolicyIDGTE,omitempty"`
-	AppPolicyIDLT     *int  `json:"appPolicyIDLT,omitempty"`
-	AppPolicyIDLTE    *int  `json:"appPolicyIDLTE,omitempty"`
 	AppPolicyIDIsNil  bool  `json:"appPolicyIDIsNil,omitempty"`
 	AppPolicyIDNotNil bool  `json:"appPolicyIDNotNil,omitempty"`
 
@@ -8625,6 +9184,10 @@ type OrgPolicyWhereInput struct {
 	// "permissions" edge predicates.
 	HasPermissions     *bool                   `json:"hasPermissions,omitempty"`
 	HasPermissionsWith []*PermissionWhereInput `json:"hasPermissionsWith,omitempty"`
+
+	// "app_policy" edge predicates.
+	HasAppPolicy     *bool                  `json:"hasAppPolicy,omitempty"`
+	HasAppPolicyWith []*AppPolicyWhereInput `json:"hasAppPolicyWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -8860,18 +9423,6 @@ func (i *OrgPolicyWhereInput) P() (predicate.OrgPolicy, error) {
 	if len(i.AppPolicyIDNotIn) > 0 {
 		predicates = append(predicates, orgpolicy.AppPolicyIDNotIn(i.AppPolicyIDNotIn...))
 	}
-	if i.AppPolicyIDGT != nil {
-		predicates = append(predicates, orgpolicy.AppPolicyIDGT(*i.AppPolicyIDGT))
-	}
-	if i.AppPolicyIDGTE != nil {
-		predicates = append(predicates, orgpolicy.AppPolicyIDGTE(*i.AppPolicyIDGTE))
-	}
-	if i.AppPolicyIDLT != nil {
-		predicates = append(predicates, orgpolicy.AppPolicyIDLT(*i.AppPolicyIDLT))
-	}
-	if i.AppPolicyIDLTE != nil {
-		predicates = append(predicates, orgpolicy.AppPolicyIDLTE(*i.AppPolicyIDLTE))
-	}
 	if i.AppPolicyIDIsNil {
 		predicates = append(predicates, orgpolicy.AppPolicyIDIsNil())
 	}
@@ -8998,6 +9549,24 @@ func (i *OrgPolicyWhereInput) P() (predicate.OrgPolicy, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, orgpolicy.HasPermissionsWith(with...))
+	}
+	if i.HasAppPolicy != nil {
+		p := orgpolicy.HasAppPolicy()
+		if !*i.HasAppPolicy {
+			p = orgpolicy.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAppPolicyWith) > 0 {
+		with := make([]predicate.AppPolicy, 0, len(i.HasAppPolicyWith))
+		for _, w := range i.HasAppPolicyWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAppPolicyWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orgpolicy.HasAppPolicyWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

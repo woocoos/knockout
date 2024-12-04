@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
@@ -1982,6 +1983,328 @@ func (ap *AppPolicy) ToEdge(order *AppPolicyOrder) *AppPolicyEdge {
 	return &AppPolicyEdge{
 		Node:   ap,
 		Cursor: order.Field.toCursor(ap),
+	}
+}
+
+// AppPolicyViewEdge is the edge representation of AppPolicyView.
+type AppPolicyViewEdge struct {
+	Node   *AppPolicyView `json:"node"`
+	Cursor Cursor         `json:"cursor"`
+}
+
+// AppPolicyViewConnection is the connection containing edges to AppPolicyView.
+type AppPolicyViewConnection struct {
+	Edges      []*AppPolicyViewEdge `json:"edges"`
+	PageInfo   PageInfo             `json:"pageInfo"`
+	TotalCount int                  `json:"totalCount"`
+}
+
+func (c *AppPolicyViewConnection) build(nodes []*AppPolicyView, pager *apppolicyviewPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *AppPolicyView
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *AppPolicyView {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *AppPolicyView {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*AppPolicyViewEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &AppPolicyViewEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// AppPolicyViewPaginateOption enables pagination customization.
+type AppPolicyViewPaginateOption func(*apppolicyviewPager) error
+
+// WithAppPolicyViewOrder configures pagination ordering.
+func WithAppPolicyViewOrder(order *AppPolicyViewOrder) AppPolicyViewPaginateOption {
+	if order == nil {
+		order = DefaultAppPolicyViewOrder
+	}
+	o := *order
+	return func(pager *apppolicyviewPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultAppPolicyViewOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithAppPolicyViewFilter configures pagination filter.
+func WithAppPolicyViewFilter(filter func(*AppPolicyViewQuery) (*AppPolicyViewQuery, error)) AppPolicyViewPaginateOption {
+	return func(pager *apppolicyviewPager) error {
+		if filter == nil {
+			return errors.New("AppPolicyViewQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type apppolicyviewPager struct {
+	reverse bool
+	order   *AppPolicyViewOrder
+	filter  func(*AppPolicyViewQuery) (*AppPolicyViewQuery, error)
+}
+
+func newAppPolicyViewPager(opts []AppPolicyViewPaginateOption, reverse bool) (*apppolicyviewPager, error) {
+	pager := &apppolicyviewPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultAppPolicyViewOrder
+	}
+	return pager, nil
+}
+
+func (p *apppolicyviewPager) applyFilter(query *AppPolicyViewQuery) (*AppPolicyViewQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *apppolicyviewPager) toCursor(apv *AppPolicyView) Cursor {
+	return p.order.Field.toCursor(apv)
+}
+
+func (p *apppolicyviewPager) applyCursors(query *AppPolicyViewQuery, after, before *Cursor) (*AppPolicyViewQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAppPolicyViewOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *apppolicyviewPager) applyOrder(query *AppPolicyViewQuery) *AppPolicyViewQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultAppPolicyViewOrder.Field {
+		query = query.Order(DefaultAppPolicyViewOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *apppolicyviewPager) orderExpr(query *AppPolicyViewQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultAppPolicyViewOrder.Field {
+			b.Comma().Ident(DefaultAppPolicyViewOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to AppPolicyView.
+func (apv *AppPolicyViewQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...AppPolicyViewPaginateOption,
+) (*AppPolicyViewConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newAppPolicyViewPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if apv, err = pager.applyFilter(apv); err != nil {
+		return nil, err
+	}
+	conn := &AppPolicyViewConnection{Edges: []*AppPolicyViewEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := apv.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if apv, err = pager.applyCursors(apv, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		apv.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			apv.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			apv.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := apv.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	apv = pager.applyOrder(apv)
+	nodes, err := apv.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// AppPolicyViewOrderFieldCreatedAt orders AppPolicyView by created_at.
+	AppPolicyViewOrderFieldCreatedAt = &AppPolicyViewOrderField{
+		Value: func(apv *AppPolicyView) (ent.Value, error) {
+			return apv.CreatedAt, nil
+		},
+		column: apppolicyview.FieldCreatedAt,
+		toTerm: apppolicyview.ByCreatedAt,
+		toCursor: func(apv *AppPolicyView) Cursor {
+			return Cursor{
+				ID:    apv.ID,
+				Value: apv.CreatedAt,
+			}
+		},
+	}
+	// AppPolicyViewOrderFieldDisplaySort orders AppPolicyView by display_sort.
+	AppPolicyViewOrderFieldDisplaySort = &AppPolicyViewOrderField{
+		Value: func(apv *AppPolicyView) (ent.Value, error) {
+			return apv.DisplaySort, nil
+		},
+		column: apppolicyview.FieldDisplaySort,
+		toTerm: apppolicyview.ByDisplaySort,
+		toCursor: func(apv *AppPolicyView) Cursor {
+			return Cursor{
+				ID:    apv.ID,
+				Value: apv.DisplaySort,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f AppPolicyViewOrderField) String() string {
+	var str string
+	switch f.column {
+	case AppPolicyViewOrderFieldCreatedAt.column:
+		str = "createdAt"
+	case AppPolicyViewOrderFieldDisplaySort.column:
+		str = "displaySort"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f AppPolicyViewOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *AppPolicyViewOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("AppPolicyViewOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *AppPolicyViewOrderFieldCreatedAt
+	case "displaySort":
+		*f = *AppPolicyViewOrderFieldDisplaySort
+	default:
+		return fmt.Errorf("%s is not a valid AppPolicyViewOrderField", str)
+	}
+	return nil
+}
+
+// AppPolicyViewOrderField defines the ordering field of AppPolicyView.
+type AppPolicyViewOrderField struct {
+	// Value extracts the ordering value from the given AppPolicyView.
+	Value    func(*AppPolicyView) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) apppolicyview.OrderOption
+	toCursor func(*AppPolicyView) Cursor
+}
+
+// AppPolicyViewOrder defines the ordering of AppPolicyView.
+type AppPolicyViewOrder struct {
+	Direction OrderDirection           `json:"direction"`
+	Field     *AppPolicyViewOrderField `json:"field"`
+}
+
+// DefaultAppPolicyViewOrder is the default ordering of AppPolicyView.
+var DefaultAppPolicyViewOrder = &AppPolicyViewOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &AppPolicyViewOrderField{
+		Value: func(apv *AppPolicyView) (ent.Value, error) {
+			return apv.ID, nil
+		},
+		column: apppolicyview.FieldID,
+		toTerm: apppolicyview.ByID,
+		toCursor: func(apv *AppPolicyView) Cursor {
+			return Cursor{ID: apv.ID}
+		},
+	},
+}
+
+// ToEdge converts AppPolicyView into AppPolicyViewEdge.
+func (apv *AppPolicyView) ToEdge(order *AppPolicyViewOrder) *AppPolicyViewEdge {
+	if order == nil {
+		order = DefaultAppPolicyViewOrder
+	}
+	return &AppPolicyViewEdge{
+		Node:   apv,
+		Cursor: order.Field.toCursor(apv),
 	}
 }
 

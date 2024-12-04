@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
@@ -175,6 +176,11 @@ func (opc *OrgPolicyCreate) AddPermissions(p ...*Permission) *OrgPolicyCreate {
 	return opc.AddPermissionIDs(ids...)
 }
 
+// SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
+func (opc *OrgPolicyCreate) SetAppPolicy(a *AppPolicy) *OrgPolicyCreate {
+	return opc.SetAppPolicyID(a.ID)
+}
+
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opc *OrgPolicyCreate) Mutation() *OrgPolicyMutation {
 	return opc.mutation
@@ -296,10 +302,6 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		_spec.SetField(orgpolicy.FieldAppID, field.TypeInt, value)
 		_node.AppID = value
 	}
-	if value, ok := opc.mutation.AppPolicyID(); ok {
-		_spec.SetField(orgpolicy.FieldAppPolicyID, field.TypeInt, value)
-		_node.AppPolicyID = value
-	}
 	if value, ok := opc.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -343,6 +345,23 @@ func (opc *OrgPolicyCreate) createSpec() (*OrgPolicy, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := opc.mutation.AppPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orgpolicy.AppPolicyTable,
+			Columns: []string{orgpolicy.AppPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.AppPolicyID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -472,12 +491,6 @@ func (u *OrgPolicyUpsert) SetAppPolicyID(v int) *OrgPolicyUpsert {
 // UpdateAppPolicyID sets the "app_policy_id" field to the value that was provided on create.
 func (u *OrgPolicyUpsert) UpdateAppPolicyID() *OrgPolicyUpsert {
 	u.SetExcluded(orgpolicy.FieldAppPolicyID)
-	return u
-}
-
-// AddAppPolicyID adds v to the "app_policy_id" field.
-func (u *OrgPolicyUpsert) AddAppPolicyID(v int) *OrgPolicyUpsert {
-	u.Add(orgpolicy.FieldAppPolicyID, v)
 	return u
 }
 
@@ -667,13 +680,6 @@ func (u *OrgPolicyUpsertOne) ClearAppID() *OrgPolicyUpsertOne {
 func (u *OrgPolicyUpsertOne) SetAppPolicyID(v int) *OrgPolicyUpsertOne {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.SetAppPolicyID(v)
-	})
-}
-
-// AddAppPolicyID adds v to the "app_policy_id" field.
-func (u *OrgPolicyUpsertOne) AddAppPolicyID(v int) *OrgPolicyUpsertOne {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.AddAppPolicyID(v)
 	})
 }
 
@@ -1044,13 +1050,6 @@ func (u *OrgPolicyUpsertBulk) ClearAppID() *OrgPolicyUpsertBulk {
 func (u *OrgPolicyUpsertBulk) SetAppPolicyID(v int) *OrgPolicyUpsertBulk {
 	return u.Update(func(s *OrgPolicyUpsert) {
 		s.SetAppPolicyID(v)
-	})
-}
-
-// AddAppPolicyID adds v to the "app_policy_id" field.
-func (u *OrgPolicyUpsertBulk) AddAppPolicyID(v int) *OrgPolicyUpsertBulk {
-	return u.Update(func(s *OrgPolicyUpsert) {
-		s.AddAppPolicyID(v)
 	})
 }
 

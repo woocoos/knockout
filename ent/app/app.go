@@ -66,6 +66,8 @@ const (
 	EdgeRoles = "roles"
 	// EdgePolicies holds the string denoting the policies edge name in mutations.
 	EdgePolicies = "policies"
+	// EdgePolicyViews holds the string denoting the policy_views edge name in mutations.
+	EdgePolicyViews = "policy_views"
 	// EdgeOrgs holds the string denoting the orgs edge name in mutations.
 	EdgeOrgs = "orgs"
 	// EdgeDicts holds the string denoting the dicts edge name in mutations.
@@ -109,6 +111,13 @@ const (
 	PoliciesInverseTable = "app_policy"
 	// PoliciesColumn is the table column denoting the policies relation/edge.
 	PoliciesColumn = "app_id"
+	// PolicyViewsTable is the table that holds the policy_views relation/edge.
+	PolicyViewsTable = "app_policy_view"
+	// PolicyViewsInverseTable is the table name for the AppPolicyView entity.
+	// It exists in this package in order to avoid circular dependency with the "apppolicyview" package.
+	PolicyViewsInverseTable = "app_policy_view"
+	// PolicyViewsColumn is the table column denoting the policy_views relation/edge.
+	PolicyViewsColumn = "app_id"
 	// OrgsTable is the table that holds the orgs relation/edge. The primary key declared below.
 	OrgsTable = "org_app"
 	// OrgsInverseTable is the table name for the Org entity.
@@ -400,6 +409,20 @@ func ByPolicies(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByPolicyViewsCount orders the results by policy_views count.
+func ByPolicyViewsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPolicyViewsStep(), opts...)
+	}
+}
+
+// ByPolicyViews orders the results by policy_views terms.
+func ByPolicyViews(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPolicyViewsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgsCount orders the results by orgs count.
 func ByOrgsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -474,6 +497,13 @@ func newPoliciesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PoliciesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, PoliciesTable, PoliciesColumn),
+	)
+}
+func newPolicyViewsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PolicyViewsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PolicyViewsTable, PolicyViewsColumn),
 	)
 }
 func newOrgsStep() *sqlgraph.Step {

@@ -211,6 +211,24 @@ type Mutation {
     deleteCurrency(currencyID:ID!): Boolean!
     """自动授权应用，系统开户、创建web交易用户使用"""
     autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
+    """创建策略视图"""
+    createAppPolicyView(input: CreateAppPolicyViewInput!): AppPolicyView!
+    """更新策略视图"""
+    updateAppPolicyView(appPolicyViewID: ID!,input: UpdateAppPolicyViewInput!): AppPolicyView!
+    """删除策略视图"""
+    deleteAppPolicyView(appPolicyViewID: ID!): Boolean!
+    """移动策略视图"""
+    moveAppPolicyView(
+        sourceID: ID!,
+        targetID: ID!,
+        action: TreeAction!
+    ): Boolean!
+    """应用角色添加策略视图权限"""
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!]!): Boolean!
+    """组织用户添加策略视图权限"""
+    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!]!): Boolean!
+    """组织角色添加策略视图权限"""
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!]!): Boolean!
     # 创建配额项
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     # 更新配额项
