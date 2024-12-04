@@ -339,6 +339,8 @@ github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5 h1:3RS4BJyTW6xnvR
 github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5/go.mod h1:WGicpJtJzVJETrn/nL8ids3UZquQYLDNm1jpw5Et42M=
 github.com/woocoos/knockout-go v0.0.0-20241203080144-fa10498c6af0 h1:BJjsTnJRMEGAfI6KS3uHWGsjzlpsUhRtNCQH1MSjSVY=
 github.com/woocoos/knockout-go v0.0.0-20241203080144-fa10498c6af0/go.mod h1:YQxXwx6UhS96RsdHh0xDsYL8IlAHFkxtz+rPlV5tX7k=
+github.com/woocoos/knockout-go v0.0.0-20241204021310-2a815a15ea18 h1:a2NrFYbi3PTQ9PPHeqjIHoXG0xu57ggkQSGeFmbuS60=
+github.com/woocoos/knockout-go v0.0.0-20241204021310-2a815a15ea18/go.mod h1:YQxXwx6UhS96RsdHh0xDsYL8IlAHFkxtz+rPlV5tX7k=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.30/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
