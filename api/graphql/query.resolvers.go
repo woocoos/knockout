@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appdictitem"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -337,4 +338,14 @@ func (r *queryResolver) UserMembers(ctx context.Context, after *entgql.Cursor[in
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))
+}
+
+// AppPolicyView is the resolver for the AppPolicyView field.
+func (r *queryResolver) AppPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
+	return r.client.AppPolicyView.Query().Where(apppolicyview.HasAppWith(app.Code(appCode))).All(ctx)
+}
+
+// OrgPolicyView is the resolver for the OrgPolicyView field.
+func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
+	return r.resource.OrgPolicyView(ctx, appCode)
 }

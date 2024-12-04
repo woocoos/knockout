@@ -58,6 +58,7 @@ func (OrgPolicy) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("org", Org.Type).Ref("policies").Unique().Immutable().Field("org_id"),
 		edge.To("permissions", Permission.Type),
+		edge.From("app_policy", AppPolicy.Type).Unique().Ref("org_policies").Field("app_policy_id"),
 	}
 }
 

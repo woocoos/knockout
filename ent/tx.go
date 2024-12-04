@@ -26,6 +26,8 @@ type Tx struct {
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
 	AppPolicy *AppPolicyClient
+	// AppPolicyView is the client for interacting with the AppPolicyView builders.
+	AppPolicyView *AppPolicyViewClient
 	// AppRes is the client for interacting with the AppRes builders.
 	AppRes *AppResClient
 	// AppRole is the client for interacting with the AppRole builders.
@@ -213,6 +215,7 @@ func (tx *Tx) init() {
 	tx.AppDictItem = NewAppDictItemClient(tx.config)
 	tx.AppMenu = NewAppMenuClient(tx.config)
 	tx.AppPolicy = NewAppPolicyClient(tx.config)
+	tx.AppPolicyView = NewAppPolicyViewClient(tx.config)
 	tx.AppRes = NewAppResClient(tx.config)
 	tx.AppRole = NewAppRoleClient(tx.config)
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)

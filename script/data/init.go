@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -201,7 +202,7 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 			SetComments("管理员角色").SetAutoGrant(true).SetEditable(true),
 		)
 		aps = append(aps, client.AppPolicy.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("全部管理权限").
-			SetComments("全部管理权限").SetAutoGrant(true).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
+			SetComments("全部管理权限").SetAutoGrant(true).SetKind(apppolicy.KindApp).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
 			SetRules([]*types.PolicyRule{
 				{
 					Effect:    "allow",

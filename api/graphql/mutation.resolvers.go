@@ -19,6 +19,7 @@ import (
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -579,6 +580,70 @@ func (r *mutationResolver) AutoGrantApp(ctx context.Context, appCode string, org
 	err := r.resource.AutoGrantApp(ctx, appCode, orgID, userID)
 	if err != nil {
 		return false, err
+	}
+	return true, nil
+}
+
+// CreateAppPolicyView is the resolver for the createAppPolicyView field.
+func (r *mutationResolver) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	return ent.FromContext(ctx).AppPolicyView.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateAppPolicyView is the resolver for the updateAppPolicyView field.
+func (r *mutationResolver) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	return ent.FromContext(ctx).AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)
+}
+
+// DeleteAppPolicyView is the resolver for the deleteAppPolicyView field.
+func (r *mutationResolver) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error) {
+	err := ent.FromContext(ctx).AppPolicyView.DeleteOneID(appPolicyViewID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveAppPolicyView is the resolver for the moveAppPolicyView field.
+func (r *mutationResolver) MoveAppPolicyView(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.resource.MoveAppPolicyView(ctx, sourceID, targetID, action)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// AssignAppRolePolicyView is the resolver for the assignAppRolePolicyView field.
+func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int) (bool, error) {
+	return r.AssignAppRolePolicy(ctx, appID, roleID, appPolicyIDs)
+}
+
+// AssignUserPolicyView is the resolver for the assignUserPolicyView field.
+func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int) (bool, error) {
+	// TODO 先使用grant处理，后期考虑批量处理
+	for _, orgPolicyID := range orgPolicyIDs {
+		_, err := r.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindUser,
+			UserID:        &userID,
+			OrgID:         orgID,
+			OrgPolicyID:   orgPolicyID,
+		})
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+// AssignOrgRolePolicyView is the resolver for the assignOrgRolePolicyView field.
+func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int) (bool, error) {
+	// TODO 先使用grant处理，后期考虑批量处理
+	for _, orgPolicyID := range orgPolicyIDs {
+		_, err := r.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindRole,
+			RoleID:        &roleID,
+			OrgID:         orgID,
+			OrgPolicyID:   orgPolicyID,
+		})
+		if err != nil {
+			return false, err
+		}
 	}
 	return true, nil
 }

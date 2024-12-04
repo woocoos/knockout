@@ -143,4 +143,8 @@ extend type Query {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """应用策略视图"""
+    appPolicyView(appCode: String!): [AppPolicyView!]!
+    """登录用户策略视图"""
+    orgPolicyView(appCode: String!): [AppPolicyView!]!
 }

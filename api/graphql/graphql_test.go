@@ -2,6 +2,12 @@ package graphql
 
 import (
 	"context"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/apppolicyview"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"strconv"
 	"testing"
 	"time"
 
@@ -297,4 +303,141 @@ func (t *graphqlSuite) TestQuota() {
 		t.Require().Equal(int64(200), resp.SetOrgQuota.Limit)
 		t.Require().Equal(int64(200), resp.SetOrgQuota.Used) // 因为在生效期内
 	})
+}
+
+// Test_AppPolicyView 测试应用策略视图
+func (t *graphqlSuite) Test_AppPolicyView() {
+	userID := 1
+	tenantID := 1
+	appID := 10
+	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": strconv.Itoa(userID)}))
+	ctx = identity.WithTenantID(ctx, tenantID)
+
+	// 创建应用
+	ac := "resource1"
+	t.Client.App.Create().SetID(appID).SetName("资源权限管理1").SetCode(ac).SetKind(app.KindWeb).
+		SetComments("资源权限管理是管理组织目录中的应用,组织,人员以及授权信息").SetStatus(typex.SimpleStatusActive).
+		SetCreatedBy(userID).SetOwnerOrgID(userID).ExecX(ctx)
+	// 创建action
+	aaCreates := make([]*ent.AppActionCreate, 0)
+	for i := 5; i < 10; i++ {
+		aaCreate := t.Client.AppAction.Create().SetID(i).SetCreatedBy(userID).
+			SetAppID(appID).SetName("action" + strconv.Itoa(i)).SetComments("权限" + strconv.Itoa(i)).SetKind(appaction.KindGraphql).SetMethod(appaction.MethodRead)
+		aaCreates = append(aaCreates, aaCreate)
+	}
+	t.Client.AppAction.CreateBulk(aaCreates...).ExecX(ctx)
+	// 创建应用权限策略、策略视图
+	apCreates := make([]*ent.AppPolicyCreate, 0)
+	apvCreates := make([]*ent.AppPolicyViewCreate, 0)
+	for i := 5; i < 10; i++ {
+		// 权限策略
+		apCreate := t.Client.AppPolicy.Create().SetID(i).SetKind(apppolicy.KindView).SetCreatedBy(userID).SetName("权限策略" + strconv.Itoa(i)).SetAppID(appID).SetStatus(typex.SimpleStatusActive).
+			SetRules([]*types.PolicyRule{
+				{
+					Effect: types.PolicyEffectAllow,
+					Actions: []string{
+						"action" + strconv.Itoa(i),
+					},
+				},
+			})
+		apCreates = append(apCreates, apCreate)
+
+		// 视图目录
+		apvParentCreate := t.Client.AppPolicyView.Create().SetID(i + 10).SetAppID(appID).SetKind(apppolicyview.KindDir).SetName("视图目录" + strconv.Itoa(i)).SetParentID(0)
+		// 视图策略
+		apvCreate := t.Client.AppPolicyView.Create().SetID(i).SetAppID(appID).SetAppPolicyID(i).SetKind(apppolicyview.KindPolicy).SetName("视图策略" + strconv.Itoa(i)).SetParentID(i + 10)
+		apvCreates = append(apvCreates, apvCreate, apvParentCreate)
+	}
+	t.Client.AppPolicy.CreateBulk(apCreates...).ExecX(ctx)
+	t.Client.AppPolicyView.CreateBulk(apvCreates...).ExecX(ctx)
+	// 创建应用角色
+	arCreates := make([]*ent.AppRoleCreate, 0)
+	for i := 5; i < 10; i++ {
+		arCreate := t.Client.AppRole.Create().SetID(i).SetCreatedBy(userID).SetAppID(appID).SetName("角色" + strconv.Itoa(i)).SetComments("角色" + strconv.Itoa(i)).SetAutoGrant(true).SetEditable(true)
+		arCreates = append(arCreates, arCreate)
+	}
+	ctx = ent.NewContext(ctx, t.Client)
+	t.Client.AppRole.CreateBulk(arCreates...).ExecX(ctx)
+
+	// 角色授权策略视图
+	assignRoleID := 5
+	assignAppPolicyIDs := []int{5, 6}
+	has, err := t.mr.AssignAppRolePolicyView(ctx, appID, assignRoleID, assignAppPolicyIDs)
+	t.Require().NoError(err)
+	t.Require().True(has)
+	// 获取角色策略视图验证
+	appRoleViews, err := t.qr.AppPolicyView(ctx, ac)
+	t.Require().NoError(err)
+	apvResolver := &appPolicyViewResolver{
+		Resolver: t.server.resolver,
+	}
+	// 验证角色5授权的应用视图
+	appRoleAssignedNums := 0
+	for _, appRoleView := range appRoleViews {
+		has, err = apvResolver.AppRoleAssigned(ctx, appRoleView, assignRoleID)
+		t.Require().NoError(err)
+		if has {
+			appRoleAssignedNums += 1
+		}
+	}
+	if appRoleAssignedNums != len(assignAppPolicyIDs) {
+		t.Fail("角色授权策略视图失败")
+	}
+
+	// 应用授权组织
+	has, err = t.mr.AssignOrganizationApp(ctx, tenantID, appID)
+	t.Require().NoError(err)
+	t.Require().True(has)
+
+	// 获取组织权限策略视图
+	orgPolicyViews, err := t.qr.OrgPolicyView(ctx, ac)
+	t.Require().NoError(err)
+	orgPolicyViewPolicies := 0
+	orgPolicys := make([]*ent.OrgPolicy, 0)
+	for _, opv := range orgPolicyViews {
+		if opv.Kind == apppolicyview.KindPolicy {
+			op, err := apvResolver.OrgPolicy(ctx, opv)
+			t.Require().NoError(err)
+			orgPolicys = append(orgPolicys, op)
+		}
+		for _, pid := range assignAppPolicyIDs {
+			if opv.PolicyID == pid {
+				orgPolicyViewPolicies += 1
+				break
+			}
+		}
+	}
+	if orgPolicyViewPolicies != len(assignAppPolicyIDs) {
+		t.Fail("策略视图授权组织管理员错误")
+	}
+
+	// 给组织用户授权策略视图
+	assignUserID := 2
+	has, err = t.mr.AssignUserPolicyView(ctx, tenantID, assignUserID, []int{orgPolicys[0].ID, orgPolicys[1].ID})
+	t.Require().NoError(err)
+	t.Require().True(has)
+	// 用户权限策略视图判断是否选中
+	has, err = apvResolver.OrgUserAssigned(ctx, orgPolicyViews[0], assignUserID)
+	t.Require().NoError(err)
+	t.Require().True(has)
+	has, err = apvResolver.OrgUserAssigned(ctx, orgPolicyViews[1], assignUserID)
+	t.Require().NoError(err)
+	t.Require().True(has)
+
+	// 创建用户组
+	orgRole, err := t.mr.CreateRole(ctx, ent.CreateOrgRoleInput{
+		Kind:  orgrole.KindGroup,
+		OrgID: &tenantID,
+		Name:  "用户组1",
+	})
+	t.Require().NoError(err)
+	// 给用户组授权策略视图
+	has, err = t.mr.AssignOrgRolePolicyView(ctx, tenantID, orgRole.ID, []int{orgPolicys[1].ID})
+	t.Require().NoError(err)
+	t.Require().True(has)
+	has, _ = apvResolver.OrgRoleAssigned(ctx, orgPolicyViews[0], orgRole.ID)
+	t.Require().False(has)
+	has, err = apvResolver.OrgRoleAssigned(ctx, orgPolicyViews[1], orgRole.ID)
+	t.Require().NoError(err)
+	t.Require().True(has)
 }

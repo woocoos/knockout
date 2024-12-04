@@ -95,6 +95,18 @@ func (a *App) Policies(ctx context.Context) (result []*AppPolicy, err error) {
 	return result, err
 }
 
+func (a *App) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = a.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = a.Edges.PolicyViewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = a.QueryPolicyViews().All(ctx)
+	}
+	return result, err
+}
+
 func (a *App) Orgs(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgOrder, where *OrgWhereInput,
 ) (*OrgConnection, error) {
@@ -103,7 +115,7 @@ func (a *App) Orgs(
 		WithOrgFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[5][alias]
+	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
 	if nodes, err := a.NamedOrgs(alias); err == nil || hasTotalCount {
 		pager, err := newOrgPager(opts, last != nil)
 		if err != nil {
@@ -124,7 +136,7 @@ func (a *App) Dicts(
 		WithAppDictFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := a.Edges.totalCount[7][alias]
 	if nodes, err := a.NamedDicts(alias); err == nil || hasTotalCount {
 		pager, err := newAppDictPager(opts, last != nil)
 		if err != nil {
@@ -227,6 +239,46 @@ func (ap *AppPolicy) Roles(ctx context.Context) (result []*AppRole, err error) {
 		result, err = ap.QueryRoles().All(ctx)
 	}
 	return result, err
+}
+
+func (ap *AppPolicy) OrgPolicies(ctx context.Context) (result []*OrgPolicy, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ap.NamedOrgPolicies(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ap.Edges.OrgPoliciesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ap.QueryOrgPolicies().All(ctx)
+	}
+	return result, err
+}
+
+func (ap *AppPolicy) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ap.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ap.Edges.PolicyViewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ap.QueryPolicyViews().All(ctx)
+	}
+	return result, err
+}
+
+func (apv *AppPolicyView) App(ctx context.Context) (*App, error) {
+	result, err := apv.Edges.AppOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryApp().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (apv *AppPolicyView) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := apv.Edges.AppPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryAppPolicy().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (ar *AppRes) App(ctx context.Context) (*App, error) {
@@ -435,6 +487,14 @@ func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err
 		result, err = op.QueryPermissions().All(ctx)
 	}
 	return result, err
+}
+
+func (op *OrgPolicy) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := op.Edges.AppPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = op.QueryAppPolicy().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (oup *OrgUserPreference) User(ctx context.Context) (*User, error) {

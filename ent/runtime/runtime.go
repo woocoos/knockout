@@ -12,6 +12,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -260,17 +261,42 @@ func init() {
 	// apppolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppolicy.DefaultCreatedAt = apppolicyDescCreatedAt.Default.(func() time.Time)
 	// apppolicyDescVersion is the schema descriptor for version field.
-	apppolicyDescVersion := apppolicyFields[4].Descriptor()
+	apppolicyDescVersion := apppolicyFields[5].Descriptor()
 	// apppolicy.DefaultVersion holds the default value on creation for the version field.
 	apppolicy.DefaultVersion = apppolicyDescVersion.Default.(string)
 	// apppolicyDescAutoGrant is the schema descriptor for auto_grant field.
-	apppolicyDescAutoGrant := apppolicyFields[5].Descriptor()
+	apppolicyDescAutoGrant := apppolicyFields[6].Descriptor()
 	// apppolicy.DefaultAutoGrant holds the default value on creation for the auto_grant field.
 	apppolicy.DefaultAutoGrant = apppolicyDescAutoGrant.Default.(bool)
 	// apppolicyDescID is the schema descriptor for id field.
 	apppolicyDescID := apppolicyMixinFields0[0].Descriptor()
 	// apppolicy.DefaultID holds the default value on creation for the id field.
 	apppolicy.DefaultID = apppolicyDescID.Default.(func() int)
+	apppolicyviewMixin := schema.AppPolicyView{}.Mixin()
+	apppolicyviewMixinHooks1 := apppolicyviewMixin[1].Hooks()
+	apppolicyviewMixinHooks2 := apppolicyviewMixin[2].Hooks()
+	apppolicyviewHooks := schema.AppPolicyView{}.Hooks()
+	apppolicyview.Hooks[0] = apppolicyviewMixinHooks1[0]
+	apppolicyview.Hooks[1] = apppolicyviewMixinHooks2[0]
+	apppolicyview.Hooks[2] = apppolicyviewHooks[0]
+	apppolicyviewMixinFields0 := apppolicyviewMixin[0].Fields()
+	_ = apppolicyviewMixinFields0
+	apppolicyviewMixinFields1 := apppolicyviewMixin[1].Fields()
+	_ = apppolicyviewMixinFields1
+	apppolicyviewFields := schema.AppPolicyView{}.Fields()
+	_ = apppolicyviewFields
+	// apppolicyviewDescCreatedAt is the schema descriptor for created_at field.
+	apppolicyviewDescCreatedAt := apppolicyviewMixinFields1[1].Descriptor()
+	// apppolicyview.DefaultCreatedAt holds the default value on creation for the created_at field.
+	apppolicyview.DefaultCreatedAt = apppolicyviewDescCreatedAt.Default.(func() time.Time)
+	// apppolicyviewDescParentID is the schema descriptor for parent_id field.
+	apppolicyviewDescParentID := apppolicyviewFields[1].Descriptor()
+	// apppolicyview.DefaultParentID holds the default value on creation for the parent_id field.
+	apppolicyview.DefaultParentID = apppolicyviewDescParentID.Default.(int)
+	// apppolicyviewDescID is the schema descriptor for id field.
+	apppolicyviewDescID := apppolicyviewMixinFields0[0].Descriptor()
+	// apppolicyview.DefaultID holds the default value on creation for the id field.
+	apppolicyview.DefaultID = apppolicyviewDescID.Default.(func() int)
 	appresMixin := schema.AppRes{}.Mixin()
 	appresMixinHooks1 := appresMixin[1].Hooks()
 	appresMixinHooks2 := appresMixin[2].Hooks()

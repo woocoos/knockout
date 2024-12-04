@@ -311,6 +311,26 @@ func AppIDNotNil() predicate.AppPolicy {
 	return predicate.AppPolicy(sql.FieldNotNull(FieldAppID))
 }
 
+// KindEQ applies the EQ predicate on the "kind" field.
+func KindEQ(v Kind) predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldEQ(FieldKind, v))
+}
+
+// KindNEQ applies the NEQ predicate on the "kind" field.
+func KindNEQ(v Kind) predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldNEQ(FieldKind, v))
+}
+
+// KindIn applies the In predicate on the "kind" field.
+func KindIn(vs ...Kind) predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldIn(FieldKind, vs...))
+}
+
+// KindNotIn applies the NotIn predicate on the "kind" field.
+func KindNotIn(vs ...Kind) predicate.AppPolicy {
+	return predicate.AppPolicy(sql.FieldNotIn(FieldKind, vs...))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.AppPolicy {
 	return predicate.AppPolicy(sql.FieldEQ(FieldName, v))
@@ -604,6 +624,52 @@ func HasRoles() predicate.AppPolicy {
 func HasRolesWith(preds ...predicate.AppRole) predicate.AppPolicy {
 	return predicate.AppPolicy(func(s *sql.Selector) {
 		step := newRolesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrgPolicies applies the HasEdge predicate on the "org_policies" edge.
+func HasOrgPolicies() predicate.AppPolicy {
+	return predicate.AppPolicy(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrgPoliciesTable, OrgPoliciesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgPoliciesWith applies the HasEdge predicate on the "org_policies" edge with a given conditions (other predicates).
+func HasOrgPoliciesWith(preds ...predicate.OrgPolicy) predicate.AppPolicy {
+	return predicate.AppPolicy(func(s *sql.Selector) {
+		step := newOrgPoliciesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPolicyViews applies the HasEdge predicate on the "policy_views" edge.
+func HasPolicyViews() predicate.AppPolicy {
+	return predicate.AppPolicy(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PolicyViewsTable, PolicyViewsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPolicyViewsWith applies the HasEdge predicate on the "policy_views" edge with a given conditions (other predicates).
+func HasPolicyViewsWith(preds ...predicate.AppPolicyView) predicate.AppPolicy {
+	return predicate.AppPolicy(func(s *sql.Selector) {
+		step := newPolicyViewsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

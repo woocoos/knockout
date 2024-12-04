@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
@@ -349,6 +350,18 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 			a.WithNamedPolicies(alias, func(wq *AppPolicyQuery) {
 				*wq = *query
 			})
+		case "policyViews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyViewClient{config: a.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, apppolicyviewImplementors)...); err != nil {
+				return err
+			}
+			a.WithNamedPolicyViews(alias, func(wq *AppPolicyViewQuery) {
+				*wq = *query
+			})
 		case "orgs":
 			var (
 				alias = field.Alias
@@ -396,10 +409,10 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -407,10 +420,10 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 					a.loadTotal = append(a.loadTotal, func(_ context.Context, nodes []*App) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Orgs)
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -484,10 +497,10 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -495,10 +508,10 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 					a.loadTotal = append(a.loadTotal, func(_ context.Context, nodes []*App) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Dicts)
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -1378,6 +1391,30 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 			ap.WithNamedRoles(alias, func(wq *AppRoleQuery) {
 				*wq = *query
 			})
+		case "orgPolicies":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgPolicyClient{config: ap.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, orgpolicyImplementors)...); err != nil {
+				return err
+			}
+			ap.WithNamedOrgPolicies(alias, func(wq *OrgPolicyQuery) {
+				*wq = *query
+			})
+		case "policyViews":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyViewClient{config: ap.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, apppolicyviewImplementors)...); err != nil {
+				return err
+			}
+			ap.WithNamedPolicyViews(alias, func(wq *AppPolicyViewQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[apppolicy.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, apppolicy.FieldCreatedBy)
@@ -1402,6 +1439,11 @@ func (ap *AppPolicyQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 			if _, ok := fieldSeen[apppolicy.FieldAppID]; !ok {
 				selectedFields = append(selectedFields, apppolicy.FieldAppID)
 				fieldSeen[apppolicy.FieldAppID] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[apppolicy.FieldKind]; !ok {
+				selectedFields = append(selectedFields, apppolicy.FieldKind)
+				fieldSeen[apppolicy.FieldKind] = struct{}{}
 			}
 		case "name":
 			if _, ok := fieldSeen[apppolicy.FieldName]; !ok {
@@ -1487,6 +1529,173 @@ func newAppPolicyPaginateArgs(rv map[string]any) *apppolicyPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*AppPolicyWhereInput); ok {
 		args.opts = append(args.opts, WithAppPolicyFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (apv *AppPolicyViewQuery) CollectFields(ctx context.Context, satisfies ...string) (*AppPolicyViewQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return apv, nil
+	}
+	if err := apv.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return apv, nil
+}
+
+func (apv *AppPolicyViewQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(apppolicyview.Columns))
+		selectedFields = []string{apppolicyview.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "app":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppClient{config: apv.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
+				return err
+			}
+			apv.withApp = query
+			if _, ok := fieldSeen[apppolicyview.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldAppID)
+				fieldSeen[apppolicyview.FieldAppID] = struct{}{}
+			}
+		case "appPolicy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyClient{config: apv.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, apppolicyImplementors)...); err != nil {
+				return err
+			}
+			apv.withAppPolicy = query
+			if _, ok := fieldSeen[apppolicyview.FieldPolicyID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldPolicyID)
+				fieldSeen[apppolicyview.FieldPolicyID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[apppolicyview.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldCreatedBy)
+				fieldSeen[apppolicyview.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[apppolicyview.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldCreatedAt)
+				fieldSeen[apppolicyview.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[apppolicyview.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldUpdatedBy)
+				fieldSeen[apppolicyview.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[apppolicyview.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldUpdatedAt)
+				fieldSeen[apppolicyview.FieldUpdatedAt] = struct{}{}
+			}
+		case "appID":
+			if _, ok := fieldSeen[apppolicyview.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldAppID)
+				fieldSeen[apppolicyview.FieldAppID] = struct{}{}
+			}
+		case "parentID":
+			if _, ok := fieldSeen[apppolicyview.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldParentID)
+				fieldSeen[apppolicyview.FieldParentID] = struct{}{}
+			}
+		case "kind":
+			if _, ok := fieldSeen[apppolicyview.FieldKind]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldKind)
+				fieldSeen[apppolicyview.FieldKind] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[apppolicyview.FieldName]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldName)
+				fieldSeen[apppolicyview.FieldName] = struct{}{}
+			}
+		case "comments":
+			if _, ok := fieldSeen[apppolicyview.FieldComments]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldComments)
+				fieldSeen[apppolicyview.FieldComments] = struct{}{}
+			}
+		case "policyID":
+			if _, ok := fieldSeen[apppolicyview.FieldPolicyID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldPolicyID)
+				fieldSeen[apppolicyview.FieldPolicyID] = struct{}{}
+			}
+		case "displaySort":
+			if _, ok := fieldSeen[apppolicyview.FieldDisplaySort]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldDisplaySort)
+				fieldSeen[apppolicyview.FieldDisplaySort] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		apv.Select(selectedFields...)
+	}
+	return nil
+}
+
+type apppolicyviewPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []AppPolicyViewPaginateOption
+}
+
+func newAppPolicyViewPaginateArgs(rv map[string]any) *apppolicyviewPaginateArgs {
+	args := &apppolicyviewPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &AppPolicyViewOrder{Field: &AppPolicyViewOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithAppPolicyViewOrder(order))
+			}
+		case *AppPolicyViewOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithAppPolicyViewOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*AppPolicyViewWhereInput); ok {
+		args.opts = append(args.opts, WithAppPolicyViewFilter(v.Filter))
 	}
 	return args
 }
@@ -3156,6 +3365,20 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 			op.WithNamedPermissions(alias, func(wq *PermissionQuery) {
 				*wq = *query
 			})
+		case "appPolicy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyClient{config: op.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, apppolicyImplementors)...); err != nil {
+				return err
+			}
+			op.withAppPolicy = query
+			if _, ok := fieldSeen[orgpolicy.FieldAppPolicyID]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldAppPolicyID)
+				fieldSeen[orgpolicy.FieldAppPolicyID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[orgpolicy.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, orgpolicy.FieldCreatedBy)

@@ -15,8 +15,10 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -77,6 +79,20 @@ func (apu *AppPolicyUpdate) SetNillableUpdatedAt(t *time.Time) *AppPolicyUpdate 
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (apu *AppPolicyUpdate) ClearUpdatedAt() *AppPolicyUpdate {
 	apu.mutation.ClearUpdatedAt()
+	return apu
+}
+
+// SetKind sets the "kind" field.
+func (apu *AppPolicyUpdate) SetKind(a apppolicy.Kind) *AppPolicyUpdate {
+	apu.mutation.SetKind(a)
+	return apu
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (apu *AppPolicyUpdate) SetNillableKind(a *apppolicy.Kind) *AppPolicyUpdate {
+	if a != nil {
+		apu.SetKind(*a)
+	}
 	return apu
 }
 
@@ -189,6 +205,36 @@ func (apu *AppPolicyUpdate) AddRoles(a ...*AppRole) *AppPolicyUpdate {
 	return apu.AddRoleIDs(ids...)
 }
 
+// AddOrgPolicyIDs adds the "org_policies" edge to the OrgPolicy entity by IDs.
+func (apu *AppPolicyUpdate) AddOrgPolicyIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.AddOrgPolicyIDs(ids...)
+	return apu
+}
+
+// AddOrgPolicies adds the "org_policies" edges to the OrgPolicy entity.
+func (apu *AppPolicyUpdate) AddOrgPolicies(o ...*OrgPolicy) *AppPolicyUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return apu.AddOrgPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (apu *AppPolicyUpdate) AddPolicyViewIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.AddPolicyViewIDs(ids...)
+	return apu
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (apu *AppPolicyUpdate) AddPolicyViews(a ...*AppPolicyView) *AppPolicyUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apu.AddPolicyViewIDs(ids...)
+}
+
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
 func (apu *AppPolicyUpdate) AddAppRolePolicyIDs(ids ...int) *AppPolicyUpdate {
 	apu.mutation.AddAppRolePolicyIDs(ids...)
@@ -228,6 +274,48 @@ func (apu *AppPolicyUpdate) RemoveRoles(a ...*AppRole) *AppPolicyUpdate {
 		ids[i] = a[i].ID
 	}
 	return apu.RemoveRoleIDs(ids...)
+}
+
+// ClearOrgPolicies clears all "org_policies" edges to the OrgPolicy entity.
+func (apu *AppPolicyUpdate) ClearOrgPolicies() *AppPolicyUpdate {
+	apu.mutation.ClearOrgPolicies()
+	return apu
+}
+
+// RemoveOrgPolicyIDs removes the "org_policies" edge to OrgPolicy entities by IDs.
+func (apu *AppPolicyUpdate) RemoveOrgPolicyIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.RemoveOrgPolicyIDs(ids...)
+	return apu
+}
+
+// RemoveOrgPolicies removes "org_policies" edges to OrgPolicy entities.
+func (apu *AppPolicyUpdate) RemoveOrgPolicies(o ...*OrgPolicy) *AppPolicyUpdate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return apu.RemoveOrgPolicyIDs(ids...)
+}
+
+// ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
+func (apu *AppPolicyUpdate) ClearPolicyViews() *AppPolicyUpdate {
+	apu.mutation.ClearPolicyViews()
+	return apu
+}
+
+// RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
+func (apu *AppPolicyUpdate) RemovePolicyViewIDs(ids ...int) *AppPolicyUpdate {
+	apu.mutation.RemovePolicyViewIDs(ids...)
+	return apu
+}
+
+// RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
+func (apu *AppPolicyUpdate) RemovePolicyViews(a ...*AppPolicyView) *AppPolicyUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apu.RemovePolicyViewIDs(ids...)
 }
 
 // ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
@@ -280,6 +368,11 @@ func (apu *AppPolicyUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (apu *AppPolicyUpdate) check() error {
+	if v, ok := apu.mutation.Kind(); ok {
+		if err := apppolicy.KindValidator(v); err != nil {
+			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.kind": %w`, err)}
+		}
+	}
 	if v, ok := apu.mutation.Status(); ok {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
@@ -314,6 +407,9 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if apu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(apppolicy.FieldUpdatedAt, field.TypeTime)
+	}
+	if value, ok := apu.mutation.Kind(); ok {
+		_spec.SetField(apppolicy.FieldKind, field.TypeEnum, value)
 	}
 	if value, ok := apu.mutation.Name(); ok {
 		_spec.SetField(apppolicy.FieldName, field.TypeString, value)
@@ -399,6 +495,96 @@ func (apu *AppPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apu.mutation.OrgPoliciesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.RemovedOrgPoliciesIDs(); len(nodes) > 0 && !apu.mutation.OrgPoliciesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.OrgPoliciesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apu.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !apu.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apu.mutation.AppRolePolicyCleared() {
@@ -513,6 +699,20 @@ func (apuo *AppPolicyUpdateOne) ClearUpdatedAt() *AppPolicyUpdateOne {
 	return apuo
 }
 
+// SetKind sets the "kind" field.
+func (apuo *AppPolicyUpdateOne) SetKind(a apppolicy.Kind) *AppPolicyUpdateOne {
+	apuo.mutation.SetKind(a)
+	return apuo
+}
+
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (apuo *AppPolicyUpdateOne) SetNillableKind(a *apppolicy.Kind) *AppPolicyUpdateOne {
+	if a != nil {
+		apuo.SetKind(*a)
+	}
+	return apuo
+}
+
 // SetName sets the "name" field.
 func (apuo *AppPolicyUpdateOne) SetName(s string) *AppPolicyUpdateOne {
 	apuo.mutation.SetName(s)
@@ -622,6 +822,36 @@ func (apuo *AppPolicyUpdateOne) AddRoles(a ...*AppRole) *AppPolicyUpdateOne {
 	return apuo.AddRoleIDs(ids...)
 }
 
+// AddOrgPolicyIDs adds the "org_policies" edge to the OrgPolicy entity by IDs.
+func (apuo *AppPolicyUpdateOne) AddOrgPolicyIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.AddOrgPolicyIDs(ids...)
+	return apuo
+}
+
+// AddOrgPolicies adds the "org_policies" edges to the OrgPolicy entity.
+func (apuo *AppPolicyUpdateOne) AddOrgPolicies(o ...*OrgPolicy) *AppPolicyUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return apuo.AddOrgPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (apuo *AppPolicyUpdateOne) AddPolicyViewIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.AddPolicyViewIDs(ids...)
+	return apuo
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (apuo *AppPolicyUpdateOne) AddPolicyViews(a ...*AppPolicyView) *AppPolicyUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apuo.AddPolicyViewIDs(ids...)
+}
+
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
 func (apuo *AppPolicyUpdateOne) AddAppRolePolicyIDs(ids ...int) *AppPolicyUpdateOne {
 	apuo.mutation.AddAppRolePolicyIDs(ids...)
@@ -661,6 +891,48 @@ func (apuo *AppPolicyUpdateOne) RemoveRoles(a ...*AppRole) *AppPolicyUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return apuo.RemoveRoleIDs(ids...)
+}
+
+// ClearOrgPolicies clears all "org_policies" edges to the OrgPolicy entity.
+func (apuo *AppPolicyUpdateOne) ClearOrgPolicies() *AppPolicyUpdateOne {
+	apuo.mutation.ClearOrgPolicies()
+	return apuo
+}
+
+// RemoveOrgPolicyIDs removes the "org_policies" edge to OrgPolicy entities by IDs.
+func (apuo *AppPolicyUpdateOne) RemoveOrgPolicyIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.RemoveOrgPolicyIDs(ids...)
+	return apuo
+}
+
+// RemoveOrgPolicies removes "org_policies" edges to OrgPolicy entities.
+func (apuo *AppPolicyUpdateOne) RemoveOrgPolicies(o ...*OrgPolicy) *AppPolicyUpdateOne {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return apuo.RemoveOrgPolicyIDs(ids...)
+}
+
+// ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
+func (apuo *AppPolicyUpdateOne) ClearPolicyViews() *AppPolicyUpdateOne {
+	apuo.mutation.ClearPolicyViews()
+	return apuo
+}
+
+// RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
+func (apuo *AppPolicyUpdateOne) RemovePolicyViewIDs(ids ...int) *AppPolicyUpdateOne {
+	apuo.mutation.RemovePolicyViewIDs(ids...)
+	return apuo
+}
+
+// RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
+func (apuo *AppPolicyUpdateOne) RemovePolicyViews(a ...*AppPolicyView) *AppPolicyUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apuo.RemovePolicyViewIDs(ids...)
 }
 
 // ClearAppRolePolicy clears all "app_role_policy" edges to the AppRolePolicy entity.
@@ -726,6 +998,11 @@ func (apuo *AppPolicyUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (apuo *AppPolicyUpdateOne) check() error {
+	if v, ok := apuo.mutation.Kind(); ok {
+		if err := apppolicy.KindValidator(v); err != nil {
+			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.kind": %w`, err)}
+		}
+	}
 	if v, ok := apuo.mutation.Status(); ok {
 		if err := apppolicy.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.status": %w`, err)}
@@ -777,6 +1054,9 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 	}
 	if apuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(apppolicy.FieldUpdatedAt, field.TypeTime)
+	}
+	if value, ok := apuo.mutation.Kind(); ok {
+		_spec.SetField(apppolicy.FieldKind, field.TypeEnum, value)
 	}
 	if value, ok := apuo.mutation.Name(); ok {
 		_spec.SetField(apppolicy.FieldName, field.TypeString, value)
@@ -862,6 +1142,96 @@ func (apuo *AppPolicyUpdateOne) sqlSave(ctx context.Context) (_node *AppPolicy, 
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apuo.mutation.OrgPoliciesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.RemovedOrgPoliciesIDs(); len(nodes) > 0 && !apuo.mutation.OrgPoliciesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.OrgPoliciesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apuo.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !apuo.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apuo.mutation.AppRolePolicyCleared() {

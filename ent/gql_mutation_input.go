@@ -10,6 +10,8 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -41,6 +43,7 @@ type CreateAppInput struct {
 	ResourceIDs          []int
 	RoleIDs              []int
 	PolicyIDs            []int
+	PolicyViewIDs        []int
 	DictIDs              []int
 }
 
@@ -91,6 +94,9 @@ func (i *CreateAppInput) Mutate(m *AppMutation) {
 	if v := i.PolicyIDs; len(v) > 0 {
 		m.AddPolicyIDs(v...)
 	}
+	if v := i.PolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
 	if v := i.DictIDs; len(v) > 0 {
 		m.AddDictIDs(v...)
 	}
@@ -139,6 +145,9 @@ type UpdateAppInput struct {
 	ClearPolicies             bool
 	AddPolicyIDs              []int
 	RemovePolicyIDs           []int
+	ClearPolicyViews          bool
+	AddPolicyViewIDs          []int
+	RemovePolicyViewIDs       []int
 	ClearDicts                bool
 	AddDictIDs                []int
 	RemoveDictIDs             []int
@@ -250,6 +259,15 @@ func (i *UpdateAppInput) Mutate(m *AppMutation) {
 	}
 	if v := i.RemovePolicyIDs; len(v) > 0 {
 		m.RemovePolicyIDs(v...)
+	}
+	if i.ClearPolicyViews {
+		m.ClearPolicyViews()
+	}
+	if v := i.AddPolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
+	if v := i.RemovePolicyViewIDs; len(v) > 0 {
+		m.RemovePolicyViewIDs(v...)
 	}
 	if i.ClearDicts {
 		m.ClearDicts()
@@ -624,17 +642,21 @@ func (c *AppMenuUpdateOne) SetInput(i UpdateAppMenuInput) *AppMenuUpdateOne {
 
 // CreateAppPolicyInput represents a mutation input for creating apppolicies.
 type CreateAppPolicyInput struct {
-	Name      string
-	Comments  *string
-	Rules     []*types.PolicyRule
-	AutoGrant *bool
-	Status    *typex.SimpleStatus
-	AppID     *int
-	RoleIDs   []int
+	Kind          apppolicy.Kind
+	Name          string
+	Comments      *string
+	Rules         []*types.PolicyRule
+	AutoGrant     *bool
+	Status        *typex.SimpleStatus
+	AppID         *int
+	RoleIDs       []int
+	OrgPolicyIDs  []int
+	PolicyViewIDs []int
 }
 
 // Mutate applies the CreateAppPolicyInput on the AppPolicyMutation builder.
 func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
+	m.SetKind(i.Kind)
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -654,6 +676,12 @@ func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	if v := i.RoleIDs; len(v) > 0 {
 		m.AddRoleIDs(v...)
 	}
+	if v := i.OrgPolicyIDs; len(v) > 0 {
+		m.AddOrgPolicyIDs(v...)
+	}
+	if v := i.PolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateAppPolicyInput on the AppPolicyCreate builder.
@@ -664,21 +692,31 @@ func (c *AppPolicyCreate) SetInput(i CreateAppPolicyInput) *AppPolicyCreate {
 
 // UpdateAppPolicyInput represents a mutation input for updating apppolicies.
 type UpdateAppPolicyInput struct {
-	Name          *string
-	ClearComments bool
-	Comments      *string
-	Rules         []*types.PolicyRule
-	AppendRules   []*types.PolicyRule
-	AutoGrant     *bool
-	ClearStatus   bool
-	Status        *typex.SimpleStatus
-	ClearRoles    bool
-	AddRoleIDs    []int
-	RemoveRoleIDs []int
+	Kind                *apppolicy.Kind
+	Name                *string
+	ClearComments       bool
+	Comments            *string
+	Rules               []*types.PolicyRule
+	AppendRules         []*types.PolicyRule
+	AutoGrant           *bool
+	ClearStatus         bool
+	Status              *typex.SimpleStatus
+	ClearRoles          bool
+	AddRoleIDs          []int
+	RemoveRoleIDs       []int
+	ClearOrgPolicies    bool
+	AddOrgPolicyIDs     []int
+	RemoveOrgPolicyIDs  []int
+	ClearPolicyViews    bool
+	AddPolicyViewIDs    []int
+	RemovePolicyViewIDs []int
 }
 
 // Mutate applies the UpdateAppPolicyInput on the AppPolicyMutation builder.
 func (i *UpdateAppPolicyInput) Mutate(m *AppPolicyMutation) {
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
@@ -712,6 +750,24 @@ func (i *UpdateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	if v := i.RemoveRoleIDs; len(v) > 0 {
 		m.RemoveRoleIDs(v...)
 	}
+	if i.ClearOrgPolicies {
+		m.ClearOrgPolicies()
+	}
+	if v := i.AddOrgPolicyIDs; len(v) > 0 {
+		m.AddOrgPolicyIDs(v...)
+	}
+	if v := i.RemoveOrgPolicyIDs; len(v) > 0 {
+		m.RemoveOrgPolicyIDs(v...)
+	}
+	if i.ClearPolicyViews {
+		m.ClearPolicyViews()
+	}
+	if v := i.AddPolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
+	if v := i.RemovePolicyViewIDs; len(v) > 0 {
+		m.RemovePolicyViewIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the UpdateAppPolicyInput on the AppPolicyUpdate builder.
@@ -722,6 +778,88 @@ func (c *AppPolicyUpdate) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdate {
 
 // SetInput applies the change-set in the UpdateAppPolicyInput on the AppPolicyUpdateOne builder.
 func (c *AppPolicyUpdateOne) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateAppPolicyViewInput represents a mutation input for creating apppolicyviews.
+type CreateAppPolicyViewInput struct {
+	ParentID    *int
+	Kind        apppolicyview.Kind
+	Name        string
+	Comments    *string
+	AppID       *int
+	AppPolicyID *int
+}
+
+// Mutate applies the CreateAppPolicyViewInput on the AppPolicyViewMutation builder.
+func (i *CreateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	m.SetKind(i.Kind)
+	m.SetName(i.Name)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateAppPolicyViewInput on the AppPolicyViewCreate builder.
+func (c *AppPolicyViewCreate) SetInput(i CreateAppPolicyViewInput) *AppPolicyViewCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateAppPolicyViewInput represents a mutation input for updating apppolicyviews.
+type UpdateAppPolicyViewInput struct {
+	ParentID       *int
+	Kind           *apppolicyview.Kind
+	Name           *string
+	ClearComments  bool
+	Comments       *string
+	ClearAppPolicy bool
+	AppPolicyID    *int
+}
+
+// Mutate applies the UpdateAppPolicyViewInput on the AppPolicyViewMutation builder.
+func (i *UpdateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if i.ClearAppPolicy {
+		m.ClearAppPolicy()
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAppPolicyViewInput on the AppPolicyViewUpdate builder.
+func (c *AppPolicyViewUpdate) SetInput(i UpdateAppPolicyViewInput) *AppPolicyViewUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateAppPolicyViewInput on the AppPolicyViewUpdateOne builder.
+func (c *AppPolicyViewUpdateOne) SetInput(i UpdateAppPolicyViewInput) *AppPolicyViewUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -1514,19 +1652,16 @@ func (c *OrgUpdateOne) SetInput(i UpdateOrgInput) *OrgUpdateOne {
 
 // CreateOrgPolicyInput represents a mutation input for creating orgpolicies.
 type CreateOrgPolicyInput struct {
-	AppPolicyID   *int
 	Name          string
 	Comments      *string
 	Rules         []*types.PolicyRule
 	OrgID         *int
 	PermissionIDs []int
+	AppPolicyID   *int
 }
 
 // Mutate applies the CreateOrgPolicyInput on the OrgPolicyMutation builder.
 func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
-	if v := i.AppPolicyID; v != nil {
-		m.SetAppPolicyID(*v)
-	}
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -1540,6 +1675,9 @@ func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	if v := i.PermissionIDs; len(v) > 0 {
 		m.AddPermissionIDs(v...)
 	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateOrgPolicyInput on the OrgPolicyCreate builder.
@@ -1550,8 +1688,6 @@ func (c *OrgPolicyCreate) SetInput(i CreateOrgPolicyInput) *OrgPolicyCreate {
 
 // UpdateOrgPolicyInput represents a mutation input for updating orgpolicies.
 type UpdateOrgPolicyInput struct {
-	ClearAppPolicyID    bool
-	AppPolicyID         *int
 	Name                *string
 	ClearComments       bool
 	Comments            *string
@@ -1560,16 +1696,12 @@ type UpdateOrgPolicyInput struct {
 	ClearPermissions    bool
 	AddPermissionIDs    []int
 	RemovePermissionIDs []int
+	ClearAppPolicy      bool
+	AppPolicyID         *int
 }
 
 // Mutate applies the UpdateOrgPolicyInput on the OrgPolicyMutation builder.
 func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
-	if i.ClearAppPolicyID {
-		m.ClearAppPolicyID()
-	}
-	if v := i.AppPolicyID; v != nil {
-		m.SetAppPolicyID(*v)
-	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
@@ -1593,6 +1725,12 @@ func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if v := i.RemovePermissionIDs; len(v) > 0 {
 		m.RemovePermissionIDs(v...)
+	}
+	if i.ClearAppPolicy {
+		m.ClearAppPolicy()
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
 	}
 }
 

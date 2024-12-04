@@ -38,6 +38,7 @@ type Config struct {
 
 type ResolverRoot interface {
 	AppPolicy() AppPolicyResolver
+	AppPolicyView() AppPolicyViewResolver
 	Mutation() MutationResolver
 	Org() OrgResolver
 	OrgPolicy() OrgPolicyResolver
@@ -68,6 +69,7 @@ type ComplexityRoot struct {
 		Name                 func(childComplexity int) int
 		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		Policies             func(childComplexity int) int
+		PolicyViews          func(childComplexity int) int
 		RedirectURI          func(childComplexity int) int
 		RefreshTokenValidity func(childComplexity int) int
 		Resources            func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
@@ -199,7 +201,10 @@ type ComplexityRoot struct {
 		CreatedBy      func(childComplexity int) int
 		ID             func(childComplexity int) int
 		IsGrantAppRole func(childComplexity int, appRoleID int) int
+		Kind           func(childComplexity int) int
 		Name           func(childComplexity int) int
+		OrgPolicies    func(childComplexity int) int
+		PolicyViews    func(childComplexity int) int
 		Roles          func(childComplexity int) int
 		Rules          func(childComplexity int) int
 		Status         func(childComplexity int) int
@@ -214,6 +219,38 @@ type ComplexityRoot struct {
 	}
 
 	AppPolicyEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	AppPolicyView struct {
+		App             func(childComplexity int) int
+		AppID           func(childComplexity int) int
+		AppPolicy       func(childComplexity int) int
+		AppRoleAssigned func(childComplexity int, appRoleID int) int
+		Comments        func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		CreatedBy       func(childComplexity int) int
+		DisplaySort     func(childComplexity int) int
+		ID              func(childComplexity int) int
+		Kind            func(childComplexity int) int
+		Name            func(childComplexity int) int
+		OrgPolicy       func(childComplexity int) int
+		OrgRoleAssigned func(childComplexity int, orgRoleID int) int
+		OrgUserAssigned func(childComplexity int, userID int) int
+		ParentID        func(childComplexity int) int
+		PolicyID        func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		UpdatedBy       func(childComplexity int) int
+	}
+
+	AppPolicyViewConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	AppPolicyViewEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
 	}
@@ -381,10 +418,13 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
+		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, appPolicyIDs []int) int
+		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, orgPolicyIDs []int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
+		AssignUserPolicyView        func(childComplexity int, orgID int, userID int, orgPolicyIDs []int) int
 		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
@@ -395,6 +435,7 @@ type ComplexityRoot struct {
 		CreateAppDictItem           func(childComplexity int, dictID int, input ent.CreateAppDictItemInput) int
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
 		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
+		CreateAppPolicyView         func(childComplexity int, input ent.CreateAppPolicyViewInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateCountry               func(childComplexity int, input ent.CreateCountryInput) int
 		CreateCurrency              func(childComplexity int, input ent.CreateCurrencyInput) int
@@ -416,6 +457,7 @@ type ComplexityRoot struct {
 		DeleteAppDictItem           func(childComplexity int, itemID int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
+		DeleteAppPolicyView         func(childComplexity int, appPolicyViewID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
 		DeleteCountry               func(childComplexity int, countryID int) int
 		DeleteCurrency              func(childComplexity int, currencyID int) int
@@ -438,6 +480,7 @@ type ComplexityRoot struct {
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppDictItem             func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		MoveAppPolicyView           func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveCountry                 func(childComplexity int, sourceID int, targetID int, action model.ListAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveRegion                  func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
@@ -459,6 +502,7 @@ type ComplexityRoot struct {
 		UpdateAppDictItem           func(childComplexity int, itemID int, input ent.UpdateAppDictItemInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
+		UpdateAppPolicyView         func(childComplexity int, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
 		UpdateCountry               func(childComplexity int, countryID int, input ent.UpdateCountryInput) int
@@ -556,6 +600,7 @@ type ComplexityRoot struct {
 	}
 
 	OrgPolicy struct {
+		AppPolicy   func(childComplexity int) int
 		AppPolicyID func(childComplexity int) int
 		Comments    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
@@ -686,6 +731,7 @@ type ComplexityRoot struct {
 		AppDictItemByRefCode        func(childComplexity int, refCode string) int
 		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		AppPolicyAssignedToOrgs     func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
+		AppPolicyView               func(childComplexity int, appCode string) int
 		AppResources                func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
@@ -704,6 +750,7 @@ type ComplexityRoot struct {
 		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgPolicyView               func(childComplexity int, appCode string) int
 		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -1078,6 +1125,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.App.Policies(childComplexity), true
+
+	case "App.policyViews":
+		if e.complexity.App.PolicyViews == nil {
+			break
+		}
+
+		return e.complexity.App.PolicyViews(childComplexity), true
 
 	case "App.redirectURI":
 		if e.complexity.App.RedirectURI == nil {
@@ -1733,12 +1787,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicy.IsGrantAppRole(childComplexity, args["appRoleID"].(int)), true
 
+	case "AppPolicy.kind":
+		if e.complexity.AppPolicy.Kind == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.Kind(childComplexity), true
+
 	case "AppPolicy.name":
 		if e.complexity.AppPolicy.Name == nil {
 			break
 		}
 
 		return e.complexity.AppPolicy.Name(childComplexity), true
+
+	case "AppPolicy.orgPolicies":
+		if e.complexity.AppPolicy.OrgPolicies == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.OrgPolicies(childComplexity), true
+
+	case "AppPolicy.policyViews":
+		if e.complexity.AppPolicy.PolicyViews == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.PolicyViews(childComplexity), true
 
 	case "AppPolicy.roles":
 		if e.complexity.AppPolicy.Roles == nil {
@@ -1809,6 +1884,182 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppPolicyEdge.Node(childComplexity), true
+
+	case "AppPolicyView.app":
+		if e.complexity.AppPolicyView.App == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.App(childComplexity), true
+
+	case "AppPolicyView.appID":
+		if e.complexity.AppPolicyView.AppID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.AppID(childComplexity), true
+
+	case "AppPolicyView.appPolicy":
+		if e.complexity.AppPolicyView.AppPolicy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.AppPolicy(childComplexity), true
+
+	case "AppPolicyView.appRoleAssigned":
+		if e.complexity.AppPolicyView.AppRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_AppPolicyView_appRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppPolicyView.AppRoleAssigned(childComplexity, args["appRoleID"].(int)), true
+
+	case "AppPolicyView.comments":
+		if e.complexity.AppPolicyView.Comments == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Comments(childComplexity), true
+
+	case "AppPolicyView.createdAt":
+		if e.complexity.AppPolicyView.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.CreatedAt(childComplexity), true
+
+	case "AppPolicyView.createdBy":
+		if e.complexity.AppPolicyView.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.CreatedBy(childComplexity), true
+
+	case "AppPolicyView.displaySort":
+		if e.complexity.AppPolicyView.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.DisplaySort(childComplexity), true
+
+	case "AppPolicyView.id":
+		if e.complexity.AppPolicyView.ID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.ID(childComplexity), true
+
+	case "AppPolicyView.kind":
+		if e.complexity.AppPolicyView.Kind == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Kind(childComplexity), true
+
+	case "AppPolicyView.name":
+		if e.complexity.AppPolicyView.Name == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Name(childComplexity), true
+
+	case "AppPolicyView.orgPolicy":
+		if e.complexity.AppPolicyView.OrgPolicy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.OrgPolicy(childComplexity), true
+
+	case "AppPolicyView.orgRoleAssigned":
+		if e.complexity.AppPolicyView.OrgRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_AppPolicyView_orgRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppPolicyView.OrgRoleAssigned(childComplexity, args["orgRoleID"].(int)), true
+
+	case "AppPolicyView.orgUserAssigned":
+		if e.complexity.AppPolicyView.OrgUserAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_AppPolicyView_orgUserAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppPolicyView.OrgUserAssigned(childComplexity, args["userID"].(int)), true
+
+	case "AppPolicyView.parentID":
+		if e.complexity.AppPolicyView.ParentID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.ParentID(childComplexity), true
+
+	case "AppPolicyView.policyID":
+		if e.complexity.AppPolicyView.PolicyID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.PolicyID(childComplexity), true
+
+	case "AppPolicyView.updatedAt":
+		if e.complexity.AppPolicyView.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.UpdatedAt(childComplexity), true
+
+	case "AppPolicyView.updatedBy":
+		if e.complexity.AppPolicyView.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.UpdatedBy(childComplexity), true
+
+	case "AppPolicyViewConnection.edges":
+		if e.complexity.AppPolicyViewConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.Edges(childComplexity), true
+
+	case "AppPolicyViewConnection.pageInfo":
+		if e.complexity.AppPolicyViewConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.PageInfo(childComplexity), true
+
+	case "AppPolicyViewConnection.totalCount":
+		if e.complexity.AppPolicyViewConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.TotalCount(childComplexity), true
+
+	case "AppPolicyViewEdge.cursor":
+		if e.complexity.AppPolicyViewEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewEdge.Cursor(childComplexity), true
+
+	case "AppPolicyViewEdge.node":
+		if e.complexity.AppPolicyViewEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewEdge.Node(childComplexity), true
 
 	case "AppRes.app":
 		if e.complexity.AppRes.App == nil {
@@ -2576,6 +2827,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AssignAppRolePolicy(childComplexity, args["appID"].(int), args["roleID"].(int), args["policyIDs"].([]int)), true
 
+	case "Mutation.assignAppRolePolicyView":
+		if e.complexity.Mutation.AssignAppRolePolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignAppRolePolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["appPolicyIDs"].([]int)), true
+
+	case "Mutation.assignOrgRolePolicyView":
+		if e.complexity.Mutation.AssignOrgRolePolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignOrgRolePolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["orgPolicyIDs"].([]int)), true
+
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
 			break
@@ -2623,6 +2898,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AssignRoleUser(childComplexity, args["input"].(model.AssignRoleUserInput)), true
+
+	case "Mutation.assignUserPolicyView":
+		if e.complexity.Mutation.AssignUserPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignUserPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["orgPolicyIDs"].([]int)), true
 
 	case "Mutation.autoGrantApp":
 		if e.complexity.Mutation.AutoGrantApp == nil {
@@ -2743,6 +3030,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppPolicyInput)), true
+
+	case "Mutation.createAppPolicyView":
+		if e.complexity.Mutation.CreateAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAppPolicyView(childComplexity, args["input"].(ent.CreateAppPolicyViewInput)), true
 
 	case "Mutation.createAppRole":
 		if e.complexity.Mutation.CreateAppRole == nil {
@@ -2995,6 +3294,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAppPolicy(childComplexity, args["policyID"].(int)), true
+
+	case "Mutation.deleteAppPolicyView":
+		if e.complexity.Mutation.DeleteAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppPolicyView(childComplexity, args["appPolicyViewID"].(int)), true
 
 	case "Mutation.deleteAppRole":
 		if e.complexity.Mutation.DeleteAppRole == nil {
@@ -3260,6 +3571,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MoveAppMenu(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
 
+	case "Mutation.moveAppPolicyView":
+		if e.complexity.Mutation.MoveAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveAppPolicyView(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
+
 	case "Mutation.moveCountry":
 		if e.complexity.Mutation.MoveCountry == nil {
 			break
@@ -3511,6 +3834,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppPolicy(childComplexity, args["policyID"].(int), args["input"].(ent.UpdateAppPolicyInput)), true
+
+	case "Mutation.updateAppPolicyView":
+		if e.complexity.Mutation.UpdateAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppPolicyView(childComplexity, args["appPolicyViewID"].(int), args["input"].(ent.UpdateAppPolicyViewInput)), true
 
 	case "Mutation.updateAppRes":
 		if e.complexity.Mutation.UpdateAppRes == nil {
@@ -4143,6 +4478,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgLogo.ThumbLogo(childComplexity), true
+
+	case "OrgPolicy.appPolicy":
+		if e.complexity.OrgPolicy.AppPolicy == nil {
+			break
+		}
+
+		return e.complexity.OrgPolicy.AppPolicy(childComplexity), true
 
 	case "OrgPolicy.appPolicyID":
 		if e.complexity.OrgPolicy.AppPolicyID == nil {
@@ -4805,6 +5147,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AppPolicyAssignedToOrgs(childComplexity, args["policyID"].(int), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.appPolicyView":
+		if e.complexity.Query.AppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppPolicyView(childComplexity, args["appCode"].(string)), true
+
 	case "Query.appResources":
 		if e.complexity.Query.AppResources == nil {
 			break
@@ -5020,6 +5374,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+
+	case "Query.orgPolicyView":
+		if e.complexity.Query.OrgPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyView(childComplexity, args["appCode"].(string)), true
 
 	case "Query.orgRecycleUsers":
 		if e.complexity.Query.OrgRecycleUsers == nil {
@@ -6368,6 +6734,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppMenuWhereInput,
 		ec.unmarshalInputAppOrder,
 		ec.unmarshalInputAppPolicyOrder,
+		ec.unmarshalInputAppPolicyViewOrder,
+		ec.unmarshalInputAppPolicyViewWhereInput,
 		ec.unmarshalInputAppPolicyWhereInput,
 		ec.unmarshalInputAppResOrder,
 		ec.unmarshalInputAppResWhereInput,
@@ -6385,6 +6753,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateAppInput,
 		ec.unmarshalInputCreateAppMenuInput,
 		ec.unmarshalInputCreateAppPolicyInput,
+		ec.unmarshalInputCreateAppPolicyViewInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
 		ec.unmarshalInputCreateCountryInput,
@@ -6445,6 +6814,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateAppInput,
 		ec.unmarshalInputUpdateAppMenuInput,
 		ec.unmarshalInputUpdateAppPolicyInput,
+		ec.unmarshalInputUpdateAppPolicyViewInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
 		ec.unmarshalInputUpdateCountryInput,
@@ -6732,6 +7102,10 @@ type App implements Node {
   策略
   """
   policies: [AppPolicy!]
+  """
+  策略视图
+  """
+  policyViews: [AppPolicyView!]
   orgs(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -7757,6 +8131,10 @@ type AppPolicy implements Node {
   """
   appID: ID
   """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind!
+  """
   策略名称
   """
   name: String!
@@ -7778,6 +8156,14 @@ type AppPolicy implements Node {
   status: AppPolicySimpleStatus
   app: App
   roles: [AppRole!]
+  """
+  策略授权的组织策略
+  """
+  orgPolicies: [OrgPolicy!]
+  """
+  策略视图
+  """
+  policyViews: [AppPolicyView!]
 }
 """
 A connection to a list of items.
@@ -7810,6 +8196,13 @@ type AppPolicyEdge {
   cursor: Cursor!
 }
 """
+AppPolicyKind is enum for the field kind
+"""
+enum AppPolicyKind @goModel(model: "github.com/woocoos/knockout/ent/apppolicy.Kind") {
+  app
+  view
+}
+"""
 Ordering options for AppPolicy connections
 """
 input AppPolicyOrder {
@@ -7836,6 +8229,227 @@ enum AppPolicySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/s
   inactive
   processing
   disabled
+}
+type AppPolicyView implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  所属应用
+  """
+  appID: ID
+  """
+  父级ID,0为顶级
+  """
+  parentID: Int!
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind!
+  """
+  名称
+  """
+  name: String!
+  """
+  描述
+  """
+  comments: String
+  """
+  关联的应用策略
+  """
+  policyID: ID
+  displaySort: Int
+  app: App
+  appPolicy: AppPolicy
+}
+"""
+A connection to a list of items.
+"""
+type AppPolicyViewConnection {
+  """
+  A list of edges.
+  """
+  edges: [AppPolicyViewEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type AppPolicyViewEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: AppPolicyView
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+AppPolicyViewKind is enum for the field kind
+"""
+enum AppPolicyViewKind @goModel(model: "github.com/woocoos/knockout/ent/apppolicyview.Kind") {
+  dir
+  policy
+}
+"""
+Ordering options for AppPolicyView connections
+"""
+input AppPolicyViewOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order AppPolicyViews.
+  """
+  field: AppPolicyViewOrderField!
+}
+"""
+Properties by which AppPolicyView connections can be ordered.
+"""
+enum AppPolicyViewOrderField {
+  createdAt
+  displaySort
+}
+"""
+AppPolicyViewWhereInput is used for filtering AppPolicyView objects.
+Input was generated by ent.
+"""
+input AppPolicyViewWhereInput {
+  not: AppPolicyViewWhereInput
+  and: [AppPolicyViewWhereInput!]
+  or: [AppPolicyViewWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  app_id field predicates
+  """
+  appID: ID
+  appIDNEQ: ID
+  appIDIn: [ID!]
+  appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
+  """
+  parent_id field predicates
+  """
+  parentID: Int
+  parentIDNEQ: Int
+  parentIDIn: [Int!]
+  parentIDNotIn: [Int!]
+  parentIDGT: Int
+  parentIDGTE: Int
+  parentIDLT: Int
+  parentIDLTE: Int
+  """
+  kind field predicates
+  """
+  kind: AppPolicyViewKind
+  kindNEQ: AppPolicyViewKind
+  kindIn: [AppPolicyViewKind!]
+  kindNotIn: [AppPolicyViewKind!]
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  policy_id field predicates
+  """
+  policyID: ID
+  policyIDNEQ: ID
+  policyIDIn: [ID!]
+  policyIDNotIn: [ID!]
+  policyIDIsNil: Boolean
+  policyIDNotNil: Boolean
+  """
+  app edge predicates
+  """
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
+  """
+  app_policy edge predicates
+  """
+  hasAppPolicy: Boolean
+  hasAppPolicyWith: [AppPolicyWhereInput!]
 }
 """
 AppPolicyWhereInput is used for filtering AppPolicy objects.
@@ -7914,6 +8528,13 @@ input AppPolicyWhereInput {
   appIDIsNil: Boolean
   appIDNotNil: Boolean
   """
+  kind field predicates
+  """
+  kind: AppPolicyKind
+  kindNEQ: AppPolicyKind
+  kindIn: [AppPolicyKind!]
+  kindNotIn: [AppPolicyKind!]
+  """
   name field predicates
   """
   name: String
@@ -7971,6 +8592,16 @@ input AppPolicyWhereInput {
   """
   hasRoles: Boolean
   hasRolesWith: [AppRoleWhereInput!]
+  """
+  org_policies edge predicates
+  """
+  hasOrgPolicies: Boolean
+  hasOrgPoliciesWith: [OrgPolicyWhereInput!]
+  """
+  policy_views edge predicates
+  """
+  hasPolicyViews: Boolean
+  hasPolicyViewsWith: [AppPolicyViewWhereInput!]
   """
   app_role_policy edge predicates
   """
@@ -8713,6 +9344,11 @@ input AppWhereInput {
   hasPolicies: Boolean
   hasPoliciesWith: [AppPolicyWhereInput!]
   """
+  policy_views edge predicates
+  """
+  hasPolicyViews: Boolean
+  hasPolicyViewsWith: [AppPolicyViewWhereInput!]
+  """
   orgs edge predicates
   """
   hasOrgs: Boolean
@@ -9070,6 +9706,7 @@ input CreateAppInput {
   resourceIDs: [ID!]
   roleIDs: [ID!]
   policyIDs: [ID!]
+  policyViewIDs: [ID!]
   dictIDs: [ID!]
 }
 """
@@ -9114,6 +9751,10 @@ Input was generated by ent.
 """
 input CreateAppPolicyInput {
   """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind!
+  """
   策略名称
   """
   name: String!
@@ -9135,6 +9776,32 @@ input CreateAppPolicyInput {
   status: AppPolicySimpleStatus
   appID: ID
   roleIDs: [ID!]
+  orgPolicyIDs: [ID!]
+  policyViewIDs: [ID!]
+}
+"""
+CreateAppPolicyViewInput is used for create AppPolicyView object.
+Input was generated by ent.
+"""
+input CreateAppPolicyViewInput {
+  """
+  父级ID,0为顶级
+  """
+  parentID: Int
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind!
+  """
+  名称
+  """
+  name: String!
+  """
+  描述
+  """
+  comments: String
+  appID: ID
+  appPolicyID: ID
 }
 """
 CreateAppResInput is used for create AppRes object.
@@ -9362,10 +10029,6 @@ Input was generated by ent.
 """
 input CreateOrgPolicyInput {
   """
-  所属应用策略,如果是自定义应用策略,则为空
-  """
-  appPolicyID: Int
-  """
   策略名称
   """
   name: String!
@@ -9379,6 +10042,7 @@ input CreateOrgPolicyInput {
   rules: [PolicyRuleInput]!
   orgID: ID
   permissionIDs: [ID!]
+  appPolicyID: ID
 }
 """
 CreateOrgRoleInput is used for create OrgRole object.
@@ -10895,7 +11559,7 @@ type OrgPolicy implements Node {
   """
   所属应用策略,如果是自定义应用策略,则为空
   """
-  appPolicyID: Int
+  appPolicyID: ID
   """
   策略名称
   """
@@ -10910,6 +11574,7 @@ type OrgPolicy implements Node {
   rules: [PolicyRule]!
   org: Org
   permissions: [Permission!]
+  appPolicy: AppPolicy
 }
 """
 A connection to a list of items.
@@ -11039,14 +11704,10 @@ input OrgPolicyWhereInput {
   """
   app_policy_id field predicates
   """
-  appPolicyID: Int
-  appPolicyIDNEQ: Int
-  appPolicyIDIn: [Int!]
-  appPolicyIDNotIn: [Int!]
-  appPolicyIDGT: Int
-  appPolicyIDGTE: Int
-  appPolicyIDLT: Int
-  appPolicyIDLTE: Int
+  appPolicyID: ID
+  appPolicyIDNEQ: ID
+  appPolicyIDIn: [ID!]
+  appPolicyIDNotIn: [ID!]
   appPolicyIDIsNil: Boolean
   appPolicyIDNotNil: Boolean
   """
@@ -11093,6 +11754,11 @@ input OrgPolicyWhereInput {
   """
   hasPermissions: Boolean
   hasPermissionsWith: [PermissionWhereInput!]
+  """
+  app_policy edge predicates
+  """
+  hasAppPolicy: Boolean
+  hasAppPolicyWith: [AppPolicyWhereInput!]
 }
 type OrgRole implements Node {
   id: ID!
@@ -13543,6 +14209,9 @@ input UpdateAppInput {
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
+  addPolicyViewIDs: [ID!]
+  removePolicyViewIDs: [ID!]
+  clearPolicyViews: Boolean
   addDictIDs: [ID!]
   removeDictIDs: [ID!]
   clearDicts: Boolean
@@ -13593,6 +14262,10 @@ Input was generated by ent.
 """
 input UpdateAppPolicyInput {
   """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind
+  """
   策略名称
   """
   name: String
@@ -13618,6 +14291,37 @@ input UpdateAppPolicyInput {
   addRoleIDs: [ID!]
   removeRoleIDs: [ID!]
   clearRoles: Boolean
+  addOrgPolicyIDs: [ID!]
+  removeOrgPolicyIDs: [ID!]
+  clearOrgPolicies: Boolean
+  addPolicyViewIDs: [ID!]
+  removePolicyViewIDs: [ID!]
+  clearPolicyViews: Boolean
+}
+"""
+UpdateAppPolicyViewInput is used for update AppPolicyView object.
+Input was generated by ent.
+"""
+input UpdateAppPolicyViewInput {
+  """
+  父级ID,0为顶级
+  """
+  parentID: Int
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind
+  """
+  名称
+  """
+  name: String
+  """
+  描述
+  """
+  comments: String
+  clearComments: Boolean
+  appPolicyID: ID
+  clearAppPolicy: Boolean
 }
 """
 UpdateAppResInput is used for update AppRes object.
@@ -13869,11 +14573,6 @@ Input was generated by ent.
 """
 input UpdateOrgPolicyInput {
   """
-  所属应用策略,如果是自定义应用策略,则为空
-  """
-  appPolicyID: Int
-  clearAppPolicyID: Boolean
-  """
   策略名称
   """
   name: String
@@ -13890,6 +14589,8 @@ input UpdateOrgPolicyInput {
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean
+  appPolicyID: ID
+  clearAppPolicy: Boolean
 }
 """
 UpdateOrgRoleInput is used for update OrgRole object.
@@ -16044,6 +16745,24 @@ input UserWhereInput {
     deleteCurrency(currencyID:ID!): Boolean!
     """自动授权应用，系统开户、创建web交易用户使用"""
     autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
+    """创建策略视图"""
+    createAppPolicyView(input: CreateAppPolicyViewInput!): AppPolicyView!
+    """更新策略视图"""
+    updateAppPolicyView(appPolicyViewID: ID!,input: UpdateAppPolicyViewInput!): AppPolicyView!
+    """删除策略视图"""
+    deleteAppPolicyView(appPolicyViewID: ID!): Boolean!
+    """移动策略视图"""
+    moveAppPolicyView(
+        sourceID: ID!,
+        targetID: ID!,
+        action: TreeAction!
+    ): Boolean!
+    """应用角色添加策略视图权限"""
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!]!): Boolean!
+    """组织用户添加策略视图权限"""
+    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!]!): Boolean!
+    """组织角色添加策略视图权限"""
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!]!): Boolean!
     # 创建配额项
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     # 更新配额项
@@ -16204,6 +16923,10 @@ input UserWhereInput {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """应用策略视图"""
+    appPolicyView(appCode: String!): [AppPolicyView!]!
+    """登录用户策略视图"""
+    orgPolicyView(appCode: String!): [AppPolicyView!]!
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""
@@ -16392,6 +17115,17 @@ input OrgLogoInput {
     logo: String
     thumbLogo: String
     favicon: String
+}
+
+extend type AppPolicyView {
+    """关联的组织策略,取当前登录组织的ID判断,用于组织策略视图授权使用"""
+    orgPolicy: OrgPolicy
+    """应用角色是否授权"""
+    appRoleAssigned(appRoleID: ID!): Boolean!
+    """组织角色/用户组是否授权"""
+    orgRoleAssigned(orgRoleID: ID!): Boolean!
+    """组织用户是否授权"""
+    orgUserAssigned(userID: ID!): Boolean!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

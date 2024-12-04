@@ -186,3 +186,14 @@ input OrgLogoInput {
     thumbLogo: String
     favicon: String
 }
+
+extend type AppPolicyView {
+    """关联的组织策略,取当前登录组织的ID判断,用于组织策略视图授权使用"""
+    orgPolicy: OrgPolicy
+    """应用角色是否授权"""
+    appRoleAssigned(appRoleID: ID!): Boolean!
+    """组织角色/用户组是否授权"""
+    orgRoleAssigned(orgRoleID: ID!): Boolean!
+    """组织用户是否授权"""
+    orgUserAssigned(userID: ID!): Boolean!
+}

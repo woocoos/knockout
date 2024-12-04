@@ -24,6 +24,9 @@ type AppMenu func(*sql.Selector)
 // AppPolicy is the predicate function for apppolicy builders.
 type AppPolicy func(*sql.Selector)
 
+// AppPolicyView is the predicate function for apppolicyview builders.
+type AppPolicyView func(*sql.Selector)
+
 // AppRes is the predicate function for appres builders.
 type AppRes func(*sql.Selector)
 

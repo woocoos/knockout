@@ -81,6 +81,18 @@ func (f AppPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPolicyMutation", m)
 }
 
+// The AppPolicyViewFunc type is an adapter to allow the use of ordinary
+// function as AppPolicyView mutator.
+type AppPolicyViewFunc func(context.Context, *ent.AppPolicyViewMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppPolicyViewFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppPolicyViewMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPolicyViewMutation", m)
+}
+
 // The AppResFunc type is an adapter to allow the use of ordinary
 // function as AppRes mutator.
 type AppResFunc func(context.Context, *ent.AppResMutation) (ent.Value, error)

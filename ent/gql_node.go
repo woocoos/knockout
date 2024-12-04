@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/country"
@@ -79,6 +80,11 @@ var apppolicyImplementors = []string{"AppPolicy", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*AppPolicy) IsNode() {}
+
+var apppolicyviewImplementors = []string{"AppPolicyView", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*AppPolicyView) IsNode() {}
 
 var appresImplementors = []string{"AppRes", "Node"}
 
@@ -297,6 +303,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, apppolicy.Table, id))
+	case apppolicyview.Table:
+		query := c.AppPolicyView.Query().
+			Where(apppolicyview.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, apppolicyviewImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, apppolicyview.Table, id))
 	case appres.Table:
 		query := c.AppRes.Query().
 			Where(appres.ID(id))
@@ -643,6 +658,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.AppPolicy.Query().
 			Where(apppolicy.IDIn(ids...))
 		query, err := query.CollectFields(ctx, apppolicyImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case apppolicyview.Table:
+		query := c.AppPolicyView.Query().
+			Where(apppolicyview.IDIn(ids...))
+		query, err := query.CollectFields(ctx, apppolicyviewImplementors...)
 		if err != nil {
 			return nil, err
 		}

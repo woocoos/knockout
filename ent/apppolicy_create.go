@@ -15,8 +15,10 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 )
 
 // AppPolicyCreate is the builder for creating a AppPolicy entity.
@@ -86,6 +88,12 @@ func (apc *AppPolicyCreate) SetNillableAppID(i *int) *AppPolicyCreate {
 	if i != nil {
 		apc.SetAppID(*i)
 	}
+	return apc
+}
+
+// SetKind sets the "kind" field.
+func (apc *AppPolicyCreate) SetKind(a apppolicy.Kind) *AppPolicyCreate {
+	apc.mutation.SetKind(a)
 	return apc
 }
 
@@ -191,6 +199,36 @@ func (apc *AppPolicyCreate) AddRoles(a ...*AppRole) *AppPolicyCreate {
 	return apc.AddRoleIDs(ids...)
 }
 
+// AddOrgPolicyIDs adds the "org_policies" edge to the OrgPolicy entity by IDs.
+func (apc *AppPolicyCreate) AddOrgPolicyIDs(ids ...int) *AppPolicyCreate {
+	apc.mutation.AddOrgPolicyIDs(ids...)
+	return apc
+}
+
+// AddOrgPolicies adds the "org_policies" edges to the OrgPolicy entity.
+func (apc *AppPolicyCreate) AddOrgPolicies(o ...*OrgPolicy) *AppPolicyCreate {
+	ids := make([]int, len(o))
+	for i := range o {
+		ids[i] = o[i].ID
+	}
+	return apc.AddOrgPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (apc *AppPolicyCreate) AddPolicyViewIDs(ids ...int) *AppPolicyCreate {
+	apc.mutation.AddPolicyViewIDs(ids...)
+	return apc
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (apc *AppPolicyCreate) AddPolicyViews(a ...*AppPolicyView) *AppPolicyCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apc.AddPolicyViewIDs(ids...)
+}
+
 // AddAppRolePolicyIDs adds the "app_role_policy" edge to the AppRolePolicy entity by IDs.
 func (apc *AppPolicyCreate) AddAppRolePolicyIDs(ids ...int) *AppPolicyCreate {
 	apc.mutation.AddAppRolePolicyIDs(ids...)
@@ -280,6 +318,14 @@ func (apc *AppPolicyCreate) check() error {
 	if _, ok := apc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppPolicy.created_at"`)}
 	}
+	if _, ok := apc.mutation.Kind(); !ok {
+		return &ValidationError{Name: "kind", err: errors.New(`ent: missing required field "AppPolicy.kind"`)}
+	}
+	if v, ok := apc.mutation.Kind(); ok {
+		if err := apppolicy.KindValidator(v); err != nil {
+			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicy.kind": %w`, err)}
+		}
+	}
 	if _, ok := apc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppPolicy.name"`)}
 	}
@@ -346,6 +392,10 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		_spec.SetField(apppolicy.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := apc.mutation.Kind(); ok {
+		_spec.SetField(apppolicy.FieldKind, field.TypeEnum, value)
+		_node.Kind = value
+	}
 	if value, ok := apc.mutation.Name(); ok {
 		_spec.SetField(apppolicy.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -405,6 +455,38 @@ func (apc *AppPolicyCreate) createSpec() (*AppPolicy, *sqlgraph.CreateSpec) {
 		_ = createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apc.mutation.OrgPoliciesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.OrgPoliciesTable,
+			Columns: []string{apppolicy.OrgPoliciesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(orgpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apc.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicy.PolicyViewsTable,
+			Columns: []string{apppolicy.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := apc.mutation.AppRolePolicyIDs(); len(nodes) > 0 {
@@ -514,6 +596,18 @@ func (u *AppPolicyUpsert) UpdateUpdatedAt() *AppPolicyUpsert {
 // ClearUpdatedAt clears the value of the "updated_at" field.
 func (u *AppPolicyUpsert) ClearUpdatedAt() *AppPolicyUpsert {
 	u.SetNull(apppolicy.FieldUpdatedAt)
+	return u
+}
+
+// SetKind sets the "kind" field.
+func (u *AppPolicyUpsert) SetKind(v apppolicy.Kind) *AppPolicyUpsert {
+	u.Set(apppolicy.FieldKind, v)
+	return u
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppPolicyUpsert) UpdateKind() *AppPolicyUpsert {
+	u.SetExcluded(apppolicy.FieldKind)
 	return u
 }
 
@@ -704,6 +798,20 @@ func (u *AppPolicyUpsertOne) UpdateUpdatedAt() *AppPolicyUpsertOne {
 func (u *AppPolicyUpsertOne) ClearUpdatedAt() *AppPolicyUpsertOne {
 	return u.Update(func(s *AppPolicyUpsert) {
 		s.ClearUpdatedAt()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppPolicyUpsertOne) SetKind(v apppolicy.Kind) *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppPolicyUpsertOne) UpdateKind() *AppPolicyUpsertOne {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateKind()
 	})
 }
 
@@ -1074,6 +1182,20 @@ func (u *AppPolicyUpsertBulk) UpdateUpdatedAt() *AppPolicyUpsertBulk {
 func (u *AppPolicyUpsertBulk) ClearUpdatedAt() *AppPolicyUpsertBulk {
 	return u.Update(func(s *AppPolicyUpsert) {
 		s.ClearUpdatedAt()
+	})
+}
+
+// SetKind sets the "kind" field.
+func (u *AppPolicyUpsertBulk) SetKind(v apppolicy.Kind) *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.SetKind(v)
+	})
+}
+
+// UpdateKind sets the "kind" field to the value that was provided on create.
+func (u *AppPolicyUpsertBulk) UpdateKind() *AppPolicyUpsertBulk {
+	return u.Update(func(s *AppPolicyUpsert) {
+		s.UpdateKind()
 	})
 }
 

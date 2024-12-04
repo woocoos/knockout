@@ -4,6 +4,8 @@ package apppolicy
 
 import (
 	"fmt"
+	"io"
+	"strconv"
 	"time"
 
 	"entgo.io/ent"
@@ -28,6 +30,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldAppID holds the string denoting the app_id field in the database.
 	FieldAppID = "app_id"
+	// FieldKind holds the string denoting the kind field in the database.
+	FieldKind = "kind"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldComments holds the string denoting the comments field in the database.
@@ -44,6 +48,10 @@ const (
 	EdgeApp = "app"
 	// EdgeRoles holds the string denoting the roles edge name in mutations.
 	EdgeRoles = "roles"
+	// EdgeOrgPolicies holds the string denoting the org_policies edge name in mutations.
+	EdgeOrgPolicies = "org_policies"
+	// EdgePolicyViews holds the string denoting the policy_views edge name in mutations.
+	EdgePolicyViews = "policy_views"
 	// EdgeAppRolePolicy holds the string denoting the app_role_policy edge name in mutations.
 	EdgeAppRolePolicy = "app_role_policy"
 	// Table holds the table name of the apppolicy in the database.
@@ -60,6 +68,20 @@ const (
 	// RolesInverseTable is the table name for the AppRole entity.
 	// It exists in this package in order to avoid circular dependency with the "approle" package.
 	RolesInverseTable = "app_role"
+	// OrgPoliciesTable is the table that holds the org_policies relation/edge.
+	OrgPoliciesTable = "org_policy"
+	// OrgPoliciesInverseTable is the table name for the OrgPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "orgpolicy" package.
+	OrgPoliciesInverseTable = "org_policy"
+	// OrgPoliciesColumn is the table column denoting the org_policies relation/edge.
+	OrgPoliciesColumn = "app_policy_id"
+	// PolicyViewsTable is the table that holds the policy_views relation/edge.
+	PolicyViewsTable = "app_policy_view"
+	// PolicyViewsInverseTable is the table name for the AppPolicyView entity.
+	// It exists in this package in order to avoid circular dependency with the "apppolicyview" package.
+	PolicyViewsInverseTable = "app_policy_view"
+	// PolicyViewsColumn is the table column denoting the policy_views relation/edge.
+	PolicyViewsColumn = "policy_id"
 	// AppRolePolicyTable is the table that holds the app_role_policy relation/edge.
 	AppRolePolicyTable = "app_role_policy"
 	// AppRolePolicyInverseTable is the table name for the AppRolePolicy entity.
@@ -77,6 +99,7 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldUpdatedAt,
 	FieldAppID,
+	FieldKind,
 	FieldName,
 	FieldComments,
 	FieldRules,
@@ -117,6 +140,29 @@ var (
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() int
 )
+
+// Kind defines the type for the "kind" enum field.
+type Kind string
+
+// Kind values.
+const (
+	KindApp  Kind = "app"
+	KindView Kind = "view"
+)
+
+func (k Kind) String() string {
+	return string(k)
+}
+
+// KindValidator is a validator for the "kind" field enum values. It is called by the builders before save.
+func KindValidator(k Kind) error {
+	switch k {
+	case KindApp, KindView:
+		return nil
+	default:
+		return fmt.Errorf("apppolicy: invalid enum value for kind field: %q", k)
+	}
+}
 
 const DefaultStatus typex.SimpleStatus = "active"
 
@@ -161,6 +207,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByAppID orders the results by the app_id field.
 func ByAppID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppID, opts...).ToFunc()
+}
+
+// ByKind orders the results by the kind field.
+func ByKind(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldKind, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
@@ -209,6 +260,34 @@ func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByOrgPoliciesCount orders the results by org_policies count.
+func ByOrgPoliciesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgPoliciesStep(), opts...)
+	}
+}
+
+// ByOrgPolicies orders the results by org_policies terms.
+func ByOrgPolicies(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgPoliciesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPolicyViewsCount orders the results by policy_views count.
+func ByPolicyViewsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPolicyViewsStep(), opts...)
+	}
+}
+
+// ByPolicyViews orders the results by policy_views terms.
+func ByPolicyViews(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPolicyViewsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByAppRolePolicyCount orders the results by app_role_policy count.
 func ByAppRolePolicyCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -236,12 +315,44 @@ func newRolesStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
 	)
 }
+func newOrgPoliciesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgPoliciesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, OrgPoliciesTable, OrgPoliciesColumn),
+	)
+}
+func newPolicyViewsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PolicyViewsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PolicyViewsTable, PolicyViewsColumn),
+	)
+}
 func newAppRolePolicyStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppRolePolicyInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, AppRolePolicyTable, AppRolePolicyColumn),
 	)
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e Kind) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *Kind) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = Kind(str)
+	if err := KindValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid Kind", str)
+	}
+	return nil
 }
 
 var (

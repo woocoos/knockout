@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
@@ -107,7 +108,6 @@ func (opu *OrgPolicyUpdate) ClearAppID() *OrgPolicyUpdate {
 
 // SetAppPolicyID sets the "app_policy_id" field.
 func (opu *OrgPolicyUpdate) SetAppPolicyID(i int) *OrgPolicyUpdate {
-	opu.mutation.ResetAppPolicyID()
 	opu.mutation.SetAppPolicyID(i)
 	return opu
 }
@@ -117,12 +117,6 @@ func (opu *OrgPolicyUpdate) SetNillableAppPolicyID(i *int) *OrgPolicyUpdate {
 	if i != nil {
 		opu.SetAppPolicyID(*i)
 	}
-	return opu
-}
-
-// AddAppPolicyID adds i to the "app_policy_id" field.
-func (opu *OrgPolicyUpdate) AddAppPolicyID(i int) *OrgPolicyUpdate {
-	opu.mutation.AddAppPolicyID(i)
 	return opu
 }
 
@@ -193,6 +187,11 @@ func (opu *OrgPolicyUpdate) AddPermissions(p ...*Permission) *OrgPolicyUpdate {
 	return opu.AddPermissionIDs(ids...)
 }
 
+// SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
+func (opu *OrgPolicyUpdate) SetAppPolicy(a *AppPolicy) *OrgPolicyUpdate {
+	return opu.SetAppPolicyID(a.ID)
+}
+
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opu *OrgPolicyUpdate) Mutation() *OrgPolicyMutation {
 	return opu.mutation
@@ -217,6 +216,12 @@ func (opu *OrgPolicyUpdate) RemovePermissions(p ...*Permission) *OrgPolicyUpdate
 		ids[i] = p[i].ID
 	}
 	return opu.RemovePermissionIDs(ids...)
+}
+
+// ClearAppPolicy clears the "app_policy" edge to the AppPolicy entity.
+func (opu *OrgPolicyUpdate) ClearAppPolicy() *OrgPolicyUpdate {
+	opu.mutation.ClearAppPolicy()
+	return opu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -279,15 +284,6 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if opu.mutation.AppIDCleared() {
 		_spec.ClearField(orgpolicy.FieldAppID, field.TypeInt)
 	}
-	if value, ok := opu.mutation.AppPolicyID(); ok {
-		_spec.SetField(orgpolicy.FieldAppPolicyID, field.TypeInt, value)
-	}
-	if value, ok := opu.mutation.AddedAppPolicyID(); ok {
-		_spec.AddField(orgpolicy.FieldAppPolicyID, field.TypeInt, value)
-	}
-	if opu.mutation.AppPolicyIDCleared() {
-		_spec.ClearField(orgpolicy.FieldAppPolicyID, field.TypeInt)
-	}
 	if value, ok := opu.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 	}
@@ -343,6 +339,35 @@ func (opu *OrgPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if opu.mutation.AppPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orgpolicy.AppPolicyTable,
+			Columns: []string{orgpolicy.AppPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opu.mutation.AppPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orgpolicy.AppPolicyTable,
+			Columns: []string{orgpolicy.AppPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -446,7 +471,6 @@ func (opuo *OrgPolicyUpdateOne) ClearAppID() *OrgPolicyUpdateOne {
 
 // SetAppPolicyID sets the "app_policy_id" field.
 func (opuo *OrgPolicyUpdateOne) SetAppPolicyID(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.ResetAppPolicyID()
 	opuo.mutation.SetAppPolicyID(i)
 	return opuo
 }
@@ -456,12 +480,6 @@ func (opuo *OrgPolicyUpdateOne) SetNillableAppPolicyID(i *int) *OrgPolicyUpdateO
 	if i != nil {
 		opuo.SetAppPolicyID(*i)
 	}
-	return opuo
-}
-
-// AddAppPolicyID adds i to the "app_policy_id" field.
-func (opuo *OrgPolicyUpdateOne) AddAppPolicyID(i int) *OrgPolicyUpdateOne {
-	opuo.mutation.AddAppPolicyID(i)
 	return opuo
 }
 
@@ -532,6 +550,11 @@ func (opuo *OrgPolicyUpdateOne) AddPermissions(p ...*Permission) *OrgPolicyUpdat
 	return opuo.AddPermissionIDs(ids...)
 }
 
+// SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
+func (opuo *OrgPolicyUpdateOne) SetAppPolicy(a *AppPolicy) *OrgPolicyUpdateOne {
+	return opuo.SetAppPolicyID(a.ID)
+}
+
 // Mutation returns the OrgPolicyMutation object of the builder.
 func (opuo *OrgPolicyUpdateOne) Mutation() *OrgPolicyMutation {
 	return opuo.mutation
@@ -556,6 +579,12 @@ func (opuo *OrgPolicyUpdateOne) RemovePermissions(p ...*Permission) *OrgPolicyUp
 		ids[i] = p[i].ID
 	}
 	return opuo.RemovePermissionIDs(ids...)
+}
+
+// ClearAppPolicy clears the "app_policy" edge to the AppPolicy entity.
+func (opuo *OrgPolicyUpdateOne) ClearAppPolicy() *OrgPolicyUpdateOne {
+	opuo.mutation.ClearAppPolicy()
+	return opuo
 }
 
 // Where appends a list predicates to the OrgPolicyUpdate builder.
@@ -648,15 +677,6 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 	if opuo.mutation.AppIDCleared() {
 		_spec.ClearField(orgpolicy.FieldAppID, field.TypeInt)
 	}
-	if value, ok := opuo.mutation.AppPolicyID(); ok {
-		_spec.SetField(orgpolicy.FieldAppPolicyID, field.TypeInt, value)
-	}
-	if value, ok := opuo.mutation.AddedAppPolicyID(); ok {
-		_spec.AddField(orgpolicy.FieldAppPolicyID, field.TypeInt, value)
-	}
-	if opuo.mutation.AppPolicyIDCleared() {
-		_spec.ClearField(orgpolicy.FieldAppPolicyID, field.TypeInt)
-	}
 	if value, ok := opuo.mutation.Name(); ok {
 		_spec.SetField(orgpolicy.FieldName, field.TypeString, value)
 	}
@@ -712,6 +732,35 @@ func (opuo *OrgPolicyUpdateOne) sqlSave(ctx context.Context) (_node *OrgPolicy, 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(permission.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if opuo.mutation.AppPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orgpolicy.AppPolicyTable,
+			Columns: []string{orgpolicy.AppPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := opuo.mutation.AppPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   orgpolicy.AppPolicyTable,
+			Columns: []string{orgpolicy.AppPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

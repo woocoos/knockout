@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
@@ -258,6 +259,33 @@ func (f TraverseAppPolicy) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyQuery", q)
+}
+
+// The AppPolicyViewFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AppPolicyViewFunc func(context.Context, *ent.AppPolicyViewQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AppPolicyViewFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AppPolicyViewQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyViewQuery", q)
+}
+
+// The TraverseAppPolicyView type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAppPolicyView func(context.Context, *ent.AppPolicyViewQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAppPolicyView) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAppPolicyView) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AppPolicyViewQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyViewQuery", q)
 }
 
 // The AppResFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -950,6 +978,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.OrderOption]{typ: ent.TypeAppMenu, tq: q}, nil
 	case *ent.AppPolicyQuery:
 		return &query[*ent.AppPolicyQuery, predicate.AppPolicy, apppolicy.OrderOption]{typ: ent.TypeAppPolicy, tq: q}, nil
+	case *ent.AppPolicyViewQuery:
+		return &query[*ent.AppPolicyViewQuery, predicate.AppPolicyView, apppolicyview.OrderOption]{typ: ent.TypeAppPolicyView, tq: q}, nil
 	case *ent.AppResQuery:
 		return &query[*ent.AppResQuery, predicate.AppRes, appres.OrderOption]{typ: ent.TypeAppRes, tq: q}, nil
 	case *ent.AppRoleQuery:
