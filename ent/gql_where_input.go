@@ -11362,11 +11362,25 @@ type QuotaWhereInput struct {
 	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
 	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
 
-	// "org_id" field predicates.
-	OrgID      *int  `json:"orgID,omitempty"`
-	OrgIDNEQ   *int  `json:"orgIDNEQ,omitempty"`
-	OrgIDIn    []int `json:"orgIDIn,omitempty"`
-	OrgIDNotIn []int `json:"orgIDNotIn,omitempty"`
+	// "tenant_id" field predicates.
+	TenantID      *int  `json:"tenantID,omitempty"`
+	TenantIDNEQ   *int  `json:"tenantIDNEQ,omitempty"`
+	TenantIDIn    []int `json:"tenantIDIn,omitempty"`
+	TenantIDNotIn []int `json:"tenantIDNotIn,omitempty"`
+	TenantIDGT    *int  `json:"tenantIDGT,omitempty"`
+	TenantIDGTE   *int  `json:"tenantIDGTE,omitempty"`
+	TenantIDLT    *int  `json:"tenantIDLT,omitempty"`
+	TenantIDLTE   *int  `json:"tenantIDLTE,omitempty"`
+
+	// "user_id" field predicates.
+	UserID      *int  `json:"userID,omitempty"`
+	UserIDNEQ   *int  `json:"userIDNEQ,omitempty"`
+	UserIDIn    []int `json:"userIDIn,omitempty"`
+	UserIDNotIn []int `json:"userIDNotIn,omitempty"`
+	UserIDGT    *int  `json:"userIDGT,omitempty"`
+	UserIDGTE   *int  `json:"userIDGTE,omitempty"`
+	UserIDLT    *int  `json:"userIDLT,omitempty"`
+	UserIDLTE   *int  `json:"userIDLTE,omitempty"`
 
 	// "quota_item_id" field predicates.
 	QuotaItemID      *int  `json:"quotaItemID,omitempty"`
@@ -11397,10 +11411,6 @@ type QuotaWhereInput struct {
 	EndAtLTE    *time.Time  `json:"endAtLTE,omitempty"`
 	EndAtIsNil  bool        `json:"endAtIsNil,omitempty"`
 	EndAtNotNil bool        `json:"endAtNotNil,omitempty"`
-
-	// "org" edge predicates.
-	HasOrg     *bool            `json:"hasOrg,omitempty"`
-	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
 
 	// "quota_item" edge predicates.
 	HasQuotaItem     *bool                  `json:"hasQuotaItem,omitempty"`
@@ -11610,17 +11620,53 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 	if i.UpdatedAtNotNil {
 		predicates = append(predicates, quota.UpdatedAtNotNil())
 	}
-	if i.OrgID != nil {
-		predicates = append(predicates, quota.OrgIDEQ(*i.OrgID))
+	if i.TenantID != nil {
+		predicates = append(predicates, quota.TenantIDEQ(*i.TenantID))
 	}
-	if i.OrgIDNEQ != nil {
-		predicates = append(predicates, quota.OrgIDNEQ(*i.OrgIDNEQ))
+	if i.TenantIDNEQ != nil {
+		predicates = append(predicates, quota.TenantIDNEQ(*i.TenantIDNEQ))
 	}
-	if len(i.OrgIDIn) > 0 {
-		predicates = append(predicates, quota.OrgIDIn(i.OrgIDIn...))
+	if len(i.TenantIDIn) > 0 {
+		predicates = append(predicates, quota.TenantIDIn(i.TenantIDIn...))
 	}
-	if len(i.OrgIDNotIn) > 0 {
-		predicates = append(predicates, quota.OrgIDNotIn(i.OrgIDNotIn...))
+	if len(i.TenantIDNotIn) > 0 {
+		predicates = append(predicates, quota.TenantIDNotIn(i.TenantIDNotIn...))
+	}
+	if i.TenantIDGT != nil {
+		predicates = append(predicates, quota.TenantIDGT(*i.TenantIDGT))
+	}
+	if i.TenantIDGTE != nil {
+		predicates = append(predicates, quota.TenantIDGTE(*i.TenantIDGTE))
+	}
+	if i.TenantIDLT != nil {
+		predicates = append(predicates, quota.TenantIDLT(*i.TenantIDLT))
+	}
+	if i.TenantIDLTE != nil {
+		predicates = append(predicates, quota.TenantIDLTE(*i.TenantIDLTE))
+	}
+	if i.UserID != nil {
+		predicates = append(predicates, quota.UserIDEQ(*i.UserID))
+	}
+	if i.UserIDNEQ != nil {
+		predicates = append(predicates, quota.UserIDNEQ(*i.UserIDNEQ))
+	}
+	if len(i.UserIDIn) > 0 {
+		predicates = append(predicates, quota.UserIDIn(i.UserIDIn...))
+	}
+	if len(i.UserIDNotIn) > 0 {
+		predicates = append(predicates, quota.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.UserIDGT != nil {
+		predicates = append(predicates, quota.UserIDGT(*i.UserIDGT))
+	}
+	if i.UserIDGTE != nil {
+		predicates = append(predicates, quota.UserIDGTE(*i.UserIDGTE))
+	}
+	if i.UserIDLT != nil {
+		predicates = append(predicates, quota.UserIDLT(*i.UserIDLT))
+	}
+	if i.UserIDLTE != nil {
+		predicates = append(predicates, quota.UserIDLTE(*i.UserIDLTE))
 	}
 	if i.QuotaItemID != nil {
 		predicates = append(predicates, quota.QuotaItemIDEQ(*i.QuotaItemID))
@@ -11695,24 +11741,6 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 		predicates = append(predicates, quota.EndAtNotNil())
 	}
 
-	if i.HasOrg != nil {
-		p := quota.HasOrg()
-		if !*i.HasOrg {
-			p = quota.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasOrgWith) > 0 {
-		with := make([]predicate.Org, 0, len(i.HasOrgWith))
-		for _, w := range i.HasOrgWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, quota.HasOrgWith(with...))
-	}
 	if i.HasQuotaItem != nil {
 		p := quota.HasQuotaItem()
 		if !*i.HasQuotaItem {
@@ -11841,6 +11869,18 @@ type QuotaItemWhereInput struct {
 	// "active" field predicates.
 	Active    *bool `json:"active,omitempty"`
 	ActiveNEQ *bool `json:"activeNEQ,omitempty"`
+
+	// "default_limit" field predicates.
+	DefaultLimit       *int64  `json:"defaultLimit,omitempty"`
+	DefaultLimitNEQ    *int64  `json:"defaultLimitNEQ,omitempty"`
+	DefaultLimitIn     []int64 `json:"defaultLimitIn,omitempty"`
+	DefaultLimitNotIn  []int64 `json:"defaultLimitNotIn,omitempty"`
+	DefaultLimitGT     *int64  `json:"defaultLimitGT,omitempty"`
+	DefaultLimitGTE    *int64  `json:"defaultLimitGTE,omitempty"`
+	DefaultLimitLT     *int64  `json:"defaultLimitLT,omitempty"`
+	DefaultLimitLTE    *int64  `json:"defaultLimitLTE,omitempty"`
+	DefaultLimitIsNil  bool    `json:"defaultLimitIsNil,omitempty"`
+	DefaultLimitNotNil bool    `json:"defaultLimitNotNil,omitempty"`
 
 	// "quota" edge predicates.
 	HasQuota     *bool              `json:"hasQuota,omitempty"`
@@ -12145,6 +12185,36 @@ func (i *QuotaItemWhereInput) P() (predicate.QuotaItem, error) {
 	}
 	if i.ActiveNEQ != nil {
 		predicates = append(predicates, quotaitem.ActiveNEQ(*i.ActiveNEQ))
+	}
+	if i.DefaultLimit != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitEQ(*i.DefaultLimit))
+	}
+	if i.DefaultLimitNEQ != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitNEQ(*i.DefaultLimitNEQ))
+	}
+	if len(i.DefaultLimitIn) > 0 {
+		predicates = append(predicates, quotaitem.DefaultLimitIn(i.DefaultLimitIn...))
+	}
+	if len(i.DefaultLimitNotIn) > 0 {
+		predicates = append(predicates, quotaitem.DefaultLimitNotIn(i.DefaultLimitNotIn...))
+	}
+	if i.DefaultLimitGT != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitGT(*i.DefaultLimitGT))
+	}
+	if i.DefaultLimitGTE != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitGTE(*i.DefaultLimitGTE))
+	}
+	if i.DefaultLimitLT != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitLT(*i.DefaultLimitLT))
+	}
+	if i.DefaultLimitLTE != nil {
+		predicates = append(predicates, quotaitem.DefaultLimitLTE(*i.DefaultLimitLTE))
+	}
+	if i.DefaultLimitIsNil {
+		predicates = append(predicates, quotaitem.DefaultLimitIsNil())
+	}
+	if i.DefaultLimitNotNil {
+		predicates = append(predicates, quotaitem.DefaultLimitNotNil())
 	}
 
 	if i.HasQuota != nil {

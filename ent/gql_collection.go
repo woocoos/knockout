@@ -3761,20 +3761,6 @@ func (q *QuotaQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-		case "org":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&OrgClient{config: q.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
-				return err
-			}
-			q.withOrg = query
-			if _, ok := fieldSeen[quota.FieldOrgID]; !ok {
-				selectedFields = append(selectedFields, quota.FieldOrgID)
-				fieldSeen[quota.FieldOrgID] = struct{}{}
-			}
 		case "quotaItem":
 			var (
 				alias = field.Alias
@@ -3809,10 +3795,15 @@ func (q *QuotaQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				selectedFields = append(selectedFields, quota.FieldUpdatedAt)
 				fieldSeen[quota.FieldUpdatedAt] = struct{}{}
 			}
-		case "orgID":
-			if _, ok := fieldSeen[quota.FieldOrgID]; !ok {
-				selectedFields = append(selectedFields, quota.FieldOrgID)
-				fieldSeen[quota.FieldOrgID] = struct{}{}
+		case "tenantID":
+			if _, ok := fieldSeen[quota.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldTenantID)
+				fieldSeen[quota.FieldTenantID] = struct{}{}
+			}
+		case "userID":
+			if _, ok := fieldSeen[quota.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldUserID)
+				fieldSeen[quota.FieldUserID] = struct{}{}
 			}
 		case "quotaItemID":
 			if _, ok := fieldSeen[quota.FieldQuotaItemID]; !ok {
@@ -4060,6 +4051,11 @@ func (qi *QuotaItemQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 			if _, ok := fieldSeen[quotaitem.FieldActive]; !ok {
 				selectedFields = append(selectedFields, quotaitem.FieldActive)
 				fieldSeen[quotaitem.FieldActive] = struct{}{}
+			}
+		case "defaultLimit":
+			if _, ok := fieldSeen[quotaitem.FieldDefaultLimit]; !ok {
+				selectedFields = append(selectedFields, quotaitem.FieldDefaultLimit)
+				fieldSeen[quotaitem.FieldDefaultLimit] = struct{}{}
 			}
 		case "id":
 		case "__typename":

@@ -757,11 +757,12 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
 		{Name: "limit", Type: field.TypeInt64},
 		{Name: "used", Type: field.TypeInt64, Default: 0},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
-		{Name: "org_id", Type: field.TypeInt},
 		{Name: "quota_item_id", Type: field.TypeInt},
 	}
 	// QuotaTable holds the schema information for the "quota" table.
@@ -771,23 +772,17 @@ var (
 		PrimaryKey: []*schema.Column{QuotaColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "quota_org_org",
-				Columns:    []*schema.Column{QuotaColumns[9]},
-				RefColumns: []*schema.Column{OrgColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
 				Symbol:     "quota_quota_item_quota",
-				Columns:    []*schema.Column{QuotaColumns[10]},
+				Columns:    []*schema.Column{QuotaColumns[11]},
 				RefColumns: []*schema.Column{QuotaItemColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "quota_org_id_quota_item_id",
+				Name:    "quota_tenant_id_user_id_quota_item_id",
 				Unique:  true,
-				Columns: []*schema.Column{QuotaColumns[9], QuotaColumns[10]},
+				Columns: []*schema.Column{QuotaColumns[5], QuotaColumns[6], QuotaColumns[11]},
 			},
 		},
 	}
@@ -804,6 +799,7 @@ var (
 		{Name: "resource_type", Type: field.TypeEnum, Enums: []string{"number", "storage", "network"}},
 		{Name: "unit", Type: field.TypeString, Nullable: true},
 		{Name: "active", Type: field.TypeBool, Default: true},
+		{Name: "default_limit", Type: field.TypeInt64, Nullable: true},
 	}
 	// QuotaItemTable holds the schema information for the "quota_item" table.
 	QuotaItemTable = &schema.Table{
@@ -1175,8 +1171,7 @@ func init() {
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
 	}
-	QuotaTable.ForeignKeys[0].RefTable = OrgTable
-	QuotaTable.ForeignKeys[1].RefTable = QuotaItemTable
+	QuotaTable.ForeignKeys[0].RefTable = QuotaItemTable
 	QuotaTable.Annotation = &entsql.Annotation{
 		Table: "quota",
 	}

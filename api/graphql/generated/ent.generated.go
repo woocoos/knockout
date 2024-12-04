@@ -26615,8 +26615,8 @@ func (ec *executionContext) fieldContext_Quota_updatedAt(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Quota_orgID(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Quota_orgID(ctx, field)
+func (ec *executionContext) _Quota_tenantID(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quota_tenantID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -26629,7 +26629,7 @@ func (ec *executionContext) _Quota_orgID(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.OrgID, nil
+		return obj.TenantID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -26643,17 +26643,61 @@ func (ec *executionContext) _Quota_orgID(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Quota_orgID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Quota_tenantID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Quota",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quota_userID(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quota_userID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quota_userID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quota",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -26873,112 +26917,6 @@ func (ec *executionContext) fieldContext_Quota_endAt(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Quota_org(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Quota_org(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Org(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*ent.Org)
-	fc.Result = res
-	return ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Quota_org(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Quota",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Org_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_Org_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Org_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_Org_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Org_updatedAt(ctx, field)
-			case "deletedAt":
-				return ec.fieldContext_Org_deletedAt(ctx, field)
-			case "ownerID":
-				return ec.fieldContext_Org_ownerID(ctx, field)
-			case "kind":
-				return ec.fieldContext_Org_kind(ctx, field)
-			case "parentID":
-				return ec.fieldContext_Org_parentID(ctx, field)
-			case "domain":
-				return ec.fieldContext_Org_domain(ctx, field)
-			case "code":
-				return ec.fieldContext_Org_code(ctx, field)
-			case "name":
-				return ec.fieldContext_Org_name(ctx, field)
-			case "profile":
-				return ec.fieldContext_Org_profile(ctx, field)
-			case "status":
-				return ec.fieldContext_Org_status(ctx, field)
-			case "path":
-				return ec.fieldContext_Org_path(ctx, field)
-			case "displaySort":
-				return ec.fieldContext_Org_displaySort(ctx, field)
-			case "countryCode":
-				return ec.fieldContext_Org_countryCode(ctx, field)
-			case "timezone":
-				return ec.fieldContext_Org_timezone(ctx, field)
-			case "localCurrency":
-				return ec.fieldContext_Org_localCurrency(ctx, field)
-			case "logo":
-				return ec.fieldContext_Org_logo(ctx, field)
-			case "parent":
-				return ec.fieldContext_Org_parent(ctx, field)
-			case "children":
-				return ec.fieldContext_Org_children(ctx, field)
-			case "owner":
-				return ec.fieldContext_Org_owner(ctx, field)
-			case "users":
-				return ec.fieldContext_Org_users(ctx, field)
-			case "permissions":
-				return ec.fieldContext_Org_permissions(ctx, field)
-			case "policies":
-				return ec.fieldContext_Org_policies(ctx, field)
-			case "apps":
-				return ec.fieldContext_Org_apps(ctx, field)
-			case "fileIdentities":
-				return ec.fieldContext_Org_fileIdentities(ctx, field)
-			case "TopOrg":
-				return ec.fieldContext_Org_TopOrg(ctx, field)
-			case "isAllowRevokeAppPolicy":
-				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Quota_quotaItem(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Quota_quotaItem(ctx, field)
 	if err != nil {
@@ -27040,6 +26978,8 @@ func (ec *executionContext) fieldContext_Quota_quotaItem(_ context.Context, fiel
 				return ec.fieldContext_QuotaItem_unit(ctx, field)
 			case "active":
 				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "defaultLimit":
+				return ec.fieldContext_QuotaItem_defaultLimit(ctx, field)
 			case "quota":
 				return ec.fieldContext_QuotaItem_quota(ctx, field)
 			}
@@ -27240,8 +27180,10 @@ func (ec *executionContext) fieldContext_QuotaEdge_node(_ context.Context, field
 				return ec.fieldContext_Quota_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Quota_updatedAt(ctx, field)
-			case "orgID":
-				return ec.fieldContext_Quota_orgID(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_Quota_tenantID(ctx, field)
+			case "userID":
+				return ec.fieldContext_Quota_userID(ctx, field)
 			case "quotaItemID":
 				return ec.fieldContext_Quota_quotaItemID(ctx, field)
 			case "limit":
@@ -27252,8 +27194,6 @@ func (ec *executionContext) fieldContext_QuotaEdge_node(_ context.Context, field
 				return ec.fieldContext_Quota_startAt(ctx, field)
 			case "endAt":
 				return ec.fieldContext_Quota_endAt(ctx, field)
-			case "org":
-				return ec.fieldContext_Quota_org(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
 			}
@@ -27779,6 +27719,47 @@ func (ec *executionContext) fieldContext_QuotaItem_active(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _QuotaItem_defaultLimit(ctx context.Context, field graphql.CollectedField, obj *ent.QuotaItem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QuotaItem_defaultLimit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DefaultLimit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QuotaItem_defaultLimit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QuotaItem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _QuotaItem_quota(ctx context.Context, field graphql.CollectedField, obj *ent.QuotaItem) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_QuotaItem_quota(ctx, field)
 	if err != nil {
@@ -28045,6 +28026,8 @@ func (ec *executionContext) fieldContext_QuotaItemEdge_node(_ context.Context, f
 				return ec.fieldContext_QuotaItem_unit(ctx, field)
 			case "active":
 				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "defaultLimit":
+				return ec.fieldContext_QuotaItem_defaultLimit(ctx, field)
 			case "quota":
 				return ec.fieldContext_QuotaItem_quota(ctx, field)
 			}
@@ -42968,13 +42951,27 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"limit", "startAt", "endAt", "orgID", "quotaItemID"}
+	fieldsInOrder := [...]string{"tenantID", "userID", "limit", "startAt", "endAt", "quotaItemID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "tenantID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantID = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserID = data
 		case "limit":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			data, err := ec.unmarshalNInt2int64(ctx, v)
@@ -42996,13 +42993,6 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.EndAt = data
-		case "orgID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.OrgID = data
 		case "quotaItemID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaItemID"))
 			data, err := ec.unmarshalNID2int(ctx, v)
@@ -43023,7 +43013,7 @@ func (ec *executionContext) unmarshalInputCreateQuotaItemInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"code", "name", "description", "resourceType", "unit", "active", "quotumIDs"}
+	fieldsInOrder := [...]string{"code", "name", "description", "resourceType", "unit", "active", "defaultLimit", "quotumIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -43072,6 +43062,13 @@ func (ec *executionContext) unmarshalInputCreateQuotaItemInput(ctx context.Conte
 				return it, err
 			}
 			it.Active = data
+		case "defaultLimit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimit"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimit = data
 		case "quotumIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotumIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
@@ -51699,7 +51696,7 @@ func (ec *executionContext) unmarshalInputQuotaItemWhereInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "resourceType", "resourceTypeNEQ", "resourceTypeIn", "resourceTypeNotIn", "active", "activeNEQ", "hasQuota", "hasQuotaWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "resourceType", "resourceTypeNEQ", "resourceTypeIn", "resourceTypeNotIn", "active", "activeNEQ", "defaultLimit", "defaultLimitNEQ", "defaultLimitIn", "defaultLimitNotIn", "defaultLimitGT", "defaultLimitGTE", "defaultLimitLT", "defaultLimitLTE", "defaultLimitIsNil", "defaultLimitNotNil", "hasQuota", "hasQuotaWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -52259,6 +52256,76 @@ func (ec *executionContext) unmarshalInputQuotaItemWhereInput(ctx context.Contex
 				return it, err
 			}
 			it.ActiveNEQ = data
+		case "defaultLimit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimit"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimit = data
+		case "defaultLimitNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitNEQ = data
+		case "defaultLimitIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitIn = data
+		case "defaultLimitNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitNotIn = data
+		case "defaultLimitGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitGT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitGT = data
+		case "defaultLimitGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitGTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitGTE = data
+		case "defaultLimitLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitLT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitLT = data
+		case "defaultLimitLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitLTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitLTE = data
+		case "defaultLimitIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitIsNil = data
+		case "defaultLimitNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimitNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimitNotNil = data
 		case "hasQuota":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuota"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -52324,7 +52391,7 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "orgID", "orgIDNEQ", "orgIDIn", "orgIDNotIn", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasOrg", "hasOrgWith", "hasQuotaItem", "hasQuotaItemWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "tenantIDGT", "tenantIDGTE", "tenantIDLT", "tenantIDLTE", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDGT", "userIDGTE", "userIDLT", "userIDLTE", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasQuotaItem", "hasQuotaItemWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -52660,34 +52727,118 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.UpdatedAtNotNil = data
-		case "orgID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+		case "tenantID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.OrgID = data
-		case "orgIDNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			it.TenantID = data
+		case "tenantIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.OrgIDNEQ = data
-		case "orgIDIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.TenantIDNEQ = data
+		case "tenantIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.OrgIDIn = data
-		case "orgIDNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			it.TenantIDIn = data
+		case "tenantIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.OrgIDNotIn = data
+			it.TenantIDNotIn = data
+		case "tenantIDGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDGT = data
+		case "tenantIDGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDGTE = data
+		case "tenantIDLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDLT = data
+		case "tenantIDLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDLTE = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserID = data
+		case "userIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNEQ = data
+		case "userIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDIn = data
+		case "userIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNotIn = data
+		case "userIDGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDGT = data
+		case "userIDGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDGTE = data
+		case "userIDLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDLT = data
+		case "userIDLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDLTE = data
 		case "quotaItemID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaItemID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -52856,20 +53007,6 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.EndAtNotNil = data
-		case "hasOrg":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrg"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOrg = data
-		case "hasOrgWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgWith"))
-			data, err := ec.unmarshalOOrgWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOrgWith = data
 		case "hasQuotaItem":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuotaItem"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -55631,13 +55768,27 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "orgID", "quotaItemID"}
+	fieldsInOrder := [...]string{"tenantID", "userID", "limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "quotaItemID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "tenantID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantID = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserID = data
 		case "limit":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
@@ -55673,13 +55824,6 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.ClearEndAt = data
-		case "orgID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.OrgID = data
 		case "quotaItemID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaItemID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -55700,7 +55844,7 @@ func (ec *executionContext) unmarshalInputUpdateQuotaItemInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"code", "name", "description", "clearDescription", "resourceType", "unit", "clearUnit", "active", "addQuotumIDs", "removeQuotumIDs", "clearQuota"}
+	fieldsInOrder := [...]string{"code", "name", "description", "clearDescription", "resourceType", "unit", "clearUnit", "active", "defaultLimit", "clearDefaultLimit", "addQuotumIDs", "removeQuotumIDs", "clearQuota"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -55763,6 +55907,20 @@ func (ec *executionContext) unmarshalInputUpdateQuotaItemInput(ctx context.Conte
 				return it, err
 			}
 			it.Active = data
+		case "defaultLimit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defaultLimit"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefaultLimit = data
+		case "clearDefaultLimit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearDefaultLimit"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearDefaultLimit = data
 		case "addQuotumIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addQuotumIDs"))
 			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
@@ -67535,8 +67693,13 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Quota_updatedBy(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._Quota_updatedAt(ctx, field, obj)
-		case "orgID":
-			out.Values[i] = ec._Quota_orgID(ctx, field, obj)
+		case "tenantID":
+			out.Values[i] = ec._Quota_tenantID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "userID":
+			out.Values[i] = ec._Quota_userID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -67559,42 +67722,6 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Quota_startAt(ctx, field, obj)
 		case "endAt":
 			out.Values[i] = ec._Quota_endAt(ctx, field, obj)
-		case "org":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Quota_org(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "quotaItem":
 			field := field
 
@@ -67795,6 +67922,8 @@ func (ec *executionContext) _QuotaItem(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "defaultLimit":
+			out.Values[i] = ec._QuotaItem_defaultLimit(ctx, field, obj)
 		case "quota":
 			field := field
 

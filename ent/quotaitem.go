@@ -37,6 +37,8 @@ type QuotaItem struct {
 	Unit string `json:"unit,omitempty"`
 	// 是否启用
 	Active bool `json:"active,omitempty"`
+	// 默认限制值
+	DefaultLimit int64 `json:"default_limit,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the QuotaItemQuery when eager-loading is set.
 	Edges        QuotaItemEdges `json:"edges"`
@@ -72,7 +74,7 @@ func (*QuotaItem) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case quotaitem.FieldActive:
 			values[i] = new(sql.NullBool)
-		case quotaitem.FieldID, quotaitem.FieldCreatedBy, quotaitem.FieldUpdatedBy:
+		case quotaitem.FieldID, quotaitem.FieldCreatedBy, quotaitem.FieldUpdatedBy, quotaitem.FieldDefaultLimit:
 			values[i] = new(sql.NullInt64)
 		case quotaitem.FieldCode, quotaitem.FieldName, quotaitem.FieldDescription, quotaitem.FieldResourceType, quotaitem.FieldUnit:
 			values[i] = new(sql.NullString)
@@ -159,6 +161,12 @@ func (qi *QuotaItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				qi.Active = value.Bool
 			}
+		case quotaitem.FieldDefaultLimit:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field default_limit", values[i])
+			} else if value.Valid {
+				qi.DefaultLimit = value.Int64
+			}
 		default:
 			qi.selectValues.Set(columns[i], values[i])
 		}
@@ -229,6 +237,9 @@ func (qi *QuotaItem) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("active=")
 	builder.WriteString(fmt.Sprintf("%v", qi.Active))
+	builder.WriteString(", ")
+	builder.WriteString("default_limit=")
+	builder.WriteString(fmt.Sprintf("%v", qi.DefaultLimit))
 	builder.WriteByte(')')
 	return builder.String()
 }

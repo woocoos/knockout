@@ -100,6 +100,11 @@ func Active(v bool) predicate.QuotaItem {
 	return predicate.QuotaItem(sql.FieldEQ(FieldActive, v))
 }
 
+// DefaultLimit applies equality check predicate on the "default_limit" field. It's identical to DefaultLimitEQ.
+func DefaultLimit(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldEQ(FieldDefaultLimit, v))
+}
+
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.QuotaItem {
 	return predicate.QuotaItem(sql.FieldEQ(FieldCreatedBy, v))
@@ -588,6 +593,56 @@ func ActiveEQ(v bool) predicate.QuotaItem {
 // ActiveNEQ applies the NEQ predicate on the "active" field.
 func ActiveNEQ(v bool) predicate.QuotaItem {
 	return predicate.QuotaItem(sql.FieldNEQ(FieldActive, v))
+}
+
+// DefaultLimitEQ applies the EQ predicate on the "default_limit" field.
+func DefaultLimitEQ(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldEQ(FieldDefaultLimit, v))
+}
+
+// DefaultLimitNEQ applies the NEQ predicate on the "default_limit" field.
+func DefaultLimitNEQ(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldNEQ(FieldDefaultLimit, v))
+}
+
+// DefaultLimitIn applies the In predicate on the "default_limit" field.
+func DefaultLimitIn(vs ...int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldIn(FieldDefaultLimit, vs...))
+}
+
+// DefaultLimitNotIn applies the NotIn predicate on the "default_limit" field.
+func DefaultLimitNotIn(vs ...int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldNotIn(FieldDefaultLimit, vs...))
+}
+
+// DefaultLimitGT applies the GT predicate on the "default_limit" field.
+func DefaultLimitGT(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldGT(FieldDefaultLimit, v))
+}
+
+// DefaultLimitGTE applies the GTE predicate on the "default_limit" field.
+func DefaultLimitGTE(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldGTE(FieldDefaultLimit, v))
+}
+
+// DefaultLimitLT applies the LT predicate on the "default_limit" field.
+func DefaultLimitLT(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldLT(FieldDefaultLimit, v))
+}
+
+// DefaultLimitLTE applies the LTE predicate on the "default_limit" field.
+func DefaultLimitLTE(v int64) predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldLTE(FieldDefaultLimit, v))
+}
+
+// DefaultLimitIsNil applies the IsNil predicate on the "default_limit" field.
+func DefaultLimitIsNil() predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldIsNull(FieldDefaultLimit))
+}
+
+// DefaultLimitNotNil applies the NotNil predicate on the "default_limit" field.
+func DefaultLimitNotNil() predicate.QuotaItem {
+	return predicate.QuotaItem(sql.FieldNotNull(FieldDefaultLimit))
 }
 
 // HasQuota applies the HasEdge predicate on the "quota" edge.

@@ -20,11 +20,14 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/test/testsuite"
 	"net/http/httptest"
@@ -348,6 +351,34 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	ts.Equal(res.User.ID, 1)
 }
 
+func (ts *loginFlowSuite) Test_UserDevice() {
+	ctx := context.Background()
+	client := ts.Client.Debug()
+	_, err := client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("1").SetDeviceName("phone1").
+		Save(ctx)
+	ts.Require().Error(err, "miss quota")
+	// 如果存在, 则用旧数据
+	client.QuotaItem.Create().SetCreatedBy(1).SetCode(string(quota.ItemCodeUserDevice)).SetName("用户设备").
+		SetResourceType(quotaitem.ResourceTypeNumber).
+		Exec(ctx)
+	drow := client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("1").SetDeviceName("phone1").
+		SaveX(ctx)
+	qrow, err := client.Quota.Create().
+		SetQuotaItemID(client.QuotaItem.Query().Where(quotaitem.Code(string(quota.ItemCodeUserDevice))).OnlyIDX(ctx)).
+		SetTenantID(0).SetUserID(1).SetLimit(1).SetUsed(1).SetCreatedBy(1).
+		Save(ctx)
+	ts.Require().NoError(err)
+	err = client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("2").SetDeviceName("phone2").
+		Exec(ctx)
+	ts.Require().ErrorContains(err, "quota exceeded")
+	client.UserDevice.DeleteOne(drow).ExecX(ctx)
+	qrow = client.Quota.GetX(ctx, qrow.ID)
+	ts.Equal(int64(0), qrow.Used)
+
+	_, err = client.UserDevice.Delete().Where(userdevice.UserID(1)).Exec(ts.NewTestCtx(1, 1))
+	ts.Require().ErrorContains(err, "operation not supported: OpDelete")
+	client.UserDevice.Delete().Where(userdevice.UserID(1)).ExecX(quota.SkipQuota(context.Background()))
+}
 func TestPwd(t *testing.T) {
 	// 随机字符串
 	req := sha256.New()

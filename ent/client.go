@@ -4510,22 +4510,6 @@ func (c *QuotaClient) GetX(ctx context.Context, id int) *Quota {
 	return obj
 }
 
-// QueryOrg queries the org edge of a Quota.
-func (c *QuotaClient) QueryOrg(q *Quota) *OrgQuery {
-	query := (&OrgClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := q.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(quota.Table, quota.FieldID, id),
-			sqlgraph.To(org.Table, org.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, quota.OrgTable, quota.OrgColumn),
-		)
-		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryQuotaItem queries the quota_item edge of a Quota.
 func (c *QuotaClient) QueryQuotaItem(q *Quota) *QuotaItemQuery {
 	query := (&QuotaItemClient{config: c.config}).Query()

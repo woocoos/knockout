@@ -38,6 +38,8 @@ const (
 	FieldUnit = "unit"
 	// FieldActive holds the string denoting the active field in the database.
 	FieldActive = "active"
+	// FieldDefaultLimit holds the string denoting the default_limit field in the database.
+	FieldDefaultLimit = "default_limit"
 	// EdgeQuota holds the string denoting the quota edge name in mutations.
 	EdgeQuota = "quota"
 	// Table holds the table name of the quotaitem in the database.
@@ -64,6 +66,7 @@ var Columns = []string{
 	FieldResourceType,
 	FieldUnit,
 	FieldActive,
+	FieldDefaultLimit,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -169,6 +172,11 @@ func ByUnit(opts ...sql.OrderTermOption) OrderOption {
 // ByActive orders the results by the active field.
 func ByActive(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActive, opts...).ToFunc()
+}
+
+// ByDefaultLimit orders the results by the default_limit field.
+func ByDefaultLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDefaultLimit, opts...).ToFunc()
 }
 
 // ByQuotaCount orders the results by quota count.

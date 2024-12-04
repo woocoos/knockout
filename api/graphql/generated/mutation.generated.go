@@ -11328,6 +11328,8 @@ func (ec *executionContext) fieldContext_Mutation_createQuotaItem(ctx context.Co
 				return ec.fieldContext_QuotaItem_unit(ctx, field)
 			case "active":
 				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "defaultLimit":
+				return ec.fieldContext_QuotaItem_defaultLimit(ctx, field)
 			case "quota":
 				return ec.fieldContext_QuotaItem_quota(ctx, field)
 			}
@@ -11409,6 +11411,8 @@ func (ec *executionContext) fieldContext_Mutation_updateQuotaItem(ctx context.Co
 				return ec.fieldContext_QuotaItem_unit(ctx, field)
 			case "active":
 				return ec.fieldContext_QuotaItem_active(ctx, field)
+			case "defaultLimit":
+				return ec.fieldContext_QuotaItem_defaultLimit(ctx, field)
 			case "quota":
 				return ec.fieldContext_QuotaItem_quota(ctx, field)
 			}
@@ -11533,8 +11537,10 @@ func (ec *executionContext) fieldContext_Mutation_createQuota(ctx context.Contex
 				return ec.fieldContext_Quota_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Quota_updatedAt(ctx, field)
-			case "orgID":
-				return ec.fieldContext_Quota_orgID(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_Quota_tenantID(ctx, field)
+			case "userID":
+				return ec.fieldContext_Quota_userID(ctx, field)
 			case "quotaItemID":
 				return ec.fieldContext_Quota_quotaItemID(ctx, field)
 			case "limit":
@@ -11545,8 +11551,6 @@ func (ec *executionContext) fieldContext_Mutation_createQuota(ctx context.Contex
 				return ec.fieldContext_Quota_startAt(ctx, field)
 			case "endAt":
 				return ec.fieldContext_Quota_endAt(ctx, field)
-			case "org":
-				return ec.fieldContext_Quota_org(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
 			}
@@ -11616,8 +11620,10 @@ func (ec *executionContext) fieldContext_Mutation_updateQuota(ctx context.Contex
 				return ec.fieldContext_Quota_updatedBy(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Quota_updatedAt(ctx, field)
-			case "orgID":
-				return ec.fieldContext_Quota_orgID(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_Quota_tenantID(ctx, field)
+			case "userID":
+				return ec.fieldContext_Quota_userID(ctx, field)
 			case "quotaItemID":
 				return ec.fieldContext_Quota_quotaItemID(ctx, field)
 			case "limit":
@@ -11628,8 +11634,6 @@ func (ec *executionContext) fieldContext_Mutation_updateQuota(ctx context.Contex
 				return ec.fieldContext_Quota_startAt(ctx, field)
 			case "endAt":
 				return ec.fieldContext_Quota_endAt(ctx, field)
-			case "org":
-				return ec.fieldContext_Quota_org(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
 			}

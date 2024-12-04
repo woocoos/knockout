@@ -131,6 +131,20 @@ func (qic *QuotaItemCreate) SetNillableActive(b *bool) *QuotaItemCreate {
 	return qic
 }
 
+// SetDefaultLimit sets the "default_limit" field.
+func (qic *QuotaItemCreate) SetDefaultLimit(i int64) *QuotaItemCreate {
+	qic.mutation.SetDefaultLimit(i)
+	return qic
+}
+
+// SetNillableDefaultLimit sets the "default_limit" field if the given value is not nil.
+func (qic *QuotaItemCreate) SetNillableDefaultLimit(i *int64) *QuotaItemCreate {
+	if i != nil {
+		qic.SetDefaultLimit(*i)
+	}
+	return qic
+}
+
 // SetID sets the "id" field.
 func (qic *QuotaItemCreate) SetID(i int) *QuotaItemCreate {
 	qic.mutation.SetID(i)
@@ -300,6 +314,10 @@ func (qic *QuotaItemCreate) createSpec() (*QuotaItem, *sqlgraph.CreateSpec) {
 	if value, ok := qic.mutation.Active(); ok {
 		_spec.SetField(quotaitem.FieldActive, field.TypeBool, value)
 		_node.Active = value
+	}
+	if value, ok := qic.mutation.DefaultLimit(); ok {
+		_spec.SetField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
+		_node.DefaultLimit = value
 	}
 	if nodes := qic.mutation.QuotaIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -492,6 +510,30 @@ func (u *QuotaItemUpsert) SetActive(v bool) *QuotaItemUpsert {
 // UpdateActive sets the "active" field to the value that was provided on create.
 func (u *QuotaItemUpsert) UpdateActive() *QuotaItemUpsert {
 	u.SetExcluded(quotaitem.FieldActive)
+	return u
+}
+
+// SetDefaultLimit sets the "default_limit" field.
+func (u *QuotaItemUpsert) SetDefaultLimit(v int64) *QuotaItemUpsert {
+	u.Set(quotaitem.FieldDefaultLimit, v)
+	return u
+}
+
+// UpdateDefaultLimit sets the "default_limit" field to the value that was provided on create.
+func (u *QuotaItemUpsert) UpdateDefaultLimit() *QuotaItemUpsert {
+	u.SetExcluded(quotaitem.FieldDefaultLimit)
+	return u
+}
+
+// AddDefaultLimit adds v to the "default_limit" field.
+func (u *QuotaItemUpsert) AddDefaultLimit(v int64) *QuotaItemUpsert {
+	u.Add(quotaitem.FieldDefaultLimit, v)
+	return u
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (u *QuotaItemUpsert) ClearDefaultLimit() *QuotaItemUpsert {
+	u.SetNull(quotaitem.FieldDefaultLimit)
 	return u
 }
 
@@ -693,6 +735,34 @@ func (u *QuotaItemUpsertOne) SetActive(v bool) *QuotaItemUpsertOne {
 func (u *QuotaItemUpsertOne) UpdateActive() *QuotaItemUpsertOne {
 	return u.Update(func(s *QuotaItemUpsert) {
 		s.UpdateActive()
+	})
+}
+
+// SetDefaultLimit sets the "default_limit" field.
+func (u *QuotaItemUpsertOne) SetDefaultLimit(v int64) *QuotaItemUpsertOne {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.SetDefaultLimit(v)
+	})
+}
+
+// AddDefaultLimit adds v to the "default_limit" field.
+func (u *QuotaItemUpsertOne) AddDefaultLimit(v int64) *QuotaItemUpsertOne {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.AddDefaultLimit(v)
+	})
+}
+
+// UpdateDefaultLimit sets the "default_limit" field to the value that was provided on create.
+func (u *QuotaItemUpsertOne) UpdateDefaultLimit() *QuotaItemUpsertOne {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.UpdateDefaultLimit()
+	})
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (u *QuotaItemUpsertOne) ClearDefaultLimit() *QuotaItemUpsertOne {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.ClearDefaultLimit()
 	})
 }
 
@@ -1060,6 +1130,34 @@ func (u *QuotaItemUpsertBulk) SetActive(v bool) *QuotaItemUpsertBulk {
 func (u *QuotaItemUpsertBulk) UpdateActive() *QuotaItemUpsertBulk {
 	return u.Update(func(s *QuotaItemUpsert) {
 		s.UpdateActive()
+	})
+}
+
+// SetDefaultLimit sets the "default_limit" field.
+func (u *QuotaItemUpsertBulk) SetDefaultLimit(v int64) *QuotaItemUpsertBulk {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.SetDefaultLimit(v)
+	})
+}
+
+// AddDefaultLimit adds v to the "default_limit" field.
+func (u *QuotaItemUpsertBulk) AddDefaultLimit(v int64) *QuotaItemUpsertBulk {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.AddDefaultLimit(v)
+	})
+}
+
+// UpdateDefaultLimit sets the "default_limit" field to the value that was provided on create.
+func (u *QuotaItemUpsertBulk) UpdateDefaultLimit() *QuotaItemUpsertBulk {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.UpdateDefaultLimit()
+	})
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (u *QuotaItemUpsertBulk) ClearDefaultLimit() *QuotaItemUpsertBulk {
+	return u.Update(func(s *QuotaItemUpsert) {
+		s.ClearDefaultLimit()
 	})
 }
 

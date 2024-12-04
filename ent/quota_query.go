@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
@@ -24,7 +23,6 @@ type QuotaQuery struct {
 	order         []quota.OrderOption
 	inters        []Interceptor
 	predicates    []predicate.Quota
-	withOrg       *OrgQuery
 	withQuotaItem *QuotaItemQuery
 	modifiers     []func(*sql.Selector)
 	loadTotal     []func(context.Context, []*Quota) error
@@ -62,28 +60,6 @@ func (qq *QuotaQuery) Unique(unique bool) *QuotaQuery {
 func (qq *QuotaQuery) Order(o ...quota.OrderOption) *QuotaQuery {
 	qq.order = append(qq.order, o...)
 	return qq
-}
-
-// QueryOrg chains the current query on the "org" edge.
-func (qq *QuotaQuery) QueryOrg() *OrgQuery {
-	query := (&OrgClient{config: qq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := qq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := qq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(quota.Table, quota.FieldID, selector),
-			sqlgraph.To(org.Table, org.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, quota.OrgTable, quota.OrgColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(qq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // QueryQuotaItem chains the current query on the "quota_item" edge.
@@ -300,23 +276,11 @@ func (qq *QuotaQuery) Clone() *QuotaQuery {
 		order:         append([]quota.OrderOption{}, qq.order...),
 		inters:        append([]Interceptor{}, qq.inters...),
 		predicates:    append([]predicate.Quota{}, qq.predicates...),
-		withOrg:       qq.withOrg.Clone(),
 		withQuotaItem: qq.withQuotaItem.Clone(),
 		// clone intermediate query.
 		sql:  qq.sql.Clone(),
 		path: qq.path,
 	}
-}
-
-// WithOrg tells the query-builder to eager-load the nodes that are connected to
-// the "org" edge. The optional arguments are used to configure the query builder of the edge.
-func (qq *QuotaQuery) WithOrg(opts ...func(*OrgQuery)) *QuotaQuery {
-	query := (&OrgClient{config: qq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	qq.withOrg = query
-	return qq
 }
 
 // WithQuotaItem tells the query-builder to eager-load the nodes that are connected to
@@ -408,8 +372,7 @@ func (qq *QuotaQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Quota,
 	var (
 		nodes       = []*Quota{}
 		_spec       = qq.querySpec()
-		loadedTypes = [2]bool{
-			qq.withOrg != nil,
+		loadedTypes = [1]bool{
 			qq.withQuotaItem != nil,
 		}
 	)
@@ -434,12 +397,6 @@ func (qq *QuotaQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Quota,
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := qq.withOrg; query != nil {
-		if err := qq.loadOrg(ctx, query, nodes, nil,
-			func(n *Quota, e *Org) { n.Edges.Org = e }); err != nil {
-			return nil, err
-		}
-	}
 	if query := qq.withQuotaItem; query != nil {
 		if err := qq.loadQuotaItem(ctx, query, nodes, nil,
 			func(n *Quota, e *QuotaItem) { n.Edges.QuotaItem = e }); err != nil {
@@ -454,35 +411,6 @@ func (qq *QuotaQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Quota,
 	return nodes, nil
 }
 
-func (qq *QuotaQuery) loadOrg(ctx context.Context, query *OrgQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *Org)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Quota)
-	for i := range nodes {
-		fk := nodes[i].OrgID
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(org.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "org_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
 func (qq *QuotaQuery) loadQuotaItem(ctx context.Context, query *QuotaItemQuery, nodes []*Quota, init func(*Quota), assign func(*Quota, *QuotaItem)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Quota)
@@ -540,9 +468,6 @@ func (qq *QuotaQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != quota.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
-		}
-		if qq.withOrg != nil {
-			_spec.Node.AddColumnOnce(quota.FieldOrgID)
 		}
 		if qq.withQuotaItem != nil {
 			_spec.Node.AddColumnOnce(quota.FieldQuotaItemID)

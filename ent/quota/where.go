@@ -75,9 +75,14 @@ func UpdatedAt(v time.Time) predicate.Quota {
 	return predicate.Quota(sql.FieldEQ(FieldUpdatedAt, v))
 }
 
-// OrgID applies equality check predicate on the "org_id" field. It's identical to OrgIDEQ.
-func OrgID(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldEQ(FieldOrgID, v))
+// TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
+func TenantID(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldEQ(FieldTenantID, v))
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldEQ(FieldUserID, v))
 }
 
 // QuotaItemID applies equality check predicate on the "quota_item_id" field. It's identical to QuotaItemIDEQ.
@@ -285,24 +290,84 @@ func UpdatedAtNotNil() predicate.Quota {
 	return predicate.Quota(sql.FieldNotNull(FieldUpdatedAt))
 }
 
-// OrgIDEQ applies the EQ predicate on the "org_id" field.
-func OrgIDEQ(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldEQ(FieldOrgID, v))
+// TenantIDEQ applies the EQ predicate on the "tenant_id" field.
+func TenantIDEQ(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldEQ(FieldTenantID, v))
 }
 
-// OrgIDNEQ applies the NEQ predicate on the "org_id" field.
-func OrgIDNEQ(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldNEQ(FieldOrgID, v))
+// TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
+func TenantIDNEQ(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldNEQ(FieldTenantID, v))
 }
 
-// OrgIDIn applies the In predicate on the "org_id" field.
-func OrgIDIn(vs ...int) predicate.Quota {
-	return predicate.Quota(sql.FieldIn(FieldOrgID, vs...))
+// TenantIDIn applies the In predicate on the "tenant_id" field.
+func TenantIDIn(vs ...int) predicate.Quota {
+	return predicate.Quota(sql.FieldIn(FieldTenantID, vs...))
 }
 
-// OrgIDNotIn applies the NotIn predicate on the "org_id" field.
-func OrgIDNotIn(vs ...int) predicate.Quota {
-	return predicate.Quota(sql.FieldNotIn(FieldOrgID, vs...))
+// TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
+func TenantIDNotIn(vs ...int) predicate.Quota {
+	return predicate.Quota(sql.FieldNotIn(FieldTenantID, vs...))
+}
+
+// TenantIDGT applies the GT predicate on the "tenant_id" field.
+func TenantIDGT(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldGT(FieldTenantID, v))
+}
+
+// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
+func TenantIDGTE(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldGTE(FieldTenantID, v))
+}
+
+// TenantIDLT applies the LT predicate on the "tenant_id" field.
+func TenantIDLT(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldLT(FieldTenantID, v))
+}
+
+// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
+func TenantIDLTE(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldLTE(FieldTenantID, v))
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldEQ(FieldUserID, v))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldNEQ(FieldUserID, v))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.Quota {
+	return predicate.Quota(sql.FieldIn(FieldUserID, vs...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.Quota {
+	return predicate.Quota(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldGT(FieldUserID, v))
+}
+
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldGTE(FieldUserID, v))
+}
+
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldLT(FieldUserID, v))
+}
+
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v int) predicate.Quota {
+	return predicate.Quota(sql.FieldLTE(FieldUserID, v))
 }
 
 // QuotaItemIDEQ applies the EQ predicate on the "quota_item_id" field.
@@ -503,29 +568,6 @@ func EndAtIsNil() predicate.Quota {
 // EndAtNotNil applies the NotNil predicate on the "end_at" field.
 func EndAtNotNil() predicate.Quota {
 	return predicate.Quota(sql.FieldNotNull(FieldEndAt))
-}
-
-// HasOrg applies the HasEdge predicate on the "org" edge.
-func HasOrg() predicate.Quota {
-	return predicate.Quota(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasOrgWith applies the HasEdge predicate on the "org" edge with a given conditions (other predicates).
-func HasOrgWith(preds ...predicate.Org) predicate.Quota {
-	return predicate.Quota(func(s *sql.Selector) {
-		step := newOrgStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
 }
 
 // HasQuotaItem applies the HasEdge predicate on the "quota_item" edge.

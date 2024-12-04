@@ -1886,15 +1886,18 @@ func (c *PermissionUpdateOne) SetInput(i UpdatePermissionInput) *PermissionUpdat
 
 // CreateQuotaInput represents a mutation input for creating quotaslice.
 type CreateQuotaInput struct {
+	TenantID    int
+	UserID      int
 	Limit       int64
 	StartAt     *time.Time
 	EndAt       *time.Time
-	OrgID       int
 	QuotaItemID int
 }
 
 // Mutate applies the CreateQuotaInput on the QuotaMutation builder.
 func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
+	m.SetTenantID(i.TenantID)
+	m.SetUserID(i.UserID)
 	m.SetLimit(i.Limit)
 	if v := i.StartAt; v != nil {
 		m.SetStartAt(*v)
@@ -1902,7 +1905,6 @@ func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
 	if v := i.EndAt; v != nil {
 		m.SetEndAt(*v)
 	}
-	m.SetOrgID(i.OrgID)
 	m.SetQuotaItemID(i.QuotaItemID)
 }
 
@@ -1914,17 +1916,24 @@ func (c *QuotaCreate) SetInput(i CreateQuotaInput) *QuotaCreate {
 
 // UpdateQuotaInput represents a mutation input for updating quotaslice.
 type UpdateQuotaInput struct {
+	TenantID     *int
+	UserID       *int
 	Limit        *int64
 	ClearStartAt bool
 	StartAt      *time.Time
 	ClearEndAt   bool
 	EndAt        *time.Time
-	OrgID        *int
 	QuotaItemID  *int
 }
 
 // Mutate applies the UpdateQuotaInput on the QuotaMutation builder.
 func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
+	if v := i.TenantID; v != nil {
+		m.SetTenantID(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
 	if v := i.Limit; v != nil {
 		m.SetLimit(*v)
 	}
@@ -1939,9 +1948,6 @@ func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
 	}
 	if v := i.EndAt; v != nil {
 		m.SetEndAt(*v)
-	}
-	if v := i.OrgID; v != nil {
-		m.SetOrgID(*v)
 	}
 	if v := i.QuotaItemID; v != nil {
 		m.SetQuotaItemID(*v)
@@ -1968,6 +1974,7 @@ type CreateQuotaItemInput struct {
 	ResourceType quotaitem.ResourceType
 	Unit         *string
 	Active       *bool
+	DefaultLimit *int64
 	QuotumIDs    []int
 }
 
@@ -1985,6 +1992,9 @@ func (i *CreateQuotaItemInput) Mutate(m *QuotaItemMutation) {
 	if v := i.Active; v != nil {
 		m.SetActive(*v)
 	}
+	if v := i.DefaultLimit; v != nil {
+		m.SetDefaultLimit(*v)
+	}
 	if v := i.QuotumIDs; len(v) > 0 {
 		m.AddQuotumIDs(v...)
 	}
@@ -1998,17 +2008,19 @@ func (c *QuotaItemCreate) SetInput(i CreateQuotaItemInput) *QuotaItemCreate {
 
 // UpdateQuotaItemInput represents a mutation input for updating quotaitems.
 type UpdateQuotaItemInput struct {
-	Code             *string
-	Name             *string
-	ClearDescription bool
-	Description      *string
-	ResourceType     *quotaitem.ResourceType
-	ClearUnit        bool
-	Unit             *string
-	Active           *bool
-	ClearQuota       bool
-	AddQuotumIDs     []int
-	RemoveQuotumIDs  []int
+	Code              *string
+	Name              *string
+	ClearDescription  bool
+	Description       *string
+	ResourceType      *quotaitem.ResourceType
+	ClearUnit         bool
+	Unit              *string
+	Active            *bool
+	ClearDefaultLimit bool
+	DefaultLimit      *int64
+	ClearQuota        bool
+	AddQuotumIDs      []int
+	RemoveQuotumIDs   []int
 }
 
 // Mutate applies the UpdateQuotaItemInput on the QuotaItemMutation builder.
@@ -2036,6 +2048,12 @@ func (i *UpdateQuotaItemInput) Mutate(m *QuotaItemMutation) {
 	}
 	if v := i.Active; v != nil {
 		m.SetActive(*v)
+	}
+	if i.ClearDefaultLimit {
+		m.ClearDefaultLimit()
+	}
+	if v := i.DefaultLimit; v != nil {
+		m.SetDefaultLimit(*v)
 	}
 	if i.ClearQuota {
 		m.ClearQuota()

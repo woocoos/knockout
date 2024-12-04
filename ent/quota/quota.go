@@ -23,8 +23,10 @@ const (
 	FieldUpdatedBy = "updated_by"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// FieldOrgID holds the string denoting the org_id field in the database.
-	FieldOrgID = "org_id"
+	// FieldTenantID holds the string denoting the tenant_id field in the database.
+	FieldTenantID = "tenant_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
 	// FieldQuotaItemID holds the string denoting the quota_item_id field in the database.
 	FieldQuotaItemID = "quota_item_id"
 	// FieldLimit holds the string denoting the limit field in the database.
@@ -35,19 +37,10 @@ const (
 	FieldStartAt = "start_at"
 	// FieldEndAt holds the string denoting the end_at field in the database.
 	FieldEndAt = "end_at"
-	// EdgeOrg holds the string denoting the org edge name in mutations.
-	EdgeOrg = "org"
 	// EdgeQuotaItem holds the string denoting the quota_item edge name in mutations.
 	EdgeQuotaItem = "quota_item"
 	// Table holds the table name of the quota in the database.
 	Table = "quota"
-	// OrgTable is the table that holds the org relation/edge.
-	OrgTable = "quota"
-	// OrgInverseTable is the table name for the Org entity.
-	// It exists in this package in order to avoid circular dependency with the "org" package.
-	OrgInverseTable = "org"
-	// OrgColumn is the table column denoting the org relation/edge.
-	OrgColumn = "org_id"
 	// QuotaItemTable is the table that holds the quota_item relation/edge.
 	QuotaItemTable = "quota"
 	// QuotaItemInverseTable is the table name for the QuotaItem entity.
@@ -64,7 +57,8 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldUpdatedBy,
 	FieldUpdatedAt,
-	FieldOrgID,
+	FieldTenantID,
+	FieldUserID,
 	FieldQuotaItemID,
 	FieldLimit,
 	FieldUsed,
@@ -88,9 +82,11 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [2]ent.Hook
+	Hooks [1]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// LimitValidator is a validator for the "limit" field. It is called by the builders before save.
+	LimitValidator func(int64) error
 	// DefaultUsed holds the default value on creation for the "used" field.
 	DefaultUsed int64
 )
@@ -123,9 +119,14 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByOrgID orders the results by the org_id field.
-func ByOrgID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOrgID, opts...).ToFunc()
+// ByTenantID orders the results by the tenant_id field.
+func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
+}
+
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByQuotaItemID orders the results by the quota_item_id field.
@@ -153,25 +154,11 @@ func ByEndAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndAt, opts...).ToFunc()
 }
 
-// ByOrgField orders the results by org field.
-func ByOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOrgStep(), sql.OrderByField(field, opts...))
-	}
-}
-
 // ByQuotaItemField orders the results by quota_item field.
 func ByQuotaItemField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newQuotaItemStep(), sql.OrderByField(field, opts...))
 	}
-}
-func newOrgStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OrgInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, OrgTable, OrgColumn),
-	)
 }
 func newQuotaItemStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

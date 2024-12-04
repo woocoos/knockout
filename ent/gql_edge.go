@@ -485,14 +485,6 @@ func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
 	return result, err
 }
 
-func (q *Quota) Org(ctx context.Context) (*Org, error) {
-	result, err := q.Edges.OrgOrErr()
-	if IsNotLoaded(err) {
-		result, err = q.QueryOrg().Only(ctx)
-	}
-	return result, err
-}
-
 func (q *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
 	result, err := q.Edges.QuotaItemOrErr()
 	if IsNotLoaded(err) {

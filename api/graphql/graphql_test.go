@@ -219,4 +219,82 @@ func (t *graphqlSuite) TestQuota() {
 		t.Require().NoError(err)
 		t.Require().Len(resp.Quotas.Edges, 2)
 	})
+
+	t.Run("create quota item", func() {
+		const mutation = `
+            mutation CreateQuotaItem($input: CreateQuotaItemInput!) {
+                createQuotaItem(input: $input) {
+                    id
+                    code
+                    name
+                    resourceType
+                    unit
+                    active
+                }
+            }
+        `
+
+		variables := map[string]interface{}{
+			"input": map[string]interface{}{
+				"code":         "api-calls",
+				"name":         "API调用次数",
+				"resourceType": "number",
+				"unit":         "次/天",
+				"active":       true,
+			},
+		}
+
+		var resp struct {
+			CreateQuotaItem struct {
+				ID           string
+				Code         string
+				Name         string
+				ResourceType string
+				Unit         string
+				Active       bool
+			}
+		}
+
+		err := t.gqlClient.Post(mutation, &resp, client.Var("input", variables["input"]))
+		t.Require().NoError(err)
+		t.Require().Equal("api-calls", resp.CreateQuotaItem.Code)
+	})
+
+	t.Run("set org quota", func() {
+		const mutation = `
+            mutation SetOrgQuota($input: SetOrgQuotaInput!) {
+                setOrgQuota(input: $input) {
+                    id
+                    limit
+                    used
+                    startAt
+                    endAt
+                }
+            }
+        `
+
+		variables := map[string]interface{}{
+			"input": map[string]interface{}{
+				"orgId":       1,
+				"quotaItemId": 1,
+				"limit":       200,
+				"startAt":     time.Now().Format(time.RFC3339),
+			},
+		}
+
+		var resp struct {
+			SetOrgQuota struct {
+				ID      string
+				Limit   int64
+				Used    int64
+				StartAt time.Time
+				EndAt   *time.Time
+			}
+		}
+
+		err := t.gqlClient.Post(mutation, &resp, client.Var("input", variables["input"]))
+		t.Require().NoError(err)
+		t.Require().Equal(int64(200), resp.SetOrgQuota.Limit)
+		t.Require().Equal(int64(200), resp.SetOrgQuota.Used) // 因为在生效期内
+	})
 }

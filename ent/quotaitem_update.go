@@ -172,6 +172,33 @@ func (qiu *QuotaItemUpdate) SetNillableActive(b *bool) *QuotaItemUpdate {
 	return qiu
 }
 
+// SetDefaultLimit sets the "default_limit" field.
+func (qiu *QuotaItemUpdate) SetDefaultLimit(i int64) *QuotaItemUpdate {
+	qiu.mutation.ResetDefaultLimit()
+	qiu.mutation.SetDefaultLimit(i)
+	return qiu
+}
+
+// SetNillableDefaultLimit sets the "default_limit" field if the given value is not nil.
+func (qiu *QuotaItemUpdate) SetNillableDefaultLimit(i *int64) *QuotaItemUpdate {
+	if i != nil {
+		qiu.SetDefaultLimit(*i)
+	}
+	return qiu
+}
+
+// AddDefaultLimit adds i to the "default_limit" field.
+func (qiu *QuotaItemUpdate) AddDefaultLimit(i int64) *QuotaItemUpdate {
+	qiu.mutation.AddDefaultLimit(i)
+	return qiu
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (qiu *QuotaItemUpdate) ClearDefaultLimit() *QuotaItemUpdate {
+	qiu.mutation.ClearDefaultLimit()
+	return qiu
+}
+
 // AddQuotumIDs adds the "quota" edge to the Quota entity by IDs.
 func (qiu *QuotaItemUpdate) AddQuotumIDs(ids ...int) *QuotaItemUpdate {
 	qiu.mutation.AddQuotumIDs(ids...)
@@ -300,6 +327,15 @@ func (qiu *QuotaItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := qiu.mutation.Active(); ok {
 		_spec.SetField(quotaitem.FieldActive, field.TypeBool, value)
+	}
+	if value, ok := qiu.mutation.DefaultLimit(); ok {
+		_spec.SetField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
+	}
+	if value, ok := qiu.mutation.AddedDefaultLimit(); ok {
+		_spec.AddField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
+	}
+	if qiu.mutation.DefaultLimitCleared() {
+		_spec.ClearField(quotaitem.FieldDefaultLimit, field.TypeInt64)
 	}
 	if qiu.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -509,6 +545,33 @@ func (qiuo *QuotaItemUpdateOne) SetNillableActive(b *bool) *QuotaItemUpdateOne {
 	return qiuo
 }
 
+// SetDefaultLimit sets the "default_limit" field.
+func (qiuo *QuotaItemUpdateOne) SetDefaultLimit(i int64) *QuotaItemUpdateOne {
+	qiuo.mutation.ResetDefaultLimit()
+	qiuo.mutation.SetDefaultLimit(i)
+	return qiuo
+}
+
+// SetNillableDefaultLimit sets the "default_limit" field if the given value is not nil.
+func (qiuo *QuotaItemUpdateOne) SetNillableDefaultLimit(i *int64) *QuotaItemUpdateOne {
+	if i != nil {
+		qiuo.SetDefaultLimit(*i)
+	}
+	return qiuo
+}
+
+// AddDefaultLimit adds i to the "default_limit" field.
+func (qiuo *QuotaItemUpdateOne) AddDefaultLimit(i int64) *QuotaItemUpdateOne {
+	qiuo.mutation.AddDefaultLimit(i)
+	return qiuo
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (qiuo *QuotaItemUpdateOne) ClearDefaultLimit() *QuotaItemUpdateOne {
+	qiuo.mutation.ClearDefaultLimit()
+	return qiuo
+}
+
 // AddQuotumIDs adds the "quota" edge to the Quota entity by IDs.
 func (qiuo *QuotaItemUpdateOne) AddQuotumIDs(ids ...int) *QuotaItemUpdateOne {
 	qiuo.mutation.AddQuotumIDs(ids...)
@@ -667,6 +730,15 @@ func (qiuo *QuotaItemUpdateOne) sqlSave(ctx context.Context) (_node *QuotaItem, 
 	}
 	if value, ok := qiuo.mutation.Active(); ok {
 		_spec.SetField(quotaitem.FieldActive, field.TypeBool, value)
+	}
+	if value, ok := qiuo.mutation.DefaultLimit(); ok {
+		_spec.SetField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
+	}
+	if value, ok := qiuo.mutation.AddedDefaultLimit(); ok {
+		_spec.AddField(quotaitem.FieldDefaultLimit, field.TypeInt64, value)
+	}
+	if qiuo.mutation.DefaultLimitCleared() {
+		_spec.ClearField(quotaitem.FieldDefaultLimit, field.TypeInt64)
 	}
 	if qiuo.mutation.QuotaCleared() {
 		edge := &sqlgraph.EdgeSpec{

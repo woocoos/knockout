@@ -9,7 +9,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
 )
@@ -27,8 +26,10 @@ type Quota struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID,为root型组织
-	OrgID int `json:"org_id,omitempty"`
+	// 租户ID,来源于root的组织ID.
+	TenantID int `json:"tenant_id,omitempty"`
+	// 来源于用户ID
+	UserID int `json:"user_id,omitempty"`
 	// 配额项ID
 	QuotaItemID int `json:"quota_item_id,omitempty"`
 	// 限制值
@@ -47,26 +48,13 @@ type Quota struct {
 
 // QuotaEdges holds the relations/edges for other nodes in the graph.
 type QuotaEdges struct {
-	// Org holds the value of the org edge.
-	Org *Org `json:"org,omitempty"`
 	// 配额定义
 	QuotaItem *QuotaItem `json:"quota_item,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
-}
-
-// OrgOrErr returns the Org value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e QuotaEdges) OrgOrErr() (*Org, error) {
-	if e.Org != nil {
-		return e.Org, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: org.Label}
-	}
-	return nil, &NotLoadedError{edge: "org"}
+	totalCount [1]map[string]int
 }
 
 // QuotaItemOrErr returns the QuotaItem value or an error if the edge
@@ -74,7 +62,7 @@ func (e QuotaEdges) OrgOrErr() (*Org, error) {
 func (e QuotaEdges) QuotaItemOrErr() (*QuotaItem, error) {
 	if e.QuotaItem != nil {
 		return e.QuotaItem, nil
-	} else if e.loadedTypes[1] {
+	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: quotaitem.Label}
 	}
 	return nil, &NotLoadedError{edge: "quota_item"}
@@ -85,7 +73,7 @@ func (*Quota) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case quota.FieldID, quota.FieldCreatedBy, quota.FieldUpdatedBy, quota.FieldOrgID, quota.FieldQuotaItemID, quota.FieldLimit, quota.FieldUsed:
+		case quota.FieldID, quota.FieldCreatedBy, quota.FieldUpdatedBy, quota.FieldTenantID, quota.FieldUserID, quota.FieldQuotaItemID, quota.FieldLimit, quota.FieldUsed:
 			values[i] = new(sql.NullInt64)
 		case quota.FieldCreatedAt, quota.FieldUpdatedAt, quota.FieldStartAt, quota.FieldEndAt:
 			values[i] = new(sql.NullTime)
@@ -134,11 +122,17 @@ func (q *Quota) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				q.UpdatedAt = value.Time
 			}
-		case quota.FieldOrgID:
+		case quota.FieldTenantID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field org_id", values[i])
+				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value.Valid {
-				q.OrgID = int(value.Int64)
+				q.TenantID = int(value.Int64)
+			}
+		case quota.FieldUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value.Valid {
+				q.UserID = int(value.Int64)
 			}
 		case quota.FieldQuotaItemID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -183,11 +177,6 @@ func (q *Quota) Value(name string) (ent.Value, error) {
 	return q.selectValues.Get(name)
 }
 
-// QueryOrg queries the "org" edge of the Quota entity.
-func (q *Quota) QueryOrg() *OrgQuery {
-	return NewQuotaClient(q.config).QueryOrg(q)
-}
-
 // QueryQuotaItem queries the "quota_item" edge of the Quota entity.
 func (q *Quota) QueryQuotaItem() *QuotaItemQuery {
 	return NewQuotaClient(q.config).QueryQuotaItem(q)
@@ -228,8 +217,11 @@ func (q *Quota) String() string {
 	builder.WriteString("updated_at=")
 	builder.WriteString(q.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("org_id=")
-	builder.WriteString(fmt.Sprintf("%v", q.OrgID))
+	builder.WriteString("tenant_id=")
+	builder.WriteString(fmt.Sprintf("%v", q.TenantID))
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", q.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("quota_item_id=")
 	builder.WriteString(fmt.Sprintf("%v", q.QuotaItemID))

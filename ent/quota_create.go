@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
 )
@@ -72,9 +71,15 @@ func (qc *QuotaCreate) SetNillableUpdatedAt(t *time.Time) *QuotaCreate {
 	return qc
 }
 
-// SetOrgID sets the "org_id" field.
-func (qc *QuotaCreate) SetOrgID(i int) *QuotaCreate {
-	qc.mutation.SetOrgID(i)
+// SetTenantID sets the "tenant_id" field.
+func (qc *QuotaCreate) SetTenantID(i int) *QuotaCreate {
+	qc.mutation.SetTenantID(i)
+	return qc
+}
+
+// SetUserID sets the "user_id" field.
+func (qc *QuotaCreate) SetUserID(i int) *QuotaCreate {
+	qc.mutation.SetUserID(i)
 	return qc
 }
 
@@ -136,11 +141,6 @@ func (qc *QuotaCreate) SetNillableEndAt(t *time.Time) *QuotaCreate {
 func (qc *QuotaCreate) SetID(i int) *QuotaCreate {
 	qc.mutation.SetID(i)
 	return qc
-}
-
-// SetOrg sets the "org" edge to the Org entity.
-func (qc *QuotaCreate) SetOrg(o *Org) *QuotaCreate {
-	return qc.SetOrgID(o.ID)
 }
 
 // SetQuotaItem sets the "quota_item" edge to the QuotaItem entity.
@@ -207,8 +207,11 @@ func (qc *QuotaCreate) check() error {
 	if _, ok := qc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Quota.created_at"`)}
 	}
-	if _, ok := qc.mutation.OrgID(); !ok {
-		return &ValidationError{Name: "org_id", err: errors.New(`ent: missing required field "Quota.org_id"`)}
+	if _, ok := qc.mutation.TenantID(); !ok {
+		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "Quota.tenant_id"`)}
+	}
+	if _, ok := qc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Quota.user_id"`)}
 	}
 	if _, ok := qc.mutation.QuotaItemID(); !ok {
 		return &ValidationError{Name: "quota_item_id", err: errors.New(`ent: missing required field "Quota.quota_item_id"`)}
@@ -216,11 +219,13 @@ func (qc *QuotaCreate) check() error {
 	if _, ok := qc.mutation.Limit(); !ok {
 		return &ValidationError{Name: "limit", err: errors.New(`ent: missing required field "Quota.limit"`)}
 	}
+	if v, ok := qc.mutation.Limit(); ok {
+		if err := quota.LimitValidator(v); err != nil {
+			return &ValidationError{Name: "limit", err: fmt.Errorf(`ent: validator failed for field "Quota.limit": %w`, err)}
+		}
+	}
 	if _, ok := qc.mutation.Used(); !ok {
 		return &ValidationError{Name: "used", err: errors.New(`ent: missing required field "Quota.used"`)}
-	}
-	if len(qc.mutation.OrgIDs()) == 0 {
-		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "Quota.org"`)}
 	}
 	if len(qc.mutation.QuotaItemIDs()) == 0 {
 		return &ValidationError{Name: "quota_item", err: errors.New(`ent: missing required edge "Quota.quota_item"`)}
@@ -274,6 +279,14 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 		_spec.SetField(quota.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
+	if value, ok := qc.mutation.TenantID(); ok {
+		_spec.SetField(quota.FieldTenantID, field.TypeInt, value)
+		_node.TenantID = value
+	}
+	if value, ok := qc.mutation.UserID(); ok {
+		_spec.SetField(quota.FieldUserID, field.TypeInt, value)
+		_node.UserID = value
+	}
 	if value, ok := qc.mutation.Limit(); ok {
 		_spec.SetField(quota.FieldLimit, field.TypeInt64, value)
 		_node.Limit = value
@@ -289,23 +302,6 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 	if value, ok := qc.mutation.EndAt(); ok {
 		_spec.SetField(quota.FieldEndAt, field.TypeTime, value)
 		_node.EndAt = value
-	}
-	if nodes := qc.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   quota.OrgTable,
-			Columns: []string{quota.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.OrgID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := qc.mutation.QuotaItemIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -418,15 +414,39 @@ func (u *QuotaUpsert) ClearUpdatedAt() *QuotaUpsert {
 	return u
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *QuotaUpsert) SetOrgID(v int) *QuotaUpsert {
-	u.Set(quota.FieldOrgID, v)
+// SetTenantID sets the "tenant_id" field.
+func (u *QuotaUpsert) SetTenantID(v int) *QuotaUpsert {
+	u.Set(quota.FieldTenantID, v)
 	return u
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *QuotaUpsert) UpdateOrgID() *QuotaUpsert {
-	u.SetExcluded(quota.FieldOrgID)
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *QuotaUpsert) UpdateTenantID() *QuotaUpsert {
+	u.SetExcluded(quota.FieldTenantID)
+	return u
+}
+
+// AddTenantID adds v to the "tenant_id" field.
+func (u *QuotaUpsert) AddTenantID(v int) *QuotaUpsert {
+	u.Add(quota.FieldTenantID, v)
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *QuotaUpsert) SetUserID(v int) *QuotaUpsert {
+	u.Set(quota.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *QuotaUpsert) UpdateUserID() *QuotaUpsert {
+	u.SetExcluded(quota.FieldUserID)
+	return u
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *QuotaUpsert) AddUserID(v int) *QuotaUpsert {
+	u.Add(quota.FieldUserID, v)
 	return u
 }
 
@@ -617,17 +637,45 @@ func (u *QuotaUpsertOne) ClearUpdatedAt() *QuotaUpsertOne {
 	})
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *QuotaUpsertOne) SetOrgID(v int) *QuotaUpsertOne {
+// SetTenantID sets the "tenant_id" field.
+func (u *QuotaUpsertOne) SetTenantID(v int) *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
-		s.SetOrgID(v)
+		s.SetTenantID(v)
 	})
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *QuotaUpsertOne) UpdateOrgID() *QuotaUpsertOne {
+// AddTenantID adds v to the "tenant_id" field.
+func (u *QuotaUpsertOne) AddTenantID(v int) *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
-		s.UpdateOrgID()
+		s.AddTenantID(v)
+	})
+}
+
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *QuotaUpsertOne) UpdateTenantID() *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.UpdateTenantID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *QuotaUpsertOne) SetUserID(v int) *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *QuotaUpsertOne) AddUserID(v int) *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *QuotaUpsertOne) UpdateUserID() *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.UpdateUserID()
 	})
 }
 
@@ -998,17 +1046,45 @@ func (u *QuotaUpsertBulk) ClearUpdatedAt() *QuotaUpsertBulk {
 	})
 }
 
-// SetOrgID sets the "org_id" field.
-func (u *QuotaUpsertBulk) SetOrgID(v int) *QuotaUpsertBulk {
+// SetTenantID sets the "tenant_id" field.
+func (u *QuotaUpsertBulk) SetTenantID(v int) *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
-		s.SetOrgID(v)
+		s.SetTenantID(v)
 	})
 }
 
-// UpdateOrgID sets the "org_id" field to the value that was provided on create.
-func (u *QuotaUpsertBulk) UpdateOrgID() *QuotaUpsertBulk {
+// AddTenantID adds v to the "tenant_id" field.
+func (u *QuotaUpsertBulk) AddTenantID(v int) *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
-		s.UpdateOrgID()
+		s.AddTenantID(v)
+	})
+}
+
+// UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
+func (u *QuotaUpsertBulk) UpdateTenantID() *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.UpdateTenantID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *QuotaUpsertBulk) SetUserID(v int) *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *QuotaUpsertBulk) AddUserID(v int) *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *QuotaUpsertBulk) UpdateUserID() *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.UpdateUserID()
 	})
 }
 

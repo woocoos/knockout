@@ -27100,6 +27100,10 @@ type QuotaMutation struct {
 	updated_by        *int
 	addupdated_by     *int
 	updated_at        *time.Time
+	tenant_id         *int
+	addtenant_id      *int
+	user_id           *int
+	adduser_id        *int
 	_limit            *int64
 	add_limit         *int64
 	used              *int64
@@ -27107,8 +27111,6 @@ type QuotaMutation struct {
 	start_at          *time.Time
 	end_at            *time.Time
 	clearedFields     map[string]struct{}
-	org               *int
-	clearedorg        bool
 	quota_item        *int
 	clearedquota_item bool
 	done              bool
@@ -27431,40 +27433,116 @@ func (m *QuotaMutation) ResetUpdatedAt() {
 	delete(m.clearedFields, quota.FieldUpdatedAt)
 }
 
-// SetOrgID sets the "org_id" field.
-func (m *QuotaMutation) SetOrgID(i int) {
-	m.org = &i
+// SetTenantID sets the "tenant_id" field.
+func (m *QuotaMutation) SetTenantID(i int) {
+	m.tenant_id = &i
+	m.addtenant_id = nil
 }
 
-// OrgID returns the value of the "org_id" field in the mutation.
-func (m *QuotaMutation) OrgID() (r int, exists bool) {
-	v := m.org
+// TenantID returns the value of the "tenant_id" field in the mutation.
+func (m *QuotaMutation) TenantID() (r int, exists bool) {
+	v := m.tenant_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOrgID returns the old "org_id" field's value of the Quota entity.
+// OldTenantID returns the old "tenant_id" field's value of the Quota entity.
 // If the Quota object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *QuotaMutation) OldOrgID(ctx context.Context) (v int, err error) {
+func (m *QuotaMutation) OldTenantID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOrgID is only allowed on UpdateOne operations")
+		return v, errors.New("OldTenantID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOrgID requires an ID field in the mutation")
+		return v, errors.New("OldTenantID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOrgID: %w", err)
+		return v, fmt.Errorf("querying old value for OldTenantID: %w", err)
 	}
-	return oldValue.OrgID, nil
+	return oldValue.TenantID, nil
 }
 
-// ResetOrgID resets all changes to the "org_id" field.
-func (m *QuotaMutation) ResetOrgID() {
-	m.org = nil
+// AddTenantID adds i to the "tenant_id" field.
+func (m *QuotaMutation) AddTenantID(i int) {
+	if m.addtenant_id != nil {
+		*m.addtenant_id += i
+	} else {
+		m.addtenant_id = &i
+	}
+}
+
+// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
+func (m *QuotaMutation) AddedTenantID() (r int, exists bool) {
+	v := m.addtenant_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTenantID resets all changes to the "tenant_id" field.
+func (m *QuotaMutation) ResetTenantID() {
+	m.tenant_id = nil
+	m.addtenant_id = nil
+}
+
+// SetUserID sets the "user_id" field.
+func (m *QuotaMutation) SetUserID(i int) {
+	m.user_id = &i
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *QuotaMutation) UserID() (r int, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Quota entity.
+// If the Quota object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *QuotaMutation) OldUserID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds i to the "user_id" field.
+func (m *QuotaMutation) AddUserID(i int) {
+	if m.adduser_id != nil {
+		*m.adduser_id += i
+	} else {
+		m.adduser_id = &i
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *QuotaMutation) AddedUserID() (r int, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *QuotaMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
 }
 
 // SetQuotaItemID sets the "quota_item_id" field.
@@ -27713,33 +27791,6 @@ func (m *QuotaMutation) ResetEndAt() {
 	delete(m.clearedFields, quota.FieldEndAt)
 }
 
-// ClearOrg clears the "org" edge to the Org entity.
-func (m *QuotaMutation) ClearOrg() {
-	m.clearedorg = true
-	m.clearedFields[quota.FieldOrgID] = struct{}{}
-}
-
-// OrgCleared reports if the "org" edge to the Org entity was cleared.
-func (m *QuotaMutation) OrgCleared() bool {
-	return m.clearedorg
-}
-
-// OrgIDs returns the "org" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OrgID instead. It exists only for internal usage by the builders.
-func (m *QuotaMutation) OrgIDs() (ids []int) {
-	if id := m.org; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOrg resets all changes to the "org" edge.
-func (m *QuotaMutation) ResetOrg() {
-	m.org = nil
-	m.clearedorg = false
-}
-
 // ClearQuotaItem clears the "quota_item" edge to the QuotaItem entity.
 func (m *QuotaMutation) ClearQuotaItem() {
 	m.clearedquota_item = true
@@ -27801,7 +27852,7 @@ func (m *QuotaMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *QuotaMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_by != nil {
 		fields = append(fields, quota.FieldCreatedBy)
 	}
@@ -27814,8 +27865,11 @@ func (m *QuotaMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, quota.FieldUpdatedAt)
 	}
-	if m.org != nil {
-		fields = append(fields, quota.FieldOrgID)
+	if m.tenant_id != nil {
+		fields = append(fields, quota.FieldTenantID)
+	}
+	if m.user_id != nil {
+		fields = append(fields, quota.FieldUserID)
 	}
 	if m.quota_item != nil {
 		fields = append(fields, quota.FieldQuotaItemID)
@@ -27848,8 +27902,10 @@ func (m *QuotaMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedBy()
 	case quota.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case quota.FieldOrgID:
-		return m.OrgID()
+	case quota.FieldTenantID:
+		return m.TenantID()
+	case quota.FieldUserID:
+		return m.UserID()
 	case quota.FieldQuotaItemID:
 		return m.QuotaItemID()
 	case quota.FieldLimit:
@@ -27877,8 +27933,10 @@ func (m *QuotaMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldUpdatedBy(ctx)
 	case quota.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case quota.FieldOrgID:
-		return m.OldOrgID(ctx)
+	case quota.FieldTenantID:
+		return m.OldTenantID(ctx)
+	case quota.FieldUserID:
+		return m.OldUserID(ctx)
 	case quota.FieldQuotaItemID:
 		return m.OldQuotaItemID(ctx)
 	case quota.FieldLimit:
@@ -27926,12 +27984,19 @@ func (m *QuotaMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case quota.FieldOrgID:
+	case quota.FieldTenantID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOrgID(v)
+		m.SetTenantID(v)
+		return nil
+	case quota.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
 		return nil
 	case quota.FieldQuotaItemID:
 		v, ok := value.(int)
@@ -27982,6 +28047,12 @@ func (m *QuotaMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, quota.FieldUpdatedBy)
 	}
+	if m.addtenant_id != nil {
+		fields = append(fields, quota.FieldTenantID)
+	}
+	if m.adduser_id != nil {
+		fields = append(fields, quota.FieldUserID)
+	}
 	if m.add_limit != nil {
 		fields = append(fields, quota.FieldLimit)
 	}
@@ -28000,6 +28071,10 @@ func (m *QuotaMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case quota.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
+	case quota.FieldTenantID:
+		return m.AddedTenantID()
+	case quota.FieldUserID:
+		return m.AddedUserID()
 	case quota.FieldLimit:
 		return m.AddedLimit()
 	case quota.FieldUsed:
@@ -28026,6 +28101,20 @@ func (m *QuotaMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
+		return nil
+	case quota.FieldTenantID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTenantID(v)
+		return nil
+	case quota.FieldUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
 		return nil
 	case quota.FieldLimit:
 		v, ok := value.(int64)
@@ -28107,8 +28196,11 @@ func (m *QuotaMutation) ResetField(name string) error {
 	case quota.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case quota.FieldOrgID:
-		m.ResetOrgID()
+	case quota.FieldTenantID:
+		m.ResetTenantID()
+		return nil
+	case quota.FieldUserID:
+		m.ResetUserID()
 		return nil
 	case quota.FieldQuotaItemID:
 		m.ResetQuotaItemID()
@@ -28131,10 +28223,7 @@ func (m *QuotaMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *QuotaMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.org != nil {
-		edges = append(edges, quota.EdgeOrg)
-	}
+	edges := make([]string, 0, 1)
 	if m.quota_item != nil {
 		edges = append(edges, quota.EdgeQuotaItem)
 	}
@@ -28145,10 +28234,6 @@ func (m *QuotaMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *QuotaMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case quota.EdgeOrg:
-		if id := m.org; id != nil {
-			return []ent.Value{*id}
-		}
 	case quota.EdgeQuotaItem:
 		if id := m.quota_item; id != nil {
 			return []ent.Value{*id}
@@ -28159,7 +28244,7 @@ func (m *QuotaMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *QuotaMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -28171,10 +28256,7 @@ func (m *QuotaMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *QuotaMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedorg {
-		edges = append(edges, quota.EdgeOrg)
-	}
+	edges := make([]string, 0, 1)
 	if m.clearedquota_item {
 		edges = append(edges, quota.EdgeQuotaItem)
 	}
@@ -28185,8 +28267,6 @@ func (m *QuotaMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *QuotaMutation) EdgeCleared(name string) bool {
 	switch name {
-	case quota.EdgeOrg:
-		return m.clearedorg
 	case quota.EdgeQuotaItem:
 		return m.clearedquota_item
 	}
@@ -28197,9 +28277,6 @@ func (m *QuotaMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *QuotaMutation) ClearEdge(name string) error {
 	switch name {
-	case quota.EdgeOrg:
-		m.ClearOrg()
-		return nil
 	case quota.EdgeQuotaItem:
 		m.ClearQuotaItem()
 		return nil
@@ -28211,9 +28288,6 @@ func (m *QuotaMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *QuotaMutation) ResetEdge(name string) error {
 	switch name {
-	case quota.EdgeOrg:
-		m.ResetOrg()
-		return nil
 	case quota.EdgeQuotaItem:
 		m.ResetQuotaItem()
 		return nil
@@ -28224,28 +28298,30 @@ func (m *QuotaMutation) ResetEdge(name string) error {
 // QuotaItemMutation represents an operation that mutates the QuotaItem nodes in the graph.
 type QuotaItemMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_by    *int
-	addcreated_by *int
-	created_at    *time.Time
-	updated_by    *int
-	addupdated_by *int
-	updated_at    *time.Time
-	code          *string
-	name          *string
-	description   *string
-	resource_type *quotaitem.ResourceType
-	unit          *string
-	active        *bool
-	clearedFields map[string]struct{}
-	quota         map[int]struct{}
-	removedquota  map[int]struct{}
-	clearedquota  bool
-	done          bool
-	oldValue      func(context.Context) (*QuotaItem, error)
-	predicates    []predicate.QuotaItem
+	op               Op
+	typ              string
+	id               *int
+	created_by       *int
+	addcreated_by    *int
+	created_at       *time.Time
+	updated_by       *int
+	addupdated_by    *int
+	updated_at       *time.Time
+	code             *string
+	name             *string
+	description      *string
+	resource_type    *quotaitem.ResourceType
+	unit             *string
+	active           *bool
+	default_limit    *int64
+	adddefault_limit *int64
+	clearedFields    map[string]struct{}
+	quota            map[int]struct{}
+	removedquota     map[int]struct{}
+	clearedquota     bool
+	done             bool
+	oldValue         func(context.Context) (*QuotaItem, error)
+	predicates       []predicate.QuotaItem
 }
 
 var _ ent.Mutation = (*QuotaItemMutation)(nil)
@@ -28805,6 +28881,76 @@ func (m *QuotaItemMutation) ResetActive() {
 	m.active = nil
 }
 
+// SetDefaultLimit sets the "default_limit" field.
+func (m *QuotaItemMutation) SetDefaultLimit(i int64) {
+	m.default_limit = &i
+	m.adddefault_limit = nil
+}
+
+// DefaultLimit returns the value of the "default_limit" field in the mutation.
+func (m *QuotaItemMutation) DefaultLimit() (r int64, exists bool) {
+	v := m.default_limit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDefaultLimit returns the old "default_limit" field's value of the QuotaItem entity.
+// If the QuotaItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *QuotaItemMutation) OldDefaultLimit(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDefaultLimit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDefaultLimit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDefaultLimit: %w", err)
+	}
+	return oldValue.DefaultLimit, nil
+}
+
+// AddDefaultLimit adds i to the "default_limit" field.
+func (m *QuotaItemMutation) AddDefaultLimit(i int64) {
+	if m.adddefault_limit != nil {
+		*m.adddefault_limit += i
+	} else {
+		m.adddefault_limit = &i
+	}
+}
+
+// AddedDefaultLimit returns the value that was added to the "default_limit" field in this mutation.
+func (m *QuotaItemMutation) AddedDefaultLimit() (r int64, exists bool) {
+	v := m.adddefault_limit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDefaultLimit clears the value of the "default_limit" field.
+func (m *QuotaItemMutation) ClearDefaultLimit() {
+	m.default_limit = nil
+	m.adddefault_limit = nil
+	m.clearedFields[quotaitem.FieldDefaultLimit] = struct{}{}
+}
+
+// DefaultLimitCleared returns if the "default_limit" field was cleared in this mutation.
+func (m *QuotaItemMutation) DefaultLimitCleared() bool {
+	_, ok := m.clearedFields[quotaitem.FieldDefaultLimit]
+	return ok
+}
+
+// ResetDefaultLimit resets all changes to the "default_limit" field.
+func (m *QuotaItemMutation) ResetDefaultLimit() {
+	m.default_limit = nil
+	m.adddefault_limit = nil
+	delete(m.clearedFields, quotaitem.FieldDefaultLimit)
+}
+
 // AddQuotumIDs adds the "quota" edge to the Quota entity by ids.
 func (m *QuotaItemMutation) AddQuotumIDs(ids ...int) {
 	if m.quota == nil {
@@ -28893,7 +29039,7 @@ func (m *QuotaItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *QuotaItemMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_by != nil {
 		fields = append(fields, quotaitem.FieldCreatedBy)
 	}
@@ -28924,6 +29070,9 @@ func (m *QuotaItemMutation) Fields() []string {
 	if m.active != nil {
 		fields = append(fields, quotaitem.FieldActive)
 	}
+	if m.default_limit != nil {
+		fields = append(fields, quotaitem.FieldDefaultLimit)
+	}
 	return fields
 }
 
@@ -28952,6 +29101,8 @@ func (m *QuotaItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Unit()
 	case quotaitem.FieldActive:
 		return m.Active()
+	case quotaitem.FieldDefaultLimit:
+		return m.DefaultLimit()
 	}
 	return nil, false
 }
@@ -28981,6 +29132,8 @@ func (m *QuotaItemMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldUnit(ctx)
 	case quotaitem.FieldActive:
 		return m.OldActive(ctx)
+	case quotaitem.FieldDefaultLimit:
+		return m.OldDefaultLimit(ctx)
 	}
 	return nil, fmt.Errorf("unknown QuotaItem field %s", name)
 }
@@ -29060,6 +29213,13 @@ func (m *QuotaItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetActive(v)
 		return nil
+	case quotaitem.FieldDefaultLimit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDefaultLimit(v)
+		return nil
 	}
 	return fmt.Errorf("unknown QuotaItem field %s", name)
 }
@@ -29074,6 +29234,9 @@ func (m *QuotaItemMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, quotaitem.FieldUpdatedBy)
 	}
+	if m.adddefault_limit != nil {
+		fields = append(fields, quotaitem.FieldDefaultLimit)
+	}
 	return fields
 }
 
@@ -29086,6 +29249,8 @@ func (m *QuotaItemMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case quotaitem.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
+	case quotaitem.FieldDefaultLimit:
+		return m.AddedDefaultLimit()
 	}
 	return nil, false
 }
@@ -29109,6 +29274,13 @@ func (m *QuotaItemMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpdatedBy(v)
 		return nil
+	case quotaitem.FieldDefaultLimit:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDefaultLimit(v)
+		return nil
 	}
 	return fmt.Errorf("unknown QuotaItem numeric field %s", name)
 }
@@ -29128,6 +29300,9 @@ func (m *QuotaItemMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(quotaitem.FieldUnit) {
 		fields = append(fields, quotaitem.FieldUnit)
+	}
+	if m.FieldCleared(quotaitem.FieldDefaultLimit) {
+		fields = append(fields, quotaitem.FieldDefaultLimit)
 	}
 	return fields
 }
@@ -29154,6 +29329,9 @@ func (m *QuotaItemMutation) ClearField(name string) error {
 		return nil
 	case quotaitem.FieldUnit:
 		m.ClearUnit()
+		return nil
+	case quotaitem.FieldDefaultLimit:
+		m.ClearDefaultLimit()
 		return nil
 	}
 	return fmt.Errorf("unknown QuotaItem nullable field %s", name)
@@ -29192,6 +29370,9 @@ func (m *QuotaItemMutation) ResetField(name string) error {
 		return nil
 	case quotaitem.FieldActive:
 		m.ResetActive()
+		return nil
+	case quotaitem.FieldDefaultLimit:
+		m.ResetDefaultLimit()
 		return nil
 	}
 	return fmt.Errorf("unknown QuotaItem field %s", name)

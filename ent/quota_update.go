@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
@@ -77,17 +76,45 @@ func (qu *QuotaUpdate) ClearUpdatedAt() *QuotaUpdate {
 	return qu
 }
 
-// SetOrgID sets the "org_id" field.
-func (qu *QuotaUpdate) SetOrgID(i int) *QuotaUpdate {
-	qu.mutation.SetOrgID(i)
+// SetTenantID sets the "tenant_id" field.
+func (qu *QuotaUpdate) SetTenantID(i int) *QuotaUpdate {
+	qu.mutation.ResetTenantID()
+	qu.mutation.SetTenantID(i)
 	return qu
 }
 
-// SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (qu *QuotaUpdate) SetNillableOrgID(i *int) *QuotaUpdate {
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (qu *QuotaUpdate) SetNillableTenantID(i *int) *QuotaUpdate {
 	if i != nil {
-		qu.SetOrgID(*i)
+		qu.SetTenantID(*i)
 	}
+	return qu
+}
+
+// AddTenantID adds i to the "tenant_id" field.
+func (qu *QuotaUpdate) AddTenantID(i int) *QuotaUpdate {
+	qu.mutation.AddTenantID(i)
+	return qu
+}
+
+// SetUserID sets the "user_id" field.
+func (qu *QuotaUpdate) SetUserID(i int) *QuotaUpdate {
+	qu.mutation.ResetUserID()
+	qu.mutation.SetUserID(i)
+	return qu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (qu *QuotaUpdate) SetNillableUserID(i *int) *QuotaUpdate {
+	if i != nil {
+		qu.SetUserID(*i)
+	}
+	return qu
+}
+
+// AddUserID adds i to the "user_id" field.
+func (qu *QuotaUpdate) AddUserID(i int) *QuotaUpdate {
+	qu.mutation.AddUserID(i)
 	return qu
 }
 
@@ -187,11 +214,6 @@ func (qu *QuotaUpdate) ClearEndAt() *QuotaUpdate {
 	return qu
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (qu *QuotaUpdate) SetOrg(o *Org) *QuotaUpdate {
-	return qu.SetOrgID(o.ID)
-}
-
 // SetQuotaItem sets the "quota_item" edge to the QuotaItem entity.
 func (qu *QuotaUpdate) SetQuotaItem(q *QuotaItem) *QuotaUpdate {
 	return qu.SetQuotaItemID(q.ID)
@@ -200,12 +222,6 @@ func (qu *QuotaUpdate) SetQuotaItem(q *QuotaItem) *QuotaUpdate {
 // Mutation returns the QuotaMutation object of the builder.
 func (qu *QuotaUpdate) Mutation() *QuotaMutation {
 	return qu.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (qu *QuotaUpdate) ClearOrg() *QuotaUpdate {
-	qu.mutation.ClearOrg()
-	return qu
 }
 
 // ClearQuotaItem clears the "quota_item" edge to the QuotaItem entity.
@@ -243,8 +259,10 @@ func (qu *QuotaUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (qu *QuotaUpdate) check() error {
-	if qu.mutation.OrgCleared() && len(qu.mutation.OrgIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.org"`)
+	if v, ok := qu.mutation.Limit(); ok {
+		if err := quota.LimitValidator(v); err != nil {
+			return &ValidationError{Name: "limit", err: fmt.Errorf(`ent: validator failed for field "Quota.limit": %w`, err)}
+		}
 	}
 	if qu.mutation.QuotaItemCleared() && len(qu.mutation.QuotaItemIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Quota.quota_item"`)
@@ -279,6 +297,18 @@ func (qu *QuotaUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if qu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(quota.FieldUpdatedAt, field.TypeTime)
 	}
+	if value, ok := qu.mutation.TenantID(); ok {
+		_spec.SetField(quota.FieldTenantID, field.TypeInt, value)
+	}
+	if value, ok := qu.mutation.AddedTenantID(); ok {
+		_spec.AddField(quota.FieldTenantID, field.TypeInt, value)
+	}
+	if value, ok := qu.mutation.UserID(); ok {
+		_spec.SetField(quota.FieldUserID, field.TypeInt, value)
+	}
+	if value, ok := qu.mutation.AddedUserID(); ok {
+		_spec.AddField(quota.FieldUserID, field.TypeInt, value)
+	}
 	if value, ok := qu.mutation.Limit(); ok {
 		_spec.SetField(quota.FieldLimit, field.TypeInt64, value)
 	}
@@ -302,35 +332,6 @@ func (qu *QuotaUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if qu.mutation.EndAtCleared() {
 		_spec.ClearField(quota.FieldEndAt, field.TypeTime)
-	}
-	if qu.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   quota.OrgTable,
-			Columns: []string{quota.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := qu.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   quota.OrgTable,
-			Columns: []string{quota.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if qu.mutation.QuotaItemCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -428,17 +429,45 @@ func (quo *QuotaUpdateOne) ClearUpdatedAt() *QuotaUpdateOne {
 	return quo
 }
 
-// SetOrgID sets the "org_id" field.
-func (quo *QuotaUpdateOne) SetOrgID(i int) *QuotaUpdateOne {
-	quo.mutation.SetOrgID(i)
+// SetTenantID sets the "tenant_id" field.
+func (quo *QuotaUpdateOne) SetTenantID(i int) *QuotaUpdateOne {
+	quo.mutation.ResetTenantID()
+	quo.mutation.SetTenantID(i)
 	return quo
 }
 
-// SetNillableOrgID sets the "org_id" field if the given value is not nil.
-func (quo *QuotaUpdateOne) SetNillableOrgID(i *int) *QuotaUpdateOne {
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (quo *QuotaUpdateOne) SetNillableTenantID(i *int) *QuotaUpdateOne {
 	if i != nil {
-		quo.SetOrgID(*i)
+		quo.SetTenantID(*i)
 	}
+	return quo
+}
+
+// AddTenantID adds i to the "tenant_id" field.
+func (quo *QuotaUpdateOne) AddTenantID(i int) *QuotaUpdateOne {
+	quo.mutation.AddTenantID(i)
+	return quo
+}
+
+// SetUserID sets the "user_id" field.
+func (quo *QuotaUpdateOne) SetUserID(i int) *QuotaUpdateOne {
+	quo.mutation.ResetUserID()
+	quo.mutation.SetUserID(i)
+	return quo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (quo *QuotaUpdateOne) SetNillableUserID(i *int) *QuotaUpdateOne {
+	if i != nil {
+		quo.SetUserID(*i)
+	}
+	return quo
+}
+
+// AddUserID adds i to the "user_id" field.
+func (quo *QuotaUpdateOne) AddUserID(i int) *QuotaUpdateOne {
+	quo.mutation.AddUserID(i)
 	return quo
 }
 
@@ -538,11 +567,6 @@ func (quo *QuotaUpdateOne) ClearEndAt() *QuotaUpdateOne {
 	return quo
 }
 
-// SetOrg sets the "org" edge to the Org entity.
-func (quo *QuotaUpdateOne) SetOrg(o *Org) *QuotaUpdateOne {
-	return quo.SetOrgID(o.ID)
-}
-
 // SetQuotaItem sets the "quota_item" edge to the QuotaItem entity.
 func (quo *QuotaUpdateOne) SetQuotaItem(q *QuotaItem) *QuotaUpdateOne {
 	return quo.SetQuotaItemID(q.ID)
@@ -551,12 +575,6 @@ func (quo *QuotaUpdateOne) SetQuotaItem(q *QuotaItem) *QuotaUpdateOne {
 // Mutation returns the QuotaMutation object of the builder.
 func (quo *QuotaUpdateOne) Mutation() *QuotaMutation {
 	return quo.mutation
-}
-
-// ClearOrg clears the "org" edge to the Org entity.
-func (quo *QuotaUpdateOne) ClearOrg() *QuotaUpdateOne {
-	quo.mutation.ClearOrg()
-	return quo
 }
 
 // ClearQuotaItem clears the "quota_item" edge to the QuotaItem entity.
@@ -607,8 +625,10 @@ func (quo *QuotaUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (quo *QuotaUpdateOne) check() error {
-	if quo.mutation.OrgCleared() && len(quo.mutation.OrgIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.org"`)
+	if v, ok := quo.mutation.Limit(); ok {
+		if err := quota.LimitValidator(v); err != nil {
+			return &ValidationError{Name: "limit", err: fmt.Errorf(`ent: validator failed for field "Quota.limit": %w`, err)}
+		}
 	}
 	if quo.mutation.QuotaItemCleared() && len(quo.mutation.QuotaItemIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Quota.quota_item"`)
@@ -660,6 +680,18 @@ func (quo *QuotaUpdateOne) sqlSave(ctx context.Context) (_node *Quota, err error
 	if quo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(quota.FieldUpdatedAt, field.TypeTime)
 	}
+	if value, ok := quo.mutation.TenantID(); ok {
+		_spec.SetField(quota.FieldTenantID, field.TypeInt, value)
+	}
+	if value, ok := quo.mutation.AddedTenantID(); ok {
+		_spec.AddField(quota.FieldTenantID, field.TypeInt, value)
+	}
+	if value, ok := quo.mutation.UserID(); ok {
+		_spec.SetField(quota.FieldUserID, field.TypeInt, value)
+	}
+	if value, ok := quo.mutation.AddedUserID(); ok {
+		_spec.AddField(quota.FieldUserID, field.TypeInt, value)
+	}
 	if value, ok := quo.mutation.Limit(); ok {
 		_spec.SetField(quota.FieldLimit, field.TypeInt64, value)
 	}
@@ -683,35 +715,6 @@ func (quo *QuotaUpdateOne) sqlSave(ctx context.Context) (_node *Quota, err error
 	}
 	if quo.mutation.EndAtCleared() {
 		_spec.ClearField(quota.FieldEndAt, field.TypeTime)
-	}
-	if quo.mutation.OrgCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   quota.OrgTable,
-			Columns: []string{quota.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := quo.mutation.OrgIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   quota.OrgTable,
-			Columns: []string{quota.OrgColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if quo.mutation.QuotaItemCleared() {
 		edge := &sqlgraph.EdgeSpec{

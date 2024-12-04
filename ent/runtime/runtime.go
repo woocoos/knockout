@@ -636,9 +636,7 @@ func init() {
 	permission.DefaultID = permissionDescID.Default.(func() int)
 	quotaMixin := schema.Quota{}.Mixin()
 	quotaMixinHooks1 := quotaMixin[1].Hooks()
-	quotaHooks := schema.Quota{}.Hooks()
 	quota.Hooks[0] = quotaMixinHooks1[0]
-	quota.Hooks[1] = quotaHooks[0]
 	quotaMixinFields1 := quotaMixin[1].Fields()
 	_ = quotaMixinFields1
 	quotaFields := schema.Quota{}.Fields()
@@ -647,8 +645,12 @@ func init() {
 	quotaDescCreatedAt := quotaMixinFields1[1].Descriptor()
 	// quota.DefaultCreatedAt holds the default value on creation for the created_at field.
 	quota.DefaultCreatedAt = quotaDescCreatedAt.Default.(func() time.Time)
+	// quotaDescLimit is the schema descriptor for limit field.
+	quotaDescLimit := quotaFields[3].Descriptor()
+	// quota.LimitValidator is a validator for the "limit" field. It is called by the builders before save.
+	quota.LimitValidator = quotaDescLimit.Validators[0].(func(int64) error)
 	// quotaDescUsed is the schema descriptor for used field.
-	quotaDescUsed := quotaFields[3].Descriptor()
+	quotaDescUsed := quotaFields[4].Descriptor()
 	// quota.DefaultUsed holds the default value on creation for the used field.
 	quota.DefaultUsed = quotaDescUsed.Default.(int64)
 	quotaitemMixin := schema.QuotaItem{}.Mixin()
@@ -782,8 +784,10 @@ func init() {
 	userdeviceMixin := schema.UserDevice{}.Mixin()
 	userdeviceMixinHooks1 := userdeviceMixin[1].Hooks()
 	userdeviceMixinHooks2 := userdeviceMixin[2].Hooks()
+	userdeviceHooks := schema.UserDevice{}.Hooks()
 	userdevice.Hooks[0] = userdeviceMixinHooks1[0]
 	userdevice.Hooks[1] = userdeviceMixinHooks2[0]
+	userdevice.Hooks[2] = userdeviceHooks[0]
 	userdeviceMixinFields1 := userdeviceMixin[1].Fields()
 	_ = userdeviceMixinFields1
 	userdeviceFields := schema.UserDevice{}.Fields()
