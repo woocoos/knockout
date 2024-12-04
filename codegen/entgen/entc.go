@@ -38,7 +38,7 @@ func main() {
 	}
 	err = entc.Generate("./codegen/entgen/schema", &gen.Config{
 		Package:  "github.com/woocoos/knockout/ent",
-		Features: []gen.Feature{gen.FeatureVersionedMigration, gen.FeatureUpsert, gen.FeatureIntercept},
+		Features: []gen.Feature{gen.FeatureVersionedMigration, gen.FeatureUpsert, gen.FeatureIntercept, gen.FeatureExecQuery},
 		Target:   "./ent",
 	}, opts...)
 	if err != nil {

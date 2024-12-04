@@ -636,7 +636,9 @@ func init() {
 	permission.DefaultID = permissionDescID.Default.(func() int)
 	quotaMixin := schema.Quota{}.Mixin()
 	quotaMixinHooks1 := quotaMixin[1].Hooks()
+	quotaHooks := schema.Quota{}.Hooks()
 	quota.Hooks[0] = quotaMixinHooks1[0]
+	quota.Hooks[1] = quotaHooks[0]
 	quotaMixinFields1 := quotaMixin[1].Fields()
 	_ = quotaMixinFields1
 	quotaFields := schema.Quota{}.Fields()

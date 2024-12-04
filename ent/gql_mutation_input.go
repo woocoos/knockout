@@ -1887,7 +1887,6 @@ func (c *PermissionUpdateOne) SetInput(i UpdatePermissionInput) *PermissionUpdat
 // CreateQuotaInput represents a mutation input for creating quotaslice.
 type CreateQuotaInput struct {
 	Limit       int64
-	Used        *int64
 	StartAt     *time.Time
 	EndAt       *time.Time
 	OrgID       int
@@ -1897,9 +1896,6 @@ type CreateQuotaInput struct {
 // Mutate applies the CreateQuotaInput on the QuotaMutation builder.
 func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
 	m.SetLimit(i.Limit)
-	if v := i.Used; v != nil {
-		m.SetUsed(*v)
-	}
 	if v := i.StartAt; v != nil {
 		m.SetStartAt(*v)
 	}
@@ -1919,7 +1915,6 @@ func (c *QuotaCreate) SetInput(i CreateQuotaInput) *QuotaCreate {
 // UpdateQuotaInput represents a mutation input for updating quotaslice.
 type UpdateQuotaInput struct {
 	Limit        *int64
-	Used         *int64
 	ClearStartAt bool
 	StartAt      *time.Time
 	ClearEndAt   bool
@@ -1932,9 +1927,6 @@ type UpdateQuotaInput struct {
 func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
 	if v := i.Limit; v != nil {
 		m.SetLimit(*v)
-	}
-	if v := i.Used; v != nil {
-		m.SetUsed(*v)
 	}
 	if i.ClearStartAt {
 		m.ClearStartAt()

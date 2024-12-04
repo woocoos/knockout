@@ -2,12 +2,15 @@ package graphql
 
 import (
 	"context"
-	"entgo.io/ent/dialect/sql"
+	"testing"
+	"time"
+
+	"github.com/99designs/gqlgen/client"
 	"github.com/golang-jwt/jwt/v5"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/pkg/security"
-	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -16,13 +19,9 @@ import (
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/orgapp"
-	"github.com/woocoos/knockout/script/data"
-	"github.com/woocoos/knockout/service/resource"
-	"github.com/woocoos/knockout/test/testsuite"
-	"testing"
-
-	_ "github.com/mattn/go-sqlite3"
 	_ "github.com/woocoos/knockout/ent/runtime"
+	"github.com/woocoos/knockout/script/data"
+	"github.com/woocoos/knockout/test/testsuite"
 )
 
 // graphqlSuite for graphql
@@ -30,87 +29,194 @@ import (
 // Name with _ will be run after Test* methods. Doing delete operation can be run in those.
 type graphqlSuite struct {
 	testsuite.BaseSuite
-	resolver     *Resolver
-	mr           *mutationResolver
-	qr           *queryResolver
-	casbinClient *casbinent.Client
+	mr        *mutationResolver
+	qr        *queryResolver
+	server    *Server
+	gqlClient *client.Client
 }
 
-func (s *graphqlSuite) SetupSuite() {
-	err := s.BaseSuite.Setup()
-	s.Require().NoError(err)
-	data.InitBase(s.DriverName, s.DSN)
+func (t *graphqlSuite) SetupSuite() {
+	err := t.BaseSuite.Setup()
+	t.Require().NoError(err)
+	data.InitBase(t.DriverName, t.DSN)
 
-	s.resolver = NewResolver(WithClient(s.Client), WithResource(&resource.Service{
-		Client: s.Client,
-	}))
+	buildCashbin(t.Cnf, t.AuthDbClient)
 
-	// 初始化casbin
-	drv, err := sql.Open(s.DriverName, s.DSN)
-	s.casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
-	buildCashbin(s.Cnf, s.casbinClient)
-
-	s.mr = &mutationResolver{
-		Resolver: s.resolver,
+	t.server = &Server{
+		casbinClient: t.AuthDbClient,
+		portalClient: t.Client,
 	}
-	s.qr = &queryResolver{
-		Resolver: s.resolver,
+	t.server.buildWebEngine(t.Cnf)
+	t.mr = &mutationResolver{
+		Resolver: t.server.resolver,
 	}
+	t.qr = &queryResolver{
+		Resolver: t.server.resolver,
+	}
+	t.gqlClient = client.New(t.server.webSrv.Router(), func(bd *client.Request) {
+		bd.HTTP.URL.Path = "/graphql/query"
+		bd.HTTP.Header.Set("Authorization", "Bearer "+t.BearToken())
+		bd.HTTP.Header.Set("X-Tenant-ID", "1")
+	})
 }
 
 func TestGraphqlSuite(t *testing.T) {
 	s := &graphqlSuite{
 		BaseSuite: testsuite.BaseSuite{
-			DSN:        "file:msgcenter?mode=memory&cache=shared&_fk=1",
+			DSN:        "file:graphql?mode=memory&cache=shared&_fk=1",
 			DriverName: "sqlite3",
 		},
 	}
 	suite.Run(t, s)
 }
 
-func (s *graphqlSuite) TestApp() {
-	s.Run("update", func() {
-		ap, err := s.Client.App.UpdateOneID(1).SetUpdatedBy(1).SetInput(ent.UpdateAppInput{Scopes: gds.Ptr("a")}).
+func (t *graphqlSuite) TestApp() {
+	t.Run("update", func() {
+		ap, err := t.Client.App.UpdateOneID(1).SetUpdatedBy(1).SetInput(ent.UpdateAppInput{Scopes: gds.Ptr("a")}).
 			Save(context.Background())
-		s.Require().NoError(err)
-		s.NotNil(ap.Logo)
+		t.Require().NoError(err)
+		t.NotNil(ap.Logo)
 	})
 }
 
-func (s *graphqlSuite) Test_DeleteApp() {
+func (t *graphqlSuite) Test_DeleteApp() {
 	ctx := context.Background()
-	_, err := s.Client.App.Get(ctx, 1)
-	s.Require().NoError(err)
+	_, err := t.Client.App.Get(ctx, 1)
+	t.Require().NoError(err)
 
-	s.Client.OrgApp.Delete().Where(orgapp.AppID(1)).ExecX(ctx)
+	t.Client.OrgApp.Delete().Where(orgapp.AppID(1)).ExecX(ctx)
 
-	_, err = s.mr.DeleteApp(s.NewTestCtx(1, 1), 1)
-	s.Require().NoError(err)
+	_, err = t.mr.DeleteApp(t.NewTestCtx(1, 1), 1)
+	t.Require().NoError(err)
 
-	ok := s.Client.AppAction.Query().Where(appaction.AppID(1)).ExistX(ctx)
-	s.Require().False(ok)
-	ok = s.Client.AppMenu.Query().Where(appmenu.AppID(1)).ExistX(ctx)
-	s.Require().False(ok)
-	ok = s.Client.AppRes.Query().Where(appres.AppID(1)).ExistX(ctx)
-	s.Require().False(ok)
-	ok = s.Client.AppRole.Query().Where(approle.AppID(1)).ExistX(ctx)
-	s.Require().False(ok)
-	ok = s.Client.AppPolicy.Query().Where(apppolicy.AppID(1)).ExistX(ctx)
-	s.Require().False(ok)
+	ok := t.Client.AppAction.Query().Where(appaction.AppID(1)).ExistX(ctx)
+	t.Require().False(ok)
+	ok = t.Client.AppMenu.Query().Where(appmenu.AppID(1)).ExistX(ctx)
+	t.Require().False(ok)
+	ok = t.Client.AppRes.Query().Where(appres.AppID(1)).ExistX(ctx)
+	t.Require().False(ok)
+	ok = t.Client.AppRole.Query().Where(approle.AppID(1)).ExistX(ctx)
+	t.Require().False(ok)
+	ok = t.Client.AppPolicy.Query().Where(apppolicy.AppID(1)).ExistX(ctx)
+	t.Require().False(ok)
 }
 
-func (s *graphqlSuite) Test_UserPermissions() {
+func (t *graphqlSuite) Test_UserPermissions() {
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
 	ctx = identity.WithTenantID(ctx, 1)
 
-	s.Client.AppAction.Create().SetAppID(1).SetCreatedBy(1).
+	t.Client.AppAction.Create().SetAppID(1).SetCreatedBy(1).
 		SetName("test").SetKind(appaction.KindFunction).SetComments("测试").SetMethod(appaction.MethodRead)
 
-	as, err := s.qr.UserPermissions(ctx, &ent.AppActionWhereInput{
+	as, err := t.qr.UserPermissions(ctx, &ent.AppActionWhereInput{
 		ID: gds.Ptr(1),
 	})
-	s.Require().NoError(err)
-	acs, err := s.Client.AppAction.Query().Where(appaction.AppID(1)).Count(ctx)
-	s.Require().NoError(err)
-	s.Equal(len(as), acs)
+	t.Require().NoError(err)
+	acs, err := t.Client.AppAction.Query().Where(appaction.AppID(1)).Count(ctx)
+	t.Require().NoError(err)
+	t.Equal(len(as), acs)
+}
+
+func (t *graphqlSuite) TestQuota() {
+	ctx := context.Background()
+	quotaItems := []*ent.QuotaItem{
+		t.Client.QuotaItem.Create().SetID(1).SetCode("users").SetName("用户数量限制").SetResourceType("number").SetUnit("个").SetActive(true).
+			SetCreatedBy(1).SaveX(ctx),
+
+		t.Client.QuotaItem.Create().SetID(2).SetCode("storage").SetName("存储空间").SetResourceType("storage").SetUnit("GB").SetActive(true).
+			SetCreatedBy(1).SaveX(ctx),
+		t.Client.QuotaItem.Create().SetID(3).SetCode("api").SetName("API调用次数").SetResourceType("number").SetUnit("次").SetActive(true).
+			SetCreatedBy(1).SaveX(ctx),
+	}
+
+	t.Client.Quota.Create().SetID(1).SetOrgID(1).SetQuotaItem(quotaItems[0]).SetLimit(100).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
+	t.Client.Quota.Create().SetID(2).SetOrgID(1).SetQuotaItem(quotaItems[1]).SetLimit(1000).SetStartAt(time.Now().AddDate(0, 0, -1)).
+		SetEndAt(time.Now().AddDate(0, 1, 0)).SetCreatedBy(1).SaveX(ctx)
+	t.Client.Quota.Create().SetID(3).SetOrgID(1).SetQuotaItem(quotaItems[2]).SetLimit(1).SetStartAt(time.Now()).SetCreatedBy(1).SaveX(ctx)
+	t.Run("query quota items", func() {
+		const query = `
+            query {
+                quotaItems(first: 10) {
+                    edges {
+                        node {
+                            id
+                            code
+                            name
+                            resourceType
+                            unit
+                            active
+                        }
+                    }
+                }
+            }
+        `
+
+		var resp struct {
+			QuotaItems struct {
+				Edges []struct {
+					Node struct {
+						ID           string
+						Code         string
+						Name         string
+						ResourceType string
+						Unit         string
+						Active       bool
+					}
+				}
+			}
+		}
+		err := t.gqlClient.Post(query, &resp)
+		t.Require().NoError(err)
+		t.Require().Len(resp.QuotaItems.Edges, 3)
+		t.Equal("users", resp.QuotaItems.Edges[0].Node.Code)
+	})
+	t.Run("query quotas", func() {
+		const query = `
+            query {
+                quotas(first: 10) {
+                    edges {
+                        node {
+                            id
+                            limit
+                            used
+                            startAt
+                            endAt
+                            quotaItem {
+                                code
+                                name
+                            }
+                            org {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `
+
+		var resp struct {
+			Quotas struct {
+				Edges []struct {
+					Node struct {
+						ID        string
+						Limit     int64
+						Used      int64
+						StartAt   time.Time
+						EndAt     *time.Time
+						QuotaItem struct {
+							Code string
+							Name string
+						}
+						Org struct {
+							Name string
+						}
+					}
+				}
+			}
+		}
+
+		err := t.gqlClient.Post(query, &resp)
+		t.Require().NoError(err)
+		t.Require().Len(resp.Quotas.Edges, 2)
+	})
 }

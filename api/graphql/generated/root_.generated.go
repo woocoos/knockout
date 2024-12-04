@@ -9457,10 +9457,6 @@ input CreateQuotaInput {
   """
   limit: Int!
   """
-  已使用值
-  """
-  used: Int
-  """
   生效时间
   """
   startAt: Time
@@ -13933,10 +13929,6 @@ input UpdateQuotaInput {
   限制值
   """
   limit: Int
-  """
-  已使用值
-  """
-  used: Int
   """
   生效时间
   """

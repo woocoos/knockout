@@ -42968,7 +42968,7 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"limit", "used", "startAt", "endAt", "orgID", "quotaItemID"}
+	fieldsInOrder := [...]string{"limit", "startAt", "endAt", "orgID", "quotaItemID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -42982,13 +42982,6 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.Limit = data
-		case "used":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("used"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Used = data
 		case "startAt":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startAt"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -55638,7 +55631,7 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"limit", "used", "startAt", "clearStartAt", "endAt", "clearEndAt", "orgID", "quotaItemID"}
+	fieldsInOrder := [...]string{"limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "orgID", "quotaItemID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -55652,13 +55645,6 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.Limit = data
-		case "used":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("used"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Used = data
 		case "startAt":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startAt"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)

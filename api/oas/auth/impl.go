@@ -12,14 +12,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
-	"github.com/tsingsun/woocoo"
-	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
-	"github.com/tsingsun/woocoo/web"
-	"github.com/tsingsun/woocoo/web/handler"
-	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -28,9 +23,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
-	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/identity"
-	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -99,8 +92,7 @@ type Options struct {
 // ServerImpl is the server API for service.
 type ServerImpl struct {
 	Options
-	db           *ent.Client
-	casbinClient *casbinent.Client
+	db *ent.Client
 
 	cache cache.Cache
 
@@ -109,26 +101,13 @@ type ServerImpl struct {
 	LogoutHandler func(*gin.Context)
 
 	captchaStore captcha.Store
-
-	webServer *web.Server
 }
 
-func NewServer(app *woocoo.App) *ServerImpl {
+func NewServerImpl(cnf *conf.AppConfiguration) *ServerImpl {
 	var (
 		err error
 	)
-	cnf := app.AppConfiguration()
 	s := &ServerImpl{}
-	ents := koapp.BuildEntComponents(cnf)
-	drv := ents["portal"]
-	if cnf.Development {
-		s.db = ent.NewClient(ent.Driver(drv), ent.Debug())
-		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv), casbinent.Debug())
-	} else {
-		s.db = ent.NewClient(ent.Driver(drv))
-		s.casbinClient = casbinent.NewClient(casbinent.Driver(drv))
-	}
-	buildCashbin(cnf, s.casbinClient)
 	if s.kosdk, err = api.NewSDK(cnf.Sub("kosdk")); err != nil {
 		panic(err)
 	}
@@ -139,31 +118,7 @@ func NewServer(app *woocoo.App) *ServerImpl {
 		panic(err)
 	}
 
-	s.buildWebServer(app)
-	app.RegisterServer(s.webServer)
 	return s
-}
-
-func (s *ServerImpl) buildWebServer(app *woocoo.App) *web.Server {
-	s.webServer = web.New(web.WithConfiguration(app.AppConfiguration().Sub("web")),
-		web.WithGracefulStop(),
-		otelweb.RegisterMiddleware(),
-	)
-	// default group is '/'
-	dr := s.webServer.Router().FindGroup("/").Group
-	if mdl, ok := s.webServer.HandlerManager().GetMiddleware("jwt"); ok {
-		s.LogoutHandler = mdl.(*handler.JWTMiddleware).Config.LogoutHandler
-	}
-	RegisterAuthHandlers(dr, s)
-	RegisterHandlersManual(dr, s)
-	return s.webServer
-}
-
-func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
-	err := casbin.SetAuthorizer(cnf.Sub("authz"), client)
-	if err != nil {
-		panic(err)
-	}
 }
 
 func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
@@ -186,16 +141,6 @@ func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 	s.captchaStore = captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire)
 	captcha.SetCustomStore(s.captchaStore)
 	return nil
-}
-
-// Start implements woocoo.Server but do noting in start, the web server has registered by NewServer.
-func (s *ServerImpl) Start(ctx context.Context) error {
-	return nil
-}
-
-func (s *ServerImpl) Stop(ctx context.Context) error {
-	s.casbinClient.Close()
-	return s.db.Close()
 }
 
 func (s *ServerImpl) Captcha(ctx *gin.Context, req *CaptchaRequest) (*Captcha, error) {

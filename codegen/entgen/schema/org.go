@@ -116,13 +116,12 @@ func pathHook() ent.Hook {
 				if err != nil {
 					return nil, err
 				}
+				ov := value.(*gen.Org)
 				if pid, ok := mutation.ParentID(); ok {
 					id, _ := mutation.ID()
 					code := strconv.FormatInt(int64(id), 36)
-					update := mutation.Client().Org.UpdateOneID(id)
-					if pid == 0 {
-						update.SetPath(code)
-					} else {
+					path := code
+					if pid != 0 {
 						parentPath := ""
 						prow, err := mutation.Client().Org.Query().Where(org.ID(pid)).
 							Select(org.FieldPath).Only(ctx)
@@ -134,15 +133,20 @@ func pathHook() ent.Hook {
 						} else {
 							parentPath = prow.Path + "/"
 						}
-						update.SetPath(parentPath + code)
+						path = parentPath + path
 					}
-					if c, _ := mutation.Code(); c == "" {
-						update.SetCode(code)
+					ov.Path = path
+
+					if ov.Code == "" {
+						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? and code=? WHERE id=?", path, code, id)
+						ov.Code = code
+					} else {
+						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? WHERE id=?", path, id)
 					}
-					err = update.Exec(ctx)
 					if err != nil {
 						return nil, err
 					}
+
 				}
 				return value, nil
 			})

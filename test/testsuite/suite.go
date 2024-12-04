@@ -9,9 +9,10 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/security"
-	entadapter "github.com/woocoos/casbin-ent-adapter"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	ecx "github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/migrate"
 	"github.com/woocoos/knockout/test"
@@ -26,26 +27,42 @@ type BaseSuite struct {
 	DSN, DriverName string
 	Client          *ent.Client
 	CacheClient     *ent.Client
-	redis           *miniredis.Miniredis
+	Redis           *miniredis.Miniredis
+	App             *woocoo.App
+	AuthDbClient    *casbinent.Client
 }
 
 func (o *BaseSuite) Setup() error {
-	app := initTestApp()
-	o.Cnf = app.AppConfiguration()
-	o.redis = initMiniRedis(o.Cnf)
+	o.App = initTestApp()
+	o.Cnf = o.App.AppConfiguration()
+	o.Redis = initMiniRedis(o.Cnf)
 
 	if o.DSN == "" && o.DriverName == "" {
 		o.DriverName = "sqlite3"
-		o.DSN = "file:msgcenter?mode=memory&cache=shared&_fk=1"
+		o.DSN = "file:portalLite?mode=memory&cache=shared&_fk=1"
 	}
-	client, err := open(context.Background(), o.DriverName, o.DSN)
-	o.Require().NoError(err)
-	o.Client = client.Debug()
+	o.Cnf.Parser().Set("store.portal.driverName", o.DriverName)
+	o.Cnf.Parser().Set("store.portal.dsn", o.DSN)
 
 	drv, err := sql.Open(o.DriverName, o.DSN)
 	o.Require().NoError(err)
+	o.Client = ent.NewClient(ent.Driver(drv))
+	o.AuthDbClient = casbinent.NewClient(casbinent.Driver(drv))
+
 	td, _ := ecx.BuildEntCacheDriver(o.Cnf.Sub("entcache"), drv)
 	o.CacheClient = ent.NewClient(ent.Driver(td)).Debug()
+
+	err = o.Client.Schema.Create(context.Background(),
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+		migrate.WithForeignKeys(false))
+	o.Require().NoError(err)
+
+	err = o.AuthDbClient.Schema.Create(context.Background(),
+		migrate.WithDropIndex(true),
+		migrate.WithDropColumn(true),
+		migrate.WithForeignKeys(false))
+	o.Require().NoError(err)
 	return nil
 }
 
@@ -67,28 +84,16 @@ func initMiniRedis(cnf *conf.AppConfiguration) *miniredis.Miniredis {
 	if err != nil {
 		panic(err)
 	}
-	cnf.Parser().Set("store.redis.addrs", []string{db.Addr()})
+	cnf.Parser().Set("cache.redis.addrs", []string{db.Addr()})
+	cnf.Parser().Set("authz.watcherOptions.options.addr", db.Addr())
+
+	koapp.BuildCacheComponents(cnf)
 	return db
 }
 
-// some as scripts/intidb.go as possible
-func open(ctx context.Context, driverName, dsn string) (*ent.Client, error) {
-	client, err := ent.Open(driverName, dsn)
-	if err != nil {
-		return nil, err
-	}
-	// Run the auto migration tool.
-	if err := client.Schema.Create(
-		ctx,
-		migrate.WithDropIndex(true),
-		migrate.WithDropColumn(true),
-		migrate.WithForeignKeys(false),
-	); err != nil {
-		return nil, err
-	}
-
-	_, err = entadapter.NewAdapter(driverName, dsn, entadapter.WithMigration())
-	return client, nil
+func (o *BaseSuite) BearToken() string {
+	const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6InFlZWx5biIsImlhdCI6MTkxNjIzOTAyMn0.x3zlGsLKOjm313FtP9YkXY9IKbtYrEGibjsyPB4X-P8"
+	return Token
 }
 
 func (o *BaseSuite) NewTestCtx(uid, oid int) context.Context {

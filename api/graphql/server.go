@@ -24,6 +24,7 @@ type Server struct {
 	casbinClient *casbinent.Client
 	webSrv       *web.Server
 	kosdk        *api.SDK
+	resolver     *Resolver
 }
 
 func NewServer(app *woocoo.App) *Server {
@@ -46,7 +47,7 @@ func NewServer(app *woocoo.App) *Server {
 		panic(err)
 	}
 
-	s.buildWebEngine(app)
+	s.buildWebEngine(app.AppConfiguration())
 
 	app.RegisterServer(s.webSrv)
 
@@ -63,8 +64,7 @@ func (s *Server) Stop(ctx context.Context) error {
 	return nil
 }
 
-func (s *Server) buildWebEngine(app *woocoo.App) {
-	cnf := app.AppConfiguration()
+func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 	s.webSrv = web.New(web.WithConfiguration(cnf.Sub("web")),
 		web.WithGracefulStop(),
 		gql.RegisterMiddleware(),
@@ -74,9 +74,10 @@ func (s *Server) buildWebEngine(app *woocoo.App) {
 		middleware.RegisterTokenSigner(),
 	)
 
-	gqlSrv := handler.NewDefaultServer(NewSchema(WithClient(s.portalClient),
+	s.resolver = NewResolver(WithClient(s.portalClient),
 		WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk, Cfg: cnf}),
-	))
+	)
+	gqlSrv := handler.NewDefaultServer(NewSchema(s.resolver))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction
 	gqlSrv.Use(entgql.Transactioner{TxOpener: s.portalClient})

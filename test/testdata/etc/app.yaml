@@ -26,9 +26,6 @@ cache:
 
 store:
   portal:
-    driverName: mysql
-    dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
-  test:
     driverName: sqlite3
     dsn: "file:portal?mode=memory&cache=shared&_fk=1"
 
@@ -38,14 +35,22 @@ entcache:
 web:
   engine:
     routerGroups:
-      - default:
-          middlewares:
-            - errorHandle:
-            - jwt:
+    - default:
+        middlewares:
+        - errorHandle:
+        - jwt:
 #                tokenStoreKey: redis
-                exclude:
-                  - "/spm/auth"
-                <<: *jwt
+            exclude:
+              - "/spm/auth"
+            <<: *jwt
+    - graphql:
+        basePath: "/graphql"
+        middlewares:
+          - tenant:
+          - graphql:
+              group: "/graphql"
+              withAuthorization: false
+              appCode: "resource"
 
 kosdk:
   client:
