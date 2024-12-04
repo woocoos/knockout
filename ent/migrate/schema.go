@@ -192,7 +192,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "kind", Type: field.TypeEnum, Enums: []string{"app", "view"}},
+		{Name: "kind", Type: field.TypeEnum, Enums: []string{"app", "view"}, Default: "app"},
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},

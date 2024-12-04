@@ -2806,7 +2806,7 @@ input CreateAppPolicyInput {
   """
   分类：app-应用策略、view-策略视图
   """
-  kind: AppPolicyKind!
+  kind: AppPolicyKind
   """
   策略名称
   """

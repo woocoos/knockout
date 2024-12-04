@@ -418,13 +418,13 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
-		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, appPolicyIDs []int) int
-		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, orgPolicyIDs []int) int
+		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) int
+		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
-		AssignUserPolicyView        func(childComplexity int, orgID int, userID int, orgPolicyIDs []int) int
+		AssignUserPolicyView        func(childComplexity int, orgID int, userID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) int
 		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
@@ -2837,7 +2837,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["appPolicyIDs"].([]int)), true
+		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["appPolicyIDs"].([]int), args["rmAppPolicyIDs"].([]int)), true
 
 	case "Mutation.assignOrgRolePolicyView":
 		if e.complexity.Mutation.AssignOrgRolePolicyView == nil {
@@ -2849,7 +2849,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["orgPolicyIDs"].([]int)), true
+		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["orgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
 
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
@@ -2909,7 +2909,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["orgPolicyIDs"].([]int)), true
+		return e.complexity.Mutation.AssignUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["orgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
 
 	case "Mutation.autoGrantApp":
 		if e.complexity.Mutation.AutoGrantApp == nil {
@@ -9753,7 +9753,7 @@ input CreateAppPolicyInput {
   """
   分类：app-应用策略、view-策略视图
   """
-  kind: AppPolicyKind!
+  kind: AppPolicyKind
   """
   策略名称
   """
@@ -16758,12 +16758,12 @@ input UserWhereInput {
         action: TreeAction!
     ): Boolean!
     """应用角色添加策略视图权限"""
-    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!]!): Boolean!
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
     """组织用户添加策略视图权限"""
-    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!]!): Boolean!
+    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """组织角色添加策略视图权限"""
-    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!]!): Boolean!
-    # 创建配额项
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    # 创建配额项q
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     # 更新配额项
     updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!

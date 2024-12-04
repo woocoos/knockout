@@ -144,6 +144,9 @@ var (
 // Kind defines the type for the "kind" enum field.
 type Kind string
 
+// KindApp is the default value of the Kind enum.
+const DefaultKind = KindApp
+
 // Kind values.
 const (
 	KindApp  Kind = "app"

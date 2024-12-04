@@ -97,6 +97,14 @@ func (apc *AppPolicyCreate) SetKind(a apppolicy.Kind) *AppPolicyCreate {
 	return apc
 }
 
+// SetNillableKind sets the "kind" field if the given value is not nil.
+func (apc *AppPolicyCreate) SetNillableKind(a *apppolicy.Kind) *AppPolicyCreate {
+	if a != nil {
+		apc.SetKind(*a)
+	}
+	return apc
+}
+
 // SetName sets the "name" field.
 func (apc *AppPolicyCreate) SetName(s string) *AppPolicyCreate {
 	apc.mutation.SetName(s)
@@ -287,6 +295,10 @@ func (apc *AppPolicyCreate) defaults() error {
 		}
 		v := apppolicy.DefaultCreatedAt()
 		apc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := apc.mutation.Kind(); !ok {
+		v := apppolicy.DefaultKind
+		apc.mutation.SetKind(v)
 	}
 	if _, ok := apc.mutation.Version(); !ok {
 		v := apppolicy.DefaultVersion

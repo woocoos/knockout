@@ -44761,7 +44761,7 @@ func (ec *executionContext) unmarshalInputCreateAppPolicyInput(ctx context.Conte
 		switch k {
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
-			data, err := ec.unmarshalNAppPolicyKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋapppolicyᚐKind(ctx, v)
+			data, err := ec.unmarshalOAppPolicyKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋapppolicyᚐKind(ctx, v)
 			if err != nil {
 				return it, err
 			}

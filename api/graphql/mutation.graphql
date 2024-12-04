@@ -224,12 +224,12 @@ type Mutation {
         action: TreeAction!
     ): Boolean!
     """应用角色添加策略视图权限"""
-    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!]!): Boolean!
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
     """组织用户添加策略视图权限"""
-    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!]!): Boolean!
+    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """组织角色添加策略视图权限"""
-    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!]!): Boolean!
-    # 创建配额项
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    # 创建配额项q
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     # 更新配额项
     updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!
@@ -241,5 +241,4 @@ type Mutation {
     updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
     # 删除配额
     deleteQuota(id: ID!): Boolean!
-
 }

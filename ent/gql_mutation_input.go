@@ -642,7 +642,7 @@ func (c *AppMenuUpdateOne) SetInput(i UpdateAppMenuInput) *AppMenuUpdateOne {
 
 // CreateAppPolicyInput represents a mutation input for creating apppolicies.
 type CreateAppPolicyInput struct {
-	Kind          apppolicy.Kind
+	Kind          *apppolicy.Kind
 	Name          string
 	Comments      *string
 	Rules         []*types.PolicyRule
@@ -656,7 +656,9 @@ type CreateAppPolicyInput struct {
 
 // Mutate applies the CreateAppPolicyInput on the AppPolicyMutation builder.
 func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
-	m.SetKind(i.Kind)
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)

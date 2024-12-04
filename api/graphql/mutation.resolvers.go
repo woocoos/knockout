@@ -610,15 +610,25 @@ func (r *mutationResolver) MoveAppPolicyView(ctx context.Context, sourceID int, 
 }
 
 // AssignAppRolePolicyView is the resolver for the assignAppRolePolicyView field.
-func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int) (bool, error) {
-	return r.AssignAppRolePolicy(ctx, appID, roleID, appPolicyIDs)
+func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) (bool, error) {
+	// 添加
+	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, appPolicyIDs)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	err = r.resource.RevokeAppRolePolicy(ctx, appID, roleID, rmAppPolicyIDs)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // AssignUserPolicyView is the resolver for the assignUserPolicyView field.
-func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int) (bool, error) {
+func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
 	// TODO 先使用grant处理，后期考虑批量处理
 	for _, orgPolicyID := range orgPolicyIDs {
-		_, err := r.Grant(ctx, ent.CreatePermissionInput{
+		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
 			PrincipalKind: permission.PrincipalKindUser,
 			UserID:        &userID,
 			OrgID:         orgID,
@@ -628,19 +638,51 @@ func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, 
 			return false, err
 		}
 	}
+	pIDs, err := r.client.Permission.Query().Where(
+		permission.OrgPolicyIDIn(rmOrgPolicyIDs...),
+		permission.UserID(userID),
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+	).Select(permission.FieldID).Ints(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	for _, pID := range pIDs {
+		err = r.resource.Revoke(ctx, orgID, pID)
+		if err != nil {
+			return false, err
+		}
+	}
 	return true, nil
 }
 
 // AssignOrgRolePolicyView is the resolver for the assignOrgRolePolicyView field.
-func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int) (bool, error) {
+func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
 	// TODO 先使用grant处理，后期考虑批量处理
 	for _, orgPolicyID := range orgPolicyIDs {
-		_, err := r.Grant(ctx, ent.CreatePermissionInput{
+		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
 			PrincipalKind: permission.PrincipalKindRole,
 			RoleID:        &roleID,
 			OrgID:         orgID,
 			OrgPolicyID:   orgPolicyID,
 		})
+		if err != nil {
+			return false, err
+		}
+	}
+	pIDs, err := r.client.Permission.Query().Where(
+		permission.OrgPolicyIDIn(rmOrgPolicyIDs...),
+		permission.RoleID(roleID),
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+	).Select(permission.FieldID).Ints(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	for _, pID := range pIDs {
+		err = r.resource.Revoke(ctx, orgID, pID)
 		if err != nil {
 			return false, err
 		}

@@ -113,9 +113,9 @@ type MutationResolver interface {
 	UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error)
 	DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error)
 	MoveAppPolicyView(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
-	AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int) (bool, error)
-	AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int) (bool, error)
-	AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int) (bool, error)
+	AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) (bool, error)
+	AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error)
+	AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error)
 	CreateQuotaItem(ctx context.Context, input ent.CreateQuotaItemInput) (*ent.QuotaItem, error)
 	UpdateQuotaItem(ctx context.Context, id int, input ent.UpdateQuotaItemInput) (*ent.QuotaItem, error)
 	DeleteQuotaItem(ctx context.Context, id int) (bool, error)
@@ -178,6 +178,11 @@ func (ec *executionContext) field_Mutation_assignAppRolePolicyView_args(ctx cont
 		return nil, err
 	}
 	args["appPolicyIDs"] = arg2
+	arg3, err := ec.field_Mutation_assignAppRolePolicyView_argsRmAppPolicyIDs(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["rmAppPolicyIDs"] = arg3
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_assignAppRolePolicyView_argsAppID(
@@ -239,7 +244,29 @@ func (ec *executionContext) field_Mutation_assignAppRolePolicyView_argsAppPolicy
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appPolicyIDs"))
 	if tmp, ok := rawArgs["appPolicyIDs"]; ok {
-		return ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
+	}
+
+	var zeroVal []int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignAppRolePolicyView_argsRmAppPolicyIDs(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["rmAppPolicyIDs"]
+	if !ok {
+		var zeroVal []int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("rmAppPolicyIDs"))
+	if tmp, ok := rawArgs["rmAppPolicyIDs"]; ok {
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
 	}
 
 	var zeroVal []int
@@ -350,6 +377,11 @@ func (ec *executionContext) field_Mutation_assignOrgRolePolicyView_args(ctx cont
 		return nil, err
 	}
 	args["orgPolicyIDs"] = arg2
+	arg3, err := ec.field_Mutation_assignOrgRolePolicyView_argsRmOrgPolicyIDs(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["rmOrgPolicyIDs"] = arg3
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_assignOrgRolePolicyView_argsOrgID(
@@ -411,7 +443,29 @@ func (ec *executionContext) field_Mutation_assignOrgRolePolicyView_argsOrgPolicy
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyIDs"))
 	if tmp, ok := rawArgs["orgPolicyIDs"]; ok {
-		return ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
+	}
+
+	var zeroVal []int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignOrgRolePolicyView_argsRmOrgPolicyIDs(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["rmOrgPolicyIDs"]
+	if !ok {
+		var zeroVal []int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("rmOrgPolicyIDs"))
+	if tmp, ok := rawArgs["rmOrgPolicyIDs"]; ok {
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
 	}
 
 	var zeroVal []int
@@ -645,6 +699,11 @@ func (ec *executionContext) field_Mutation_assignUserPolicyView_args(ctx context
 		return nil, err
 	}
 	args["orgPolicyIDs"] = arg2
+	arg3, err := ec.field_Mutation_assignUserPolicyView_argsRmOrgPolicyIDs(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["rmOrgPolicyIDs"] = arg3
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_assignUserPolicyView_argsOrgID(
@@ -706,7 +765,29 @@ func (ec *executionContext) field_Mutation_assignUserPolicyView_argsOrgPolicyIDs
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgPolicyIDs"))
 	if tmp, ok := rawArgs["orgPolicyIDs"]; ok {
-		return ec.unmarshalNID2ᚕintᚄ(ctx, tmp)
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
+	}
+
+	var zeroVal []int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_assignUserPolicyView_argsRmOrgPolicyIDs(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) ([]int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["rmOrgPolicyIDs"]
+	if !ok {
+		var zeroVal []int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("rmOrgPolicyIDs"))
+	if tmp, ok := rawArgs["rmOrgPolicyIDs"]; ok {
+		return ec.unmarshalOID2ᚕintᚄ(ctx, tmp)
 	}
 
 	var zeroVal []int
@@ -12071,7 +12152,7 @@ func (ec *executionContext) _Mutation_assignAppRolePolicyView(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AssignAppRolePolicyView(rctx, fc.Args["appID"].(int), fc.Args["roleID"].(int), fc.Args["appPolicyIDs"].([]int))
+		return ec.resolvers.Mutation().AssignAppRolePolicyView(rctx, fc.Args["appID"].(int), fc.Args["roleID"].(int), fc.Args["appPolicyIDs"].([]int), fc.Args["rmAppPolicyIDs"].([]int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12126,7 +12207,7 @@ func (ec *executionContext) _Mutation_assignUserPolicyView(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AssignUserPolicyView(rctx, fc.Args["orgID"].(int), fc.Args["userID"].(int), fc.Args["orgPolicyIDs"].([]int))
+		return ec.resolvers.Mutation().AssignUserPolicyView(rctx, fc.Args["orgID"].(int), fc.Args["userID"].(int), fc.Args["orgPolicyIDs"].([]int), fc.Args["rmOrgPolicyIDs"].([]int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12181,7 +12262,7 @@ func (ec *executionContext) _Mutation_assignOrgRolePolicyView(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AssignOrgRolePolicyView(rctx, fc.Args["orgID"].(int), fc.Args["roleID"].(int), fc.Args["orgPolicyIDs"].([]int))
+		return ec.resolvers.Mutation().AssignOrgRolePolicyView(rctx, fc.Args["orgID"].(int), fc.Args["roleID"].(int), fc.Args["orgPolicyIDs"].([]int), fc.Args["rmOrgPolicyIDs"].([]int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
