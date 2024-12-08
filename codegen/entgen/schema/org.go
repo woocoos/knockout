@@ -138,7 +138,7 @@ func pathHook() ent.Hook {
 					ov.Path = path
 
 					if ov.Code == "" {
-						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? and code=? WHERE id=?", path, code, id)
+						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=?, code=? WHERE id=?", path, code, id)
 						ov.Code = code
 					} else {
 						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? WHERE id=?", path, id)
