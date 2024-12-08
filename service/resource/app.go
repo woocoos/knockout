@@ -20,6 +20,8 @@ import (
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -443,6 +445,7 @@ func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int
 	return client.AppRolePolicy.CreateBulk(builders...).Exec(ctx)
 }
 
+// RevokeAppRolePolicy 应用角色删除权限
 func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) error {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -465,6 +468,64 @@ func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int
 	}
 	_, err = client.AppRolePolicy.Delete().Where(approlepolicy.AppID(appID), approlepolicy.AppRoleID(roleID), approlepolicy.AppPolicyIDIn(policyIDs...)).Exec(ctx)
 	return err
+}
+
+func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int) error {
+	client := ent.FromContext(ctx)
+	rootOrg, err := s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Only(ctx)
+	if rootOrg == nil || err != nil {
+		return fmt.Errorf("organization %d is not a root organization", orgID)
+	}
+	if rootOrg.OwnerID == nil {
+		return fmt.Errorf("organization %d is not has ownerID", orgID)
+	}
+	// 查询组织角色授权的用户
+	orgRoleUsers, err := client.OrgRoleUser.Query().Where(
+		orgroleuser.OrgID(orgID),
+		orgroleuser.UserIDNEQ(*rootOrg.OwnerID),
+		orgroleuser.HasOrgRoleWith(orgrole.AppRoleID(appRoleID)),
+	).All(ctx)
+	if err != nil {
+		return err
+	}
+	// 取消组织角色用户授权
+	for _, oru := range orgRoleUsers {
+		// 取消旧的授权
+		err = s.RevokeRoleUser(ctx, oru.OrgRoleID, oru.UserID)
+		if err != nil {
+			return err
+		}
+	}
+	// 取消应用角色对组织的授权
+	err = s.RevokeOrganizationAppRole(ctx, orgID, appRoleID)
+	if err != nil {
+		return err
+	}
+	// 重新授权应用角色给组织
+	err = s.AssignOrganizationAppRole(ctx, orgID, appRoleID)
+	if err != nil {
+		return err
+	}
+	// 重新对组织角色用户授权
+	for _, oru := range orgRoleUsers {
+		orID, err := client.OrgRole.Query().Where(
+			orgrole.OrgID(oru.OrgID),
+			orgrole.AppRoleID(appRoleID),
+			orgrole.KindEQ(orgrole.KindRole),
+		).Select(orgrole.FieldID).Int(ctx)
+		if err != nil {
+			return err
+		}
+		// 增加新的授权
+		err = s.AssignRoleUser(ctx, model.AssignRoleUserInput{
+			UserID:    oru.UserID,
+			OrgRoleID: orID,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // CreateAppPolicy 创建应用策略.

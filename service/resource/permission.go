@@ -486,7 +486,7 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 	if !isRoot {
 		return fmt.Errorf("organization %d is not a root organization", orgID)
 	}
-
+	// 获取组织角色的授权
 	ps, err := client.OrgRoleUser.Query().Where(
 		orgroleuser.HasOrgUserWith(orguser.OrgID(orgID)),
 		orgroleuser.HasOrgRoleWith(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID))).
@@ -508,11 +508,12 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 	if err != nil {
 		return err
 	}
-	// 清理OrgRole授权
+	// 获取组织角色
 	orid, err := client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID)).Select(orgrole.FieldID).Int(ctx)
 	if err != nil {
 		return err
 	}
+	// 获取组织角色关联的组织策略
 	ops, err := client.OrgPolicy.Query().Where(
 		orgpolicy.HasPermissionsWith(
 			permission.RoleID(orid),
@@ -532,17 +533,49 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 			rules = append(rules, rs...)
 		}
 	}
+	// 清理组织角色授权
 	err = security.RevokePolicy(rules, strconv.Itoa(orid), orgID, permission.PrincipalKindRole)
 	if err != nil {
 		return err
 	}
-	// 清理permission
+	// 查询角色关联的权限策略在其他授权的应用角色引用
+	refOPIDs, err := client.Permission.Query().Where(
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.HasRoleWith(orgrole.AppRoleIDNotNil(), orgrole.AppRoleIDNEQ(appRoleID)),
+		permission.OrgPolicyIDIn(opids...),
+	).Select(permission.FieldOrgPolicyID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	// 比较opids与refOPIDs，取出不在refOPIDs中的opid
+	rmOPIDs, _ := DiffArrays(opids, refOPIDs)
+	// 解除用户、自定义角色及用户组的Permission授权
+	rmPerms, err := client.Permission.Query().Where(permission.OrgPolicyIDIn(rmOPIDs...), permission.OrgID(orgID)).WithOrgPolicy().All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, rmPerm := range rmPerms {
+		if rmPerm.PrincipalKind == permission.PrincipalKindUser {
+			err = security.RevokePolicy(rmPerm.Edges.OrgPolicy.Rules, strconv.Itoa(rmPerm.UserID), orgID, permission.PrincipalKindUser)
+		} else if rmPerm.PrincipalKind == permission.PrincipalKindRole {
+			err = security.RevokePolicy(rmPerm.Edges.OrgPolicy.Rules, strconv.Itoa(rmPerm.RoleID), orgID, permission.PrincipalKindRole)
+		}
+		if err != nil {
+			return err
+		}
+	}
+	_, err = client.Permission.Delete().Where(permission.OrgPolicyIDIn(rmOPIDs...), permission.OrgID(orgID)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	// 清理组织角色permission
 	_, err = client.Permission.Delete().Where(permission.OrgID(orgID), permission.PrincipalKindEQ(permission.PrincipalKindRole), permission.RoleID(orid)).Exec(ctx)
 	if err != nil {
 		return err
 	}
 	// 删除orgPolicy
-	_, err = client.OrgPolicy.Delete().Where(orgpolicy.IDIn(opids...)).Exec(ctx)
+	_, err = client.OrgPolicy.Delete().Where(orgpolicy.IDIn(rmOPIDs...)).Exec(ctx)
 	if err != nil {
 		return err
 	}

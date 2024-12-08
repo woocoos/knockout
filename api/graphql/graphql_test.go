@@ -363,7 +363,10 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 	has, err = t.mr.AssignOrganizationApp(ctx, tenantID, appID)
 	t.Require().NoError(err)
 	t.Require().True(has)
-
+	// 判断管理员权限项
+	//as, err := t.qr.UserPermissions(ctx, nil)
+	//t.Require().NoError(err)
+	//t.Require().Equal(len(as), 3)
 	// 获取组织权限策略视图
 	orgPolicyViews, err := t.qr.OrgPolicyView(ctx, ac)
 	t.Require().NoError(err)

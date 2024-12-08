@@ -496,6 +496,7 @@ type ComplexityRoot struct {
 		SaveOrgUserPreference       func(childComplexity int, input model.OrgUserPreferenceInput) int
 		SendMFAToUserByEmail        func(childComplexity int, userID int) int
 		SetDefaultFileIdentity      func(childComplexity int, identityID int, orgID int) int
+		SyncAppRoleToOrg            func(childComplexity int, orgID int, appRoleID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppDict               func(childComplexity int, dictID int, input ent.UpdateAppDictInput) int
@@ -3762,6 +3763,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SetDefaultFileIdentity(childComplexity, args["identityID"].(int), args["orgID"].(int)), true
+
+	case "Mutation.syncAppRoleToOrg":
+		if e.complexity.Mutation.SyncAppRoleToOrg == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_syncAppRoleToOrg_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SyncAppRoleToOrg(childComplexity, args["orgID"].(int), args["appRoleID"].(int)), true
 
 	case "Mutation.updateApp":
 		if e.complexity.Mutation.UpdateApp == nil {
@@ -16639,6 +16652,8 @@ input UserWhereInput {
     assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
     """角色移除策略"""
     revokeAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
+    """同步角色权限策略到组织"""
+    syncAppRoleToOrg(orgID:ID!,appRoleID:ID!): Boolean!
     """分配应用,将自动分配应用下的所有资源"""
     assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
     """取消分配应用"""
@@ -16775,7 +16790,6 @@ input UserWhereInput {
     updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
     # 删除配额
     deleteQuota(id: ID!): Boolean!
-
 }
 `, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {

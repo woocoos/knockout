@@ -271,6 +271,15 @@ func (r *mutationResolver) RevokeAppRolePolicy(ctx context.Context, appID int, r
 	return err == nil, err
 }
 
+// SyncAppRoleToOrg is the resolver for the syncAppRoleToOrg field.
+func (r *mutationResolver) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int) (bool, error) {
+	err := r.resource.SyncAppRoleToOrg(ctx, orgID, appRoleID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // AssignOrganizationApp is the resolver for the assignOrganizationApp field.
 func (r *mutationResolver) AssignOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
 	err := r.resource.AssignOrganizationApp(ctx, orgID, appID)
@@ -611,6 +620,7 @@ func (r *mutationResolver) MoveAppPolicyView(ctx context.Context, sourceID int, 
 
 // AssignAppRolePolicyView is the resolver for the assignAppRolePolicyView field.
 func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) (bool, error) {
+	// TODO 是否需要判断appPolicyIDs已经添加？
 	// 添加
 	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, appPolicyIDs)
 	if err != nil {
