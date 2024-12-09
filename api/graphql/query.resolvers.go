@@ -39,6 +39,15 @@ func (r *queryResolver) GlobalID(ctx context.Context, typeArg string, id int) (*
 	return &s, err
 }
 
+// Viewer is the resolver for the viewer field.
+func (r *queryResolver) Viewer(ctx context.Context) (*ent.User, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.client.User.Get(ctx, uid)
+}
+
 // OrgGroups is the resolver for the orgGroups field.
 func (r *queryResolver) OrgGroups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
 	tid, err := identity.TenantIDFromContext(ctx)

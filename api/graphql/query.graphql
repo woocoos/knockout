@@ -1,6 +1,8 @@
 extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
+    """获取登录用户的信息"""
+    viewer: User!
     """用户组"""
     orgGroups(
         after: Cursor

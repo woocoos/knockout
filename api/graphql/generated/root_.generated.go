@@ -768,6 +768,7 @@ type ComplexityRoot struct {
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
 		UserRootOrgs                func(childComplexity int) int
 		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Viewer                      func(childComplexity int) int
 	}
 
 	Quota struct {
@@ -5576,6 +5577,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+
+	case "Query.viewer":
+		if e.complexity.Query.Viewer == nil {
+			break
+		}
+
+		return e.complexity.Query.Viewer(childComplexity), true
 
 	case "Quota.createdAt":
 		if e.complexity.Quota.CreatedAt == nil {
@@ -16795,6 +16803,8 @@ input UserWhereInput {
 	{Name: "../query.graphql", Input: `extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
+    """获取登录用户的信息"""
+    viewer: User!
     """用户组"""
     orgGroups(
         after: Cursor
