@@ -166,10 +166,15 @@ func (s *ServerImpl) Captcha(ctx *gin.Context, req *CaptchaRequest) (*Captcha, e
 func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginResponse, err error) {
 	failCount := 0
 	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
-	if failCount >= s.CaptchaTimes && !captcha.VerifyString(req.CaptchaId, req.Captcha) {
-		ctx.Status(http.StatusBadRequest)
-		s.logFailHandler(ctx, req.Username, false)
-		return nil, status.ErrCaptchaNotMatch
+	if failCount >= s.CaptchaTimes {
+		if req.CaptchaId == "" || req.Captcha == "" {
+			return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, err
+		}
+		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
+			ctx.Status(http.StatusBadRequest)
+			s.logFailHandler(ctx, req.Username, false)
+			return nil, status.ErrCaptchaNotMatch
+		}
 	}
 	if failCount >= s.LoginFailTimes {
 		ctx.Status(http.StatusForbidden)
