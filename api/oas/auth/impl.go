@@ -37,6 +37,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/service/resource"
@@ -87,6 +88,16 @@ type Options struct {
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	} `json:"jwt"`
+	PwdPolicy struct {
+		Length               int32 `json:"length"`
+		IncludeElement       int32 `json:"includeElement"`
+		IncludeChar          int32 `json:"includeChar"`
+		AllowIncludeUserName bool  `json:"allowIncludeUserName"`
+		InvalidDay           int32 `json:"invalidDay"`
+		InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
+		Retry                int32 `json:"retry"`
+		CaptchaTimes         int32 `json:"captchaTimes"`
+	} `json:"pwdPolicy"`
 }
 
 // ServerImpl is the server API for service.
@@ -164,11 +175,16 @@ func (s *ServerImpl) Captcha(ctx *gin.Context, req *CaptchaRequest) (*Captcha, e
 
 // Login login
 func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginResponse, err error) {
-	failCount := 0
+	var failCount int32 = 0
 	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
-	if failCount >= s.CaptchaTimes {
+	upp, err := s.getPasswordPolicy(ctx)
+	if err != nil {
+		ctx.Status(http.StatusBadRequest)
+		return nil, err
+	}
+	if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
 		if req.CaptchaId == "" || req.Captcha == "" {
-			return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, err
+			return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, nil
 		}
 		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 			ctx.Status(http.StatusBadRequest)
@@ -176,11 +192,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 			return nil, status.ErrCaptchaNotMatch
 		}
 	}
-	if failCount >= s.LoginFailTimes {
-		ctx.Status(http.StatusForbidden)
-		return nil, status.ErrLoginFailUpperLimit
-	}
-	pwd, err := s.checkPwd(ctx, req)
+	pwd, err := s.checkPwd(ctx, req, failCount, upp)
 	if err != nil {
 		if errors.Is(err, status.ErrMismatchPWD) {
 			ctx.Status(http.StatusBadRequest)
@@ -189,10 +201,10 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 			if errL != nil {
 				return nil, errors.Join(err, errL)
 			}
-			if failCount >= s.CaptchaTimes {
+			if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
 				return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, err
 			}
-			if failCount >= s.LoginFailTimes {
+			if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
 				return nil, status.ErrLoginFailUpperLimit
 			}
 		}
@@ -222,8 +234,15 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 }
 
 func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
+	var failCount int32 = 0
+	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
+	upp, err := s.getPasswordPolicy(ctx)
+	if err != nil {
+		ctx.Status(http.StatusBadRequest)
+		return nil, err
+	}
 	// 验证密码
-	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, failCount, upp)
 	if err != nil {
 		return nil, fmt.Errorf("username or password error")
 	}
@@ -481,7 +500,11 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	}, nil
 }
 
-func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest) (*ent.UserPassword, error) {
+func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest, failCount int32, upp *ent.UserPasswordPolicy) (*ent.UserPassword, error) {
+	if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
+		ctx.Status(http.StatusForbidden)
+		return nil, status.ErrLoginFailUpperLimit
+	}
 	pwd, err := s.db.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
@@ -677,12 +700,12 @@ func (s *ServerImpl) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, e
 	return uorg, nil
 }
 
-func (s *ServerImpl) logFailHandler(ctx *gin.Context, uid string, clear bool) (int, error) {
+func (s *ServerImpl) logFailHandler(ctx *gin.Context, uid string, clear bool) (int32, error) {
 	key := loginFailCachePrefix + uid
 	if clear {
 		return 0, s.cache.Del(ctx, key)
 	}
-	count := 0
+	var count int32 = 0
 	err := s.cache.Get(ctx, key, &count)
 	if err != nil && !s.cache.IsNotFound(err) {
 		return 0, err
@@ -1164,4 +1187,57 @@ func (s *ServerImpl) doCheckPermission(ctx context.Context, uid, tid int, action
 		return false, nil
 	}
 	return true, nil
+}
+
+func (s *ServerImpl) getTopLevelDomain(urlString string) (string, error) {
+	u, err := url.Parse(urlString)
+	if err != nil {
+		return "", err
+	}
+	host := u.Hostname()
+	// 分割host为各级域名部分
+	parts := strings.Split(host, ".")
+	if len(parts) < 2 {
+		return "", fmt.Errorf("unable to parse top level domain")
+	}
+	// 返回最后两部分作为一级域名
+	return strings.Join(parts[len(parts)-2:], "."), nil
+}
+
+func (s *ServerImpl) getPasswordPolicy(ctx *gin.Context) (*ent.UserPasswordPolicy, error) {
+	referer := ctx.GetHeader("Referer")
+	if referer == "" {
+		return s.defaultPwdPolicy(), nil
+	}
+	// 解析出一级域名
+	tld, err := s.getTopLevelDomain(referer)
+	if err != nil {
+		return s.defaultPwdPolicy(), nil
+	}
+	t, err := s.db.Org.Query().Where(org.Domain(tld), org.ParentID(0)).Only(ctx)
+	if err != nil {
+		return s.defaultPwdPolicy(), nil
+	}
+	upp, err := s.db.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(t.ID)).Only(ctx)
+	if err != nil {
+		return s.defaultPwdPolicy(), nil
+	}
+	if upp == nil {
+		return s.defaultPwdPolicy(), nil
+	}
+	return upp, nil
+}
+
+func (s *ServerImpl) defaultPwdPolicy() *ent.UserPasswordPolicy {
+	var upp = ent.UserPasswordPolicy{
+		Length:               s.PwdPolicy.Length,
+		IncludeElement:       s.PwdPolicy.IncludeElement,
+		IncludeChar:          s.PwdPolicy.IncludeChar,
+		AllowIncludeUserName: s.PwdPolicy.AllowIncludeUserName,
+		InvalidDay:           s.PwdPolicy.InvalidDay,
+		InvalidLoginLimit:    s.PwdPolicy.InvalidLoginLimit,
+		Retry:                s.PwdPolicy.Retry,
+		CaptchaTimes:         s.PwdPolicy.CaptchaTimes,
+	}
+	return &upp
 }

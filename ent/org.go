@@ -85,25 +85,28 @@ type OrgEdges struct {
 	Apps []*App `json:"apps,omitempty"`
 	// 组织下文件凭证
 	FileIdentities []*FileIdentity `json:"file_identities,omitempty"`
+	// 组织下密码策略
+	UserPasswordPolicy []*UserPasswordPolicy `json:"user_password_policy,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// OrgApp holds the value of the org_app edge.
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [12]bool
 	// totalCount holds the count of the edges above.
-	totalCount [8]map[string]int
+	totalCount [9]map[string]int
 
-	namedChildren       map[string][]*Org
-	namedUsers          map[string][]*User
-	namedRolesAndGroups map[string][]*OrgRole
-	namedPermissions    map[string][]*Permission
-	namedPolicies       map[string][]*OrgPolicy
-	namedApps           map[string][]*App
-	namedFileIdentities map[string][]*FileIdentity
-	namedOrgUser        map[string][]*OrgUser
-	namedOrgApp         map[string][]*OrgApp
+	namedChildren           map[string][]*Org
+	namedUsers              map[string][]*User
+	namedRolesAndGroups     map[string][]*OrgRole
+	namedPermissions        map[string][]*Permission
+	namedPolicies           map[string][]*OrgPolicy
+	namedApps               map[string][]*App
+	namedFileIdentities     map[string][]*FileIdentity
+	namedUserPasswordPolicy map[string][]*UserPasswordPolicy
+	namedOrgUser            map[string][]*OrgUser
+	namedOrgApp             map[string][]*OrgApp
 }
 
 // ParentOrErr returns the Parent value or an error if the edge
@@ -191,10 +194,19 @@ func (e OrgEdges) FileIdentitiesOrErr() ([]*FileIdentity, error) {
 	return nil, &NotLoadedError{edge: "file_identities"}
 }
 
+// UserPasswordPolicyOrErr returns the UserPasswordPolicy value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgEdges) UserPasswordPolicyOrErr() ([]*UserPasswordPolicy, error) {
+	if e.loadedTypes[9] {
+		return e.UserPasswordPolicy, nil
+	}
+	return nil, &NotLoadedError{edge: "user_password_policy"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -203,7 +215,7 @@ func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -416,6 +428,11 @@ func (o *Org) QueryApps() *AppQuery {
 // QueryFileIdentities queries the "file_identities" edge of the Org entity.
 func (o *Org) QueryFileIdentities() *FileIdentityQuery {
 	return NewOrgClient(o.config).QueryFileIdentities(o)
+}
+
+// QueryUserPasswordPolicy queries the "user_password_policy" edge of the Org entity.
+func (o *Org) QueryUserPasswordPolicy() *UserPasswordPolicyQuery {
+	return NewOrgClient(o.config).QueryUserPasswordPolicy(o)
 }
 
 // QueryOrgUser queries the "org_user" edge of the Org entity.
@@ -678,6 +695,30 @@ func (o *Org) appendNamedFileIdentities(name string, edges ...*FileIdentity) {
 		o.Edges.namedFileIdentities[name] = []*FileIdentity{}
 	} else {
 		o.Edges.namedFileIdentities[name] = append(o.Edges.namedFileIdentities[name], edges...)
+	}
+}
+
+// NamedUserPasswordPolicy returns the UserPasswordPolicy named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (o *Org) NamedUserPasswordPolicy(name string) ([]*UserPasswordPolicy, error) {
+	if o.Edges.namedUserPasswordPolicy == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := o.Edges.namedUserPasswordPolicy[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (o *Org) appendNamedUserPasswordPolicy(name string, edges ...*UserPasswordPolicy) {
+	if o.Edges.namedUserPasswordPolicy == nil {
+		o.Edges.namedUserPasswordPolicy = make(map[string][]*UserPasswordPolicy)
+	}
+	if len(edges) == 0 {
+		o.Edges.namedUserPasswordPolicy[name] = []*UserPasswordPolicy{}
+	} else {
+		o.Edges.namedUserPasswordPolicy[name] = append(o.Edges.namedUserPasswordPolicy[name], edges...)
 	}
 }
 

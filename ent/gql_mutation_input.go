@@ -1430,23 +1430,24 @@ func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUp
 
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
-	Domain           *string
-	Name             string
-	Profile          *string
-	Status           *typex.SimpleStatus
-	CountryCode      *string
-	Timezone         *string
-	LocalCurrency    *string
-	Logo             *types.OrgLogo
-	ParentID         int
-	ChildIDs         []int
-	OwnerID          *int
-	UserIDs          []int
-	RolesAndGroupIDs []int
-	PermissionIDs    []int
-	PolicyIDs        []int
-	AppIDs           []int
-	FileIdentityIDs  []int
+	Domain                *string
+	Name                  string
+	Profile               *string
+	Status                *typex.SimpleStatus
+	CountryCode           *string
+	Timezone              *string
+	LocalCurrency         *string
+	Logo                  *types.OrgLogo
+	ParentID              int
+	ChildIDs              []int
+	OwnerID               *int
+	UserIDs               []int
+	RolesAndGroupIDs      []int
+	PermissionIDs         []int
+	PolicyIDs             []int
+	AppIDs                []int
+	FileIdentityIDs       []int
+	UserPasswordPolicyIDs []int
 }
 
 // Mutate applies the CreateOrgInput on the OrgMutation builder.
@@ -1498,6 +1499,9 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.FileIdentityIDs; len(v) > 0 {
 		m.AddFileIdentityIDs(v...)
 	}
+	if v := i.UserPasswordPolicyIDs; len(v) > 0 {
+		m.AddUserPasswordPolicyIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateOrgInput on the OrgCreate builder.
@@ -1508,45 +1512,48 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 
 // UpdateOrgInput represents a mutation input for updating orgs.
 type UpdateOrgInput struct {
-	ClearDomain            bool
-	Domain                 *string
-	Name                   *string
-	ClearProfile           bool
-	Profile                *string
-	ClearStatus            bool
-	Status                 *typex.SimpleStatus
-	ClearCountryCode       bool
-	CountryCode            *string
-	ClearTimezone          bool
-	Timezone               *string
-	ClearLocalCurrency     bool
-	LocalCurrency          *string
-	ClearLogo              bool
-	Logo                   *types.OrgLogo
-	ParentID               *int
-	ClearChildren          bool
-	AddChildIDs            []int
-	RemoveChildIDs         []int
-	ClearOwner             bool
-	OwnerID                *int
-	ClearUsers             bool
-	AddUserIDs             []int
-	RemoveUserIDs          []int
-	ClearRolesAndGroups    bool
-	AddRolesAndGroupIDs    []int
-	RemoveRolesAndGroupIDs []int
-	ClearPermissions       bool
-	AddPermissionIDs       []int
-	RemovePermissionIDs    []int
-	ClearPolicies          bool
-	AddPolicyIDs           []int
-	RemovePolicyIDs        []int
-	ClearApps              bool
-	AddAppIDs              []int
-	RemoveAppIDs           []int
-	ClearFileIdentities    bool
-	AddFileIdentityIDs     []int
-	RemoveFileIdentityIDs  []int
+	ClearDomain                 bool
+	Domain                      *string
+	Name                        *string
+	ClearProfile                bool
+	Profile                     *string
+	ClearStatus                 bool
+	Status                      *typex.SimpleStatus
+	ClearCountryCode            bool
+	CountryCode                 *string
+	ClearTimezone               bool
+	Timezone                    *string
+	ClearLocalCurrency          bool
+	LocalCurrency               *string
+	ClearLogo                   bool
+	Logo                        *types.OrgLogo
+	ParentID                    *int
+	ClearChildren               bool
+	AddChildIDs                 []int
+	RemoveChildIDs              []int
+	ClearOwner                  bool
+	OwnerID                     *int
+	ClearUsers                  bool
+	AddUserIDs                  []int
+	RemoveUserIDs               []int
+	ClearRolesAndGroups         bool
+	AddRolesAndGroupIDs         []int
+	RemoveRolesAndGroupIDs      []int
+	ClearPermissions            bool
+	AddPermissionIDs            []int
+	RemovePermissionIDs         []int
+	ClearPolicies               bool
+	AddPolicyIDs                []int
+	RemovePolicyIDs             []int
+	ClearApps                   bool
+	AddAppIDs                   []int
+	RemoveAppIDs                []int
+	ClearFileIdentities         bool
+	AddFileIdentityIDs          []int
+	RemoveFileIdentityIDs       []int
+	ClearUserPasswordPolicy     bool
+	AddUserPasswordPolicyIDs    []int
+	RemoveUserPasswordPolicyIDs []int
 }
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
@@ -1667,6 +1674,15 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.RemoveFileIdentityIDs; len(v) > 0 {
 		m.RemoveFileIdentityIDs(v...)
+	}
+	if i.ClearUserPasswordPolicy {
+		m.ClearUserPasswordPolicy()
+	}
+	if v := i.AddUserPasswordPolicyIDs; len(v) > 0 {
+		m.AddUserPasswordPolicyIDs(v...)
+	}
+	if v := i.RemoveUserPasswordPolicyIDs; len(v) > 0 {
+		m.RemoveUserPasswordPolicyIDs(v...)
 	}
 }
 
@@ -2902,6 +2918,140 @@ func (i *UpdateUserPasswordInput) Mutate(m *UserPasswordMutation) {
 
 // SetInput applies the change-set in the UpdateUserPasswordInput on the UserPasswordUpdate builder.
 func (c *UserPasswordUpdate) SetInput(i UpdateUserPasswordInput) *UserPasswordUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateUserPasswordPolicyInput represents a mutation input for creating userpasswordpolicies.
+type CreateUserPasswordPolicyInput struct {
+	Length               *int32
+	IncludeElement       *int32
+	IncludeChar          *int32
+	AllowIncludeUserName *bool
+	InvalidDay           *int32
+	InvalidLoginLimit    *bool
+	Retry                *int32
+	CaptchaTimes         *int32
+	OrgID                *int
+}
+
+// Mutate applies the CreateUserPasswordPolicyInput on the UserPasswordPolicyMutation builder.
+func (i *CreateUserPasswordPolicyInput) Mutate(m *UserPasswordPolicyMutation) {
+	if v := i.Length; v != nil {
+		m.SetLength(*v)
+	}
+	if v := i.IncludeElement; v != nil {
+		m.SetIncludeElement(*v)
+	}
+	if v := i.IncludeChar; v != nil {
+		m.SetIncludeChar(*v)
+	}
+	if v := i.AllowIncludeUserName; v != nil {
+		m.SetAllowIncludeUserName(*v)
+	}
+	if v := i.InvalidDay; v != nil {
+		m.SetInvalidDay(*v)
+	}
+	if v := i.InvalidLoginLimit; v != nil {
+		m.SetInvalidLoginLimit(*v)
+	}
+	if v := i.Retry; v != nil {
+		m.SetRetry(*v)
+	}
+	if v := i.CaptchaTimes; v != nil {
+		m.SetCaptchaTimes(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateUserPasswordPolicyInput on the UserPasswordPolicyCreate builder.
+func (c *UserPasswordPolicyCreate) SetInput(i CreateUserPasswordPolicyInput) *UserPasswordPolicyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateUserPasswordPolicyInput represents a mutation input for updating userpasswordpolicies.
+type UpdateUserPasswordPolicyInput struct {
+	ClearLength               bool
+	Length                    *int32
+	ClearIncludeElement       bool
+	IncludeElement            *int32
+	ClearIncludeChar          bool
+	IncludeChar               *int32
+	ClearAllowIncludeUserName bool
+	AllowIncludeUserName      *bool
+	ClearInvalidDay           bool
+	InvalidDay                *int32
+	ClearInvalidLoginLimit    bool
+	InvalidLoginLimit         *bool
+	ClearRetry                bool
+	Retry                     *int32
+	ClearCaptchaTimes         bool
+	CaptchaTimes              *int32
+}
+
+// Mutate applies the UpdateUserPasswordPolicyInput on the UserPasswordPolicyMutation builder.
+func (i *UpdateUserPasswordPolicyInput) Mutate(m *UserPasswordPolicyMutation) {
+	if i.ClearLength {
+		m.ClearLength()
+	}
+	if v := i.Length; v != nil {
+		m.SetLength(*v)
+	}
+	if i.ClearIncludeElement {
+		m.ClearIncludeElement()
+	}
+	if v := i.IncludeElement; v != nil {
+		m.SetIncludeElement(*v)
+	}
+	if i.ClearIncludeChar {
+		m.ClearIncludeChar()
+	}
+	if v := i.IncludeChar; v != nil {
+		m.SetIncludeChar(*v)
+	}
+	if i.ClearAllowIncludeUserName {
+		m.ClearAllowIncludeUserName()
+	}
+	if v := i.AllowIncludeUserName; v != nil {
+		m.SetAllowIncludeUserName(*v)
+	}
+	if i.ClearInvalidDay {
+		m.ClearInvalidDay()
+	}
+	if v := i.InvalidDay; v != nil {
+		m.SetInvalidDay(*v)
+	}
+	if i.ClearInvalidLoginLimit {
+		m.ClearInvalidLoginLimit()
+	}
+	if v := i.InvalidLoginLimit; v != nil {
+		m.SetInvalidLoginLimit(*v)
+	}
+	if i.ClearRetry {
+		m.ClearRetry()
+	}
+	if v := i.Retry; v != nil {
+		m.SetRetry(*v)
+	}
+	if i.ClearCaptchaTimes {
+		m.ClearCaptchaTimes()
+	}
+	if v := i.CaptchaTimes; v != nil {
+		m.SetCaptchaTimes(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateUserPasswordPolicyInput on the UserPasswordPolicyUpdate builder.
+func (c *UserPasswordPolicyUpdate) SetInput(i UpdateUserPasswordPolicyInput) *UserPasswordPolicyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateUserPasswordPolicyInput on the UserPasswordPolicyUpdateOne builder.
+func (c *UserPasswordPolicyUpdateOne) SetInput(i UpdateUserPasswordPolicyInput) *UserPasswordPolicyUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

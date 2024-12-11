@@ -101,3 +101,6 @@ type UserLoginProfile func(*sql.Selector)
 
 // UserPassword is the predicate function for userpassword builders.
 type UserPassword func(*sql.Selector)
+
+// UserPasswordPolicy is the predicate function for userpasswordpolicy builders.
+type UserPasswordPolicy func(*sql.Selector)

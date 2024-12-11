@@ -123,6 +123,9 @@ type MutationResolver interface {
 	CreateQuota(ctx context.Context, input ent.CreateQuotaInput) (*ent.Quota, error)
 	UpdateQuota(ctx context.Context, id int, input ent.UpdateQuotaInput) (*ent.Quota, error)
 	DeleteQuota(ctx context.Context, id int) (bool, error)
+	CreateUserPasswordPolicy(ctx context.Context, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
+	UpdateUserPasswordPolicy(ctx context.Context, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
+	DeleteUserPasswordPolicy(ctx context.Context) (bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -1975,6 +1978,38 @@ func (ec *executionContext) field_Mutation_createRoot_argsInput(
 	}
 
 	var zeroVal ent.CreateOrgInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_createUserPasswordPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_createUserPasswordPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_createUserPasswordPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.CreateUserPasswordPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.CreateUserPasswordPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNCreateUserPasswordPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserPasswordPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.CreateUserPasswordPolicyInput
 	return zeroVal, nil
 }
 
@@ -5391,6 +5426,38 @@ func (ec *executionContext) field_Mutation_updateRole_argsInput(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_updateUserPasswordPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_updateUserPasswordPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateUserPasswordPolicy_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (ent.UpdateUserPasswordPolicyInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal ent.UpdateUserPasswordPolicyInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNUpdateUserPasswordPolicyInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserPasswordPolicyInput(ctx, tmp)
+	}
+
+	var zeroVal ent.UpdateUserPasswordPolicyInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -5577,6 +5644,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "userPasswordPolicy":
+				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -5691,6 +5760,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "userPasswordPolicy":
+				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -5805,6 +5876,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "userPasswordPolicy":
+				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -5919,6 +5992,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_apps(ctx, field)
 			case "fileIdentities":
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "userPasswordPolicy":
+				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -12880,6 +12955,218 @@ func (ec *executionContext) fieldContext_Mutation_deleteQuota(ctx context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createUserPasswordPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createUserPasswordPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUserPasswordPolicy(rctx, fc.Args["input"].(ent.CreateUserPasswordPolicyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserPasswordPolicy)
+	fc.Result = res
+	return ec.marshalOUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createUserPasswordPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UserPasswordPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_UserPasswordPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UserPasswordPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_UserPasswordPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UserPasswordPolicy_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_UserPasswordPolicy_tenantID(ctx, field)
+			case "length":
+				return ec.fieldContext_UserPasswordPolicy_length(ctx, field)
+			case "includeElement":
+				return ec.fieldContext_UserPasswordPolicy_includeElement(ctx, field)
+			case "includeChar":
+				return ec.fieldContext_UserPasswordPolicy_includeChar(ctx, field)
+			case "allowIncludeUserName":
+				return ec.fieldContext_UserPasswordPolicy_allowIncludeUserName(ctx, field)
+			case "invalidDay":
+				return ec.fieldContext_UserPasswordPolicy_invalidDay(ctx, field)
+			case "invalidLoginLimit":
+				return ec.fieldContext_UserPasswordPolicy_invalidLoginLimit(ctx, field)
+			case "retry":
+				return ec.fieldContext_UserPasswordPolicy_retry(ctx, field)
+			case "captchaTimes":
+				return ec.fieldContext_UserPasswordPolicy_captchaTimes(ctx, field)
+			case "org":
+				return ec.fieldContext_UserPasswordPolicy_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserPasswordPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createUserPasswordPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateUserPasswordPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateUserPasswordPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateUserPasswordPolicy(rctx, fc.Args["input"].(ent.UpdateUserPasswordPolicyInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserPasswordPolicy)
+	fc.Result = res
+	return ec.marshalOUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateUserPasswordPolicy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UserPasswordPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_UserPasswordPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UserPasswordPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_UserPasswordPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UserPasswordPolicy_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_UserPasswordPolicy_tenantID(ctx, field)
+			case "length":
+				return ec.fieldContext_UserPasswordPolicy_length(ctx, field)
+			case "includeElement":
+				return ec.fieldContext_UserPasswordPolicy_includeElement(ctx, field)
+			case "includeChar":
+				return ec.fieldContext_UserPasswordPolicy_includeChar(ctx, field)
+			case "allowIncludeUserName":
+				return ec.fieldContext_UserPasswordPolicy_allowIncludeUserName(ctx, field)
+			case "invalidDay":
+				return ec.fieldContext_UserPasswordPolicy_invalidDay(ctx, field)
+			case "invalidLoginLimit":
+				return ec.fieldContext_UserPasswordPolicy_invalidLoginLimit(ctx, field)
+			case "retry":
+				return ec.fieldContext_UserPasswordPolicy_retry(ctx, field)
+			case "captchaTimes":
+				return ec.fieldContext_UserPasswordPolicy_captchaTimes(ctx, field)
+			case "org":
+				return ec.fieldContext_UserPasswordPolicy_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserPasswordPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateUserPasswordPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteUserPasswordPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteUserPasswordPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteUserPasswordPolicy(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteUserPasswordPolicy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -13526,6 +13813,21 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteQuota":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteQuota(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createUserPasswordPolicy":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createUserPasswordPolicy(ctx, field)
+			})
+		case "updateUserPasswordPolicy":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateUserPasswordPolicy(ctx, field)
+			})
+		case "deleteUserPasswordPolicy":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteUserPasswordPolicy(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

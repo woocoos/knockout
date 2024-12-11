@@ -108,3 +108,14 @@ kosdk:
   plugin:
     msg:
       basePath: "http://127.0.0.1:10072/api/v2"
+
+adminx:
+  pwdPolicy:
+    length: 6
+    includeElement: 3
+    includeChar: 4
+    allowIncludeUserName: false
+    invalidDay: 30
+    invalidLoginLimit: false
+    retry: 5
+    captchaTimes: 3

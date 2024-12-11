@@ -48,6 +48,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 
 	stdsql "database/sql"
 )
@@ -121,6 +122,8 @@ type Client struct {
 	UserLoginProfile *UserLoginProfileClient
 	// UserPassword is the client for interacting with the UserPassword builders.
 	UserPassword *UserPasswordClient
+	// UserPasswordPolicy is the client for interacting with the UserPasswordPolicy builders.
+	UserPasswordPolicy *UserPasswordPolicyClient
 	// additional fields for node api
 	tables tables
 }
@@ -166,6 +169,7 @@ func (c *Client) init() {
 	c.UserIdentity = NewUserIdentityClient(c.config)
 	c.UserLoginProfile = NewUserLoginProfileClient(c.config)
 	c.UserPassword = NewUserPasswordClient(c.config)
+	c.UserPasswordPolicy = NewUserPasswordPolicyClient(c.config)
 }
 
 type (
@@ -256,40 +260,41 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		App:               NewAppClient(cfg),
-		AppAction:         NewAppActionClient(cfg),
-		AppDict:           NewAppDictClient(cfg),
-		AppDictItem:       NewAppDictItemClient(cfg),
-		AppMenu:           NewAppMenuClient(cfg),
-		AppPolicy:         NewAppPolicyClient(cfg),
-		AppPolicyView:     NewAppPolicyViewClient(cfg),
-		AppRes:            NewAppResClient(cfg),
-		AppRole:           NewAppRoleClient(cfg),
-		AppRolePolicy:     NewAppRolePolicyClient(cfg),
-		Country:           NewCountryClient(cfg),
-		Currency:          NewCurrencyClient(cfg),
-		FileIdentity:      NewFileIdentityClient(cfg),
-		FileSource:        NewFileSourceClient(cfg),
-		OauthClient:       NewOauthClientClient(cfg),
-		Org:               NewOrgClient(cfg),
-		OrgApp:            NewOrgAppClient(cfg),
-		OrgPolicy:         NewOrgPolicyClient(cfg),
-		OrgRole:           NewOrgRoleClient(cfg),
-		OrgRoleUser:       NewOrgRoleUserClient(cfg),
-		OrgUser:           NewOrgUserClient(cfg),
-		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
-		Permission:        NewPermissionClient(cfg),
-		Quota:             NewQuotaClient(cfg),
-		QuotaItem:         NewQuotaItemClient(cfg),
-		Region:            NewRegionClient(cfg),
-		User:              NewUserClient(cfg),
-		UserAddr:          NewUserAddrClient(cfg),
-		UserDevice:        NewUserDeviceClient(cfg),
-		UserIdentity:      NewUserIdentityClient(cfg),
-		UserLoginProfile:  NewUserLoginProfileClient(cfg),
-		UserPassword:      NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppDict:            NewAppDictClient(cfg),
+		AppDictItem:        NewAppDictItemClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppPolicyView:      NewAppPolicyViewClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Country:            NewCountryClient(cfg),
+		Currency:           NewCurrencyClient(cfg),
+		FileIdentity:       NewFileIdentityClient(cfg),
+		FileSource:         NewFileSourceClient(cfg),
+		OauthClient:        NewOauthClientClient(cfg),
+		Org:                NewOrgClient(cfg),
+		OrgApp:             NewOrgAppClient(cfg),
+		OrgPolicy:          NewOrgPolicyClient(cfg),
+		OrgRole:            NewOrgRoleClient(cfg),
+		OrgRoleUser:        NewOrgRoleUserClient(cfg),
+		OrgUser:            NewOrgUserClient(cfg),
+		OrgUserPreference:  NewOrgUserPreferenceClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		Quota:              NewQuotaClient(cfg),
+		QuotaItem:          NewQuotaItemClient(cfg),
+		Region:             NewRegionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserAddr:           NewUserAddrClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
+		UserPasswordPolicy: NewUserPasswordPolicyClient(cfg),
 	}, nil
 }
 
@@ -307,40 +312,41 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		App:               NewAppClient(cfg),
-		AppAction:         NewAppActionClient(cfg),
-		AppDict:           NewAppDictClient(cfg),
-		AppDictItem:       NewAppDictItemClient(cfg),
-		AppMenu:           NewAppMenuClient(cfg),
-		AppPolicy:         NewAppPolicyClient(cfg),
-		AppPolicyView:     NewAppPolicyViewClient(cfg),
-		AppRes:            NewAppResClient(cfg),
-		AppRole:           NewAppRoleClient(cfg),
-		AppRolePolicy:     NewAppRolePolicyClient(cfg),
-		Country:           NewCountryClient(cfg),
-		Currency:          NewCurrencyClient(cfg),
-		FileIdentity:      NewFileIdentityClient(cfg),
-		FileSource:        NewFileSourceClient(cfg),
-		OauthClient:       NewOauthClientClient(cfg),
-		Org:               NewOrgClient(cfg),
-		OrgApp:            NewOrgAppClient(cfg),
-		OrgPolicy:         NewOrgPolicyClient(cfg),
-		OrgRole:           NewOrgRoleClient(cfg),
-		OrgRoleUser:       NewOrgRoleUserClient(cfg),
-		OrgUser:           NewOrgUserClient(cfg),
-		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
-		Permission:        NewPermissionClient(cfg),
-		Quota:             NewQuotaClient(cfg),
-		QuotaItem:         NewQuotaItemClient(cfg),
-		Region:            NewRegionClient(cfg),
-		User:              NewUserClient(cfg),
-		UserAddr:          NewUserAddrClient(cfg),
-		UserDevice:        NewUserDeviceClient(cfg),
-		UserIdentity:      NewUserIdentityClient(cfg),
-		UserLoginProfile:  NewUserLoginProfileClient(cfg),
-		UserPassword:      NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppDict:            NewAppDictClient(cfg),
+		AppDictItem:        NewAppDictItemClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppPolicyView:      NewAppPolicyViewClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Country:            NewCountryClient(cfg),
+		Currency:           NewCurrencyClient(cfg),
+		FileIdentity:       NewFileIdentityClient(cfg),
+		FileSource:         NewFileSourceClient(cfg),
+		OauthClient:        NewOauthClientClient(cfg),
+		Org:                NewOrgClient(cfg),
+		OrgApp:             NewOrgAppClient(cfg),
+		OrgPolicy:          NewOrgPolicyClient(cfg),
+		OrgRole:            NewOrgRoleClient(cfg),
+		OrgRoleUser:        NewOrgRoleUserClient(cfg),
+		OrgUser:            NewOrgUserClient(cfg),
+		OrgUserPreference:  NewOrgUserPreferenceClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		Quota:              NewQuotaClient(cfg),
+		QuotaItem:          NewQuotaItemClient(cfg),
+		Region:             NewRegionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserAddr:           NewUserAddrClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
+		UserPasswordPolicy: NewUserPasswordPolicyClient(cfg),
 	}, nil
 }
 
@@ -375,7 +381,7 @@ func (c *Client) Use(hooks ...Hook) {
 		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
 		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
 		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
-		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword, c.UserPasswordPolicy,
 	} {
 		n.Use(hooks...)
 	}
@@ -390,7 +396,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
 		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
 		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
-		c.UserIdentity, c.UserLoginProfile, c.UserPassword,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword, c.UserPasswordPolicy,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -463,6 +469,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.UserLoginProfile.mutate(ctx, m)
 	case *UserPasswordMutation:
 		return c.UserPassword.mutate(ctx, m)
+	case *UserPasswordPolicyMutation:
+		return c.UserPasswordPolicy.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -3348,6 +3356,22 @@ func (c *OrgClient) QueryFileIdentities(o *Org) *FileIdentityQuery {
 			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, org.FileIdentitiesTable, org.FileIdentitiesColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUserPasswordPolicy queries the user_password_policy edge of a Org.
+func (c *OrgClient) QueryUserPasswordPolicy(o *Org) *UserPasswordPolicyQuery {
+	query := (&UserPasswordPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(userpasswordpolicy.Table, userpasswordpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.UserPasswordPolicyTable, org.UserPasswordPolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -6247,6 +6271,156 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 	}
 }
 
+// UserPasswordPolicyClient is a client for the UserPasswordPolicy schema.
+type UserPasswordPolicyClient struct {
+	config
+}
+
+// NewUserPasswordPolicyClient returns a client for the UserPasswordPolicy from the given config.
+func NewUserPasswordPolicyClient(c config) *UserPasswordPolicyClient {
+	return &UserPasswordPolicyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `userpasswordpolicy.Hooks(f(g(h())))`.
+func (c *UserPasswordPolicyClient) Use(hooks ...Hook) {
+	c.hooks.UserPasswordPolicy = append(c.hooks.UserPasswordPolicy, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `userpasswordpolicy.Intercept(f(g(h())))`.
+func (c *UserPasswordPolicyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserPasswordPolicy = append(c.inters.UserPasswordPolicy, interceptors...)
+}
+
+// Create returns a builder for creating a UserPasswordPolicy entity.
+func (c *UserPasswordPolicyClient) Create() *UserPasswordPolicyCreate {
+	mutation := newUserPasswordPolicyMutation(c.config, OpCreate)
+	return &UserPasswordPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserPasswordPolicy entities.
+func (c *UserPasswordPolicyClient) CreateBulk(builders ...*UserPasswordPolicyCreate) *UserPasswordPolicyCreateBulk {
+	return &UserPasswordPolicyCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserPasswordPolicyClient) MapCreateBulk(slice any, setFunc func(*UserPasswordPolicyCreate, int)) *UserPasswordPolicyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserPasswordPolicyCreateBulk{err: fmt.Errorf("calling to UserPasswordPolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserPasswordPolicyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserPasswordPolicyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Update() *UserPasswordPolicyUpdate {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdate)
+	return &UserPasswordPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserPasswordPolicyClient) UpdateOne(upp *UserPasswordPolicy) *UserPasswordPolicyUpdateOne {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdateOne, withUserPasswordPolicy(upp))
+	return &UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserPasswordPolicyClient) UpdateOneID(id int) *UserPasswordPolicyUpdateOne {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdateOne, withUserPasswordPolicyID(id))
+	return &UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Delete() *UserPasswordPolicyDelete {
+	mutation := newUserPasswordPolicyMutation(c.config, OpDelete)
+	return &UserPasswordPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserPasswordPolicyClient) DeleteOne(upp *UserPasswordPolicy) *UserPasswordPolicyDeleteOne {
+	return c.DeleteOneID(upp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserPasswordPolicyClient) DeleteOneID(id int) *UserPasswordPolicyDeleteOne {
+	builder := c.Delete().Where(userpasswordpolicy.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserPasswordPolicyDeleteOne{builder}
+}
+
+// Query returns a query builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Query() *UserPasswordPolicyQuery {
+	return &UserPasswordPolicyQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserPasswordPolicy},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserPasswordPolicy entity by its id.
+func (c *UserPasswordPolicyClient) Get(ctx context.Context, id int) (*UserPasswordPolicy, error) {
+	return c.Query().Where(userpasswordpolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "UserPasswordPolicy", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserPasswordPolicyClient) GetX(ctx context.Context, id int) *UserPasswordPolicy {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOrg queries the org edge of a UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) QueryOrg(upp *UserPasswordPolicy) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := upp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(userpasswordpolicy.Table, userpasswordpolicy.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(upp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserPasswordPolicyClient) Hooks() []Hook {
+	hooks := c.hooks.UserPasswordPolicy
+	return append(hooks[:len(hooks):len(hooks)], userpasswordpolicy.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserPasswordPolicyClient) Interceptors() []Interceptor {
+	return c.inters.UserPasswordPolicy
+}
+
+func (c *UserPasswordPolicyClient) mutate(ctx context.Context, m *UserPasswordPolicyMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserPasswordPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserPasswordPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserPasswordPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserPasswordPolicy mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
@@ -6254,14 +6428,16 @@ type (
 		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
 		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
 		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
-		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword,
+		UserPasswordPolicy []ent.Hook
 	}
 	inters struct {
 		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppPolicyView, AppRes,
 		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
 		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
 		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
-		UserDevice, UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword,
+		UserPasswordPolicy []ent.Interceptor
 	}
 )
 

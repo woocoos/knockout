@@ -1333,6 +1333,29 @@ func HasFileIdentitiesWith(preds ...predicate.FileIdentity) predicate.Org {
 	})
 }
 
+// HasUserPasswordPolicy applies the HasEdge predicate on the "user_password_policy" edge.
+func HasUserPasswordPolicy() predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserPasswordPolicyWith applies the HasEdge predicate on the "user_password_policy" edge with a given conditions (other predicates).
+func HasUserPasswordPolicyWith(preds ...predicate.UserPasswordPolicy) predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := newUserPasswordPolicyStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasOrgUser applies the HasEdge predicate on the "org_user" edge.
 func HasOrgUser() predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {

@@ -40,6 +40,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // AppWhereInput represents a where input for filtering App queries.
@@ -8388,6 +8389,10 @@ type OrgWhereInput struct {
 	HasFileIdentities     *bool                     `json:"hasFileIdentities,omitempty"`
 	HasFileIdentitiesWith []*FileIdentityWhereInput `json:"hasFileIdentitiesWith,omitempty"`
 
+	// "user_password_policy" edge predicates.
+	HasUserPasswordPolicy     *bool                           `json:"hasUserPasswordPolicy,omitempty"`
+	HasUserPasswordPolicyWith []*UserPasswordPolicyWhereInput `json:"hasUserPasswordPolicyWith,omitempty"`
+
 	// "org_user" edge predicates.
 	HasOrgUser     *bool                `json:"hasOrgUser,omitempty"`
 	HasOrgUserWith []*OrgUserWhereInput `json:"hasOrgUserWith,omitempty"`
@@ -9157,6 +9162,24 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, org.HasFileIdentitiesWith(with...))
+	}
+	if i.HasUserPasswordPolicy != nil {
+		p := org.HasUserPasswordPolicy()
+		if !*i.HasUserPasswordPolicy {
+			p = org.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasUserPasswordPolicyWith) > 0 {
+		with := make([]predicate.UserPasswordPolicy, 0, len(i.HasUserPasswordPolicyWith))
+		for _, w := range i.HasUserPasswordPolicyWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasUserPasswordPolicyWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, org.HasUserPasswordPolicyWith(with...))
 	}
 	if i.HasOrgUser != nil {
 		p := org.HasOrgUser()
@@ -17571,5 +17594,617 @@ func (i *UserPasswordWhereInput) P() (predicate.UserPassword, error) {
 		return predicates[0], nil
 	default:
 		return userpassword.And(predicates...), nil
+	}
+}
+
+// UserPasswordPolicyWhereInput represents a where input for filtering UserPasswordPolicy queries.
+type UserPasswordPolicyWhereInput struct {
+	Predicates []predicate.UserPasswordPolicy  `json:"-"`
+	Not        *UserPasswordPolicyWhereInput   `json:"not,omitempty"`
+	Or         []*UserPasswordPolicyWhereInput `json:"or,omitempty"`
+	And        []*UserPasswordPolicyWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "created_by" field predicates.
+	CreatedBy      *int  `json:"createdBy,omitempty"`
+	CreatedByNEQ   *int  `json:"createdByNEQ,omitempty"`
+	CreatedByIn    []int `json:"createdByIn,omitempty"`
+	CreatedByNotIn []int `json:"createdByNotIn,omitempty"`
+	CreatedByGT    *int  `json:"createdByGT,omitempty"`
+	CreatedByGTE   *int  `json:"createdByGTE,omitempty"`
+	CreatedByLT    *int  `json:"createdByLT,omitempty"`
+	CreatedByLTE   *int  `json:"createdByLTE,omitempty"`
+
+	// "created_at" field predicates.
+	CreatedAt      *time.Time  `json:"createdAt,omitempty"`
+	CreatedAtNEQ   *time.Time  `json:"createdAtNEQ,omitempty"`
+	CreatedAtIn    []time.Time `json:"createdAtIn,omitempty"`
+	CreatedAtNotIn []time.Time `json:"createdAtNotIn,omitempty"`
+	CreatedAtGT    *time.Time  `json:"createdAtGT,omitempty"`
+	CreatedAtGTE   *time.Time  `json:"createdAtGTE,omitempty"`
+	CreatedAtLT    *time.Time  `json:"createdAtLT,omitempty"`
+	CreatedAtLTE   *time.Time  `json:"createdAtLTE,omitempty"`
+
+	// "updated_by" field predicates.
+	UpdatedBy       *int  `json:"updatedBy,omitempty"`
+	UpdatedByNEQ    *int  `json:"updatedByNEQ,omitempty"`
+	UpdatedByIn     []int `json:"updatedByIn,omitempty"`
+	UpdatedByNotIn  []int `json:"updatedByNotIn,omitempty"`
+	UpdatedByGT     *int  `json:"updatedByGT,omitempty"`
+	UpdatedByGTE    *int  `json:"updatedByGTE,omitempty"`
+	UpdatedByLT     *int  `json:"updatedByLT,omitempty"`
+	UpdatedByLTE    *int  `json:"updatedByLTE,omitempty"`
+	UpdatedByIsNil  bool  `json:"updatedByIsNil,omitempty"`
+	UpdatedByNotNil bool  `json:"updatedByNotNil,omitempty"`
+
+	// "updated_at" field predicates.
+	UpdatedAt       *time.Time  `json:"updatedAt,omitempty"`
+	UpdatedAtNEQ    *time.Time  `json:"updatedAtNEQ,omitempty"`
+	UpdatedAtIn     []time.Time `json:"updatedAtIn,omitempty"`
+	UpdatedAtNotIn  []time.Time `json:"updatedAtNotIn,omitempty"`
+	UpdatedAtGT     *time.Time  `json:"updatedAtGT,omitempty"`
+	UpdatedAtGTE    *time.Time  `json:"updatedAtGTE,omitempty"`
+	UpdatedAtLT     *time.Time  `json:"updatedAtLT,omitempty"`
+	UpdatedAtLTE    *time.Time  `json:"updatedAtLTE,omitempty"`
+	UpdatedAtIsNil  bool        `json:"updatedAtIsNil,omitempty"`
+	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
+
+	// "tenant_id" field predicates.
+	TenantID       *int  `json:"tenantID,omitempty"`
+	TenantIDNEQ    *int  `json:"tenantIDNEQ,omitempty"`
+	TenantIDIn     []int `json:"tenantIDIn,omitempty"`
+	TenantIDNotIn  []int `json:"tenantIDNotIn,omitempty"`
+	TenantIDIsNil  bool  `json:"tenantIDIsNil,omitempty"`
+	TenantIDNotNil bool  `json:"tenantIDNotNil,omitempty"`
+
+	// "length" field predicates.
+	Length       *int32  `json:"length,omitempty"`
+	LengthNEQ    *int32  `json:"lengthNEQ,omitempty"`
+	LengthIn     []int32 `json:"lengthIn,omitempty"`
+	LengthNotIn  []int32 `json:"lengthNotIn,omitempty"`
+	LengthGT     *int32  `json:"lengthGT,omitempty"`
+	LengthGTE    *int32  `json:"lengthGTE,omitempty"`
+	LengthLT     *int32  `json:"lengthLT,omitempty"`
+	LengthLTE    *int32  `json:"lengthLTE,omitempty"`
+	LengthIsNil  bool    `json:"lengthIsNil,omitempty"`
+	LengthNotNil bool    `json:"lengthNotNil,omitempty"`
+
+	// "include_element" field predicates.
+	IncludeElement       *int32  `json:"includeElement,omitempty"`
+	IncludeElementNEQ    *int32  `json:"includeElementNEQ,omitempty"`
+	IncludeElementIn     []int32 `json:"includeElementIn,omitempty"`
+	IncludeElementNotIn  []int32 `json:"includeElementNotIn,omitempty"`
+	IncludeElementGT     *int32  `json:"includeElementGT,omitempty"`
+	IncludeElementGTE    *int32  `json:"includeElementGTE,omitempty"`
+	IncludeElementLT     *int32  `json:"includeElementLT,omitempty"`
+	IncludeElementLTE    *int32  `json:"includeElementLTE,omitempty"`
+	IncludeElementIsNil  bool    `json:"includeElementIsNil,omitempty"`
+	IncludeElementNotNil bool    `json:"includeElementNotNil,omitempty"`
+
+	// "include_char" field predicates.
+	IncludeChar       *int32  `json:"includeChar,omitempty"`
+	IncludeCharNEQ    *int32  `json:"includeCharNEQ,omitempty"`
+	IncludeCharIn     []int32 `json:"includeCharIn,omitempty"`
+	IncludeCharNotIn  []int32 `json:"includeCharNotIn,omitempty"`
+	IncludeCharGT     *int32  `json:"includeCharGT,omitempty"`
+	IncludeCharGTE    *int32  `json:"includeCharGTE,omitempty"`
+	IncludeCharLT     *int32  `json:"includeCharLT,omitempty"`
+	IncludeCharLTE    *int32  `json:"includeCharLTE,omitempty"`
+	IncludeCharIsNil  bool    `json:"includeCharIsNil,omitempty"`
+	IncludeCharNotNil bool    `json:"includeCharNotNil,omitempty"`
+
+	// "allow_include_user_name" field predicates.
+	AllowIncludeUserName       *bool `json:"allowIncludeUserName,omitempty"`
+	AllowIncludeUserNameNEQ    *bool `json:"allowIncludeUserNameNEQ,omitempty"`
+	AllowIncludeUserNameIsNil  bool  `json:"allowIncludeUserNameIsNil,omitempty"`
+	AllowIncludeUserNameNotNil bool  `json:"allowIncludeUserNameNotNil,omitempty"`
+
+	// "invalid_day" field predicates.
+	InvalidDay       *int32  `json:"invalidDay,omitempty"`
+	InvalidDayNEQ    *int32  `json:"invalidDayNEQ,omitempty"`
+	InvalidDayIn     []int32 `json:"invalidDayIn,omitempty"`
+	InvalidDayNotIn  []int32 `json:"invalidDayNotIn,omitempty"`
+	InvalidDayGT     *int32  `json:"invalidDayGT,omitempty"`
+	InvalidDayGTE    *int32  `json:"invalidDayGTE,omitempty"`
+	InvalidDayLT     *int32  `json:"invalidDayLT,omitempty"`
+	InvalidDayLTE    *int32  `json:"invalidDayLTE,omitempty"`
+	InvalidDayIsNil  bool    `json:"invalidDayIsNil,omitempty"`
+	InvalidDayNotNil bool    `json:"invalidDayNotNil,omitempty"`
+
+	// "invalid_login_limit" field predicates.
+	InvalidLoginLimit       *bool `json:"invalidLoginLimit,omitempty"`
+	InvalidLoginLimitNEQ    *bool `json:"invalidLoginLimitNEQ,omitempty"`
+	InvalidLoginLimitIsNil  bool  `json:"invalidLoginLimitIsNil,omitempty"`
+	InvalidLoginLimitNotNil bool  `json:"invalidLoginLimitNotNil,omitempty"`
+
+	// "retry" field predicates.
+	Retry       *int32  `json:"retry,omitempty"`
+	RetryNEQ    *int32  `json:"retryNEQ,omitempty"`
+	RetryIn     []int32 `json:"retryIn,omitempty"`
+	RetryNotIn  []int32 `json:"retryNotIn,omitempty"`
+	RetryGT     *int32  `json:"retryGT,omitempty"`
+	RetryGTE    *int32  `json:"retryGTE,omitempty"`
+	RetryLT     *int32  `json:"retryLT,omitempty"`
+	RetryLTE    *int32  `json:"retryLTE,omitempty"`
+	RetryIsNil  bool    `json:"retryIsNil,omitempty"`
+	RetryNotNil bool    `json:"retryNotNil,omitempty"`
+
+	// "captcha_times" field predicates.
+	CaptchaTimes       *int32  `json:"captchaTimes,omitempty"`
+	CaptchaTimesNEQ    *int32  `json:"captchaTimesNEQ,omitempty"`
+	CaptchaTimesIn     []int32 `json:"captchaTimesIn,omitempty"`
+	CaptchaTimesNotIn  []int32 `json:"captchaTimesNotIn,omitempty"`
+	CaptchaTimesGT     *int32  `json:"captchaTimesGT,omitempty"`
+	CaptchaTimesGTE    *int32  `json:"captchaTimesGTE,omitempty"`
+	CaptchaTimesLT     *int32  `json:"captchaTimesLT,omitempty"`
+	CaptchaTimesLTE    *int32  `json:"captchaTimesLTE,omitempty"`
+	CaptchaTimesIsNil  bool    `json:"captchaTimesIsNil,omitempty"`
+	CaptchaTimesNotNil bool    `json:"captchaTimesNotNil,omitempty"`
+
+	// "org" edge predicates.
+	HasOrg     *bool            `json:"hasOrg,omitempty"`
+	HasOrgWith []*OrgWhereInput `json:"hasOrgWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *UserPasswordPolicyWhereInput) AddPredicates(predicates ...predicate.UserPasswordPolicy) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the UserPasswordPolicyWhereInput filter on the UserPasswordPolicyQuery builder.
+func (i *UserPasswordPolicyWhereInput) Filter(q *UserPasswordPolicyQuery) (*UserPasswordPolicyQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyUserPasswordPolicyWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyUserPasswordPolicyWhereInput is returned in case the UserPasswordPolicyWhereInput is empty.
+var ErrEmptyUserPasswordPolicyWhereInput = errors.New("ent: empty predicate UserPasswordPolicyWhereInput")
+
+// P returns a predicate for filtering userpasswordpolicies.
+// An error is returned if the input is empty or invalid.
+func (i *UserPasswordPolicyWhereInput) P() (predicate.UserPasswordPolicy, error) {
+	var predicates []predicate.UserPasswordPolicy
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, userpasswordpolicy.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.UserPasswordPolicy, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, userpasswordpolicy.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.UserPasswordPolicy, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, userpasswordpolicy.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, userpasswordpolicy.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, userpasswordpolicy.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, userpasswordpolicy.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IDLTE(*i.IDLTE))
+	}
+	if i.CreatedBy != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByEQ(*i.CreatedBy))
+	}
+	if i.CreatedByNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByNEQ(*i.CreatedByNEQ))
+	}
+	if len(i.CreatedByIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CreatedByIn(i.CreatedByIn...))
+	}
+	if len(i.CreatedByNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CreatedByNotIn(i.CreatedByNotIn...))
+	}
+	if i.CreatedByGT != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByGT(*i.CreatedByGT))
+	}
+	if i.CreatedByGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByGTE(*i.CreatedByGTE))
+	}
+	if i.CreatedByLT != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByLT(*i.CreatedByLT))
+	}
+	if i.CreatedByLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedByLTE(*i.CreatedByLTE))
+	}
+	if i.CreatedAt != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtEQ(*i.CreatedAt))
+	}
+	if i.CreatedAtNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtNEQ(*i.CreatedAtNEQ))
+	}
+	if len(i.CreatedAtIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtIn(i.CreatedAtIn...))
+	}
+	if len(i.CreatedAtNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtNotIn(i.CreatedAtNotIn...))
+	}
+	if i.CreatedAtGT != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtGT(*i.CreatedAtGT))
+	}
+	if i.CreatedAtGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtGTE(*i.CreatedAtGTE))
+	}
+	if i.CreatedAtLT != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtLT(*i.CreatedAtLT))
+	}
+	if i.CreatedAtLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CreatedAtLTE(*i.CreatedAtLTE))
+	}
+	if i.UpdatedBy != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByEQ(*i.UpdatedBy))
+	}
+	if i.UpdatedByNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByNEQ(*i.UpdatedByNEQ))
+	}
+	if len(i.UpdatedByIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByIn(i.UpdatedByIn...))
+	}
+	if len(i.UpdatedByNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByNotIn(i.UpdatedByNotIn...))
+	}
+	if i.UpdatedByGT != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByGT(*i.UpdatedByGT))
+	}
+	if i.UpdatedByGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByGTE(*i.UpdatedByGTE))
+	}
+	if i.UpdatedByLT != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByLT(*i.UpdatedByLT))
+	}
+	if i.UpdatedByLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByLTE(*i.UpdatedByLTE))
+	}
+	if i.UpdatedByIsNil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByIsNil())
+	}
+	if i.UpdatedByNotNil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedByNotNil())
+	}
+	if i.UpdatedAt != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtEQ(*i.UpdatedAt))
+	}
+	if i.UpdatedAtNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+	}
+	if len(i.UpdatedAtIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtIn(i.UpdatedAtIn...))
+	}
+	if len(i.UpdatedAtNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+	}
+	if i.UpdatedAtGT != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtGT(*i.UpdatedAtGT))
+	}
+	if i.UpdatedAtGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtGTE(*i.UpdatedAtGTE))
+	}
+	if i.UpdatedAtLT != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtLT(*i.UpdatedAtLT))
+	}
+	if i.UpdatedAtLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtLTE(*i.UpdatedAtLTE))
+	}
+	if i.UpdatedAtIsNil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtIsNil())
+	}
+	if i.UpdatedAtNotNil {
+		predicates = append(predicates, userpasswordpolicy.UpdatedAtNotNil())
+	}
+	if i.TenantID != nil {
+		predicates = append(predicates, userpasswordpolicy.TenantIDEQ(*i.TenantID))
+	}
+	if i.TenantIDNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.TenantIDNEQ(*i.TenantIDNEQ))
+	}
+	if len(i.TenantIDIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.TenantIDIn(i.TenantIDIn...))
+	}
+	if len(i.TenantIDNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.TenantIDNotIn(i.TenantIDNotIn...))
+	}
+	if i.TenantIDIsNil {
+		predicates = append(predicates, userpasswordpolicy.TenantIDIsNil())
+	}
+	if i.TenantIDNotNil {
+		predicates = append(predicates, userpasswordpolicy.TenantIDNotNil())
+	}
+	if i.Length != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthEQ(*i.Length))
+	}
+	if i.LengthNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthNEQ(*i.LengthNEQ))
+	}
+	if len(i.LengthIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.LengthIn(i.LengthIn...))
+	}
+	if len(i.LengthNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.LengthNotIn(i.LengthNotIn...))
+	}
+	if i.LengthGT != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthGT(*i.LengthGT))
+	}
+	if i.LengthGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthGTE(*i.LengthGTE))
+	}
+	if i.LengthLT != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthLT(*i.LengthLT))
+	}
+	if i.LengthLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.LengthLTE(*i.LengthLTE))
+	}
+	if i.LengthIsNil {
+		predicates = append(predicates, userpasswordpolicy.LengthIsNil())
+	}
+	if i.LengthNotNil {
+		predicates = append(predicates, userpasswordpolicy.LengthNotNil())
+	}
+	if i.IncludeElement != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementEQ(*i.IncludeElement))
+	}
+	if i.IncludeElementNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementNEQ(*i.IncludeElementNEQ))
+	}
+	if len(i.IncludeElementIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementIn(i.IncludeElementIn...))
+	}
+	if len(i.IncludeElementNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementNotIn(i.IncludeElementNotIn...))
+	}
+	if i.IncludeElementGT != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementGT(*i.IncludeElementGT))
+	}
+	if i.IncludeElementGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementGTE(*i.IncludeElementGTE))
+	}
+	if i.IncludeElementLT != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementLT(*i.IncludeElementLT))
+	}
+	if i.IncludeElementLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementLTE(*i.IncludeElementLTE))
+	}
+	if i.IncludeElementIsNil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementIsNil())
+	}
+	if i.IncludeElementNotNil {
+		predicates = append(predicates, userpasswordpolicy.IncludeElementNotNil())
+	}
+	if i.IncludeChar != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharEQ(*i.IncludeChar))
+	}
+	if i.IncludeCharNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharNEQ(*i.IncludeCharNEQ))
+	}
+	if len(i.IncludeCharIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharIn(i.IncludeCharIn...))
+	}
+	if len(i.IncludeCharNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharNotIn(i.IncludeCharNotIn...))
+	}
+	if i.IncludeCharGT != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharGT(*i.IncludeCharGT))
+	}
+	if i.IncludeCharGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharGTE(*i.IncludeCharGTE))
+	}
+	if i.IncludeCharLT != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharLT(*i.IncludeCharLT))
+	}
+	if i.IncludeCharLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharLTE(*i.IncludeCharLTE))
+	}
+	if i.IncludeCharIsNil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharIsNil())
+	}
+	if i.IncludeCharNotNil {
+		predicates = append(predicates, userpasswordpolicy.IncludeCharNotNil())
+	}
+	if i.AllowIncludeUserName != nil {
+		predicates = append(predicates, userpasswordpolicy.AllowIncludeUserNameEQ(*i.AllowIncludeUserName))
+	}
+	if i.AllowIncludeUserNameNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.AllowIncludeUserNameNEQ(*i.AllowIncludeUserNameNEQ))
+	}
+	if i.AllowIncludeUserNameIsNil {
+		predicates = append(predicates, userpasswordpolicy.AllowIncludeUserNameIsNil())
+	}
+	if i.AllowIncludeUserNameNotNil {
+		predicates = append(predicates, userpasswordpolicy.AllowIncludeUserNameNotNil())
+	}
+	if i.InvalidDay != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayEQ(*i.InvalidDay))
+	}
+	if i.InvalidDayNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayNEQ(*i.InvalidDayNEQ))
+	}
+	if len(i.InvalidDayIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayIn(i.InvalidDayIn...))
+	}
+	if len(i.InvalidDayNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayNotIn(i.InvalidDayNotIn...))
+	}
+	if i.InvalidDayGT != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayGT(*i.InvalidDayGT))
+	}
+	if i.InvalidDayGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayGTE(*i.InvalidDayGTE))
+	}
+	if i.InvalidDayLT != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayLT(*i.InvalidDayLT))
+	}
+	if i.InvalidDayLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayLTE(*i.InvalidDayLTE))
+	}
+	if i.InvalidDayIsNil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayIsNil())
+	}
+	if i.InvalidDayNotNil {
+		predicates = append(predicates, userpasswordpolicy.InvalidDayNotNil())
+	}
+	if i.InvalidLoginLimit != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidLoginLimitEQ(*i.InvalidLoginLimit))
+	}
+	if i.InvalidLoginLimitNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.InvalidLoginLimitNEQ(*i.InvalidLoginLimitNEQ))
+	}
+	if i.InvalidLoginLimitIsNil {
+		predicates = append(predicates, userpasswordpolicy.InvalidLoginLimitIsNil())
+	}
+	if i.InvalidLoginLimitNotNil {
+		predicates = append(predicates, userpasswordpolicy.InvalidLoginLimitNotNil())
+	}
+	if i.Retry != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryEQ(*i.Retry))
+	}
+	if i.RetryNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryNEQ(*i.RetryNEQ))
+	}
+	if len(i.RetryIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.RetryIn(i.RetryIn...))
+	}
+	if len(i.RetryNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.RetryNotIn(i.RetryNotIn...))
+	}
+	if i.RetryGT != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryGT(*i.RetryGT))
+	}
+	if i.RetryGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryGTE(*i.RetryGTE))
+	}
+	if i.RetryLT != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryLT(*i.RetryLT))
+	}
+	if i.RetryLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.RetryLTE(*i.RetryLTE))
+	}
+	if i.RetryIsNil {
+		predicates = append(predicates, userpasswordpolicy.RetryIsNil())
+	}
+	if i.RetryNotNil {
+		predicates = append(predicates, userpasswordpolicy.RetryNotNil())
+	}
+	if i.CaptchaTimes != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesEQ(*i.CaptchaTimes))
+	}
+	if i.CaptchaTimesNEQ != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesNEQ(*i.CaptchaTimesNEQ))
+	}
+	if len(i.CaptchaTimesIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesIn(i.CaptchaTimesIn...))
+	}
+	if len(i.CaptchaTimesNotIn) > 0 {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesNotIn(i.CaptchaTimesNotIn...))
+	}
+	if i.CaptchaTimesGT != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesGT(*i.CaptchaTimesGT))
+	}
+	if i.CaptchaTimesGTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesGTE(*i.CaptchaTimesGTE))
+	}
+	if i.CaptchaTimesLT != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesLT(*i.CaptchaTimesLT))
+	}
+	if i.CaptchaTimesLTE != nil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesLTE(*i.CaptchaTimesLTE))
+	}
+	if i.CaptchaTimesIsNil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesIsNil())
+	}
+	if i.CaptchaTimesNotNil {
+		predicates = append(predicates, userpasswordpolicy.CaptchaTimesNotNil())
+	}
+
+	if i.HasOrg != nil {
+		p := userpasswordpolicy.HasOrg()
+		if !*i.HasOrg {
+			p = userpasswordpolicy.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasOrgWith))
+		for _, w := range i.HasOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, userpasswordpolicy.HasOrgWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyUserPasswordPolicyWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return userpasswordpolicy.And(predicates...), nil
 	}
 }

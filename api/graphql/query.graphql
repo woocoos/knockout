@@ -149,4 +149,6 @@ extend type Query {
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
     orgPolicyView(appCode: String!): [AppPolicyView!]!
+    """获取租户密码策略"""
+    userPasswordPolicy: UserPasswordPolicy
 }

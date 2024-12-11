@@ -358,3 +358,8 @@ func (r *queryResolver) AppPolicyView(ctx context.Context, appCode string) ([]*e
 func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
 	return r.resource.OrgPolicyView(ctx, appCode)
 }
+
+// UserPasswordPolicy is the resolver for the UserPasswordPolicy field.
+func (r *queryResolver) UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPolicy, error) {
+	return r.resource.UserPasswordPolicy(ctx)
+}

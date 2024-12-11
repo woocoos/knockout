@@ -74,8 +74,23 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 		middleware.RegisterTokenSigner(),
 	)
 
+	pp := resource.PwdPolicy{
+		Length:               6,
+		IncludeElement:       3,
+		IncludeChar:          4,
+		AllowIncludeUserName: false,
+		InvalidDay:           30,
+		InvalidLoginLimit:    false,
+		Retry:                5,
+		CaptchaTimes:         3,
+	}
+	var err = cnf.Sub("adminx.pwdPolicy").Unmarshal(&pp)
+	if err != nil {
+		panic(err)
+	}
 	s.resolver = NewResolver(WithClient(s.portalClient),
-		WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk, Cfg: cnf}),
+		//WithResource(&resource.Service{Client: s.portalClient, KOSDK: s.kosdk, Cfg: cnf}),
+		WithResource(resource.NewService(resource.WithClient(s.portalClient), resource.WithKOSDK(s.kosdk), resource.WithCfg(cnf), resource.WithPwdPolicy(&pp))),
 	)
 	gqlSrv := handler.NewDefaultServer(NewSchema(s.resolver))
 	gqlSrv.AroundResponses(middleware.SimplePagination())

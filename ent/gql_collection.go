@@ -39,6 +39,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
@@ -3217,6 +3218,18 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 			o.WithNamedFileIdentities(alias, func(wq *FileIdentityQuery) {
 				*wq = *query
 			})
+		case "userPasswordPolicy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserPasswordPolicyClient{config: o.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, userpasswordpolicyImplementors)...); err != nil {
+				return err
+			}
+			o.WithNamedUserPasswordPolicy(alias, func(wq *UserPasswordPolicyQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[org.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, org.FieldCreatedBy)
@@ -5708,6 +5721,169 @@ func newUserPasswordPaginateArgs(rv map[string]any) *userpasswordPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*UserPasswordWhereInput); ok {
 		args.opts = append(args.opts, WithUserPasswordFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (upp *UserPasswordPolicyQuery) CollectFields(ctx context.Context, satisfies ...string) (*UserPasswordPolicyQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return upp, nil
+	}
+	if err := upp.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return upp, nil
+}
+
+func (upp *UserPasswordPolicyQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(userpasswordpolicy.Columns))
+		selectedFields = []string{userpasswordpolicy.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "org":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: upp.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			upp.withOrg = query
+			if _, ok := fieldSeen[userpasswordpolicy.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldTenantID)
+				fieldSeen[userpasswordpolicy.FieldTenantID] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldCreatedBy)
+				fieldSeen[userpasswordpolicy.FieldCreatedBy] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldCreatedAt)
+				fieldSeen[userpasswordpolicy.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldUpdatedBy)
+				fieldSeen[userpasswordpolicy.FieldUpdatedBy] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldUpdatedAt)
+				fieldSeen[userpasswordpolicy.FieldUpdatedAt] = struct{}{}
+			}
+		case "tenantID":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldTenantID)
+				fieldSeen[userpasswordpolicy.FieldTenantID] = struct{}{}
+			}
+		case "length":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldLength]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldLength)
+				fieldSeen[userpasswordpolicy.FieldLength] = struct{}{}
+			}
+		case "includeElement":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldIncludeElement]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldIncludeElement)
+				fieldSeen[userpasswordpolicy.FieldIncludeElement] = struct{}{}
+			}
+		case "includeChar":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldIncludeChar]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldIncludeChar)
+				fieldSeen[userpasswordpolicy.FieldIncludeChar] = struct{}{}
+			}
+		case "allowIncludeUserName":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldAllowIncludeUserName]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldAllowIncludeUserName)
+				fieldSeen[userpasswordpolicy.FieldAllowIncludeUserName] = struct{}{}
+			}
+		case "invalidDay":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldInvalidDay]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldInvalidDay)
+				fieldSeen[userpasswordpolicy.FieldInvalidDay] = struct{}{}
+			}
+		case "invalidLoginLimit":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldInvalidLoginLimit]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldInvalidLoginLimit)
+				fieldSeen[userpasswordpolicy.FieldInvalidLoginLimit] = struct{}{}
+			}
+		case "retry":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldRetry]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldRetry)
+				fieldSeen[userpasswordpolicy.FieldRetry] = struct{}{}
+			}
+		case "captchaTimes":
+			if _, ok := fieldSeen[userpasswordpolicy.FieldCaptchaTimes]; !ok {
+				selectedFields = append(selectedFields, userpasswordpolicy.FieldCaptchaTimes)
+				fieldSeen[userpasswordpolicy.FieldCaptchaTimes] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		upp.Select(selectedFields...)
+	}
+	return nil
+}
+
+type userpasswordpolicyPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []UserPasswordPolicyPaginateOption
+}
+
+func newUserPasswordPolicyPaginateArgs(rv map[string]any) *userpasswordpolicyPaginateArgs {
+	args := &userpasswordpolicyPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &UserPasswordPolicyOrder{Field: &UserPasswordPolicyOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithUserPasswordPolicyOrder(order))
+			}
+		case *UserPasswordPolicyOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithUserPasswordPolicyOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*UserPasswordPolicyWhereInput); ok {
+		args.opts = append(args.opts, WithUserPasswordPolicyFilter(v.Filter))
 	}
 	return args
 }

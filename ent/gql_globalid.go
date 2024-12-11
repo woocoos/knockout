@@ -40,6 +40,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // GlobalID returns the global identifier for the given App node.
@@ -210,6 +211,12 @@ func (up *UserPassword) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given UserPasswordPolicy node.
+func (upp *UserPasswordPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserPasswordPolicy:%d", upp.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 type ResolvedGlobal struct{ Type, ID string }
 
 func FromGlobalID(s string) (*ResolvedGlobal, error) {
@@ -282,6 +289,8 @@ func GlobalID(tp, id string) (string, error) {
 	case userloginprofile.Table:
 		break
 	case userpassword.Table:
+		break
+	case userpasswordpolicy.Table:
 		break
 	default:
 		return "", fmt.Errorf("invalid type %q", tp)

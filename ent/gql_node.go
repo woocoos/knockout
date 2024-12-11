@@ -43,6 +43,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -190,6 +191,11 @@ var userpasswordImplementors = []string{"UserPassword", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*UserPassword) IsNode() {}
+
+var userpasswordpolicyImplementors = []string{"UserPasswordPolicy", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserPasswordPolicy) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -501,6 +507,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, userpassword.Table, id))
+	case userpasswordpolicy.Table:
+		query := c.UserPasswordPolicy.Query().
+			Where(userpasswordpolicy.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userpasswordpolicyImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, userpasswordpolicy.Table, id))
 	default:
 		return nil, fmt.Errorf("cannot resolve noder from table %q: %w", table, errNodeInvalidID)
 	}
@@ -1010,6 +1025,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.UserPassword.Query().
 			Where(userpassword.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userpasswordImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case userpasswordpolicy.Table:
+		query := c.UserPasswordPolicy.Query().
+			Where(userpasswordpolicy.IDIn(ids...))
+		query, err := query.CollectFields(ctx, userpasswordpolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}

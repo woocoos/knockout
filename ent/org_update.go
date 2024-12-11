@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // OrgUpdate is the builder for updating Org entities.
@@ -481,6 +482,21 @@ func (ou *OrgUpdate) AddFileIdentities(f ...*FileIdentity) *OrgUpdate {
 	return ou.AddFileIdentityIDs(ids...)
 }
 
+// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
+func (ou *OrgUpdate) AddUserPasswordPolicyIDs(ids ...int) *OrgUpdate {
+	ou.mutation.AddUserPasswordPolicyIDs(ids...)
+	return ou
+}
+
+// AddUserPasswordPolicy adds the "user_password_policy" edges to the UserPasswordPolicy entity.
+func (ou *OrgUpdate) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return ou.AddUserPasswordPolicyIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ou *OrgUpdate) AddOrgUserIDs(ids ...int) *OrgUpdate {
 	ou.mutation.AddOrgUserIDs(ids...)
@@ -673,6 +689,27 @@ func (ou *OrgUpdate) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdate {
 		ids[i] = f[i].ID
 	}
 	return ou.RemoveFileIdentityIDs(ids...)
+}
+
+// ClearUserPasswordPolicy clears all "user_password_policy" edges to the UserPasswordPolicy entity.
+func (ou *OrgUpdate) ClearUserPasswordPolicy() *OrgUpdate {
+	ou.mutation.ClearUserPasswordPolicy()
+	return ou
+}
+
+// RemoveUserPasswordPolicyIDs removes the "user_password_policy" edge to UserPasswordPolicy entities by IDs.
+func (ou *OrgUpdate) RemoveUserPasswordPolicyIDs(ids ...int) *OrgUpdate {
+	ou.mutation.RemoveUserPasswordPolicyIDs(ids...)
+	return ou
+}
+
+// RemoveUserPasswordPolicy removes "user_password_policy" edges to UserPasswordPolicy entities.
+func (ou *OrgUpdate) RemoveUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return ou.RemoveUserPasswordPolicyIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1291,6 +1328,51 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedUserPasswordPolicyIDs(); len(nodes) > 0 && !ou.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if ou.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1844,6 +1926,21 @@ func (ouo *OrgUpdateOne) AddFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
 	return ouo.AddFileIdentityIDs(ids...)
 }
 
+// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
+func (ouo *OrgUpdateOne) AddUserPasswordPolicyIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.AddUserPasswordPolicyIDs(ids...)
+	return ouo
+}
+
+// AddUserPasswordPolicy adds the "user_password_policy" edges to the UserPasswordPolicy entity.
+func (ouo *OrgUpdateOne) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return ouo.AddUserPasswordPolicyIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ouo *OrgUpdateOne) AddOrgUserIDs(ids ...int) *OrgUpdateOne {
 	ouo.mutation.AddOrgUserIDs(ids...)
@@ -2036,6 +2133,27 @@ func (ouo *OrgUpdateOne) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdateOne 
 		ids[i] = f[i].ID
 	}
 	return ouo.RemoveFileIdentityIDs(ids...)
+}
+
+// ClearUserPasswordPolicy clears all "user_password_policy" edges to the UserPasswordPolicy entity.
+func (ouo *OrgUpdateOne) ClearUserPasswordPolicy() *OrgUpdateOne {
+	ouo.mutation.ClearUserPasswordPolicy()
+	return ouo
+}
+
+// RemoveUserPasswordPolicyIDs removes the "user_password_policy" edge to UserPasswordPolicy entities by IDs.
+func (ouo *OrgUpdateOne) RemoveUserPasswordPolicyIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.RemoveUserPasswordPolicyIDs(ids...)
+	return ouo
+}
+
+// RemoveUserPasswordPolicy removes "user_password_policy" edges to UserPasswordPolicy entities.
+func (ouo *OrgUpdateOne) RemoveUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return ouo.RemoveUserPasswordPolicyIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -2677,6 +2795,51 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedUserPasswordPolicyIDs(); len(nodes) > 0 && !ouo.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

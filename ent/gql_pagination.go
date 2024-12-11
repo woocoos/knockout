@@ -15,7 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/vektah/gqlparser/v2/gqlerror"
-	"github.com/woocoos/knockout-go/pkg/pagination"
+	"github.com/woocoos/entco/pkg/pagination"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -44,6 +44,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // Common entgql types.
@@ -8743,5 +8744,309 @@ func (up *UserPassword) ToEdge(order *UserPasswordOrder) *UserPasswordEdge {
 	return &UserPasswordEdge{
 		Node:   up,
 		Cursor: order.Field.toCursor(up),
+	}
+}
+
+// UserPasswordPolicyEdge is the edge representation of UserPasswordPolicy.
+type UserPasswordPolicyEdge struct {
+	Node   *UserPasswordPolicy `json:"node"`
+	Cursor Cursor              `json:"cursor"`
+}
+
+// UserPasswordPolicyConnection is the connection containing edges to UserPasswordPolicy.
+type UserPasswordPolicyConnection struct {
+	Edges      []*UserPasswordPolicyEdge `json:"edges"`
+	PageInfo   PageInfo                  `json:"pageInfo"`
+	TotalCount int                       `json:"totalCount"`
+}
+
+func (c *UserPasswordPolicyConnection) build(nodes []*UserPasswordPolicy, pager *userpasswordpolicyPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *UserPasswordPolicy
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *UserPasswordPolicy {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *UserPasswordPolicy {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*UserPasswordPolicyEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &UserPasswordPolicyEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// UserPasswordPolicyPaginateOption enables pagination customization.
+type UserPasswordPolicyPaginateOption func(*userpasswordpolicyPager) error
+
+// WithUserPasswordPolicyOrder configures pagination ordering.
+func WithUserPasswordPolicyOrder(order *UserPasswordPolicyOrder) UserPasswordPolicyPaginateOption {
+	if order == nil {
+		order = DefaultUserPasswordPolicyOrder
+	}
+	o := *order
+	return func(pager *userpasswordpolicyPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultUserPasswordPolicyOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithUserPasswordPolicyFilter configures pagination filter.
+func WithUserPasswordPolicyFilter(filter func(*UserPasswordPolicyQuery) (*UserPasswordPolicyQuery, error)) UserPasswordPolicyPaginateOption {
+	return func(pager *userpasswordpolicyPager) error {
+		if filter == nil {
+			return errors.New("UserPasswordPolicyQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type userpasswordpolicyPager struct {
+	reverse bool
+	order   *UserPasswordPolicyOrder
+	filter  func(*UserPasswordPolicyQuery) (*UserPasswordPolicyQuery, error)
+}
+
+func newUserPasswordPolicyPager(opts []UserPasswordPolicyPaginateOption, reverse bool) (*userpasswordpolicyPager, error) {
+	pager := &userpasswordpolicyPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultUserPasswordPolicyOrder
+	}
+	return pager, nil
+}
+
+func (p *userpasswordpolicyPager) applyFilter(query *UserPasswordPolicyQuery) (*UserPasswordPolicyQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *userpasswordpolicyPager) toCursor(upp *UserPasswordPolicy) Cursor {
+	return p.order.Field.toCursor(upp)
+}
+
+func (p *userpasswordpolicyPager) applyCursors(query *UserPasswordPolicyQuery, after, before *Cursor) (*UserPasswordPolicyQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultUserPasswordPolicyOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *userpasswordpolicyPager) applyOrder(query *UserPasswordPolicyQuery) *UserPasswordPolicyQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultUserPasswordPolicyOrder.Field {
+		query = query.Order(DefaultUserPasswordPolicyOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *userpasswordpolicyPager) orderExpr(query *UserPasswordPolicyQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultUserPasswordPolicyOrder.Field {
+			b.Comma().Ident(DefaultUserPasswordPolicyOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to UserPasswordPolicy.
+func (upp *UserPasswordPolicyQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...UserPasswordPolicyPaginateOption,
+) (*UserPasswordPolicyConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newUserPasswordPolicyPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if upp, err = pager.applyFilter(upp); err != nil {
+		return nil, err
+	}
+	conn := &UserPasswordPolicyConnection{Edges: []*UserPasswordPolicyEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := upp.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if upp, err = pager.applyCursors(upp, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		upp.Limit(limit)
+	}
+	if sp, ok := pagination.SimplePaginationFromContext(ctx); ok {
+		if first != nil {
+			upp.Offset((sp.PageIndex - sp.CurrentIndex - 1) * *first)
+		}
+		if last != nil {
+			upp.Offset((sp.CurrentIndex - sp.PageIndex - 1) * *last)
+		}
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := upp.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	upp = pager.applyOrder(upp)
+	nodes, err := upp.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// UserPasswordPolicyOrderFieldCreatedAt orders UserPasswordPolicy by created_at.
+	UserPasswordPolicyOrderFieldCreatedAt = &UserPasswordPolicyOrderField{
+		Value: func(upp *UserPasswordPolicy) (ent.Value, error) {
+			return upp.CreatedAt, nil
+		},
+		column: userpasswordpolicy.FieldCreatedAt,
+		toTerm: userpasswordpolicy.ByCreatedAt,
+		toCursor: func(upp *UserPasswordPolicy) Cursor {
+			return Cursor{
+				ID:    upp.ID,
+				Value: upp.CreatedAt,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f UserPasswordPolicyOrderField) String() string {
+	var str string
+	switch f.column {
+	case UserPasswordPolicyOrderFieldCreatedAt.column:
+		str = "createdAt"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f UserPasswordPolicyOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *UserPasswordPolicyOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("UserPasswordPolicyOrderField %T must be a string", v)
+	}
+	switch str {
+	case "createdAt":
+		*f = *UserPasswordPolicyOrderFieldCreatedAt
+	default:
+		return fmt.Errorf("%s is not a valid UserPasswordPolicyOrderField", str)
+	}
+	return nil
+}
+
+// UserPasswordPolicyOrderField defines the ordering field of UserPasswordPolicy.
+type UserPasswordPolicyOrderField struct {
+	// Value extracts the ordering value from the given UserPasswordPolicy.
+	Value    func(*UserPasswordPolicy) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) userpasswordpolicy.OrderOption
+	toCursor func(*UserPasswordPolicy) Cursor
+}
+
+// UserPasswordPolicyOrder defines the ordering of UserPasswordPolicy.
+type UserPasswordPolicyOrder struct {
+	Direction OrderDirection                `json:"direction"`
+	Field     *UserPasswordPolicyOrderField `json:"field"`
+}
+
+// DefaultUserPasswordPolicyOrder is the default ordering of UserPasswordPolicy.
+var DefaultUserPasswordPolicyOrder = &UserPasswordPolicyOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &UserPasswordPolicyOrderField{
+		Value: func(upp *UserPasswordPolicy) (ent.Value, error) {
+			return upp.ID, nil
+		},
+		column: userpasswordpolicy.FieldID,
+		toTerm: userpasswordpolicy.ByID,
+		toCursor: func(upp *UserPasswordPolicy) Cursor {
+			return Cursor{ID: upp.ID}
+		},
+	},
+}
+
+// ToEdge converts UserPasswordPolicy into UserPasswordPolicyEdge.
+func (upp *UserPasswordPolicy) ToEdge(order *UserPasswordPolicyOrder) *UserPasswordPolicyEdge {
+	if order == nil {
+		order = DefaultUserPasswordPolicyOrder
+	}
+	return &UserPasswordPolicyEdge{
+		Node:   upp,
+		Cursor: order.Field.toCursor(upp),
 	}
 }

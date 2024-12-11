@@ -46,6 +46,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 const (
@@ -57,38 +58,39 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeApp               = "App"
-	TypeAppAction         = "AppAction"
-	TypeAppDict           = "AppDict"
-	TypeAppDictItem       = "AppDictItem"
-	TypeAppMenu           = "AppMenu"
-	TypeAppPolicy         = "AppPolicy"
-	TypeAppPolicyView     = "AppPolicyView"
-	TypeAppRes            = "AppRes"
-	TypeAppRole           = "AppRole"
-	TypeAppRolePolicy     = "AppRolePolicy"
-	TypeCountry           = "Country"
-	TypeCurrency          = "Currency"
-	TypeFileIdentity      = "FileIdentity"
-	TypeFileSource        = "FileSource"
-	TypeOauthClient       = "OauthClient"
-	TypeOrg               = "Org"
-	TypeOrgApp            = "OrgApp"
-	TypeOrgPolicy         = "OrgPolicy"
-	TypeOrgRole           = "OrgRole"
-	TypeOrgRoleUser       = "OrgRoleUser"
-	TypeOrgUser           = "OrgUser"
-	TypeOrgUserPreference = "OrgUserPreference"
-	TypePermission        = "Permission"
-	TypeQuota             = "Quota"
-	TypeQuotaItem         = "QuotaItem"
-	TypeRegion            = "Region"
-	TypeUser              = "User"
-	TypeUserAddr          = "UserAddr"
-	TypeUserDevice        = "UserDevice"
-	TypeUserIdentity      = "UserIdentity"
-	TypeUserLoginProfile  = "UserLoginProfile"
-	TypeUserPassword      = "UserPassword"
+	TypeApp                = "App"
+	TypeAppAction          = "AppAction"
+	TypeAppDict            = "AppDict"
+	TypeAppDictItem        = "AppDictItem"
+	TypeAppMenu            = "AppMenu"
+	TypeAppPolicy          = "AppPolicy"
+	TypeAppPolicyView      = "AppPolicyView"
+	TypeAppRes             = "AppRes"
+	TypeAppRole            = "AppRole"
+	TypeAppRolePolicy      = "AppRolePolicy"
+	TypeCountry            = "Country"
+	TypeCurrency           = "Currency"
+	TypeFileIdentity       = "FileIdentity"
+	TypeFileSource         = "FileSource"
+	TypeOauthClient        = "OauthClient"
+	TypeOrg                = "Org"
+	TypeOrgApp             = "OrgApp"
+	TypeOrgPolicy          = "OrgPolicy"
+	TypeOrgRole            = "OrgRole"
+	TypeOrgRoleUser        = "OrgRoleUser"
+	TypeOrgUser            = "OrgUser"
+	TypeOrgUserPreference  = "OrgUserPreference"
+	TypePermission         = "Permission"
+	TypeQuota              = "Quota"
+	TypeQuotaItem          = "QuotaItem"
+	TypeRegion             = "Region"
+	TypeUser               = "User"
+	TypeUserAddr           = "UserAddr"
+	TypeUserDevice         = "UserDevice"
+	TypeUserIdentity       = "UserIdentity"
+	TypeUserLoginProfile   = "UserLoginProfile"
+	TypeUserPassword       = "UserPassword"
+	TypeUserPasswordPolicy = "UserPasswordPolicy"
 )
 
 // AppMutation represents an operation that mutates the App nodes in the graph.
@@ -18676,64 +18678,67 @@ func (m *OauthClientMutation) ResetEdge(name string) error {
 // OrgMutation represents an operation that mutates the Org nodes in the graph.
 type OrgMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int
-	created_by              *int
-	addcreated_by           *int
-	created_at              *time.Time
-	updated_by              *int
-	addupdated_by           *int
-	updated_at              *time.Time
-	deleted_at              *time.Time
-	kind                    *org.Kind
-	domain                  *string
-	code                    *string
-	name                    *string
-	profile                 *string
-	status                  *typex.SimpleStatus
-	_path                   *string
-	display_sort            *int32
-	adddisplay_sort         *int32
-	country_code            *string
-	timezone                *string
-	local_currency          *string
-	logo                    **types.OrgLogo
-	clearedFields           map[string]struct{}
-	parent                  *int
-	clearedparent           bool
-	children                map[int]struct{}
-	removedchildren         map[int]struct{}
-	clearedchildren         bool
-	owner                   *int
-	clearedowner            bool
-	users                   map[int]struct{}
-	removedusers            map[int]struct{}
-	clearedusers            bool
-	roles_and_groups        map[int]struct{}
-	removedroles_and_groups map[int]struct{}
-	clearedroles_and_groups bool
-	permissions             map[int]struct{}
-	removedpermissions      map[int]struct{}
-	clearedpermissions      bool
-	policies                map[int]struct{}
-	removedpolicies         map[int]struct{}
-	clearedpolicies         bool
-	apps                    map[int]struct{}
-	removedapps             map[int]struct{}
-	clearedapps             bool
-	file_identities         map[int]struct{}
-	removedfile_identities  map[int]struct{}
-	clearedfile_identities  bool
-	org_user                map[int]struct{}
-	removedorg_user         map[int]struct{}
-	clearedorg_user         bool
-	org_app                 map[int]struct{}
-	removedorg_app          map[int]struct{}
-	clearedorg_app          bool
-	done                    bool
-	oldValue                func(context.Context) (*Org, error)
-	predicates              []predicate.Org
+	op                          Op
+	typ                         string
+	id                          *int
+	created_by                  *int
+	addcreated_by               *int
+	created_at                  *time.Time
+	updated_by                  *int
+	addupdated_by               *int
+	updated_at                  *time.Time
+	deleted_at                  *time.Time
+	kind                        *org.Kind
+	domain                      *string
+	code                        *string
+	name                        *string
+	profile                     *string
+	status                      *typex.SimpleStatus
+	_path                       *string
+	display_sort                *int32
+	adddisplay_sort             *int32
+	country_code                *string
+	timezone                    *string
+	local_currency              *string
+	logo                        **types.OrgLogo
+	clearedFields               map[string]struct{}
+	parent                      *int
+	clearedparent               bool
+	children                    map[int]struct{}
+	removedchildren             map[int]struct{}
+	clearedchildren             bool
+	owner                       *int
+	clearedowner                bool
+	users                       map[int]struct{}
+	removedusers                map[int]struct{}
+	clearedusers                bool
+	roles_and_groups            map[int]struct{}
+	removedroles_and_groups     map[int]struct{}
+	clearedroles_and_groups     bool
+	permissions                 map[int]struct{}
+	removedpermissions          map[int]struct{}
+	clearedpermissions          bool
+	policies                    map[int]struct{}
+	removedpolicies             map[int]struct{}
+	clearedpolicies             bool
+	apps                        map[int]struct{}
+	removedapps                 map[int]struct{}
+	clearedapps                 bool
+	file_identities             map[int]struct{}
+	removedfile_identities      map[int]struct{}
+	clearedfile_identities      bool
+	user_password_policy        map[int]struct{}
+	removeduser_password_policy map[int]struct{}
+	cleareduser_password_policy bool
+	org_user                    map[int]struct{}
+	removedorg_user             map[int]struct{}
+	clearedorg_user             bool
+	org_app                     map[int]struct{}
+	removedorg_app              map[int]struct{}
+	clearedorg_app              bool
+	done                        bool
+	oldValue                    func(context.Context) (*Org, error)
+	predicates                  []predicate.Org
 }
 
 var _ ent.Mutation = (*OrgMutation)(nil)
@@ -20200,6 +20205,60 @@ func (m *OrgMutation) ResetFileIdentities() {
 	m.removedfile_identities = nil
 }
 
+// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by ids.
+func (m *OrgMutation) AddUserPasswordPolicyIDs(ids ...int) {
+	if m.user_password_policy == nil {
+		m.user_password_policy = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.user_password_policy[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (m *OrgMutation) ClearUserPasswordPolicy() {
+	m.cleareduser_password_policy = true
+}
+
+// UserPasswordPolicyCleared reports if the "user_password_policy" edge to the UserPasswordPolicy entity was cleared.
+func (m *OrgMutation) UserPasswordPolicyCleared() bool {
+	return m.cleareduser_password_policy
+}
+
+// RemoveUserPasswordPolicyIDs removes the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
+func (m *OrgMutation) RemoveUserPasswordPolicyIDs(ids ...int) {
+	if m.removeduser_password_policy == nil {
+		m.removeduser_password_policy = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.user_password_policy, ids[i])
+		m.removeduser_password_policy[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUserPasswordPolicy returns the removed IDs of the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (m *OrgMutation) RemovedUserPasswordPolicyIDs() (ids []int) {
+	for id := range m.removeduser_password_policy {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserPasswordPolicyIDs returns the "user_password_policy" edge IDs in the mutation.
+func (m *OrgMutation) UserPasswordPolicyIDs() (ids []int) {
+	for id := range m.user_password_policy {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUserPasswordPolicy resets all changes to the "user_password_policy" edge.
+func (m *OrgMutation) ResetUserPasswordPolicy() {
+	m.user_password_policy = nil
+	m.cleareduser_password_policy = false
+	m.removeduser_password_policy = nil
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by ids.
 func (m *OrgMutation) AddOrgUserIDs(ids ...int) {
 	if m.org_user == nil {
@@ -20873,7 +20932,7 @@ func (m *OrgMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrgMutation) AddedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.parent != nil {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -20900,6 +20959,9 @@ func (m *OrgMutation) AddedEdges() []string {
 	}
 	if m.file_identities != nil {
 		edges = append(edges, org.EdgeFileIdentities)
+	}
+	if m.user_password_policy != nil {
+		edges = append(edges, org.EdgeUserPasswordPolicy)
 	}
 	if m.org_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -20964,6 +21026,12 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeUserPasswordPolicy:
+		ids := make([]ent.Value, 0, len(m.user_password_policy))
+		for id := range m.user_password_policy {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.org_user))
 		for id := range m.org_user {
@@ -20982,7 +21050,7 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrgMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.removedchildren != nil {
 		edges = append(edges, org.EdgeChildren)
 	}
@@ -21003,6 +21071,9 @@ func (m *OrgMutation) RemovedEdges() []string {
 	}
 	if m.removedfile_identities != nil {
 		edges = append(edges, org.EdgeFileIdentities)
+	}
+	if m.removeduser_password_policy != nil {
+		edges = append(edges, org.EdgeUserPasswordPolicy)
 	}
 	if m.removedorg_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -21059,6 +21130,12 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeUserPasswordPolicy:
+		ids := make([]ent.Value, 0, len(m.removeduser_password_policy))
+		for id := range m.removeduser_password_policy {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.removedorg_user))
 		for id := range m.removedorg_user {
@@ -21077,7 +21154,7 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrgMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.clearedparent {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -21104,6 +21181,9 @@ func (m *OrgMutation) ClearedEdges() []string {
 	}
 	if m.clearedfile_identities {
 		edges = append(edges, org.EdgeFileIdentities)
+	}
+	if m.cleareduser_password_policy {
+		edges = append(edges, org.EdgeUserPasswordPolicy)
 	}
 	if m.clearedorg_user {
 		edges = append(edges, org.EdgeOrgUser)
@@ -21136,6 +21216,8 @@ func (m *OrgMutation) EdgeCleared(name string) bool {
 		return m.clearedapps
 	case org.EdgeFileIdentities:
 		return m.clearedfile_identities
+	case org.EdgeUserPasswordPolicy:
+		return m.cleareduser_password_policy
 	case org.EdgeOrgUser:
 		return m.clearedorg_user
 	case org.EdgeOrgApp:
@@ -21188,6 +21270,9 @@ func (m *OrgMutation) ResetEdge(name string) error {
 		return nil
 	case org.EdgeFileIdentities:
 		m.ResetFileIdentities()
+		return nil
+	case org.EdgeUserPasswordPolicy:
+		m.ResetUserPasswordPolicy()
 		return nil
 	case org.EdgeOrgUser:
 		m.ResetOrgUser()
@@ -41167,4 +41252,1537 @@ func (m *UserPasswordMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown UserPassword edge %s", name)
+}
+
+// UserPasswordPolicyMutation represents an operation that mutates the UserPasswordPolicy nodes in the graph.
+type UserPasswordPolicyMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	created_by              *int
+	addcreated_by           *int
+	created_at              *time.Time
+	updated_by              *int
+	addupdated_by           *int
+	updated_at              *time.Time
+	length                  *int32
+	addlength               *int32
+	include_element         *int32
+	addinclude_element      *int32
+	include_char            *int32
+	addinclude_char         *int32
+	allow_include_user_name *bool
+	invalid_day             *int32
+	addinvalid_day          *int32
+	invalid_login_limit     *bool
+	retry                   *int32
+	addretry                *int32
+	captcha_times           *int32
+	addcaptcha_times        *int32
+	clearedFields           map[string]struct{}
+	org                     *int
+	clearedorg              bool
+	done                    bool
+	oldValue                func(context.Context) (*UserPasswordPolicy, error)
+	predicates              []predicate.UserPasswordPolicy
+}
+
+var _ ent.Mutation = (*UserPasswordPolicyMutation)(nil)
+
+// userpasswordpolicyOption allows management of the mutation configuration using functional options.
+type userpasswordpolicyOption func(*UserPasswordPolicyMutation)
+
+// newUserPasswordPolicyMutation creates new mutation for the UserPasswordPolicy entity.
+func newUserPasswordPolicyMutation(c config, op Op, opts ...userpasswordpolicyOption) *UserPasswordPolicyMutation {
+	m := &UserPasswordPolicyMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeUserPasswordPolicy,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withUserPasswordPolicyID sets the ID field of the mutation.
+func withUserPasswordPolicyID(id int) userpasswordpolicyOption {
+	return func(m *UserPasswordPolicyMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *UserPasswordPolicy
+		)
+		m.oldValue = func(ctx context.Context) (*UserPasswordPolicy, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().UserPasswordPolicy.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withUserPasswordPolicy sets the old UserPasswordPolicy of the mutation.
+func withUserPasswordPolicy(node *UserPasswordPolicy) userpasswordpolicyOption {
+	return func(m *UserPasswordPolicyMutation) {
+		m.oldValue = func(context.Context) (*UserPasswordPolicy, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m UserPasswordPolicyMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m UserPasswordPolicyMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of UserPasswordPolicy entities.
+func (m *UserPasswordPolicyMutation) SetID(id int) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *UserPasswordPolicyMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *UserPasswordPolicyMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().UserPasswordPolicy.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedBy sets the "created_by" field.
+func (m *UserPasswordPolicyMutation) SetCreatedBy(i int) {
+	m.created_by = &i
+	m.addcreated_by = nil
+}
+
+// CreatedBy returns the value of the "created_by" field in the mutation.
+func (m *UserPasswordPolicyMutation) CreatedBy() (r int, exists bool) {
+	v := m.created_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedBy returns the old "created_by" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldCreatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedBy: %w", err)
+	}
+	return oldValue.CreatedBy, nil
+}
+
+// AddCreatedBy adds i to the "created_by" field.
+func (m *UserPasswordPolicyMutation) AddCreatedBy(i int) {
+	if m.addcreated_by != nil {
+		*m.addcreated_by += i
+	} else {
+		m.addcreated_by = &i
+	}
+}
+
+// AddedCreatedBy returns the value that was added to the "created_by" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedCreatedBy() (r int, exists bool) {
+	v := m.addcreated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedBy resets all changes to the "created_by" field.
+func (m *UserPasswordPolicyMutation) ResetCreatedBy() {
+	m.created_by = nil
+	m.addcreated_by = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *UserPasswordPolicyMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *UserPasswordPolicyMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *UserPasswordPolicyMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *UserPasswordPolicyMutation) SetUpdatedBy(i int) {
+	m.updated_by = &i
+	m.addupdated_by = nil
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *UserPasswordPolicyMutation) UpdatedBy() (r int, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldUpdatedBy(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// AddUpdatedBy adds i to the "updated_by" field.
+func (m *UserPasswordPolicyMutation) AddUpdatedBy(i int) {
+	if m.addupdated_by != nil {
+		*m.addupdated_by += i
+	} else {
+		m.addupdated_by = &i
+	}
+}
+
+// AddedUpdatedBy returns the value that was added to the "updated_by" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedUpdatedBy() (r int, exists bool) {
+	v := m.addupdated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUpdatedBy clears the value of the "updated_by" field.
+func (m *UserPasswordPolicyMutation) ClearUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	m.clearedFields[userpasswordpolicy.FieldUpdatedBy] = struct{}{}
+}
+
+// UpdatedByCleared returns if the "updated_by" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) UpdatedByCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldUpdatedBy]
+	return ok
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *UserPasswordPolicyMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+	m.addupdated_by = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldUpdatedBy)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *UserPasswordPolicyMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *UserPasswordPolicyMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ClearUpdatedAt clears the value of the "updated_at" field.
+func (m *UserPasswordPolicyMutation) ClearUpdatedAt() {
+	m.updated_at = nil
+	m.clearedFields[userpasswordpolicy.FieldUpdatedAt] = struct{}{}
+}
+
+// UpdatedAtCleared returns if the "updated_at" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) UpdatedAtCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldUpdatedAt]
+	return ok
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *UserPasswordPolicyMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldUpdatedAt)
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (m *UserPasswordPolicyMutation) SetTenantID(i int) {
+	m.org = &i
+}
+
+// TenantID returns the value of the "tenant_id" field in the mutation.
+func (m *UserPasswordPolicyMutation) TenantID() (r int, exists bool) {
+	v := m.org
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTenantID returns the old "tenant_id" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldTenantID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTenantID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTenantID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTenantID: %w", err)
+	}
+	return oldValue.TenantID, nil
+}
+
+// ClearTenantID clears the value of the "tenant_id" field.
+func (m *UserPasswordPolicyMutation) ClearTenantID() {
+	m.org = nil
+	m.clearedFields[userpasswordpolicy.FieldTenantID] = struct{}{}
+}
+
+// TenantIDCleared returns if the "tenant_id" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) TenantIDCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldTenantID]
+	return ok
+}
+
+// ResetTenantID resets all changes to the "tenant_id" field.
+func (m *UserPasswordPolicyMutation) ResetTenantID() {
+	m.org = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldTenantID)
+}
+
+// SetLength sets the "length" field.
+func (m *UserPasswordPolicyMutation) SetLength(i int32) {
+	m.length = &i
+	m.addlength = nil
+}
+
+// Length returns the value of the "length" field in the mutation.
+func (m *UserPasswordPolicyMutation) Length() (r int32, exists bool) {
+	v := m.length
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLength returns the old "length" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldLength(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLength is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLength requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLength: %w", err)
+	}
+	return oldValue.Length, nil
+}
+
+// AddLength adds i to the "length" field.
+func (m *UserPasswordPolicyMutation) AddLength(i int32) {
+	if m.addlength != nil {
+		*m.addlength += i
+	} else {
+		m.addlength = &i
+	}
+}
+
+// AddedLength returns the value that was added to the "length" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedLength() (r int32, exists bool) {
+	v := m.addlength
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearLength clears the value of the "length" field.
+func (m *UserPasswordPolicyMutation) ClearLength() {
+	m.length = nil
+	m.addlength = nil
+	m.clearedFields[userpasswordpolicy.FieldLength] = struct{}{}
+}
+
+// LengthCleared returns if the "length" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) LengthCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldLength]
+	return ok
+}
+
+// ResetLength resets all changes to the "length" field.
+func (m *UserPasswordPolicyMutation) ResetLength() {
+	m.length = nil
+	m.addlength = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldLength)
+}
+
+// SetIncludeElement sets the "include_element" field.
+func (m *UserPasswordPolicyMutation) SetIncludeElement(i int32) {
+	m.include_element = &i
+	m.addinclude_element = nil
+}
+
+// IncludeElement returns the value of the "include_element" field in the mutation.
+func (m *UserPasswordPolicyMutation) IncludeElement() (r int32, exists bool) {
+	v := m.include_element
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIncludeElement returns the old "include_element" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldIncludeElement(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIncludeElement is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIncludeElement requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIncludeElement: %w", err)
+	}
+	return oldValue.IncludeElement, nil
+}
+
+// AddIncludeElement adds i to the "include_element" field.
+func (m *UserPasswordPolicyMutation) AddIncludeElement(i int32) {
+	if m.addinclude_element != nil {
+		*m.addinclude_element += i
+	} else {
+		m.addinclude_element = &i
+	}
+}
+
+// AddedIncludeElement returns the value that was added to the "include_element" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedIncludeElement() (r int32, exists bool) {
+	v := m.addinclude_element
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearIncludeElement clears the value of the "include_element" field.
+func (m *UserPasswordPolicyMutation) ClearIncludeElement() {
+	m.include_element = nil
+	m.addinclude_element = nil
+	m.clearedFields[userpasswordpolicy.FieldIncludeElement] = struct{}{}
+}
+
+// IncludeElementCleared returns if the "include_element" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) IncludeElementCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldIncludeElement]
+	return ok
+}
+
+// ResetIncludeElement resets all changes to the "include_element" field.
+func (m *UserPasswordPolicyMutation) ResetIncludeElement() {
+	m.include_element = nil
+	m.addinclude_element = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldIncludeElement)
+}
+
+// SetIncludeChar sets the "include_char" field.
+func (m *UserPasswordPolicyMutation) SetIncludeChar(i int32) {
+	m.include_char = &i
+	m.addinclude_char = nil
+}
+
+// IncludeChar returns the value of the "include_char" field in the mutation.
+func (m *UserPasswordPolicyMutation) IncludeChar() (r int32, exists bool) {
+	v := m.include_char
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIncludeChar returns the old "include_char" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldIncludeChar(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIncludeChar is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIncludeChar requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIncludeChar: %w", err)
+	}
+	return oldValue.IncludeChar, nil
+}
+
+// AddIncludeChar adds i to the "include_char" field.
+func (m *UserPasswordPolicyMutation) AddIncludeChar(i int32) {
+	if m.addinclude_char != nil {
+		*m.addinclude_char += i
+	} else {
+		m.addinclude_char = &i
+	}
+}
+
+// AddedIncludeChar returns the value that was added to the "include_char" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedIncludeChar() (r int32, exists bool) {
+	v := m.addinclude_char
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearIncludeChar clears the value of the "include_char" field.
+func (m *UserPasswordPolicyMutation) ClearIncludeChar() {
+	m.include_char = nil
+	m.addinclude_char = nil
+	m.clearedFields[userpasswordpolicy.FieldIncludeChar] = struct{}{}
+}
+
+// IncludeCharCleared returns if the "include_char" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) IncludeCharCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldIncludeChar]
+	return ok
+}
+
+// ResetIncludeChar resets all changes to the "include_char" field.
+func (m *UserPasswordPolicyMutation) ResetIncludeChar() {
+	m.include_char = nil
+	m.addinclude_char = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldIncludeChar)
+}
+
+// SetAllowIncludeUserName sets the "allow_include_user_name" field.
+func (m *UserPasswordPolicyMutation) SetAllowIncludeUserName(b bool) {
+	m.allow_include_user_name = &b
+}
+
+// AllowIncludeUserName returns the value of the "allow_include_user_name" field in the mutation.
+func (m *UserPasswordPolicyMutation) AllowIncludeUserName() (r bool, exists bool) {
+	v := m.allow_include_user_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAllowIncludeUserName returns the old "allow_include_user_name" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldAllowIncludeUserName(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAllowIncludeUserName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAllowIncludeUserName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAllowIncludeUserName: %w", err)
+	}
+	return oldValue.AllowIncludeUserName, nil
+}
+
+// ClearAllowIncludeUserName clears the value of the "allow_include_user_name" field.
+func (m *UserPasswordPolicyMutation) ClearAllowIncludeUserName() {
+	m.allow_include_user_name = nil
+	m.clearedFields[userpasswordpolicy.FieldAllowIncludeUserName] = struct{}{}
+}
+
+// AllowIncludeUserNameCleared returns if the "allow_include_user_name" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) AllowIncludeUserNameCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldAllowIncludeUserName]
+	return ok
+}
+
+// ResetAllowIncludeUserName resets all changes to the "allow_include_user_name" field.
+func (m *UserPasswordPolicyMutation) ResetAllowIncludeUserName() {
+	m.allow_include_user_name = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldAllowIncludeUserName)
+}
+
+// SetInvalidDay sets the "invalid_day" field.
+func (m *UserPasswordPolicyMutation) SetInvalidDay(i int32) {
+	m.invalid_day = &i
+	m.addinvalid_day = nil
+}
+
+// InvalidDay returns the value of the "invalid_day" field in the mutation.
+func (m *UserPasswordPolicyMutation) InvalidDay() (r int32, exists bool) {
+	v := m.invalid_day
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInvalidDay returns the old "invalid_day" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldInvalidDay(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInvalidDay is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInvalidDay requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInvalidDay: %w", err)
+	}
+	return oldValue.InvalidDay, nil
+}
+
+// AddInvalidDay adds i to the "invalid_day" field.
+func (m *UserPasswordPolicyMutation) AddInvalidDay(i int32) {
+	if m.addinvalid_day != nil {
+		*m.addinvalid_day += i
+	} else {
+		m.addinvalid_day = &i
+	}
+}
+
+// AddedInvalidDay returns the value that was added to the "invalid_day" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedInvalidDay() (r int32, exists bool) {
+	v := m.addinvalid_day
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearInvalidDay clears the value of the "invalid_day" field.
+func (m *UserPasswordPolicyMutation) ClearInvalidDay() {
+	m.invalid_day = nil
+	m.addinvalid_day = nil
+	m.clearedFields[userpasswordpolicy.FieldInvalidDay] = struct{}{}
+}
+
+// InvalidDayCleared returns if the "invalid_day" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) InvalidDayCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldInvalidDay]
+	return ok
+}
+
+// ResetInvalidDay resets all changes to the "invalid_day" field.
+func (m *UserPasswordPolicyMutation) ResetInvalidDay() {
+	m.invalid_day = nil
+	m.addinvalid_day = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldInvalidDay)
+}
+
+// SetInvalidLoginLimit sets the "invalid_login_limit" field.
+func (m *UserPasswordPolicyMutation) SetInvalidLoginLimit(b bool) {
+	m.invalid_login_limit = &b
+}
+
+// InvalidLoginLimit returns the value of the "invalid_login_limit" field in the mutation.
+func (m *UserPasswordPolicyMutation) InvalidLoginLimit() (r bool, exists bool) {
+	v := m.invalid_login_limit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInvalidLoginLimit returns the old "invalid_login_limit" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldInvalidLoginLimit(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInvalidLoginLimit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInvalidLoginLimit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInvalidLoginLimit: %w", err)
+	}
+	return oldValue.InvalidLoginLimit, nil
+}
+
+// ClearInvalidLoginLimit clears the value of the "invalid_login_limit" field.
+func (m *UserPasswordPolicyMutation) ClearInvalidLoginLimit() {
+	m.invalid_login_limit = nil
+	m.clearedFields[userpasswordpolicy.FieldInvalidLoginLimit] = struct{}{}
+}
+
+// InvalidLoginLimitCleared returns if the "invalid_login_limit" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) InvalidLoginLimitCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldInvalidLoginLimit]
+	return ok
+}
+
+// ResetInvalidLoginLimit resets all changes to the "invalid_login_limit" field.
+func (m *UserPasswordPolicyMutation) ResetInvalidLoginLimit() {
+	m.invalid_login_limit = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldInvalidLoginLimit)
+}
+
+// SetRetry sets the "retry" field.
+func (m *UserPasswordPolicyMutation) SetRetry(i int32) {
+	m.retry = &i
+	m.addretry = nil
+}
+
+// Retry returns the value of the "retry" field in the mutation.
+func (m *UserPasswordPolicyMutation) Retry() (r int32, exists bool) {
+	v := m.retry
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRetry returns the old "retry" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldRetry(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRetry is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRetry requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRetry: %w", err)
+	}
+	return oldValue.Retry, nil
+}
+
+// AddRetry adds i to the "retry" field.
+func (m *UserPasswordPolicyMutation) AddRetry(i int32) {
+	if m.addretry != nil {
+		*m.addretry += i
+	} else {
+		m.addretry = &i
+	}
+}
+
+// AddedRetry returns the value that was added to the "retry" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedRetry() (r int32, exists bool) {
+	v := m.addretry
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRetry clears the value of the "retry" field.
+func (m *UserPasswordPolicyMutation) ClearRetry() {
+	m.retry = nil
+	m.addretry = nil
+	m.clearedFields[userpasswordpolicy.FieldRetry] = struct{}{}
+}
+
+// RetryCleared returns if the "retry" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) RetryCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldRetry]
+	return ok
+}
+
+// ResetRetry resets all changes to the "retry" field.
+func (m *UserPasswordPolicyMutation) ResetRetry() {
+	m.retry = nil
+	m.addretry = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldRetry)
+}
+
+// SetCaptchaTimes sets the "captcha_times" field.
+func (m *UserPasswordPolicyMutation) SetCaptchaTimes(i int32) {
+	m.captcha_times = &i
+	m.addcaptcha_times = nil
+}
+
+// CaptchaTimes returns the value of the "captcha_times" field in the mutation.
+func (m *UserPasswordPolicyMutation) CaptchaTimes() (r int32, exists bool) {
+	v := m.captcha_times
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCaptchaTimes returns the old "captcha_times" field's value of the UserPasswordPolicy entity.
+// If the UserPasswordPolicy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserPasswordPolicyMutation) OldCaptchaTimes(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCaptchaTimes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCaptchaTimes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCaptchaTimes: %w", err)
+	}
+	return oldValue.CaptchaTimes, nil
+}
+
+// AddCaptchaTimes adds i to the "captcha_times" field.
+func (m *UserPasswordPolicyMutation) AddCaptchaTimes(i int32) {
+	if m.addcaptcha_times != nil {
+		*m.addcaptcha_times += i
+	} else {
+		m.addcaptcha_times = &i
+	}
+}
+
+// AddedCaptchaTimes returns the value that was added to the "captcha_times" field in this mutation.
+func (m *UserPasswordPolicyMutation) AddedCaptchaTimes() (r int32, exists bool) {
+	v := m.addcaptcha_times
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearCaptchaTimes clears the value of the "captcha_times" field.
+func (m *UserPasswordPolicyMutation) ClearCaptchaTimes() {
+	m.captcha_times = nil
+	m.addcaptcha_times = nil
+	m.clearedFields[userpasswordpolicy.FieldCaptchaTimes] = struct{}{}
+}
+
+// CaptchaTimesCleared returns if the "captcha_times" field was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) CaptchaTimesCleared() bool {
+	_, ok := m.clearedFields[userpasswordpolicy.FieldCaptchaTimes]
+	return ok
+}
+
+// ResetCaptchaTimes resets all changes to the "captcha_times" field.
+func (m *UserPasswordPolicyMutation) ResetCaptchaTimes() {
+	m.captcha_times = nil
+	m.addcaptcha_times = nil
+	delete(m.clearedFields, userpasswordpolicy.FieldCaptchaTimes)
+}
+
+// SetOrgID sets the "org" edge to the Org entity by id.
+func (m *UserPasswordPolicyMutation) SetOrgID(id int) {
+	m.org = &id
+}
+
+// ClearOrg clears the "org" edge to the Org entity.
+func (m *UserPasswordPolicyMutation) ClearOrg() {
+	m.clearedorg = true
+	m.clearedFields[userpasswordpolicy.FieldTenantID] = struct{}{}
+}
+
+// OrgCleared reports if the "org" edge to the Org entity was cleared.
+func (m *UserPasswordPolicyMutation) OrgCleared() bool {
+	return m.TenantIDCleared() || m.clearedorg
+}
+
+// OrgID returns the "org" edge ID in the mutation.
+func (m *UserPasswordPolicyMutation) OrgID() (id int, exists bool) {
+	if m.org != nil {
+		return *m.org, true
+	}
+	return
+}
+
+// OrgIDs returns the "org" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OrgID instead. It exists only for internal usage by the builders.
+func (m *UserPasswordPolicyMutation) OrgIDs() (ids []int) {
+	if id := m.org; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOrg resets all changes to the "org" edge.
+func (m *UserPasswordPolicyMutation) ResetOrg() {
+	m.org = nil
+	m.clearedorg = false
+}
+
+// Where appends a list predicates to the UserPasswordPolicyMutation builder.
+func (m *UserPasswordPolicyMutation) Where(ps ...predicate.UserPasswordPolicy) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the UserPasswordPolicyMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *UserPasswordPolicyMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.UserPasswordPolicy, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *UserPasswordPolicyMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *UserPasswordPolicyMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (UserPasswordPolicy).
+func (m *UserPasswordPolicyMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *UserPasswordPolicyMutation) Fields() []string {
+	fields := make([]string, 0, 13)
+	if m.created_by != nil {
+		fields = append(fields, userpasswordpolicy.FieldCreatedBy)
+	}
+	if m.created_at != nil {
+		fields = append(fields, userpasswordpolicy.FieldCreatedAt)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, userpasswordpolicy.FieldUpdatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, userpasswordpolicy.FieldUpdatedAt)
+	}
+	if m.org != nil {
+		fields = append(fields, userpasswordpolicy.FieldTenantID)
+	}
+	if m.length != nil {
+		fields = append(fields, userpasswordpolicy.FieldLength)
+	}
+	if m.include_element != nil {
+		fields = append(fields, userpasswordpolicy.FieldIncludeElement)
+	}
+	if m.include_char != nil {
+		fields = append(fields, userpasswordpolicy.FieldIncludeChar)
+	}
+	if m.allow_include_user_name != nil {
+		fields = append(fields, userpasswordpolicy.FieldAllowIncludeUserName)
+	}
+	if m.invalid_day != nil {
+		fields = append(fields, userpasswordpolicy.FieldInvalidDay)
+	}
+	if m.invalid_login_limit != nil {
+		fields = append(fields, userpasswordpolicy.FieldInvalidLoginLimit)
+	}
+	if m.retry != nil {
+		fields = append(fields, userpasswordpolicy.FieldRetry)
+	}
+	if m.captcha_times != nil {
+		fields = append(fields, userpasswordpolicy.FieldCaptchaTimes)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *UserPasswordPolicyMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		return m.CreatedBy()
+	case userpasswordpolicy.FieldCreatedAt:
+		return m.CreatedAt()
+	case userpasswordpolicy.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case userpasswordpolicy.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case userpasswordpolicy.FieldTenantID:
+		return m.TenantID()
+	case userpasswordpolicy.FieldLength:
+		return m.Length()
+	case userpasswordpolicy.FieldIncludeElement:
+		return m.IncludeElement()
+	case userpasswordpolicy.FieldIncludeChar:
+		return m.IncludeChar()
+	case userpasswordpolicy.FieldAllowIncludeUserName:
+		return m.AllowIncludeUserName()
+	case userpasswordpolicy.FieldInvalidDay:
+		return m.InvalidDay()
+	case userpasswordpolicy.FieldInvalidLoginLimit:
+		return m.InvalidLoginLimit()
+	case userpasswordpolicy.FieldRetry:
+		return m.Retry()
+	case userpasswordpolicy.FieldCaptchaTimes:
+		return m.CaptchaTimes()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *UserPasswordPolicyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		return m.OldCreatedBy(ctx)
+	case userpasswordpolicy.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case userpasswordpolicy.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case userpasswordpolicy.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case userpasswordpolicy.FieldTenantID:
+		return m.OldTenantID(ctx)
+	case userpasswordpolicy.FieldLength:
+		return m.OldLength(ctx)
+	case userpasswordpolicy.FieldIncludeElement:
+		return m.OldIncludeElement(ctx)
+	case userpasswordpolicy.FieldIncludeChar:
+		return m.OldIncludeChar(ctx)
+	case userpasswordpolicy.FieldAllowIncludeUserName:
+		return m.OldAllowIncludeUserName(ctx)
+	case userpasswordpolicy.FieldInvalidDay:
+		return m.OldInvalidDay(ctx)
+	case userpasswordpolicy.FieldInvalidLoginLimit:
+		return m.OldInvalidLoginLimit(ctx)
+	case userpasswordpolicy.FieldRetry:
+		return m.OldRetry(ctx)
+	case userpasswordpolicy.FieldCaptchaTimes:
+		return m.OldCaptchaTimes(ctx)
+	}
+	return nil, fmt.Errorf("unknown UserPasswordPolicy field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *UserPasswordPolicyMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedBy(v)
+		return nil
+	case userpasswordpolicy.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case userpasswordpolicy.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case userpasswordpolicy.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case userpasswordpolicy.FieldTenantID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTenantID(v)
+		return nil
+	case userpasswordpolicy.FieldLength:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLength(v)
+		return nil
+	case userpasswordpolicy.FieldIncludeElement:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIncludeElement(v)
+		return nil
+	case userpasswordpolicy.FieldIncludeChar:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIncludeChar(v)
+		return nil
+	case userpasswordpolicy.FieldAllowIncludeUserName:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAllowIncludeUserName(v)
+		return nil
+	case userpasswordpolicy.FieldInvalidDay:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInvalidDay(v)
+		return nil
+	case userpasswordpolicy.FieldInvalidLoginLimit:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInvalidLoginLimit(v)
+		return nil
+	case userpasswordpolicy.FieldRetry:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRetry(v)
+		return nil
+	case userpasswordpolicy.FieldCaptchaTimes:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCaptchaTimes(v)
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *UserPasswordPolicyMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_by != nil {
+		fields = append(fields, userpasswordpolicy.FieldCreatedBy)
+	}
+	if m.addupdated_by != nil {
+		fields = append(fields, userpasswordpolicy.FieldUpdatedBy)
+	}
+	if m.addlength != nil {
+		fields = append(fields, userpasswordpolicy.FieldLength)
+	}
+	if m.addinclude_element != nil {
+		fields = append(fields, userpasswordpolicy.FieldIncludeElement)
+	}
+	if m.addinclude_char != nil {
+		fields = append(fields, userpasswordpolicy.FieldIncludeChar)
+	}
+	if m.addinvalid_day != nil {
+		fields = append(fields, userpasswordpolicy.FieldInvalidDay)
+	}
+	if m.addretry != nil {
+		fields = append(fields, userpasswordpolicy.FieldRetry)
+	}
+	if m.addcaptcha_times != nil {
+		fields = append(fields, userpasswordpolicy.FieldCaptchaTimes)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *UserPasswordPolicyMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		return m.AddedCreatedBy()
+	case userpasswordpolicy.FieldUpdatedBy:
+		return m.AddedUpdatedBy()
+	case userpasswordpolicy.FieldLength:
+		return m.AddedLength()
+	case userpasswordpolicy.FieldIncludeElement:
+		return m.AddedIncludeElement()
+	case userpasswordpolicy.FieldIncludeChar:
+		return m.AddedIncludeChar()
+	case userpasswordpolicy.FieldInvalidDay:
+		return m.AddedInvalidDay()
+	case userpasswordpolicy.FieldRetry:
+		return m.AddedRetry()
+	case userpasswordpolicy.FieldCaptchaTimes:
+		return m.AddedCaptchaTimes()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *UserPasswordPolicyMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedBy(v)
+		return nil
+	case userpasswordpolicy.FieldUpdatedBy:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedBy(v)
+		return nil
+	case userpasswordpolicy.FieldLength:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLength(v)
+		return nil
+	case userpasswordpolicy.FieldIncludeElement:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIncludeElement(v)
+		return nil
+	case userpasswordpolicy.FieldIncludeChar:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIncludeChar(v)
+		return nil
+	case userpasswordpolicy.FieldInvalidDay:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddInvalidDay(v)
+		return nil
+	case userpasswordpolicy.FieldRetry:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRetry(v)
+		return nil
+	case userpasswordpolicy.FieldCaptchaTimes:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCaptchaTimes(v)
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *UserPasswordPolicyMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(userpasswordpolicy.FieldUpdatedBy) {
+		fields = append(fields, userpasswordpolicy.FieldUpdatedBy)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldUpdatedAt) {
+		fields = append(fields, userpasswordpolicy.FieldUpdatedAt)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldTenantID) {
+		fields = append(fields, userpasswordpolicy.FieldTenantID)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldLength) {
+		fields = append(fields, userpasswordpolicy.FieldLength)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldIncludeElement) {
+		fields = append(fields, userpasswordpolicy.FieldIncludeElement)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldIncludeChar) {
+		fields = append(fields, userpasswordpolicy.FieldIncludeChar)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldAllowIncludeUserName) {
+		fields = append(fields, userpasswordpolicy.FieldAllowIncludeUserName)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldInvalidDay) {
+		fields = append(fields, userpasswordpolicy.FieldInvalidDay)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldInvalidLoginLimit) {
+		fields = append(fields, userpasswordpolicy.FieldInvalidLoginLimit)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldRetry) {
+		fields = append(fields, userpasswordpolicy.FieldRetry)
+	}
+	if m.FieldCleared(userpasswordpolicy.FieldCaptchaTimes) {
+		fields = append(fields, userpasswordpolicy.FieldCaptchaTimes)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *UserPasswordPolicyMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *UserPasswordPolicyMutation) ClearField(name string) error {
+	switch name {
+	case userpasswordpolicy.FieldUpdatedBy:
+		m.ClearUpdatedBy()
+		return nil
+	case userpasswordpolicy.FieldUpdatedAt:
+		m.ClearUpdatedAt()
+		return nil
+	case userpasswordpolicy.FieldTenantID:
+		m.ClearTenantID()
+		return nil
+	case userpasswordpolicy.FieldLength:
+		m.ClearLength()
+		return nil
+	case userpasswordpolicy.FieldIncludeElement:
+		m.ClearIncludeElement()
+		return nil
+	case userpasswordpolicy.FieldIncludeChar:
+		m.ClearIncludeChar()
+		return nil
+	case userpasswordpolicy.FieldAllowIncludeUserName:
+		m.ClearAllowIncludeUserName()
+		return nil
+	case userpasswordpolicy.FieldInvalidDay:
+		m.ClearInvalidDay()
+		return nil
+	case userpasswordpolicy.FieldInvalidLoginLimit:
+		m.ClearInvalidLoginLimit()
+		return nil
+	case userpasswordpolicy.FieldRetry:
+		m.ClearRetry()
+		return nil
+	case userpasswordpolicy.FieldCaptchaTimes:
+		m.ClearCaptchaTimes()
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *UserPasswordPolicyMutation) ResetField(name string) error {
+	switch name {
+	case userpasswordpolicy.FieldCreatedBy:
+		m.ResetCreatedBy()
+		return nil
+	case userpasswordpolicy.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case userpasswordpolicy.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case userpasswordpolicy.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case userpasswordpolicy.FieldTenantID:
+		m.ResetTenantID()
+		return nil
+	case userpasswordpolicy.FieldLength:
+		m.ResetLength()
+		return nil
+	case userpasswordpolicy.FieldIncludeElement:
+		m.ResetIncludeElement()
+		return nil
+	case userpasswordpolicy.FieldIncludeChar:
+		m.ResetIncludeChar()
+		return nil
+	case userpasswordpolicy.FieldAllowIncludeUserName:
+		m.ResetAllowIncludeUserName()
+		return nil
+	case userpasswordpolicy.FieldInvalidDay:
+		m.ResetInvalidDay()
+		return nil
+	case userpasswordpolicy.FieldInvalidLoginLimit:
+		m.ResetInvalidLoginLimit()
+		return nil
+	case userpasswordpolicy.FieldRetry:
+		m.ResetRetry()
+		return nil
+	case userpasswordpolicy.FieldCaptchaTimes:
+		m.ResetCaptchaTimes()
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *UserPasswordPolicyMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.org != nil {
+		edges = append(edges, userpasswordpolicy.EdgeOrg)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *UserPasswordPolicyMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case userpasswordpolicy.EdgeOrg:
+		if id := m.org; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *UserPasswordPolicyMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *UserPasswordPolicyMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *UserPasswordPolicyMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedorg {
+		edges = append(edges, userpasswordpolicy.EdgeOrg)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *UserPasswordPolicyMutation) EdgeCleared(name string) bool {
+	switch name {
+	case userpasswordpolicy.EdgeOrg:
+		return m.clearedorg
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *UserPasswordPolicyMutation) ClearEdge(name string) error {
+	switch name {
+	case userpasswordpolicy.EdgeOrg:
+		m.ClearOrg()
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *UserPasswordPolicyMutation) ResetEdge(name string) error {
+	switch name {
+	case userpasswordpolicy.EdgeOrg:
+		m.ResetOrg()
+		return nil
+	}
+	return fmt.Errorf("unknown UserPasswordPolicy edge %s", name)
 }

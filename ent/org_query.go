@@ -22,37 +22,40 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // OrgQuery is the builder for querying Org entities.
 type OrgQuery struct {
 	config
-	ctx                     *QueryContext
-	order                   []org.OrderOption
-	inters                  []Interceptor
-	predicates              []predicate.Org
-	withParent              *OrgQuery
-	withChildren            *OrgQuery
-	withOwner               *UserQuery
-	withUsers               *UserQuery
-	withRolesAndGroups      *OrgRoleQuery
-	withPermissions         *PermissionQuery
-	withPolicies            *OrgPolicyQuery
-	withApps                *AppQuery
-	withFileIdentities      *FileIdentityQuery
-	withOrgUser             *OrgUserQuery
-	withOrgApp              *OrgAppQuery
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*Org) error
-	withNamedChildren       map[string]*OrgQuery
-	withNamedUsers          map[string]*UserQuery
-	withNamedRolesAndGroups map[string]*OrgRoleQuery
-	withNamedPermissions    map[string]*PermissionQuery
-	withNamedPolicies       map[string]*OrgPolicyQuery
-	withNamedApps           map[string]*AppQuery
-	withNamedFileIdentities map[string]*FileIdentityQuery
-	withNamedOrgUser        map[string]*OrgUserQuery
-	withNamedOrgApp         map[string]*OrgAppQuery
+	ctx                         *QueryContext
+	order                       []org.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.Org
+	withParent                  *OrgQuery
+	withChildren                *OrgQuery
+	withOwner                   *UserQuery
+	withUsers                   *UserQuery
+	withRolesAndGroups          *OrgRoleQuery
+	withPermissions             *PermissionQuery
+	withPolicies                *OrgPolicyQuery
+	withApps                    *AppQuery
+	withFileIdentities          *FileIdentityQuery
+	withUserPasswordPolicy      *UserPasswordPolicyQuery
+	withOrgUser                 *OrgUserQuery
+	withOrgApp                  *OrgAppQuery
+	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*Org) error
+	withNamedChildren           map[string]*OrgQuery
+	withNamedUsers              map[string]*UserQuery
+	withNamedRolesAndGroups     map[string]*OrgRoleQuery
+	withNamedPermissions        map[string]*PermissionQuery
+	withNamedPolicies           map[string]*OrgPolicyQuery
+	withNamedApps               map[string]*AppQuery
+	withNamedFileIdentities     map[string]*FileIdentityQuery
+	withNamedUserPasswordPolicy map[string]*UserPasswordPolicyQuery
+	withNamedOrgUser            map[string]*OrgUserQuery
+	withNamedOrgApp             map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -280,6 +283,28 @@ func (oq *OrgQuery) QueryFileIdentities() *FileIdentityQuery {
 			sqlgraph.From(org.Table, org.FieldID, selector),
 			sqlgraph.To(fileidentity.Table, fileidentity.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, org.FileIdentitiesTable, org.FileIdentitiesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryUserPasswordPolicy chains the current query on the "user_password_policy" edge.
+func (oq *OrgQuery) QueryUserPasswordPolicy() *UserPasswordPolicyQuery {
+	query := (&UserPasswordPolicyClient{config: oq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, selector),
+			sqlgraph.To(userpasswordpolicy.Table, userpasswordpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.UserPasswordPolicyTable, org.UserPasswordPolicyColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
 		return fromU, nil
@@ -518,22 +543,23 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 		return nil
 	}
 	return &OrgQuery{
-		config:             oq.config,
-		ctx:                oq.ctx.Clone(),
-		order:              append([]org.OrderOption{}, oq.order...),
-		inters:             append([]Interceptor{}, oq.inters...),
-		predicates:         append([]predicate.Org{}, oq.predicates...),
-		withParent:         oq.withParent.Clone(),
-		withChildren:       oq.withChildren.Clone(),
-		withOwner:          oq.withOwner.Clone(),
-		withUsers:          oq.withUsers.Clone(),
-		withRolesAndGroups: oq.withRolesAndGroups.Clone(),
-		withPermissions:    oq.withPermissions.Clone(),
-		withPolicies:       oq.withPolicies.Clone(),
-		withApps:           oq.withApps.Clone(),
-		withFileIdentities: oq.withFileIdentities.Clone(),
-		withOrgUser:        oq.withOrgUser.Clone(),
-		withOrgApp:         oq.withOrgApp.Clone(),
+		config:                 oq.config,
+		ctx:                    oq.ctx.Clone(),
+		order:                  append([]org.OrderOption{}, oq.order...),
+		inters:                 append([]Interceptor{}, oq.inters...),
+		predicates:             append([]predicate.Org{}, oq.predicates...),
+		withParent:             oq.withParent.Clone(),
+		withChildren:           oq.withChildren.Clone(),
+		withOwner:              oq.withOwner.Clone(),
+		withUsers:              oq.withUsers.Clone(),
+		withRolesAndGroups:     oq.withRolesAndGroups.Clone(),
+		withPermissions:        oq.withPermissions.Clone(),
+		withPolicies:           oq.withPolicies.Clone(),
+		withApps:               oq.withApps.Clone(),
+		withFileIdentities:     oq.withFileIdentities.Clone(),
+		withUserPasswordPolicy: oq.withUserPasswordPolicy.Clone(),
+		withOrgUser:            oq.withOrgUser.Clone(),
+		withOrgApp:             oq.withOrgApp.Clone(),
 		// clone intermediate query.
 		sql:  oq.sql.Clone(),
 		path: oq.path,
@@ -639,6 +665,17 @@ func (oq *OrgQuery) WithFileIdentities(opts ...func(*FileIdentityQuery)) *OrgQue
 	return oq
 }
 
+// WithUserPasswordPolicy tells the query-builder to eager-load the nodes that are connected to
+// the "user_password_policy" edge. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithUserPasswordPolicy(opts ...func(*UserPasswordPolicyQuery)) *OrgQuery {
+	query := (&UserPasswordPolicyClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	oq.withUserPasswordPolicy = query
+	return oq
+}
+
 // WithOrgUser tells the query-builder to eager-load the nodes that are connected to
 // the "org_user" edge. The optional arguments are used to configure the query builder of the edge.
 func (oq *OrgQuery) WithOrgUser(opts ...func(*OrgUserQuery)) *OrgQuery {
@@ -739,7 +776,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 	var (
 		nodes       = []*Org{}
 		_spec       = oq.querySpec()
-		loadedTypes = [11]bool{
+		loadedTypes = [12]bool{
 			oq.withParent != nil,
 			oq.withChildren != nil,
 			oq.withOwner != nil,
@@ -749,6 +786,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			oq.withPolicies != nil,
 			oq.withApps != nil,
 			oq.withFileIdentities != nil,
+			oq.withUserPasswordPolicy != nil,
 			oq.withOrgUser != nil,
 			oq.withOrgApp != nil,
 		}
@@ -835,6 +873,15 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			return nil, err
 		}
 	}
+	if query := oq.withUserPasswordPolicy; query != nil {
+		if err := oq.loadUserPasswordPolicy(ctx, query, nodes,
+			func(n *Org) { n.Edges.UserPasswordPolicy = []*UserPasswordPolicy{} },
+			func(n *Org, e *UserPasswordPolicy) {
+				n.Edges.UserPasswordPolicy = append(n.Edges.UserPasswordPolicy, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := oq.withOrgUser; query != nil {
 		if err := oq.loadOrgUser(ctx, query, nodes,
 			func(n *Org) { n.Edges.OrgUser = []*OrgUser{} },
@@ -895,6 +942,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 		if err := oq.loadFileIdentities(ctx, query, nodes,
 			func(n *Org) { n.appendNamedFileIdentities(name) },
 			func(n *Org, e *FileIdentity) { n.appendNamedFileIdentities(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range oq.withNamedUserPasswordPolicy {
+		if err := oq.loadUserPasswordPolicy(ctx, query, nodes,
+			func(n *Org) { n.appendNamedUserPasswordPolicy(name) },
+			func(n *Org, e *UserPasswordPolicy) { n.appendNamedUserPasswordPolicy(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1253,6 +1307,36 @@ func (oq *OrgQuery) loadFileIdentities(ctx context.Context, query *FileIdentityQ
 	}
 	return nil
 }
+func (oq *OrgQuery) loadUserPasswordPolicy(ctx context.Context, query *UserPasswordPolicyQuery, nodes []*Org, init func(*Org), assign func(*Org, *UserPasswordPolicy)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Org)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userpasswordpolicy.FieldTenantID)
+	}
+	query.Where(predicate.UserPasswordPolicy(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(org.UserPasswordPolicyColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenant_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*Org, init func(*Org), assign func(*Org, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Org)
@@ -1499,6 +1583,20 @@ func (oq *OrgQuery) WithNamedFileIdentities(name string, opts ...func(*FileIdent
 		oq.withNamedFileIdentities = make(map[string]*FileIdentityQuery)
 	}
 	oq.withNamedFileIdentities[name] = query
+	return oq
+}
+
+// WithNamedUserPasswordPolicy tells the query-builder to eager-load the nodes that are connected to the "user_password_policy"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithNamedUserPasswordPolicy(name string, opts ...func(*UserPasswordPolicyQuery)) *OrgQuery {
+	query := (&UserPasswordPolicyClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if oq.withNamedUserPasswordPolicy == nil {
+		oq.withNamedUserPasswordPolicy = make(map[string]*UserPasswordPolicyQuery)
+	}
+	oq.withNamedUserPasswordPolicy[name] = query
 	return oq
 }
 

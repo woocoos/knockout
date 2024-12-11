@@ -76,6 +76,8 @@ const (
 	EdgeApps = "apps"
 	// EdgeFileIdentities holds the string denoting the file_identities edge name in mutations.
 	EdgeFileIdentities = "file_identities"
+	// EdgeUserPasswordPolicy holds the string denoting the user_password_policy edge name in mutations.
+	EdgeUserPasswordPolicy = "user_password_policy"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
@@ -135,6 +137,13 @@ const (
 	FileIdentitiesInverseTable = "file_identity"
 	// FileIdentitiesColumn is the table column denoting the file_identities relation/edge.
 	FileIdentitiesColumn = "tenant_id"
+	// UserPasswordPolicyTable is the table that holds the user_password_policy relation/edge.
+	UserPasswordPolicyTable = "user_password_policy"
+	// UserPasswordPolicyInverseTable is the table name for the UserPasswordPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "userpasswordpolicy" package.
+	UserPasswordPolicyInverseTable = "user_password_policy"
+	// UserPasswordPolicyColumn is the table column denoting the user_password_policy relation/edge.
+	UserPasswordPolicyColumn = "tenant_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -468,6 +477,20 @@ func ByFileIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByUserPasswordPolicyCount orders the results by user_password_policy count.
+func ByUserPasswordPolicyCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUserPasswordPolicyStep(), opts...)
+	}
+}
+
+// ByUserPasswordPolicy orders the results by user_password_policy terms.
+func ByUserPasswordPolicy(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserPasswordPolicyStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -556,6 +579,13 @@ func newFileIdentitiesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FileIdentitiesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FileIdentitiesTable, FileIdentitiesColumn),
+	)
+}
+func newUserPasswordPolicyStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserPasswordPolicyInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

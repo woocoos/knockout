@@ -38,6 +38,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -896,6 +897,21 @@ func init() {
 	userpasswordDescSalt := userpasswordFields[3].Descriptor()
 	// userpassword.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
 	userpassword.SaltValidator = userpasswordDescSalt.Validators[0].(func(string) error)
+	userpasswordpolicyMixin := schema.UserPasswordPolicy{}.Mixin()
+	userpasswordpolicyMixinHooks1 := userpasswordpolicyMixin[1].Hooks()
+	userpasswordpolicyMixinHooks2 := userpasswordpolicyMixin[2].Hooks()
+	userpasswordpolicyHooks := schema.UserPasswordPolicy{}.Hooks()
+	userpasswordpolicy.Hooks[0] = userpasswordpolicyMixinHooks1[0]
+	userpasswordpolicy.Hooks[1] = userpasswordpolicyMixinHooks2[0]
+	userpasswordpolicy.Hooks[2] = userpasswordpolicyHooks[0]
+	userpasswordpolicyMixinFields1 := userpasswordpolicyMixin[1].Fields()
+	_ = userpasswordpolicyMixinFields1
+	userpasswordpolicyFields := schema.UserPasswordPolicy{}.Fields()
+	_ = userpasswordpolicyFields
+	// userpasswordpolicyDescCreatedAt is the schema descriptor for created_at field.
+	userpasswordpolicyDescCreatedAt := userpasswordpolicyMixinFields1[1].Descriptor()
+	// userpasswordpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
+	userpasswordpolicy.DefaultCreatedAt = userpasswordpolicyDescCreatedAt.Default.(func() time.Time)
 }
 
 const (

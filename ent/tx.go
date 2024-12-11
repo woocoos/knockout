@@ -78,6 +78,8 @@ type Tx struct {
 	UserLoginProfile *UserLoginProfileClient
 	// UserPassword is the client for interacting with the UserPassword builders.
 	UserPassword *UserPasswordClient
+	// UserPasswordPolicy is the client for interacting with the UserPasswordPolicy builders.
+	UserPasswordPolicy *UserPasswordPolicyClient
 
 	// lazily loaded.
 	client     *Client
@@ -241,6 +243,7 @@ func (tx *Tx) init() {
 	tx.UserIdentity = NewUserIdentityClient(tx.config)
 	tx.UserLoginProfile = NewUserLoginProfileClient(tx.config)
 	tx.UserPassword = NewUserPasswordClient(tx.config)
+	tx.UserPasswordPolicy = NewUserPasswordPolicyClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

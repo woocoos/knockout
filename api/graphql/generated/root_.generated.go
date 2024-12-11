@@ -456,6 +456,7 @@ type ComplexityRoot struct {
 		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
+		CreateUserPasswordPolicy    func(childComplexity int, input ent.CreateUserPasswordPolicyInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteAppAction             func(childComplexity int, actionID int) int
 		DeleteAppDict               func(childComplexity int, dictID int) int
@@ -477,6 +478,7 @@ type ComplexityRoot struct {
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
+		DeleteUserPasswordPolicy    func(childComplexity int) int
 		DisableMfa                  func(childComplexity int, userID int) int
 		DisableOauthClient          func(childComplexity int, id int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
@@ -524,6 +526,7 @@ type ComplexityRoot struct {
 		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
+		UpdateUserPasswordPolicy    func(childComplexity int, input ent.UpdateUserPasswordPolicyInput) int
 	}
 
 	OauthClient struct {
@@ -572,6 +575,7 @@ type ComplexityRoot struct {
 		TopOrg                 func(childComplexity int) int
 		UpdatedAt              func(childComplexity int) int
 		UpdatedBy              func(childComplexity int) int
+		UserPasswordPolicy     func(childComplexity int) int
 		Users                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -770,6 +774,7 @@ type ComplexityRoot struct {
 		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		UserMenus                   func(childComplexity int, appCode string) int
+		UserPasswordPolicy          func(childComplexity int) int
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
 		UserRootOrgs                func(childComplexity int) int
 		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
@@ -986,6 +991,24 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 		User      func(childComplexity int) int
 		UserID    func(childComplexity int) int
+	}
+
+	UserPasswordPolicy struct {
+		AllowIncludeUserName func(childComplexity int) int
+		CaptchaTimes         func(childComplexity int) int
+		CreatedAt            func(childComplexity int) int
+		CreatedBy            func(childComplexity int) int
+		ID                   func(childComplexity int) int
+		IncludeChar          func(childComplexity int) int
+		IncludeElement       func(childComplexity int) int
+		InvalidDay           func(childComplexity int) int
+		InvalidLoginLimit    func(childComplexity int) int
+		Length               func(childComplexity int) int
+		Org                  func(childComplexity int) int
+		Retry                func(childComplexity int) int
+		TenantID             func(childComplexity int) int
+		UpdatedAt            func(childComplexity int) int
+		UpdatedBy            func(childComplexity int) int
 	}
 }
 
@@ -3265,6 +3288,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateRoot(childComplexity, args["input"].(ent.CreateOrgInput)), true
 
+	case "Mutation.createUserPasswordPolicy":
+		if e.complexity.Mutation.CreateUserPasswordPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUserPasswordPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUserPasswordPolicy(childComplexity, args["input"].(ent.CreateUserPasswordPolicyInput)), true
+
 	case "Mutation.deleteApp":
 		if e.complexity.Mutation.DeleteApp == nil {
 			break
@@ -3516,6 +3551,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteUserIdentity(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteUserPasswordPolicy":
+		if e.complexity.Mutation.DeleteUserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteUserPasswordPolicy(childComplexity), true
 
 	case "Mutation.disableMFA":
 		if e.complexity.Mutation.DisableMfa == nil {
@@ -4081,6 +4123,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["contact"].(*ent.UpdateUserAddrInput)), true
 
+	case "Mutation.updateUserPasswordPolicy":
+		if e.complexity.Mutation.UpdateUserPasswordPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserPasswordPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserPasswordPolicy(childComplexity, args["input"].(ent.UpdateUserPasswordPolicyInput)), true
+
 	case "OauthClient.clientID":
 		if e.complexity.OauthClient.ClientID == nil {
 			break
@@ -4394,6 +4448,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.UpdatedBy(childComplexity), true
+
+	case "Org.userPasswordPolicy":
+		if e.complexity.Org.UserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Org.UserPasswordPolicy(childComplexity), true
 
 	case "Org.users":
 		if e.complexity.Org.Users == nil {
@@ -5587,6 +5648,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserMenus(childComplexity, args["appCode"].(string)), true
 
+	case "Query.userPasswordPolicy":
+		if e.complexity.Query.UserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Query.UserPasswordPolicy(childComplexity), true
+
 	case "Query.userPermissions":
 		if e.complexity.Query.UserPermissions == nil {
 			break
@@ -6777,6 +6845,111 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserPassword.UserID(childComplexity), true
 
+	case "UserPasswordPolicy.allowIncludeUserName":
+		if e.complexity.UserPasswordPolicy.AllowIncludeUserName == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.AllowIncludeUserName(childComplexity), true
+
+	case "UserPasswordPolicy.captchaTimes":
+		if e.complexity.UserPasswordPolicy.CaptchaTimes == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CaptchaTimes(childComplexity), true
+
+	case "UserPasswordPolicy.createdAt":
+		if e.complexity.UserPasswordPolicy.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CreatedAt(childComplexity), true
+
+	case "UserPasswordPolicy.createdBy":
+		if e.complexity.UserPasswordPolicy.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CreatedBy(childComplexity), true
+
+	case "UserPasswordPolicy.id":
+		if e.complexity.UserPasswordPolicy.ID == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.ID(childComplexity), true
+
+	case "UserPasswordPolicy.includeChar":
+		if e.complexity.UserPasswordPolicy.IncludeChar == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.IncludeChar(childComplexity), true
+
+	case "UserPasswordPolicy.includeElement":
+		if e.complexity.UserPasswordPolicy.IncludeElement == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.IncludeElement(childComplexity), true
+
+	case "UserPasswordPolicy.invalidDay":
+		if e.complexity.UserPasswordPolicy.InvalidDay == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.InvalidDay(childComplexity), true
+
+	case "UserPasswordPolicy.invalidLoginLimit":
+		if e.complexity.UserPasswordPolicy.InvalidLoginLimit == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.InvalidLoginLimit(childComplexity), true
+
+	case "UserPasswordPolicy.length":
+		if e.complexity.UserPasswordPolicy.Length == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Length(childComplexity), true
+
+	case "UserPasswordPolicy.org":
+		if e.complexity.UserPasswordPolicy.Org == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Org(childComplexity), true
+
+	case "UserPasswordPolicy.retry":
+		if e.complexity.UserPasswordPolicy.Retry == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Retry(childComplexity), true
+
+	case "UserPasswordPolicy.tenantID":
+		if e.complexity.UserPasswordPolicy.TenantID == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.TenantID(childComplexity), true
+
+	case "UserPasswordPolicy.updatedAt":
+		if e.complexity.UserPasswordPolicy.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.UpdatedAt(childComplexity), true
+
+	case "UserPasswordPolicy.updatedBy":
+		if e.complexity.UserPasswordPolicy.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.UpdatedBy(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -6836,6 +7009,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputCreateUserLoginProfileInput,
 		ec.unmarshalInputCreateUserPasswordInput,
+		ec.unmarshalInputCreateUserPasswordPolicyInput,
 		ec.unmarshalInputCurrencyOrder,
 		ec.unmarshalInputCurrencyWhereInput,
 		ec.unmarshalInputEnableDirectoryInput,
@@ -6897,6 +7071,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateUserInput,
 		ec.unmarshalInputUpdateUserLoginProfileInput,
 		ec.unmarshalInputUpdateUserPasswordInput,
+		ec.unmarshalInputUpdateUserPasswordPolicyInput,
 		ec.unmarshalInputUserAddrOrder,
 		ec.unmarshalInputUserAddrWhereInput,
 		ec.unmarshalInputUserDeviceOrder,
@@ -6907,6 +7082,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUserLoginProfileWhereInput,
 		ec.unmarshalInputUserOrder,
 		ec.unmarshalInputUserPasswordOrder,
+		ec.unmarshalInputUserPasswordPolicyOrder,
+		ec.unmarshalInputUserPasswordPolicyWhereInput,
 		ec.unmarshalInputUserPasswordWhereInput,
 		ec.unmarshalInputUserWhereInput,
 	)
@@ -10117,6 +10294,7 @@ input CreateOrgInput {
   policyIDs: [ID!]
   appIDs: [ID!]
   fileIdentityIDs: [ID!]
+  userPasswordPolicyIDs: [ID!]
 }
 """
 CreateOrgPolicyInput is used for create OrgPolicy object.
@@ -10462,6 +10640,45 @@ input CreateUserPasswordInput {
   """
   status: UserPasswordSimpleStatus
   userID: ID
+}
+"""
+CreateUserPasswordPolicyInput is used for create UserPasswordPolicy object.
+Input was generated by ent.
+"""
+input CreateUserPasswordPolicyInput {
+  """
+  密码长度
+  """
+  length: Int
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  """
+  最少包含的不同字符数
+  """
+  includeChar: Int
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  """
+  有效天数
+  """
+  invalidDay: Int
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数
+  """
+  retry: Int
+  """
+  密码错误多少次出现验证码
+  """
+  captchaTimes: Int
+  orgID: ID
 }
 type Currency implements Node {
   id: ID!
@@ -11583,6 +11800,10 @@ type Org implements Node {
   组织下文件凭证
   """
   fileIdentities: [FileIdentity!]
+  """
+  组织下密码策略
+  """
+  userPasswordPolicy: [UserPasswordPolicy!]
 }
 """
 A connection to a list of items.
@@ -12728,6 +12949,11 @@ input OrgWhereInput {
   """
   hasFileIdentities: Boolean
   hasFileIdentitiesWith: [FileIdentityWhereInput!]
+  """
+  user_password_policy edge predicates
+  """
+  hasUserPasswordPolicy: Boolean
+  hasUserPasswordPolicyWith: [UserPasswordPolicyWhereInput!]
   """
   org_user edge predicates
   """
@@ -14661,6 +14887,9 @@ input UpdateOrgInput {
   addFileIdentityIDs: [ID!]
   removeFileIdentityIDs: [ID!]
   clearFileIdentities: Boolean
+  addUserPasswordPolicyIDs: [ID!]
+  removeUserPasswordPolicyIDs: [ID!]
+  clearUserPasswordPolicy: Boolean
 }
 """
 UpdateOrgPolicyInput is used for update OrgPolicy object.
@@ -15037,6 +15266,52 @@ input UpdateUserPasswordInput {
   """
   status: UserPasswordSimpleStatus
   clearStatus: Boolean
+}
+"""
+UpdateUserPasswordPolicyInput is used for update UserPasswordPolicy object.
+Input was generated by ent.
+"""
+input UpdateUserPasswordPolicyInput {
+  """
+  密码长度
+  """
+  length: Int
+  clearLength: Boolean
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  clearIncludeElement: Boolean
+  """
+  最少包含的不同字符数
+  """
+  includeChar: Int
+  clearIncludeChar: Boolean
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  clearAllowIncludeUserName: Boolean
+  """
+  有效天数
+  """
+  invalidDay: Int
+  clearInvalidDay: Boolean
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  clearInvalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数
+  """
+  retry: Int
+  clearRetry: Boolean
+  """
+  密码错误多少次出现验证码
+  """
+  captchaTimes: Int
+  clearCaptchaTimes: Boolean
 }
 type User implements Node {
   id: ID!
@@ -16217,6 +16492,243 @@ Properties by which UserPassword connections can be ordered.
 enum UserPasswordOrderField {
   createdAt
 }
+type UserPasswordPolicy implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  租户id
+  """
+  tenantID: ID
+  """
+  密码长度
+  """
+  length: Int
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  """
+  最少包含的不同字符数
+  """
+  includeChar: Int
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  """
+  有效天数
+  """
+  invalidDay: Int
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数
+  """
+  retry: Int
+  """
+  密码错误多少次出现验证码
+  """
+  captchaTimes: Int
+  org: Org
+}
+"""
+Ordering options for UserPasswordPolicy connections
+"""
+input UserPasswordPolicyOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order UserPasswordPolicies.
+  """
+  field: UserPasswordPolicyOrderField!
+}
+"""
+Properties by which UserPasswordPolicy connections can be ordered.
+"""
+enum UserPasswordPolicyOrderField {
+  createdAt
+}
+"""
+UserPasswordPolicyWhereInput is used for filtering UserPasswordPolicy objects.
+Input was generated by ent.
+"""
+input UserPasswordPolicyWhereInput {
+  not: UserPasswordPolicyWhereInput
+  and: [UserPasswordPolicyWhereInput!]
+  or: [UserPasswordPolicyWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  tenant_id field predicates
+  """
+  tenantID: ID
+  tenantIDNEQ: ID
+  tenantIDIn: [ID!]
+  tenantIDNotIn: [ID!]
+  tenantIDIsNil: Boolean
+  tenantIDNotNil: Boolean
+  """
+  length field predicates
+  """
+  length: Int
+  lengthNEQ: Int
+  lengthIn: [Int!]
+  lengthNotIn: [Int!]
+  lengthGT: Int
+  lengthGTE: Int
+  lengthLT: Int
+  lengthLTE: Int
+  lengthIsNil: Boolean
+  lengthNotNil: Boolean
+  """
+  include_element field predicates
+  """
+  includeElement: Int
+  includeElementNEQ: Int
+  includeElementIn: [Int!]
+  includeElementNotIn: [Int!]
+  includeElementGT: Int
+  includeElementGTE: Int
+  includeElementLT: Int
+  includeElementLTE: Int
+  includeElementIsNil: Boolean
+  includeElementNotNil: Boolean
+  """
+  include_char field predicates
+  """
+  includeChar: Int
+  includeCharNEQ: Int
+  includeCharIn: [Int!]
+  includeCharNotIn: [Int!]
+  includeCharGT: Int
+  includeCharGTE: Int
+  includeCharLT: Int
+  includeCharLTE: Int
+  includeCharIsNil: Boolean
+  includeCharNotNil: Boolean
+  """
+  allow_include_user_name field predicates
+  """
+  allowIncludeUserName: Boolean
+  allowIncludeUserNameNEQ: Boolean
+  allowIncludeUserNameIsNil: Boolean
+  allowIncludeUserNameNotNil: Boolean
+  """
+  invalid_day field predicates
+  """
+  invalidDay: Int
+  invalidDayNEQ: Int
+  invalidDayIn: [Int!]
+  invalidDayNotIn: [Int!]
+  invalidDayGT: Int
+  invalidDayGTE: Int
+  invalidDayLT: Int
+  invalidDayLTE: Int
+  invalidDayIsNil: Boolean
+  invalidDayNotNil: Boolean
+  """
+  invalid_login_limit field predicates
+  """
+  invalidLoginLimit: Boolean
+  invalidLoginLimitNEQ: Boolean
+  invalidLoginLimitIsNil: Boolean
+  invalidLoginLimitNotNil: Boolean
+  """
+  retry field predicates
+  """
+  retry: Int
+  retryNEQ: Int
+  retryIn: [Int!]
+  retryNotIn: [Int!]
+  retryGT: Int
+  retryGTE: Int
+  retryLT: Int
+  retryLTE: Int
+  retryIsNil: Boolean
+  retryNotNil: Boolean
+  """
+  captcha_times field predicates
+  """
+  captchaTimes: Int
+  captchaTimesNEQ: Int
+  captchaTimesIn: [Int!]
+  captchaTimesNotIn: [Int!]
+  captchaTimesGT: Int
+  captchaTimesGTE: Int
+  captchaTimesLT: Int
+  captchaTimesLTE: Int
+  captchaTimesIsNil: Boolean
+  captchaTimesNotNil: Boolean
+  """
+  org edge predicates
+  """
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
+}
 """
 UserPasswordScene is enum for the field scene
 """
@@ -16872,6 +17384,12 @@ input UserWhereInput {
     updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
     # 删除配额
     deleteQuota(id: ID!): Boolean!
+    # 设置密码策略
+    createUserPasswordPolicy(input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
+    # 更新密码策略
+    updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
+    # 删除密码策略
+    deleteUserPasswordPolicy: Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {
@@ -17025,6 +17543,8 @@ input UserWhereInput {
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
     orgPolicyView(appCode: String!): [AppPolicyView!]!
+    """获取租户密码策略"""
+    userPasswordPolicy: UserPasswordPolicy
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""

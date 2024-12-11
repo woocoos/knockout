@@ -41,6 +41,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -963,6 +964,33 @@ func (f TraverseUserPassword) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordQuery", q)
 }
 
+// The UserPasswordPolicyFunc type is an adapter to allow the use of ordinary function as a Querier.
+type UserPasswordPolicyFunc func(context.Context, *ent.UserPasswordPolicyQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f UserPasswordPolicyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.UserPasswordPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordPolicyQuery", q)
+}
+
+// The TraverseUserPasswordPolicy type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseUserPasswordPolicy func(context.Context, *ent.UserPasswordPolicyQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseUserPasswordPolicy) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseUserPasswordPolicy) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.UserPasswordPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordPolicyQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
@@ -1030,6 +1058,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile, userloginprofile.OrderOption]{typ: ent.TypeUserLoginProfile, tq: q}, nil
 	case *ent.UserPasswordQuery:
 		return &query[*ent.UserPasswordQuery, predicate.UserPassword, userpassword.OrderOption]{typ: ent.TypeUserPassword, tq: q}, nil
+	case *ent.UserPasswordPolicyQuery:
+		return &query[*ent.UserPasswordPolicyQuery, predicate.UserPasswordPolicy, userpasswordpolicy.OrderOption]{typ: ent.TypeUserPasswordPolicy, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

@@ -1091,6 +1091,37 @@ var (
 			},
 		},
 	}
+	// UserPasswordPolicyColumns holds the columns for the "user_password_policy" table.
+	UserPasswordPolicyColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_by", Type: field.TypeInt},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "length", Type: field.TypeInt32, Nullable: true},
+		{Name: "include_element", Type: field.TypeInt32, Nullable: true},
+		{Name: "include_char", Type: field.TypeInt32, Nullable: true},
+		{Name: "allow_include_user_name", Type: field.TypeBool, Nullable: true},
+		{Name: "invalid_day", Type: field.TypeInt32, Nullable: true},
+		{Name: "invalid_login_limit", Type: field.TypeBool, Nullable: true},
+		{Name: "retry", Type: field.TypeInt32, Nullable: true},
+		{Name: "captcha_times", Type: field.TypeInt32, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeInt, Nullable: true},
+	}
+	// UserPasswordPolicyTable holds the schema information for the "user_password_policy" table.
+	UserPasswordPolicyTable = &schema.Table{
+		Name:       "user_password_policy",
+		Columns:    UserPasswordPolicyColumns,
+		PrimaryKey: []*schema.Column{UserPasswordPolicyColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_password_policy_org_user_password_policy",
+				Columns:    []*schema.Column{UserPasswordPolicyColumns[13]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AppTable,
@@ -1125,6 +1156,7 @@ var (
 		UserIdentityTable,
 		UserLoginProfileTable,
 		UserPasswordTable,
+		UserPasswordPolicyTable,
 	}
 )
 
@@ -1271,5 +1303,9 @@ func init() {
 	UserPasswordTable.ForeignKeys[0].RefTable = UserTable
 	UserPasswordTable.Annotation = &entsql.Annotation{
 		Table: "user_password",
+	}
+	UserPasswordPolicyTable.ForeignKeys[0].RefTable = OrgTable
+	UserPasswordPolicyTable.Annotation = &entsql.Annotation{
+		Table: "user_password_policy",
 	}
 }

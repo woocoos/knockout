@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // OrgCreate is the builder for creating a Org entity.
@@ -393,6 +394,21 @@ func (oc *OrgCreate) AddFileIdentities(f ...*FileIdentity) *OrgCreate {
 		ids[i] = f[i].ID
 	}
 	return oc.AddFileIdentityIDs(ids...)
+}
+
+// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
+func (oc *OrgCreate) AddUserPasswordPolicyIDs(ids ...int) *OrgCreate {
+	oc.mutation.AddUserPasswordPolicyIDs(ids...)
+	return oc
+}
+
+// AddUserPasswordPolicy adds the "user_password_policy" edges to the UserPasswordPolicy entity.
+func (oc *OrgCreate) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return oc.AddUserPasswordPolicyIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -792,6 +808,22 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

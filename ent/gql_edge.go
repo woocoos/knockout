@@ -509,6 +509,18 @@ func (o *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err e
 	return result, err
 }
 
+func (o *Org) UserPasswordPolicy(ctx context.Context) (result []*UserPasswordPolicy, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = o.NamedUserPasswordPolicy(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = o.Edges.UserPasswordPolicyOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = o.QueryUserPasswordPolicy().All(ctx)
+	}
+	return result, err
+}
+
 func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
 	result, err := op.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
@@ -731,6 +743,14 @@ func (ua *UserAddr) User(ctx context.Context) (*User, error) {
 	result, err := ua.Edges.UserOrErr()
 	if IsNotLoaded(err) {
 		result, err = ua.QueryUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (upp *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := upp.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = upp.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

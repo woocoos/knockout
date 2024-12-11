@@ -732,6 +732,21 @@ func (r *mutationResolver) DeleteQuota(ctx context.Context, id int) (bool, error
 	return err == nil, err
 }
 
+// CreateUserPasswordPolicy is the resolver for the createUserPasswordPolicy field.
+func (r *mutationResolver) CreateUserPasswordPolicy(ctx context.Context, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.CreateUserPasswordPolicy(ctx, input)
+}
+
+// UpdateUserPasswordPolicy is the resolver for the updateUserPasswordPolicy field.
+func (r *mutationResolver) UpdateUserPasswordPolicy(ctx context.Context, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.UpdateUserPasswordPolicy(ctx, input)
+}
+
+// DeleteUserPasswordPolicy is the resolver for the deleteUserPasswordPolicy field.
+func (r *mutationResolver) DeleteUserPasswordPolicy(ctx context.Context) (bool, error) {
+	return r.resource.DeleteUserPasswordPolicy(ctx)
+}
+
 // Mutation returns generated1.MutationResolver implementation.
 func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
 

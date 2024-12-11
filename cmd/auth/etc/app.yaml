@@ -34,6 +34,15 @@ auth:
     signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
     tokenTTL: 1h
     refreshTokenTTL: 168h
+  pwdPolicy:
+    length: 6
+    includeElement: 3
+    includeChar: 4
+    allowIncludeUserName: false
+    invalidDay: 30
+    invalidLoginLimit: false
+    retry: 5
+    captchaTimes: 3
 
 web:
   server:
