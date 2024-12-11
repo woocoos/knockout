@@ -1211,6 +1211,32 @@ func (am *AppMenuQuery) collectField(ctx context.Context, oneNode bool, opCtx *g
 				selectedFields = append(selectedFields, appmenu.FieldActionID)
 				fieldSeen[appmenu.FieldActionID] = struct{}{}
 			}
+		case "parent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppMenuClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, appmenuImplementors)...); err != nil {
+				return err
+			}
+			am.withParent = query
+			if _, ok := fieldSeen[appmenu.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, appmenu.FieldParentID)
+				fieldSeen[appmenu.FieldParentID] = struct{}{}
+			}
+		case "children":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppMenuClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, appmenuImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedChildren(alias, func(wq *AppMenuQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[appmenu.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, appmenu.FieldCreatedBy)
@@ -1582,6 +1608,32 @@ func (apv *AppPolicyViewQuery) collectField(ctx context.Context, oneNode bool, o
 				selectedFields = append(selectedFields, apppolicyview.FieldPolicyID)
 				fieldSeen[apppolicyview.FieldPolicyID] = struct{}{}
 			}
+		case "parent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyViewClient{config: apv.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, apppolicyviewImplementors)...); err != nil {
+				return err
+			}
+			apv.withParent = query
+			if _, ok := fieldSeen[apppolicyview.FieldParentID]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldParentID)
+				fieldSeen[apppolicyview.FieldParentID] = struct{}{}
+			}
+		case "children":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppPolicyViewClient{config: apv.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, apppolicyviewImplementors)...); err != nil {
+				return err
+			}
+			apv.WithNamedChildren(alias, func(wq *AppPolicyViewQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[apppolicyview.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, apppolicyview.FieldCreatedBy)
@@ -1631,6 +1683,11 @@ func (apv *AppPolicyViewQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[apppolicyview.FieldPolicyID]; !ok {
 				selectedFields = append(selectedFields, apppolicyview.FieldPolicyID)
 				fieldSeen[apppolicyview.FieldPolicyID] = struct{}{}
+			}
+		case "path":
+			if _, ok := fieldSeen[apppolicyview.FieldPath]; !ok {
+				selectedFields = append(selectedFields, apppolicyview.FieldPath)
+				fieldSeen[apppolicyview.FieldPath] = struct{}{}
 			}
 		case "displaySort":
 			if _, ok := fieldSeen[apppolicyview.FieldDisplaySort]; !ok {

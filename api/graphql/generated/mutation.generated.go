@@ -7670,6 +7670,10 @@ func (ec *executionContext) fieldContext_Mutation_createAppMenus(ctx context.Con
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
 				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
@@ -7758,6 +7762,10 @@ func (ec *executionContext) fieldContext_Mutation_updateAppMenu(ctx context.Cont
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
 				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
@@ -12018,12 +12026,18 @@ func (ec *executionContext) fieldContext_Mutation_createAppPolicyView(ctx contex
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -12111,12 +12125,18 @@ func (ec *executionContext) fieldContext_Mutation_updateAppPolicyView(ctx contex
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":

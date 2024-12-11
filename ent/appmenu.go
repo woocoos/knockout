@@ -60,11 +60,17 @@ type AppMenuEdges struct {
 	App *App `json:"app,omitempty"`
 	// 需要权限控制时对应的权限
 	Action *AppAction `json:"action,omitempty"`
+	// Parent holds the value of the parent edge.
+	Parent *AppMenu `json:"parent,omitempty"`
+	// Children holds the value of the children edge.
+	Children []*AppMenu `json:"children,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [4]map[string]int
+
+	namedChildren map[string][]*AppMenu
 }
 
 // AppOrErr returns the App value or an error if the edge
@@ -87,6 +93,26 @@ func (e AppMenuEdges) ActionOrErr() (*AppAction, error) {
 		return nil, &NotFoundError{label: appaction.Label}
 	}
 	return nil, &NotLoadedError{edge: "action"}
+}
+
+// ParentOrErr returns the Parent value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppMenuEdges) ParentOrErr() (*AppMenu, error) {
+	if e.Parent != nil {
+		return e.Parent, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: appmenu.Label}
+	}
+	return nil, &NotLoadedError{edge: "parent"}
+}
+
+// ChildrenOrErr returns the Children value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppMenuEdges) ChildrenOrErr() ([]*AppMenu, error) {
+	if e.loadedTypes[3] {
+		return e.Children, nil
+	}
+	return nil, &NotLoadedError{edge: "children"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -229,6 +255,16 @@ func (am *AppMenu) QueryAction() *AppActionQuery {
 	return NewAppMenuClient(am.config).QueryAction(am)
 }
 
+// QueryParent queries the "parent" edge of the AppMenu entity.
+func (am *AppMenu) QueryParent() *AppMenuQuery {
+	return NewAppMenuClient(am.config).QueryParent(am)
+}
+
+// QueryChildren queries the "children" edge of the AppMenu entity.
+func (am *AppMenu) QueryChildren() *AppMenuQuery {
+	return NewAppMenuClient(am.config).QueryChildren(am)
+}
+
 // Update returns a builder for updating this AppMenu.
 // Note that you need to call AppMenu.Unwrap() before calling this method if this AppMenu
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -297,6 +333,30 @@ func (am *AppMenu) String() string {
 	builder.WriteString(fmt.Sprintf("%v", am.Status))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedChildren returns the Children named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (am *AppMenu) NamedChildren(name string) ([]*AppMenu, error) {
+	if am.Edges.namedChildren == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := am.Edges.namedChildren[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (am *AppMenu) appendNamedChildren(name string, edges ...*AppMenu) {
+	if am.Edges.namedChildren == nil {
+		am.Edges.namedChildren = make(map[string][]*AppMenu)
+	}
+	if len(edges) == 0 {
+		am.Edges.namedChildren[name] = []*AppMenu{}
+	} else {
+		am.Edges.namedChildren[name] = append(am.Edges.namedChildren[name], edges...)
+	}
 }
 
 // AppMenus is a parsable slice of AppMenu.

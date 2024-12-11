@@ -279,6 +279,7 @@ func init() {
 	apppolicyview.Hooks[0] = apppolicyviewMixinHooks1[0]
 	apppolicyview.Hooks[1] = apppolicyviewMixinHooks2[0]
 	apppolicyview.Hooks[2] = apppolicyviewHooks[0]
+	apppolicyview.Hooks[3] = apppolicyviewHooks[1]
 	apppolicyviewMixinFields0 := apppolicyviewMixin[0].Fields()
 	_ = apppolicyviewMixinFields0
 	apppolicyviewMixinFields1 := apppolicyviewMixin[1].Fields()

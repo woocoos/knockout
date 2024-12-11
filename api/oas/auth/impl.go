@@ -217,6 +217,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	}
 
 	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	s.logFailHandler(ctx, req.Username, true)
 	return s.loginToken(ctx, pwd.UserID)
 }
 

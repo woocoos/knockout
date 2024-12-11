@@ -1384,6 +1384,38 @@ func (c *AppMenuClient) QueryAction(am *AppMenu) *AppActionQuery {
 	return query
 }
 
+// QueryParent queries the parent edge of a AppMenu.
+func (c *AppMenuClient) QueryParent(am *AppMenu) *AppMenuQuery {
+	query := (&AppMenuClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := am.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, id),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ParentTable, appmenu.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a AppMenu.
+func (c *AppMenuClient) QueryChildren(am *AppMenu) *AppMenuQuery {
+	query := (&AppMenuClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := am.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, id),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, appmenu.ChildrenTable, appmenu.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AppMenuClient) Hooks() []Hook {
 	hooks := c.hooks.AppMenu
@@ -1757,6 +1789,38 @@ func (c *AppPolicyViewClient) QueryAppPolicy(apv *AppPolicyView) *AppPolicyQuery
 			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppPolicyTable, apppolicyview.AppPolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryParent queries the parent edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryParent(apv *AppPolicyView) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.ParentTable, apppolicyview.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryChildren(apv *AppPolicyView) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicyview.ChildrenTable, apppolicyview.ChildrenColumn),
 		)
 		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
 		return fromV, nil

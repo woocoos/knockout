@@ -221,6 +221,26 @@ func (am *AppMenu) Action(ctx context.Context) (*AppAction, error) {
 	return result, MaskNotFound(err)
 }
 
+func (am *AppMenu) Parent(ctx context.Context) (*AppMenu, error) {
+	result, err := am.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = am.QueryParent().Only(ctx)
+	}
+	return result, err
+}
+
+func (am *AppMenu) Children(ctx context.Context) (result []*AppMenu, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = am.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = am.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = am.QueryChildren().All(ctx)
+	}
+	return result, err
+}
+
 func (ap *AppPolicy) App(ctx context.Context) (*App, error) {
 	result, err := ap.Edges.AppOrErr()
 	if IsNotLoaded(err) {
@@ -279,6 +299,26 @@ func (apv *AppPolicyView) AppPolicy(ctx context.Context) (*AppPolicy, error) {
 		result, err = apv.QueryAppPolicy().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (apv *AppPolicyView) Parent(ctx context.Context) (*AppPolicyView, error) {
+	result, err := apv.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryParent().Only(ctx)
+	}
+	return result, err
+}
+
+func (apv *AppPolicyView) Children(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = apv.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = apv.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = apv.QueryChildren().All(ctx)
+	}
+	return result, err
 }
 
 func (ar *AppRes) App(ctx context.Context) (*App, error) {

@@ -213,6 +213,26 @@ func (amc *AppMenuCreate) SetAction(a *AppAction) *AppMenuCreate {
 	return amc.SetActionID(a.ID)
 }
 
+// SetParent sets the "parent" edge to the AppMenu entity.
+func (amc *AppMenuCreate) SetParent(a *AppMenu) *AppMenuCreate {
+	return amc.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
+func (amc *AppMenuCreate) AddChildIDs(ids ...int) *AppMenuCreate {
+	amc.mutation.AddChildIDs(ids...)
+	return amc
+}
+
+// AddChildren adds the "children" edges to the AppMenu entity.
+func (amc *AppMenuCreate) AddChildren(a ...*AppMenu) *AppMenuCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amc.AddChildIDs(ids...)
+}
+
 // Mutation returns the AppMenuMutation object of the builder.
 func (amc *AppMenuCreate) Mutation() *AppMenuMutation {
 	return amc.mutation
@@ -298,6 +318,9 @@ func (amc *AppMenuCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
+	if len(amc.mutation.ParentIDs()) == 0 {
+		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "AppMenu.parent"`)}
+	}
 	return nil
 }
 
@@ -346,10 +369,6 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 	if value, ok := amc.mutation.UpdatedAt(); ok {
 		_spec.SetField(appmenu.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
-	}
-	if value, ok := amc.mutation.ParentID(); ok {
-		_spec.SetField(appmenu.FieldParentID, field.TypeInt, value)
-		_node.ParentID = value
 	}
 	if value, ok := amc.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
@@ -411,6 +430,39 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.ActionID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := amc.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := amc.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -516,12 +568,6 @@ func (u *AppMenuUpsert) SetParentID(v int) *AppMenuUpsert {
 // UpdateParentID sets the "parent_id" field to the value that was provided on create.
 func (u *AppMenuUpsert) UpdateParentID() *AppMenuUpsert {
 	u.SetExcluded(appmenu.FieldParentID)
-	return u
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsert) AddParentID(v int) *AppMenuUpsert {
-	u.Add(appmenu.FieldParentID, v)
 	return u
 }
 
@@ -773,13 +819,6 @@ func (u *AppMenuUpsertOne) ClearUpdatedAt() *AppMenuUpsertOne {
 func (u *AppMenuUpsertOne) SetParentID(v int) *AppMenuUpsertOne {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.SetParentID(v)
-	})
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsertOne) AddParentID(v int) *AppMenuUpsertOne {
-	return u.Update(func(s *AppMenuUpsert) {
-		s.AddParentID(v)
 	})
 }
 
@@ -1227,13 +1266,6 @@ func (u *AppMenuUpsertBulk) ClearUpdatedAt() *AppMenuUpsertBulk {
 func (u *AppMenuUpsertBulk) SetParentID(v int) *AppMenuUpsertBulk {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.SetParentID(v)
-	})
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsertBulk) AddParentID(v int) *AppMenuUpsertBulk {
-	return u.Update(func(s *AppMenuUpsert) {
-		s.AddParentID(v)
 	})
 }
 

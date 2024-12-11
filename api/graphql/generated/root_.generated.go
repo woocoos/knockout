@@ -166,6 +166,7 @@ type ComplexityRoot struct {
 		ActionID    func(childComplexity int) int
 		App         func(childComplexity int) int
 		AppID       func(childComplexity int) int
+		Children    func(childComplexity int) int
 		Comments    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
 		CreatedBy   func(childComplexity int) int
@@ -174,6 +175,7 @@ type ComplexityRoot struct {
 		Icon        func(childComplexity int) int
 		Kind        func(childComplexity int) int
 		Name        func(childComplexity int) int
+		Parent      func(childComplexity int) int
 		ParentID    func(childComplexity int) int
 		Route       func(childComplexity int) int
 		Status      func(childComplexity int) int
@@ -228,6 +230,7 @@ type ComplexityRoot struct {
 		AppID           func(childComplexity int) int
 		AppPolicy       func(childComplexity int) int
 		AppRoleAssigned func(childComplexity int, appRoleID int) int
+		Children        func(childComplexity int) int
 		Comments        func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		CreatedBy       func(childComplexity int) int
@@ -238,7 +241,9 @@ type ComplexityRoot struct {
 		OrgPolicy       func(childComplexity int) int
 		OrgRoleAssigned func(childComplexity int, orgRoleID int) int
 		OrgUserAssigned func(childComplexity int, userID int) int
+		Parent          func(childComplexity int) int
 		ParentID        func(childComplexity int) int
+		Path            func(childComplexity int) int
 		PolicyID        func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
 		UpdatedBy       func(childComplexity int) int
@@ -1602,6 +1607,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppMenu.AppID(childComplexity), true
 
+	case "AppMenu.children":
+		if e.complexity.AppMenu.Children == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Children(childComplexity), true
+
 	case "AppMenu.comments":
 		if e.complexity.AppMenu.Comments == nil {
 			break
@@ -1657,6 +1669,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppMenu.Name(childComplexity), true
+
+	case "AppMenu.parent":
+		if e.complexity.AppMenu.Parent == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Parent(childComplexity), true
 
 	case "AppMenu.parentID":
 		if e.complexity.AppMenu.ParentID == nil {
@@ -1920,6 +1939,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicyView.AppRoleAssigned(childComplexity, args["appRoleID"].(int)), true
 
+	case "AppPolicyView.children":
+		if e.complexity.AppPolicyView.Children == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Children(childComplexity), true
+
 	case "AppPolicyView.comments":
 		if e.complexity.AppPolicyView.Comments == nil {
 			break
@@ -2000,12 +2026,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicyView.OrgUserAssigned(childComplexity, args["userID"].(int)), true
 
+	case "AppPolicyView.parent":
+		if e.complexity.AppPolicyView.Parent == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Parent(childComplexity), true
+
 	case "AppPolicyView.parentID":
 		if e.complexity.AppPolicyView.ParentID == nil {
 			break
 		}
 
 		return e.complexity.AppPolicyView.ParentID(childComplexity), true
+
+	case "AppPolicyView.path":
+		if e.complexity.AppPolicyView.Path == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Path(childComplexity), true
 
 	case "AppPolicyView.policyID":
 		if e.complexity.AppPolicyView.PolicyID == nil {
@@ -7854,7 +7894,7 @@ type AppMenu implements Node {
   """
   父级ID
   """
-  parentID: Int!
+  parentID: ID!
   """
   目录,菜单项
   """
@@ -7889,6 +7929,8 @@ type AppMenu implements Node {
   需要权限控制时对应的权限
   """
   action: AppAction
+  parent: AppMenu!
+  children: [AppMenu!]
 }
 """
 A connection to a list of items.
@@ -8035,14 +8077,10 @@ input AppMenuWhereInput {
   """
   parent_id field predicates
   """
-  parentID: Int
-  parentIDNEQ: Int
-  parentIDIn: [Int!]
-  parentIDNotIn: [Int!]
-  parentIDGT: Int
-  parentIDGTE: Int
-  parentIDLT: Int
-  parentIDLTE: Int
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
   """
   kind field predicates
   """
@@ -8121,6 +8159,16 @@ input AppMenuWhereInput {
   """
   hasAction: Boolean
   hasActionWith: [AppActionWhereInput!]
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [AppMenuWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [AppMenuWhereInput!]
 }
 """
 Ordering options for App connections
@@ -8264,7 +8312,7 @@ type AppPolicyView implements Node {
   """
   父级ID,0为顶级
   """
-  parentID: Int!
+  parentID: ID!
   """
   分类：dir-目录、policy-权限策略
   """
@@ -8281,9 +8329,15 @@ type AppPolicyView implements Node {
   关联的应用策略
   """
   policyID: ID
+  """
+  路径编码
+  """
+  path: String
   displaySort: Int
   app: App
   appPolicy: AppPolicy
+  parent: AppPolicyView!
+  children: [AppPolicyView!]
 }
 """
 A connection to a list of items.
@@ -8421,14 +8475,10 @@ input AppPolicyViewWhereInput {
   """
   parent_id field predicates
   """
-  parentID: Int
-  parentIDNEQ: Int
-  parentIDIn: [Int!]
-  parentIDNotIn: [Int!]
-  parentIDGT: Int
-  parentIDGTE: Int
-  parentIDLT: Int
-  parentIDLTE: Int
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
   """
   kind field predicates
   """
@@ -8462,6 +8512,24 @@ input AppPolicyViewWhereInput {
   policyIDIsNil: Boolean
   policyIDNotNil: Boolean
   """
+  path field predicates
+  """
+  path: String
+  pathNEQ: String
+  pathIn: [String!]
+  pathNotIn: [String!]
+  pathGT: String
+  pathGTE: String
+  pathLT: String
+  pathLTE: String
+  pathContains: String
+  pathHasPrefix: String
+  pathHasSuffix: String
+  pathIsNil: Boolean
+  pathNotNil: Boolean
+  pathEqualFold: String
+  pathContainsFold: String
+  """
   app edge predicates
   """
   hasApp: Boolean
@@ -8471,6 +8539,16 @@ input AppPolicyViewWhereInput {
   """
   hasAppPolicy: Boolean
   hasAppPolicyWith: [AppPolicyWhereInput!]
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [AppPolicyViewWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [AppPolicyViewWhereInput!]
 }
 """
 AppPolicyWhereInput is used for filtering AppPolicy objects.
@@ -9736,10 +9814,6 @@ Input was generated by ent.
 """
 input CreateAppMenuInput {
   """
-  父级ID
-  """
-  parentID: Int!
-  """
   目录,菜单项
   """
   kind: AppMenuKind!
@@ -9765,6 +9839,8 @@ input CreateAppMenuInput {
   status: AppMenuSimpleStatus
   appID: ID
   actionID: ID
+  parentID: ID!
+  childIDs: [ID!]
 }
 """
 CreateAppPolicyInput is used for create AppPolicy object.
@@ -9806,10 +9882,6 @@ Input was generated by ent.
 """
 input CreateAppPolicyViewInput {
   """
-  父级ID,0为顶级
-  """
-  parentID: Int
-  """
   分类：dir-目录、policy-权限策略
   """
   kind: AppPolicyViewKind!
@@ -9823,6 +9895,8 @@ input CreateAppPolicyViewInput {
   comments: String
   appID: ID
   appPolicyID: ID
+  parentID: ID!
+  childIDs: [ID!]
 }
 """
 CreateAppResInput is used for create AppRes object.
@@ -14243,10 +14317,6 @@ Input was generated by ent.
 """
 input UpdateAppMenuInput {
   """
-  父级ID
-  """
-  parentID: Int
-  """
   目录,菜单项
   """
   kind: AppMenuKind
@@ -14276,6 +14346,10 @@ input UpdateAppMenuInput {
   clearStatus: Boolean
   actionID: ID
   clearAction: Boolean
+  parentID: ID
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
 }
 """
 UpdateAppPolicyInput is used for update AppPolicy object.
@@ -14325,10 +14399,6 @@ Input was generated by ent.
 """
 input UpdateAppPolicyViewInput {
   """
-  父级ID,0为顶级
-  """
-  parentID: Int
-  """
   分类：dir-目录、policy-权限策略
   """
   kind: AppPolicyViewKind
@@ -14343,6 +14413,10 @@ input UpdateAppPolicyViewInput {
   clearComments: Boolean
   appPolicyID: ID
   clearAppPolicy: Boolean
+  parentID: ID
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
 }
 """
 UpdateAppResInput is used for update AppRes object.

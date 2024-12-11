@@ -5848,8 +5848,6 @@ type AppMenuMutation struct {
 	updated_by      *int
 	addupdated_by   *int
 	updated_at      *time.Time
-	parent_id       *int
-	addparent_id    *int
 	kind            *appmenu.Kind
 	name            *string
 	icon            *string
@@ -5863,6 +5861,11 @@ type AppMenuMutation struct {
 	clearedapp      bool
 	action          *int
 	clearedaction   bool
+	parent          *int
+	clearedparent   bool
+	children        map[int]struct{}
+	removedchildren map[int]struct{}
+	clearedchildren bool
 	done            bool
 	oldValue        func(context.Context) (*AppMenu, error)
 	predicates      []predicate.AppMenu
@@ -6234,13 +6237,12 @@ func (m *AppMenuMutation) ResetAppID() {
 
 // SetParentID sets the "parent_id" field.
 func (m *AppMenuMutation) SetParentID(i int) {
-	m.parent_id = &i
-	m.addparent_id = nil
+	m.parent = &i
 }
 
 // ParentID returns the value of the "parent_id" field in the mutation.
 func (m *AppMenuMutation) ParentID() (r int, exists bool) {
-	v := m.parent_id
+	v := m.parent
 	if v == nil {
 		return
 	}
@@ -6264,28 +6266,9 @@ func (m *AppMenuMutation) OldParentID(ctx context.Context) (v int, err error) {
 	return oldValue.ParentID, nil
 }
 
-// AddParentID adds i to the "parent_id" field.
-func (m *AppMenuMutation) AddParentID(i int) {
-	if m.addparent_id != nil {
-		*m.addparent_id += i
-	} else {
-		m.addparent_id = &i
-	}
-}
-
-// AddedParentID returns the value that was added to the "parent_id" field in this mutation.
-func (m *AppMenuMutation) AddedParentID() (r int, exists bool) {
-	v := m.addparent_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetParentID resets all changes to the "parent_id" field.
 func (m *AppMenuMutation) ResetParentID() {
-	m.parent_id = nil
-	m.addparent_id = nil
+	m.parent = nil
 }
 
 // SetKind sets the "kind" field.
@@ -6729,6 +6712,87 @@ func (m *AppMenuMutation) ResetAction() {
 	m.clearedaction = false
 }
 
+// ClearParent clears the "parent" edge to the AppMenu entity.
+func (m *AppMenuMutation) ClearParent() {
+	m.clearedparent = true
+	m.clearedFields[appmenu.FieldParentID] = struct{}{}
+}
+
+// ParentCleared reports if the "parent" edge to the AppMenu entity was cleared.
+func (m *AppMenuMutation) ParentCleared() bool {
+	return m.clearedparent
+}
+
+// ParentIDs returns the "parent" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ParentID instead. It exists only for internal usage by the builders.
+func (m *AppMenuMutation) ParentIDs() (ids []int) {
+	if id := m.parent; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetParent resets all changes to the "parent" edge.
+func (m *AppMenuMutation) ResetParent() {
+	m.parent = nil
+	m.clearedparent = false
+}
+
+// AddChildIDs adds the "children" edge to the AppMenu entity by ids.
+func (m *AppMenuMutation) AddChildIDs(ids ...int) {
+	if m.children == nil {
+		m.children = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.children[ids[i]] = struct{}{}
+	}
+}
+
+// ClearChildren clears the "children" edge to the AppMenu entity.
+func (m *AppMenuMutation) ClearChildren() {
+	m.clearedchildren = true
+}
+
+// ChildrenCleared reports if the "children" edge to the AppMenu entity was cleared.
+func (m *AppMenuMutation) ChildrenCleared() bool {
+	return m.clearedchildren
+}
+
+// RemoveChildIDs removes the "children" edge to the AppMenu entity by IDs.
+func (m *AppMenuMutation) RemoveChildIDs(ids ...int) {
+	if m.removedchildren == nil {
+		m.removedchildren = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.children, ids[i])
+		m.removedchildren[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedChildren returns the removed IDs of the "children" edge to the AppMenu entity.
+func (m *AppMenuMutation) RemovedChildrenIDs() (ids []int) {
+	for id := range m.removedchildren {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ChildrenIDs returns the "children" edge IDs in the mutation.
+func (m *AppMenuMutation) ChildrenIDs() (ids []int) {
+	for id := range m.children {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetChildren resets all changes to the "children" edge.
+func (m *AppMenuMutation) ResetChildren() {
+	m.children = nil
+	m.clearedchildren = false
+	m.removedchildren = nil
+}
+
 // Where appends a list predicates to the AppMenuMutation builder.
 func (m *AppMenuMutation) Where(ps ...predicate.AppMenu) {
 	m.predicates = append(m.predicates, ps...)
@@ -6779,7 +6843,7 @@ func (m *AppMenuMutation) Fields() []string {
 	if m.app != nil {
 		fields = append(fields, appmenu.FieldAppID)
 	}
-	if m.parent_id != nil {
+	if m.parent != nil {
 		fields = append(fields, appmenu.FieldParentID)
 	}
 	if m.kind != nil {
@@ -7000,9 +7064,6 @@ func (m *AppMenuMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, appmenu.FieldUpdatedBy)
 	}
-	if m.addparent_id != nil {
-		fields = append(fields, appmenu.FieldParentID)
-	}
 	if m.adddisplay_sort != nil {
 		fields = append(fields, appmenu.FieldDisplaySort)
 	}
@@ -7018,8 +7079,6 @@ func (m *AppMenuMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case appmenu.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case appmenu.FieldParentID:
-		return m.AddedParentID()
 	case appmenu.FieldDisplaySort:
 		return m.AddedDisplaySort()
 	}
@@ -7044,13 +7103,6 @@ func (m *AppMenuMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case appmenu.FieldParentID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddParentID(v)
 		return nil
 	case appmenu.FieldDisplaySort:
 		v, ok := value.(int32)
@@ -7191,12 +7243,18 @@ func (m *AppMenuMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMenuMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.app != nil {
 		edges = append(edges, appmenu.EdgeApp)
 	}
 	if m.action != nil {
 		edges = append(edges, appmenu.EdgeAction)
+	}
+	if m.parent != nil {
+		edges = append(edges, appmenu.EdgeParent)
+	}
+	if m.children != nil {
+		edges = append(edges, appmenu.EdgeChildren)
 	}
 	return edges
 }
@@ -7213,30 +7271,57 @@ func (m *AppMenuMutation) AddedIDs(name string) []ent.Value {
 		if id := m.action; id != nil {
 			return []ent.Value{*id}
 		}
+	case appmenu.EdgeParent:
+		if id := m.parent; id != nil {
+			return []ent.Value{*id}
+		}
+	case appmenu.EdgeChildren:
+		ids := make([]ent.Value, 0, len(m.children))
+		for id := range m.children {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMenuMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
+	if m.removedchildren != nil {
+		edges = append(edges, appmenu.EdgeChildren)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AppMenuMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case appmenu.EdgeChildren:
+		ids := make([]ent.Value, 0, len(m.removedchildren))
+		for id := range m.removedchildren {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMenuMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.clearedapp {
 		edges = append(edges, appmenu.EdgeApp)
 	}
 	if m.clearedaction {
 		edges = append(edges, appmenu.EdgeAction)
+	}
+	if m.clearedparent {
+		edges = append(edges, appmenu.EdgeParent)
+	}
+	if m.clearedchildren {
+		edges = append(edges, appmenu.EdgeChildren)
 	}
 	return edges
 }
@@ -7249,6 +7334,10 @@ func (m *AppMenuMutation) EdgeCleared(name string) bool {
 		return m.clearedapp
 	case appmenu.EdgeAction:
 		return m.clearedaction
+	case appmenu.EdgeParent:
+		return m.clearedparent
+	case appmenu.EdgeChildren:
+		return m.clearedchildren
 	}
 	return false
 }
@@ -7263,6 +7352,9 @@ func (m *AppMenuMutation) ClearEdge(name string) error {
 	case appmenu.EdgeAction:
 		m.ClearAction()
 		return nil
+	case appmenu.EdgeParent:
+		m.ClearParent()
+		return nil
 	}
 	return fmt.Errorf("unknown AppMenu unique edge %s", name)
 }
@@ -7276,6 +7368,12 @@ func (m *AppMenuMutation) ResetEdge(name string) error {
 		return nil
 	case appmenu.EdgeAction:
 		m.ResetAction()
+		return nil
+	case appmenu.EdgeParent:
+		m.ResetParent()
+		return nil
+	case appmenu.EdgeChildren:
+		m.ResetChildren()
 		return nil
 	}
 	return fmt.Errorf("unknown AppMenu edge %s", name)
@@ -8791,11 +8889,10 @@ type AppPolicyViewMutation struct {
 	updated_by        *int
 	addupdated_by     *int
 	updated_at        *time.Time
-	parent_id         *int
-	addparent_id      *int
 	kind              *apppolicyview.Kind
 	name              *string
 	comments          *string
+	_path             *string
 	display_sort      *int32
 	adddisplay_sort   *int32
 	clearedFields     map[string]struct{}
@@ -8803,6 +8900,11 @@ type AppPolicyViewMutation struct {
 	clearedapp        bool
 	app_policy        *int
 	clearedapp_policy bool
+	parent            *int
+	clearedparent     bool
+	children          map[int]struct{}
+	removedchildren   map[int]struct{}
+	clearedchildren   bool
 	done              bool
 	oldValue          func(context.Context) (*AppPolicyView, error)
 	predicates        []predicate.AppPolicyView
@@ -9174,13 +9276,12 @@ func (m *AppPolicyViewMutation) ResetAppID() {
 
 // SetParentID sets the "parent_id" field.
 func (m *AppPolicyViewMutation) SetParentID(i int) {
-	m.parent_id = &i
-	m.addparent_id = nil
+	m.parent = &i
 }
 
 // ParentID returns the value of the "parent_id" field in the mutation.
 func (m *AppPolicyViewMutation) ParentID() (r int, exists bool) {
-	v := m.parent_id
+	v := m.parent
 	if v == nil {
 		return
 	}
@@ -9204,28 +9305,9 @@ func (m *AppPolicyViewMutation) OldParentID(ctx context.Context) (v int, err err
 	return oldValue.ParentID, nil
 }
 
-// AddParentID adds i to the "parent_id" field.
-func (m *AppPolicyViewMutation) AddParentID(i int) {
-	if m.addparent_id != nil {
-		*m.addparent_id += i
-	} else {
-		m.addparent_id = &i
-	}
-}
-
-// AddedParentID returns the value that was added to the "parent_id" field in this mutation.
-func (m *AppPolicyViewMutation) AddedParentID() (r int, exists bool) {
-	v := m.addparent_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetParentID resets all changes to the "parent_id" field.
 func (m *AppPolicyViewMutation) ResetParentID() {
-	m.parent_id = nil
-	m.addparent_id = nil
+	m.parent = nil
 }
 
 // SetKind sets the "kind" field.
@@ -9398,6 +9480,55 @@ func (m *AppPolicyViewMutation) ResetPolicyID() {
 	delete(m.clearedFields, apppolicyview.FieldPolicyID)
 }
 
+// SetPath sets the "path" field.
+func (m *AppPolicyViewMutation) SetPath(s string) {
+	m._path = &s
+}
+
+// Path returns the value of the "path" field in the mutation.
+func (m *AppPolicyViewMutation) Path() (r string, exists bool) {
+	v := m._path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPath returns the old "path" field's value of the AppPolicyView entity.
+// If the AppPolicyView object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPolicyViewMutation) OldPath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPath: %w", err)
+	}
+	return oldValue.Path, nil
+}
+
+// ClearPath clears the value of the "path" field.
+func (m *AppPolicyViewMutation) ClearPath() {
+	m._path = nil
+	m.clearedFields[apppolicyview.FieldPath] = struct{}{}
+}
+
+// PathCleared returns if the "path" field was cleared in this mutation.
+func (m *AppPolicyViewMutation) PathCleared() bool {
+	_, ok := m.clearedFields[apppolicyview.FieldPath]
+	return ok
+}
+
+// ResetPath resets all changes to the "path" field.
+func (m *AppPolicyViewMutation) ResetPath() {
+	m._path = nil
+	delete(m.clearedFields, apppolicyview.FieldPath)
+}
+
 // SetDisplaySort sets the "display_sort" field.
 func (m *AppPolicyViewMutation) SetDisplaySort(i int32) {
 	m.display_sort = &i
@@ -9535,6 +9666,87 @@ func (m *AppPolicyViewMutation) ResetAppPolicy() {
 	m.clearedapp_policy = false
 }
 
+// ClearParent clears the "parent" edge to the AppPolicyView entity.
+func (m *AppPolicyViewMutation) ClearParent() {
+	m.clearedparent = true
+	m.clearedFields[apppolicyview.FieldParentID] = struct{}{}
+}
+
+// ParentCleared reports if the "parent" edge to the AppPolicyView entity was cleared.
+func (m *AppPolicyViewMutation) ParentCleared() bool {
+	return m.clearedparent
+}
+
+// ParentIDs returns the "parent" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ParentID instead. It exists only for internal usage by the builders.
+func (m *AppPolicyViewMutation) ParentIDs() (ids []int) {
+	if id := m.parent; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetParent resets all changes to the "parent" edge.
+func (m *AppPolicyViewMutation) ResetParent() {
+	m.parent = nil
+	m.clearedparent = false
+}
+
+// AddChildIDs adds the "children" edge to the AppPolicyView entity by ids.
+func (m *AppPolicyViewMutation) AddChildIDs(ids ...int) {
+	if m.children == nil {
+		m.children = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.children[ids[i]] = struct{}{}
+	}
+}
+
+// ClearChildren clears the "children" edge to the AppPolicyView entity.
+func (m *AppPolicyViewMutation) ClearChildren() {
+	m.clearedchildren = true
+}
+
+// ChildrenCleared reports if the "children" edge to the AppPolicyView entity was cleared.
+func (m *AppPolicyViewMutation) ChildrenCleared() bool {
+	return m.clearedchildren
+}
+
+// RemoveChildIDs removes the "children" edge to the AppPolicyView entity by IDs.
+func (m *AppPolicyViewMutation) RemoveChildIDs(ids ...int) {
+	if m.removedchildren == nil {
+		m.removedchildren = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.children, ids[i])
+		m.removedchildren[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedChildren returns the removed IDs of the "children" edge to the AppPolicyView entity.
+func (m *AppPolicyViewMutation) RemovedChildrenIDs() (ids []int) {
+	for id := range m.removedchildren {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ChildrenIDs returns the "children" edge IDs in the mutation.
+func (m *AppPolicyViewMutation) ChildrenIDs() (ids []int) {
+	for id := range m.children {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetChildren resets all changes to the "children" edge.
+func (m *AppPolicyViewMutation) ResetChildren() {
+	m.children = nil
+	m.clearedchildren = false
+	m.removedchildren = nil
+}
+
 // Where appends a list predicates to the AppPolicyViewMutation builder.
 func (m *AppPolicyViewMutation) Where(ps ...predicate.AppPolicyView) {
 	m.predicates = append(m.predicates, ps...)
@@ -9569,7 +9781,7 @@ func (m *AppPolicyViewMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppPolicyViewMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_by != nil {
 		fields = append(fields, apppolicyview.FieldCreatedBy)
 	}
@@ -9585,7 +9797,7 @@ func (m *AppPolicyViewMutation) Fields() []string {
 	if m.app != nil {
 		fields = append(fields, apppolicyview.FieldAppID)
 	}
-	if m.parent_id != nil {
+	if m.parent != nil {
 		fields = append(fields, apppolicyview.FieldParentID)
 	}
 	if m.kind != nil {
@@ -9599,6 +9811,9 @@ func (m *AppPolicyViewMutation) Fields() []string {
 	}
 	if m.app_policy != nil {
 		fields = append(fields, apppolicyview.FieldPolicyID)
+	}
+	if m._path != nil {
+		fields = append(fields, apppolicyview.FieldPath)
 	}
 	if m.display_sort != nil {
 		fields = append(fields, apppolicyview.FieldDisplaySort)
@@ -9631,6 +9846,8 @@ func (m *AppPolicyViewMutation) Field(name string) (ent.Value, bool) {
 		return m.Comments()
 	case apppolicyview.FieldPolicyID:
 		return m.PolicyID()
+	case apppolicyview.FieldPath:
+		return m.Path()
 	case apppolicyview.FieldDisplaySort:
 		return m.DisplaySort()
 	}
@@ -9662,6 +9879,8 @@ func (m *AppPolicyViewMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldComments(ctx)
 	case apppolicyview.FieldPolicyID:
 		return m.OldPolicyID(ctx)
+	case apppolicyview.FieldPath:
+		return m.OldPath(ctx)
 	case apppolicyview.FieldDisplaySort:
 		return m.OldDisplaySort(ctx)
 	}
@@ -9743,6 +9962,13 @@ func (m *AppPolicyViewMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPolicyID(v)
 		return nil
+	case apppolicyview.FieldPath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPath(v)
+		return nil
 	case apppolicyview.FieldDisplaySort:
 		v, ok := value.(int32)
 		if !ok {
@@ -9764,9 +9990,6 @@ func (m *AppPolicyViewMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, apppolicyview.FieldUpdatedBy)
 	}
-	if m.addparent_id != nil {
-		fields = append(fields, apppolicyview.FieldParentID)
-	}
 	if m.adddisplay_sort != nil {
 		fields = append(fields, apppolicyview.FieldDisplaySort)
 	}
@@ -9782,8 +10005,6 @@ func (m *AppPolicyViewMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case apppolicyview.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case apppolicyview.FieldParentID:
-		return m.AddedParentID()
 	case apppolicyview.FieldDisplaySort:
 		return m.AddedDisplaySort()
 	}
@@ -9808,13 +10029,6 @@ func (m *AppPolicyViewMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case apppolicyview.FieldParentID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddParentID(v)
 		return nil
 	case apppolicyview.FieldDisplaySort:
 		v, ok := value.(int32)
@@ -9845,6 +10059,9 @@ func (m *AppPolicyViewMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(apppolicyview.FieldPolicyID) {
 		fields = append(fields, apppolicyview.FieldPolicyID)
+	}
+	if m.FieldCleared(apppolicyview.FieldPath) {
+		fields = append(fields, apppolicyview.FieldPath)
 	}
 	if m.FieldCleared(apppolicyview.FieldDisplaySort) {
 		fields = append(fields, apppolicyview.FieldDisplaySort)
@@ -9877,6 +10094,9 @@ func (m *AppPolicyViewMutation) ClearField(name string) error {
 		return nil
 	case apppolicyview.FieldPolicyID:
 		m.ClearPolicyID()
+		return nil
+	case apppolicyview.FieldPath:
+		m.ClearPath()
 		return nil
 	case apppolicyview.FieldDisplaySort:
 		m.ClearDisplaySort()
@@ -9919,6 +10139,9 @@ func (m *AppPolicyViewMutation) ResetField(name string) error {
 	case apppolicyview.FieldPolicyID:
 		m.ResetPolicyID()
 		return nil
+	case apppolicyview.FieldPath:
+		m.ResetPath()
+		return nil
 	case apppolicyview.FieldDisplaySort:
 		m.ResetDisplaySort()
 		return nil
@@ -9928,12 +10151,18 @@ func (m *AppPolicyViewMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppPolicyViewMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.app != nil {
 		edges = append(edges, apppolicyview.EdgeApp)
 	}
 	if m.app_policy != nil {
 		edges = append(edges, apppolicyview.EdgeAppPolicy)
+	}
+	if m.parent != nil {
+		edges = append(edges, apppolicyview.EdgeParent)
+	}
+	if m.children != nil {
+		edges = append(edges, apppolicyview.EdgeChildren)
 	}
 	return edges
 }
@@ -9950,30 +10179,57 @@ func (m *AppPolicyViewMutation) AddedIDs(name string) []ent.Value {
 		if id := m.app_policy; id != nil {
 			return []ent.Value{*id}
 		}
+	case apppolicyview.EdgeParent:
+		if id := m.parent; id != nil {
+			return []ent.Value{*id}
+		}
+	case apppolicyview.EdgeChildren:
+		ids := make([]ent.Value, 0, len(m.children))
+		for id := range m.children {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppPolicyViewMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
+	if m.removedchildren != nil {
+		edges = append(edges, apppolicyview.EdgeChildren)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AppPolicyViewMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case apppolicyview.EdgeChildren:
+		ids := make([]ent.Value, 0, len(m.removedchildren))
+		for id := range m.removedchildren {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppPolicyViewMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.clearedapp {
 		edges = append(edges, apppolicyview.EdgeApp)
 	}
 	if m.clearedapp_policy {
 		edges = append(edges, apppolicyview.EdgeAppPolicy)
+	}
+	if m.clearedparent {
+		edges = append(edges, apppolicyview.EdgeParent)
+	}
+	if m.clearedchildren {
+		edges = append(edges, apppolicyview.EdgeChildren)
 	}
 	return edges
 }
@@ -9986,6 +10242,10 @@ func (m *AppPolicyViewMutation) EdgeCleared(name string) bool {
 		return m.clearedapp
 	case apppolicyview.EdgeAppPolicy:
 		return m.clearedapp_policy
+	case apppolicyview.EdgeParent:
+		return m.clearedparent
+	case apppolicyview.EdgeChildren:
+		return m.clearedchildren
 	}
 	return false
 }
@@ -10000,6 +10260,9 @@ func (m *AppPolicyViewMutation) ClearEdge(name string) error {
 	case apppolicyview.EdgeAppPolicy:
 		m.ClearAppPolicy()
 		return nil
+	case apppolicyview.EdgeParent:
+		m.ClearParent()
+		return nil
 	}
 	return fmt.Errorf("unknown AppPolicyView unique edge %s", name)
 }
@@ -10013,6 +10276,12 @@ func (m *AppPolicyViewMutation) ResetEdge(name string) error {
 		return nil
 	case apppolicyview.EdgeAppPolicy:
 		m.ResetAppPolicy()
+		return nil
+	case apppolicyview.EdgeParent:
+		m.ResetParent()
+		return nil
+	case apppolicyview.EdgeChildren:
+		m.ResetChildren()
 		return nil
 	}
 	return fmt.Errorf("unknown AppPolicyView edge %s", name)

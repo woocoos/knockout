@@ -140,6 +140,20 @@ func (apvc *AppPolicyViewCreate) SetNillablePolicyID(i *int) *AppPolicyViewCreat
 	return apvc
 }
 
+// SetPath sets the "path" field.
+func (apvc *AppPolicyViewCreate) SetPath(s string) *AppPolicyViewCreate {
+	apvc.mutation.SetPath(s)
+	return apvc
+}
+
+// SetNillablePath sets the "path" field if the given value is not nil.
+func (apvc *AppPolicyViewCreate) SetNillablePath(s *string) *AppPolicyViewCreate {
+	if s != nil {
+		apvc.SetPath(*s)
+	}
+	return apvc
+}
+
 // SetDisplaySort sets the "display_sort" field.
 func (apvc *AppPolicyViewCreate) SetDisplaySort(i int32) *AppPolicyViewCreate {
 	apvc.mutation.SetDisplaySort(i)
@@ -190,6 +204,26 @@ func (apvc *AppPolicyViewCreate) SetNillableAppPolicyID(id *int) *AppPolicyViewC
 // SetAppPolicy sets the "app_policy" edge to the AppPolicy entity.
 func (apvc *AppPolicyViewCreate) SetAppPolicy(a *AppPolicy) *AppPolicyViewCreate {
 	return apvc.SetAppPolicyID(a.ID)
+}
+
+// SetParent sets the "parent" edge to the AppPolicyView entity.
+func (apvc *AppPolicyViewCreate) SetParent(a *AppPolicyView) *AppPolicyViewCreate {
+	return apvc.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppPolicyView entity by IDs.
+func (apvc *AppPolicyViewCreate) AddChildIDs(ids ...int) *AppPolicyViewCreate {
+	apvc.mutation.AddChildIDs(ids...)
+	return apvc
+}
+
+// AddChildren adds the "children" edges to the AppPolicyView entity.
+func (apvc *AppPolicyViewCreate) AddChildren(a ...*AppPolicyView) *AppPolicyViewCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apvc.AddChildIDs(ids...)
 }
 
 // Mutation returns the AppPolicyViewMutation object of the builder.
@@ -272,6 +306,9 @@ func (apvc *AppPolicyViewCreate) check() error {
 	if _, ok := apvc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppPolicyView.name"`)}
 	}
+	if len(apvc.mutation.ParentIDs()) == 0 {
+		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "AppPolicyView.parent"`)}
+	}
 	return nil
 }
 
@@ -321,10 +358,6 @@ func (apvc *AppPolicyViewCreate) createSpec() (*AppPolicyView, *sqlgraph.CreateS
 		_spec.SetField(apppolicyview.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := apvc.mutation.ParentID(); ok {
-		_spec.SetField(apppolicyview.FieldParentID, field.TypeInt, value)
-		_node.ParentID = value
-	}
 	if value, ok := apvc.mutation.Kind(); ok {
 		_spec.SetField(apppolicyview.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
@@ -336,6 +369,10 @@ func (apvc *AppPolicyViewCreate) createSpec() (*AppPolicyView, *sqlgraph.CreateS
 	if value, ok := apvc.mutation.Comments(); ok {
 		_spec.SetField(apppolicyview.FieldComments, field.TypeString, value)
 		_node.Comments = value
+	}
+	if value, ok := apvc.mutation.Path(); ok {
+		_spec.SetField(apppolicyview.FieldPath, field.TypeString, value)
+		_node.Path = value
 	}
 	if value, ok := apvc.mutation.DisplaySort(); ok {
 		_spec.SetField(apppolicyview.FieldDisplaySort, field.TypeInt32, value)
@@ -373,6 +410,39 @@ func (apvc *AppPolicyViewCreate) createSpec() (*AppPolicyView, *sqlgraph.CreateS
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.PolicyID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apvc.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppolicyview.ParentTable,
+			Columns: []string{apppolicyview.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apvc.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -481,12 +551,6 @@ func (u *AppPolicyViewUpsert) UpdateParentID() *AppPolicyViewUpsert {
 	return u
 }
 
-// AddParentID adds v to the "parent_id" field.
-func (u *AppPolicyViewUpsert) AddParentID(v int) *AppPolicyViewUpsert {
-	u.Add(apppolicyview.FieldParentID, v)
-	return u
-}
-
 // SetKind sets the "kind" field.
 func (u *AppPolicyViewUpsert) SetKind(v apppolicyview.Kind) *AppPolicyViewUpsert {
 	u.Set(apppolicyview.FieldKind, v)
@@ -544,6 +608,24 @@ func (u *AppPolicyViewUpsert) UpdatePolicyID() *AppPolicyViewUpsert {
 // ClearPolicyID clears the value of the "policy_id" field.
 func (u *AppPolicyViewUpsert) ClearPolicyID() *AppPolicyViewUpsert {
 	u.SetNull(apppolicyview.FieldPolicyID)
+	return u
+}
+
+// SetPath sets the "path" field.
+func (u *AppPolicyViewUpsert) SetPath(v string) *AppPolicyViewUpsert {
+	u.Set(apppolicyview.FieldPath, v)
+	return u
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *AppPolicyViewUpsert) UpdatePath() *AppPolicyViewUpsert {
+	u.SetExcluded(apppolicyview.FieldPath)
+	return u
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *AppPolicyViewUpsert) ClearPath() *AppPolicyViewUpsert {
+	u.SetNull(apppolicyview.FieldPath)
 	return u
 }
 
@@ -684,13 +766,6 @@ func (u *AppPolicyViewUpsertOne) SetParentID(v int) *AppPolicyViewUpsertOne {
 	})
 }
 
-// AddParentID adds v to the "parent_id" field.
-func (u *AppPolicyViewUpsertOne) AddParentID(v int) *AppPolicyViewUpsertOne {
-	return u.Update(func(s *AppPolicyViewUpsert) {
-		s.AddParentID(v)
-	})
-}
-
 // UpdateParentID sets the "parent_id" field to the value that was provided on create.
 func (u *AppPolicyViewUpsertOne) UpdateParentID() *AppPolicyViewUpsertOne {
 	return u.Update(func(s *AppPolicyViewUpsert) {
@@ -765,6 +840,27 @@ func (u *AppPolicyViewUpsertOne) UpdatePolicyID() *AppPolicyViewUpsertOne {
 func (u *AppPolicyViewUpsertOne) ClearPolicyID() *AppPolicyViewUpsertOne {
 	return u.Update(func(s *AppPolicyViewUpsert) {
 		s.ClearPolicyID()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *AppPolicyViewUpsertOne) SetPath(v string) *AppPolicyViewUpsertOne {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *AppPolicyViewUpsertOne) UpdatePath() *AppPolicyViewUpsertOne {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *AppPolicyViewUpsertOne) ClearPath() *AppPolicyViewUpsertOne {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.ClearPath()
 	})
 }
 
@@ -1075,13 +1171,6 @@ func (u *AppPolicyViewUpsertBulk) SetParentID(v int) *AppPolicyViewUpsertBulk {
 	})
 }
 
-// AddParentID adds v to the "parent_id" field.
-func (u *AppPolicyViewUpsertBulk) AddParentID(v int) *AppPolicyViewUpsertBulk {
-	return u.Update(func(s *AppPolicyViewUpsert) {
-		s.AddParentID(v)
-	})
-}
-
 // UpdateParentID sets the "parent_id" field to the value that was provided on create.
 func (u *AppPolicyViewUpsertBulk) UpdateParentID() *AppPolicyViewUpsertBulk {
 	return u.Update(func(s *AppPolicyViewUpsert) {
@@ -1156,6 +1245,27 @@ func (u *AppPolicyViewUpsertBulk) UpdatePolicyID() *AppPolicyViewUpsertBulk {
 func (u *AppPolicyViewUpsertBulk) ClearPolicyID() *AppPolicyViewUpsertBulk {
 	return u.Update(func(s *AppPolicyViewUpsert) {
 		s.ClearPolicyID()
+	})
+}
+
+// SetPath sets the "path" field.
+func (u *AppPolicyViewUpsertBulk) SetPath(v string) *AppPolicyViewUpsertBulk {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.SetPath(v)
+	})
+}
+
+// UpdatePath sets the "path" field to the value that was provided on create.
+func (u *AppPolicyViewUpsertBulk) UpdatePath() *AppPolicyViewUpsertBulk {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.UpdatePath()
+	})
+}
+
+// ClearPath clears the value of the "path" field.
+func (u *AppPolicyViewUpsertBulk) ClearPath() *AppPolicyViewUpsertBulk {
+	return u.Update(func(s *AppPolicyViewUpsert) {
+		s.ClearPath()
 	})
 }
 

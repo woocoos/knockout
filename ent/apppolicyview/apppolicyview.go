@@ -38,12 +38,18 @@ const (
 	FieldComments = "comments"
 	// FieldPolicyID holds the string denoting the policy_id field in the database.
 	FieldPolicyID = "policy_id"
+	// FieldPath holds the string denoting the path field in the database.
+	FieldPath = "path"
 	// FieldDisplaySort holds the string denoting the display_sort field in the database.
 	FieldDisplaySort = "display_sort"
 	// EdgeApp holds the string denoting the app edge name in mutations.
 	EdgeApp = "app"
 	// EdgeAppPolicy holds the string denoting the app_policy edge name in mutations.
 	EdgeAppPolicy = "app_policy"
+	// EdgeParent holds the string denoting the parent edge name in mutations.
+	EdgeParent = "parent"
+	// EdgeChildren holds the string denoting the children edge name in mutations.
+	EdgeChildren = "children"
 	// Table holds the table name of the apppolicyview in the database.
 	Table = "app_policy_view"
 	// AppTable is the table that holds the app relation/edge.
@@ -60,6 +66,14 @@ const (
 	AppPolicyInverseTable = "app_policy"
 	// AppPolicyColumn is the table column denoting the app_policy relation/edge.
 	AppPolicyColumn = "policy_id"
+	// ParentTable is the table that holds the parent relation/edge.
+	ParentTable = "app_policy_view"
+	// ParentColumn is the table column denoting the parent relation/edge.
+	ParentColumn = "parent_id"
+	// ChildrenTable is the table that holds the children relation/edge.
+	ChildrenTable = "app_policy_view"
+	// ChildrenColumn is the table column denoting the children relation/edge.
+	ChildrenColumn = "parent_id"
 )
 
 // Columns holds all SQL columns for apppolicyview fields.
@@ -75,6 +89,7 @@ var Columns = []string{
 	FieldName,
 	FieldComments,
 	FieldPolicyID,
+	FieldPath,
 	FieldDisplaySort,
 }
 
@@ -94,7 +109,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [3]ent.Hook
+	Hooks [4]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
@@ -184,6 +199,11 @@ func ByPolicyID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPolicyID, opts...).ToFunc()
 }
 
+// ByPath orders the results by the path field.
+func ByPath(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPath, opts...).ToFunc()
+}
+
 // ByDisplaySort orders the results by the display_sort field.
 func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
@@ -202,6 +222,27 @@ func ByAppPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newAppPolicyStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByParentField orders the results by parent field.
+func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newParentStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByChildrenCount orders the results by children count.
+func ByChildrenCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChildrenStep(), opts...)
+	}
+}
+
+// ByChildren orders the results by children terms.
+func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChildrenStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newAppStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -214,6 +255,20 @@ func newAppPolicyStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppPolicyInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, AppPolicyTable, AppPolicyColumn),
+	)
+}
+func newParentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+	)
+}
+func newChildrenStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
 	)
 }
 

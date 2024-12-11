@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -20,14 +21,17 @@ import (
 // AppMenuQuery is the builder for querying AppMenu entities.
 type AppMenuQuery struct {
 	config
-	ctx        *QueryContext
-	order      []appmenu.OrderOption
-	inters     []Interceptor
-	predicates []predicate.AppMenu
-	withApp    *AppQuery
-	withAction *AppActionQuery
-	modifiers  []func(*sql.Selector)
-	loadTotal  []func(context.Context, []*AppMenu) error
+	ctx               *QueryContext
+	order             []appmenu.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.AppMenu
+	withApp           *AppQuery
+	withAction        *AppActionQuery
+	withParent        *AppMenuQuery
+	withChildren      *AppMenuQuery
+	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*AppMenu) error
+	withNamedChildren map[string]*AppMenuQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -101,6 +105,50 @@ func (amq *AppMenuQuery) QueryAction() *AppActionQuery {
 			sqlgraph.From(appmenu.Table, appmenu.FieldID, selector),
 			sqlgraph.To(appaction.Table, appaction.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ActionTable, appmenu.ActionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryParent chains the current query on the "parent" edge.
+func (amq *AppMenuQuery) QueryParent() *AppMenuQuery {
+	query := (&AppMenuClient{config: amq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := amq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := amq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, selector),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ParentTable, appmenu.ParentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChildren chains the current query on the "children" edge.
+func (amq *AppMenuQuery) QueryChildren() *AppMenuQuery {
+	query := (&AppMenuClient{config: amq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := amq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := amq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, selector),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, appmenu.ChildrenTable, appmenu.ChildrenColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -295,13 +343,15 @@ func (amq *AppMenuQuery) Clone() *AppMenuQuery {
 		return nil
 	}
 	return &AppMenuQuery{
-		config:     amq.config,
-		ctx:        amq.ctx.Clone(),
-		order:      append([]appmenu.OrderOption{}, amq.order...),
-		inters:     append([]Interceptor{}, amq.inters...),
-		predicates: append([]predicate.AppMenu{}, amq.predicates...),
-		withApp:    amq.withApp.Clone(),
-		withAction: amq.withAction.Clone(),
+		config:       amq.config,
+		ctx:          amq.ctx.Clone(),
+		order:        append([]appmenu.OrderOption{}, amq.order...),
+		inters:       append([]Interceptor{}, amq.inters...),
+		predicates:   append([]predicate.AppMenu{}, amq.predicates...),
+		withApp:      amq.withApp.Clone(),
+		withAction:   amq.withAction.Clone(),
+		withParent:   amq.withParent.Clone(),
+		withChildren: amq.withChildren.Clone(),
 		// clone intermediate query.
 		sql:  amq.sql.Clone(),
 		path: amq.path,
@@ -327,6 +377,28 @@ func (amq *AppMenuQuery) WithAction(opts ...func(*AppActionQuery)) *AppMenuQuery
 		opt(query)
 	}
 	amq.withAction = query
+	return amq
+}
+
+// WithParent tells the query-builder to eager-load the nodes that are connected to
+// the "parent" edge. The optional arguments are used to configure the query builder of the edge.
+func (amq *AppMenuQuery) WithParent(opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: amq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	amq.withParent = query
+	return amq
+}
+
+// WithChildren tells the query-builder to eager-load the nodes that are connected to
+// the "children" edge. The optional arguments are used to configure the query builder of the edge.
+func (amq *AppMenuQuery) WithChildren(opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: amq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	amq.withChildren = query
 	return amq
 }
 
@@ -408,9 +480,11 @@ func (amq *AppMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App
 	var (
 		nodes       = []*AppMenu{}
 		_spec       = amq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [4]bool{
 			amq.withApp != nil,
 			amq.withAction != nil,
+			amq.withParent != nil,
+			amq.withChildren != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -443,6 +517,26 @@ func (amq *AppMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App
 	if query := amq.withAction; query != nil {
 		if err := amq.loadAction(ctx, query, nodes, nil,
 			func(n *AppMenu, e *AppAction) { n.Edges.Action = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := amq.withParent; query != nil {
+		if err := amq.loadParent(ctx, query, nodes, nil,
+			func(n *AppMenu, e *AppMenu) { n.Edges.Parent = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := amq.withChildren; query != nil {
+		if err := amq.loadChildren(ctx, query, nodes,
+			func(n *AppMenu) { n.Edges.Children = []*AppMenu{} },
+			func(n *AppMenu, e *AppMenu) { n.Edges.Children = append(n.Edges.Children, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range amq.withNamedChildren {
+		if err := amq.loadChildren(ctx, query, nodes,
+			func(n *AppMenu) { n.appendNamedChildren(name) },
+			func(n *AppMenu, e *AppMenu) { n.appendNamedChildren(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -515,6 +609,65 @@ func (amq *AppMenuQuery) loadAction(ctx context.Context, query *AppActionQuery, 
 	}
 	return nil
 }
+func (amq *AppMenuQuery) loadParent(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*AppMenu)
+	for i := range nodes {
+		fk := nodes[i].ParentID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(appmenu.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "parent_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (amq *AppMenuQuery) loadChildren(ctx context.Context, query *AppMenuQuery, nodes []*AppMenu, init func(*AppMenu), assign func(*AppMenu, *AppMenu)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*AppMenu)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appmenu.FieldParentID)
+	}
+	query.Where(predicate.AppMenu(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(appmenu.ChildrenColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ParentID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "parent_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 
 func (amq *AppMenuQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := amq.querySpec()
@@ -549,6 +702,9 @@ func (amq *AppMenuQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if amq.withAction != nil {
 			_spec.Node.AddColumnOnce(appmenu.FieldActionID)
+		}
+		if amq.withParent != nil {
+			_spec.Node.AddColumnOnce(appmenu.FieldParentID)
 		}
 	}
 	if ps := amq.predicates; len(ps) > 0 {
@@ -604,6 +760,20 @@ func (amq *AppMenuQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedChildren tells the query-builder to eager-load the nodes that are connected to the "children"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (amq *AppMenuQuery) WithNamedChildren(name string, opts ...func(*AppMenuQuery)) *AppMenuQuery {
+	query := (&AppMenuClient{config: amq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if amq.withNamedChildren == nil {
+		amq.withNamedChildren = make(map[string]*AppMenuQuery)
+	}
+	amq.withNamedChildren[name] = query
+	return amq
 }
 
 // AppMenuGroupBy is the group-by builder for AppMenu entities.

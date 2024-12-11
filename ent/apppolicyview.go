@@ -39,6 +39,8 @@ type AppPolicyView struct {
 	Comments string `json:"comments,omitempty"`
 	// 关联的应用策略
 	PolicyID int `json:"policy_id,omitempty"`
+	// 路径编码
+	Path string `json:"path,omitempty"`
 	// DisplaySort holds the value of the "display_sort" field.
 	DisplaySort int32 `json:"display_sort,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -53,11 +55,17 @@ type AppPolicyViewEdges struct {
 	App *App `json:"app,omitempty"`
 	// AppPolicy holds the value of the app_policy edge.
 	AppPolicy *AppPolicy `json:"app_policy,omitempty"`
+	// Parent holds the value of the parent edge.
+	Parent *AppPolicyView `json:"parent,omitempty"`
+	// Children holds the value of the children edge.
+	Children []*AppPolicyView `json:"children,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [4]map[string]int
+
+	namedChildren map[string][]*AppPolicyView
 }
 
 // AppOrErr returns the App value or an error if the edge
@@ -82,6 +90,26 @@ func (e AppPolicyViewEdges) AppPolicyOrErr() (*AppPolicy, error) {
 	return nil, &NotLoadedError{edge: "app_policy"}
 }
 
+// ParentOrErr returns the Parent value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppPolicyViewEdges) ParentOrErr() (*AppPolicyView, error) {
+	if e.Parent != nil {
+		return e.Parent, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: apppolicyview.Label}
+	}
+	return nil, &NotLoadedError{edge: "parent"}
+}
+
+// ChildrenOrErr returns the Children value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppPolicyViewEdges) ChildrenOrErr() ([]*AppPolicyView, error) {
+	if e.loadedTypes[3] {
+		return e.Children, nil
+	}
+	return nil, &NotLoadedError{edge: "children"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*AppPolicyView) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -89,7 +117,7 @@ func (*AppPolicyView) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case apppolicyview.FieldID, apppolicyview.FieldCreatedBy, apppolicyview.FieldUpdatedBy, apppolicyview.FieldAppID, apppolicyview.FieldParentID, apppolicyview.FieldPolicyID, apppolicyview.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case apppolicyview.FieldKind, apppolicyview.FieldName, apppolicyview.FieldComments:
+		case apppolicyview.FieldKind, apppolicyview.FieldName, apppolicyview.FieldComments, apppolicyview.FieldPath:
 			values[i] = new(sql.NullString)
 		case apppolicyview.FieldCreatedAt, apppolicyview.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -174,6 +202,12 @@ func (apv *AppPolicyView) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				apv.PolicyID = int(value.Int64)
 			}
+		case apppolicyview.FieldPath:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field path", values[i])
+			} else if value.Valid {
+				apv.Path = value.String
+			}
 		case apppolicyview.FieldDisplaySort:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field display_sort", values[i])
@@ -201,6 +235,16 @@ func (apv *AppPolicyView) QueryApp() *AppQuery {
 // QueryAppPolicy queries the "app_policy" edge of the AppPolicyView entity.
 func (apv *AppPolicyView) QueryAppPolicy() *AppPolicyQuery {
 	return NewAppPolicyViewClient(apv.config).QueryAppPolicy(apv)
+}
+
+// QueryParent queries the "parent" edge of the AppPolicyView entity.
+func (apv *AppPolicyView) QueryParent() *AppPolicyViewQuery {
+	return NewAppPolicyViewClient(apv.config).QueryParent(apv)
+}
+
+// QueryChildren queries the "children" edge of the AppPolicyView entity.
+func (apv *AppPolicyView) QueryChildren() *AppPolicyViewQuery {
+	return NewAppPolicyViewClient(apv.config).QueryChildren(apv)
 }
 
 // Update returns a builder for updating this AppPolicyView.
@@ -256,10 +300,37 @@ func (apv *AppPolicyView) String() string {
 	builder.WriteString("policy_id=")
 	builder.WriteString(fmt.Sprintf("%v", apv.PolicyID))
 	builder.WriteString(", ")
+	builder.WriteString("path=")
+	builder.WriteString(apv.Path)
+	builder.WriteString(", ")
 	builder.WriteString("display_sort=")
 	builder.WriteString(fmt.Sprintf("%v", apv.DisplaySort))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedChildren returns the Children named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (apv *AppPolicyView) NamedChildren(name string) ([]*AppPolicyView, error) {
+	if apv.Edges.namedChildren == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := apv.Edges.namedChildren[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (apv *AppPolicyView) appendNamedChildren(name string, edges ...*AppPolicyView) {
+	if apv.Edges.namedChildren == nil {
+		apv.Edges.namedChildren = make(map[string][]*AppPolicyView)
+	}
+	if len(edges) == 0 {
+		apv.Edges.namedChildren[name] = []*AppPolicyView{}
+	} else {
+		apv.Edges.namedChildren[name] = append(apv.Edges.namedChildren[name], edges...)
+	}
 }
 
 // AppPolicyViews is a parsable slice of AppPolicyView.

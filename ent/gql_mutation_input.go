@@ -526,7 +526,6 @@ func (c *AppDictItemUpdateOne) SetInput(i UpdateAppDictItemInput) *AppDictItemUp
 
 // CreateAppMenuInput represents a mutation input for creating appmenus.
 type CreateAppMenuInput struct {
-	ParentID int
 	Kind     appmenu.Kind
 	Name     string
 	Icon     *string
@@ -535,11 +534,12 @@ type CreateAppMenuInput struct {
 	Status   *typex.SimpleStatus
 	AppID    *int
 	ActionID *int
+	ParentID int
+	ChildIDs []int
 }
 
 // Mutate applies the CreateAppMenuInput on the AppMenuMutation builder.
 func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
-	m.SetParentID(i.ParentID)
 	m.SetKind(i.Kind)
 	m.SetName(i.Name)
 	if v := i.Icon; v != nil {
@@ -560,6 +560,10 @@ func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
 	if v := i.ActionID; v != nil {
 		m.SetActionID(*v)
 	}
+	m.SetParentID(i.ParentID)
+	if v := i.ChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateAppMenuInput on the AppMenuCreate builder.
@@ -570,26 +574,26 @@ func (c *AppMenuCreate) SetInput(i CreateAppMenuInput) *AppMenuCreate {
 
 // UpdateAppMenuInput represents a mutation input for updating appmenus.
 type UpdateAppMenuInput struct {
-	ParentID      *int
-	Kind          *appmenu.Kind
-	Name          *string
-	ClearIcon     bool
-	Icon          *string
-	ClearRoute    bool
-	Route         *string
-	ClearComments bool
-	Comments      *string
-	ClearStatus   bool
-	Status        *typex.SimpleStatus
-	ClearAction   bool
-	ActionID      *int
+	Kind           *appmenu.Kind
+	Name           *string
+	ClearIcon      bool
+	Icon           *string
+	ClearRoute     bool
+	Route          *string
+	ClearComments  bool
+	Comments       *string
+	ClearStatus    bool
+	Status         *typex.SimpleStatus
+	ClearAction    bool
+	ActionID       *int
+	ParentID       *int
+	ClearChildren  bool
+	AddChildIDs    []int
+	RemoveChildIDs []int
 }
 
 // Mutate applies the UpdateAppMenuInput on the AppMenuMutation builder.
 func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
-	if v := i.ParentID; v != nil {
-		m.SetParentID(*v)
-	}
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
 	}
@@ -625,6 +629,18 @@ func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
 	}
 	if v := i.ActionID; v != nil {
 		m.SetActionID(*v)
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if i.ClearChildren {
+		m.ClearChildren()
+	}
+	if v := i.AddChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.RemoveChildIDs; len(v) > 0 {
+		m.RemoveChildIDs(v...)
 	}
 }
 
@@ -786,19 +802,17 @@ func (c *AppPolicyUpdateOne) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdateOn
 
 // CreateAppPolicyViewInput represents a mutation input for creating apppolicyviews.
 type CreateAppPolicyViewInput struct {
-	ParentID    *int
 	Kind        apppolicyview.Kind
 	Name        string
 	Comments    *string
 	AppID       *int
 	AppPolicyID *int
+	ParentID    int
+	ChildIDs    []int
 }
 
 // Mutate applies the CreateAppPolicyViewInput on the AppPolicyViewMutation builder.
 func (i *CreateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
-	if v := i.ParentID; v != nil {
-		m.SetParentID(*v)
-	}
 	m.SetKind(i.Kind)
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
@@ -810,6 +824,10 @@ func (i *CreateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
 	if v := i.AppPolicyID; v != nil {
 		m.SetAppPolicyID(*v)
 	}
+	m.SetParentID(i.ParentID)
+	if v := i.ChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateAppPolicyViewInput on the AppPolicyViewCreate builder.
@@ -820,20 +838,20 @@ func (c *AppPolicyViewCreate) SetInput(i CreateAppPolicyViewInput) *AppPolicyVie
 
 // UpdateAppPolicyViewInput represents a mutation input for updating apppolicyviews.
 type UpdateAppPolicyViewInput struct {
-	ParentID       *int
 	Kind           *apppolicyview.Kind
 	Name           *string
 	ClearComments  bool
 	Comments       *string
 	ClearAppPolicy bool
 	AppPolicyID    *int
+	ParentID       *int
+	ClearChildren  bool
+	AddChildIDs    []int
+	RemoveChildIDs []int
 }
 
 // Mutate applies the UpdateAppPolicyViewInput on the AppPolicyViewMutation builder.
 func (i *UpdateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
-	if v := i.ParentID; v != nil {
-		m.SetParentID(*v)
-	}
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
 	}
@@ -851,6 +869,18 @@ func (i *UpdateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
 	}
 	if v := i.AppPolicyID; v != nil {
 		m.SetAppPolicyID(*v)
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if i.ClearChildren {
+		m.ClearChildren()
+	}
+	if v := i.AddChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.RemoveChildIDs; len(v) > 0 {
+		m.RemoveChildIDs(v...)
 	}
 }
 

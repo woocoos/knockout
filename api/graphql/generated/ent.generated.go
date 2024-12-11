@@ -7922,12 +7922,18 @@ func (ec *executionContext) fieldContext_App_policyViews(_ context.Context, fiel
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -8660,6 +8666,10 @@ func (ec *executionContext) fieldContext_AppAction_menus(_ context.Context, fiel
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
 				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
@@ -11011,7 +11021,7 @@ func (ec *executionContext) _AppMenu_parentID(ctx context.Context, field graphql
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AppMenu_parentID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11021,7 +11031,7 @@ func (ec *executionContext) fieldContext_AppMenu_parentID(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11521,6 +11531,171 @@ func (ec *executionContext) fieldContext_AppMenu_action(_ context.Context, field
 	return fc, nil
 }
 
+func (ec *executionContext) _AppMenu_parent(ctx context.Context, field graphql.CollectedField, obj *ent.AppMenu) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppMenu_parent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Parent(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppMenu)
+	fc.Result = res
+	return ec.marshalNAppMenu2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenu(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppMenu_parent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppMenu",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppMenu_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppMenu_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppMenu_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppMenu_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppMenu_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppMenu_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppMenu_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppMenu_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppMenu_name(ctx, field)
+			case "icon":
+				return ec.fieldContext_AppMenu_icon(ctx, field)
+			case "route":
+				return ec.fieldContext_AppMenu_route(ctx, field)
+			case "actionID":
+				return ec.fieldContext_AppMenu_actionID(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppMenu_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
+			case "app":
+				return ec.fieldContext_AppMenu_app(ctx, field)
+			case "action":
+				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppMenu_children(ctx context.Context, field graphql.CollectedField, obj *ent.AppMenu) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppMenu_children(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Children(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppMenu)
+	fc.Result = res
+	return ec.marshalOAppMenu2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppMenu_children(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppMenu",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppMenu_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppMenu_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppMenu_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppMenu_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppMenu_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppMenu_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppMenu_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppMenu_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppMenu_name(ctx, field)
+			case "icon":
+				return ec.fieldContext_AppMenu_icon(ctx, field)
+			case "route":
+				return ec.fieldContext_AppMenu_route(ctx, field)
+			case "actionID":
+				return ec.fieldContext_AppMenu_actionID(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppMenu_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppMenu_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppMenu_status(ctx, field)
+			case "app":
+				return ec.fieldContext_AppMenu_app(ctx, field)
+			case "action":
+				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AppMenuConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.AppMenuConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AppMenuConnection_edges(ctx, field)
 	if err != nil {
@@ -11736,6 +11911,10 @@ func (ec *executionContext) fieldContext_AppMenuEdge_node(_ context.Context, fie
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
 				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
@@ -12601,12 +12780,18 @@ func (ec *executionContext) fieldContext_AppPolicy_policyViews(_ context.Context
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -13226,7 +13411,7 @@ func (ec *executionContext) _AppPolicyView_parentID(ctx context.Context, field g
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AppPolicyView_parentID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13236,7 +13421,7 @@ func (ec *executionContext) fieldContext_AppPolicyView_parentID(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13407,6 +13592,47 @@ func (ec *executionContext) fieldContext_AppPolicyView_policyID(_ context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppPolicyView_path(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppPolicyView_path(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppPolicyView_path(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppPolicyView",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13618,6 +13844,179 @@ func (ec *executionContext) fieldContext_AppPolicyView_appPolicy(_ context.Conte
 				return ec.fieldContext_AppPolicy_isGrantAppRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicy", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppPolicyView_parent(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppPolicyView_parent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Parent(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalNAppPolicyView2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyView(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppPolicyView_parent(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppPolicyView",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			case "orgPolicy":
+				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
+			case "appRoleAssigned":
+				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
+			case "orgRoleAssigned":
+				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
+			case "orgUserAssigned":
+				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppPolicyView_children(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppPolicyView_children(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Children(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalOAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppPolicyView_children(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppPolicyView",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			case "orgPolicy":
+				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
+			case "appRoleAssigned":
+				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
+			case "orgRoleAssigned":
+				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
+			case "orgUserAssigned":
+				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
 	}
 	return fc, nil
@@ -14064,12 +14463,18 @@ func (ec *executionContext) fieldContext_AppPolicyViewEdge_node(_ context.Contex
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -27038,6 +27443,10 @@ func (ec *executionContext) fieldContext_Query_userMenus(ctx context.Context, fi
 				return ec.fieldContext_AppMenu_app(ctx, field)
 			case "action":
 				return ec.fieldContext_AppMenu_action(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppMenu_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppMenu_children(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppMenu", field.Name)
 		},
@@ -28188,12 +28597,18 @@ func (ec *executionContext) fieldContext_Query_appPolicyView(ctx context.Context
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -28281,12 +28696,18 @@ func (ec *executionContext) fieldContext_Query_orgPolicyView(ctx context.Context
 				return ec.fieldContext_AppPolicyView_comments(ctx, field)
 			case "policyID":
 				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
 			case "displaySort":
 				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
 			case "app":
 				return ec.fieldContext_AppPolicyView_app(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
 			case "orgPolicy":
 				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
 			case "appRoleAssigned":
@@ -38238,7 +38659,7 @@ func (ec *executionContext) unmarshalInputAppMenuWhereInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "parentIDGT", "parentIDGTE", "parentIDLT", "parentIDLTE", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "icon", "iconNEQ", "iconIn", "iconNotIn", "iconGT", "iconGTE", "iconLT", "iconLTE", "iconContains", "iconHasPrefix", "iconHasSuffix", "iconIsNil", "iconNotNil", "iconEqualFold", "iconContainsFold", "route", "routeNEQ", "routeIn", "routeNotIn", "routeGT", "routeGTE", "routeLT", "routeLTE", "routeContains", "routeHasPrefix", "routeHasSuffix", "routeIsNil", "routeNotNil", "routeEqualFold", "routeContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasApp", "hasAppWith", "hasAction", "hasActionWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "icon", "iconNEQ", "iconIn", "iconNotIn", "iconGT", "iconGTE", "iconLT", "iconLTE", "iconContains", "iconHasPrefix", "iconHasSuffix", "iconIsNil", "iconNotNil", "iconEqualFold", "iconContainsFold", "route", "routeNEQ", "routeIn", "routeNotIn", "routeGT", "routeGTE", "routeLT", "routeLTE", "routeContains", "routeHasPrefix", "routeHasSuffix", "routeIsNil", "routeNotNil", "routeEqualFold", "routeContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "hasApp", "hasAppWith", "hasAction", "hasActionWith", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -38618,60 +39039,32 @@ func (ec *executionContext) unmarshalInputAppMenuWhereInput(ctx context.Context,
 			it.AppIDNotNil = data
 		case "parentID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentID = data
 		case "parentIDNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDNEQ = data
 		case "parentIDIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDIn = data
 		case "parentIDNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDNotIn = data
-		case "parentIDGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDGT = data
-		case "parentIDGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDGTE = data
-		case "parentIDLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDLT = data
-		case "parentIDLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDLTE = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalOAppMenuKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋappmenuᚐKind(ctx, v)
@@ -39071,6 +39464,34 @@ func (ec *executionContext) unmarshalInputAppMenuWhereInput(ctx context.Context,
 				return it, err
 			}
 			it.HasActionWith = data
+		case "hasParent":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasParent"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasParent = data
+		case "hasParentWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasParentWith"))
+			data, err := ec.unmarshalOAppMenuWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasParentWith = data
+		case "hasChildren":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChildren"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChildren = data
+		case "hasChildrenWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChildrenWith"))
+			data, err := ec.unmarshalOAppMenuWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppMenuWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChildrenWith = data
 		}
 	}
 
@@ -39198,7 +39619,7 @@ func (ec *executionContext) unmarshalInputAppPolicyViewWhereInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "parentIDGT", "parentIDGTE", "parentIDLT", "parentIDLTE", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "policyID", "policyIDNEQ", "policyIDIn", "policyIDNotIn", "policyIDIsNil", "policyIDNotNil", "hasApp", "hasAppWith", "hasAppPolicy", "hasAppPolicyWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "appID", "appIDNEQ", "appIDIn", "appIDNotIn", "appIDIsNil", "appIDNotNil", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "kind", "kindNEQ", "kindIn", "kindNotIn", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "policyID", "policyIDNEQ", "policyIDIn", "policyIDNotIn", "policyIDIsNil", "policyIDNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "hasApp", "hasAppWith", "hasAppPolicy", "hasAppPolicyWith", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -39578,60 +39999,32 @@ func (ec *executionContext) unmarshalInputAppPolicyViewWhereInput(ctx context.Co
 			it.AppIDNotNil = data
 		case "parentID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentID = data
 		case "parentIDNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDNEQ = data
 		case "parentIDIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDIn = data
 		case "parentIDNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ParentIDNotIn = data
-		case "parentIDGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDGT = data
-		case "parentIDGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDGTE = data
-		case "parentIDLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDLT = data
-		case "parentIDLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentIDLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentIDLTE = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalOAppPolicyViewKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋapppolicyviewᚐKind(ctx, v)
@@ -39793,6 +40186,111 @@ func (ec *executionContext) unmarshalInputAppPolicyViewWhereInput(ctx context.Co
 				return it, err
 			}
 			it.PolicyIDNotNil = data
+		case "path":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("path"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Path = data
+		case "pathNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathNEQ = data
+		case "pathIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathIn = data
+		case "pathNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathNotIn = data
+		case "pathGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathGT = data
+		case "pathGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathGTE = data
+		case "pathLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathLT = data
+		case "pathLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathLTE = data
+		case "pathContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathContains = data
+		case "pathHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathHasPrefix = data
+		case "pathHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathHasSuffix = data
+		case "pathIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathIsNil = data
+		case "pathNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathNotNil = data
+		case "pathEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathEqualFold = data
+		case "pathContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pathContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PathContainsFold = data
 		case "hasApp":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasApp"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -39821,6 +40319,34 @@ func (ec *executionContext) unmarshalInputAppPolicyViewWhereInput(ctx context.Co
 				return it, err
 			}
 			it.HasAppPolicyWith = data
+		case "hasParent":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasParent"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasParent = data
+		case "hasParentWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasParentWith"))
+			data, err := ec.unmarshalOAppPolicyViewWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasParentWith = data
+		case "hasChildren":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChildren"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChildren = data
+		case "hasChildrenWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasChildrenWith"))
+			data, err := ec.unmarshalOAppPolicyViewWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasChildrenWith = data
 		}
 	}
 
@@ -44778,20 +45304,13 @@ func (ec *executionContext) unmarshalInputCreateAppMenuInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "route", "comments", "status", "appID", "actionID"}
+	fieldsInOrder := [...]string{"kind", "name", "icon", "route", "comments", "status", "appID", "actionID", "parentID", "childIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "parentID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentID = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalNAppMenuKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋappmenuᚐKind(ctx, v)
@@ -44848,6 +45367,20 @@ func (ec *executionContext) unmarshalInputCreateAppMenuInput(ctx context.Context
 				return it, err
 			}
 			it.ActionID = data
+		case "parentID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ParentID = data
+		case "childIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("childIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ChildIDs = data
 		}
 	}
 
@@ -44951,20 +45484,13 @@ func (ec *executionContext) unmarshalInputCreateAppPolicyViewInput(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "comments", "appID", "appPolicyID"}
+	fieldsInOrder := [...]string{"kind", "name", "comments", "appID", "appPolicyID", "parentID", "childIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "parentID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentID = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalNAppPolicyViewKind2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋapppolicyviewᚐKind(ctx, v)
@@ -45000,6 +45526,20 @@ func (ec *executionContext) unmarshalInputCreateAppPolicyViewInput(ctx context.C
 				return it, err
 			}
 			it.AppPolicyID = data
+		case "parentID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ParentID = data
+		case "childIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("childIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ChildIDs = data
 		}
 	}
 
@@ -57370,20 +57910,13 @@ func (ec *executionContext) unmarshalInputUpdateAppMenuInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "icon", "clearIcon", "route", "clearRoute", "comments", "clearComments", "status", "clearStatus", "actionID", "clearAction"}
+	fieldsInOrder := [...]string{"kind", "name", "icon", "clearIcon", "route", "clearRoute", "comments", "clearComments", "status", "clearStatus", "actionID", "clearAction", "parentID", "addChildIDs", "removeChildIDs", "clearChildren"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "parentID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentID = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalOAppMenuKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋappmenuᚐKind(ctx, v)
@@ -57468,6 +58001,34 @@ func (ec *executionContext) unmarshalInputUpdateAppMenuInput(ctx context.Context
 				return it, err
 			}
 			it.ClearAction = data
+		case "parentID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ParentID = data
+		case "addChildIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addChildIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddChildIDs = data
+		case "removeChildIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeChildIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveChildIDs = data
+		case "clearChildren":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearChildren"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearChildren = data
 		}
 	}
 
@@ -57627,20 +58188,13 @@ func (ec *executionContext) unmarshalInputUpdateAppPolicyViewInput(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"parentID", "kind", "name", "comments", "clearComments", "appPolicyID", "clearAppPolicy"}
+	fieldsInOrder := [...]string{"kind", "name", "comments", "clearComments", "appPolicyID", "clearAppPolicy", "parentID", "addChildIDs", "removeChildIDs", "clearChildren"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "parentID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ParentID = data
 		case "kind":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("kind"))
 			data, err := ec.unmarshalOAppPolicyViewKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋapppolicyviewᚐKind(ctx, v)
@@ -57683,6 +58237,34 @@ func (ec *executionContext) unmarshalInputUpdateAppPolicyViewInput(ctx context.C
 				return it, err
 			}
 			it.ClearAppPolicy = data
+		case "parentID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("parentID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ParentID = data
+		case "addChildIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addChildIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddChildIDs = data
+		case "removeChildIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeChildIDs"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RemoveChildIDs = data
+		case "clearChildren":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearChildren"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearChildren = data
 		}
 	}
 
@@ -66535,6 +67117,75 @@ func (ec *executionContext) _AppMenu(ctx context.Context, sel ast.SelectionSet, 
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "parent":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AppMenu_parent(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "children":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AppMenu_children(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -67030,6 +67681,8 @@ func (ec *executionContext) _AppPolicyView(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._AppPolicyView_comments(ctx, field, obj)
 		case "policyID":
 			out.Values[i] = ec._AppPolicyView_policyID(ctx, field, obj)
+		case "path":
+			out.Values[i] = ec._AppPolicyView_path(ctx, field, obj)
 		case "displaySort":
 			out.Values[i] = ec._AppPolicyView_displaySort(ctx, field, obj)
 		case "app":
@@ -67075,6 +67728,75 @@ func (ec *executionContext) _AppPolicyView(ctx context.Context, sel ast.Selectio
 					}
 				}()
 				res = ec._AppPolicyView_appPolicy(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "parent":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AppPolicyView_parent(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "children":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AppPolicyView_children(ctx, field, obj)
 				return res
 			}
 

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -20,14 +21,17 @@ import (
 // AppPolicyViewQuery is the builder for querying AppPolicyView entities.
 type AppPolicyViewQuery struct {
 	config
-	ctx           *QueryContext
-	order         []apppolicyview.OrderOption
-	inters        []Interceptor
-	predicates    []predicate.AppPolicyView
-	withApp       *AppQuery
-	withAppPolicy *AppPolicyQuery
-	modifiers     []func(*sql.Selector)
-	loadTotal     []func(context.Context, []*AppPolicyView) error
+	ctx               *QueryContext
+	order             []apppolicyview.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.AppPolicyView
+	withApp           *AppQuery
+	withAppPolicy     *AppPolicyQuery
+	withParent        *AppPolicyViewQuery
+	withChildren      *AppPolicyViewQuery
+	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*AppPolicyView) error
+	withNamedChildren map[string]*AppPolicyViewQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -101,6 +105,50 @@ func (apvq *AppPolicyViewQuery) QueryAppPolicy() *AppPolicyQuery {
 			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, selector),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppPolicyTable, apppolicyview.AppPolicyColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryParent chains the current query on the "parent" edge.
+func (apvq *AppPolicyViewQuery) QueryParent() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apvq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apvq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, selector),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.ParentTable, apppolicyview.ParentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryChildren chains the current query on the "children" edge.
+func (apvq *AppPolicyViewQuery) QueryChildren() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apvq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apvq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, selector),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicyview.ChildrenTable, apppolicyview.ChildrenColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(apvq.driver.Dialect(), step)
 		return fromU, nil
@@ -302,6 +350,8 @@ func (apvq *AppPolicyViewQuery) Clone() *AppPolicyViewQuery {
 		predicates:    append([]predicate.AppPolicyView{}, apvq.predicates...),
 		withApp:       apvq.withApp.Clone(),
 		withAppPolicy: apvq.withAppPolicy.Clone(),
+		withParent:    apvq.withParent.Clone(),
+		withChildren:  apvq.withChildren.Clone(),
 		// clone intermediate query.
 		sql:  apvq.sql.Clone(),
 		path: apvq.path,
@@ -327,6 +377,28 @@ func (apvq *AppPolicyViewQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *Ap
 		opt(query)
 	}
 	apvq.withAppPolicy = query
+	return apvq
+}
+
+// WithParent tells the query-builder to eager-load the nodes that are connected to
+// the "parent" edge. The optional arguments are used to configure the query builder of the edge.
+func (apvq *AppPolicyViewQuery) WithParent(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apvq.withParent = query
+	return apvq
+}
+
+// WithChildren tells the query-builder to eager-load the nodes that are connected to
+// the "children" edge. The optional arguments are used to configure the query builder of the edge.
+func (apvq *AppPolicyViewQuery) WithChildren(opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apvq.withChildren = query
 	return apvq
 }
 
@@ -408,9 +480,11 @@ func (apvq *AppPolicyViewQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	var (
 		nodes       = []*AppPolicyView{}
 		_spec       = apvq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [4]bool{
 			apvq.withApp != nil,
 			apvq.withAppPolicy != nil,
+			apvq.withParent != nil,
+			apvq.withChildren != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -443,6 +517,26 @@ func (apvq *AppPolicyViewQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	if query := apvq.withAppPolicy; query != nil {
 		if err := apvq.loadAppPolicy(ctx, query, nodes, nil,
 			func(n *AppPolicyView, e *AppPolicy) { n.Edges.AppPolicy = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := apvq.withParent; query != nil {
+		if err := apvq.loadParent(ctx, query, nodes, nil,
+			func(n *AppPolicyView, e *AppPolicyView) { n.Edges.Parent = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := apvq.withChildren; query != nil {
+		if err := apvq.loadChildren(ctx, query, nodes,
+			func(n *AppPolicyView) { n.Edges.Children = []*AppPolicyView{} },
+			func(n *AppPolicyView, e *AppPolicyView) { n.Edges.Children = append(n.Edges.Children, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range apvq.withNamedChildren {
+		if err := apvq.loadChildren(ctx, query, nodes,
+			func(n *AppPolicyView) { n.appendNamedChildren(name) },
+			func(n *AppPolicyView, e *AppPolicyView) { n.appendNamedChildren(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -512,6 +606,65 @@ func (apvq *AppPolicyViewQuery) loadAppPolicy(ctx context.Context, query *AppPol
 	}
 	return nil
 }
+func (apvq *AppPolicyViewQuery) loadParent(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*AppPolicyView)
+	for i := range nodes {
+		fk := nodes[i].ParentID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(apppolicyview.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "parent_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (apvq *AppPolicyViewQuery) loadChildren(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicyView, init func(*AppPolicyView), assign func(*AppPolicyView, *AppPolicyView)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*AppPolicyView)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(apppolicyview.FieldParentID)
+	}
+	query.Where(predicate.AppPolicyView(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(apppolicyview.ChildrenColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.ParentID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "parent_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 
 func (apvq *AppPolicyViewQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := apvq.querySpec()
@@ -546,6 +699,9 @@ func (apvq *AppPolicyViewQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if apvq.withAppPolicy != nil {
 			_spec.Node.AddColumnOnce(apppolicyview.FieldPolicyID)
+		}
+		if apvq.withParent != nil {
+			_spec.Node.AddColumnOnce(apppolicyview.FieldParentID)
 		}
 	}
 	if ps := apvq.predicates; len(ps) > 0 {
@@ -601,6 +757,20 @@ func (apvq *AppPolicyViewQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedChildren tells the query-builder to eager-load the nodes that are connected to the "children"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (apvq *AppPolicyViewQuery) WithNamedChildren(name string, opts ...func(*AppPolicyViewQuery)) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apvq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if apvq.withNamedChildren == nil {
+		apvq.withNamedChildren = make(map[string]*AppPolicyViewQuery)
+	}
+	apvq.withNamedChildren[name] = query
+	return apvq
 }
 
 // AppPolicyViewGroupBy is the group-by builder for AppPolicyView entities.

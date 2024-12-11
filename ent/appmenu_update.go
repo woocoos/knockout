@@ -79,7 +79,6 @@ func (amu *AppMenuUpdate) ClearUpdatedAt() *AppMenuUpdate {
 
 // SetParentID sets the "parent_id" field.
 func (amu *AppMenuUpdate) SetParentID(i int) *AppMenuUpdate {
-	amu.mutation.ResetParentID()
 	amu.mutation.SetParentID(i)
 	return amu
 }
@@ -89,12 +88,6 @@ func (amu *AppMenuUpdate) SetNillableParentID(i *int) *AppMenuUpdate {
 	if i != nil {
 		amu.SetParentID(*i)
 	}
-	return amu
-}
-
-// AddParentID adds i to the "parent_id" field.
-func (amu *AppMenuUpdate) AddParentID(i int) *AppMenuUpdate {
-	amu.mutation.AddParentID(i)
 	return amu
 }
 
@@ -258,6 +251,26 @@ func (amu *AppMenuUpdate) SetAction(a *AppAction) *AppMenuUpdate {
 	return amu.SetActionID(a.ID)
 }
 
+// SetParent sets the "parent" edge to the AppMenu entity.
+func (amu *AppMenuUpdate) SetParent(a *AppMenu) *AppMenuUpdate {
+	return amu.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
+func (amu *AppMenuUpdate) AddChildIDs(ids ...int) *AppMenuUpdate {
+	amu.mutation.AddChildIDs(ids...)
+	return amu
+}
+
+// AddChildren adds the "children" edges to the AppMenu entity.
+func (amu *AppMenuUpdate) AddChildren(a ...*AppMenu) *AppMenuUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amu.AddChildIDs(ids...)
+}
+
 // Mutation returns the AppMenuMutation object of the builder.
 func (amu *AppMenuUpdate) Mutation() *AppMenuMutation {
 	return amu.mutation
@@ -267,6 +280,33 @@ func (amu *AppMenuUpdate) Mutation() *AppMenuMutation {
 func (amu *AppMenuUpdate) ClearAction() *AppMenuUpdate {
 	amu.mutation.ClearAction()
 	return amu
+}
+
+// ClearParent clears the "parent" edge to the AppMenu entity.
+func (amu *AppMenuUpdate) ClearParent() *AppMenuUpdate {
+	amu.mutation.ClearParent()
+	return amu
+}
+
+// ClearChildren clears all "children" edges to the AppMenu entity.
+func (amu *AppMenuUpdate) ClearChildren() *AppMenuUpdate {
+	amu.mutation.ClearChildren()
+	return amu
+}
+
+// RemoveChildIDs removes the "children" edge to AppMenu entities by IDs.
+func (amu *AppMenuUpdate) RemoveChildIDs(ids ...int) *AppMenuUpdate {
+	amu.mutation.RemoveChildIDs(ids...)
+	return amu
+}
+
+// RemoveChildren removes "children" edges to AppMenu entities.
+func (amu *AppMenuUpdate) RemoveChildren(a ...*AppMenu) *AppMenuUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amu.RemoveChildIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -308,6 +348,9 @@ func (amu *AppMenuUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
+	if amu.mutation.ParentCleared() && len(amu.mutation.ParentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AppMenu.parent"`)
+	}
 	return nil
 }
 
@@ -337,12 +380,6 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if amu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedAt, field.TypeTime)
-	}
-	if value, ok := amu.mutation.ParentID(); ok {
-		_spec.SetField(appmenu.FieldParentID, field.TypeInt, value)
-	}
-	if value, ok := amu.mutation.AddedParentID(); ok {
-		_spec.AddField(appmenu.FieldParentID, field.TypeInt, value)
 	}
 	if value, ok := amu.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
@@ -405,6 +442,80 @@ func (amu *AppMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if amu.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amu.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if amu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amu.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !amu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amu.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -481,7 +592,6 @@ func (amuo *AppMenuUpdateOne) ClearUpdatedAt() *AppMenuUpdateOne {
 
 // SetParentID sets the "parent_id" field.
 func (amuo *AppMenuUpdateOne) SetParentID(i int) *AppMenuUpdateOne {
-	amuo.mutation.ResetParentID()
 	amuo.mutation.SetParentID(i)
 	return amuo
 }
@@ -491,12 +601,6 @@ func (amuo *AppMenuUpdateOne) SetNillableParentID(i *int) *AppMenuUpdateOne {
 	if i != nil {
 		amuo.SetParentID(*i)
 	}
-	return amuo
-}
-
-// AddParentID adds i to the "parent_id" field.
-func (amuo *AppMenuUpdateOne) AddParentID(i int) *AppMenuUpdateOne {
-	amuo.mutation.AddParentID(i)
 	return amuo
 }
 
@@ -660,6 +764,26 @@ func (amuo *AppMenuUpdateOne) SetAction(a *AppAction) *AppMenuUpdateOne {
 	return amuo.SetActionID(a.ID)
 }
 
+// SetParent sets the "parent" edge to the AppMenu entity.
+func (amuo *AppMenuUpdateOne) SetParent(a *AppMenu) *AppMenuUpdateOne {
+	return amuo.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
+func (amuo *AppMenuUpdateOne) AddChildIDs(ids ...int) *AppMenuUpdateOne {
+	amuo.mutation.AddChildIDs(ids...)
+	return amuo
+}
+
+// AddChildren adds the "children" edges to the AppMenu entity.
+func (amuo *AppMenuUpdateOne) AddChildren(a ...*AppMenu) *AppMenuUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amuo.AddChildIDs(ids...)
+}
+
 // Mutation returns the AppMenuMutation object of the builder.
 func (amuo *AppMenuUpdateOne) Mutation() *AppMenuMutation {
 	return amuo.mutation
@@ -669,6 +793,33 @@ func (amuo *AppMenuUpdateOne) Mutation() *AppMenuMutation {
 func (amuo *AppMenuUpdateOne) ClearAction() *AppMenuUpdateOne {
 	amuo.mutation.ClearAction()
 	return amuo
+}
+
+// ClearParent clears the "parent" edge to the AppMenu entity.
+func (amuo *AppMenuUpdateOne) ClearParent() *AppMenuUpdateOne {
+	amuo.mutation.ClearParent()
+	return amuo
+}
+
+// ClearChildren clears all "children" edges to the AppMenu entity.
+func (amuo *AppMenuUpdateOne) ClearChildren() *AppMenuUpdateOne {
+	amuo.mutation.ClearChildren()
+	return amuo
+}
+
+// RemoveChildIDs removes the "children" edge to AppMenu entities by IDs.
+func (amuo *AppMenuUpdateOne) RemoveChildIDs(ids ...int) *AppMenuUpdateOne {
+	amuo.mutation.RemoveChildIDs(ids...)
+	return amuo
+}
+
+// RemoveChildren removes "children" edges to AppMenu entities.
+func (amuo *AppMenuUpdateOne) RemoveChildren(a ...*AppMenu) *AppMenuUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amuo.RemoveChildIDs(ids...)
 }
 
 // Where appends a list predicates to the AppMenuUpdate builder.
@@ -723,6 +874,9 @@ func (amuo *AppMenuUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
 		}
 	}
+	if amuo.mutation.ParentCleared() && len(amuo.mutation.ParentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AppMenu.parent"`)
+	}
 	return nil
 }
 
@@ -769,12 +923,6 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 	}
 	if amuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(appmenu.FieldUpdatedAt, field.TypeTime)
-	}
-	if value, ok := amuo.mutation.ParentID(); ok {
-		_spec.SetField(appmenu.FieldParentID, field.TypeInt, value)
-	}
-	if value, ok := amuo.mutation.AddedParentID(); ok {
-		_spec.AddField(appmenu.FieldParentID, field.TypeInt, value)
 	}
 	if value, ok := amuo.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
@@ -837,6 +985,80 @@ func (amuo *AppMenuUpdateOne) sqlSave(ctx context.Context) (_node *AppMenu, err 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appaction.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if amuo.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amuo.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if amuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amuo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !amuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := amuo.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

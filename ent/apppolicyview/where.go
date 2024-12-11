@@ -100,6 +100,11 @@ func PolicyID(v int) predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldEQ(FieldPolicyID, v))
 }
 
+// Path applies equality check predicate on the "path" field. It's identical to PathEQ.
+func Path(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldEQ(FieldPath, v))
+}
+
 // DisplaySort applies equality check predicate on the "display_sort" field. It's identical to DisplaySortEQ.
 func DisplaySort(v int32) predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldEQ(FieldDisplaySort, v))
@@ -335,26 +340,6 @@ func ParentIDNotIn(vs ...int) predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldNotIn(FieldParentID, vs...))
 }
 
-// ParentIDGT applies the GT predicate on the "parent_id" field.
-func ParentIDGT(v int) predicate.AppPolicyView {
-	return predicate.AppPolicyView(sql.FieldGT(FieldParentID, v))
-}
-
-// ParentIDGTE applies the GTE predicate on the "parent_id" field.
-func ParentIDGTE(v int) predicate.AppPolicyView {
-	return predicate.AppPolicyView(sql.FieldGTE(FieldParentID, v))
-}
-
-// ParentIDLT applies the LT predicate on the "parent_id" field.
-func ParentIDLT(v int) predicate.AppPolicyView {
-	return predicate.AppPolicyView(sql.FieldLT(FieldParentID, v))
-}
-
-// ParentIDLTE applies the LTE predicate on the "parent_id" field.
-func ParentIDLTE(v int) predicate.AppPolicyView {
-	return predicate.AppPolicyView(sql.FieldLTE(FieldParentID, v))
-}
-
 // KindEQ applies the EQ predicate on the "kind" field.
 func KindEQ(v Kind) predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldEQ(FieldKind, v))
@@ -545,6 +530,81 @@ func PolicyIDNotNil() predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldNotNull(FieldPolicyID))
 }
 
+// PathEQ applies the EQ predicate on the "path" field.
+func PathEQ(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldEQ(FieldPath, v))
+}
+
+// PathNEQ applies the NEQ predicate on the "path" field.
+func PathNEQ(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldNEQ(FieldPath, v))
+}
+
+// PathIn applies the In predicate on the "path" field.
+func PathIn(vs ...string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldIn(FieldPath, vs...))
+}
+
+// PathNotIn applies the NotIn predicate on the "path" field.
+func PathNotIn(vs ...string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldNotIn(FieldPath, vs...))
+}
+
+// PathGT applies the GT predicate on the "path" field.
+func PathGT(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldGT(FieldPath, v))
+}
+
+// PathGTE applies the GTE predicate on the "path" field.
+func PathGTE(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldGTE(FieldPath, v))
+}
+
+// PathLT applies the LT predicate on the "path" field.
+func PathLT(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldLT(FieldPath, v))
+}
+
+// PathLTE applies the LTE predicate on the "path" field.
+func PathLTE(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldLTE(FieldPath, v))
+}
+
+// PathContains applies the Contains predicate on the "path" field.
+func PathContains(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldContains(FieldPath, v))
+}
+
+// PathHasPrefix applies the HasPrefix predicate on the "path" field.
+func PathHasPrefix(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldHasPrefix(FieldPath, v))
+}
+
+// PathHasSuffix applies the HasSuffix predicate on the "path" field.
+func PathHasSuffix(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldHasSuffix(FieldPath, v))
+}
+
+// PathIsNil applies the IsNil predicate on the "path" field.
+func PathIsNil() predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldIsNull(FieldPath))
+}
+
+// PathNotNil applies the NotNil predicate on the "path" field.
+func PathNotNil() predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldNotNull(FieldPath))
+}
+
+// PathEqualFold applies the EqualFold predicate on the "path" field.
+func PathEqualFold(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldEqualFold(FieldPath, v))
+}
+
+// PathContainsFold applies the ContainsFold predicate on the "path" field.
+func PathContainsFold(v string) predicate.AppPolicyView {
+	return predicate.AppPolicyView(sql.FieldContainsFold(FieldPath, v))
+}
+
 // DisplaySortEQ applies the EQ predicate on the "display_sort" field.
 func DisplaySortEQ(v int32) predicate.AppPolicyView {
 	return predicate.AppPolicyView(sql.FieldEQ(FieldDisplaySort, v))
@@ -633,6 +693,52 @@ func HasAppPolicy() predicate.AppPolicyView {
 func HasAppPolicyWith(preds ...predicate.AppPolicy) predicate.AppPolicyView {
 	return predicate.AppPolicyView(func(s *sql.Selector) {
 		step := newAppPolicyStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasParent applies the HasEdge predicate on the "parent" edge.
+func HasParent() predicate.AppPolicyView {
+	return predicate.AppPolicyView(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasParentWith applies the HasEdge predicate on the "parent" edge with a given conditions (other predicates).
+func HasParentWith(preds ...predicate.AppPolicyView) predicate.AppPolicyView {
+	return predicate.AppPolicyView(func(s *sql.Selector) {
+		step := newParentStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasChildren applies the HasEdge predicate on the "children" edge.
+func HasChildren() predicate.AppPolicyView {
+	return predicate.AppPolicyView(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasChildrenWith applies the HasEdge predicate on the "children" edge with a given conditions (other predicates).
+func HasChildrenWith(preds ...predicate.AppPolicyView) predicate.AppPolicyView {
+	return predicate.AppPolicyView(func(s *sql.Selector) {
+		step := newChildrenStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

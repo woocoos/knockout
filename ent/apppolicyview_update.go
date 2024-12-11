@@ -78,7 +78,6 @@ func (apvu *AppPolicyViewUpdate) ClearUpdatedAt() *AppPolicyViewUpdate {
 
 // SetParentID sets the "parent_id" field.
 func (apvu *AppPolicyViewUpdate) SetParentID(i int) *AppPolicyViewUpdate {
-	apvu.mutation.ResetParentID()
 	apvu.mutation.SetParentID(i)
 	return apvu
 }
@@ -88,12 +87,6 @@ func (apvu *AppPolicyViewUpdate) SetNillableParentID(i *int) *AppPolicyViewUpdat
 	if i != nil {
 		apvu.SetParentID(*i)
 	}
-	return apvu
-}
-
-// AddParentID adds i to the "parent_id" field.
-func (apvu *AppPolicyViewUpdate) AddParentID(i int) *AppPolicyViewUpdate {
-	apvu.mutation.AddParentID(i)
 	return apvu
 }
 
@@ -165,6 +158,26 @@ func (apvu *AppPolicyViewUpdate) ClearPolicyID() *AppPolicyViewUpdate {
 	return apvu
 }
 
+// SetPath sets the "path" field.
+func (apvu *AppPolicyViewUpdate) SetPath(s string) *AppPolicyViewUpdate {
+	apvu.mutation.SetPath(s)
+	return apvu
+}
+
+// SetNillablePath sets the "path" field if the given value is not nil.
+func (apvu *AppPolicyViewUpdate) SetNillablePath(s *string) *AppPolicyViewUpdate {
+	if s != nil {
+		apvu.SetPath(*s)
+	}
+	return apvu
+}
+
+// ClearPath clears the value of the "path" field.
+func (apvu *AppPolicyViewUpdate) ClearPath() *AppPolicyViewUpdate {
+	apvu.mutation.ClearPath()
+	return apvu
+}
+
 // SetDisplaySort sets the "display_sort" field.
 func (apvu *AppPolicyViewUpdate) SetDisplaySort(i int32) *AppPolicyViewUpdate {
 	apvu.mutation.ResetDisplaySort()
@@ -211,6 +224,26 @@ func (apvu *AppPolicyViewUpdate) SetAppPolicy(a *AppPolicy) *AppPolicyViewUpdate
 	return apvu.SetAppPolicyID(a.ID)
 }
 
+// SetParent sets the "parent" edge to the AppPolicyView entity.
+func (apvu *AppPolicyViewUpdate) SetParent(a *AppPolicyView) *AppPolicyViewUpdate {
+	return apvu.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppPolicyView entity by IDs.
+func (apvu *AppPolicyViewUpdate) AddChildIDs(ids ...int) *AppPolicyViewUpdate {
+	apvu.mutation.AddChildIDs(ids...)
+	return apvu
+}
+
+// AddChildren adds the "children" edges to the AppPolicyView entity.
+func (apvu *AppPolicyViewUpdate) AddChildren(a ...*AppPolicyView) *AppPolicyViewUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apvu.AddChildIDs(ids...)
+}
+
 // Mutation returns the AppPolicyViewMutation object of the builder.
 func (apvu *AppPolicyViewUpdate) Mutation() *AppPolicyViewMutation {
 	return apvu.mutation
@@ -220,6 +253,33 @@ func (apvu *AppPolicyViewUpdate) Mutation() *AppPolicyViewMutation {
 func (apvu *AppPolicyViewUpdate) ClearAppPolicy() *AppPolicyViewUpdate {
 	apvu.mutation.ClearAppPolicy()
 	return apvu
+}
+
+// ClearParent clears the "parent" edge to the AppPolicyView entity.
+func (apvu *AppPolicyViewUpdate) ClearParent() *AppPolicyViewUpdate {
+	apvu.mutation.ClearParent()
+	return apvu
+}
+
+// ClearChildren clears all "children" edges to the AppPolicyView entity.
+func (apvu *AppPolicyViewUpdate) ClearChildren() *AppPolicyViewUpdate {
+	apvu.mutation.ClearChildren()
+	return apvu
+}
+
+// RemoveChildIDs removes the "children" edge to AppPolicyView entities by IDs.
+func (apvu *AppPolicyViewUpdate) RemoveChildIDs(ids ...int) *AppPolicyViewUpdate {
+	apvu.mutation.RemoveChildIDs(ids...)
+	return apvu
+}
+
+// RemoveChildren removes "children" edges to AppPolicyView entities.
+func (apvu *AppPolicyViewUpdate) RemoveChildren(a ...*AppPolicyView) *AppPolicyViewUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apvu.RemoveChildIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -256,6 +316,9 @@ func (apvu *AppPolicyViewUpdate) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicyView.kind": %w`, err)}
 		}
 	}
+	if apvu.mutation.ParentCleared() && len(apvu.mutation.ParentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AppPolicyView.parent"`)
+	}
 	return nil
 }
 
@@ -286,12 +349,6 @@ func (apvu *AppPolicyViewUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if apvu.mutation.UpdatedAtCleared() {
 		_spec.ClearField(apppolicyview.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := apvu.mutation.ParentID(); ok {
-		_spec.SetField(apppolicyview.FieldParentID, field.TypeInt, value)
-	}
-	if value, ok := apvu.mutation.AddedParentID(); ok {
-		_spec.AddField(apppolicyview.FieldParentID, field.TypeInt, value)
-	}
 	if value, ok := apvu.mutation.Kind(); ok {
 		_spec.SetField(apppolicyview.FieldKind, field.TypeEnum, value)
 	}
@@ -303,6 +360,12 @@ func (apvu *AppPolicyViewUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if apvu.mutation.CommentsCleared() {
 		_spec.ClearField(apppolicyview.FieldComments, field.TypeString)
+	}
+	if value, ok := apvu.mutation.Path(); ok {
+		_spec.SetField(apppolicyview.FieldPath, field.TypeString, value)
+	}
+	if apvu.mutation.PathCleared() {
+		_spec.ClearField(apppolicyview.FieldPath, field.TypeString)
 	}
 	if value, ok := apvu.mutation.DisplaySort(); ok {
 		_spec.SetField(apppolicyview.FieldDisplaySort, field.TypeInt32, value)
@@ -335,6 +398,80 @@ func (apvu *AppPolicyViewUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apvu.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppolicyview.ParentTable,
+			Columns: []string{apppolicyview.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvu.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppolicyview.ParentTable,
+			Columns: []string{apppolicyview.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apvu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvu.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !apvu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvu.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -411,7 +548,6 @@ func (apvuo *AppPolicyViewUpdateOne) ClearUpdatedAt() *AppPolicyViewUpdateOne {
 
 // SetParentID sets the "parent_id" field.
 func (apvuo *AppPolicyViewUpdateOne) SetParentID(i int) *AppPolicyViewUpdateOne {
-	apvuo.mutation.ResetParentID()
 	apvuo.mutation.SetParentID(i)
 	return apvuo
 }
@@ -421,12 +557,6 @@ func (apvuo *AppPolicyViewUpdateOne) SetNillableParentID(i *int) *AppPolicyViewU
 	if i != nil {
 		apvuo.SetParentID(*i)
 	}
-	return apvuo
-}
-
-// AddParentID adds i to the "parent_id" field.
-func (apvuo *AppPolicyViewUpdateOne) AddParentID(i int) *AppPolicyViewUpdateOne {
-	apvuo.mutation.AddParentID(i)
 	return apvuo
 }
 
@@ -498,6 +628,26 @@ func (apvuo *AppPolicyViewUpdateOne) ClearPolicyID() *AppPolicyViewUpdateOne {
 	return apvuo
 }
 
+// SetPath sets the "path" field.
+func (apvuo *AppPolicyViewUpdateOne) SetPath(s string) *AppPolicyViewUpdateOne {
+	apvuo.mutation.SetPath(s)
+	return apvuo
+}
+
+// SetNillablePath sets the "path" field if the given value is not nil.
+func (apvuo *AppPolicyViewUpdateOne) SetNillablePath(s *string) *AppPolicyViewUpdateOne {
+	if s != nil {
+		apvuo.SetPath(*s)
+	}
+	return apvuo
+}
+
+// ClearPath clears the value of the "path" field.
+func (apvuo *AppPolicyViewUpdateOne) ClearPath() *AppPolicyViewUpdateOne {
+	apvuo.mutation.ClearPath()
+	return apvuo
+}
+
 // SetDisplaySort sets the "display_sort" field.
 func (apvuo *AppPolicyViewUpdateOne) SetDisplaySort(i int32) *AppPolicyViewUpdateOne {
 	apvuo.mutation.ResetDisplaySort()
@@ -544,6 +694,26 @@ func (apvuo *AppPolicyViewUpdateOne) SetAppPolicy(a *AppPolicy) *AppPolicyViewUp
 	return apvuo.SetAppPolicyID(a.ID)
 }
 
+// SetParent sets the "parent" edge to the AppPolicyView entity.
+func (apvuo *AppPolicyViewUpdateOne) SetParent(a *AppPolicyView) *AppPolicyViewUpdateOne {
+	return apvuo.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppPolicyView entity by IDs.
+func (apvuo *AppPolicyViewUpdateOne) AddChildIDs(ids ...int) *AppPolicyViewUpdateOne {
+	apvuo.mutation.AddChildIDs(ids...)
+	return apvuo
+}
+
+// AddChildren adds the "children" edges to the AppPolicyView entity.
+func (apvuo *AppPolicyViewUpdateOne) AddChildren(a ...*AppPolicyView) *AppPolicyViewUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apvuo.AddChildIDs(ids...)
+}
+
 // Mutation returns the AppPolicyViewMutation object of the builder.
 func (apvuo *AppPolicyViewUpdateOne) Mutation() *AppPolicyViewMutation {
 	return apvuo.mutation
@@ -553,6 +723,33 @@ func (apvuo *AppPolicyViewUpdateOne) Mutation() *AppPolicyViewMutation {
 func (apvuo *AppPolicyViewUpdateOne) ClearAppPolicy() *AppPolicyViewUpdateOne {
 	apvuo.mutation.ClearAppPolicy()
 	return apvuo
+}
+
+// ClearParent clears the "parent" edge to the AppPolicyView entity.
+func (apvuo *AppPolicyViewUpdateOne) ClearParent() *AppPolicyViewUpdateOne {
+	apvuo.mutation.ClearParent()
+	return apvuo
+}
+
+// ClearChildren clears all "children" edges to the AppPolicyView entity.
+func (apvuo *AppPolicyViewUpdateOne) ClearChildren() *AppPolicyViewUpdateOne {
+	apvuo.mutation.ClearChildren()
+	return apvuo
+}
+
+// RemoveChildIDs removes the "children" edge to AppPolicyView entities by IDs.
+func (apvuo *AppPolicyViewUpdateOne) RemoveChildIDs(ids ...int) *AppPolicyViewUpdateOne {
+	apvuo.mutation.RemoveChildIDs(ids...)
+	return apvuo
+}
+
+// RemoveChildren removes "children" edges to AppPolicyView entities.
+func (apvuo *AppPolicyViewUpdateOne) RemoveChildren(a ...*AppPolicyView) *AppPolicyViewUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return apvuo.RemoveChildIDs(ids...)
 }
 
 // Where appends a list predicates to the AppPolicyViewUpdate builder.
@@ -602,6 +799,9 @@ func (apvuo *AppPolicyViewUpdateOne) check() error {
 			return &ValidationError{Name: "kind", err: fmt.Errorf(`ent: validator failed for field "AppPolicyView.kind": %w`, err)}
 		}
 	}
+	if apvuo.mutation.ParentCleared() && len(apvuo.mutation.ParentIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "AppPolicyView.parent"`)
+	}
 	return nil
 }
 
@@ -649,12 +849,6 @@ func (apvuo *AppPolicyViewUpdateOne) sqlSave(ctx context.Context) (_node *AppPol
 	if apvuo.mutation.UpdatedAtCleared() {
 		_spec.ClearField(apppolicyview.FieldUpdatedAt, field.TypeTime)
 	}
-	if value, ok := apvuo.mutation.ParentID(); ok {
-		_spec.SetField(apppolicyview.FieldParentID, field.TypeInt, value)
-	}
-	if value, ok := apvuo.mutation.AddedParentID(); ok {
-		_spec.AddField(apppolicyview.FieldParentID, field.TypeInt, value)
-	}
 	if value, ok := apvuo.mutation.Kind(); ok {
 		_spec.SetField(apppolicyview.FieldKind, field.TypeEnum, value)
 	}
@@ -666,6 +860,12 @@ func (apvuo *AppPolicyViewUpdateOne) sqlSave(ctx context.Context) (_node *AppPol
 	}
 	if apvuo.mutation.CommentsCleared() {
 		_spec.ClearField(apppolicyview.FieldComments, field.TypeString)
+	}
+	if value, ok := apvuo.mutation.Path(); ok {
+		_spec.SetField(apppolicyview.FieldPath, field.TypeString, value)
+	}
+	if apvuo.mutation.PathCleared() {
+		_spec.ClearField(apppolicyview.FieldPath, field.TypeString)
 	}
 	if value, ok := apvuo.mutation.DisplaySort(); ok {
 		_spec.SetField(apppolicyview.FieldDisplaySort, field.TypeInt32, value)
@@ -698,6 +898,80 @@ func (apvuo *AppPolicyViewUpdateOne) sqlSave(ctx context.Context) (_node *AppPol
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apvuo.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppolicyview.ParentTable,
+			Columns: []string{apppolicyview.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvuo.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppolicyview.ParentTable,
+			Columns: []string{apppolicyview.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apvuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvuo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !apvuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apvuo.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   apppolicyview.ChildrenTable,
+			Columns: []string{apppolicyview.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

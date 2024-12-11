@@ -154,7 +154,6 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "parent_id", Type: field.TypeInt},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"dir", "menu"}},
 		{Name: "name", Type: field.TypeString},
 		{Name: "icon", Type: field.TypeString, Nullable: true},
@@ -164,6 +163,7 @@ var (
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}, Default: "active"},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "action_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "parent_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppMenuTable holds the schema information for the "app_menu" table.
 	AppMenuTable = &schema.Table{
@@ -173,14 +173,20 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_menu_app_menus",
-				Columns:    []*schema.Column{AppMenuColumns[13]},
+				Columns:    []*schema.Column{AppMenuColumns[12]},
 				RefColumns: []*schema.Column{AppColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "app_menu_app_action_menus",
-				Columns:    []*schema.Column{AppMenuColumns[14]},
+				Columns:    []*schema.Column{AppMenuColumns[13]},
 				RefColumns: []*schema.Column{AppActionColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_menu_app_menu_children",
+				Columns:    []*schema.Column{AppMenuColumns[14]},
+				RefColumns: []*schema.Column{AppMenuColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -222,13 +228,14 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "parent_id", Type: field.TypeInt, Default: 0},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"dir", "policy"}},
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
+		{Name: "path", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
 		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "policy_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
+		{Name: "parent_id", Type: field.TypeInt, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// AppPolicyViewTable holds the schema information for the "app_policy_view" table.
 	AppPolicyViewTable = &schema.Table{
@@ -246,6 +253,12 @@ var (
 				Symbol:     "app_policy_view_app_policy_policy_views",
 				Columns:    []*schema.Column{AppPolicyViewColumns[11]},
 				RefColumns: []*schema.Column{AppPolicyColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_policy_view_app_policy_view_children",
+				Columns:    []*schema.Column{AppPolicyViewColumns[12]},
+				RefColumns: []*schema.Column{AppPolicyViewColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -1134,6 +1147,7 @@ func init() {
 	}
 	AppMenuTable.ForeignKeys[0].RefTable = AppTable
 	AppMenuTable.ForeignKeys[1].RefTable = AppActionTable
+	AppMenuTable.ForeignKeys[2].RefTable = AppMenuTable
 	AppMenuTable.Annotation = &entsql.Annotation{
 		Table: "app_menu",
 	}
@@ -1143,6 +1157,7 @@ func init() {
 	}
 	AppPolicyViewTable.ForeignKeys[0].RefTable = AppTable
 	AppPolicyViewTable.ForeignKeys[1].RefTable = AppPolicyTable
+	AppPolicyViewTable.ForeignKeys[2].RefTable = AppPolicyViewTable
 	AppPolicyViewTable.Annotation = &entsql.Annotation{
 		Table: "app_policy_view",
 	}

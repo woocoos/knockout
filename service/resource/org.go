@@ -562,7 +562,7 @@ func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error)
 		return nil, fmt.Errorf("user not found")
 	}
 	sec := GeneralMFASecret()
-	err = client.UserLoginProfile.UpdateOneID(userID).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
+	err = client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}

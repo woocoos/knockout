@@ -58,6 +58,8 @@ func (AppMenu) Edges() []ent.Edge {
 		edge.From("app", App.Type).Ref("menus").Unique().Immutable().Field("app_id"),
 		edge.From("action", AppAction.Type).Ref("menus").Unique().Field("action_id").
 			Comment("需要权限控制时对应的权限"),
+		edge.To("children", AppMenu.Type).
+			From("parent").Unique().Required().Field("parent_id"),
 	}
 }
 
