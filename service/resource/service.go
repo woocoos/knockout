@@ -45,16 +45,27 @@ func WithCfg(cnf *conf.AppConfiguration) Option {
 	}
 }
 
-func WithPwdPolicy(pp *PwdPolicy) Option {
-	return func(s *Service) {
-		s.PwdPolicy = pp
-	}
-}
-
 func NewService(opt ...Option) *Service {
 	r := &Service{}
 	for _, option := range opt {
 		option(r)
 	}
+	pp := PwdPolicy{
+		Length:               6,
+		IncludeElement:       3,
+		IncludeChar:          4,
+		AllowIncludeUserName: false,
+		InvalidDay:           30,
+		InvalidLoginLimit:    false,
+		Retry:                5,
+		CaptchaTimes:         3,
+	}
+	if r.Cfg != nil && r.Cfg.IsSet("adminx.pwdPolicy") {
+		err := r.Cfg.Sub("adminx.pwdPolicy").Unmarshal(&pp)
+		if err != nil {
+			panic(err)
+		}
+	}
+	r.PwdPolicy = &pp
 	return r
 }

@@ -88,16 +88,17 @@ type Options struct {
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	} `json:"jwt"`
-	PwdPolicy struct {
-		Length               int32 `json:"length"`
-		IncludeElement       int32 `json:"includeElement"`
-		IncludeChar          int32 `json:"includeChar"`
-		AllowIncludeUserName bool  `json:"allowIncludeUserName"`
-		InvalidDay           int32 `json:"invalidDay"`
-		InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
-		Retry                int32 `json:"retry"`
-		CaptchaTimes         int32 `json:"captchaTimes"`
-	} `json:"pwdPolicy"`
+	PwdPolicy OptionsPwdPolicy `json:"pwdPolicy"`
+}
+type OptionsPwdPolicy struct {
+	Length               int32 `json:"length"`
+	IncludeElement       int32 `json:"includeElement"`
+	IncludeChar          int32 `json:"includeChar"`
+	AllowIncludeUserName bool  `json:"allowIncludeUserName"`
+	InvalidDay           int32 `json:"invalidDay"`
+	InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
+	Retry                int32 `json:"retry"`
+	CaptchaTimes         int32 `json:"captchaTimes"`
 }
 
 // ServerImpl is the server API for service.
@@ -142,6 +143,16 @@ func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 		LoginFailTimes:    10,
 		LoginFailLockTime: time.Hour * 24,
 		SpmTTL:            time.Second * 5,
+		PwdPolicy: OptionsPwdPolicy{
+			Length:               6,
+			IncludeElement:       3,
+			IncludeChar:          4,
+			AllowIncludeUserName: false,
+			InvalidDay:           30,
+			InvalidLoginLimit:    false,
+			Retry:                5,
+			CaptchaTimes:         3,
+		},
 	}
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
 	if err != nil {
@@ -175,7 +186,7 @@ func (s *ServerImpl) Captcha(ctx *gin.Context, req *CaptchaRequest) (*Captcha, e
 
 // Login login
 func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginResponse, err error) {
-	var failCount int32 = 0
+	var failCount int32
 	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
 	upp, err := s.getPasswordPolicy(ctx)
 	if err != nil {
@@ -192,7 +203,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 			return nil, status.ErrCaptchaNotMatch
 		}
 	}
-	pwd, err := s.checkPwd(ctx, req, failCount, upp)
+	pwd, err := s.checkPwd(ctx, req, upp)
 	if err != nil {
 		if errors.Is(err, status.ErrMismatchPWD) {
 			ctx.Status(http.StatusBadRequest)
@@ -234,15 +245,8 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 }
 
 func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
-	var failCount int32 = 0
-	s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
-	upp, err := s.getPasswordPolicy(ctx)
-	if err != nil {
-		ctx.Status(http.StatusBadRequest)
-		return nil, err
-	}
 	// 验证密码
-	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, failCount, upp)
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, nil)
 	if err != nil {
 		return nil, fmt.Errorf("username or password error")
 	}
@@ -500,10 +504,14 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	}, nil
 }
 
-func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest, failCount int32, upp *ent.UserPasswordPolicy) (*ent.UserPassword, error) {
-	if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
-		ctx.Status(http.StatusForbidden)
-		return nil, status.ErrLoginFailUpperLimit
+func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest, upp *ent.UserPasswordPolicy) (*ent.UserPassword, error) {
+	if upp != nil {
+		var failCount int32
+		s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
+		if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
+			ctx.Status(http.StatusForbidden)
+			return nil, status.ErrLoginFailUpperLimit
+		}
 	}
 	pwd, err := s.db.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Username))),
