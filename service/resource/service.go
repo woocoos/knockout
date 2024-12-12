@@ -9,14 +9,14 @@ import (
 type Option func(*Service)
 
 type PwdPolicy struct {
-	Length               int32 `json:"length"`
-	IncludeElement       int32 `json:"includeElement"`
-	IncludeChar          int32 `json:"includeChar"`
-	AllowIncludeUserName bool  `json:"allowIncludeUserName"`
-	InvalidDay           int32 `json:"invalidDay"`
-	InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
-	Retry                int32 `json:"retry"`
-	CaptchaTimes         int32 `json:"captchaTimes"`
+	Length               int32 `json:"length"`               // 密码最短长度，长度应在6-32位之间
+	IncludeElement       int32 `json:"includeElement"`       // 必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+	IncludeChar          int32 `json:"includeChar"`          // 最少包含的不同字符数，最多8个，0代表不限制
+	AllowIncludeUserName bool  `json:"allowIncludeUserName"` // 是否允许包含用户名
+	InvalidDay           int32 `json:"invalidDay"`           // 有效天数，最大1095天，0代表不过期
+	InvalidLoginLimit    bool  `json:"invalidLoginLimit"`    // 过期后是否限制登录
+	Retry                int32 `json:"retry"`                // 一小时内密码错误最多尝试次数，最大32次，0代表不限次数
+	CaptchaTimes         int32 `json:"captchaTimes"`         // 密码错误多少次出现验证码，最大5次，0代表不出现验证码
 }
 
 // Service 企业目录服务管理
