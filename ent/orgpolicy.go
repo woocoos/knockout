@@ -34,7 +34,7 @@ type OrgPolicy struct {
 	// 所属应用
 	AppID int `json:"app_id,omitempty"`
 	// 所属应用策略,如果是自定义应用策略,则为空
-	AppPolicyID int `json:"app_policy_id,omitempty"`
+	AppPolicyID *int `json:"app_policy_id,omitempty"`
 	// 策略名称
 	Name string `json:"name,omitempty"`
 	// 描述
@@ -169,7 +169,8 @@ func (op *OrgPolicy) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_policy_id", values[i])
 			} else if value.Valid {
-				op.AppPolicyID = int(value.Int64)
+				op.AppPolicyID = new(int)
+				*op.AppPolicyID = int(value.Int64)
 			}
 		case orgpolicy.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -260,8 +261,10 @@ func (op *OrgPolicy) String() string {
 	builder.WriteString("app_id=")
 	builder.WriteString(fmt.Sprintf("%v", op.AppID))
 	builder.WriteString(", ")
-	builder.WriteString("app_policy_id=")
-	builder.WriteString(fmt.Sprintf("%v", op.AppPolicyID))
+	if v := op.AppPolicyID; v != nil {
+		builder.WriteString("app_policy_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(op.Name)

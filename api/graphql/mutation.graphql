@@ -231,22 +231,22 @@ type Mutation {
     assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """组织角色添加策略视图权限"""
     assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
-    # 创建配额项q
+    """创建配额项"""
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
-    # 更新配额项
+    """更新配额项"""
     updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!
-    # 删除配额项
+    """删除配额项"""
     deleteQuotaItem(id: ID!): Boolean!
-    # 设置配额
+    """设置配额"""
     createQuota(input: CreateQuotaInput!): Quota!
-    # 更新配额
+    """更新配额"""
     updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
-    # 删除配额
+    """删除配额"""
     deleteQuota(id: ID!): Boolean!
-    # 设置密码策略
+    """设置密码策略"""
     createUserPasswordPolicy(input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
-    # 更新密码策略
+    """更新密码策略"""
     updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
-    # 删除密码策略
+    """删除密码策略"""
     deleteUserPasswordPolicy: Boolean!
 }

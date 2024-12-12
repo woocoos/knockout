@@ -2706,6 +2706,134 @@ func (c *UserAddrUpdateOne) SetInput(i UpdateUserAddrInput) *UserAddrUpdateOne {
 	return c
 }
 
+// CreateUserDeviceInput represents a mutation input for creating userdevices.
+type CreateUserDeviceInput struct {
+	DeviceUID     string
+	DeviceName    *string
+	SystemName    *string
+	SystemVersion *string
+	AppVersion    *string
+	DeviceModel   *string
+	Status        *typex.SimpleStatus
+	Comments      *string
+	UserID        *int
+}
+
+// Mutate applies the CreateUserDeviceInput on the UserDeviceMutation builder.
+func (i *CreateUserDeviceInput) Mutate(m *UserDeviceMutation) {
+	m.SetDeviceUID(i.DeviceUID)
+	if v := i.DeviceName; v != nil {
+		m.SetDeviceName(*v)
+	}
+	if v := i.SystemName; v != nil {
+		m.SetSystemName(*v)
+	}
+	if v := i.SystemVersion; v != nil {
+		m.SetSystemVersion(*v)
+	}
+	if v := i.AppVersion; v != nil {
+		m.SetAppVersion(*v)
+	}
+	if v := i.DeviceModel; v != nil {
+		m.SetDeviceModel(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateUserDeviceInput on the UserDeviceCreate builder.
+func (c *UserDeviceCreate) SetInput(i CreateUserDeviceInput) *UserDeviceCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateUserDeviceInput represents a mutation input for updating userdevices.
+type UpdateUserDeviceInput struct {
+	DeviceUID          *string
+	ClearDeviceName    bool
+	DeviceName         *string
+	ClearSystemName    bool
+	SystemName         *string
+	ClearSystemVersion bool
+	SystemVersion      *string
+	ClearAppVersion    bool
+	AppVersion         *string
+	ClearDeviceModel   bool
+	DeviceModel        *string
+	ClearStatus        bool
+	Status             *typex.SimpleStatus
+	ClearComments      bool
+	Comments           *string
+}
+
+// Mutate applies the UpdateUserDeviceInput on the UserDeviceMutation builder.
+func (i *UpdateUserDeviceInput) Mutate(m *UserDeviceMutation) {
+	if v := i.DeviceUID; v != nil {
+		m.SetDeviceUID(*v)
+	}
+	if i.ClearDeviceName {
+		m.ClearDeviceName()
+	}
+	if v := i.DeviceName; v != nil {
+		m.SetDeviceName(*v)
+	}
+	if i.ClearSystemName {
+		m.ClearSystemName()
+	}
+	if v := i.SystemName; v != nil {
+		m.SetSystemName(*v)
+	}
+	if i.ClearSystemVersion {
+		m.ClearSystemVersion()
+	}
+	if v := i.SystemVersion; v != nil {
+		m.SetSystemVersion(*v)
+	}
+	if i.ClearAppVersion {
+		m.ClearAppVersion()
+	}
+	if v := i.AppVersion; v != nil {
+		m.SetAppVersion(*v)
+	}
+	if i.ClearDeviceModel {
+		m.ClearDeviceModel()
+	}
+	if v := i.DeviceModel; v != nil {
+		m.SetDeviceModel(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateUserDeviceInput on the UserDeviceUpdate builder.
+func (c *UserDeviceUpdate) SetInput(i UpdateUserDeviceInput) *UserDeviceUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateUserDeviceInput on the UserDeviceUpdateOne builder.
+func (c *UserDeviceUpdateOne) SetInput(i UpdateUserDeviceInput) *UserDeviceUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateUserIdentityInput represents a mutation input for creating useridentities.
 type CreateUserIdentityInput struct {
 	Kind       useridentity.Kind
@@ -2922,6 +3050,12 @@ func (c *UserPasswordUpdate) SetInput(i UpdateUserPasswordInput) *UserPasswordUp
 	return c
 }
 
+// SetInput applies the change-set in the UpdateUserPasswordInput on the UserPasswordUpdateOne builder.
+func (c *UserPasswordUpdateOne) SetInput(i UpdateUserPasswordInput) *UserPasswordUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateUserPasswordPolicyInput represents a mutation input for creating userpasswordpolicies.
 type CreateUserPasswordPolicyInput struct {
 	Length               *int32
@@ -3052,12 +3186,6 @@ func (c *UserPasswordPolicyUpdate) SetInput(i UpdateUserPasswordPolicyInput) *Us
 
 // SetInput applies the change-set in the UpdateUserPasswordPolicyInput on the UserPasswordPolicyUpdateOne builder.
 func (c *UserPasswordPolicyUpdateOne) SetInput(i UpdateUserPasswordPolicyInput) *UserPasswordPolicyUpdateOne {
-	i.Mutate(c.Mutation())
-	return c
-}
-
-// SetInput applies the change-set in the UpdateUserPasswordInput on the UserPasswordUpdateOne builder.
-func (c *UserPasswordUpdateOne) SetInput(i UpdateUserPasswordInput) *UserPasswordUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

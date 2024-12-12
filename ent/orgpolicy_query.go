@@ -570,7 +570,10 @@ func (opq *OrgPolicyQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQu
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*OrgPolicy)
 	for i := range nodes {
-		fk := nodes[i].AppPolicyID
+		if nodes[i].AppPolicyID == nil {
+			continue
+		}
+		fk := *nodes[i].AppPolicyID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

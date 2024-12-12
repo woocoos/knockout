@@ -110,17 +110,17 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 
 // appPolicy to orgPolicy
 func appPolicyToOrgPolicy(appCode string, rules []*types.PolicyRule, tenantID int) error {
-	for _, rule := range rules {
-		for j, action := range rule.Actions {
-			rule.Actions[j] = appCode + ArnSplit + action
-		}
-		for j, resource := range rule.Resources {
-			// 替换tenant_id
-			resource = authz.ReplaceTenantID(resource, tenantID)
-			// 补充appCode
-			rule.Resources[j] = appCode + ArnSplit + authz.FormatResourceArn(resource)
-		}
-	}
+	//for _, rule := range rules {
+	//	for j, action := range rule.Actions {
+	//		rule.Actions[j] = appCode + ArnSplit + action
+	//	}
+	//	for j, resource := range rule.Resources {
+	//		// 替换tenant_id
+	//		resource = authz.ReplaceTenantID(resource, tenantID)
+	//		// 补充appCode
+	//		rule.Resources[j] = appCode + ArnSplit + authz.FormatResourceArn(resource)
+	//	}
+	//}
 	return nil
 }
 
@@ -418,7 +418,9 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 	}
 	hasOpMap := make(map[int]bool)
 	for _, op := range hasOps {
-		hasOpMap[op.AppPolicyID] = true
+		if op.AppPolicyID != nil {
+			hasOpMap[*op.AppPolicyID] = true
+		}
 	}
 	// 分配策略给组织
 	opbk := make([]*ent.OrgPolicyCreate, 0)

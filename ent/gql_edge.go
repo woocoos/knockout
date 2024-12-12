@@ -747,14 +747,6 @@ func (ua *UserAddr) User(ctx context.Context) (*User, error) {
 	return result, MaskNotFound(err)
 }
 
-func (upp *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
-	result, err := upp.Edges.OrgOrErr()
-	if IsNotLoaded(err) {
-		result, err = upp.QueryOrg().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (ua *UserAddr) Region(ctx context.Context) (*Region, error) {
 	result, err := ua.Edges.RegionOrErr()
 	if IsNotLoaded(err) {
@@ -791,6 +783,14 @@ func (up *UserPassword) User(ctx context.Context) (*User, error) {
 	result, err := up.Edges.UserOrErr()
 	if IsNotLoaded(err) {
 		result, err = up.QueryUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (upp *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := upp.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = upp.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

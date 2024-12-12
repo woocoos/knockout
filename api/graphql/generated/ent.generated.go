@@ -78,6 +78,7 @@ type QueryResolver interface {
 	QuotaItems(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) (*ent.QuotaItemConnection, error)
 	Regions(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) (*ent.RegionConnection, error)
 	Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
+	UserDevices(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) (*ent.UserDeviceConnection, error)
 	GlobalID(ctx context.Context, typeArg string, id int) (*string, error)
 	Viewer(ctx context.Context) (*ent.User, error)
 	OrgGroups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
@@ -5590,6 +5591,173 @@ func (ec *executionContext) field_Query_regions_argsWhere(
 	}
 
 	var zeroVal *ent.RegionWhereInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_userDevices_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg0
+	arg1, err := ec.field_Query_userDevices_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg1
+	arg2, err := ec.field_Query_userDevices_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg2
+	arg3, err := ec.field_Query_userDevices_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg3
+	arg4, err := ec.field_Query_userDevices_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg4
+	arg5, err := ec.field_Query_userDevices_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg5
+	return args, nil
+}
+func (ec *executionContext) field_Query_userDevices_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["first"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["before"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_argsLast(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["last"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UserDeviceOrder, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orderBy"]
+	if !ok {
+		var zeroVal *ent.UserDeviceOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOUserDeviceOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.UserDeviceOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userDevices_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UserDeviceWhereInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["where"]
+	if !ok {
+		var zeroVal *ent.UserDeviceWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOUserDeviceWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.UserDeviceWhereInput
 	return zeroVal, nil
 }
 
@@ -21996,9 +22164,9 @@ func (ec *executionContext) _OrgPolicy_appPolicyID(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OrgPolicy_appPolicyID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26558,6 +26726,69 @@ func (ec *executionContext) fieldContext_Query_users(ctx context.Context, field 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_users_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_userDevices(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userDevices(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserDevices(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.UserDeviceOrder), fc.Args["where"].(*ent.UserDeviceWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserDeviceConnection)
+	fc.Result = res
+	return ec.marshalNUserDeviceConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userDevices(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_UserDeviceConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_UserDeviceConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_UserDeviceConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserDeviceConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_userDevices_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -34995,6 +35226,268 @@ func (ec *executionContext) fieldContext_UserDevice_user(_ context.Context, fiel
 				return ec.fieldContext_User_orgUserType(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserDeviceConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.UserDeviceConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeviceConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.UserDeviceEdge)
+	fc.Result = res
+	return ec.marshalOUserDeviceEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserDeviceConnection_edges(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserDeviceConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_UserDeviceEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_UserDeviceEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserDeviceEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserDeviceConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.UserDeviceConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeviceConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[int])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserDeviceConnection_pageInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserDeviceConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserDeviceConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.UserDeviceConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeviceConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserDeviceConnection_totalCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserDeviceConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserDeviceEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.UserDeviceEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeviceEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserDevice)
+	fc.Result = res
+	return ec.marshalOUserDevice2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDevice(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserDeviceEdge_node(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserDeviceEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UserDevice_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_UserDevice_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UserDevice_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_UserDevice_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UserDevice_updatedAt(ctx, field)
+			case "userID":
+				return ec.fieldContext_UserDevice_userID(ctx, field)
+			case "deviceUID":
+				return ec.fieldContext_UserDevice_deviceUID(ctx, field)
+			case "deviceName":
+				return ec.fieldContext_UserDevice_deviceName(ctx, field)
+			case "systemName":
+				return ec.fieldContext_UserDevice_systemName(ctx, field)
+			case "systemVersion":
+				return ec.fieldContext_UserDevice_systemVersion(ctx, field)
+			case "appVersion":
+				return ec.fieldContext_UserDevice_appVersion(ctx, field)
+			case "deviceModel":
+				return ec.fieldContext_UserDevice_deviceModel(ctx, field)
+			case "status":
+				return ec.fieldContext_UserDevice_status(ctx, field)
+			case "comments":
+				return ec.fieldContext_UserDevice_comments(ctx, field)
+			case "user":
+				return ec.fieldContext_UserDevice_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserDevice", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserDeviceEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.UserDeviceEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeviceEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[int])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserDeviceEdge_cursor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserDeviceEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
 		},
 	}
 	return fc, nil
@@ -47225,89 +47718,6 @@ func (ec *executionContext) unmarshalInputCreatePermissionInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputCreateUserPasswordPolicyInput(ctx context.Context, obj interface{}) (ent.CreateUserPasswordPolicyInput, error) {
-	var it ent.CreateUserPasswordPolicyInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"length", "includeElement", "includeChar", "allowIncludeUserName", "invalidDay", "invalidLoginLimit", "retry", "captchaTimes", "orgID"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "length":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("length"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Length = data
-		case "includeElement":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeElement"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IncludeElement = data
-		case "includeChar":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeChar"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IncludeChar = data
-		case "allowIncludeUserName":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("allowIncludeUserName"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AllowIncludeUserName = data
-		case "invalidDay":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("invalidDay"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InvalidDay = data
-		case "invalidLoginLimit":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("invalidLoginLimit"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InvalidLoginLimit = data
-		case "retry":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("retry"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Retry = data
-		case "captchaTimes":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("captchaTimes"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CaptchaTimes = data
-		case "orgID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.OrgID = data
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, obj interface{}) (ent.CreateQuotaInput, error) {
 	var it ent.CreateQuotaInput
 	asMap := map[string]interface{}{}
@@ -47606,6 +48016,89 @@ func (ec *executionContext) unmarshalInputCreateUserAddrInput(ctx context.Contex
 				return it, err
 			}
 			it.RegionID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateUserDeviceInput(ctx context.Context, obj interface{}) (ent.CreateUserDeviceInput, error) {
+	var it ent.CreateUserDeviceInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"deviceUID", "deviceName", "systemName", "systemVersion", "appVersion", "deviceModel", "status", "comments", "userID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "deviceUID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceUID"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceUID = data
+		case "deviceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceName = data
+		case "systemName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("systemName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SystemName = data
+		case "systemVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("systemVersion"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SystemVersion = data
+		case "appVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appVersion"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppVersion = data
+		case "deviceModel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceModel"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceModel = data
+		case "status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOUserDeviceSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "comments":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comments"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Comments = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserID = data
 		}
 	}
 
@@ -47930,6 +48423,89 @@ func (ec *executionContext) unmarshalInputCreateUserPasswordInput(ctx context.Co
 				return it, err
 			}
 			it.UserID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateUserPasswordPolicyInput(ctx context.Context, obj interface{}) (ent.CreateUserPasswordPolicyInput, error) {
+	var it ent.CreateUserPasswordPolicyInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"length", "includeElement", "includeChar", "allowIncludeUserName", "invalidDay", "invalidLoginLimit", "retry", "captchaTimes", "orgID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "length":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("length"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Length = data
+		case "includeElement":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeElement"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IncludeElement = data
+		case "includeChar":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("includeChar"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IncludeChar = data
+		case "allowIncludeUserName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("allowIncludeUserName"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AllowIncludeUserName = data
+		case "invalidDay":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("invalidDay"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.InvalidDay = data
+		case "invalidLoginLimit":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("invalidLoginLimit"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.InvalidLoginLimit = data
+		case "retry":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("retry"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Retry = data
+		case "captchaTimes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("captchaTimes"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CaptchaTimes = data
+		case "orgID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OrgID = data
 		}
 	}
 
@@ -60792,6 +61368,131 @@ func (ec *executionContext) unmarshalInputUpdateUserAddrInput(ctx context.Contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateUserDeviceInput(ctx context.Context, obj interface{}) (ent.UpdateUserDeviceInput, error) {
+	var it ent.UpdateUserDeviceInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"deviceUID", "deviceName", "clearDeviceName", "systemName", "clearSystemName", "systemVersion", "clearSystemVersion", "appVersion", "clearAppVersion", "deviceModel", "clearDeviceModel", "status", "clearStatus", "comments", "clearComments"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "deviceUID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceUID"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceUID = data
+		case "deviceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceName = data
+		case "clearDeviceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearDeviceName"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearDeviceName = data
+		case "systemName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("systemName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SystemName = data
+		case "clearSystemName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearSystemName"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearSystemName = data
+		case "systemVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("systemVersion"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SystemVersion = data
+		case "clearSystemVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearSystemVersion"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearSystemVersion = data
+		case "appVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appVersion"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppVersion = data
+		case "clearAppVersion":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearAppVersion"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearAppVersion = data
+		case "deviceModel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceModel"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DeviceModel = data
+		case "clearDeviceModel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearDeviceModel"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearDeviceModel = data
+		case "status":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+			data, err := ec.unmarshalOUserDeviceSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Status = data
+		case "clearStatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearStatus"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearStatus = data
+		case "comments":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comments"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Comments = data
+		case "clearComments":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearComments"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearComments = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateUserIdentityInput(ctx context.Context, obj interface{}) (ent.UpdateUserIdentityInput, error) {
 	var it ent.UpdateUserIdentityInput
 	asMap := map[string]interface{}{}
@@ -64349,6 +65050,693 @@ func (ec *executionContext) unmarshalInputUserIdentityWhereInput(ctx context.Con
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUserLoginProfileOrder(ctx context.Context, obj interface{}) (ent.UserLoginProfileOrder, error) {
+	var it ent.UserLoginProfileOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNUserLoginProfileOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUserLoginProfileWhereInput(ctx context.Context, obj interface{}) (ent.UserLoginProfileWhereInput, error) {
+	var it ent.UserLoginProfileWhereInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "canLogin", "canLoginNEQ", "canLoginIsNil", "canLoginNotNil", "setKind", "setKindNEQ", "setKindIn", "setKindNotIn", "passwordReset", "passwordResetNEQ", "passwordResetIsNil", "passwordResetNotNil", "verifyDevice", "verifyDeviceNEQ", "mfaEnabled", "mfaEnabledNEQ", "mfaEnabledIsNil", "mfaEnabledNotNil", "mfaStatus", "mfaStatusNEQ", "mfaStatusIn", "mfaStatusNotIn", "mfaStatusIsNil", "mfaStatusNotNil", "hasUser", "hasUserWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ID = data
+		case "idNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNEQ = data
+		case "idIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDIn = data
+		case "idNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDNotIn = data
+		case "idGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGT = data
+		case "idGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDGTE = data
+		case "idLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLT = data
+		case "idLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.IDLTE = data
+		case "createdBy":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdBy"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedBy = data
+		case "createdByNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByNEQ = data
+		case "createdByIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByIn = data
+		case "createdByNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByNotIn = data
+		case "createdByGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByGT = data
+		case "createdByGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByGTE = data
+		case "createdByLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByLT = data
+		case "createdByLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedByLTE = data
+		case "createdAt":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAt = data
+		case "createdAtNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNEQ = data
+		case "createdAtIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtIn = data
+		case "createdAtNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtNotIn = data
+		case "createdAtGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGT = data
+		case "createdAtGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtGTE = data
+		case "createdAtLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLT = data
+		case "createdAtLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedAtLTE = data
+		case "updatedBy":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedBy"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedBy = data
+		case "updatedByNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByNEQ = data
+		case "updatedByIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByIn = data
+		case "updatedByNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNotIn"))
+			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByNotIn = data
+		case "updatedByGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByGT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByGT = data
+		case "updatedByGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByGTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByGTE = data
+		case "updatedByLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByLT"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByLT = data
+		case "updatedByLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByLTE"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByLTE = data
+		case "updatedByIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByIsNil = data
+		case "updatedByNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedByNotNil = data
+		case "updatedAt":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAt = data
+		case "updatedAtNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNEQ = data
+		case "updatedAtIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIn = data
+		case "updatedAtNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotIn = data
+		case "updatedAtGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGT = data
+		case "updatedAtGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtGTE = data
+		case "updatedAtLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLT = data
+		case "updatedAtLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtLTE = data
+		case "updatedAtIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtIsNil = data
+		case "updatedAtNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedAtNotNil = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserID = data
+		case "userIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNEQ"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNEQ = data
+		case "userIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIn"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDIn = data
+		case "userIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotIn"))
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNotIn = data
+		case "userIDIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDIsNil = data
+		case "userIDNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNotNil = data
+		case "canLogin":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLogin"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CanLogin = data
+		case "canLoginNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CanLoginNEQ = data
+		case "canLoginIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CanLoginIsNil = data
+		case "canLoginNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CanLoginNotNil = data
+		case "setKind":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKind"))
+			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKind = data
+		case "setKindNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindNEQ"))
+			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKindNEQ = data
+		case "setKindIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindIn"))
+			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKindᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKindIn = data
+		case "setKindNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindNotIn"))
+			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKindᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SetKindNotIn = data
+		case "passwordReset":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordReset"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PasswordReset = data
+		case "passwordResetNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PasswordResetNEQ = data
+		case "passwordResetIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PasswordResetIsNil = data
+		case "passwordResetNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PasswordResetNotNil = data
+		case "verifyDevice":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDevice"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VerifyDevice = data
+		case "verifyDeviceNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDeviceNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VerifyDeviceNEQ = data
+		case "mfaEnabled":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabled"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaEnabled = data
+		case "mfaEnabledNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledNEQ"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaEnabledNEQ = data
+		case "mfaEnabledIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaEnabledIsNil = data
+		case "mfaEnabledNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaEnabledNotNil = data
+		case "mfaStatus":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatus"))
+			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatus = data
+		case "mfaStatusNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNEQ"))
+			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatusNEQ = data
+		case "mfaStatusIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusIn"))
+			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatusIn = data
+		case "mfaStatusNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNotIn"))
+			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatusNotIn = data
+		case "mfaStatusIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatusIsNil = data
+		case "mfaStatusNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MfaStatusNotNil = data
+		case "hasUser":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUser"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasUser = data
+		case "hasUserWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUserWith"))
+			data, err := ec.unmarshalOUserWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasUserWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUserOrder(ctx context.Context, obj interface{}) (ent.UserOrder, error) {
+	var it ent.UserOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNUserOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUserPasswordOrder(ctx context.Context, obj interface{}) (ent.UserPasswordOrder, error) {
+	var it ent.UserPasswordOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNUserPasswordOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUserPasswordPolicyOrder(ctx context.Context, obj interface{}) (ent.UserPasswordPolicyOrder, error) {
 	var it ent.UserPasswordPolicyOrder
 	asMap := map[string]interface{}{}
@@ -65262,693 +66650,6 @@ func (ec *executionContext) unmarshalInputUserPasswordPolicyWhereInput(ctx conte
 				return it, err
 			}
 			it.HasOrgWith = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUserLoginProfileOrder(ctx context.Context, obj interface{}) (ent.UserLoginProfileOrder, error) {
-	var it ent.UserLoginProfileOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	fieldsInOrder := [...]string{"direction", "field"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "direction":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Direction = data
-		case "field":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			data, err := ec.unmarshalNUserLoginProfileOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Field = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUserLoginProfileWhereInput(ctx context.Context, obj interface{}) (ent.UserLoginProfileWhereInput, error) {
-	var it ent.UserLoginProfileWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "canLogin", "canLoginNEQ", "canLoginIsNil", "canLoginNotNil", "setKind", "setKindNEQ", "setKindIn", "setKindNotIn", "passwordReset", "passwordResetNEQ", "passwordResetIsNil", "passwordResetNotNil", "verifyDevice", "verifyDeviceNEQ", "mfaEnabled", "mfaEnabledNEQ", "mfaEnabledIsNil", "mfaEnabledNotNil", "mfaStatus", "mfaStatusNEQ", "mfaStatusIn", "mfaStatusNotIn", "mfaStatusIsNil", "mfaStatusNotNil", "hasUser", "hasUserWith"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "not":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
-			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Not = data
-		case "and":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
-			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.And = data
-		case "or":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
-			data, err := ec.unmarshalOUserLoginProfileWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserLoginProfileWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Or = data
-		case "id":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ID = data
-		case "idNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDNEQ = data
-		case "idIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDIn = data
-		case "idNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDNotIn = data
-		case "idGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDGT = data
-		case "idGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDGTE = data
-		case "idLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDLT = data
-		case "idLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IDLTE = data
-		case "createdBy":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdBy"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedBy = data
-		case "createdByNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByNEQ = data
-		case "createdByIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByIn = data
-		case "createdByNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByNotIn = data
-		case "createdByGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByGT = data
-		case "createdByGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByGTE = data
-		case "createdByLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByLT = data
-		case "createdByLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdByLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedByLTE = data
-		case "createdAt":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAt = data
-		case "createdAtNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNEQ"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtNEQ = data
-		case "createdAtIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtIn = data
-		case "createdAtNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtNotIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtNotIn = data
-		case "createdAtGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtGT = data
-		case "createdAtGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtGTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtGTE = data
-		case "createdAtLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtLT = data
-		case "createdAtLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAtLTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CreatedAtLTE = data
-		case "updatedBy":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedBy"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedBy = data
-		case "updatedByNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByNEQ = data
-		case "updatedByIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByIn = data
-		case "updatedByNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByNotIn = data
-		case "updatedByGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByGT = data
-		case "updatedByGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByGTE = data
-		case "updatedByLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByLT = data
-		case "updatedByLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByLTE = data
-		case "updatedByIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByIsNil = data
-		case "updatedByNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedByNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedByNotNil = data
-		case "updatedAt":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAt"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAt = data
-		case "updatedAtNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNEQ"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtNEQ = data
-		case "updatedAtIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtIn = data
-		case "updatedAtNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotIn"))
-			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtNotIn = data
-		case "updatedAtGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtGT = data
-		case "updatedAtGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtGTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtGTE = data
-		case "updatedAtLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLT"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtLT = data
-		case "updatedAtLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtLTE"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtLTE = data
-		case "updatedAtIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtIsNil = data
-		case "updatedAtNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedAtNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UpdatedAtNotNil = data
-		case "userID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
-		case "userIDNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNEQ"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDNEQ = data
-		case "userIDIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDIn = data
-		case "userIDNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotIn"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDNotIn = data
-		case "userIDIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDIsNil = data
-		case "userIDNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDNotNil = data
-		case "canLogin":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLogin"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CanLogin = data
-		case "canLoginNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginNEQ"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CanLoginNEQ = data
-		case "canLoginIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CanLoginIsNil = data
-		case "canLoginNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("canLoginNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CanLoginNotNil = data
-		case "setKind":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKind"))
-			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SetKind = data
-		case "setKindNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindNEQ"))
-			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKind(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SetKindNEQ = data
-		case "setKindIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindIn"))
-			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKindᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SetKindIn = data
-		case "setKindNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("setKindNotIn"))
-			data, err := ec.unmarshalOUserLoginProfileSetKind2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserloginprofileᚐSetKindᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SetKindNotIn = data
-		case "passwordReset":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordReset"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PasswordReset = data
-		case "passwordResetNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetNEQ"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PasswordResetNEQ = data
-		case "passwordResetIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PasswordResetIsNil = data
-		case "passwordResetNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordResetNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.PasswordResetNotNil = data
-		case "verifyDevice":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDevice"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.VerifyDevice = data
-		case "verifyDeviceNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDeviceNEQ"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.VerifyDeviceNEQ = data
-		case "mfaEnabled":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabled"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaEnabled = data
-		case "mfaEnabledNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledNEQ"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaEnabledNEQ = data
-		case "mfaEnabledIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaEnabledIsNil = data
-		case "mfaEnabledNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaEnabledNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaEnabledNotNil = data
-		case "mfaStatus":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatus"))
-			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatus = data
-		case "mfaStatusNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNEQ"))
-			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatusNEQ = data
-		case "mfaStatusIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusIn"))
-			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatusIn = data
-		case "mfaStatusNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNotIn"))
-			data, err := ec.unmarshalOUserLoginProfileSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatusNotIn = data
-		case "mfaStatusIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatusIsNil = data
-		case "mfaStatusNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mfaStatusNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.MfaStatusNotNil = data
-		case "hasUser":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUser"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasUser = data
-		case "hasUserWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUserWith"))
-			data, err := ec.unmarshalOUserWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasUserWith = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUserOrder(ctx context.Context, obj interface{}) (ent.UserOrder, error) {
-	var it ent.UserOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	fieldsInOrder := [...]string{"direction", "field"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "direction":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Direction = data
-		case "field":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			data, err := ec.unmarshalNUserOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Field = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputUserPasswordOrder(ctx context.Context, obj interface{}) (ent.UserPasswordOrder, error) {
-	var it ent.UserPasswordOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	if _, present := asMap["direction"]; !present {
-		asMap["direction"] = "ASC"
-	}
-
-	fieldsInOrder := [...]string{"direction", "field"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "direction":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
-			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Direction = data
-		case "field":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
-			data, err := ec.unmarshalNUserPasswordOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordOrderField(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Field = data
 		}
 	}
 
@@ -73351,6 +74052,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "userDevices":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userDevices(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "globalID":
 			field := field
 
@@ -75470,6 +76193,93 @@ func (ec *executionContext) _UserDevice(ctx context.Context, sel ast.SelectionSe
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var userDeviceConnectionImplementors = []string{"UserDeviceConnection"}
+
+func (ec *executionContext) _UserDeviceConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.UserDeviceConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userDeviceConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserDeviceConnection")
+		case "edges":
+			out.Values[i] = ec._UserDeviceConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._UserDeviceConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._UserDeviceConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var userDeviceEdgeImplementors = []string{"UserDeviceEdge"}
+
+func (ec *executionContext) _UserDeviceEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.UserDeviceEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userDeviceEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserDeviceEdge")
+		case "node":
+			out.Values[i] = ec._UserDeviceEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._UserDeviceEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -77933,6 +78743,20 @@ func (ec *executionContext) marshalNUserDevice2ᚖgithubᚗcomᚋwoocoosᚋknock
 		return graphql.Null
 	}
 	return ec._UserDevice(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNUserDeviceConnection2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceConnection(ctx context.Context, sel ast.SelectionSet, v ent.UserDeviceConnection) graphql.Marshaler {
+	return ec._UserDeviceConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUserDeviceConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceConnection(ctx context.Context, sel ast.SelectionSet, v *ent.UserDeviceConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._UserDeviceConnection(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNUserDeviceOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceOrderField(ctx context.Context, v interface{}) (*ent.UserDeviceOrderField, error) {
@@ -83049,6 +83873,69 @@ func (ec *executionContext) marshalOUserDevice2ᚕᚖgithubᚗcomᚋwoocoosᚋkn
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOUserDevice2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDevice(ctx context.Context, sel ast.SelectionSet, v *ent.UserDevice) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UserDevice(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOUserDeviceEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.UserDeviceEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUserDeviceEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOUserDeviceEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceEdge(ctx context.Context, sel ast.SelectionSet, v *ent.UserDeviceEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UserDeviceEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOUserDeviceOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDeviceOrder(ctx context.Context, v interface{}) (*ent.UserDeviceOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputUserDeviceOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOUserDeviceSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {

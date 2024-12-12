@@ -99,6 +99,13 @@ func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], fi
 		ent.WithUserFilter(where.Filter))
 }
 
+// UserDevices is the resolver for the userDevices field.
+func (r *queryResolver) UserDevices(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) (*ent.UserDeviceConnection, error) {
+	return r.client.UserDevice.Query().Paginate(ctx, after, first, before, last,
+		ent.WithUserDeviceOrder(orderBy),
+		ent.WithUserDeviceFilter(where.Filter))
+}
+
 // AppPolicy returns generated.AppPolicyResolver implementation.
 func (r *Resolver) AppPolicy() generated.AppPolicyResolver { return &appPolicyResolver{r} }
 
