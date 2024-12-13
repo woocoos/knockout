@@ -309,7 +309,40 @@ func (uppu *UserPasswordPolicyUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uppu *UserPasswordPolicyUpdate) check() error {
+	if v, ok := uppu.mutation.Length(); ok {
+		if err := userpasswordpolicy.LengthValidator(v); err != nil {
+			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
+		}
+	}
+	if v, ok := uppu.mutation.IncludeChar(); ok {
+		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
+			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
+		}
+	}
+	if v, ok := uppu.mutation.InvalidDay(); ok {
+		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
+			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
+		}
+	}
+	if v, ok := uppu.mutation.Retry(); ok {
+		if err := userpasswordpolicy.RetryValidator(v); err != nil {
+			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
+		}
+	}
+	if v, ok := uppu.mutation.CaptchaTimes(); ok {
+		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
+			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uppu *UserPasswordPolicyUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := uppu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(userpasswordpolicy.Table, userpasswordpolicy.Columns, sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt))
 	if ps := uppu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -713,7 +746,40 @@ func (uppuo *UserPasswordPolicyUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uppuo *UserPasswordPolicyUpdateOne) check() error {
+	if v, ok := uppuo.mutation.Length(); ok {
+		if err := userpasswordpolicy.LengthValidator(v); err != nil {
+			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
+		}
+	}
+	if v, ok := uppuo.mutation.IncludeChar(); ok {
+		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
+			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
+		}
+	}
+	if v, ok := uppuo.mutation.InvalidDay(); ok {
+		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
+			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
+		}
+	}
+	if v, ok := uppuo.mutation.Retry(); ok {
+		if err := userpasswordpolicy.RetryValidator(v); err != nil {
+			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
+		}
+	}
+	if v, ok := uppuo.mutation.CaptchaTimes(); ok {
+		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
+			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uppuo *UserPasswordPolicyUpdateOne) sqlSave(ctx context.Context) (_node *UserPasswordPolicy, err error) {
+	if err := uppuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(userpasswordpolicy.Table, userpasswordpolicy.Columns, sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt))
 	id, ok := uppuo.mutation.ID()
 	if !ok {

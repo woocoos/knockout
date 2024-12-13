@@ -88,9 +88,19 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [3]ent.Hook
+	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// LengthValidator is a validator for the "length" field. It is called by the builders before save.
+	LengthValidator func(int32) error
+	// IncludeCharValidator is a validator for the "include_char" field. It is called by the builders before save.
+	IncludeCharValidator func(int32) error
+	// InvalidDayValidator is a validator for the "invalid_day" field. It is called by the builders before save.
+	InvalidDayValidator func(int32) error
+	// RetryValidator is a validator for the "retry" field. It is called by the builders before save.
+	RetryValidator func(int32) error
+	// CaptchaTimesValidator is a validator for the "captcha_times" field. It is called by the builders before save.
+	CaptchaTimesValidator func(int32) error
 )
 
 // OrderOption defines the ordering options for the UserPasswordPolicy queries.

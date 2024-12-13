@@ -900,10 +900,8 @@ func init() {
 	userpasswordpolicyMixin := schema.UserPasswordPolicy{}.Mixin()
 	userpasswordpolicyMixinHooks1 := userpasswordpolicyMixin[1].Hooks()
 	userpasswordpolicyMixinHooks2 := userpasswordpolicyMixin[2].Hooks()
-	userpasswordpolicyHooks := schema.UserPasswordPolicy{}.Hooks()
 	userpasswordpolicy.Hooks[0] = userpasswordpolicyMixinHooks1[0]
 	userpasswordpolicy.Hooks[1] = userpasswordpolicyMixinHooks2[0]
-	userpasswordpolicy.Hooks[2] = userpasswordpolicyHooks[0]
 	userpasswordpolicyMixinFields1 := userpasswordpolicyMixin[1].Fields()
 	_ = userpasswordpolicyMixinFields1
 	userpasswordpolicyFields := schema.UserPasswordPolicy{}.Fields()
@@ -912,6 +910,40 @@ func init() {
 	userpasswordpolicyDescCreatedAt := userpasswordpolicyMixinFields1[1].Descriptor()
 	// userpasswordpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	userpasswordpolicy.DefaultCreatedAt = userpasswordpolicyDescCreatedAt.Default.(func() time.Time)
+	// userpasswordpolicyDescLength is the schema descriptor for length field.
+	userpasswordpolicyDescLength := userpasswordpolicyFields[1].Descriptor()
+	// userpasswordpolicy.LengthValidator is a validator for the "length" field. It is called by the builders before save.
+	userpasswordpolicy.LengthValidator = func() func(int32) error {
+		validators := userpasswordpolicyDescLength.Validators
+		fns := [...]func(int32) error{
+			validators[0].(func(int32) error),
+			validators[1].(func(int32) error),
+		}
+		return func(length int32) error {
+			for _, fn := range fns {
+				if err := fn(length); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userpasswordpolicyDescIncludeChar is the schema descriptor for include_char field.
+	userpasswordpolicyDescIncludeChar := userpasswordpolicyFields[3].Descriptor()
+	// userpasswordpolicy.IncludeCharValidator is a validator for the "include_char" field. It is called by the builders before save.
+	userpasswordpolicy.IncludeCharValidator = userpasswordpolicyDescIncludeChar.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescInvalidDay is the schema descriptor for invalid_day field.
+	userpasswordpolicyDescInvalidDay := userpasswordpolicyFields[5].Descriptor()
+	// userpasswordpolicy.InvalidDayValidator is a validator for the "invalid_day" field. It is called by the builders before save.
+	userpasswordpolicy.InvalidDayValidator = userpasswordpolicyDescInvalidDay.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescRetry is the schema descriptor for retry field.
+	userpasswordpolicyDescRetry := userpasswordpolicyFields[7].Descriptor()
+	// userpasswordpolicy.RetryValidator is a validator for the "retry" field. It is called by the builders before save.
+	userpasswordpolicy.RetryValidator = userpasswordpolicyDescRetry.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescCaptchaTimes is the schema descriptor for captcha_times field.
+	userpasswordpolicyDescCaptchaTimes := userpasswordpolicyFields[8].Descriptor()
+	// userpasswordpolicy.CaptchaTimesValidator is a validator for the "captcha_times" field. It is called by the builders before save.
+	userpasswordpolicy.CaptchaTimesValidator = userpasswordpolicyDescCaptchaTimes.Validators[0].(func(int32) error)
 }
 
 const (

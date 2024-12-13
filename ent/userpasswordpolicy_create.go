@@ -277,6 +277,31 @@ func (uppc *UserPasswordPolicyCreate) check() error {
 	if _, ok := uppc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserPasswordPolicy.created_at"`)}
 	}
+	if v, ok := uppc.mutation.Length(); ok {
+		if err := userpasswordpolicy.LengthValidator(v); err != nil {
+			return &ValidationError{Name: "length", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.length": %w`, err)}
+		}
+	}
+	if v, ok := uppc.mutation.IncludeChar(); ok {
+		if err := userpasswordpolicy.IncludeCharValidator(v); err != nil {
+			return &ValidationError{Name: "include_char", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.include_char": %w`, err)}
+		}
+	}
+	if v, ok := uppc.mutation.InvalidDay(); ok {
+		if err := userpasswordpolicy.InvalidDayValidator(v); err != nil {
+			return &ValidationError{Name: "invalid_day", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.invalid_day": %w`, err)}
+		}
+	}
+	if v, ok := uppc.mutation.Retry(); ok {
+		if err := userpasswordpolicy.RetryValidator(v); err != nil {
+			return &ValidationError{Name: "retry", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.retry": %w`, err)}
+		}
+	}
+	if v, ok := uppc.mutation.CaptchaTimes(); ok {
+		if err := userpasswordpolicy.CaptchaTimesValidator(v); err != nil {
+			return &ValidationError{Name: "captcha_times", err: fmt.Errorf(`ent: validator failed for field "UserPasswordPolicy.captcha_times": %w`, err)}
+		}
+	}
 	return nil
 }
 
