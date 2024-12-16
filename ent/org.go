@@ -39,6 +39,8 @@ type Org struct {
 	ParentID int `json:"parent_id,omitempty"`
 	// 默认域名
 	Domain string `json:"domain,omitempty"`
+	// 自定义域名
+	CustomDomain []string `json:"custom_domain,omitempty"`
 	// 系统代码
 	Code string `json:"code,omitempty"`
 	// 组织名称
@@ -226,7 +228,7 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case org.FieldLogo:
+		case org.FieldCustomDomain, org.FieldLogo:
 			values[i] = new([]byte)
 		case org.FieldID, org.FieldCreatedBy, org.FieldUpdatedBy, org.FieldOwnerID, org.FieldParentID, org.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
@@ -309,6 +311,14 @@ func (o *Org) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field domain", values[i])
 			} else if value.Valid {
 				o.Domain = value.String
+			}
+		case org.FieldCustomDomain:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field custom_domain", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &o.CustomDomain); err != nil {
+					return fmt.Errorf("unmarshal field custom_domain: %w", err)
+				}
 			}
 		case org.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -496,6 +506,9 @@ func (o *Org) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("domain=")
 	builder.WriteString(o.Domain)
+	builder.WriteString(", ")
+	builder.WriteString("custom_domain=")
+	builder.WriteString(fmt.Sprintf("%v", o.CustomDomain))
 	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(o.Code)

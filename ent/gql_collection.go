@@ -3275,6 +3275,11 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				selectedFields = append(selectedFields, org.FieldDomain)
 				fieldSeen[org.FieldDomain] = struct{}{}
 			}
+		case "customDomain":
+			if _, ok := fieldSeen[org.FieldCustomDomain]; !ok {
+				selectedFields = append(selectedFields, org.FieldCustomDomain)
+				fieldSeen[org.FieldCustomDomain] = struct{}{}
+			}
 		case "code":
 			if _, ok := fieldSeen[org.FieldCode]; !ok {
 				selectedFields = append(selectedFields, org.FieldCode)

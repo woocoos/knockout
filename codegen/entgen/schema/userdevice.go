@@ -47,11 +47,11 @@ func (UserDevice) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id").Optional().Immutable(),
 		field.String("device_uid").MaxLen(64).Comment("设备唯一ID"),
-		field.String("device_name").MaxLen(45).Optional(),
-		field.String("system_name").MaxLen(45).Optional(),
-		field.String("system_version").MaxLen(45).Optional(),
-		field.String("app_version").MaxLen(45).Optional(),
-		field.String("device_model").MaxLen(45).Optional(),
+		field.String("device_name").MaxLen(45).Optional().Comment("设备名称"),
+		field.String("system_name").MaxLen(45).Optional().Comment("系统名称"),
+		field.String("system_version").MaxLen(45).Optional().Comment("系统版本"),
+		field.String("app_version").MaxLen(45).Optional().Comment("app版本"),
+		field.String("device_model").MaxLen(45).Optional().Comment("设备型号"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Optional().Comment("状态,可用或不可用及其他待确认状态"),
 		field.String("comments").Optional().Comment("备注").Annotations(entgql.Skip(entgql.SkipWhereInput)),
 	}

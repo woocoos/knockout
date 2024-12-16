@@ -38,6 +38,8 @@ const (
 	FieldParentID = "parent_id"
 	// FieldDomain holds the string denoting the domain field in the database.
 	FieldDomain = "domain"
+	// FieldCustomDomain holds the string denoting the custom_domain field in the database.
+	FieldCustomDomain = "custom_domain"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
 	// FieldName holds the string denoting the name field in the database.
@@ -172,6 +174,7 @@ var Columns = []string{
 	FieldKind,
 	FieldParentID,
 	FieldDomain,
+	FieldCustomDomain,
 	FieldCode,
 	FieldName,
 	FieldProfile,

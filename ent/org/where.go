@@ -511,6 +511,16 @@ func DomainContainsFold(v string) predicate.Org {
 	return predicate.Org(sql.FieldContainsFold(FieldDomain, v))
 }
 
+// CustomDomainIsNil applies the IsNil predicate on the "custom_domain" field.
+func CustomDomainIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldCustomDomain))
+}
+
+// CustomDomainNotNil applies the NotNil predicate on the "custom_domain" field.
+func CustomDomainNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldCustomDomain))
+}
+
 // CodeEQ applies the EQ predicate on the "code" field.
 func CodeEQ(v string) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldCode, v))

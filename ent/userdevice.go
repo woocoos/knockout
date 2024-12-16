@@ -31,15 +31,15 @@ type UserDevice struct {
 	UserID int `json:"user_id,omitempty"`
 	// 设备唯一ID
 	DeviceUID string `json:"device_uid,omitempty"`
-	// DeviceName holds the value of the "device_name" field.
+	// 设备名称
 	DeviceName string `json:"device_name,omitempty"`
-	// SystemName holds the value of the "system_name" field.
+	// 系统名称
 	SystemName string `json:"system_name,omitempty"`
-	// SystemVersion holds the value of the "system_version" field.
+	// 系统版本
 	SystemVersion string `json:"system_version,omitempty"`
-	// AppVersion holds the value of the "app_version" field.
+	// app版本
 	AppVersion string `json:"app_version,omitempty"`
-	// DeviceModel holds the value of the "device_model" field.
+	// 设备型号
 	DeviceModel string `json:"device_model,omitempty"`
 	// 状态,可用或不可用及其他待确认状态
 	Status typex.SimpleStatus `json:"status,omitempty"`

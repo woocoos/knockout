@@ -423,13 +423,13 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
-		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) int
-		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) int
+		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, addAppPolicyIDs []int, rmAppPolicyIDs []int) int
+		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) int
+		AssignOrgUserPolicyView     func(childComplexity int, orgID int, userID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
-		AssignUserPolicyView        func(childComplexity int, orgID int, userID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) int
 		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
 		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
@@ -439,7 +439,7 @@ type ComplexityRoot struct {
 		CreateAppDict               func(childComplexity int, appID int, input ent.CreateAppDictInput) int
 		CreateAppDictItem           func(childComplexity int, dictID int, input ent.CreateAppDictItemInput) int
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
-		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
+		CreateAppPolicy             func(childComplexity int, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) int
 		CreateAppPolicyView         func(childComplexity int, input ent.CreateAppPolicyViewInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
 		CreateCountry               func(childComplexity int, input ent.CreateCountryInput) int
@@ -477,6 +477,7 @@ type ComplexityRoot struct {
 		DeleteRegion                func(childComplexity int, regionID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
+		DeleteUserDevice            func(childComplexity int, userID int, deviceID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
 		DeleteUserPasswordPolicy    func(childComplexity int) int
 		DisableMfa                  func(childComplexity int, userID int) int
@@ -484,6 +485,7 @@ type ComplexityRoot struct {
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		EnableMfa                   func(childComplexity int, userID int) int
 		EnableOauthClient           func(childComplexity int, id int) int
+		EnableVerifyUserDevice      func(childComplexity int, userID int, enable bool, deviceInfoInput ent.CreateUserDeviceInput) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppDictItem             func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
@@ -526,6 +528,7 @@ type ComplexityRoot struct {
 		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
+		UpdateUserDevice            func(childComplexity int, deviceID int, input ent.UpdateUserDeviceInput) int
 		UpdateUserPasswordPolicy    func(childComplexity int, input ent.UpdateUserPasswordPolicyInput) int
 	}
 
@@ -552,6 +555,7 @@ type ComplexityRoot struct {
 		CountryCode            func(childComplexity int) int
 		CreatedAt              func(childComplexity int) int
 		CreatedBy              func(childComplexity int) int
+		CustomDomain           func(childComplexity int) int
 		DeletedAt              func(childComplexity int) int
 		DisplaySort            func(childComplexity int) int
 		Domain                 func(childComplexity int) int
@@ -2914,7 +2918,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["appPolicyIDs"].([]int), args["rmAppPolicyIDs"].([]int)), true
+		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["addAppPolicyIDs"].([]int), args["rmAppPolicyIDs"].([]int)), true
 
 	case "Mutation.assignOrgRolePolicyView":
 		if e.complexity.Mutation.AssignOrgRolePolicyView == nil {
@@ -2926,7 +2930,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["orgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
+		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["addOrgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
+
+	case "Mutation.assignOrgUserPolicyView":
+		if e.complexity.Mutation.AssignOrgUserPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignOrgUserPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignOrgUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["addOrgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
 
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
@@ -2975,18 +2991,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AssignRoleUser(childComplexity, args["input"].(model.AssignRoleUserInput)), true
-
-	case "Mutation.assignUserPolicyView":
-		if e.complexity.Mutation.AssignUserPolicyView == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_assignUserPolicyView_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.AssignUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["orgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
 
 	case "Mutation.autoGrantApp":
 		if e.complexity.Mutation.AutoGrantApp == nil {
@@ -3106,7 +3110,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppPolicyInput)), true
+		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["appPolicyViewID"].(*int), args["input"].(ent.CreateAppPolicyInput)), true
 
 	case "Mutation.createAppPolicyView":
 		if e.complexity.Mutation.CreateAppPolicyView == nil {
@@ -3552,6 +3556,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUser(childComplexity, args["userID"].(int)), true
 
+	case "Mutation.deleteUserDevice":
+		if e.complexity.Mutation.DeleteUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteUserDevice(childComplexity, args["userID"].(int), args["deviceID"].(int)), true
+
 	case "Mutation.deleteUserIdentity":
 		if e.complexity.Mutation.DeleteUserIdentity == nil {
 			break
@@ -3630,6 +3646,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EnableOauthClient(childComplexity, args["id"].(int)), true
+
+	case "Mutation.enableVerifyUserDevice":
+		if e.complexity.Mutation.EnableVerifyUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_enableVerifyUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EnableVerifyUserDevice(childComplexity, args["userID"].(int), args["enable"].(bool), args["deviceInfoInput"].(ent.CreateUserDeviceInput)), true
 
 	case "Mutation.grant":
 		if e.complexity.Mutation.Grant == nil {
@@ -4135,6 +4163,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["contact"].(*ent.UpdateUserAddrInput)), true
 
+	case "Mutation.updateUserDevice":
+		if e.complexity.Mutation.UpdateUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserDevice(childComplexity, args["deviceID"].(int), args["input"].(ent.UpdateUserDeviceInput)), true
+
 	case "Mutation.updateUserPasswordPolicy":
 		if e.complexity.Mutation.UpdateUserPasswordPolicy == nil {
 			break
@@ -4284,6 +4324,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.CreatedBy(childComplexity), true
+
+	case "Org.customDomain":
+		if e.complexity.Org.CustomDomain == nil {
+			break
+		}
+
+		return e.complexity.Org.CustomDomain(childComplexity), true
 
 	case "Org.deletedAt":
 		if e.complexity.Org.DeletedAt == nil {
@@ -10319,6 +10366,10 @@ input CreateOrgInput {
   """
   domain: String
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  """
   组织名称
   """
   name: String!
@@ -10593,10 +10644,25 @@ input CreateUserDeviceInput {
   设备唯一ID
   """
   deviceUID: String!
+  """
+  设备名称
+  """
   deviceName: String
+  """
+  系统名称
+  """
   systemName: String
+  """
+  系统版本
+  """
   systemVersion: String
+  """
+  app版本
+  """
   appVersion: String
+  """
+  设备型号
+  """
   deviceModel: String
   """
   状态,可用或不可用及其他待确认状态
@@ -11714,6 +11780,10 @@ type Org implements Node {
   默认域名
   """
   domain: String
+  """
+  自定义域名
+  """
+  customDomain: [String!]
   """
   系统代码
   """
@@ -14949,6 +15019,12 @@ input UpdateOrgInput {
   domain: String
   clearDomain: Boolean
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  appendCustomDomain: [String!]
+  clearCustomDomain: Boolean
+  """
   组织名称
   """
   name: String
@@ -15276,14 +15352,29 @@ input UpdateUserDeviceInput {
   设备唯一ID
   """
   deviceUID: String
+  """
+  设备名称
+  """
   deviceName: String
   clearDeviceName: Boolean
+  """
+  系统名称
+  """
   systemName: String
   clearSystemName: Boolean
+  """
+  系统版本
+  """
   systemVersion: String
   clearSystemVersion: Boolean
+  """
+  app版本
+  """
   appVersion: String
   clearAppVersion: Boolean
+  """
+  设备型号
+  """
   deviceModel: String
   clearDeviceModel: Boolean
   """
@@ -15930,10 +16021,25 @@ type UserDevice implements Node {
   设备唯一ID
   """
   deviceUID: String!
+  """
+  设备名称
+  """
   deviceName: String
+  """
+  系统名称
+  """
   systemName: String
+  """
+  系统版本
+  """
   systemVersion: String
+  """
+  app版本
+  """
   appVersion: String
+  """
+  设备型号
+  """
   deviceModel: String
   """
   状态,可用或不可用及其他待确认状态
@@ -17384,7 +17490,7 @@ input UserWhereInput {
     """删除应用操作"""
     deleteAppAction(actionID:ID!): Boolean!
     """创建应用策略模板"""
-    createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
+    createAppPolicy(appID:ID!,"""策略视图id，有传就关联视图"""appPolicyViewID:ID,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
@@ -17546,11 +17652,11 @@ input UserWhereInput {
         action: TreeAction!
     ): Boolean!
     """应用角色添加策略视图权限"""
-    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, addAppPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
     """组织用户添加策略视图权限"""
-    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    assignOrgUserPolicyView(orgID: ID!,userID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """组织角色添加策略视图权限"""
-    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """创建配额项"""
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     """更新配额项"""
@@ -17569,6 +17675,12 @@ input UserWhereInput {
     updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
     """删除密码策略"""
     deleteUserPasswordPolicy: Boolean!
+    """更新用户设备"""
+    updateUserDevice(deviceID: ID!,input: UpdateUserDeviceInput!): UserDevice!
+    """开启用户设备验证"""
+    enableVerifyUserDevice(userID: ID!,enable: Boolean!,deviceInfoInput: CreateUserDeviceInput!): Boolean!
+    """删除用户设备"""
+    deleteUserDevice(userID: ID!,deviceID: ID!): Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../query.graphql", Input: `extend type Query {

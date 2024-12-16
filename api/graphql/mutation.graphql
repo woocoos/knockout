@@ -64,7 +64,7 @@ type Mutation {
     """删除应用操作"""
     deleteAppAction(actionID:ID!): Boolean!
     """创建应用策略模板"""
-    createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
+    createAppPolicy(appID:ID!,"""策略视图id，有传就关联视图"""appPolicyViewID:ID,input: CreateAppPolicyInput!): AppPolicy
     """更新应用策略模板"""
     updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
     """删除应用策略模板"""
@@ -226,11 +226,11 @@ type Mutation {
         action: TreeAction!
     ): Boolean!
     """应用角色添加策略视图权限"""
-    assignAppRolePolicyView(appID: ID!, roleID: ID!, appPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, addAppPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
     """组织用户添加策略视图权限"""
-    assignUserPolicyView(orgID: ID!,userID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    assignOrgUserPolicyView(orgID: ID!,userID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """组织角色添加策略视图权限"""
-    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, orgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
     """创建配额项"""
     createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
     """更新配额项"""
@@ -249,4 +249,10 @@ type Mutation {
     updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
     """删除密码策略"""
     deleteUserPasswordPolicy: Boolean!
+    """更新用户设备"""
+    updateUserDevice(deviceID: ID!,input: UpdateUserDeviceInput!): UserDevice!
+    """开启用户设备验证"""
+    enableVerifyUserDevice(userID: ID!,enable: Boolean!,deviceInfoInput: CreateUserDeviceInput!): Boolean!
+    """删除用户设备"""
+    deleteUserDevice(userID: ID!,deviceID: ID!): Boolean!
 }

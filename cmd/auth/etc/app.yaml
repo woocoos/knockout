@@ -24,6 +24,7 @@ authz:
 auth:
   captchaTimes: 3 # if login fail times, captcha will force show
   captchaTTL: 1m # captcha ttl
+  captchaExpire: 5m
   loginFailTimes: 10 # login fail times will lock account
   loginFailLockTime: 10m # login fail lock time
   stateTokenTTL: 20m
@@ -73,6 +74,8 @@ web:
                   - "/login/mfaqr.png"
                   - "/login/verify-factor"
                   - "/login/reset-password"
+                  - "/login/device-captcha"
+                  - "/login/verify-device"
                   - "/captcha"
                   - "/forget-pwd/begin"
                   - "/forget-pwd/verify-email"
@@ -141,7 +144,7 @@ kosdk:
   plugin:
     fs:
     msg:
-      basePath: "http://127.0.0.1:10072"
+      basePath: "http://192.168.0.14:32037/api/v2"
 
 
 

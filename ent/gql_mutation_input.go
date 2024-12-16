@@ -1431,6 +1431,7 @@ func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUp
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
 	Domain                *string
+	CustomDomain          []string
 	Name                  string
 	Profile               *string
 	Status                *typex.SimpleStatus
@@ -1454,6 +1455,9 @@ type CreateOrgInput struct {
 func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.Domain; v != nil {
 		m.SetDomain(*v)
+	}
+	if v := i.CustomDomain; v != nil {
+		m.SetCustomDomain(v)
 	}
 	m.SetName(i.Name)
 	if v := i.Profile; v != nil {
@@ -1514,6 +1518,9 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 type UpdateOrgInput struct {
 	ClearDomain                 bool
 	Domain                      *string
+	ClearCustomDomain           bool
+	CustomDomain                []string
+	AppendCustomDomain          []string
 	Name                        *string
 	ClearProfile                bool
 	Profile                     *string
@@ -1563,6 +1570,15 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.Domain; v != nil {
 		m.SetDomain(*v)
+	}
+	if i.ClearCustomDomain {
+		m.ClearCustomDomain()
+	}
+	if v := i.CustomDomain; v != nil {
+		m.SetCustomDomain(v)
+	}
+	if i.AppendCustomDomain != nil {
+		m.AppendCustomDomain(i.CustomDomain)
 	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)

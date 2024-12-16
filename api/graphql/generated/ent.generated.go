@@ -10723,6 +10723,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -18111,6 +18113,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -20295,6 +20299,47 @@ func (ec *executionContext) fieldContext_Org_domain(_ context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_customDomain(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_customDomain(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CustomDomain, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_customDomain(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_code(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_code(ctx, field)
 	if err != nil {
@@ -20775,6 +20820,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -20880,6 +20927,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -21488,6 +21537,8 @@ func (ec *executionContext) fieldContext_Org_TopOrg(_ context.Context, field gra
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -21793,6 +21844,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -22377,6 +22430,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -24242,6 +24297,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -25325,6 +25382,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -27203,6 +27262,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -27322,6 +27383,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -28123,6 +28186,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -37947,6 +38012,8 @@ func (ec *executionContext) fieldContext_UserPasswordPolicy_org(_ context.Contex
 				return ec.fieldContext_Org_parentID(ctx, field)
 			case "domain":
 				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
 			case "code":
 				return ec.fieldContext_Org_code(ctx, field)
 			case "name":
@@ -47311,7 +47378,7 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "name", "profile", "status", "countryCode", "timezone", "localCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs", "userPasswordPolicyIDs"}
+	fieldsInOrder := [...]string{"domain", "customDomain", "name", "profile", "status", "countryCode", "timezone", "localCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs", "userPasswordPolicyIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -47325,6 +47392,13 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.Domain = data
+		case "customDomain":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customDomain"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CustomDomain = data
 		case "name":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			data, err := ec.unmarshalNString2string(ctx, v)
@@ -60279,7 +60353,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "localCurrency", "clearLocalCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities", "addUserPasswordPolicyIDs", "removeUserPasswordPolicyIDs", "clearUserPasswordPolicy"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "customDomain", "appendCustomDomain", "clearCustomDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "localCurrency", "clearLocalCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities", "addUserPasswordPolicyIDs", "removeUserPasswordPolicyIDs", "clearUserPasswordPolicy"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -60300,6 +60374,27 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearDomain = data
+		case "customDomain":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("customDomain"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CustomDomain = data
+		case "appendCustomDomain":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appendCustomDomain"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppendCustomDomain = data
+		case "clearCustomDomain":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearCustomDomain"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearCustomDomain = data
 		case "name":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -72070,6 +72165,8 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 			}
 		case "domain":
 			out.Values[i] = ec._Org_domain(ctx, field, obj)
+		case "customDomain":
+			out.Values[i] = ec._Org_customDomain(ctx, field, obj)
 		case "code":
 			out.Values[i] = ec._Org_code(ctx, field, obj)
 		case "name":
@@ -77696,6 +77793,11 @@ func (ec *executionContext) unmarshalNCreateRegionInput2githubᚗcomᚋwoocoos�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNCreateUserDeviceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserDeviceInput(ctx context.Context, v interface{}) (ent.CreateUserDeviceInput, error) {
+	res, err := ec.unmarshalInputCreateUserDeviceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNCreateUserIdentityInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐCreateUserIdentityInput(ctx context.Context, v interface{}) (ent.CreateUserIdentityInput, error) {
 	res, err := ec.unmarshalInputCreateUserIdentityInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -78641,6 +78743,11 @@ func (ec *executionContext) unmarshalNUpdateRegionInput2githubᚗcomᚋwoocoos�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNUpdateUserDeviceInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserDeviceInput(ctx context.Context, v interface{}) (ent.UpdateUserDeviceInput, error) {
+	res, err := ec.unmarshalInputUpdateUserDeviceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNUpdateUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUpdateUserInput(ctx context.Context, v interface{}) (ent.UpdateUserInput, error) {
 	res, err := ec.unmarshalInputUpdateUserInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -78733,6 +78840,10 @@ func (ec *executionContext) unmarshalNUserCreationType2githubᚗcomᚋwoocoosᚋ
 
 func (ec *executionContext) marshalNUserCreationType2githubᚗcomᚋwoocoosᚋknockoutᚋentᚋuserᚐCreationType(ctx context.Context, sel ast.SelectionSet, v user.CreationType) graphql.Marshaler {
 	return v
+}
+
+func (ec *executionContext) marshalNUserDevice2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDevice(ctx context.Context, sel ast.SelectionSet, v ent.UserDevice) graphql.Marshaler {
+	return ec._UserDevice(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNUserDevice2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserDevice(ctx context.Context, sel ast.SelectionSet, v *ent.UserDevice) graphql.Marshaler {

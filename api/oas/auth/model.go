@@ -12,6 +12,17 @@ type Captcha struct {
 	CaptchaImage string `json:"captchaImage,omitempty"`
 }
 
+// DeviceInfo device info
+type DeviceInfo struct {
+	AppVersion    string `json:"appVersion,omitempty"`
+	Comments      string `json:"comments,omitempty"`
+	DeviceModel   string `json:"deviceModel,omitempty"`
+	DeviceName    string `json:"deviceName,omitempty"`
+	DeviceUid     string `json:"deviceUid,omitempty"`
+	SystemName    string `json:"systemName,omitempty"`
+	SystemVersion string `json:"systemVersion,omitempty"`
+}
+
 type Domain struct {
 	ID             int    `json:"id,omitempty"`
 	LocalCurrency  string `json:"local_currency,omitempty"`

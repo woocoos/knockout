@@ -31,6 +31,8 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/token", wrapToken(si))
 	router.POST("/mfa/unbind", wrapUnBindMfa(si))
+	router.POST("/login/verify-device", wrapVerifyDevice(si))
+	router.POST("/login/device-captcha", wrapVerifyDeviceSendEmail(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
 }
 
@@ -317,6 +319,38 @@ func wrapUnBindMfa(si AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.UnBindMfa(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapVerifyDevice(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req VerifyDeviceRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.VerifyDevice(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapVerifyDeviceSendEmail(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req VerifyDeviceSendEmailRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.VerifyDeviceSendEmail(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

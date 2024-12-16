@@ -43,6 +43,9 @@ paths:
                 captchaId:
                   type: string
                   description: captcha id,if login fail 3 times, the login profile will demand captcha.
+                deviceId:
+                  type: string
+                  description: device id,app verify the login device.
               required:
                 - username
                 - password
@@ -198,6 +201,69 @@ paths:
       responses:
         '200':
           description: complete the login flow. return token info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/device-captcha:
+    post:
+      description: the captcha code is sent to the login device.
+      tags:
+        - auth
+      operationId: verifyDeviceSendEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                stateToken:
+                  type: string
+              required:
+                - email
+                - newPassword
+      responses:
+        '200':
+          description: complete the verify device flow. return captcha info
+          content:
+            application/json:
+              schema:
+                type: string
+                description: return captchaId on success
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/verify-device:
+    post:
+      description: verify the device login with the verification code.
+      tags:
+        - auth
+      operationId: verifyDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                captcha:
+                  type: string
+                captchaId:
+                  type: string
+                stateToken:
+                  type: string
+                deviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+              required:
+                - captcha
+                - captchaId
+                - stateToken
+                - deviceInfo
+      responses:
+        '200':
+          description: complete the verify device flow. return captcha info
           content:
             application/json:
               schema:
@@ -650,6 +716,24 @@ components:
         captchaId:
           type: string
         captchaImage:
+          type: string
+    DeviceInfo:
+      type: object
+      description: device info
+      properties:
+        deviceUid:
+          type: string
+        deviceName:
+          type: string
+        systemName:
+          type: string
+        systemVersion:
+          type: string
+        appVersion:
+          type: string
+        deviceModel:
+          type: string
+        comments:
           type: string
     Mfa:
       type: object

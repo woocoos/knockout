@@ -67,6 +67,12 @@ type AuthServer interface {
 	// UnBindMfa Verify a one-time password (OTP) value to unBind MFA.
 	// (POST /mfa/unbind)
 	UnBindMfa(*gin.Context, *UnBindMfaRequest) (bool, error)
+	// VerifyDevice verify the device login with the verification code.
+	// (POST /login/verify-device)
+	VerifyDevice(*gin.Context, *VerifyDeviceRequest) (*LoginResponse, error)
+	// VerifyDeviceSendEmail the captcha code is sent to the login device.
+	// (POST /login/device-captcha)
+	VerifyDeviceSendEmail(*gin.Context, *VerifyDeviceSendEmailRequest) (string, error)
 	// VerifyFactor Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
 	// (POST /login/verify-factor)
 	VerifyFactor(*gin.Context, *VerifyFactorRequest) (*LoginResponse, error)
@@ -167,6 +173,16 @@ func (UnimplementedAuthServer) Token(c *gin.Context, req *TokenRequest) (_ *Toke
 
 func (UnimplementedAuthServer) UnBindMfa(c *gin.Context, req *UnBindMfaRequest) (_ bool, err error) {
 	err = fmt.Errorf("method UnBindMfa not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) VerifyDevice(c *gin.Context, req *VerifyDeviceRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method VerifyDevice not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) VerifyDeviceSendEmail(c *gin.Context, req *VerifyDeviceSendEmailRequest) (_ string, err error) {
+	err = fmt.Errorf("method VerifyDeviceSendEmail not implemented")
 	return
 }
 

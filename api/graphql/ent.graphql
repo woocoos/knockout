@@ -3073,6 +3073,10 @@ input CreateOrgInput {
   """
   domain: String
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  """
   组织名称
   """
   name: String!
@@ -3347,10 +3351,25 @@ input CreateUserDeviceInput {
   设备唯一ID
   """
   deviceUID: String!
+  """
+  设备名称
+  """
   deviceName: String
+  """
+  系统名称
+  """
   systemName: String
+  """
+  系统版本
+  """
   systemVersion: String
+  """
+  app版本
+  """
   appVersion: String
+  """
+  设备型号
+  """
   deviceModel: String
   """
   状态,可用或不可用及其他待确认状态
@@ -4468,6 +4487,10 @@ type Org implements Node {
   默认域名
   """
   domain: String
+  """
+  自定义域名
+  """
+  customDomain: [String!]
   """
   系统代码
   """
@@ -7703,6 +7726,12 @@ input UpdateOrgInput {
   domain: String
   clearDomain: Boolean
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  appendCustomDomain: [String!]
+  clearCustomDomain: Boolean
+  """
   组织名称
   """
   name: String
@@ -8030,14 +8059,29 @@ input UpdateUserDeviceInput {
   设备唯一ID
   """
   deviceUID: String
+  """
+  设备名称
+  """
   deviceName: String
   clearDeviceName: Boolean
+  """
+  系统名称
+  """
   systemName: String
   clearSystemName: Boolean
+  """
+  系统版本
+  """
   systemVersion: String
   clearSystemVersion: Boolean
+  """
+  app版本
+  """
   appVersion: String
   clearAppVersion: Boolean
+  """
+  设备型号
+  """
   deviceModel: String
   clearDeviceModel: Boolean
   """
@@ -8684,10 +8728,25 @@ type UserDevice implements Node {
   设备唯一ID
   """
   deviceUID: String!
+  """
+  设备名称
+  """
   deviceName: String
+  """
+  系统名称
+  """
   systemName: String
+  """
+  系统版本
+  """
   systemVersion: String
+  """
+  app版本
+  """
   appVersion: String
+  """
+  设备型号
+  """
   deviceModel: String
   """
   状态,可用或不可用及其他待确认状态

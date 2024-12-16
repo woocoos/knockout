@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -171,6 +172,24 @@ func (ou *OrgUpdate) SetNillableDomain(s *string) *OrgUpdate {
 // ClearDomain clears the value of the "domain" field.
 func (ou *OrgUpdate) ClearDomain() *OrgUpdate {
 	ou.mutation.ClearDomain()
+	return ou
+}
+
+// SetCustomDomain sets the "custom_domain" field.
+func (ou *OrgUpdate) SetCustomDomain(s []string) *OrgUpdate {
+	ou.mutation.SetCustomDomain(s)
+	return ou
+}
+
+// AppendCustomDomain appends s to the "custom_domain" field.
+func (ou *OrgUpdate) AppendCustomDomain(s []string) *OrgUpdate {
+	ou.mutation.AppendCustomDomain(s)
+	return ou
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (ou *OrgUpdate) ClearCustomDomain() *OrgUpdate {
+	ou.mutation.ClearCustomDomain()
 	return ou
 }
 
@@ -870,6 +889,17 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ou.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
+	}
+	if value, ok := ou.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+	}
+	if value, ok := ou.mutation.AppendedCustomDomain(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, org.FieldCustomDomain, value)
+		})
+	}
+	if ou.mutation.CustomDomainCleared() {
+		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
 	}
 	if value, ok := ou.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
@@ -1618,6 +1648,24 @@ func (ouo *OrgUpdateOne) ClearDomain() *OrgUpdateOne {
 	return ouo
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (ouo *OrgUpdateOne) SetCustomDomain(s []string) *OrgUpdateOne {
+	ouo.mutation.SetCustomDomain(s)
+	return ouo
+}
+
+// AppendCustomDomain appends s to the "custom_domain" field.
+func (ouo *OrgUpdateOne) AppendCustomDomain(s []string) *OrgUpdateOne {
+	ouo.mutation.AppendCustomDomain(s)
+	return ouo
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (ouo *OrgUpdateOne) ClearCustomDomain() *OrgUpdateOne {
+	ouo.mutation.ClearCustomDomain()
+	return ouo
+}
+
 // SetCode sets the "code" field.
 func (ouo *OrgUpdateOne) SetCode(s string) *OrgUpdateOne {
 	ouo.mutation.SetCode(s)
@@ -2344,6 +2392,17 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	}
 	if ouo.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
+	}
+	if value, ok := ouo.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+	}
+	if value, ok := ouo.mutation.AppendedCustomDomain(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, org.FieldCustomDomain, value)
+		})
+	}
+	if ouo.mutation.CustomDomainCleared() {
+		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
 	}
 	if value, ok := ouo.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)

@@ -531,7 +531,7 @@ func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int
 // CreateAppPolicy 创建应用策略.
 //
 // 该方法会检查应用策略的规则中的action是否以应用代码开头.
-func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+func (s *Service) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -544,8 +544,25 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.Crea
 	if !exist {
 		return nil, fmt.Errorf("app not exist")
 	}
-
-	return client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
+	ap, err := client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 如果有传递appPolicyViewID，则关联视图
+	if appPolicyViewID != nil && *appPolicyViewID != 0 {
+		exist, err = client.AppPolicyView.Query().Where(apppolicyview.ID(*appPolicyViewID)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if !exist {
+			return nil, fmt.Errorf("appPolicyView not exist")
+		}
+		err = client.AppRolePolicy.UpdateOneID(*appPolicyViewID).SetAppPolicyID(ap.ID).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ap, nil
 }
 
 // UpdateAppPolicy 更新应用策略,该应用必须属于(创建者)该租户才可更新

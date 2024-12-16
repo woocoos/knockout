@@ -532,23 +532,23 @@ func init() {
 	// org.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
 	org.DomainValidator = orgDescDomain.Validators[0].(func(string) error)
 	// orgDescCode is the schema descriptor for code field.
-	orgDescCode := orgFields[4].Descriptor()
+	orgDescCode := orgFields[5].Descriptor()
 	// org.CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	org.CodeValidator = orgDescCode.Validators[0].(func(string) error)
 	// orgDescName is the schema descriptor for name field.
-	orgDescName := orgFields[5].Descriptor()
+	orgDescName := orgFields[6].Descriptor()
 	// org.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	org.NameValidator = orgDescName.Validators[0].(func(string) error)
 	// orgDescCountryCode is the schema descriptor for country_code field.
-	orgDescCountryCode := orgFields[10].Descriptor()
+	orgDescCountryCode := orgFields[11].Descriptor()
 	// org.CountryCodeValidator is a validator for the "country_code" field. It is called by the builders before save.
 	org.CountryCodeValidator = orgDescCountryCode.Validators[0].(func(string) error)
 	// orgDescTimezone is the schema descriptor for timezone field.
-	orgDescTimezone := orgFields[11].Descriptor()
+	orgDescTimezone := orgFields[12].Descriptor()
 	// org.TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	org.TimezoneValidator = orgDescTimezone.Validators[0].(func(string) error)
 	// orgDescLocalCurrency is the schema descriptor for local_currency field.
-	orgDescLocalCurrency := orgFields[12].Descriptor()
+	orgDescLocalCurrency := orgFields[13].Descriptor()
 	// org.LocalCurrencyValidator is a validator for the "local_currency" field. It is called by the builders before save.
 	org.LocalCurrencyValidator = orgDescLocalCurrency.Validators[0].(func(string) error)
 	orgappMixin := schema.OrgApp{}.Mixin()

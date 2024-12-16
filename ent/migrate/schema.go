@@ -496,6 +496,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "kind", Type: field.TypeEnum, Enums: []string{"root", "org"}, Default: "org"},
 		{Name: "domain", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "custom_domain", Type: field.TypeJSON, Nullable: true},
 		{Name: "code", Type: field.TypeString, Nullable: true, Size: 45},
 		{Name: "name", Type: field.TypeString, Size: 100},
 		{Name: "profile", Type: field.TypeString, Nullable: true},
@@ -517,13 +518,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_org_children",
-				Columns:    []*schema.Column{OrgColumns[18]},
+				Columns:    []*schema.Column{OrgColumns[19]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "org_user_owner",
-				Columns:    []*schema.Column{OrgColumns[19]},
+				Columns:    []*schema.Column{OrgColumns[20]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

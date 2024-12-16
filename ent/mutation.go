@@ -18690,6 +18690,8 @@ type OrgMutation struct {
 	deleted_at                  *time.Time
 	kind                        *org.Kind
 	domain                      *string
+	custom_domain               *[]string
+	appendcustom_domain         []string
 	code                        *string
 	name                        *string
 	profile                     *string
@@ -19273,6 +19275,71 @@ func (m *OrgMutation) DomainCleared() bool {
 func (m *OrgMutation) ResetDomain() {
 	m.domain = nil
 	delete(m.clearedFields, org.FieldDomain)
+}
+
+// SetCustomDomain sets the "custom_domain" field.
+func (m *OrgMutation) SetCustomDomain(s []string) {
+	m.custom_domain = &s
+	m.appendcustom_domain = nil
+}
+
+// CustomDomain returns the value of the "custom_domain" field in the mutation.
+func (m *OrgMutation) CustomDomain() (r []string, exists bool) {
+	v := m.custom_domain
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCustomDomain returns the old "custom_domain" field's value of the Org entity.
+// If the Org object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgMutation) OldCustomDomain(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCustomDomain is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCustomDomain requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCustomDomain: %w", err)
+	}
+	return oldValue.CustomDomain, nil
+}
+
+// AppendCustomDomain adds s to the "custom_domain" field.
+func (m *OrgMutation) AppendCustomDomain(s []string) {
+	m.appendcustom_domain = append(m.appendcustom_domain, s...)
+}
+
+// AppendedCustomDomain returns the list of values that were appended to the "custom_domain" field in this mutation.
+func (m *OrgMutation) AppendedCustomDomain() ([]string, bool) {
+	if len(m.appendcustom_domain) == 0 {
+		return nil, false
+	}
+	return m.appendcustom_domain, true
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (m *OrgMutation) ClearCustomDomain() {
+	m.custom_domain = nil
+	m.appendcustom_domain = nil
+	m.clearedFields[org.FieldCustomDomain] = struct{}{}
+}
+
+// CustomDomainCleared returns if the "custom_domain" field was cleared in this mutation.
+func (m *OrgMutation) CustomDomainCleared() bool {
+	_, ok := m.clearedFields[org.FieldCustomDomain]
+	return ok
+}
+
+// ResetCustomDomain resets all changes to the "custom_domain" field.
+func (m *OrgMutation) ResetCustomDomain() {
+	m.custom_domain = nil
+	m.appendcustom_domain = nil
+	delete(m.clearedFields, org.FieldCustomDomain)
 }
 
 // SetCode sets the "code" field.
@@ -20401,7 +20468,7 @@ func (m *OrgMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 20)
 	if m.created_by != nil {
 		fields = append(fields, org.FieldCreatedBy)
 	}
@@ -20428,6 +20495,9 @@ func (m *OrgMutation) Fields() []string {
 	}
 	if m.domain != nil {
 		fields = append(fields, org.FieldDomain)
+	}
+	if m.custom_domain != nil {
+		fields = append(fields, org.FieldCustomDomain)
 	}
 	if m.code != nil {
 		fields = append(fields, org.FieldCode)
@@ -20485,6 +20555,8 @@ func (m *OrgMutation) Field(name string) (ent.Value, bool) {
 		return m.ParentID()
 	case org.FieldDomain:
 		return m.Domain()
+	case org.FieldCustomDomain:
+		return m.CustomDomain()
 	case org.FieldCode:
 		return m.Code()
 	case org.FieldName:
@@ -20532,6 +20604,8 @@ func (m *OrgMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldParentID(ctx)
 	case org.FieldDomain:
 		return m.OldDomain(ctx)
+	case org.FieldCustomDomain:
+		return m.OldCustomDomain(ctx)
 	case org.FieldCode:
 		return m.OldCode(ctx)
 	case org.FieldName:
@@ -20623,6 +20697,13 @@ func (m *OrgMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDomain(v)
+		return nil
+	case org.FieldCustomDomain:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCustomDomain(v)
 		return nil
 	case org.FieldCode:
 		v, ok := value.(string)
@@ -20778,6 +20859,9 @@ func (m *OrgMutation) ClearedFields() []string {
 	if m.FieldCleared(org.FieldDomain) {
 		fields = append(fields, org.FieldDomain)
 	}
+	if m.FieldCleared(org.FieldCustomDomain) {
+		fields = append(fields, org.FieldCustomDomain)
+	}
 	if m.FieldCleared(org.FieldCode) {
 		fields = append(fields, org.FieldCode)
 	}
@@ -20833,6 +20917,9 @@ func (m *OrgMutation) ClearField(name string) error {
 		return nil
 	case org.FieldDomain:
 		m.ClearDomain()
+		return nil
+	case org.FieldCustomDomain:
+		m.ClearCustomDomain()
 		return nil
 	case org.FieldCode:
 		m.ClearCode()
@@ -20895,6 +20982,9 @@ func (m *OrgMutation) ResetField(name string) error {
 		return nil
 	case org.FieldDomain:
 		m.ResetDomain()
+		return nil
+	case org.FieldCustomDomain:
+		m.ResetCustomDomain()
 		return nil
 	case org.FieldCode:
 		m.ResetCode()

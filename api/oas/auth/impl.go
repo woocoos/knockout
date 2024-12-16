@@ -32,14 +32,17 @@ import (
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
+	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/security"
+	quotaService "github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
 	"image/png"
 	"net/http"
@@ -57,12 +60,14 @@ const (
 	forgetPwdBeginCachePrefix  = "forgetpwdbegin:"
 	forgetPwdEmailCachePrefix  = "forgetpwdemail:"
 	forgetPwdVerifyCachePrefix = "forgetpwdverify:"
+	verifyDeviceCachePrefix    = "verifyDevice:"
 
 	spmKeyPrefix = "spm:"
 
 	callBackUrlResetPassword = "/login/reset-password"
 	callBackUrlMFA           = "/login/verify-factor"
 	callBackUrlCaptcha       = "/captcha"
+	callBackUrlVerifyDevice  = "/login/verify-device"
 
 	captchaWidth  = 200
 	captchaHeight = 100
@@ -92,21 +97,21 @@ type Options struct {
 }
 type OptionsPwdPolicy struct {
 	// 密码最短长度，长度应在6-32位之间
-	Length               int32 `json:"length"`
+	Length int32 `json:"length"`
 	// 必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
-	IncludeElement       int32 `json:"includeElement"`
+	IncludeElement int32 `json:"includeElement"`
 	// 最少包含的不同字符数，最多8个，0代表不限制
-	IncludeChar          int32 `json:"includeChar"`
+	IncludeChar int32 `json:"includeChar"`
 	// 是否允许包含用户名
-	AllowIncludeUserName bool  `json:"allowIncludeUserName"`
+	AllowIncludeUserName bool `json:"allowIncludeUserName"`
 	// 有效天数，最大1095天，0代表不过期
-	InvalidDay           int32 `json:"invalidDay"`
+	InvalidDay int32 `json:"invalidDay"`
 	// 过期后是否限制登录
-	InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
+	InvalidLoginLimit bool `json:"invalidLoginLimit"`
 	// 一小时内密码错误最多尝试次数，最大32次，0代表不限次数
-	Retry                int32 `json:"retry"`
+	Retry int32 `json:"retry"`
 	// 密码错误多少次出现验证码，最大5次，0代表不出现验证码
-	CaptchaTimes         int32 `json:"captchaTimes"`
+	CaptchaTimes int32 `json:"captchaTimes"`
 }
 
 // ServerImpl is the server API for service.
@@ -239,6 +244,45 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 
 	if !profile.CanLogin {
 		return nil, errors.New("user not allowed to login")
+	}
+
+	// 设备验证：开启设备验证及传递了deviceId
+	if profile.VerifyDevice && req.DeviceId != "" {
+		// TODO 后续根据quota判断
+		// 判断是否需要验证设备，设备验证后需判断是否需要mfa验证
+		count, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID)).Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		// 获取登录设备配额
+		quotaItem, err := s.db.QuotaItem.Query().Where(quotaitem.Code(string(quotaService.ItemCodeUserDevice)), quotaitem.Active(true)).Only(ctx)
+		if err != nil && !ent.IsNotFound(err) {
+			return nil, err
+		}
+		if quotaItem != nil && quotaItem.DefaultLimit > 0 {
+			// TODO 判断配额是否达到上限，暂时提示处理
+			if int64(count) >= quotaItem.DefaultLimit {
+				return nil, fmt.Errorf("登录设备超过%d台限制", quotaItem.DefaultLimit)
+			}
+		}
+		//s.db.Quota.Query().Where(
+		//	quota.HasQuotaItemWith(
+		//		quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+		//	),
+		//).Only(ctx)
+
+		// 没有设备记录不需要验证设备
+		if count > 0 {
+			has, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID), userdevice.DeviceUID(req.DeviceId)).Exist(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if !has {
+				return s.verifyDevicePrepare(ctx, profile)
+			} else {
+				s.db.UserDevice.Update().Where(userdevice.DeviceUID(req.DeviceId), userdevice.UserID(pwd.UserID)).SetUpdatedBy(pwd.UserID).Exec(ctx)
+			}
+		}
 	}
 
 	if profile.MfaEnabled {
@@ -441,6 +485,110 @@ func (s *ServerImpl) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile)
 	}
 	err = s.cache.Set(ctx, mfaCachePrefix+sid, profile.ID, cache.WithTTL(s.StateTokenTTL))
 	return
+}
+
+func (s *ServerImpl) verifyDevicePrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *LoginResponse, err error) {
+	sid := uuid.New().String()
+	res = &LoginResponse{
+		CallbackUrl: callBackUrlVerifyDevice,
+		StateToken:  createStateToken(sid, s.Options),
+	}
+	err = s.cache.Set(ctx, verifyDeviceCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
+	return
+}
+
+// VerifyDeviceSendEmail 验证登录设备 发送邮件验证码
+func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSendEmailRequest) (string, error) {
+	token := req.StateToken
+	id, err := parseStateToken(token, s.Options)
+	if err != nil {
+		return "", err
+	}
+	var uid int
+	cacheKey := verifyDeviceCachePrefix + id
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
+		return "", err
+	}
+	// 生成验证码
+	captchaId := captcha.NewLen(6)
+	digits := s.captchaStore.Get(captchaId, false)
+	captchaCode := ""
+	for _, v := range digits {
+		captchaCode = captchaCode + strconv.Itoa(int(v))
+	}
+	usr, err := s.db.User.Get(ctx, uid)
+	if err != nil {
+		return "", err
+	}
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	if addr == nil || addr.Email == "" || req.Email != addr.Email {
+		return "", fmt.Errorf("未找到邮箱，请确认邮箱是否正确")
+	}
+	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
+	if err != nil {
+		return "", err
+	}
+
+	params := msg.PostableAlerts{
+		{
+			Annotations: map[string]string{
+				"to":            addr.Email,
+				"displayName":   usr.DisplayName,
+				"captchaCode":   captchaCode,
+				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),
+			},
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "SendCaptchaCode",
+					"tenant":    strconv.Itoa(uorg.ID),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
+			},
+		},
+	}
+	err = s.postAlerts(ctx, params)
+	if err != nil {
+		return "", err
+	}
+	return captchaId, nil
+}
+
+// VerifyDevice 验证登录设备并绑定
+func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*LoginResponse, error) {
+	// 验证验证码
+	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
+		return nil, fmt.Errorf("验证码错误")
+	}
+	token := req.StateToken
+	id, err := parseStateToken(token, s.Options)
+	if err != nil {
+		return nil, err
+	}
+	var uid int
+	if err = s.cache.Get(ctx, verifyDeviceCachePrefix+id, &uid); err != nil {
+		return nil, err
+	}
+	// 保存设备信息
+	client := s.db
+	err = client.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
+		DeviceName:    &req.DeviceInfo.DeviceName,
+		DeviceModel:   &req.DeviceInfo.DeviceModel,
+		DeviceUID:     req.DeviceInfo.DeviceUid,
+		SystemName:    &req.DeviceInfo.SystemName,
+		SystemVersion: &req.DeviceInfo.SystemVersion,
+		AppVersion:    &req.DeviceInfo.AppVersion,
+		Comments:      &req.DeviceInfo.Comments,
+	}).SetStatus(typex.SimpleStatusActive).SetUserID(uid).SetCreatedBy(uid).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// no need use transaction
+	err = updateLastLogin(ctx, s.db.UserLoginProfile, uid)
+	return s.loginToken(ctx, uid)
 }
 
 func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) error {

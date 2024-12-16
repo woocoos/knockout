@@ -22,6 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/service/resource"
 )
@@ -156,8 +157,8 @@ func (r *mutationResolver) DeleteAppAction(ctx context.Context, actionID int) (b
 }
 
 // CreateAppPolicy is the resolver for the createAppPolicy field.
-func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
-	return r.resource.CreateAppPolicy(ctx, appID, input)
+func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+	return r.resource.CreateAppPolicy(ctx, appID, appPolicyViewID, input)
 }
 
 // UpdateAppPolicy is the resolver for the updateAppPolicy field.
@@ -619,10 +620,10 @@ func (r *mutationResolver) MoveAppPolicyView(ctx context.Context, sourceID int, 
 }
 
 // AssignAppRolePolicyView is the resolver for the assignAppRolePolicyView field.
-func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, appPolicyIDs []int, rmAppPolicyIDs []int) (bool, error) {
+func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, addAppPolicyIDs []int, rmAppPolicyIDs []int) (bool, error) {
 	// TODO 是否需要判断appPolicyIDs已经添加？
 	// 添加
-	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, appPolicyIDs)
+	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, addAppPolicyIDs)
 	if err != nil {
 		return false, err
 	}
@@ -634,10 +635,10 @@ func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID in
 	return true, nil
 }
 
-// AssignUserPolicyView is the resolver for the assignUserPolicyView field.
-func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, userID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
+// AssignOrgUserPolicyView is the resolver for the assignOrgUserPolicyView field.
+func (r *mutationResolver) AssignOrgUserPolicyView(ctx context.Context, orgID int, userID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
 	// TODO 先使用grant处理，后期考虑批量处理
-	for _, orgPolicyID := range orgPolicyIDs {
+	for _, orgPolicyID := range addOrgPolicyIDs {
 		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
 			PrincipalKind: permission.PrincipalKindUser,
 			UserID:        &userID,
@@ -668,9 +669,9 @@ func (r *mutationResolver) AssignUserPolicyView(ctx context.Context, orgID int, 
 }
 
 // AssignOrgRolePolicyView is the resolver for the assignOrgRolePolicyView field.
-func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, orgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
+func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
 	// TODO 先使用grant处理，后期考虑批量处理
-	for _, orgPolicyID := range orgPolicyIDs {
+	for _, orgPolicyID := range addOrgPolicyIDs {
 		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
 			PrincipalKind: permission.PrincipalKindRole,
 			RoleID:        &roleID,
@@ -745,6 +746,49 @@ func (r *mutationResolver) UpdateUserPasswordPolicy(ctx context.Context, input e
 // DeleteUserPasswordPolicy is the resolver for the deleteUserPasswordPolicy field.
 func (r *mutationResolver) DeleteUserPasswordPolicy(ctx context.Context) (bool, error) {
 	return r.resource.DeleteUserPasswordPolicy(ctx)
+}
+
+// UpdateUserDevice is the resolver for the updateUserDevice field.
+func (r *mutationResolver) UpdateUserDevice(ctx context.Context, deviceID int, input ent.UpdateUserDeviceInput) (*ent.UserDevice, error) {
+	return ent.FromContext(ctx).UserDevice.UpdateOneID(deviceID).SetInput(input).Save(ctx)
+}
+
+// EnableVerifyUserDevice is the resolver for the enableVerifyUserDevice field.
+func (r *mutationResolver) EnableVerifyUserDevice(ctx context.Context, userID int, enable bool, deviceInfoInput ent.CreateUserDeviceInput) (bool, error) {
+	client := ent.FromContext(ctx)
+	err := client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).SetVerifyDevice(enable).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	has, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 如果存在则更新
+	if has {
+		err = client.UserDevice.Update().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).SetInput(ent.UpdateUserDeviceInput{
+			DeviceName:    deviceInfoInput.DeviceName,
+			SystemName:    deviceInfoInput.SystemName,
+			SystemVersion: deviceInfoInput.SystemVersion,
+			AppVersion:    deviceInfoInput.AppVersion,
+			DeviceModel:   deviceInfoInput.DeviceModel,
+		}).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		err = client.UserDevice.Create().SetInput(deviceInfoInput).SetStatus(typex.SimpleStatusActive).SetUserID(userID).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+// DeleteUserDevice is the resolver for the deleteUserDevice field.
+func (r *mutationResolver) DeleteUserDevice(ctx context.Context, userID int, deviceID int) (bool, error) {
+	_, err := ent.FromContext(ctx).UserDevice.Delete().Where(userdevice.ID(deviceID), userdevice.UserID(userID)).Exec(ctx)
+	return err == nil, err
 }
 
 // Mutation returns generated1.MutationResolver implementation.

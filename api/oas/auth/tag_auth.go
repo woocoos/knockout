@@ -100,6 +100,8 @@ type LoginRequest struct {
 	Captcha string `json:"captcha,omitempty"`
 	// CaptchaId captcha id,if login fail 3 times, the login profile will demand captcha.
 	CaptchaId string `json:"captchaId,omitempty"`
+	// DeviceId device id,app verify the login device.
+	DeviceId string `json:"deviceId,omitempty"`
 	// Password hashed password
 	Password string `binding:"required" json:"password"`
 	// Username username or email
@@ -168,6 +170,21 @@ type TokenResponse struct {
 // UnBindMfaRequest is the request object for (POST /mfa/unbind)
 type UnBindMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
+}
+
+// VerifyDeviceRequest is the request object for (POST /login/verify-device)
+type VerifyDeviceRequest struct {
+	Captcha   string `binding:"required" json:"captcha"`
+	CaptchaId string `binding:"required" json:"captchaId"`
+	// DeviceInfo device info
+	DeviceInfo DeviceInfo `json:"deviceInfo"`
+	StateToken string     `binding:"required" json:"stateToken"`
+}
+
+// VerifyDeviceSendEmailRequest is the request object for (POST /login/device-captcha)
+type VerifyDeviceSendEmailRequest struct {
+	Email      string `binding:"required" json:"email"`
+	StateToken string `json:"stateToken,omitempty"`
 }
 
 // VerifyFactorRequest is the request object for (POST /login/verify-factor)

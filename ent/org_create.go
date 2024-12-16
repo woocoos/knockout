@@ -151,6 +151,12 @@ func (oc *OrgCreate) SetNillableDomain(s *string) *OrgCreate {
 	return oc
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (oc *OrgCreate) SetCustomDomain(s []string) *OrgCreate {
+	oc.mutation.SetCustomDomain(s)
+	return oc
+}
+
 // SetCode sets the "code" field.
 func (oc *OrgCreate) SetCode(s string) *OrgCreate {
 	oc.mutation.SetCode(s)
@@ -621,6 +627,10 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 		_node.Domain = value
 	}
+	if value, ok := oc.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+		_node.CustomDomain = value
+	}
 	if value, ok := oc.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 		_node.Code = value
@@ -1035,6 +1045,24 @@ func (u *OrgUpsert) ClearDomain() *OrgUpsert {
 	return u
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsert) SetCustomDomain(v []string) *OrgUpsert {
+	u.Set(org.FieldCustomDomain, v)
+	return u
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateCustomDomain() *OrgUpsert {
+	u.SetExcluded(org.FieldCustomDomain)
+	return u
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsert) ClearCustomDomain() *OrgUpsert {
+	u.SetNull(org.FieldCustomDomain)
+	return u
+}
+
 // SetCode sets the "code" field.
 func (u *OrgUpsert) SetCode(v string) *OrgUpsert {
 	u.Set(org.FieldCode, v)
@@ -1406,6 +1434,27 @@ func (u *OrgUpsertOne) UpdateDomain() *OrgUpsertOne {
 func (u *OrgUpsertOne) ClearDomain() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearDomain()
+	})
+}
+
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsertOne) SetCustomDomain(v []string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCustomDomain(v)
+	})
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateCustomDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCustomDomain()
+	})
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsertOne) ClearCustomDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCustomDomain()
 	})
 }
 
@@ -1976,6 +2025,27 @@ func (u *OrgUpsertBulk) UpdateDomain() *OrgUpsertBulk {
 func (u *OrgUpsertBulk) ClearDomain() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearDomain()
+	})
+}
+
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsertBulk) SetCustomDomain(v []string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCustomDomain(v)
+	})
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateCustomDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCustomDomain()
+	})
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsertBulk) ClearCustomDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCustomDomain()
 	})
 }
 
