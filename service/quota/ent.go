@@ -81,6 +81,7 @@ func EntHook(schemaType ItemCode, resource Resource) ent.Hook {
 			q, err := mc.Client().Quota.Query().
 				Where(
 					quota.TenantID(tar.TenantID),
+					quota.UserID(tar.UserID),
 					quota.QuotaItemID(quotaItem.ID),
 				).Only(ctx)
 			if err != nil {
@@ -100,6 +101,7 @@ func EntHook(schemaType ItemCode, resource Resource) ent.Hook {
 				if quotaItem.DefaultLimit != 0 {
 					q, err = mc.Client().Quota.Create().
 						SetTenantID(tar.TenantID).
+						SetUserID(tar.UserID).
 						SetQuotaItemID(quotaItem.ID).
 						SetLimit(quotaItem.DefaultLimit).
 						SetUsed(change).
