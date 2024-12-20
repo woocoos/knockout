@@ -15,6 +15,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
+	securityX "github.com/tsingsun/woocoo/pkg/security"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -32,6 +33,7 @@ import (
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -248,40 +250,30 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 
 	// 设备验证：开启设备验证及传递了deviceId
 	if profile.VerifyDevice && req.DeviceId != "" {
-		// TODO 后续根据quota判断
-		// 判断是否需要验证设备，设备验证后需判断是否需要mfa验证
-		count, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID)).Count(ctx)
-		if err != nil {
-			return nil, err
-		}
-		// 获取登录设备配额
-		quotaItem, err := s.db.QuotaItem.Query().Where(quotaitem.Code(string(quotaService.ItemCodeUserDevice)), quotaitem.Active(true)).Only(ctx)
+		// 判断是否需要验证设备
+		q, err := s.db.Quota.Query().Where(
+			quota.TenantID(0),
+			quota.UserID(pwd.UserID),
+			quota.HasQuotaItemWith(
+				quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+			),
+		).Only(ctx)
 		if err != nil && !ent.IsNotFound(err) {
 			return nil, err
 		}
-		if quotaItem != nil && quotaItem.DefaultLimit > 0 {
-			// TODO 判断配额是否达到上限，暂时提示处理
-			if int64(count) >= quotaItem.DefaultLimit {
-				return nil, fmt.Errorf("登录设备超过%d台限制", quotaItem.DefaultLimit)
-			}
+		if q != nil && q.Used >= q.Limit {
+			return nil, fmt.Errorf("登录设备超过%d台限制", q.Limit)
 		}
-		//s.db.Quota.Query().Where(
-		//	quota.HasQuotaItemWith(
-		//		quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
-		//	),
-		//).Only(ctx)
-
-		// 没有设备记录不需要验证设备
-		if count > 0 {
-			has, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID), userdevice.DeviceUID(req.DeviceId)).Exist(ctx)
-			if err != nil {
-				return nil, err
-			}
-			if !has {
-				return s.verifyDevicePrepare(ctx, profile)
-			} else {
-				s.db.UserDevice.Update().Where(userdevice.DeviceUID(req.DeviceId), userdevice.UserID(pwd.UserID)).SetUpdatedBy(pwd.UserID).Exec(ctx)
-			}
+		// 验证设备
+		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID), userdevice.DeviceUID(req.DeviceId)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			// 进行设备验证
+			return s.verifyDevicePrepare(ctx, profile)
+		} else {
+			s.db.UserDevice.Update().Where(userdevice.DeviceUID(req.DeviceId), userdevice.UserID(pwd.UserID)).SetUpdatedBy(pwd.UserID).Exec(ctx)
 		}
 	}
 
@@ -574,6 +566,10 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	}
 	// 保存设备信息
 	client := s.db
+	// ctx增加用户信息
+	ctx1 := securityX.WithContext(ctx, securityX.NewGenericPrincipalByClaims(jwt.MapClaims{
+		"sub": strconv.Itoa(uid),
+	}))
 	err = client.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
 		DeviceName:    &req.DeviceInfo.DeviceName,
 		DeviceModel:   &req.DeviceInfo.DeviceModel,
@@ -582,7 +578,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		SystemVersion: &req.DeviceInfo.SystemVersion,
 		AppVersion:    &req.DeviceInfo.AppVersion,
 		Comments:      &req.DeviceInfo.Comments,
-	}).SetStatus(typex.SimpleStatusActive).SetUserID(uid).SetCreatedBy(uid).Exec(ctx)
+	}).SetStatus(typex.SimpleStatusActive).SetUserID(uid).Exec(ctx1)
 	if err != nil {
 		return nil, err
 	}
@@ -840,7 +836,7 @@ func (s *ServerImpl) BindMfa(ctx *gin.Context, req *BindMfaRequest) (bool, error
 	if !totp.Validate(req.OtpToken, val["secret"]) {
 		return false, errors.New("invalid code")
 	}
-	err = s.db.UserLoginProfile.UpdateOneID(uid).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
+	err = s.db.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
 	return err == nil, err
 }
 

@@ -409,7 +409,7 @@ func (apvc *AppPolicyViewCreate) createSpec() (*AppPolicyView, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.PolicyID = nodes[0]
+		_node.PolicyID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := apvc.mutation.ParentIDs(); len(nodes) > 0 {

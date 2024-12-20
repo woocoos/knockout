@@ -45,7 +45,7 @@ func (AppPolicyView) Fields() []ent.Field {
 		field.String("name").Comment("名称"),
 		field.String("comments").Optional().Comment("描述").
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
-		field.Int("policy_id").Optional().Comment("关联的应用策略"),
+		field.Int("policy_id").Optional().Nillable().Comment("关联的应用策略"),
 		field.Text("path").Optional().Comment("路径编码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.Int32("display_sort").Optional().

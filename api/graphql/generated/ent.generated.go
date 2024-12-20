@@ -13752,9 +13752,9 @@ func (ec *executionContext) _AppPolicyView_policyID(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOID2int(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AppPolicyView_policyID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {

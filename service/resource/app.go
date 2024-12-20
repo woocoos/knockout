@@ -22,6 +22,8 @@ import (
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
+	"strconv"
+	"strings"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -697,4 +699,105 @@ func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action mo
 	}
 
 	return builder.Exec(ctx)
+}
+
+func (s *Service) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	client := ent.FromContext(ctx)
+	if input.AppID == nil {
+		return nil, fmt.Errorf("appID do not exist")
+	}
+	a, err := client.App.Get(ctx, *input.AppID)
+	if err != nil {
+		return nil, err
+	}
+	// 创建视图项
+	apv, err := client.AppPolicyView.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 如果是权限，则创建权限策略
+	if input.Kind == apppolicyview.KindPolicy {
+		appCode := a.Code
+		// appCode首字母大写处理
+		appCode = strings.ToUpper(string(appCode[0])) + appCode[1:]
+		name := fmt.Sprintf("Sys%s%s", appCode, strconv.Itoa(apv.ID))
+		comments := input.Name
+		if input.ParentID != 0 {
+			parent, err := client.AppPolicyView.Get(ctx, input.ParentID)
+			if err != nil {
+				return nil, err
+			}
+			comments = parent.Name + "-" + comments
+			if parent.ParentID != 0 {
+				parent, err = client.AppPolicyView.Get(ctx, parent.ParentID)
+				if err != nil {
+					return nil, err
+				}
+				comments = parent.Name + "-" + comments
+			}
+		}
+		ap, err := client.AppPolicy.Create().SetAppID(a.ID).SetKind(apppolicy.KindView).SetName(name).SetComments(comments).
+			SetRules([]*types.PolicyRule{}).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+		apv, err = client.AppPolicyView.UpdateOneID(apv.ID).SetAppPolicyID(ap.ID).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return apv, nil
+}
+
+func (s *Service) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	apv, err := client.AppPolicyView.Get(ctx, appPolicyViewID)
+	if err != nil {
+		return false, err
+	}
+	// 如果权限视图目录有子项，则不能删除
+	has, err := client.AppPolicyView.Query().Where(apppolicyview.PathHasPrefix(apv.Path), apppolicyview.IDNEQ(apv.ID)).Exist(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("请清空子节点后删除")
+	}
+	// 如果权限策略有关联权限，则不允许删除
+	if apv.PolicyID != nil {
+		ap, err := client.AppPolicy.Query().Where(apppolicy.KindEQ(apppolicy.KindView), apppolicy.ID(*apv.PolicyID)).Only(ctx)
+		if err != nil {
+			return false, err
+		}
+		for _, i := range ap.Rules {
+			if len(i.Actions) > 0 || len(i.Resources) > 0 || len(i.Conditions) > 0 {
+				return false, fmt.Errorf("请清空权限后删除！")
+			}
+		}
+	}
+	err = client.AppPolicyView.DeleteOneID(appPolicyViewID).Exec(ctx)
+	return err == nil, err
+}
+
+func (s *Service) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	client := ent.FromContext(ctx)
+	apv, err := client.AppPolicyView.Get(ctx, appPolicyViewID)
+	if err != nil {
+		return nil, err
+	}
+	// 关联应用权限策略id，不能修改为dir
+	if apv.PolicyID != nil && input.Kind != nil && *input.Kind == apppolicyview.KindDir {
+		return nil, fmt.Errorf("类型为权限策略，无法变更类型为目录")
+	}
+	// dir节点有子项，不能修改为policy
+	if apv.PolicyID == nil && input.Kind != nil && *input.Kind == apppolicyview.KindPolicy {
+		has, err := client.AppPolicyView.Query().Where(apppolicyview.PathHasPrefix(apv.Path), apppolicyview.IDNEQ(apv.ID)).Exist(ctx)
+		if err != nil && !ent.IsNotFound(err) {
+			return nil, err
+		}
+		if has {
+			return nil, fmt.Errorf("当前目录已存在子节点，无法变更类型为权限策略")
+		}
+	}
+	return client.AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)
 }

@@ -38,7 +38,7 @@ type AppPolicyView struct {
 	// 描述
 	Comments string `json:"comments,omitempty"`
 	// 关联的应用策略
-	PolicyID int `json:"policy_id,omitempty"`
+	PolicyID *int `json:"policy_id,omitempty"`
 	// 路径编码
 	Path string `json:"path,omitempty"`
 	// DisplaySort holds the value of the "display_sort" field.
@@ -200,7 +200,8 @@ func (apv *AppPolicyView) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field policy_id", values[i])
 			} else if value.Valid {
-				apv.PolicyID = int(value.Int64)
+				apv.PolicyID = new(int)
+				*apv.PolicyID = int(value.Int64)
 			}
 		case apppolicyview.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -297,8 +298,10 @@ func (apv *AppPolicyView) String() string {
 	builder.WriteString("comments=")
 	builder.WriteString(apv.Comments)
 	builder.WriteString(", ")
-	builder.WriteString("policy_id=")
-	builder.WriteString(fmt.Sprintf("%v", apv.PolicyID))
+	if v := apv.PolicyID; v != nil {
+		builder.WriteString("policy_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("path=")
 	builder.WriteString(apv.Path)

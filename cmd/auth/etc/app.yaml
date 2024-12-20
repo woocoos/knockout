@@ -55,7 +55,7 @@ auth:
 
 web:
   server:
-    addr: 127.0.0.1:10070
+    addr: :10070
   engine:
     routerGroups:
       - default:

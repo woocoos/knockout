@@ -17,7 +17,10 @@ func (s *Service) UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPoli
 		return s.defaultUserPasswordPolicy()
 	}
 	upp, err := s.Client.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(tid)).Only(ctx)
-	if err != nil && !ent.IsNotFound(err) {
+	if ent.IsNotFound(err) {
+		return s.defaultUserPasswordPolicy()
+	}
+	if err != nil {
 		return nil, err
 	}
 	return upp, nil

@@ -581,7 +581,10 @@ func (apvq *AppPolicyViewQuery) loadAppPolicy(ctx context.Context, query *AppPol
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*AppPolicyView)
 	for i := range nodes {
-		fk := nodes[i].PolicyID
+		if nodes[i].PolicyID == nil {
+			continue
+		}
+		fk := *nodes[i].PolicyID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

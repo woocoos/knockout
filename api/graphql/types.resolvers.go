@@ -31,28 +31,44 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 
 // OrgPolicy is the resolver for the orgPolicy field.
 func (r *appPolicyViewResolver) OrgPolicy(ctx context.Context, obj *ent.AppPolicyView) (*ent.OrgPolicy, error) {
+	if obj.PolicyID == nil {
+		return nil, nil
+	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return r.client.OrgPolicy.Query().Where(
+	op, err := r.client.OrgPolicy.Query().Where(
 		orgpolicy.OrgID(tid),
-		orgpolicy.AppPolicyID(obj.PolicyID),
+		orgpolicy.AppPolicyID(*obj.PolicyID),
 		orgpolicy.AppID(obj.AppID),
 	).Only(ctx)
+	if ent.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return op, nil
 }
 
 // AppRoleAssigned is the resolver for the appRoleAssigned field.
 func (r *appPolicyViewResolver) AppRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, appRoleID int) (bool, error) {
+	if obj.PolicyID == nil {
+		return false, nil
+	}
 	return r.client.AppRolePolicy.Query().Where(
 		approlepolicy.AppID(obj.AppID),
 		approlepolicy.AppRoleID(appRoleID),
-		approlepolicy.AppPolicyID(obj.PolicyID),
+		approlepolicy.AppPolicyID(*obj.PolicyID),
 	).Exist(ctx)
 }
 
 // OrgRoleAssigned is the resolver for the orgRoleAssigned field.
 func (r *appPolicyViewResolver) OrgRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, orgRoleID int) (bool, error) {
+	if obj.PolicyID == nil {
+		return false, nil
+	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err
@@ -69,6 +85,9 @@ func (r *appPolicyViewResolver) OrgRoleAssigned(ctx context.Context, obj *ent.Ap
 
 // OrgUserAssigned is the resolver for the orgUserAssigned field.
 func (r *appPolicyViewResolver) OrgUserAssigned(ctx context.Context, obj *ent.AppPolicyView, userID int) (bool, error) {
+	if obj.PolicyID == nil {
+		return false, nil
+	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err

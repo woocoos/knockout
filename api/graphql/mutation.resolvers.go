@@ -596,18 +596,17 @@ func (r *mutationResolver) AutoGrantApp(ctx context.Context, appCode string, org
 
 // CreateAppPolicyView is the resolver for the createAppPolicyView field.
 func (r *mutationResolver) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
-	return ent.FromContext(ctx).AppPolicyView.Create().SetInput(input).Save(ctx)
+	return r.resource.CreateAppPolicyView(ctx, input)
 }
 
 // UpdateAppPolicyView is the resolver for the updateAppPolicyView field.
 func (r *mutationResolver) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error) {
-	return ent.FromContext(ctx).AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)
+	return r.resource.UpdateAppPolicyView(ctx, appPolicyViewID, input)
 }
 
 // DeleteAppPolicyView is the resolver for the deleteAppPolicyView field.
 func (r *mutationResolver) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error) {
-	err := ent.FromContext(ctx).AppPolicyView.DeleteOneID(appPolicyViewID).Exec(ctx)
-	return err == nil, err
+	return r.resource.DeleteAppPolicyView(ctx, appPolicyViewID)
 }
 
 // MoveAppPolicyView is the resolver for the moveAppPolicyView field.
