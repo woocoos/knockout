@@ -1352,36 +1352,43 @@ func (s *ServerImpl) doCheckPermission(ctx context.Context, uid, tid int, action
 	return true, nil
 }
 
-func (s *ServerImpl) getTopLevelDomain(urlString string) (string, error) {
-	u, err := url.Parse(urlString)
-	if err != nil {
-		return "", err
-	}
-	host := u.Hostname()
-	// 分割host为各级域名部分
-	parts := strings.Split(host, ".")
-	if len(parts) < 2 {
-		return "", fmt.Errorf("unable to parse top level domain")
-	}
-	// 返回最后两部分作为一级域名
-	return strings.Join(parts[len(parts)-2:], "."), nil
-}
-
 func (s *ServerImpl) getPasswordPolicy(ctx *gin.Context) (*ent.UserPasswordPolicy, error) {
 	referer := ctx.GetHeader("Referer")
 	if referer == "" {
 		return s.defaultPwdPolicy(), nil
 	}
-	// 解析出一级域名
-	tld, err := s.getTopLevelDomain(referer)
+	// 获取host
+	u, err := url.Parse(referer)
 	if err != nil {
 		return s.defaultPwdPolicy(), nil
 	}
-	t, err := s.db.Org.Query().Where(org.Domain(tld), org.ParentID(0)).Only(ctx)
+	host := u.Hostname()
 	if err != nil {
 		return s.defaultPwdPolicy(), nil
 	}
-	upp, err := s.db.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(t.ID)).Only(ctx)
+	// 先根据host找domain
+	o, err := s.db.Org.Query().Where(org.Domain(host), org.ParentID(0)).Only(ctx)
+	// 如果没找到，再找自定义域名
+	if ent.IsNotFound(err) {
+		orgs, _ := s.db.Org.Query().Where(org.ParentID(0)).All(ctx)
+		for _, or := range orgs {
+			// 获取自定义域名
+			customDomains := or.CustomDomain
+			for _, customDomain := range customDomains {
+				if customDomain == host {
+					o = or
+					break
+				}
+			}
+			if o != nil {
+				break
+			}
+		}
+	}
+	if o == nil {
+		return s.defaultPwdPolicy(), nil
+	}
+	upp, err := s.db.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(o.ID)).Only(ctx)
 	if err != nil {
 		return s.defaultPwdPolicy(), nil
 	}
