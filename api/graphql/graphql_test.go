@@ -2,6 +2,8 @@ package graphql
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
@@ -50,7 +52,7 @@ func (t *graphqlSuite) SetupSuite() {
 
 	t.server = &Server{
 		casbinClient: t.AuthDbClient,
-		portalClient: t.Client,
+		portalClient: t.CacheClient,
 	}
 	t.server.buildWebEngine(t.Cnf)
 	t.mr = &mutationResolver{
@@ -437,4 +439,109 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 	has, err = apvResolver.OrgRoleAssigned(ctx, orgPolicyViews[1], orgRole.ID)
 	t.Require().NoError(err)
 	t.Require().False(has)
+}
+
+func (t *graphqlSuite) TestAppPolicyRulesCache() {
+	ctx := context.Background()
+	t.Client.AppPolicy.Create()
+	ac := "resource"
+	appID := 1
+	aas := []string{"userPermissions", "userMenus", "userRootOrgs"}
+	// 创建action
+	aaCreates := make([]*ent.AppActionCreate, 0)
+	for i, a := range aas {
+		create := t.Client.AppAction.Create().SetAppID(appID).SetCreatedBy(1).
+			SetName(a).SetKind(appaction.KindFunction).SetComments("策略描述" + strconv.Itoa(i)).SetMethod(appaction.MethodRead)
+		aaCreates = append(aaCreates, create)
+	}
+	err := t.Client.AppAction.CreateBulk(aaCreates...).Exec(ctx)
+	t.Require().NoError(err)
+	// 创建appPolicy
+	ap, err := t.Client.AppPolicy.Create().SetCreatedBy(1).SetVersion("1").SetRules([]*types.PolicyRule{
+		{
+			Effect: types.PolicyEffectAllow,
+			Actions: []string{
+				ac + ":userPermissions",
+			},
+		},
+	}).SetName("KOResAccess").SetComments("资源权限管理应用授权").SetAppID(appID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true).Save(ctx)
+	t.Require().NoError(err)
+	// base64加密
+	id := fmt.Sprintf("app_policy:%d", ap.ID)
+	gid := base64.StdEncoding.EncodeToString([]byte(id))
+	var nodeQuery = `
+            query appPolicyInfo {
+			  node(id: "` + gid + `") {
+				... on AppPolicy {
+				  comments
+				  rules {
+					effect
+					actions
+				  }
+				}
+			  }
+			}
+        `
+	var nodeResp struct {
+		Node struct {
+			Comments string
+			Rules    []struct {
+				Effect  string
+				Actions []string
+			}
+		}
+	}
+	t.Run("query appPolicy", func() {
+		err := t.gqlClient.Post(nodeQuery, &nodeResp)
+		t.Require().NoError(err)
+		t.Require().Len(nodeResp.Node.Rules[0].Actions, 1)
+	})
+	t.Run("update appPolicy", func() {
+		const query = `
+            mutation UpdateAppPolicy ($policyID: ID!, $input: UpdateAppPolicyInput!) {
+			  updateAppPolicy(policyID: $policyID, input: $input) {
+				comments
+				rules {
+				  effect
+				  actions
+				}
+			  }
+			}
+        `
+		variables := map[string]interface{}{
+			"input": map[string]interface{}{
+				"rules": []interface{}{
+					map[string]interface{}{
+						"effect": "allow",
+						"actions": []string{
+							ac + ":userPermissions",
+							ac + ":userMenus",
+							ac + ":userRootOrgs",
+						},
+					},
+				},
+			},
+			"policyID": strconv.Itoa(ap.ID),
+		}
+		var resp struct {
+			UpdateAppPolicy struct {
+				Comments string
+				Rules    []struct {
+					Effect  string
+					Actions []string
+				}
+			}
+		}
+
+		err = t.gqlClient.Post(query, &resp, client.Var("input", variables["input"]), client.Var("policyID", variables["policyID"]))
+		t.Require().NoError(err)
+		t.Require().Len(resp.UpdateAppPolicy.Rules[0].Actions, 3)
+	})
+	// 暂停5s
+	time.Sleep(5 * time.Second)
+	t.Run("query appPolicy after update", func() {
+		err := t.gqlClient.Post(nodeQuery, &nodeResp)
+		t.Require().NoError(err)
+		t.Require().Len(nodeResp.Node.Rules[0].Actions, 3)
+	})
 }
