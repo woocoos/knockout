@@ -292,7 +292,7 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 				{
 					Effect: types.PolicyEffectAllow,
 					Actions: []string{
-						"action" + strconv.Itoa(i),
+						ac + ":action" + strconv.Itoa(i),
 					},
 				},
 			})
@@ -349,7 +349,7 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 		has, err = apvResolver.AppRoleAssigned(ctx, appRoleView, assignRoleID)
 		t.Require().NoError(err)
 		if has {
-			if appRoleView.PolicyID == 7 {
+			if appRoleView.PolicyID != nil && *appRoleView.PolicyID == 7 {
 				hasPolicy7 = true
 				break
 			}
@@ -380,7 +380,7 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 			orgPolicys = append(orgPolicys, op)
 		}
 		for _, pid := range assignAppPolicyIDs {
-			if opv.PolicyID == pid {
+			if opv.PolicyID != nil && *opv.PolicyID == pid {
 				orgPolicyViewPolicies += 1
 				break
 			}
@@ -393,7 +393,7 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 
 	// 给组织用户授权策略视图
 	assignUserID := 2
-	has, err = t.mr.AssignUserPolicyView(ctx, tenantID, assignUserID, []int{orgPolicys[0].ID, orgPolicys[1].ID}, nil)
+	has, err = t.mr.AssignOrgUserPolicyView(ctx, tenantID, assignUserID, []int{orgPolicys[0].ID, orgPolicys[1].ID}, nil)
 	t.Require().NoError(err)
 	t.Require().True(has)
 	// 用户权限策略视图判断是否选中
@@ -404,7 +404,7 @@ func (t *graphqlSuite) Test_AppPolicyView() {
 	t.Require().NoError(err)
 	t.Require().True(has)
 	// 取消授权用户策略视图
-	has, err = t.mr.AssignUserPolicyView(ctx, tenantID, assignUserID, nil, []int{orgPolicys[0].ID})
+	has, err = t.mr.AssignOrgUserPolicyView(ctx, tenantID, assignUserID, nil, []int{orgPolicys[0].ID})
 	t.Require().NoError(err)
 	t.Require().True(has)
 	// 判断orgPolicys[0]是否解除授权
