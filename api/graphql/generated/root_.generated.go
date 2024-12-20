@@ -11048,6 +11048,9 @@ type FileIdentity implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
+  """
+  租户ID
+  """
   tenantID: ID!
   """
   accesskey id

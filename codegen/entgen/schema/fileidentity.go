@@ -43,6 +43,7 @@ func (FileIdentity) Mixin() []ent.Mixin {
 // Fields of the FileIdentity.
 func (FileIdentity) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int(schemax.FieldTenantID).Immutable().Comment("租户ID"),
 		field.String("access_key_id").MaxLen(255).Comment("accesskey id"),
 		field.String("access_key_secret").MaxLen(255).Sensitive().Comment("accesskey secret"),
 		field.Int("file_source_id").Comment("文件来源ID"),

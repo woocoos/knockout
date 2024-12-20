@@ -496,7 +496,7 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 		t.Require().NoError(err)
 		t.Require().Len(nodeResp.Node.Rules[0].Actions, 1)
 	})
-	t.Run("update appPolicy", func() {
+	t.Run("query appPolicy after update", func() {
 		const query = `
             mutation UpdateAppPolicy ($policyID: ID!, $input: UpdateAppPolicyInput!) {
 			  updateAppPolicy(policyID: $policyID, input: $input) {
@@ -536,10 +536,7 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 		err = t.gqlClient.Post(query, &resp, client.Var("input", variables["input"]), client.Var("policyID", variables["policyID"]))
 		t.Require().NoError(err)
 		t.Require().Len(resp.UpdateAppPolicy.Rules[0].Actions, 3)
-	})
-	// 暂停5s
-	time.Sleep(5 * time.Second)
-	t.Run("query appPolicy after update", func() {
+		time.Sleep(time.Second * 5)
 		err := t.gqlClient.Post(nodeQuery, &nodeResp)
 		t.Require().NoError(err)
 		t.Require().Len(nodeResp.Node.Rules[0].Actions, 3)

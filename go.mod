@@ -15,16 +15,15 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tsingsun/woocoo v0.5.2-0.20241202093219-65c540512afa
+	github.com/tsingsun/woocoo v0.5.2
 	github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20241202100427-ec3ba92be926
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.5-0.20240522021626-a2b6e6d10802
 	github.com/vektah/gqlparser/v2 v2.5.19
 	github.com/vmihailenco/msgpack/v5 v5.3.5
-	github.com/woocoos/entcache v0.0.0-20231206055445-856f0148efa5
-	github.com/woocoos/entco v0.0.0-20240411071658-1e7b23d4df15
-	github.com/woocoos/knockout-go v0.0.0-20241204021310-2a815a15ea18
+	github.com/woocoos/entcache v0.1.0
+	github.com/woocoos/knockout-go v0.0.0-20241220163452-bfe7103634ad
 	go.opentelemetry.io/contrib/propagators/b3 v1.26.0
-	golang.org/x/sync v0.8.0
+	golang.org/x/sync v0.10.0
 )
 
 require (
@@ -159,12 +158,12 @@ require (
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect; indirectgo
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect; indirectgo
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.35.1

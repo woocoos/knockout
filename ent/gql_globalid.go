@@ -12,35 +12,6 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
-	"github.com/woocoos/knockout/ent/app"
-	"github.com/woocoos/knockout/ent/appaction"
-	"github.com/woocoos/knockout/ent/appdict"
-	"github.com/woocoos/knockout/ent/appdictitem"
-	"github.com/woocoos/knockout/ent/appmenu"
-	"github.com/woocoos/knockout/ent/apppolicy"
-	"github.com/woocoos/knockout/ent/apppolicyview"
-	"github.com/woocoos/knockout/ent/appres"
-	"github.com/woocoos/knockout/ent/approle"
-	"github.com/woocoos/knockout/ent/country"
-	"github.com/woocoos/knockout/ent/currency"
-	"github.com/woocoos/knockout/ent/fileidentity"
-	"github.com/woocoos/knockout/ent/filesource"
-	"github.com/woocoos/knockout/ent/oauthclient"
-	"github.com/woocoos/knockout/ent/org"
-	"github.com/woocoos/knockout/ent/orgpolicy"
-	"github.com/woocoos/knockout/ent/orgrole"
-	"github.com/woocoos/knockout/ent/orguserpreference"
-	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/ent/quota"
-	"github.com/woocoos/knockout/ent/quotaitem"
-	"github.com/woocoos/knockout/ent/region"
-	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/ent/useraddr"
-	"github.com/woocoos/knockout/ent/userdevice"
-	"github.com/woocoos/knockout/ent/useridentity"
-	"github.com/woocoos/knockout/ent/userloginprofile"
-	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // GlobalID returns the global identifier for the given App node.
@@ -234,63 +205,63 @@ func FromGlobalID(s string) (*ResolvedGlobal, error) {
 // GlobalID returns the global identifier for the given type and id.
 func GlobalID(tp, id string) (string, error) {
 	switch tp {
-	case app.Table:
+	case "App":
 		break
-	case appaction.Table:
+	case "AppAction":
 		break
-	case appdict.Table:
+	case "AppDict":
 		break
-	case appdictitem.Table:
+	case "AppDictItem":
 		break
-	case appmenu.Table:
+	case "AppMenu":
 		break
-	case apppolicy.Table:
+	case "AppPolicy":
 		break
-	case apppolicyview.Table:
+	case "AppPolicyView":
 		break
-	case appres.Table:
+	case "AppRes":
 		break
-	case approle.Table:
+	case "AppRole":
 		break
-	case country.Table:
+	case "Country":
 		break
-	case currency.Table:
+	case "Currency":
 		break
-	case fileidentity.Table:
+	case "FileIdentity":
 		break
-	case filesource.Table:
+	case "FileSource":
 		break
-	case oauthclient.Table:
+	case "OauthClient":
 		break
-	case org.Table:
+	case "Org":
 		break
-	case orgpolicy.Table:
+	case "OrgPolicy":
 		break
-	case orgrole.Table:
+	case "OrgRole":
 		break
-	case orguserpreference.Table:
+	case "OrgUserPreference":
 		break
-	case permission.Table:
+	case "Permission":
 		break
-	case quota.Table:
+	case "Quota":
 		break
-	case quotaitem.Table:
+	case "QuotaItem":
 		break
-	case region.Table:
+	case "Region":
 		break
-	case user.Table:
+	case "User":
 		break
-	case useraddr.Table:
+	case "UserAddr":
 		break
-	case userdevice.Table:
+	case "UserDevice":
 		break
-	case useridentity.Table:
+	case "UserIdentity":
 		break
-	case userloginprofile.Table:
+	case "UserLoginProfile":
 		break
-	case userpassword.Table:
+	case "UserPassword":
 		break
-	case userpasswordpolicy.Table:
+	case "UserPasswordPolicy":
 		break
 	default:
 		return "", fmt.Errorf("invalid type %q", tp)
