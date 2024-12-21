@@ -55,29 +55,6 @@ type ForgetPwdVerify struct {
 	Value string              `json:"value,omitempty"`
 }
 
-// ForgetPwdVerifyKind defines the type for the ForgetPwdVerify.kind enum field.
-type ForgetPwdVerifyKind string
-
-// ForgetPwdVerifyKind values.
-const (
-	ForgetPwdVerifyKindEmail ForgetPwdVerifyKind = "email"
-	ForgetPwdVerifyKindMfa   ForgetPwdVerifyKind = "mfa"
-)
-
-func (k ForgetPwdVerifyKind) String() string {
-	return string(k)
-}
-
-// ForgetPwdVerifyKindValidator is a validator for the ForgetPwdVerifyKind field enum values.
-func ForgetPwdVerifyKindValidator(k ForgetPwdVerifyKind) error {
-	switch k {
-	case ForgetPwdVerifyKindEmail, ForgetPwdVerifyKindMfa:
-		return nil
-	default:
-		return fmt.Errorf("ForgetPwdVerifyKind does not allow the value '%s'", k)
-	}
-}
-
 // LoginResponse when complete login accessToken,expiresAt,refreshToken will be filled
 type LoginResponse struct {
 	AccessToken  string `json:"accessToken,omitempty"`
@@ -104,4 +81,38 @@ type User struct {
 	DisplayName string    `json:"displayName,omitempty"`
 	Domains     []*Domain `json:"domains,omitempty"`
 	ID          int       `json:"id,omitempty"`
+}
+
+type UserPasswordPolicy struct {
+	AllowIncludeUserName bool `json:"allowIncludeUserName,omitempty"`
+	CaptchaTimes         int  `json:"captchaTimes,omitempty"`
+	IncludeChar          int  `json:"includeChar,omitempty"`
+	IncludeElement       int  `json:"includeElement,omitempty"`
+	InvalidDay           int  `json:"invalidDay,omitempty"`
+	InvalidLoginLimit    bool `json:"invalidLoginLimit,omitempty"`
+	Length               int  `json:"length,omitempty"`
+	Retry                int  `json:"retry,omitempty"`
+}
+
+// ForgetPwdVerifyKind defines the type for the kind.kind enum field.
+type ForgetPwdVerifyKind string
+
+// ForgetPwdVerifyKind values.
+const (
+	ForgetPwdVerifyKindEmail ForgetPwdVerifyKind = "email"
+	ForgetPwdVerifyKindMfa   ForgetPwdVerifyKind = "mfa"
+)
+
+func (k ForgetPwdVerifyKind) String() string {
+	return string(k)
+}
+
+// ForgetPwdVerifyKindValidator is a validator for the ForgetPwdVerifyKind field enum values.
+func ForgetPwdVerifyKindValidator(k ForgetPwdVerifyKind) error {
+	switch k {
+	case ForgetPwdVerifyKindEmail, ForgetPwdVerifyKindMfa:
+		return nil
+	default:
+		return fmt.Errorf("ForgetPwdVerifyKind does not allow the value '%s'", k)
+	}
 }

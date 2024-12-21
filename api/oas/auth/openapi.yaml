@@ -676,6 +676,28 @@ paths:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /pwd/policy:
+    get:
+      summary: Use this API to get pwd policy
+      description: Use this API to get pwd policy
+      tags:
+        - auth
+      operationId: passwordPolicy
+      responses:
+        '200':
+          description: get pwd policy successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPasswordPolicy'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   responses:
     UnauthorizedError:
@@ -780,7 +802,6 @@ components:
           type: string
         parent_currency:
           type: string
-
     ErrorResponse:
       type: object
       properties:
@@ -816,3 +837,22 @@ components:
           enum: ["email","mfa"]
         value:
           type: string
+    UserPasswordPolicy:
+      type: object
+      properties:
+        length:
+          type: integer
+        includeElement:
+          type: integer
+        includeChar:
+          type: integer
+        allowIncludeUserName:
+          type: boolean
+        invalidDay:
+          type: integer
+        invalidLoginLimit:
+          type: boolean
+        retry:
+          type: integer
+        captchaTimes:
+          type: integer

@@ -55,6 +55,9 @@ type AuthServer interface {
 	// OldLoginForApp use this API to compatible old app login
 	// (POST /login/old-auth)
 	OldLoginForApp(*gin.Context, *OldLoginForAppRequest) (*LoginResponse, error)
+	// PasswordPolicy Use this API to get pwd policy
+	// (GET /pwd/policy)
+	PasswordPolicy(*gin.Context) (*UserPasswordPolicy, error)
 	// RefreshToken Use this API to refresh token
 	// (POST /login/refresh-token)
 	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
@@ -153,6 +156,11 @@ func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 
 func (UnimplementedAuthServer) OldLoginForApp(c *gin.Context, req *OldLoginForAppRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method OldLoginForApp not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) PasswordPolicy(c *gin.Context) (_ *UserPasswordPolicy, err error) {
+	err = fmt.Errorf("method PasswordPolicy not implemented")
 	return
 }
 

@@ -27,6 +27,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
 	router.POST("/login/old-auth", wrapOldLoginForApp(si))
+	router.GET("/pwd/policy", wrapPasswordPolicy(si))
 	router.POST("/login/refresh-token", wrapRefreshToken(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/token", wrapToken(si))
@@ -255,6 +256,17 @@ func wrapOldLoginForApp(si AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.OldLoginForApp(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapPasswordPolicy(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		resp, err := si.PasswordPolicy(c)
 		if err != nil {
 			c.Error(err)
 			return

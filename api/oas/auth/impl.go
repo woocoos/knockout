@@ -1074,6 +1074,32 @@ func (s *ServerImpl) ForgetPwdVerifyMfa(ctx *gin.Context, req *ForgetPwdVerifyMf
 	}, nil
 }
 
+func (s *ServerImpl) PasswordPolicy(ctx *gin.Context) (*UserPasswordPolicy, error) {
+	upp, err := s.getPasswordPolicy(ctx)
+	if err != nil {
+		return &UserPasswordPolicy{
+			Length:               int(s.PwdPolicy.Length),
+			IncludeElement:       int(s.PwdPolicy.IncludeElement),
+			IncludeChar:          int(s.PwdPolicy.IncludeChar),
+			AllowIncludeUserName: s.PwdPolicy.AllowIncludeUserName,
+			InvalidDay:           int(s.PwdPolicy.InvalidDay),
+			InvalidLoginLimit:    s.PwdPolicy.InvalidLoginLimit,
+			Retry:                int(s.PwdPolicy.Retry),
+			CaptchaTimes:         int(s.PwdPolicy.CaptchaTimes),
+		}, nil
+	}
+	return &UserPasswordPolicy{
+		Length:               int(upp.Length),
+		IncludeElement:       int(upp.IncludeElement),
+		IncludeChar:          int(upp.IncludeChar),
+		AllowIncludeUserName: upp.AllowIncludeUserName,
+		InvalidDay:           int(upp.InvalidDay),
+		InvalidLoginLimit:    upp.InvalidLoginLimit,
+		Retry:                int(upp.Retry),
+		CaptchaTimes:         int(upp.CaptchaTimes),
+	}, nil
+}
+
 func (s *ServerImpl) tryGetTenantID(c *gin.Context) (tid int, err error) {
 	if str := c.GetHeader("X-Tenant-ID"); str != "" {
 		if tid, err = strconv.Atoi(str); err != nil {

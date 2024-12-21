@@ -84,6 +84,7 @@ web:
                   - "/forget-pwd/reset"
                   - "/spm/auth"
                   - "/token"
+                  - "/pwd/policy"
                 <<: *jwt
 grpc:
   server:
