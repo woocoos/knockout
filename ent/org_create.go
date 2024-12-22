@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
@@ -415,6 +416,21 @@ func (oc *OrgCreate) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgCreate 
 		ids[i] = u[i].ID
 	}
 	return oc.AddUserPasswordPolicyIDs(ids...)
+}
+
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (oc *OrgCreate) AddOrgQuotumIDs(ids ...int) *OrgCreate {
+	oc.mutation.AddOrgQuotumIDs(ids...)
+	return oc
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (oc *OrgCreate) AddOrgQuota(q ...*Quota) *OrgCreate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return oc.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -834,6 +850,22 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

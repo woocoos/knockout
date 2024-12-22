@@ -127,5 +127,7 @@ func (User) Edges() []ent.Edge {
 			Annotations(entproto.Skip(), entgql.Skip(entgql.SkipMutationUpdateInput)),
 		edge.To("citizenship", Country.Type).Field("citizenship_id").Unique().Comment("国籍信息").
 			Annotations(entproto.Skip()),
+		edge.To("user_quota", Quota.Type).Comment("用户配额").Annotations(entproto.Skip(),
+			entgql.Skip(entgql.SkipMutationUpdateInput, entgql.SkipMutationCreateInput)),
 	}
 }

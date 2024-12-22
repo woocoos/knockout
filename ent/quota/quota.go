@@ -39,6 +39,10 @@ const (
 	FieldEndAt = "end_at"
 	// EdgeQuotaItem holds the string denoting the quota_item edge name in mutations.
 	EdgeQuotaItem = "quota_item"
+	// EdgeQuotaOrg holds the string denoting the quota_org edge name in mutations.
+	EdgeQuotaOrg = "quota_org"
+	// EdgeQuotaUser holds the string denoting the quota_user edge name in mutations.
+	EdgeQuotaUser = "quota_user"
 	// Table holds the table name of the quota in the database.
 	Table = "quota"
 	// QuotaItemTable is the table that holds the quota_item relation/edge.
@@ -48,6 +52,20 @@ const (
 	QuotaItemInverseTable = "quota_item"
 	// QuotaItemColumn is the table column denoting the quota_item relation/edge.
 	QuotaItemColumn = "quota_item_id"
+	// QuotaOrgTable is the table that holds the quota_org relation/edge.
+	QuotaOrgTable = "quota"
+	// QuotaOrgInverseTable is the table name for the Org entity.
+	// It exists in this package in order to avoid circular dependency with the "org" package.
+	QuotaOrgInverseTable = "org"
+	// QuotaOrgColumn is the table column denoting the quota_org relation/edge.
+	QuotaOrgColumn = "tenant_id"
+	// QuotaUserTable is the table that holds the quota_user relation/edge.
+	QuotaUserTable = "quota"
+	// QuotaUserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	QuotaUserInverseTable = "user"
+	// QuotaUserColumn is the table column denoting the quota_user relation/edge.
+	QuotaUserColumn = "user_id"
 )
 
 // Columns holds all SQL columns for quota fields.
@@ -160,10 +178,38 @@ func ByQuotaItemField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newQuotaItemStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByQuotaOrgField orders the results by quota_org field.
+func ByQuotaOrgField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newQuotaOrgStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByQuotaUserField orders the results by quota_user field.
+func ByQuotaUserField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newQuotaUserStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newQuotaItemStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(QuotaItemInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, QuotaItemTable, QuotaItemColumn),
+	)
+}
+func newQuotaOrgStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(QuotaOrgInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, QuotaOrgTable, QuotaOrgColumn),
+	)
+}
+func newQuotaUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(QuotaUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, QuotaUserTable, QuotaUserColumn),
 	)
 }

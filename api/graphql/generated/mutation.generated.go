@@ -5882,6 +5882,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -6000,6 +6002,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -6118,6 +6122,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -6236,6 +6242,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -6458,6 +6466,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationAccount(ctx 
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -6574,6 +6584,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationUser(ctx con
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -6800,6 +6812,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -10515,6 +10529,8 @@ func (ec *executionContext) fieldContext_Mutation_recoverOrgUser(ctx context.Con
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -13041,6 +13057,10 @@ func (ec *executionContext) fieldContext_Mutation_createQuota(ctx context.Contex
 				return ec.fieldContext_Quota_endAt(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			case "quotaOrg":
+				return ec.fieldContext_Quota_quotaOrg(ctx, field)
+			case "quotaUser":
+				return ec.fieldContext_Quota_quotaUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
 		},
@@ -13124,6 +13144,10 @@ func (ec *executionContext) fieldContext_Mutation_updateQuota(ctx context.Contex
 				return ec.fieldContext_Quota_endAt(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			case "quotaOrg":
+				return ec.fieldContext_Quota_quotaOrg(ctx, field)
+			case "quotaUser":
+				return ec.fieldContext_Quota_quotaUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
 		},

@@ -3379,6 +3379,22 @@ func (c *OrgClient) QueryUserPasswordPolicy(o *Org) *UserPasswordPolicyQuery {
 	return query
 }
 
+// QueryOrgQuota queries the org_quota edge of a Org.
+func (c *OrgClient) QueryOrgQuota(o *Org) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.OrgQuotaTable, org.OrgQuotaColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgUser queries the org_user edge of a Org.
 func (c *OrgClient) QueryOrgUser(o *Org) *OrgUserQuery {
 	query := (&OrgUserClient{config: c.config}).Query()
@@ -4852,6 +4868,38 @@ func (c *QuotaClient) QueryQuotaItem(q *Quota) *QuotaItemQuery {
 	return query
 }
 
+// QueryQuotaOrg queries the quota_org edge of a Quota.
+func (c *QuotaClient) QueryQuotaOrg(q *Quota) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaOrgTable, quota.QuotaOrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQuotaUser queries the quota_user edge of a Quota.
+func (c *QuotaClient) QueryQuotaUser(q *Quota) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaUserTable, quota.QuotaUserColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *QuotaClient) Hooks() []Hook {
 	hooks := c.hooks.Quota
@@ -5455,6 +5503,22 @@ func (c *UserClient) QueryCitizenship(u *User) *CountryQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(country.Table, country.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, user.CitizenshipTable, user.CitizenshipColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUserQuota queries the user_quota edge of a User.
+func (c *UserClient) QueryUserQuota(u *User) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.UserQuotaTable, user.UserQuotaColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

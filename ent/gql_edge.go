@@ -521,6 +521,18 @@ func (o *Org) UserPasswordPolicy(ctx context.Context) (result []*UserPasswordPol
 	return result, err
 }
 
+func (o *Org) OrgQuota(ctx context.Context) (result []*Quota, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = o.NamedOrgQuota(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = o.Edges.OrgQuotaOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = o.QueryOrgQuota().All(ctx)
+	}
+	return result, err
+}
+
 func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
 	result, err := op.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
@@ -601,6 +613,22 @@ func (q *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
 	result, err := q.Edges.QuotaItemOrErr()
 	if IsNotLoaded(err) {
 		result, err = q.QueryQuotaItem().Only(ctx)
+	}
+	return result, err
+}
+
+func (q *Quota) QuotaOrg(ctx context.Context) (*Org, error) {
+	result, err := q.Edges.QuotaOrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaOrg().Only(ctx)
+	}
+	return result, err
+}
+
+func (q *Quota) QuotaUser(ctx context.Context) (*User, error) {
+	result, err := q.Edges.QuotaUserOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaUser().Only(ctx)
 	}
 	return result, err
 }
@@ -737,6 +765,18 @@ func (u *User) Citizenship(ctx context.Context) (*Country, error) {
 		result, err = u.QueryCitizenship().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (u *User) UserQuota(ctx context.Context) (result []*Quota, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedUserQuota(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.UserQuotaOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryUserQuota().All(ctx)
+	}
+	return result, err
 }
 
 func (ua *UserAddr) User(ctx context.Context) (*User, error) {

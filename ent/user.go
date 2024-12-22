@@ -84,13 +84,15 @@ type UserEdges struct {
 	Addresses []*UserAddr `json:"addresses,omitempty"`
 	// 国籍信息
 	Citizenship *Country `json:"citizenship,omitempty"`
+	// 用户配额
+	UserQuota []*Quota `json:"user_quota,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [10]bool
+	loadedTypes [11]bool
 	// totalCount holds the count of the edges above.
-	totalCount [7]map[string]int
+	totalCount [8]map[string]int
 
 	namedIdentities   map[string][]*UserIdentity
 	namedPasswords    map[string][]*UserPassword
@@ -99,6 +101,7 @@ type UserEdges struct {
 	namedPermissions  map[string][]*Permission
 	namedOauthClients map[string][]*OauthClient
 	namedAddresses    map[string][]*UserAddr
+	namedUserQuota    map[string][]*Quota
 	namedOrgUser      map[string][]*OrgUser
 }
 
@@ -187,10 +190,19 @@ func (e UserEdges) CitizenshipOrErr() (*Country, error) {
 	return nil, &NotLoadedError{edge: "citizenship"}
 }
 
+// UserQuotaOrErr returns the UserQuota value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UserQuotaOrErr() ([]*Quota, error) {
+	if e.loadedTypes[9] {
+		return e.UserQuota, nil
+	}
+	return nil, &NotLoadedError{edge: "user_quota"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -400,6 +412,11 @@ func (u *User) QueryAddresses() *UserAddrQuery {
 // QueryCitizenship queries the "citizenship" edge of the User entity.
 func (u *User) QueryCitizenship() *CountryQuery {
 	return NewUserClient(u.config).QueryCitizenship(u)
+}
+
+// QueryUserQuota queries the "user_quota" edge of the User entity.
+func (u *User) QueryUserQuota() *QuotaQuery {
+	return NewUserClient(u.config).QueryUserQuota(u)
 }
 
 // QueryOrgUser queries the "org_user" edge of the User entity.
@@ -659,6 +676,30 @@ func (u *User) appendNamedAddresses(name string, edges ...*UserAddr) {
 		u.Edges.namedAddresses[name] = []*UserAddr{}
 	} else {
 		u.Edges.namedAddresses[name] = append(u.Edges.namedAddresses[name], edges...)
+	}
+}
+
+// NamedUserQuota returns the UserQuota named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedUserQuota(name string) ([]*Quota, error) {
+	if u.Edges.namedUserQuota == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedUserQuota[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedUserQuota(name string, edges ...*Quota) {
+	if u.Edges.namedUserQuota == nil {
+		u.Edges.namedUserQuota = make(map[string][]*Quota)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedUserQuota[name] = []*Quota{}
+	} else {
+		u.Edges.namedUserQuota[name] = append(u.Edges.namedUserQuota[name], edges...)
 	}
 }
 

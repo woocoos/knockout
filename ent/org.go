@@ -89,15 +89,17 @@ type OrgEdges struct {
 	FileIdentities []*FileIdentity `json:"file_identities,omitempty"`
 	// 组织下密码策略
 	UserPasswordPolicy []*UserPasswordPolicy `json:"user_password_policy,omitempty"`
+	// 组织下登录策略
+	OrgQuota []*Quota `json:"org_quota,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// OrgApp holds the value of the org_app edge.
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [12]bool
+	loadedTypes [13]bool
 	// totalCount holds the count of the edges above.
-	totalCount [9]map[string]int
+	totalCount [10]map[string]int
 
 	namedChildren           map[string][]*Org
 	namedUsers              map[string][]*User
@@ -107,6 +109,7 @@ type OrgEdges struct {
 	namedApps               map[string][]*App
 	namedFileIdentities     map[string][]*FileIdentity
 	namedUserPasswordPolicy map[string][]*UserPasswordPolicy
+	namedOrgQuota           map[string][]*Quota
 	namedOrgUser            map[string][]*OrgUser
 	namedOrgApp             map[string][]*OrgApp
 }
@@ -205,10 +208,19 @@ func (e OrgEdges) UserPasswordPolicyOrErr() ([]*UserPasswordPolicy, error) {
 	return nil, &NotLoadedError{edge: "user_password_policy"}
 }
 
+// OrgQuotaOrErr returns the OrgQuota value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgEdges) OrgQuotaOrErr() ([]*Quota, error) {
+	if e.loadedTypes[10] {
+		return e.OrgQuota, nil
+	}
+	return nil, &NotLoadedError{edge: "org_quota"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -217,7 +229,7 @@ func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[12] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -443,6 +455,11 @@ func (o *Org) QueryFileIdentities() *FileIdentityQuery {
 // QueryUserPasswordPolicy queries the "user_password_policy" edge of the Org entity.
 func (o *Org) QueryUserPasswordPolicy() *UserPasswordPolicyQuery {
 	return NewOrgClient(o.config).QueryUserPasswordPolicy(o)
+}
+
+// QueryOrgQuota queries the "org_quota" edge of the Org entity.
+func (o *Org) QueryOrgQuota() *QuotaQuery {
+	return NewOrgClient(o.config).QueryOrgQuota(o)
 }
 
 // QueryOrgUser queries the "org_user" edge of the Org entity.
@@ -732,6 +749,30 @@ func (o *Org) appendNamedUserPasswordPolicy(name string, edges ...*UserPasswordP
 		o.Edges.namedUserPasswordPolicy[name] = []*UserPasswordPolicy{}
 	} else {
 		o.Edges.namedUserPasswordPolicy[name] = append(o.Edges.namedUserPasswordPolicy[name], edges...)
+	}
+}
+
+// NamedOrgQuota returns the OrgQuota named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (o *Org) NamedOrgQuota(name string) ([]*Quota, error) {
+	if o.Edges.namedOrgQuota == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := o.Edges.namedOrgQuota[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (o *Org) appendNamedOrgQuota(name string, edges ...*Quota) {
+	if o.Edges.namedOrgQuota == nil {
+		o.Edges.namedOrgQuota = make(map[string][]*Quota)
+	}
+	if len(edges) == 0 {
+		o.Edges.namedOrgQuota[name] = []*Quota{}
+	} else {
+		o.Edges.namedOrgQuota[name] = append(o.Edges.namedOrgQuota[name], edges...)
 	}
 }
 

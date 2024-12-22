@@ -76,6 +76,8 @@ const (
 	EdgeAddresses = "addresses"
 	// EdgeCitizenship holds the string denoting the citizenship edge name in mutations.
 	EdgeCitizenship = "citizenship"
+	// EdgeUserQuota holds the string denoting the user_quota edge name in mutations.
+	EdgeUserQuota = "user_quota"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// Table holds the table name of the user in the database.
@@ -141,6 +143,13 @@ const (
 	CitizenshipInverseTable = "country"
 	// CitizenshipColumn is the table column denoting the citizenship relation/edge.
 	CitizenshipColumn = "citizenship_id"
+	// UserQuotaTable is the table that holds the user_quota relation/edge.
+	UserQuotaTable = "quota"
+	// UserQuotaInverseTable is the table name for the Quota entity.
+	// It exists in this package in order to avoid circular dependency with the "quota" package.
+	UserQuotaInverseTable = "quota"
+	// UserQuotaColumn is the table column denoting the user_quota relation/edge.
+	UserQuotaColumn = "user_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -511,6 +520,20 @@ func ByCitizenshipField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
+// ByUserQuotaCount orders the results by user_quota count.
+func ByUserQuotaCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUserQuotaStep(), opts...)
+	}
+}
+
+// ByUserQuota orders the results by user_quota terms.
+func ByUserQuota(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserQuotaStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -585,6 +608,13 @@ func newCitizenshipStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CitizenshipInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, CitizenshipTable, CitizenshipColumn),
+	)
+}
+func newUserQuotaStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserQuotaInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, UserQuotaTable, UserQuotaColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

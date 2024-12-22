@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -42,6 +43,7 @@ type UserQuery struct {
 	withOauthClients      *OauthClientQuery
 	withAddresses         *UserAddrQuery
 	withCitizenship       *CountryQuery
+	withUserQuota         *QuotaQuery
 	withOrgUser           *OrgUserQuery
 	modifiers             []func(*sql.Selector)
 	loadTotal             []func(context.Context, []*User) error
@@ -52,6 +54,7 @@ type UserQuery struct {
 	withNamedPermissions  map[string]*PermissionQuery
 	withNamedOauthClients map[string]*OauthClientQuery
 	withNamedAddresses    map[string]*UserAddrQuery
+	withNamedUserQuota    map[string]*QuotaQuery
 	withNamedOrgUser      map[string]*OrgUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -287,6 +290,28 @@ func (uq *UserQuery) QueryCitizenship() *CountryQuery {
 	return query
 }
 
+// QueryUserQuota chains the current query on the "user_quota" edge.
+func (uq *UserQuery) QueryUserQuota() *QuotaQuery {
+	query := (&QuotaClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.UserQuotaTable, user.UserQuotaColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryOrgUser chains the current query on the "org_user" edge.
 func (uq *UserQuery) QueryOrgUser() *OrgUserQuery {
 	query := (&OrgUserClient{config: uq.config}).Query()
@@ -510,6 +535,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withOauthClients: uq.withOauthClients.Clone(),
 		withAddresses:    uq.withAddresses.Clone(),
 		withCitizenship:  uq.withCitizenship.Clone(),
+		withUserQuota:    uq.withUserQuota.Clone(),
 		withOrgUser:      uq.withOrgUser.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
@@ -616,6 +642,17 @@ func (uq *UserQuery) WithCitizenship(opts ...func(*CountryQuery)) *UserQuery {
 	return uq
 }
 
+// WithUserQuota tells the query-builder to eager-load the nodes that are connected to
+// the "user_quota" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithUserQuota(opts ...func(*QuotaQuery)) *UserQuery {
+	query := (&QuotaClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withUserQuota = query
+	return uq
+}
+
 // WithOrgUser tells the query-builder to eager-load the nodes that are connected to
 // the "org_user" edge. The optional arguments are used to configure the query builder of the edge.
 func (uq *UserQuery) WithOrgUser(opts ...func(*OrgUserQuery)) *UserQuery {
@@ -705,7 +742,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [11]bool{
 			uq.withIdentities != nil,
 			uq.withLoginProfile != nil,
 			uq.withPasswords != nil,
@@ -715,6 +752,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withOauthClients != nil,
 			uq.withAddresses != nil,
 			uq.withCitizenship != nil,
+			uq.withUserQuota != nil,
 			uq.withOrgUser != nil,
 		}
 	)
@@ -800,6 +838,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
+	if query := uq.withUserQuota; query != nil {
+		if err := uq.loadUserQuota(ctx, query, nodes,
+			func(n *User) { n.Edges.UserQuota = []*Quota{} },
+			func(n *User, e *Quota) { n.Edges.UserQuota = append(n.Edges.UserQuota, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := uq.withOrgUser; query != nil {
 		if err := uq.loadOrgUser(ctx, query, nodes,
 			func(n *User) { n.Edges.OrgUser = []*OrgUser{} },
@@ -853,6 +898,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadAddresses(ctx, query, nodes,
 			func(n *User) { n.appendNamedAddresses(name) },
 			func(n *User, e *UserAddr) { n.appendNamedAddresses(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedUserQuota {
+		if err := uq.loadUserQuota(ctx, query, nodes,
+			func(n *User) { n.appendNamedUserQuota(name) },
+			func(n *User, e *Quota) { n.appendNamedUserQuota(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1171,6 +1223,36 @@ func (uq *UserQuery) loadCitizenship(ctx context.Context, query *CountryQuery, n
 	}
 	return nil
 }
+func (uq *UserQuery) loadUserQuota(ctx context.Context, query *QuotaQuery, nodes []*User, init func(*User), assign func(*User, *Quota)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(quota.FieldUserID)
+	}
+	query.Where(predicate.Quota(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.UserQuotaColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.UserID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (uq *UserQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*User, init func(*User), assign func(*User, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*User)
@@ -1384,6 +1466,20 @@ func (uq *UserQuery) WithNamedAddresses(name string, opts ...func(*UserAddrQuery
 		uq.withNamedAddresses = make(map[string]*UserAddrQuery)
 	}
 	uq.withNamedAddresses[name] = query
+	return uq
+}
+
+// WithNamedUserQuota tells the query-builder to eager-load the nodes that are connected to the "user_quota"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedUserQuota(name string, opts ...func(*QuotaQuery)) *UserQuery {
+	query := (&QuotaClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedUserQuota == nil {
+		uq.withNamedUserQuota = make(map[string]*QuotaQuery)
+	}
+	uq.withNamedUserQuota[name] = query
 	return uq
 }
 

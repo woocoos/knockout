@@ -3230,6 +3230,18 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 			o.WithNamedUserPasswordPolicy(alias, func(wq *UserPasswordPolicyQuery) {
 				*wq = *query
 			})
+		case "orgQuota":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&QuotaClient{config: o.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, quotaImplementors)...); err != nil {
+				return err
+			}
+			o.WithNamedOrgQuota(alias, func(wq *QuotaQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[org.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, org.FieldCreatedBy)
@@ -4073,6 +4085,34 @@ func (q *QuotaQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				selectedFields = append(selectedFields, quota.FieldQuotaItemID)
 				fieldSeen[quota.FieldQuotaItemID] = struct{}{}
 			}
+		case "quotaOrg":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OrgClient{config: q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, orgImplementors)...); err != nil {
+				return err
+			}
+			q.withQuotaOrg = query
+			if _, ok := fieldSeen[quota.FieldTenantID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldTenantID)
+				fieldSeen[quota.FieldTenantID] = struct{}{}
+			}
+		case "quotaUser":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: q.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
+				return err
+			}
+			q.withQuotaUser = query
+			if _, ok := fieldSeen[quota.FieldUserID]; !ok {
+				selectedFields = append(selectedFields, quota.FieldUserID)
+				fieldSeen[quota.FieldUserID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[quota.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, quota.FieldCreatedBy)
@@ -4783,6 +4823,18 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				selectedFields = append(selectedFields, user.FieldCitizenshipID)
 				fieldSeen[user.FieldCitizenshipID] = struct{}{}
 			}
+		case "userQuota":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&QuotaClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, quotaImplementors)...); err != nil {
+				return err
+			}
+			u.WithNamedUserQuota(alias, func(wq *QuotaQuery) {
+				*wq = *query
+			})
 		case "createdBy":
 			if _, ok := fieldSeen[user.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, user.FieldCreatedBy)

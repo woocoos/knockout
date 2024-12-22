@@ -18732,6 +18732,9 @@ type OrgMutation struct {
 	user_password_policy        map[int]struct{}
 	removeduser_password_policy map[int]struct{}
 	cleareduser_password_policy bool
+	org_quota                   map[int]struct{}
+	removedorg_quota            map[int]struct{}
+	clearedorg_quota            bool
 	org_user                    map[int]struct{}
 	removedorg_user             map[int]struct{}
 	clearedorg_user             bool
@@ -20326,6 +20329,60 @@ func (m *OrgMutation) ResetUserPasswordPolicy() {
 	m.removeduser_password_policy = nil
 }
 
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by ids.
+func (m *OrgMutation) AddOrgQuotumIDs(ids ...int) {
+	if m.org_quota == nil {
+		m.org_quota = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.org_quota[ids[i]] = struct{}{}
+	}
+}
+
+// ClearOrgQuota clears the "org_quota" edge to the Quota entity.
+func (m *OrgMutation) ClearOrgQuota() {
+	m.clearedorg_quota = true
+}
+
+// OrgQuotaCleared reports if the "org_quota" edge to the Quota entity was cleared.
+func (m *OrgMutation) OrgQuotaCleared() bool {
+	return m.clearedorg_quota
+}
+
+// RemoveOrgQuotumIDs removes the "org_quota" edge to the Quota entity by IDs.
+func (m *OrgMutation) RemoveOrgQuotumIDs(ids ...int) {
+	if m.removedorg_quota == nil {
+		m.removedorg_quota = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.org_quota, ids[i])
+		m.removedorg_quota[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedOrgQuota returns the removed IDs of the "org_quota" edge to the Quota entity.
+func (m *OrgMutation) RemovedOrgQuotaIDs() (ids []int) {
+	for id := range m.removedorg_quota {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// OrgQuotaIDs returns the "org_quota" edge IDs in the mutation.
+func (m *OrgMutation) OrgQuotaIDs() (ids []int) {
+	for id := range m.org_quota {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetOrgQuota resets all changes to the "org_quota" edge.
+func (m *OrgMutation) ResetOrgQuota() {
+	m.org_quota = nil
+	m.clearedorg_quota = false
+	m.removedorg_quota = nil
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by ids.
 func (m *OrgMutation) AddOrgUserIDs(ids ...int) {
 	if m.org_user == nil {
@@ -21022,7 +21079,7 @@ func (m *OrgMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrgMutation) AddedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.parent != nil {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -21052,6 +21109,9 @@ func (m *OrgMutation) AddedEdges() []string {
 	}
 	if m.user_password_policy != nil {
 		edges = append(edges, org.EdgeUserPasswordPolicy)
+	}
+	if m.org_quota != nil {
+		edges = append(edges, org.EdgeOrgQuota)
 	}
 	if m.org_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -21122,6 +21182,12 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeOrgQuota:
+		ids := make([]ent.Value, 0, len(m.org_quota))
+		for id := range m.org_quota {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.org_user))
 		for id := range m.org_user {
@@ -21140,7 +21206,7 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrgMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.removedchildren != nil {
 		edges = append(edges, org.EdgeChildren)
 	}
@@ -21164,6 +21230,9 @@ func (m *OrgMutation) RemovedEdges() []string {
 	}
 	if m.removeduser_password_policy != nil {
 		edges = append(edges, org.EdgeUserPasswordPolicy)
+	}
+	if m.removedorg_quota != nil {
+		edges = append(edges, org.EdgeOrgQuota)
 	}
 	if m.removedorg_user != nil {
 		edges = append(edges, org.EdgeOrgUser)
@@ -21226,6 +21295,12 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case org.EdgeOrgQuota:
+		ids := make([]ent.Value, 0, len(m.removedorg_quota))
+		for id := range m.removedorg_quota {
+			ids = append(ids, id)
+		}
+		return ids
 	case org.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.removedorg_user))
 		for id := range m.removedorg_user {
@@ -21244,7 +21319,7 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrgMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.clearedparent {
 		edges = append(edges, org.EdgeParent)
 	}
@@ -21274,6 +21349,9 @@ func (m *OrgMutation) ClearedEdges() []string {
 	}
 	if m.cleareduser_password_policy {
 		edges = append(edges, org.EdgeUserPasswordPolicy)
+	}
+	if m.clearedorg_quota {
+		edges = append(edges, org.EdgeOrgQuota)
 	}
 	if m.clearedorg_user {
 		edges = append(edges, org.EdgeOrgUser)
@@ -21308,6 +21386,8 @@ func (m *OrgMutation) EdgeCleared(name string) bool {
 		return m.clearedfile_identities
 	case org.EdgeUserPasswordPolicy:
 		return m.cleareduser_password_policy
+	case org.EdgeOrgQuota:
+		return m.clearedorg_quota
 	case org.EdgeOrgUser:
 		return m.clearedorg_user
 	case org.EdgeOrgApp:
@@ -21363,6 +21443,9 @@ func (m *OrgMutation) ResetEdge(name string) error {
 		return nil
 	case org.EdgeUserPasswordPolicy:
 		m.ResetUserPasswordPolicy()
+		return nil
+	case org.EdgeOrgQuota:
+		m.ResetOrgQuota()
 		return nil
 	case org.EdgeOrgUser:
 		m.ResetOrgUser()
@@ -29100,10 +29183,6 @@ type QuotaMutation struct {
 	updated_by        *int
 	addupdated_by     *int
 	updated_at        *time.Time
-	tenant_id         *int
-	addtenant_id      *int
-	user_id           *int
-	adduser_id        *int
 	_limit            *int64
 	add_limit         *int64
 	used              *int64
@@ -29113,6 +29192,10 @@ type QuotaMutation struct {
 	clearedFields     map[string]struct{}
 	quota_item        *int
 	clearedquota_item bool
+	quota_org         *int
+	clearedquota_org  bool
+	quota_user        *int
+	clearedquota_user bool
 	done              bool
 	oldValue          func(context.Context) (*Quota, error)
 	predicates        []predicate.Quota
@@ -29435,13 +29518,12 @@ func (m *QuotaMutation) ResetUpdatedAt() {
 
 // SetTenantID sets the "tenant_id" field.
 func (m *QuotaMutation) SetTenantID(i int) {
-	m.tenant_id = &i
-	m.addtenant_id = nil
+	m.quota_org = &i
 }
 
 // TenantID returns the value of the "tenant_id" field in the mutation.
 func (m *QuotaMutation) TenantID() (r int, exists bool) {
-	v := m.tenant_id
+	v := m.quota_org
 	if v == nil {
 		return
 	}
@@ -29465,39 +29547,19 @@ func (m *QuotaMutation) OldTenantID(ctx context.Context) (v int, err error) {
 	return oldValue.TenantID, nil
 }
 
-// AddTenantID adds i to the "tenant_id" field.
-func (m *QuotaMutation) AddTenantID(i int) {
-	if m.addtenant_id != nil {
-		*m.addtenant_id += i
-	} else {
-		m.addtenant_id = &i
-	}
-}
-
-// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
-func (m *QuotaMutation) AddedTenantID() (r int, exists bool) {
-	v := m.addtenant_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetTenantID resets all changes to the "tenant_id" field.
 func (m *QuotaMutation) ResetTenantID() {
-	m.tenant_id = nil
-	m.addtenant_id = nil
+	m.quota_org = nil
 }
 
 // SetUserID sets the "user_id" field.
 func (m *QuotaMutation) SetUserID(i int) {
-	m.user_id = &i
-	m.adduser_id = nil
+	m.quota_user = &i
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
 func (m *QuotaMutation) UserID() (r int, exists bool) {
-	v := m.user_id
+	v := m.quota_user
 	if v == nil {
 		return
 	}
@@ -29521,28 +29583,9 @@ func (m *QuotaMutation) OldUserID(ctx context.Context) (v int, err error) {
 	return oldValue.UserID, nil
 }
 
-// AddUserID adds i to the "user_id" field.
-func (m *QuotaMutation) AddUserID(i int) {
-	if m.adduser_id != nil {
-		*m.adduser_id += i
-	} else {
-		m.adduser_id = &i
-	}
-}
-
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *QuotaMutation) AddedUserID() (r int, exists bool) {
-	v := m.adduser_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetUserID resets all changes to the "user_id" field.
 func (m *QuotaMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
+	m.quota_user = nil
 }
 
 // SetQuotaItemID sets the "quota_item_id" field.
@@ -29818,6 +29861,86 @@ func (m *QuotaMutation) ResetQuotaItem() {
 	m.clearedquota_item = false
 }
 
+// SetQuotaOrgID sets the "quota_org" edge to the Org entity by id.
+func (m *QuotaMutation) SetQuotaOrgID(id int) {
+	m.quota_org = &id
+}
+
+// ClearQuotaOrg clears the "quota_org" edge to the Org entity.
+func (m *QuotaMutation) ClearQuotaOrg() {
+	m.clearedquota_org = true
+	m.clearedFields[quota.FieldTenantID] = struct{}{}
+}
+
+// QuotaOrgCleared reports if the "quota_org" edge to the Org entity was cleared.
+func (m *QuotaMutation) QuotaOrgCleared() bool {
+	return m.clearedquota_org
+}
+
+// QuotaOrgID returns the "quota_org" edge ID in the mutation.
+func (m *QuotaMutation) QuotaOrgID() (id int, exists bool) {
+	if m.quota_org != nil {
+		return *m.quota_org, true
+	}
+	return
+}
+
+// QuotaOrgIDs returns the "quota_org" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// QuotaOrgID instead. It exists only for internal usage by the builders.
+func (m *QuotaMutation) QuotaOrgIDs() (ids []int) {
+	if id := m.quota_org; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetQuotaOrg resets all changes to the "quota_org" edge.
+func (m *QuotaMutation) ResetQuotaOrg() {
+	m.quota_org = nil
+	m.clearedquota_org = false
+}
+
+// SetQuotaUserID sets the "quota_user" edge to the User entity by id.
+func (m *QuotaMutation) SetQuotaUserID(id int) {
+	m.quota_user = &id
+}
+
+// ClearQuotaUser clears the "quota_user" edge to the User entity.
+func (m *QuotaMutation) ClearQuotaUser() {
+	m.clearedquota_user = true
+	m.clearedFields[quota.FieldUserID] = struct{}{}
+}
+
+// QuotaUserCleared reports if the "quota_user" edge to the User entity was cleared.
+func (m *QuotaMutation) QuotaUserCleared() bool {
+	return m.clearedquota_user
+}
+
+// QuotaUserID returns the "quota_user" edge ID in the mutation.
+func (m *QuotaMutation) QuotaUserID() (id int, exists bool) {
+	if m.quota_user != nil {
+		return *m.quota_user, true
+	}
+	return
+}
+
+// QuotaUserIDs returns the "quota_user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// QuotaUserID instead. It exists only for internal usage by the builders.
+func (m *QuotaMutation) QuotaUserIDs() (ids []int) {
+	if id := m.quota_user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetQuotaUser resets all changes to the "quota_user" edge.
+func (m *QuotaMutation) ResetQuotaUser() {
+	m.quota_user = nil
+	m.clearedquota_user = false
+}
+
 // Where appends a list predicates to the QuotaMutation builder.
 func (m *QuotaMutation) Where(ps ...predicate.Quota) {
 	m.predicates = append(m.predicates, ps...)
@@ -29865,10 +29988,10 @@ func (m *QuotaMutation) Fields() []string {
 	if m.updated_at != nil {
 		fields = append(fields, quota.FieldUpdatedAt)
 	}
-	if m.tenant_id != nil {
+	if m.quota_org != nil {
 		fields = append(fields, quota.FieldTenantID)
 	}
-	if m.user_id != nil {
+	if m.quota_user != nil {
 		fields = append(fields, quota.FieldUserID)
 	}
 	if m.quota_item != nil {
@@ -30047,12 +30170,6 @@ func (m *QuotaMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, quota.FieldUpdatedBy)
 	}
-	if m.addtenant_id != nil {
-		fields = append(fields, quota.FieldTenantID)
-	}
-	if m.adduser_id != nil {
-		fields = append(fields, quota.FieldUserID)
-	}
 	if m.add_limit != nil {
 		fields = append(fields, quota.FieldLimit)
 	}
@@ -30071,10 +30188,6 @@ func (m *QuotaMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case quota.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case quota.FieldTenantID:
-		return m.AddedTenantID()
-	case quota.FieldUserID:
-		return m.AddedUserID()
 	case quota.FieldLimit:
 		return m.AddedLimit()
 	case quota.FieldUsed:
@@ -30101,20 +30214,6 @@ func (m *QuotaMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case quota.FieldTenantID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTenantID(v)
-		return nil
-	case quota.FieldUserID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUserID(v)
 		return nil
 	case quota.FieldLimit:
 		v, ok := value.(int64)
@@ -30223,9 +30322,15 @@ func (m *QuotaMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *QuotaMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.quota_item != nil {
 		edges = append(edges, quota.EdgeQuotaItem)
+	}
+	if m.quota_org != nil {
+		edges = append(edges, quota.EdgeQuotaOrg)
+	}
+	if m.quota_user != nil {
+		edges = append(edges, quota.EdgeQuotaUser)
 	}
 	return edges
 }
@@ -30238,13 +30343,21 @@ func (m *QuotaMutation) AddedIDs(name string) []ent.Value {
 		if id := m.quota_item; id != nil {
 			return []ent.Value{*id}
 		}
+	case quota.EdgeQuotaOrg:
+		if id := m.quota_org; id != nil {
+			return []ent.Value{*id}
+		}
+	case quota.EdgeQuotaUser:
+		if id := m.quota_user; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *QuotaMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -30256,9 +30369,15 @@ func (m *QuotaMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *QuotaMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.clearedquota_item {
 		edges = append(edges, quota.EdgeQuotaItem)
+	}
+	if m.clearedquota_org {
+		edges = append(edges, quota.EdgeQuotaOrg)
+	}
+	if m.clearedquota_user {
+		edges = append(edges, quota.EdgeQuotaUser)
 	}
 	return edges
 }
@@ -30269,6 +30388,10 @@ func (m *QuotaMutation) EdgeCleared(name string) bool {
 	switch name {
 	case quota.EdgeQuotaItem:
 		return m.clearedquota_item
+	case quota.EdgeQuotaOrg:
+		return m.clearedquota_org
+	case quota.EdgeQuotaUser:
+		return m.clearedquota_user
 	}
 	return false
 }
@@ -30280,6 +30403,12 @@ func (m *QuotaMutation) ClearEdge(name string) error {
 	case quota.EdgeQuotaItem:
 		m.ClearQuotaItem()
 		return nil
+	case quota.EdgeQuotaOrg:
+		m.ClearQuotaOrg()
+		return nil
+	case quota.EdgeQuotaUser:
+		m.ClearQuotaUser()
+		return nil
 	}
 	return fmt.Errorf("unknown Quota unique edge %s", name)
 }
@@ -30290,6 +30419,12 @@ func (m *QuotaMutation) ResetEdge(name string) error {
 	switch name {
 	case quota.EdgeQuotaItem:
 		m.ResetQuotaItem()
+		return nil
+	case quota.EdgeQuotaOrg:
+		m.ResetQuotaOrg()
+		return nil
+	case quota.EdgeQuotaUser:
+		m.ResetQuotaUser()
 		return nil
 	}
 	return fmt.Errorf("unknown Quota edge %s", name)
@@ -32922,6 +33057,9 @@ type UserMutation struct {
 	clearedaddresses     bool
 	citizenship          *int
 	clearedcitizenship   bool
+	user_quota           map[int]struct{}
+	removeduser_quota    map[int]struct{}
+	cleareduser_quota    bool
 	org_user             map[int]struct{}
 	removedorg_user      map[int]struct{}
 	clearedorg_user      bool
@@ -34346,6 +34484,60 @@ func (m *UserMutation) ResetCitizenship() {
 	m.clearedcitizenship = false
 }
 
+// AddUserQuotumIDs adds the "user_quota" edge to the Quota entity by ids.
+func (m *UserMutation) AddUserQuotumIDs(ids ...int) {
+	if m.user_quota == nil {
+		m.user_quota = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.user_quota[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUserQuota clears the "user_quota" edge to the Quota entity.
+func (m *UserMutation) ClearUserQuota() {
+	m.cleareduser_quota = true
+}
+
+// UserQuotaCleared reports if the "user_quota" edge to the Quota entity was cleared.
+func (m *UserMutation) UserQuotaCleared() bool {
+	return m.cleareduser_quota
+}
+
+// RemoveUserQuotumIDs removes the "user_quota" edge to the Quota entity by IDs.
+func (m *UserMutation) RemoveUserQuotumIDs(ids ...int) {
+	if m.removeduser_quota == nil {
+		m.removeduser_quota = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.user_quota, ids[i])
+		m.removeduser_quota[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUserQuota returns the removed IDs of the "user_quota" edge to the Quota entity.
+func (m *UserMutation) RemovedUserQuotaIDs() (ids []int) {
+	for id := range m.removeduser_quota {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserQuotaIDs returns the "user_quota" edge IDs in the mutation.
+func (m *UserMutation) UserQuotaIDs() (ids []int) {
+	for id := range m.user_quota {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUserQuota resets all changes to the "user_quota" edge.
+func (m *UserMutation) ResetUserQuota() {
+	m.user_quota = nil
+	m.cleareduser_quota = false
+	m.removeduser_quota = nil
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by ids.
 func (m *UserMutation) AddOrgUserIDs(ids ...int) {
 	if m.org_user == nil {
@@ -34935,7 +35127,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.identities != nil {
 		edges = append(edges, user.EdgeIdentities)
 	}
@@ -34962,6 +35154,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.citizenship != nil {
 		edges = append(edges, user.EdgeCitizenship)
+	}
+	if m.user_quota != nil {
+		edges = append(edges, user.EdgeUserQuota)
 	}
 	if m.org_user != nil {
 		edges = append(edges, user.EdgeOrgUser)
@@ -35023,6 +35218,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 		if id := m.citizenship; id != nil {
 			return []ent.Value{*id}
 		}
+	case user.EdgeUserQuota:
+		ids := make([]ent.Value, 0, len(m.user_quota))
+		for id := range m.user_quota {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.org_user))
 		for id := range m.org_user {
@@ -35035,7 +35236,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.removedidentities != nil {
 		edges = append(edges, user.EdgeIdentities)
 	}
@@ -35056,6 +35257,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedaddresses != nil {
 		edges = append(edges, user.EdgeAddresses)
+	}
+	if m.removeduser_quota != nil {
+		edges = append(edges, user.EdgeUserQuota)
 	}
 	if m.removedorg_user != nil {
 		edges = append(edges, user.EdgeOrgUser)
@@ -35109,6 +35313,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeUserQuota:
+		ids := make([]ent.Value, 0, len(m.removeduser_quota))
+		for id := range m.removeduser_quota {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeOrgUser:
 		ids := make([]ent.Value, 0, len(m.removedorg_user))
 		for id := range m.removedorg_user {
@@ -35121,7 +35331,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 10)
+	edges := make([]string, 0, 11)
 	if m.clearedidentities {
 		edges = append(edges, user.EdgeIdentities)
 	}
@@ -35148,6 +35358,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.clearedcitizenship {
 		edges = append(edges, user.EdgeCitizenship)
+	}
+	if m.cleareduser_quota {
+		edges = append(edges, user.EdgeUserQuota)
 	}
 	if m.clearedorg_user {
 		edges = append(edges, user.EdgeOrgUser)
@@ -35177,6 +35390,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedaddresses
 	case user.EdgeCitizenship:
 		return m.clearedcitizenship
+	case user.EdgeUserQuota:
+		return m.cleareduser_quota
 	case user.EdgeOrgUser:
 		return m.clearedorg_user
 	}
@@ -35227,6 +35442,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeCitizenship:
 		m.ResetCitizenship()
+		return nil
+	case user.EdgeUserQuota:
+		m.ResetUserQuota()
 		return nil
 	case user.EdgeOrgUser:
 		m.ResetOrgUser()

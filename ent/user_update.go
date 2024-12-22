@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -479,6 +480,21 @@ func (uu *UserUpdate) SetCitizenship(c *Country) *UserUpdate {
 	return uu.SetCitizenshipID(c.ID)
 }
 
+// AddUserQuotumIDs adds the "user_quota" edge to the Quota entity by IDs.
+func (uu *UserUpdate) AddUserQuotumIDs(ids ...int) *UserUpdate {
+	uu.mutation.AddUserQuotumIDs(ids...)
+	return uu
+}
+
+// AddUserQuota adds the "user_quota" edges to the Quota entity.
+func (uu *UserUpdate) AddUserQuota(q ...*Quota) *UserUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return uu.AddUserQuotumIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (uu *UserUpdate) AddOrgUserIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddOrgUserIDs(ids...)
@@ -656,6 +672,27 @@ func (uu *UserUpdate) RemoveAddresses(u ...*UserAddr) *UserUpdate {
 func (uu *UserUpdate) ClearCitizenship() *UserUpdate {
 	uu.mutation.ClearCitizenship()
 	return uu
+}
+
+// ClearUserQuota clears all "user_quota" edges to the Quota entity.
+func (uu *UserUpdate) ClearUserQuota() *UserUpdate {
+	uu.mutation.ClearUserQuota()
+	return uu
+}
+
+// RemoveUserQuotumIDs removes the "user_quota" edge to Quota entities by IDs.
+func (uu *UserUpdate) RemoveUserQuotumIDs(ids ...int) *UserUpdate {
+	uu.mutation.RemoveUserQuotumIDs(ids...)
+	return uu
+}
+
+// RemoveUserQuota removes "user_quota" edges to Quota entities.
+func (uu *UserUpdate) RemoveUserQuota(q ...*Quota) *UserUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return uu.RemoveUserQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1234,6 +1271,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.UserQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedUserQuotaIDs(); len(nodes) > 0 && !uu.mutation.UserQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.UserQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1739,6 +1821,21 @@ func (uuo *UserUpdateOne) SetCitizenship(c *Country) *UserUpdateOne {
 	return uuo.SetCitizenshipID(c.ID)
 }
 
+// AddUserQuotumIDs adds the "user_quota" edge to the Quota entity by IDs.
+func (uuo *UserUpdateOne) AddUserQuotumIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.AddUserQuotumIDs(ids...)
+	return uuo
+}
+
+// AddUserQuota adds the "user_quota" edges to the Quota entity.
+func (uuo *UserUpdateOne) AddUserQuota(q ...*Quota) *UserUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return uuo.AddUserQuotumIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (uuo *UserUpdateOne) AddOrgUserIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddOrgUserIDs(ids...)
@@ -1916,6 +2013,27 @@ func (uuo *UserUpdateOne) RemoveAddresses(u ...*UserAddr) *UserUpdateOne {
 func (uuo *UserUpdateOne) ClearCitizenship() *UserUpdateOne {
 	uuo.mutation.ClearCitizenship()
 	return uuo
+}
+
+// ClearUserQuota clears all "user_quota" edges to the Quota entity.
+func (uuo *UserUpdateOne) ClearUserQuota() *UserUpdateOne {
+	uuo.mutation.ClearUserQuota()
+	return uuo
+}
+
+// RemoveUserQuotumIDs removes the "user_quota" edge to Quota entities by IDs.
+func (uuo *UserUpdateOne) RemoveUserQuotumIDs(ids ...int) *UserUpdateOne {
+	uuo.mutation.RemoveUserQuotumIDs(ids...)
+	return uuo
+}
+
+// RemoveUserQuota removes "user_quota" edges to Quota entities.
+func (uuo *UserUpdateOne) RemoveUserQuota(q ...*Quota) *UserUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return uuo.RemoveUserQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -2517,6 +2635,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(country.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.UserQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedUserQuotaIDs(); len(nodes) > 0 && !uuo.mutation.UserQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.UserQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

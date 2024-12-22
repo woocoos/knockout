@@ -11,8 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/user"
 )
 
 // QuotaCreate is the builder for creating a Quota entity.
@@ -148,6 +150,28 @@ func (qc *QuotaCreate) SetQuotaItem(q *QuotaItem) *QuotaCreate {
 	return qc.SetQuotaItemID(q.ID)
 }
 
+// SetQuotaOrgID sets the "quota_org" edge to the Org entity by ID.
+func (qc *QuotaCreate) SetQuotaOrgID(id int) *QuotaCreate {
+	qc.mutation.SetQuotaOrgID(id)
+	return qc
+}
+
+// SetQuotaOrg sets the "quota_org" edge to the Org entity.
+func (qc *QuotaCreate) SetQuotaOrg(o *Org) *QuotaCreate {
+	return qc.SetQuotaOrgID(o.ID)
+}
+
+// SetQuotaUserID sets the "quota_user" edge to the User entity by ID.
+func (qc *QuotaCreate) SetQuotaUserID(id int) *QuotaCreate {
+	qc.mutation.SetQuotaUserID(id)
+	return qc
+}
+
+// SetQuotaUser sets the "quota_user" edge to the User entity.
+func (qc *QuotaCreate) SetQuotaUser(u *User) *QuotaCreate {
+	return qc.SetQuotaUserID(u.ID)
+}
+
 // Mutation returns the QuotaMutation object of the builder.
 func (qc *QuotaCreate) Mutation() *QuotaMutation {
 	return qc.mutation
@@ -230,6 +254,12 @@ func (qc *QuotaCreate) check() error {
 	if len(qc.mutation.QuotaItemIDs()) == 0 {
 		return &ValidationError{Name: "quota_item", err: errors.New(`ent: missing required edge "Quota.quota_item"`)}
 	}
+	if len(qc.mutation.QuotaOrgIDs()) == 0 {
+		return &ValidationError{Name: "quota_org", err: errors.New(`ent: missing required edge "Quota.quota_org"`)}
+	}
+	if len(qc.mutation.QuotaUserIDs()) == 0 {
+		return &ValidationError{Name: "quota_user", err: errors.New(`ent: missing required edge "Quota.quota_user"`)}
+	}
 	return nil
 }
 
@@ -279,14 +309,6 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 		_spec.SetField(quota.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := qc.mutation.TenantID(); ok {
-		_spec.SetField(quota.FieldTenantID, field.TypeInt, value)
-		_node.TenantID = value
-	}
-	if value, ok := qc.mutation.UserID(); ok {
-		_spec.SetField(quota.FieldUserID, field.TypeInt, value)
-		_node.UserID = value
-	}
 	if value, ok := qc.mutation.Limit(); ok {
 		_spec.SetField(quota.FieldLimit, field.TypeInt64, value)
 		_node.Limit = value
@@ -318,6 +340,40 @@ func (qc *QuotaCreate) createSpec() (*Quota, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.QuotaItemID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := qc.mutation.QuotaOrgIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   quota.QuotaOrgTable,
+			Columns: []string{quota.QuotaOrgColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(org.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := qc.mutation.QuotaUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   quota.QuotaUserTable,
+			Columns: []string{quota.QuotaUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -426,12 +482,6 @@ func (u *QuotaUpsert) UpdateTenantID() *QuotaUpsert {
 	return u
 }
 
-// AddTenantID adds v to the "tenant_id" field.
-func (u *QuotaUpsert) AddTenantID(v int) *QuotaUpsert {
-	u.Add(quota.FieldTenantID, v)
-	return u
-}
-
 // SetUserID sets the "user_id" field.
 func (u *QuotaUpsert) SetUserID(v int) *QuotaUpsert {
 	u.Set(quota.FieldUserID, v)
@@ -441,12 +491,6 @@ func (u *QuotaUpsert) SetUserID(v int) *QuotaUpsert {
 // UpdateUserID sets the "user_id" field to the value that was provided on create.
 func (u *QuotaUpsert) UpdateUserID() *QuotaUpsert {
 	u.SetExcluded(quota.FieldUserID)
-	return u
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *QuotaUpsert) AddUserID(v int) *QuotaUpsert {
-	u.Add(quota.FieldUserID, v)
 	return u
 }
 
@@ -644,13 +688,6 @@ func (u *QuotaUpsertOne) SetTenantID(v int) *QuotaUpsertOne {
 	})
 }
 
-// AddTenantID adds v to the "tenant_id" field.
-func (u *QuotaUpsertOne) AddTenantID(v int) *QuotaUpsertOne {
-	return u.Update(func(s *QuotaUpsert) {
-		s.AddTenantID(v)
-	})
-}
-
 // UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
 func (u *QuotaUpsertOne) UpdateTenantID() *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
@@ -662,13 +699,6 @@ func (u *QuotaUpsertOne) UpdateTenantID() *QuotaUpsertOne {
 func (u *QuotaUpsertOne) SetUserID(v int) *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
 		s.SetUserID(v)
-	})
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *QuotaUpsertOne) AddUserID(v int) *QuotaUpsertOne {
-	return u.Update(func(s *QuotaUpsert) {
-		s.AddUserID(v)
 	})
 }
 
@@ -1053,13 +1083,6 @@ func (u *QuotaUpsertBulk) SetTenantID(v int) *QuotaUpsertBulk {
 	})
 }
 
-// AddTenantID adds v to the "tenant_id" field.
-func (u *QuotaUpsertBulk) AddTenantID(v int) *QuotaUpsertBulk {
-	return u.Update(func(s *QuotaUpsert) {
-		s.AddTenantID(v)
-	})
-}
-
 // UpdateTenantID sets the "tenant_id" field to the value that was provided on create.
 func (u *QuotaUpsertBulk) UpdateTenantID() *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
@@ -1071,13 +1094,6 @@ func (u *QuotaUpsertBulk) UpdateTenantID() *QuotaUpsertBulk {
 func (u *QuotaUpsertBulk) SetUserID(v int) *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
 		s.SetUserID(v)
-	})
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *QuotaUpsertBulk) AddUserID(v int) *QuotaUpsertBulk {
-	return u.Update(func(s *QuotaUpsert) {
-		s.AddUserID(v)
 	})
 }
 

@@ -10763,6 +10763,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -18153,6 +18155,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -19859,6 +19863,8 @@ func (ec *executionContext) fieldContext_OauthClient_user(_ context.Context, fie
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -20860,6 +20866,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -20967,6 +20975,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -21068,6 +21078,8 @@ func (ec *executionContext) fieldContext_Org_owner(_ context.Context, field grap
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -21481,6 +21493,79 @@ func (ec *executionContext) fieldContext_Org_userPasswordPolicy(_ context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Org_orgQuota(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_orgQuota(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OrgQuota(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Quota)
+	fc.Result = res
+	return ec.marshalOQuota2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_orgQuota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Quota_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Quota_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Quota_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Quota_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Quota_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_Quota_tenantID(ctx, field)
+			case "userID":
+				return ec.fieldContext_Quota_userID(ctx, field)
+			case "quotaItemID":
+				return ec.fieldContext_Quota_quotaItemID(ctx, field)
+			case "limit":
+				return ec.fieldContext_Quota_limit(ctx, field)
+			case "used":
+				return ec.fieldContext_Quota_used(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Quota_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Quota_endAt(ctx, field)
+			case "quotaItem":
+				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			case "quotaOrg":
+				return ec.fieldContext_Quota_quotaOrg(ctx, field)
+			case "quotaUser":
+				return ec.fieldContext_Quota_quotaUser(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Org_TopOrg(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Org_TopOrg(ctx, field)
 	if err != nil {
@@ -21577,6 +21662,8 @@ func (ec *executionContext) fieldContext_Org_TopOrg(_ context.Context, field gra
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -21884,6 +21971,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -22470,6 +22559,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -24223,6 +24314,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_user(_ context.Contex
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -24337,6 +24430,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -25422,6 +25517,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -25523,6 +25620,8 @@ func (ec *executionContext) fieldContext_Permission_user(_ context.Context, fiel
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -26999,6 +27098,8 @@ func (ec *executionContext) fieldContext_Query_viewer(_ context.Context, field g
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -27302,6 +27403,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -27423,6 +27526,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -28226,6 +28331,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -29572,7 +29679,7 @@ func (ec *executionContext) _Quota_tenantID(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_tenantID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29582,7 +29689,7 @@ func (ec *executionContext) fieldContext_Quota_tenantID(_ context.Context, field
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -29616,7 +29723,7 @@ func (ec *executionContext) _Quota_userID(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_userID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29626,7 +29733,7 @@ func (ec *executionContext) fieldContext_Quota_userID(_ context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -29918,6 +30025,228 @@ func (ec *executionContext) fieldContext_Quota_quotaItem(_ context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Quota_quotaOrg(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quota_quotaOrg(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuotaOrg(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Org)
+	fc.Result = res
+	return ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quota_quotaOrg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quota",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Org_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Org_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Org_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Org_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Org_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Org_deletedAt(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_Org_ownerID(ctx, field)
+			case "kind":
+				return ec.fieldContext_Org_kind(ctx, field)
+			case "parentID":
+				return ec.fieldContext_Org_parentID(ctx, field)
+			case "domain":
+				return ec.fieldContext_Org_domain(ctx, field)
+			case "customDomain":
+				return ec.fieldContext_Org_customDomain(ctx, field)
+			case "code":
+				return ec.fieldContext_Org_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Org_name(ctx, field)
+			case "profile":
+				return ec.fieldContext_Org_profile(ctx, field)
+			case "status":
+				return ec.fieldContext_Org_status(ctx, field)
+			case "path":
+				return ec.fieldContext_Org_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_Org_displaySort(ctx, field)
+			case "countryCode":
+				return ec.fieldContext_Org_countryCode(ctx, field)
+			case "timezone":
+				return ec.fieldContext_Org_timezone(ctx, field)
+			case "localCurrency":
+				return ec.fieldContext_Org_localCurrency(ctx, field)
+			case "logo":
+				return ec.fieldContext_Org_logo(ctx, field)
+			case "parent":
+				return ec.fieldContext_Org_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_Org_children(ctx, field)
+			case "owner":
+				return ec.fieldContext_Org_owner(ctx, field)
+			case "users":
+				return ec.fieldContext_Org_users(ctx, field)
+			case "permissions":
+				return ec.fieldContext_Org_permissions(ctx, field)
+			case "policies":
+				return ec.fieldContext_Org_policies(ctx, field)
+			case "apps":
+				return ec.fieldContext_Org_apps(ctx, field)
+			case "fileIdentities":
+				return ec.fieldContext_Org_fileIdentities(ctx, field)
+			case "userPasswordPolicy":
+				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
+			case "TopOrg":
+				return ec.fieldContext_Org_TopOrg(ctx, field)
+			case "isAllowRevokeAppPolicy":
+				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Quota_quotaUser(ctx context.Context, field graphql.CollectedField, obj *ent.Quota) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Quota_quotaUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QuotaUser(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Quota_quotaUser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Quota",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_User_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_User_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_User_deletedAt(ctx, field)
+			case "principalName":
+				return ec.fieldContext_User_principalName(ctx, field)
+			case "displayName":
+				return ec.fieldContext_User_displayName(ctx, field)
+			case "userType":
+				return ec.fieldContext_User_userType(ctx, field)
+			case "creationType":
+				return ec.fieldContext_User_creationType(ctx, field)
+			case "registerIP":
+				return ec.fieldContext_User_registerIP(ctx, field)
+			case "status":
+				return ec.fieldContext_User_status(ctx, field)
+			case "comments":
+				return ec.fieldContext_User_comments(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
+			case "gender":
+				return ec.fieldContext_User_gender(ctx, field)
+			case "citizenshipID":
+				return ec.fieldContext_User_citizenshipID(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "middleName":
+				return ec.fieldContext_User_middleName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
+			case "identities":
+				return ec.fieldContext_User_identities(ctx, field)
+			case "loginProfile":
+				return ec.fieldContext_User_loginProfile(ctx, field)
+			case "devices":
+				return ec.fieldContext_User_devices(ctx, field)
+			case "permissions":
+				return ec.fieldContext_User_permissions(ctx, field)
+			case "oauthClients":
+				return ec.fieldContext_User_oauthClients(ctx, field)
+			case "addresses":
+				return ec.fieldContext_User_addresses(ctx, field)
+			case "citizenship":
+				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
+			case "isAssignOrgRole":
+				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
+			case "isAllowRevokeRole":
+				return ec.fieldContext_User_isAllowRevokeRole(ctx, field)
+			case "contact":
+				return ec.fieldContext_User_contact(ctx, field)
+			case "orgUserType":
+				return ec.fieldContext_User_orgUserType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _QuotaConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.QuotaConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_QuotaConnection_edges(ctx, field)
 	if err != nil {
@@ -30125,6 +30454,10 @@ func (ec *executionContext) fieldContext_QuotaEdge_node(_ context.Context, field
 				return ec.fieldContext_Quota_endAt(ctx, field)
 			case "quotaItem":
 				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			case "quotaOrg":
+				return ec.fieldContext_Quota_quotaOrg(ctx, field)
+			case "quotaUser":
+				return ec.fieldContext_Quota_quotaUser(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
 		},
@@ -33365,6 +33698,79 @@ func (ec *executionContext) fieldContext_User_citizenship(_ context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _User_userQuota(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_userQuota(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserQuota(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Quota)
+	fc.Result = res
+	return ec.marshalOQuota2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_userQuota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Quota_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Quota_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Quota_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Quota_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Quota_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_Quota_tenantID(ctx, field)
+			case "userID":
+				return ec.fieldContext_Quota_userID(ctx, field)
+			case "quotaItemID":
+				return ec.fieldContext_Quota_quotaItemID(ctx, field)
+			case "limit":
+				return ec.fieldContext_Quota_limit(ctx, field)
+			case "used":
+				return ec.fieldContext_Quota_used(ctx, field)
+			case "startAt":
+				return ec.fieldContext_Quota_startAt(ctx, field)
+			case "endAt":
+				return ec.fieldContext_Quota_endAt(ctx, field)
+			case "quotaItem":
+				return ec.fieldContext_Quota_quotaItem(ctx, field)
+			case "quotaOrg":
+				return ec.fieldContext_Quota_quotaOrg(ctx, field)
+			case "quotaUser":
+				return ec.fieldContext_Quota_quotaUser(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Quota", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _User_isAssignOrgRole(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_isAssignOrgRole(ctx, field)
 	if err != nil {
@@ -34370,6 +34776,8 @@ func (ec *executionContext) fieldContext_UserAddr_user(_ context.Context, field 
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -35281,6 +35689,8 @@ func (ec *executionContext) fieldContext_UserDevice_user(_ context.Context, fiel
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -35648,6 +36058,8 @@ func (ec *executionContext) fieldContext_UserEdge_node(_ context.Context, field 
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -36219,6 +36631,8 @@ func (ec *executionContext) fieldContext_UserIdentity_user(_ context.Context, fi
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -36913,6 +37327,8 @@ func (ec *executionContext) fieldContext_UserLoginProfile_user(_ context.Context
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -37358,6 +37774,8 @@ func (ec *executionContext) fieldContext_UserPassword_user(_ context.Context, fi
 				return ec.fieldContext_User_addresses(ctx, field)
 			case "citizenship":
 				return ec.fieldContext_User_citizenship(ctx, field)
+			case "userQuota":
+				return ec.fieldContext_User_userQuota(ctx, field)
 			case "isAssignOrgRole":
 				return ec.fieldContext_User_isAssignOrgRole(ctx, field)
 			case "isAllowRevokeRole":
@@ -38052,6 +38470,8 @@ func (ec *executionContext) fieldContext_UserPasswordPolicy_org(_ context.Contex
 				return ec.fieldContext_Org_fileIdentities(ctx, field)
 			case "userPasswordPolicy":
 				return ec.fieldContext_Org_userPasswordPolicy(ctx, field)
+			case "orgQuota":
+				return ec.fieldContext_Org_orgQuota(ctx, field)
 			case "TopOrg":
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
@@ -47799,27 +48219,13 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"tenantID", "userID", "limit", "startAt", "endAt", "quotaItemID"}
+	fieldsInOrder := [...]string{"limit", "startAt", "endAt", "quotaItemID", "quotaOrgID", "quotaUserID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantID = data
-		case "userID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "limit":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			data, err := ec.unmarshalNInt2int64(ctx, v)
@@ -47848,6 +48254,20 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.QuotaItemID = data
+		case "quotaOrgID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaOrgID"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.QuotaOrgID = data
+		case "quotaUserID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaUserID"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.QuotaUserID = data
 		}
 	}
 
@@ -54445,7 +54865,7 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "localCurrency", "localCurrencyNEQ", "localCurrencyIn", "localCurrencyNotIn", "localCurrencyGT", "localCurrencyGTE", "localCurrencyLT", "localCurrencyLTE", "localCurrencyContains", "localCurrencyHasPrefix", "localCurrencyHasSuffix", "localCurrencyIsNil", "localCurrencyNotNil", "localCurrencyEqualFold", "localCurrencyContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasFileIdentities", "hasFileIdentitiesWith", "hasUserPasswordPolicy", "hasUserPasswordPolicyWith", "hasOrgUser", "hasOrgUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "ownerID", "ownerIDNEQ", "ownerIDIn", "ownerIDNotIn", "ownerIDIsNil", "ownerIDNotNil", "kind", "kindNEQ", "kindIn", "kindNotIn", "parentID", "parentIDNEQ", "parentIDIn", "parentIDNotIn", "domain", "domainNEQ", "domainIn", "domainNotIn", "domainGT", "domainGTE", "domainLT", "domainLTE", "domainContains", "domainHasPrefix", "domainHasSuffix", "domainIsNil", "domainNotNil", "domainEqualFold", "domainContainsFold", "code", "codeNEQ", "codeIn", "codeNotIn", "codeGT", "codeGTE", "codeLT", "codeLTE", "codeContains", "codeHasPrefix", "codeHasSuffix", "codeIsNil", "codeNotNil", "codeEqualFold", "codeContainsFold", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "path", "pathNEQ", "pathIn", "pathNotIn", "pathGT", "pathGTE", "pathLT", "pathLTE", "pathContains", "pathHasPrefix", "pathHasSuffix", "pathIsNil", "pathNotNil", "pathEqualFold", "pathContainsFold", "countryCode", "countryCodeNEQ", "countryCodeIn", "countryCodeNotIn", "countryCodeGT", "countryCodeGTE", "countryCodeLT", "countryCodeLTE", "countryCodeContains", "countryCodeHasPrefix", "countryCodeHasSuffix", "countryCodeIsNil", "countryCodeNotNil", "countryCodeEqualFold", "countryCodeContainsFold", "timezone", "timezoneNEQ", "timezoneIn", "timezoneNotIn", "timezoneGT", "timezoneGTE", "timezoneLT", "timezoneLTE", "timezoneContains", "timezoneHasPrefix", "timezoneHasSuffix", "timezoneIsNil", "timezoneNotNil", "timezoneEqualFold", "timezoneContainsFold", "localCurrency", "localCurrencyNEQ", "localCurrencyIn", "localCurrencyNotIn", "localCurrencyGT", "localCurrencyGTE", "localCurrencyLT", "localCurrencyLTE", "localCurrencyContains", "localCurrencyHasPrefix", "localCurrencyHasSuffix", "localCurrencyIsNil", "localCurrencyNotNil", "localCurrencyEqualFold", "localCurrencyContainsFold", "hasParent", "hasParentWith", "hasChildren", "hasChildrenWith", "hasOwner", "hasOwnerWith", "hasUsers", "hasUsersWith", "hasRolesAndGroups", "hasRolesAndGroupsWith", "hasPermissions", "hasPermissionsWith", "hasPolicies", "hasPoliciesWith", "hasApps", "hasAppsWith", "hasFileIdentities", "hasFileIdentitiesWith", "hasUserPasswordPolicy", "hasUserPasswordPolicyWith", "hasOrgQuota", "hasOrgQuotaWith", "hasOrgUser", "hasOrgUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -55852,6 +56272,20 @@ func (ec *executionContext) unmarshalInputOrgWhereInput(ctx context.Context, obj
 				return it, err
 			}
 			it.HasUserPasswordPolicyWith = data
+		case "hasOrgQuota":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgQuota"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasOrgQuota = data
+		case "hasOrgQuotaWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgQuotaWith"))
+			data, err := ec.unmarshalOQuotaWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasOrgQuotaWith = data
 		case "hasOrgUser":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOrgUser"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -57405,7 +57839,7 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "tenantIDGT", "tenantIDGTE", "tenantIDLT", "tenantIDLTE", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDGT", "userIDGTE", "userIDLT", "userIDLTE", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasQuotaItem", "hasQuotaItemWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasQuotaItem", "hasQuotaItemWith", "hasQuotaOrg", "hasQuotaOrgWith", "hasQuotaUser", "hasQuotaUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -57743,116 +58177,60 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 			it.UpdatedAtNotNil = data
 		case "tenantID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TenantID = data
 		case "tenantIDNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TenantIDNEQ = data
 		case "tenantIDIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TenantIDIn = data
 		case "tenantIDNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TenantIDNotIn = data
-		case "tenantIDGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDGT = data
-		case "tenantIDGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDGTE = data
-		case "tenantIDLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDLT = data
-		case "tenantIDLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantIDLTE = data
 		case "userID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.UserID = data
 		case "userIDNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.UserIDNEQ = data
 		case "userIDIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.UserIDIn = data
 		case "userIDNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotIn"))
-			data, err := ec.unmarshalOInt2ᚕintᚄ(ctx, v)
+			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.UserIDNotIn = data
-		case "userIDGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDGT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDGT = data
-		case "userIDGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDGTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDGTE = data
-		case "userIDLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDLT"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDLT = data
-		case "userIDLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDLTE"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserIDLTE = data
 		case "quotaItemID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaItemID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -58035,6 +58413,34 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.HasQuotaItemWith = data
+		case "hasQuotaOrg":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuotaOrg"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasQuotaOrg = data
+		case "hasQuotaOrgWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuotaOrgWith"))
+			data, err := ec.unmarshalOOrgWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasQuotaOrgWith = data
+		case "hasQuotaUser":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuotaUser"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasQuotaUser = data
+		case "hasQuotaUserWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasQuotaUserWith"))
+			data, err := ec.unmarshalOUserWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasQuotaUserWith = data
 		}
 	}
 
@@ -61005,27 +61411,13 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"tenantID", "userID", "limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "quotaItemID"}
+	fieldsInOrder := [...]string{"limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "quotaItemID", "quotaOrgID", "quotaUserID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "tenantID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.TenantID = data
-		case "userID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "limit":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
@@ -61068,6 +61460,20 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.QuotaItemID = data
+		case "quotaOrgID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaOrgID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.QuotaOrgID = data
+		case "quotaUserID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaUserID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.QuotaUserID = data
 		}
 	}
 
@@ -67233,7 +67639,7 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "principalName", "principalNameNEQ", "principalNameIn", "principalNameNotIn", "principalNameGT", "principalNameGTE", "principalNameLT", "principalNameLTE", "principalNameContains", "principalNameHasPrefix", "principalNameHasSuffix", "principalNameEqualFold", "principalNameContainsFold", "displayName", "displayNameNEQ", "displayNameIn", "displayNameNotIn", "displayNameGT", "displayNameGTE", "displayNameLT", "displayNameLTE", "displayNameContains", "displayNameHasPrefix", "displayNameHasSuffix", "displayNameEqualFold", "displayNameContainsFold", "userType", "userTypeNEQ", "userTypeIn", "userTypeNotIn", "creationType", "creationTypeNEQ", "creationTypeIn", "creationTypeNotIn", "registerIP", "registerIPNEQ", "registerIPIn", "registerIPNotIn", "registerIPGT", "registerIPGTE", "registerIPLT", "registerIPLTE", "registerIPContains", "registerIPHasPrefix", "registerIPHasSuffix", "registerIPEqualFold", "registerIPContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "gender", "genderNEQ", "genderIn", "genderNotIn", "citizenshipID", "citizenshipIDNEQ", "citizenshipIDIn", "citizenshipIDNotIn", "citizenshipIDIsNil", "citizenshipIDNotNil", "firstName", "firstNameNEQ", "firstNameIn", "firstNameNotIn", "firstNameGT", "firstNameGTE", "firstNameLT", "firstNameLTE", "firstNameContains", "firstNameHasPrefix", "firstNameHasSuffix", "firstNameIsNil", "firstNameNotNil", "firstNameEqualFold", "firstNameContainsFold", "middleName", "middleNameNEQ", "middleNameIn", "middleNameNotIn", "middleNameGT", "middleNameGTE", "middleNameLT", "middleNameLTE", "middleNameContains", "middleNameHasPrefix", "middleNameHasSuffix", "middleNameIsNil", "middleNameNotNil", "middleNameEqualFold", "middleNameContainsFold", "lastName", "lastNameNEQ", "lastNameIn", "lastNameNotIn", "lastNameGT", "lastNameGTE", "lastNameLT", "lastNameLTE", "lastNameContains", "lastNameHasPrefix", "lastNameHasSuffix", "lastNameIsNil", "lastNameNotNil", "lastNameEqualFold", "lastNameContainsFold", "lang", "langNEQ", "langIn", "langNotIn", "langGT", "langGTE", "langLT", "langLTE", "langContains", "langHasPrefix", "langHasSuffix", "langIsNil", "langNotNil", "langEqualFold", "langContainsFold", "hasIdentities", "hasIdentitiesWith", "hasLoginProfile", "hasLoginProfileWith", "hasPasswords", "hasPasswordsWith", "hasDevices", "hasDevicesWith", "hasPermissions", "hasPermissionsWith", "hasOauthClients", "hasOauthClientsWith", "hasAddresses", "hasAddressesWith", "hasCitizenship", "hasCitizenshipWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "deletedAt", "deletedAtNEQ", "deletedAtIn", "deletedAtNotIn", "deletedAtGT", "deletedAtGTE", "deletedAtLT", "deletedAtLTE", "deletedAtIsNil", "deletedAtNotNil", "principalName", "principalNameNEQ", "principalNameIn", "principalNameNotIn", "principalNameGT", "principalNameGTE", "principalNameLT", "principalNameLTE", "principalNameContains", "principalNameHasPrefix", "principalNameHasSuffix", "principalNameEqualFold", "principalNameContainsFold", "displayName", "displayNameNEQ", "displayNameIn", "displayNameNotIn", "displayNameGT", "displayNameGTE", "displayNameLT", "displayNameLTE", "displayNameContains", "displayNameHasPrefix", "displayNameHasSuffix", "displayNameEqualFold", "displayNameContainsFold", "userType", "userTypeNEQ", "userTypeIn", "userTypeNotIn", "creationType", "creationTypeNEQ", "creationTypeIn", "creationTypeNotIn", "registerIP", "registerIPNEQ", "registerIPIn", "registerIPNotIn", "registerIPGT", "registerIPGTE", "registerIPLT", "registerIPLTE", "registerIPContains", "registerIPHasPrefix", "registerIPHasSuffix", "registerIPEqualFold", "registerIPContainsFold", "status", "statusNEQ", "statusIn", "statusNotIn", "statusIsNil", "statusNotNil", "gender", "genderNEQ", "genderIn", "genderNotIn", "citizenshipID", "citizenshipIDNEQ", "citizenshipIDIn", "citizenshipIDNotIn", "citizenshipIDIsNil", "citizenshipIDNotNil", "firstName", "firstNameNEQ", "firstNameIn", "firstNameNotIn", "firstNameGT", "firstNameGTE", "firstNameLT", "firstNameLTE", "firstNameContains", "firstNameHasPrefix", "firstNameHasSuffix", "firstNameIsNil", "firstNameNotNil", "firstNameEqualFold", "firstNameContainsFold", "middleName", "middleNameNEQ", "middleNameIn", "middleNameNotIn", "middleNameGT", "middleNameGTE", "middleNameLT", "middleNameLTE", "middleNameContains", "middleNameHasPrefix", "middleNameHasSuffix", "middleNameIsNil", "middleNameNotNil", "middleNameEqualFold", "middleNameContainsFold", "lastName", "lastNameNEQ", "lastNameIn", "lastNameNotIn", "lastNameGT", "lastNameGTE", "lastNameLT", "lastNameLTE", "lastNameContains", "lastNameHasPrefix", "lastNameHasSuffix", "lastNameIsNil", "lastNameNotNil", "lastNameEqualFold", "lastNameContainsFold", "lang", "langNEQ", "langIn", "langNotIn", "langGT", "langGTE", "langLT", "langLTE", "langContains", "langHasPrefix", "langHasSuffix", "langIsNil", "langNotNil", "langEqualFold", "langContainsFold", "hasIdentities", "hasIdentitiesWith", "hasLoginProfile", "hasLoginProfileWith", "hasPasswords", "hasPasswordsWith", "hasDevices", "hasDevicesWith", "hasPermissions", "hasPermissionsWith", "hasOauthClients", "hasOauthClientsWith", "hasAddresses", "hasAddressesWith", "hasCitizenship", "hasCitizenshipWith", "hasUserQuota", "hasUserQuotaWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -68612,6 +69018,20 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.HasCitizenshipWith = data
+		case "hasUserQuota":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUserQuota"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasUserQuota = data
+		case "hasUserQuotaWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasUserQuotaWith"))
+			data, err := ec.unmarshalOQuotaWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasUserQuotaWith = data
 		}
 	}
 
@@ -72502,6 +72922,39 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "orgQuota":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Org_orgQuota(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "TopOrg":
 			field := field
 
@@ -74970,6 +75423,78 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "quotaOrg":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Quota_quotaOrg(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "quotaUser":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Quota_quotaUser(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -75826,6 +76351,39 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 					}
 				}()
 				res = ec._User_citizenship(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "userQuota":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_userQuota(ctx, field, obj)
 				return res
 			}
 
@@ -83114,6 +83672,53 @@ func (ec *executionContext) unmarshalOPermissionWhereInput2ᚖgithubᚗcomᚋwoo
 	}
 	res, err := ec.unmarshalInputPermissionWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOQuota2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuotaᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Quota) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNQuota2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuota(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalOQuota2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐQuota(ctx context.Context, sel ast.SelectionSet, v *ent.Quota) graphql.Marshaler {

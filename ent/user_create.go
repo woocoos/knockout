@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
@@ -384,6 +385,21 @@ func (uc *UserCreate) AddAddresses(u ...*UserAddr) *UserCreate {
 // SetCitizenship sets the "citizenship" edge to the Country entity.
 func (uc *UserCreate) SetCitizenship(c *Country) *UserCreate {
 	return uc.SetCitizenshipID(c.ID)
+}
+
+// AddUserQuotumIDs adds the "user_quota" edge to the Quota entity by IDs.
+func (uc *UserCreate) AddUserQuotumIDs(ids ...int) *UserCreate {
+	uc.mutation.AddUserQuotumIDs(ids...)
+	return uc
+}
+
+// AddUserQuota adds the "user_quota" edges to the Quota entity.
+func (uc *UserCreate) AddUserQuota(q ...*Quota) *UserCreate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return uc.AddUserQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -775,6 +791,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.CitizenshipID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.UserQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.UserQuotaTable,
+			Columns: []string{user.UserQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.OrgUserIDs(); len(nodes) > 0 {

@@ -80,6 +80,8 @@ const (
 	EdgeFileIdentities = "file_identities"
 	// EdgeUserPasswordPolicy holds the string denoting the user_password_policy edge name in mutations.
 	EdgeUserPasswordPolicy = "user_password_policy"
+	// EdgeOrgQuota holds the string denoting the org_quota edge name in mutations.
+	EdgeOrgQuota = "org_quota"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
@@ -146,6 +148,13 @@ const (
 	UserPasswordPolicyInverseTable = "user_password_policy"
 	// UserPasswordPolicyColumn is the table column denoting the user_password_policy relation/edge.
 	UserPasswordPolicyColumn = "tenant_id"
+	// OrgQuotaTable is the table that holds the org_quota relation/edge.
+	OrgQuotaTable = "quota"
+	// OrgQuotaInverseTable is the table name for the Quota entity.
+	// It exists in this package in order to avoid circular dependency with the "quota" package.
+	OrgQuotaInverseTable = "quota"
+	// OrgQuotaColumn is the table column denoting the org_quota relation/edge.
+	OrgQuotaColumn = "tenant_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -494,6 +503,20 @@ func ByUserPasswordPolicy(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOptio
 	}
 }
 
+// ByOrgQuotaCount orders the results by org_quota count.
+func ByOrgQuotaCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgQuotaStep(), opts...)
+	}
+}
+
+// ByOrgQuota orders the results by org_quota terms.
+func ByOrgQuota(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgQuotaStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -589,6 +612,13 @@ func newUserPasswordPolicyStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UserPasswordPolicyInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
+	)
+}
+func newOrgQuotaStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgQuotaInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, OrgQuotaTable, OrgQuotaColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

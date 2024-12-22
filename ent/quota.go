@@ -9,8 +9,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/user"
 )
 
 // Quota is the model entity for the Quota schema.
@@ -50,11 +52,15 @@ type Quota struct {
 type QuotaEdges struct {
 	// 配额定义
 	QuotaItem *QuotaItem `json:"quota_item,omitempty"`
+	// 配额关联租户
+	QuotaOrg *Org `json:"quota_org,omitempty"`
+	// 配额关联用户
+	QuotaUser *User `json:"quota_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [3]map[string]int
 }
 
 // QuotaItemOrErr returns the QuotaItem value or an error if the edge
@@ -66,6 +72,28 @@ func (e QuotaEdges) QuotaItemOrErr() (*QuotaItem, error) {
 		return nil, &NotFoundError{label: quotaitem.Label}
 	}
 	return nil, &NotLoadedError{edge: "quota_item"}
+}
+
+// QuotaOrgOrErr returns the QuotaOrg value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e QuotaEdges) QuotaOrgOrErr() (*Org, error) {
+	if e.QuotaOrg != nil {
+		return e.QuotaOrg, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: org.Label}
+	}
+	return nil, &NotLoadedError{edge: "quota_org"}
+}
+
+// QuotaUserOrErr returns the QuotaUser value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e QuotaEdges) QuotaUserOrErr() (*User, error) {
+	if e.QuotaUser != nil {
+		return e.QuotaUser, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: user.Label}
+	}
+	return nil, &NotLoadedError{edge: "quota_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -180,6 +208,16 @@ func (q *Quota) Value(name string) (ent.Value, error) {
 // QueryQuotaItem queries the "quota_item" edge of the Quota entity.
 func (q *Quota) QueryQuotaItem() *QuotaItemQuery {
 	return NewQuotaClient(q.config).QueryQuotaItem(q)
+}
+
+// QueryQuotaOrg queries the "quota_org" edge of the Quota entity.
+func (q *Quota) QueryQuotaOrg() *OrgQuery {
+	return NewQuotaClient(q.config).QueryQuotaOrg(q)
+}
+
+// QueryQuotaUser queries the "quota_user" edge of the Quota entity.
+func (q *Quota) QueryQuotaUser() *UserQuery {
+	return NewQuotaClient(q.config).QueryQuotaUser(q)
 }
 
 // Update returns a builder for updating this Quota.

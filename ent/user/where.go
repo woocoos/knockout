@@ -1343,6 +1343,29 @@ func HasCitizenshipWith(preds ...predicate.Country) predicate.User {
 	})
 }
 
+// HasUserQuota applies the HasEdge predicate on the "user_quota" edge.
+func HasUserQuota() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, UserQuotaTable, UserQuotaColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserQuotaWith applies the HasEdge predicate on the "user_quota" edge with a given conditions (other predicates).
+func HasUserQuotaWith(preds ...predicate.Quota) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newUserQuotaStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasOrgUser applies the HasEdge predicate on the "org_user" edge.
 func HasOrgUser() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

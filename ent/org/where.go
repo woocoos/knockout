@@ -1366,6 +1366,29 @@ func HasUserPasswordPolicyWith(preds ...predicate.UserPasswordPolicy) predicate.
 	})
 }
 
+// HasOrgQuota applies the HasEdge predicate on the "org_quota" edge.
+func HasOrgQuota() predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrgQuotaTable, OrgQuotaColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgQuotaWith applies the HasEdge predicate on the "org_quota" edge with a given conditions (other predicates).
+func HasOrgQuotaWith(preds ...predicate.Quota) predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := newOrgQuotaStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasOrgUser applies the HasEdge predicate on the "org_user" edge.
 func HasOrgUser() predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {

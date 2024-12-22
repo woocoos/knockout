@@ -8393,6 +8393,10 @@ type OrgWhereInput struct {
 	HasUserPasswordPolicy     *bool                           `json:"hasUserPasswordPolicy,omitempty"`
 	HasUserPasswordPolicyWith []*UserPasswordPolicyWhereInput `json:"hasUserPasswordPolicyWith,omitempty"`
 
+	// "org_quota" edge predicates.
+	HasOrgQuota     *bool              `json:"hasOrgQuota,omitempty"`
+	HasOrgQuotaWith []*QuotaWhereInput `json:"hasOrgQuotaWith,omitempty"`
+
 	// "org_user" edge predicates.
 	HasOrgUser     *bool                `json:"hasOrgUser,omitempty"`
 	HasOrgUserWith []*OrgUserWhereInput `json:"hasOrgUserWith,omitempty"`
@@ -9180,6 +9184,24 @@ func (i *OrgWhereInput) P() (predicate.Org, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, org.HasUserPasswordPolicyWith(with...))
+	}
+	if i.HasOrgQuota != nil {
+		p := org.HasOrgQuota()
+		if !*i.HasOrgQuota {
+			p = org.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOrgQuotaWith) > 0 {
+		with := make([]predicate.Quota, 0, len(i.HasOrgQuotaWith))
+		for _, w := range i.HasOrgQuotaWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOrgQuotaWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, org.HasOrgQuotaWith(with...))
 	}
 	if i.HasOrgUser != nil {
 		p := org.HasOrgUser()
@@ -12077,20 +12099,12 @@ type QuotaWhereInput struct {
 	TenantIDNEQ   *int  `json:"tenantIDNEQ,omitempty"`
 	TenantIDIn    []int `json:"tenantIDIn,omitempty"`
 	TenantIDNotIn []int `json:"tenantIDNotIn,omitempty"`
-	TenantIDGT    *int  `json:"tenantIDGT,omitempty"`
-	TenantIDGTE   *int  `json:"tenantIDGTE,omitempty"`
-	TenantIDLT    *int  `json:"tenantIDLT,omitempty"`
-	TenantIDLTE   *int  `json:"tenantIDLTE,omitempty"`
 
 	// "user_id" field predicates.
 	UserID      *int  `json:"userID,omitempty"`
 	UserIDNEQ   *int  `json:"userIDNEQ,omitempty"`
 	UserIDIn    []int `json:"userIDIn,omitempty"`
 	UserIDNotIn []int `json:"userIDNotIn,omitempty"`
-	UserIDGT    *int  `json:"userIDGT,omitempty"`
-	UserIDGTE   *int  `json:"userIDGTE,omitempty"`
-	UserIDLT    *int  `json:"userIDLT,omitempty"`
-	UserIDLTE   *int  `json:"userIDLTE,omitempty"`
 
 	// "quota_item_id" field predicates.
 	QuotaItemID      *int  `json:"quotaItemID,omitempty"`
@@ -12125,6 +12139,14 @@ type QuotaWhereInput struct {
 	// "quota_item" edge predicates.
 	HasQuotaItem     *bool                  `json:"hasQuotaItem,omitempty"`
 	HasQuotaItemWith []*QuotaItemWhereInput `json:"hasQuotaItemWith,omitempty"`
+
+	// "quota_org" edge predicates.
+	HasQuotaOrg     *bool            `json:"hasQuotaOrg,omitempty"`
+	HasQuotaOrgWith []*OrgWhereInput `json:"hasQuotaOrgWith,omitempty"`
+
+	// "quota_user" edge predicates.
+	HasQuotaUser     *bool             `json:"hasQuotaUser,omitempty"`
+	HasQuotaUserWith []*UserWhereInput `json:"hasQuotaUserWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -12342,18 +12364,6 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 	if len(i.TenantIDNotIn) > 0 {
 		predicates = append(predicates, quota.TenantIDNotIn(i.TenantIDNotIn...))
 	}
-	if i.TenantIDGT != nil {
-		predicates = append(predicates, quota.TenantIDGT(*i.TenantIDGT))
-	}
-	if i.TenantIDGTE != nil {
-		predicates = append(predicates, quota.TenantIDGTE(*i.TenantIDGTE))
-	}
-	if i.TenantIDLT != nil {
-		predicates = append(predicates, quota.TenantIDLT(*i.TenantIDLT))
-	}
-	if i.TenantIDLTE != nil {
-		predicates = append(predicates, quota.TenantIDLTE(*i.TenantIDLTE))
-	}
 	if i.UserID != nil {
 		predicates = append(predicates, quota.UserIDEQ(*i.UserID))
 	}
@@ -12365,18 +12375,6 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 	}
 	if len(i.UserIDNotIn) > 0 {
 		predicates = append(predicates, quota.UserIDNotIn(i.UserIDNotIn...))
-	}
-	if i.UserIDGT != nil {
-		predicates = append(predicates, quota.UserIDGT(*i.UserIDGT))
-	}
-	if i.UserIDGTE != nil {
-		predicates = append(predicates, quota.UserIDGTE(*i.UserIDGTE))
-	}
-	if i.UserIDLT != nil {
-		predicates = append(predicates, quota.UserIDLT(*i.UserIDLT))
-	}
-	if i.UserIDLTE != nil {
-		predicates = append(predicates, quota.UserIDLTE(*i.UserIDLTE))
 	}
 	if i.QuotaItemID != nil {
 		predicates = append(predicates, quota.QuotaItemIDEQ(*i.QuotaItemID))
@@ -12468,6 +12466,42 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, quota.HasQuotaItemWith(with...))
+	}
+	if i.HasQuotaOrg != nil {
+		p := quota.HasQuotaOrg()
+		if !*i.HasQuotaOrg {
+			p = quota.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQuotaOrgWith) > 0 {
+		with := make([]predicate.Org, 0, len(i.HasQuotaOrgWith))
+		for _, w := range i.HasQuotaOrgWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasQuotaOrgWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, quota.HasQuotaOrgWith(with...))
+	}
+	if i.HasQuotaUser != nil {
+		p := quota.HasQuotaUser()
+		if !*i.HasQuotaUser {
+			p = quota.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasQuotaUserWith) > 0 {
+		with := make([]predicate.User, 0, len(i.HasQuotaUserWith))
+		for _, w := range i.HasQuotaUserWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasQuotaUserWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, quota.HasQuotaUserWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -13874,6 +13908,10 @@ type UserWhereInput struct {
 	// "citizenship" edge predicates.
 	HasCitizenship     *bool                `json:"hasCitizenship,omitempty"`
 	HasCitizenshipWith []*CountryWhereInput `json:"hasCitizenshipWith,omitempty"`
+
+	// "user_quota" edge predicates.
+	HasUserQuota     *bool              `json:"hasUserQuota,omitempty"`
+	HasUserQuotaWith []*QuotaWhereInput `json:"hasUserQuotaWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -14622,6 +14660,24 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, user.HasCitizenshipWith(with...))
+	}
+	if i.HasUserQuota != nil {
+		p := user.HasUserQuota()
+		if !*i.HasUserQuota {
+			p = user.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasUserQuotaWith) > 0 {
+		with := make([]predicate.Quota, 0, len(i.HasUserQuotaWith))
+		for _, w := range i.HasUserQuotaWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasUserQuotaWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, user.HasUserQuotaWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

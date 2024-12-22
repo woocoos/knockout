@@ -23,6 +23,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
@@ -516,6 +517,21 @@ func (ou *OrgUpdate) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpdate 
 	return ou.AddUserPasswordPolicyIDs(ids...)
 }
 
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (ou *OrgUpdate) AddOrgQuotumIDs(ids ...int) *OrgUpdate {
+	ou.mutation.AddOrgQuotumIDs(ids...)
+	return ou
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (ou *OrgUpdate) AddOrgQuota(q ...*Quota) *OrgUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ou.AddOrgQuotumIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ou *OrgUpdate) AddOrgUserIDs(ids ...int) *OrgUpdate {
 	ou.mutation.AddOrgUserIDs(ids...)
@@ -729,6 +745,27 @@ func (ou *OrgUpdate) RemoveUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpda
 		ids[i] = u[i].ID
 	}
 	return ou.RemoveUserPasswordPolicyIDs(ids...)
+}
+
+// ClearOrgQuota clears all "org_quota" edges to the Quota entity.
+func (ou *OrgUpdate) ClearOrgQuota() *OrgUpdate {
+	ou.mutation.ClearOrgQuota()
+	return ou
+}
+
+// RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
+func (ou *OrgUpdate) RemoveOrgQuotumIDs(ids ...int) *OrgUpdate {
+	ou.mutation.RemoveOrgQuotumIDs(ids...)
+	return ou
+}
+
+// RemoveOrgQuota removes "org_quota" edges to Quota entities.
+func (ou *OrgUpdate) RemoveOrgQuota(q ...*Quota) *OrgUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ou.RemoveOrgQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -1403,6 +1440,51 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ou.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if ou.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1989,6 +2071,21 @@ func (ouo *OrgUpdateOne) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgUpd
 	return ouo.AddUserPasswordPolicyIDs(ids...)
 }
 
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (ouo *OrgUpdateOne) AddOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.AddOrgQuotumIDs(ids...)
+	return ouo
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (ouo *OrgUpdateOne) AddOrgQuota(q ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ouo.AddOrgQuotumIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (ouo *OrgUpdateOne) AddOrgUserIDs(ids ...int) *OrgUpdateOne {
 	ouo.mutation.AddOrgUserIDs(ids...)
@@ -2202,6 +2299,27 @@ func (ouo *OrgUpdateOne) RemoveUserPasswordPolicy(u ...*UserPasswordPolicy) *Org
 		ids[i] = u[i].ID
 	}
 	return ouo.RemoveUserPasswordPolicyIDs(ids...)
+}
+
+// ClearOrgQuota clears all "org_quota" edges to the Quota entity.
+func (ouo *OrgUpdateOne) ClearOrgQuota() *OrgUpdateOne {
+	ouo.mutation.ClearOrgQuota()
+	return ouo
+}
+
+// RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
+func (ouo *OrgUpdateOne) RemoveOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.RemoveOrgQuotumIDs(ids...)
+	return ouo
+}
+
+// RemoveOrgQuota removes "org_quota" edges to Quota entities.
+func (ouo *OrgUpdateOne) RemoveOrgQuota(q ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ouo.RemoveOrgQuotumIDs(ids...)
 }
 
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
@@ -2899,6 +3017,51 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ouo.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

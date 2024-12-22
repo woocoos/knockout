@@ -104,6 +104,8 @@ func (Quota) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("quota_item", QuotaItem.Type).Ref("quota").
 			Field("quota_item_id").Unique().Required().Comment("配额定义"),
+		edge.From("quota_org", Org.Type).Unique().Required().Field("tenant_id").Ref("org_quota").Comment("配额关联租户"),
+		edge.From("quota_user", User.Type).Unique().Required().Field("user_id").Ref("user_quota").Comment("配额关联用户"),
 	}
 }
 

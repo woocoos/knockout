@@ -310,26 +310,6 @@ func TenantIDNotIn(vs ...int) predicate.Quota {
 	return predicate.Quota(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
-// TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldGT(FieldTenantID, v))
-}
-
-// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldGTE(FieldTenantID, v))
-}
-
-// TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldLT(FieldTenantID, v))
-}
-
-// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldLTE(FieldTenantID, v))
-}
-
 // UserIDEQ applies the EQ predicate on the "user_id" field.
 func UserIDEQ(v int) predicate.Quota {
 	return predicate.Quota(sql.FieldEQ(FieldUserID, v))
@@ -348,26 +328,6 @@ func UserIDIn(vs ...int) predicate.Quota {
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
 func UserIDNotIn(vs ...int) predicate.Quota {
 	return predicate.Quota(sql.FieldNotIn(FieldUserID, vs...))
-}
-
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldGT(FieldUserID, v))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldGTE(FieldUserID, v))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldLT(FieldUserID, v))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v int) predicate.Quota {
-	return predicate.Quota(sql.FieldLTE(FieldUserID, v))
 }
 
 // QuotaItemIDEQ applies the EQ predicate on the "quota_item_id" field.
@@ -585,6 +545,52 @@ func HasQuotaItem() predicate.Quota {
 func HasQuotaItemWith(preds ...predicate.QuotaItem) predicate.Quota {
 	return predicate.Quota(func(s *sql.Selector) {
 		step := newQuotaItemStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasQuotaOrg applies the HasEdge predicate on the "quota_org" edge.
+func HasQuotaOrg() predicate.Quota {
+	return predicate.Quota(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, QuotaOrgTable, QuotaOrgColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasQuotaOrgWith applies the HasEdge predicate on the "quota_org" edge with a given conditions (other predicates).
+func HasQuotaOrgWith(preds ...predicate.Org) predicate.Quota {
+	return predicate.Quota(func(s *sql.Selector) {
+		step := newQuotaOrgStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasQuotaUser applies the HasEdge predicate on the "quota_user" edge.
+func HasQuotaUser() predicate.Quota {
+	return predicate.Quota(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, QuotaUserTable, QuotaUserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasQuotaUserWith applies the HasEdge predicate on the "quota_user" edge with a given conditions (other predicates).
+func HasQuotaUserWith(preds ...predicate.User) predicate.Quota {
+	return predicate.Quota(func(s *sql.Selector) {
+		step := newQuotaUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

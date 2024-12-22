@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
@@ -42,6 +43,7 @@ type OrgQuery struct {
 	withApps                    *AppQuery
 	withFileIdentities          *FileIdentityQuery
 	withUserPasswordPolicy      *UserPasswordPolicyQuery
+	withOrgQuota                *QuotaQuery
 	withOrgUser                 *OrgUserQuery
 	withOrgApp                  *OrgAppQuery
 	modifiers                   []func(*sql.Selector)
@@ -54,6 +56,7 @@ type OrgQuery struct {
 	withNamedApps               map[string]*AppQuery
 	withNamedFileIdentities     map[string]*FileIdentityQuery
 	withNamedUserPasswordPolicy map[string]*UserPasswordPolicyQuery
+	withNamedOrgQuota           map[string]*QuotaQuery
 	withNamedOrgUser            map[string]*OrgUserQuery
 	withNamedOrgApp             map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
@@ -312,6 +315,28 @@ func (oq *OrgQuery) QueryUserPasswordPolicy() *UserPasswordPolicyQuery {
 	return query
 }
 
+// QueryOrgQuota chains the current query on the "org_quota" edge.
+func (oq *OrgQuery) QueryOrgQuota() *QuotaQuery {
+	query := (&QuotaClient{config: oq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := oq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := oq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, selector),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.OrgQuotaTable, org.OrgQuotaColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(oq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryOrgUser chains the current query on the "org_user" edge.
 func (oq *OrgQuery) QueryOrgUser() *OrgUserQuery {
 	query := (&OrgUserClient{config: oq.config}).Query()
@@ -558,6 +583,7 @@ func (oq *OrgQuery) Clone() *OrgQuery {
 		withApps:               oq.withApps.Clone(),
 		withFileIdentities:     oq.withFileIdentities.Clone(),
 		withUserPasswordPolicy: oq.withUserPasswordPolicy.Clone(),
+		withOrgQuota:           oq.withOrgQuota.Clone(),
 		withOrgUser:            oq.withOrgUser.Clone(),
 		withOrgApp:             oq.withOrgApp.Clone(),
 		// clone intermediate query.
@@ -676,6 +702,17 @@ func (oq *OrgQuery) WithUserPasswordPolicy(opts ...func(*UserPasswordPolicyQuery
 	return oq
 }
 
+// WithOrgQuota tells the query-builder to eager-load the nodes that are connected to
+// the "org_quota" edge. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithOrgQuota(opts ...func(*QuotaQuery)) *OrgQuery {
+	query := (&QuotaClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	oq.withOrgQuota = query
+	return oq
+}
+
 // WithOrgUser tells the query-builder to eager-load the nodes that are connected to
 // the "org_user" edge. The optional arguments are used to configure the query builder of the edge.
 func (oq *OrgQuery) WithOrgUser(opts ...func(*OrgUserQuery)) *OrgQuery {
@@ -776,7 +813,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 	var (
 		nodes       = []*Org{}
 		_spec       = oq.querySpec()
-		loadedTypes = [12]bool{
+		loadedTypes = [13]bool{
 			oq.withParent != nil,
 			oq.withChildren != nil,
 			oq.withOwner != nil,
@@ -787,6 +824,7 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			oq.withApps != nil,
 			oq.withFileIdentities != nil,
 			oq.withUserPasswordPolicy != nil,
+			oq.withOrgQuota != nil,
 			oq.withOrgUser != nil,
 			oq.withOrgApp != nil,
 		}
@@ -882,6 +920,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 			return nil, err
 		}
 	}
+	if query := oq.withOrgQuota; query != nil {
+		if err := oq.loadOrgQuota(ctx, query, nodes,
+			func(n *Org) { n.Edges.OrgQuota = []*Quota{} },
+			func(n *Org, e *Quota) { n.Edges.OrgQuota = append(n.Edges.OrgQuota, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := oq.withOrgUser; query != nil {
 		if err := oq.loadOrgUser(ctx, query, nodes,
 			func(n *Org) { n.Edges.OrgUser = []*OrgUser{} },
@@ -949,6 +994,13 @@ func (oq *OrgQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Org, err
 		if err := oq.loadUserPasswordPolicy(ctx, query, nodes,
 			func(n *Org) { n.appendNamedUserPasswordPolicy(name) },
 			func(n *Org, e *UserPasswordPolicy) { n.appendNamedUserPasswordPolicy(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range oq.withNamedOrgQuota {
+		if err := oq.loadOrgQuota(ctx, query, nodes,
+			func(n *Org) { n.appendNamedOrgQuota(name) },
+			func(n *Org, e *Quota) { n.appendNamedOrgQuota(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1337,6 +1389,36 @@ func (oq *OrgQuery) loadUserPasswordPolicy(ctx context.Context, query *UserPassw
 	}
 	return nil
 }
+func (oq *OrgQuery) loadOrgQuota(ctx context.Context, query *QuotaQuery, nodes []*Org, init func(*Org), assign func(*Org, *Quota)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Org)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(quota.FieldTenantID)
+	}
+	query.Where(predicate.Quota(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(org.OrgQuotaColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TenantID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "tenant_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (oq *OrgQuery) loadOrgUser(ctx context.Context, query *OrgUserQuery, nodes []*Org, init func(*Org), assign func(*Org, *OrgUser)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Org)
@@ -1597,6 +1679,20 @@ func (oq *OrgQuery) WithNamedUserPasswordPolicy(name string, opts ...func(*UserP
 		oq.withNamedUserPasswordPolicy = make(map[string]*UserPasswordPolicyQuery)
 	}
 	oq.withNamedUserPasswordPolicy[name] = query
+	return oq
+}
+
+// WithNamedOrgQuota tells the query-builder to eager-load the nodes that are connected to the "org_quota"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (oq *OrgQuery) WithNamedOrgQuota(name string, opts ...func(*QuotaQuery)) *OrgQuery {
+	query := (&QuotaClient{config: oq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if oq.withNamedOrgQuota == nil {
+		oq.withNamedOrgQuota = make(map[string]*QuotaQuery)
+	}
+	oq.withNamedOrgQuota[name] = query
 	return oq
 }
 

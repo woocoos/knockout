@@ -94,6 +94,8 @@ func (Org) Edges() []ent.Edge {
 			Annotations(entgql.RelayConnection()),
 		edge.To("file_identities", FileIdentity.Type).Comment("组织下文件凭证"),
 		edge.To("user_password_policy", UserPasswordPolicy.Type).Comment("组织下密码策略"),
+		edge.To("org_quota", Quota.Type).Comment("组织下登录策略").
+			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 	}
 }
 
