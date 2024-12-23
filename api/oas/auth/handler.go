@@ -12,10 +12,12 @@ import (
 
 // RegisterAuthHandlers creates http.Handler with routing matching OpenAPI spec.
 func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
+	router.POST("/login/bind-fingerprint", wrapBindFingerprint(si))
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
 	router.POST("/spm/create", wrapCreateSpm(si))
+	router.POST("/login/fingerprint", wrapFingerprintLogin(si))
 	router.POST("/forget-pwd/begin", wrapForgetPwdBegin(si))
 	router.POST("/forget-pwd/reset", wrapForgetPwdReset(si))
 	router.POST("/forget-pwd/send-email", wrapForgetPwdSendEmail(si))
@@ -26,6 +28,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/spm/auth", wrapGetSpmAuth(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
+	router.POST("/login/old-fingerprint", wrapOldFingerprintLogin(si))
 	router.POST("/login/old-auth", wrapOldLoginForApp(si))
 	router.GET("/pwd/policy", wrapPasswordPolicy(si))
 	router.POST("/login/refresh-token", wrapRefreshToken(si))
@@ -35,6 +38,22 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/login/verify-device", wrapVerifyDevice(si))
 	router.POST("/login/device-captcha", wrapVerifyDeviceSendEmail(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
+}
+
+func wrapBindFingerprint(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req BindFingerprintRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.BindFingerprint(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
 }
 
 func wrapBindMfa(si AuthServer) func(c *gin.Context) {
@@ -86,6 +105,22 @@ func wrapCaptcha(si AuthServer) func(c *gin.Context) {
 func wrapCreateSpm(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		resp, err := si.CreateSpm(c)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapFingerprintLogin(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req FingerprintLoginRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.FingerprintLogin(c, &req)
 		if err != nil {
 			c.Error(err)
 			return
@@ -245,6 +280,22 @@ func wrapLogout(si AuthServer) func(c *gin.Context) {
 			c.Error(err)
 			return
 		}
+	}
+}
+
+func wrapOldFingerprintLogin(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req OldFingerprintLoginRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.OldFingerprintLogin(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
 	}
 }
 

@@ -377,6 +377,100 @@ func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*
 		ExpiresIn:   int(s.Options.JWT.TokenTTL.Seconds()),
 	}, nil
 }
+func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLoginRequest) (*LoginResponse, error) {
+	// 验证密码
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("username or password error")
+	}
+
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !profile.CanLogin {
+		return nil, errors.New("user not allowed to login")
+	}
+
+	roIDs, err := s.db.Org.Query().Where(
+		org.HasOrgUserWith(orguser.UserID(pwd.UserID)),
+		org.StatusEQ(typex.SimpleStatusActive),
+		org.DomainNotNil(),
+		org.KindEQ(org.KindRoot),
+	).Select(org.FieldID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if roIDs == nil || len(roIDs) == 0 {
+		return nil, fmt.Errorf("user organization not found")
+	}
+	appAccess := false
+	for _, roID := range roIDs {
+		// 验证登录权限
+		has, err := s.doCheckPermission(ctx, pwd.UserID, roID, "login", req.AppCode)
+		if err != nil {
+			return nil, err
+		}
+		if has {
+			appAccess = true
+			break
+		}
+	}
+	if !appAccess {
+		return nil, fmt.Errorf("user does not authorize the app")
+	}
+
+	cip := ctx.ClientIP()
+	// no mater what, update last login time and ip
+	err = s.db.UserLoginProfile.Update().Where(userloginprofile.UserID(profile.UserID)).
+		SetLastLoginIP(cip).SetUpdatedBy(profile.UserID).SetLastLoginAt(time.Now()).Exec(ctx)
+	return s.loginToken(ctx, pwd.UserID)
+}
+func (s *ServerImpl) FingerprintLogin(ctx *gin.Context, req *FingerprintLoginRequest) (*LoginResponse, error) {
+	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
+		return []byte(s.Options.JWT.SigningKey), nil
+	})
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+
+	subject := token.Claims.(*jwt.RegisteredClaims).Subject
+	uid, err := strconv.Atoi(subject)
+	if err != nil {
+		return nil, err
+	}
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !profile.CanLogin {
+		return nil, errors.New("user not allowed to login")
+	}
+	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	return s.loginToken(ctx, uid)
+}
+
+func (s *ServerImpl) BindFingerprint(ctx *gin.Context, req *BindFingerprintRequest) (bool, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+	pwd, err := s.db.UserPassword.Query().Where(
+		userpassword.UserID(uid),
+		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
+	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
+	if err != nil {
+		return false, status.ErrMismatchPWD
+	}
+	given := resource.SaltSecret(req.UserPassword, pwd.Salt)
+	if given != pwd.Password {
+		return false, status.ErrMismatchPWD // return user id
+	}
+	return true, nil
+}
 
 func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*LoginResponse, error) {
 	token := req.StateToken

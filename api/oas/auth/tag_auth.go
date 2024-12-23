@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+// BindFingerprintRequest is the request object for (POST /login/bind-fingerprint)
+type BindFingerprintRequest struct {
+	// UserPassword the userPassword
+	UserPassword string `binding:"required" json:"userPassword"`
+}
+
 // BindMfaRequest is the request object for (POST /mfa/bind)
 type BindMfaRequest struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
@@ -19,6 +25,12 @@ type CaptchaRequest struct {
 	W *int `form:"w"`
 	// H height of captcha
 	H *int `form:"h"`
+}
+
+// FingerprintLoginRequest is the request object for (POST /login/fingerprint)
+type FingerprintLoginRequest struct {
+	// RefreshToken the refreshToken
+	RefreshToken string `binding:"required" json:"refreshToken"`
 }
 
 // ForgetPwdBeginRequest is the request object for (POST /forget-pwd/begin)
@@ -69,10 +81,23 @@ type GetPreSignUrlRequest struct {
 	URL string `binding:"required" json:"url"`
 }
 
+// GetPreSignUrlResponse successful operation
+type GetPreSignUrlResponse struct {
+	URL string `json:"url,omitempty"`
+}
+
 // GetSTSRequest is the request object for (POST /oss/sts)
 type GetSTSRequest struct {
 	Bucket   string `json:"bucket,omitempty"`
 	Endpoint string `json:"endpoint,omitempty"`
+}
+
+// GetSTSResponse successful operation
+type GetSTSResponse struct {
+	AccessKeyID     string    `json:"access_key_id,omitempty"`
+	Expiration      time.Time `json:"expiration,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
+	SecretAccessKey string    `json:"secret_access_key,omitempty"`
+	SessionToken    string    `json:"session_token,omitempty"`
 }
 
 // GetSpmAuthRequest is the request object for (POST /spm/auth)
@@ -92,6 +117,13 @@ type LoginRequest struct {
 	// Password hashed password
 	Password string `binding:"required" json:"password"`
 	// Username username or email
+	Username string `binding:"required" json:"username"`
+}
+
+// OldFingerprintLoginRequest is the request object for (POST /login/old-fingerprint)
+type OldFingerprintLoginRequest struct {
+	AppCode  string `binding:"required" json:"appCode"`
+	Password string `binding:"required" json:"password"`
 	Username string `binding:"required" json:"username"`
 }
 
@@ -126,6 +158,34 @@ type TokenRequest struct {
 	GrantType    GrantType `binding:"required,oneof=client_credentials" form:"grant_type"`
 }
 
+// GrantType defines the type for the grant_type.grant_type enum field.
+type GrantType string
+
+// GrantType values.
+const (
+	GrantTypeClientCredentials GrantType = "client_credentials"
+)
+
+func (gt GrantType) String() string {
+	return string(gt)
+}
+
+// GrantTypeValidator is a validator for the GrantType field enum values.
+func GrantTypeValidator(gt GrantType) error {
+	switch gt {
+	case GrantTypeClientCredentials:
+		return nil
+	default:
+		return fmt.Errorf("GrantType does not allow the value '%s'", gt)
+	}
+}
+
+// TokenResponse successful operation
+type TokenResponse struct {
+	AccessToken string `json:"access_token,omitempty"`
+	ExpiresIn   int    `json:"expires_in,omitempty"`
+}
+
 // UnBindMfaRequest is the request object for (POST /mfa/unbind)
 type UnBindMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
@@ -152,42 +212,4 @@ type VerifyFactorRequest struct {
 	DeviceId   string `binding:"required" json:"deviceId"`
 	OtpToken   string `binding:"required" json:"otpToken"`
 	StateToken string `binding:"required" json:"stateToken"`
-}
-
-// GrantType defines the type for the grant_type.grant_type enum field.
-type GrantType string
-
-// GrantType values.
-const (
-	GrantTypeClientCredentials GrantType = "client_credentials"
-)
-
-func (gt GrantType) String() string {
-	return string(gt)
-}
-
-// GrantTypeValidator is a validator for the GrantType field enum values.
-func GrantTypeValidator(gt GrantType) error {
-	switch gt {
-	case GrantTypeClientCredentials:
-		return nil
-	default:
-		return fmt.Errorf("GrantType does not allow the value '%s'", gt)
-	}
-}
-
-type GetPreSignUrlResponse struct {
-	URL string `json:"url,omitempty"`
-}
-
-type GetSTSResponse struct {
-	AccessKeyID     string     `json:"access_key_id,omitempty"`
-	Expiration      time.Time `json:"expiration,omitempty" time_format:"2006-01-02T15:04:05Z07:00"`
-	SecretAccessKey string     `json:"secret_access_key,omitempty"`
-	SessionToken    string     `json:"session_token,omitempty"`
-}
-
-type TokenResponse struct {
-	AccessToken string `json:"access_token,omitempty"`
-	ExpiresIn   int    `json:"expires_in,omitempty"`
 }

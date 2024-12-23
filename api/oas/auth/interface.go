@@ -10,6 +10,9 @@ import (
 
 // AuthServer is the server API for Auth service.
 type AuthServer interface {
+	// BindFingerprint Use this API to enable fingerprint login
+	// (POST /login/bind-fingerprint)
+	BindFingerprint(*gin.Context, *BindFingerprintRequest) (bool, error)
 	// BindMfa Verify a one-time password (OTP) value to binding MFA.
 	// (POST /mfa/bind)
 	BindMfa(*gin.Context, *BindMfaRequest) (bool, error)
@@ -22,6 +25,9 @@ type AuthServer interface {
 	// CreateSpm create spm key.
 	// (POST /spm/create)
 	CreateSpm(*gin.Context) (string, error)
+	// FingerprintLogin Use this API to fingerprint login
+	// (POST /login/fingerprint)
+	FingerprintLogin(*gin.Context, *FingerprintLoginRequest) (*LoginResponse, error)
 	// ForgetPwdBegin start the process of forgetting your password by verifying your account.
 	// (POST /forget-pwd/begin)
 	ForgetPwdBegin(*gin.Context, *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error)
@@ -52,6 +58,9 @@ type AuthServer interface {
 	// Logout log out a user
 	// (POST /logout)
 	Logout(*gin.Context) error
+	// OldFingerprintLogin Use this API to fingerprint login
+	// (POST /login/old-fingerprint)
+	OldFingerprintLogin(*gin.Context, *OldFingerprintLoginRequest) (*LoginResponse, error)
 	// OldLoginForApp use this API to compatible old app login
 	// (POST /login/old-auth)
 	OldLoginForApp(*gin.Context, *OldLoginForAppRequest) (*LoginResponse, error)
@@ -84,6 +93,11 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
+func (UnimplementedAuthServer) BindFingerprint(c *gin.Context, req *BindFingerprintRequest) (_ bool, err error) {
+	err = fmt.Errorf("method BindFingerprint not implemented")
+	return
+}
+
 func (UnimplementedAuthServer) BindMfa(c *gin.Context, req *BindMfaRequest) (_ bool, err error) {
 	err = fmt.Errorf("method BindMfa not implemented")
 	return
@@ -101,6 +115,11 @@ func (UnimplementedAuthServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *
 
 func (UnimplementedAuthServer) CreateSpm(c *gin.Context) (_ string, err error) {
 	err = fmt.Errorf("method CreateSpm not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) FingerprintLogin(c *gin.Context, req *FingerprintLoginRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method FingerprintLogin not implemented")
 	return
 }
 
@@ -151,6 +170,11 @@ func (UnimplementedAuthServer) Login(c *gin.Context, req *LoginRequest) (_ *Logi
 
 func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 	err = fmt.Errorf("method Logout not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) OldFingerprintLogin(c *gin.Context, req *OldFingerprintLoginRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method OldFingerprintLogin not implemented")
 	return
 }
 
