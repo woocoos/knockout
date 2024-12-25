@@ -3224,12 +3224,10 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				path  = append(path, alias)
 				query = (&UserPasswordPolicyClient{config: o.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, userpasswordpolicyImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userpasswordpolicyImplementors)...); err != nil {
 				return err
 			}
-			o.WithNamedUserPasswordPolicy(alias, func(wq *UserPasswordPolicyQuery) {
-				*wq = *query
-			})
+			o.withUserPasswordPolicy = query
 		case "orgQuota":
 			var (
 				alias = field.Alias

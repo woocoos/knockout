@@ -34,7 +34,7 @@ func (UserPasswordPolicy) Mixin() []ent.Mixin {
 func (UserPasswordPolicy) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("tenant_id").Optional().Immutable().Comment("租户id"),
-		field.Int32("length").Optional().Min(6).Max(32).Comment("密码最短长度，长度应在6-32位之间"),
+		field.Int32("length").Optional().Default(6).Min(6).Max(32).Comment("密码最短长度，长度应在6-32位之间"),
 		field.Int32("include_element").Optional().Comment("必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号"),
 		field.Int32("include_char").Max(8).Optional().Comment("最少包含的不同字符数，最多8个，0代表不限制"),
 		field.Bool("allow_include_user_name").Optional().Comment("是否允许包含用户名"),

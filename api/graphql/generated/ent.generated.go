@@ -21443,9 +21443,9 @@ func (ec *executionContext) _Org_userPasswordPolicy(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.UserPasswordPolicy)
+	res := resTmp.(*ent.UserPasswordPolicy)
 	fc.Result = res
-	return ec.marshalOUserPasswordPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicyᚄ(ctx, field.Selections, res)
+	return ec.marshalOUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Org_userPasswordPolicy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -47798,7 +47798,7 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "customDomain", "name", "profile", "status", "countryCode", "timezone", "localCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs", "userPasswordPolicyIDs"}
+	fieldsInOrder := [...]string{"domain", "customDomain", "name", "profile", "status", "countryCode", "timezone", "localCurrency", "logo", "parentID", "childIDs", "ownerID", "userIDs", "rolesAndGroupIDs", "permissionIDs", "policyIDs", "appIDs", "fileIdentityIDs", "userPasswordPolicyID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -47931,13 +47931,13 @@ func (ec *executionContext) unmarshalInputCreateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.FileIdentityIDs = data
-		case "userPasswordPolicyIDs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userPasswordPolicyIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+		case "userPasswordPolicyID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userPasswordPolicyID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserPasswordPolicyIDs = data
+			it.UserPasswordPolicyID = data
 		}
 	}
 
@@ -60759,7 +60759,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"domain", "clearDomain", "customDomain", "appendCustomDomain", "clearCustomDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "localCurrency", "clearLocalCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities", "addUserPasswordPolicyIDs", "removeUserPasswordPolicyIDs", "clearUserPasswordPolicy"}
+	fieldsInOrder := [...]string{"domain", "clearDomain", "customDomain", "appendCustomDomain", "clearCustomDomain", "name", "profile", "clearProfile", "status", "clearStatus", "countryCode", "clearCountryCode", "timezone", "clearTimezone", "localCurrency", "clearLocalCurrency", "logo", "clearLogo", "parentID", "addChildIDs", "removeChildIDs", "clearChildren", "ownerID", "clearOwner", "addUserIDs", "removeUserIDs", "clearUsers", "addRolesAndGroupIDs", "removeRolesAndGroupIDs", "clearRolesAndGroups", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "addPolicyIDs", "removePolicyIDs", "clearPolicies", "addAppIDs", "removeAppIDs", "clearApps", "addFileIdentityIDs", "removeFileIdentityIDs", "clearFileIdentities", "userPasswordPolicyID", "clearUserPasswordPolicy"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -61060,20 +61060,13 @@ func (ec *executionContext) unmarshalInputUpdateOrgInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ClearFileIdentities = data
-		case "addUserPasswordPolicyIDs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addUserPasswordPolicyIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
+		case "userPasswordPolicyID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userPasswordPolicyID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AddUserPasswordPolicyIDs = data
-		case "removeUserPasswordPolicyIDs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("removeUserPasswordPolicyIDs"))
-			data, err := ec.unmarshalOID2ᚕintᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.RemoveUserPasswordPolicyIDs = data
+			it.UserPasswordPolicyID = data
 		case "clearUserPasswordPolicy":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearUserPasswordPolicy"))
 			data, err := ec.unmarshalOBoolean2bool(ctx, v)
@@ -79593,16 +79586,6 @@ func (ec *executionContext) marshalNUserPasswordOrderField2ᚖgithubᚗcomᚋwoo
 	return v
 }
 
-func (ec *executionContext) marshalNUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx context.Context, sel ast.SelectionSet, v *ent.UserPasswordPolicy) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._UserPasswordPolicy(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNUserPasswordPolicyOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicyOrderField(ctx context.Context, v interface{}) (*ent.UserPasswordPolicyOrderField, error) {
 	var res = new(ent.UserPasswordPolicyOrderField)
 	err := res.UnmarshalGQL(v)
@@ -85381,53 +85364,6 @@ func (ec *executionContext) unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknoc
 	}
 	res, err := ec.unmarshalInputUserOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUserPasswordPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicyᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.UserPasswordPolicy) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) marshalOUserPasswordPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserPasswordPolicy(ctx context.Context, sel ast.SelectionSet, v *ent.UserPasswordPolicy) graphql.Marshaler {

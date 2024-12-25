@@ -489,17 +489,10 @@ func ByFileIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByUserPasswordPolicyCount orders the results by user_password_policy count.
-func ByUserPasswordPolicyCount(opts ...sql.OrderTermOption) OrderOption {
+// ByUserPasswordPolicyField orders the results by user_password_policy field.
+func ByUserPasswordPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newUserPasswordPolicyStep(), opts...)
-	}
-}
-
-// ByUserPasswordPolicy orders the results by user_password_policy terms.
-func ByUserPasswordPolicy(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newUserPasswordPolicyStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newUserPasswordPolicyStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -611,7 +604,7 @@ func newUserPasswordPolicyStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UserPasswordPolicyInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
 	)
 }
 func newOrgQuotaStep() *sqlgraph.Step {

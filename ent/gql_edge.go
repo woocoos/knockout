@@ -509,16 +509,12 @@ func (o *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err e
 	return result, err
 }
 
-func (o *Org) UserPasswordPolicy(ctx context.Context) (result []*UserPasswordPolicy, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = o.NamedUserPasswordPolicy(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = o.Edges.UserPasswordPolicyOrErr()
-	}
+func (o *Org) UserPasswordPolicy(ctx context.Context) (*UserPasswordPolicy, error) {
+	result, err := o.Edges.UserPasswordPolicyOrErr()
 	if IsNotLoaded(err) {
-		result, err = o.QueryUserPasswordPolicy().All(ctx)
+		result, err = o.QueryUserPasswordPolicy().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (o *Org) OrgQuota(ctx context.Context) (result []*Quota, err error) {

@@ -123,8 +123,8 @@ type MutationResolver interface {
 	CreateQuota(ctx context.Context, input ent.CreateQuotaInput) (*ent.Quota, error)
 	UpdateQuota(ctx context.Context, id int, input ent.UpdateQuotaInput) (*ent.Quota, error)
 	DeleteQuota(ctx context.Context, id int) (bool, error)
-	CreateUserPasswordPolicy(ctx context.Context, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
-	UpdateUserPasswordPolicy(ctx context.Context, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
+	CreateUserPasswordPolicy(ctx context.Context, orgID int, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
+	UpdateUserPasswordPolicy(ctx context.Context, orgID int, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error)
 	DeleteUserPasswordPolicy(ctx context.Context) (bool, error)
 	UpdateUserDevice(ctx context.Context, deviceID int, input ent.UpdateUserDeviceInput) (*ent.UserDevice, error)
 	EnableVerifyUserDevice(ctx context.Context, userID int, enable bool, deviceInfoInput ent.CreateUserDeviceInput) (bool, error)
@@ -2014,13 +2014,40 @@ func (ec *executionContext) field_Mutation_createRoot_argsInput(
 func (ec *executionContext) field_Mutation_createUserPasswordPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Mutation_createUserPasswordPolicy_argsInput(ctx, rawArgs)
+	arg0, err := ec.field_Mutation_createUserPasswordPolicy_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["input"] = arg0
+	args["orgID"] = arg0
+	arg1, err := ec.field_Mutation_createUserPasswordPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
 	return args, nil
 }
+func (ec *executionContext) field_Mutation_createUserPasswordPolicy_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_createUserPasswordPolicy_argsInput(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -5663,13 +5690,40 @@ func (ec *executionContext) field_Mutation_updateUserDevice_argsInput(
 func (ec *executionContext) field_Mutation_updateUserPasswordPolicy_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Mutation_updateUserPasswordPolicy_argsInput(ctx, rawArgs)
+	arg0, err := ec.field_Mutation_updateUserPasswordPolicy_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["input"] = arg0
+	args["orgID"] = arg0
+	arg1, err := ec.field_Mutation_updateUserPasswordPolicy_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg1
 	return args, nil
 }
+func (ec *executionContext) field_Mutation_updateUserPasswordPolicy_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_updateUserPasswordPolicy_argsInput(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -13235,7 +13289,7 @@ func (ec *executionContext) _Mutation_createUserPasswordPolicy(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUserPasswordPolicy(rctx, fc.Args["input"].(ent.CreateUserPasswordPolicyInput))
+		return ec.resolvers.Mutation().CreateUserPasswordPolicy(rctx, fc.Args["orgID"].(int), fc.Args["input"].(ent.CreateUserPasswordPolicyInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13319,7 +13373,7 @@ func (ec *executionContext) _Mutation_updateUserPasswordPolicy(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUserPasswordPolicy(rctx, fc.Args["input"].(ent.UpdateUserPasswordPolicyInput))
+		return ec.resolvers.Mutation().UpdateUserPasswordPolicy(rctx, fc.Args["orgID"].(int), fc.Args["input"].(ent.UpdateUserPasswordPolicyInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

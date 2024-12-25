@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/quota"
 )
 
@@ -92,10 +93,24 @@ func quotaHook() ent.Hook {
 			}
 
 			// 尝试从 mutation 中获取 UserID
-			if fd, _ := m.Field("user_id"); fd != nil {
+			if fd, ok := m.Field("user_id"); ok {
 				if id, ok := fd.(int); ok {
 					return &quota.Target{
 						UserID:   id,
+						TenantID: 0,
+					}, nil
+				}
+			}
+			// 如果是 DeleteOne 操作，尝试从数据库获取 UserID
+			if m.Op().Is(ent.OpDeleteOne) {
+				udm := m.(*gen.UserDeviceMutation)
+				if id, ok := udm.ID(); ok {
+					ud, err := udm.Client().UserDevice.Get(ctx, id)
+					if err != nil {
+						return nil, err
+					}
+					return &quota.Target{
+						UserID:   ud.UserID,
 						TenantID: 0,
 					}, nil
 				}

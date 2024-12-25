@@ -91,6 +91,8 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultLength holds the default value on creation for the "length" field.
+	DefaultLength int32
 	// LengthValidator is a validator for the "length" field. It is called by the builders before save.
 	LengthValidator func(int32) error
 	// IncludeCharValidator is a validator for the "include_char" field. It is called by the builders before save.
@@ -186,6 +188,6 @@ func newOrgStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OrgInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, OrgTable, OrgColumn),
 	)
 }

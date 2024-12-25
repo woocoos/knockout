@@ -3113,7 +3113,7 @@ input CreateOrgInput {
   policyIDs: [ID!]
   appIDs: [ID!]
   fileIdentityIDs: [ID!]
-  userPasswordPolicyIDs: [ID!]
+  userPasswordPolicyID: ID
 }
 """
 CreateOrgPolicyInput is used for create OrgPolicy object.
@@ -4662,7 +4662,7 @@ type Org implements Node {
   """
   组织下密码策略
   """
-  userPasswordPolicy: [UserPasswordPolicy!]
+  userPasswordPolicy: UserPasswordPolicy
   """
   组织下登录策略
   """
@@ -7805,8 +7805,7 @@ input UpdateOrgInput {
   addFileIdentityIDs: [ID!]
   removeFileIdentityIDs: [ID!]
   clearFileIdentities: Boolean
-  addUserPasswordPolicyIDs: [ID!]
-  removeUserPasswordPolicyIDs: [ID!]
+  userPasswordPolicyID: ID
   clearUserPasswordPolicy: Boolean
 }
 """

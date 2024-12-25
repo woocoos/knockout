@@ -733,13 +733,13 @@ func (r *mutationResolver) DeleteQuota(ctx context.Context, id int) (bool, error
 }
 
 // CreateUserPasswordPolicy is the resolver for the createUserPasswordPolicy field.
-func (r *mutationResolver) CreateUserPasswordPolicy(ctx context.Context, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
-	return r.resource.CreateUserPasswordPolicy(ctx, input)
+func (r *mutationResolver) CreateUserPasswordPolicy(ctx context.Context, orgID int, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.CreateUserPasswordPolicy(ctx, orgID, input)
 }
 
 // UpdateUserPasswordPolicy is the resolver for the updateUserPasswordPolicy field.
-func (r *mutationResolver) UpdateUserPasswordPolicy(ctx context.Context, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
-	return r.resource.UpdateUserPasswordPolicy(ctx, input)
+func (r *mutationResolver) UpdateUserPasswordPolicy(ctx context.Context, orgID int, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.UpdateUserPasswordPolicy(ctx, orgID, input)
 }
 
 // DeleteUserPasswordPolicy is the resolver for the deleteUserPasswordPolicy field.
@@ -786,7 +786,12 @@ func (r *mutationResolver) EnableVerifyUserDevice(ctx context.Context, userID in
 
 // DeleteUserDevice is the resolver for the deleteUserDevice field.
 func (r *mutationResolver) DeleteUserDevice(ctx context.Context, userID int, deviceID int) (bool, error) {
-	_, err := ent.FromContext(ctx).UserDevice.Delete().Where(userdevice.ID(deviceID), userdevice.UserID(userID)).Exec(ctx)
+	client := ent.FromContext(ctx)
+	ud, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.ID(deviceID)).Only(ctx)
+	if err != nil {
+		return false, err
+	}
+	err = client.UserDevice.DeleteOne(ud).Exec(ctx)
 	return err == nil, err
 }
 

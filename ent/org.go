@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // Org is the model entity for the Org schema.
@@ -88,7 +89,7 @@ type OrgEdges struct {
 	// 组织下文件凭证
 	FileIdentities []*FileIdentity `json:"file_identities,omitempty"`
 	// 组织下密码策略
-	UserPasswordPolicy []*UserPasswordPolicy `json:"user_password_policy,omitempty"`
+	UserPasswordPolicy *UserPasswordPolicy `json:"user_password_policy,omitempty"`
 	// 组织下登录策略
 	OrgQuota []*Quota `json:"org_quota,omitempty"`
 	// OrgUser holds the value of the org_user edge.
@@ -101,17 +102,16 @@ type OrgEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [10]map[string]int
 
-	namedChildren           map[string][]*Org
-	namedUsers              map[string][]*User
-	namedRolesAndGroups     map[string][]*OrgRole
-	namedPermissions        map[string][]*Permission
-	namedPolicies           map[string][]*OrgPolicy
-	namedApps               map[string][]*App
-	namedFileIdentities     map[string][]*FileIdentity
-	namedUserPasswordPolicy map[string][]*UserPasswordPolicy
-	namedOrgQuota           map[string][]*Quota
-	namedOrgUser            map[string][]*OrgUser
-	namedOrgApp             map[string][]*OrgApp
+	namedChildren       map[string][]*Org
+	namedUsers          map[string][]*User
+	namedRolesAndGroups map[string][]*OrgRole
+	namedPermissions    map[string][]*Permission
+	namedPolicies       map[string][]*OrgPolicy
+	namedApps           map[string][]*App
+	namedFileIdentities map[string][]*FileIdentity
+	namedOrgQuota       map[string][]*Quota
+	namedOrgUser        map[string][]*OrgUser
+	namedOrgApp         map[string][]*OrgApp
 }
 
 // ParentOrErr returns the Parent value or an error if the edge
@@ -200,10 +200,12 @@ func (e OrgEdges) FileIdentitiesOrErr() ([]*FileIdentity, error) {
 }
 
 // UserPasswordPolicyOrErr returns the UserPasswordPolicy value or an error if the edge
-// was not loaded in eager-loading.
-func (e OrgEdges) UserPasswordPolicyOrErr() ([]*UserPasswordPolicy, error) {
-	if e.loadedTypes[9] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgEdges) UserPasswordPolicyOrErr() (*UserPasswordPolicy, error) {
+	if e.UserPasswordPolicy != nil {
 		return e.UserPasswordPolicy, nil
+	} else if e.loadedTypes[9] {
+		return nil, &NotFoundError{label: userpasswordpolicy.Label}
 	}
 	return nil, &NotLoadedError{edge: "user_password_policy"}
 }
@@ -725,30 +727,6 @@ func (o *Org) appendNamedFileIdentities(name string, edges ...*FileIdentity) {
 		o.Edges.namedFileIdentities[name] = []*FileIdentity{}
 	} else {
 		o.Edges.namedFileIdentities[name] = append(o.Edges.namedFileIdentities[name], edges...)
-	}
-}
-
-// NamedUserPasswordPolicy returns the UserPasswordPolicy named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (o *Org) NamedUserPasswordPolicy(name string) ([]*UserPasswordPolicy, error) {
-	if o.Edges.namedUserPasswordPolicy == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := o.Edges.namedUserPasswordPolicy[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (o *Org) appendNamedUserPasswordPolicy(name string, edges ...*UserPasswordPolicy) {
-	if o.Edges.namedUserPasswordPolicy == nil {
-		o.Edges.namedUserPasswordPolicy = make(map[string][]*UserPasswordPolicy)
-	}
-	if len(edges) == 0 {
-		o.Edges.namedUserPasswordPolicy[name] = []*UserPasswordPolicy{}
-	} else {
-		o.Edges.namedUserPasswordPolicy[name] = append(o.Edges.namedUserPasswordPolicy[name], edges...)
 	}
 }
 

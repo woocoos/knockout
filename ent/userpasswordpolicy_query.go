@@ -76,7 +76,7 @@ func (uppq *UserPasswordPolicyQuery) QueryOrg() *OrgQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(userpasswordpolicy.Table, userpasswordpolicy.FieldID, selector),
 			sqlgraph.To(org.Table, org.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uppq.driver.Dialect(), step)
 		return fromU, nil

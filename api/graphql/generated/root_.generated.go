@@ -456,7 +456,7 @@ type ComplexityRoot struct {
 		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
-		CreateUserPasswordPolicy    func(childComplexity int, input ent.CreateUserPasswordPolicyInput) int
+		CreateUserPasswordPolicy    func(childComplexity int, orgID int, input ent.CreateUserPasswordPolicyInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteAppAction             func(childComplexity int, actionID int) int
 		DeleteAppDict               func(childComplexity int, dictID int) int
@@ -529,7 +529,7 @@ type ComplexityRoot struct {
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
 		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
 		UpdateUserDevice            func(childComplexity int, deviceID int, input ent.UpdateUserDeviceInput) int
-		UpdateUserPasswordPolicy    func(childComplexity int, input ent.UpdateUserPasswordPolicyInput) int
+		UpdateUserPasswordPolicy    func(childComplexity int, orgID int, input ent.UpdateUserPasswordPolicyInput) int
 	}
 
 	OauthClient struct {
@@ -3318,7 +3318,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUserPasswordPolicy(childComplexity, args["input"].(ent.CreateUserPasswordPolicyInput)), true
+		return e.complexity.Mutation.CreateUserPasswordPolicy(childComplexity, args["orgID"].(int), args["input"].(ent.CreateUserPasswordPolicyInput)), true
 
 	case "Mutation.deleteApp":
 		if e.complexity.Mutation.DeleteApp == nil {
@@ -4189,7 +4189,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUserPasswordPolicy(childComplexity, args["input"].(ent.UpdateUserPasswordPolicyInput)), true
+		return e.complexity.Mutation.UpdateUserPasswordPolicy(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateUserPasswordPolicyInput)), true
 
 	case "OauthClient.clientID":
 		if e.complexity.OauthClient.ClientID == nil {
@@ -10438,7 +10438,7 @@ input CreateOrgInput {
   policyIDs: [ID!]
   appIDs: [ID!]
   fileIdentityIDs: [ID!]
-  userPasswordPolicyIDs: [ID!]
+  userPasswordPolicyID: ID
 }
 """
 CreateOrgPolicyInput is used for create OrgPolicy object.
@@ -11987,7 +11987,7 @@ type Org implements Node {
   """
   组织下密码策略
   """
-  userPasswordPolicy: [UserPasswordPolicy!]
+  userPasswordPolicy: UserPasswordPolicy
   """
   组织下登录策略
   """
@@ -15130,8 +15130,7 @@ input UpdateOrgInput {
   addFileIdentityIDs: [ID!]
   removeFileIdentityIDs: [ID!]
   clearFileIdentities: Boolean
-  addUserPasswordPolicyIDs: [ID!]
-  removeUserPasswordPolicyIDs: [ID!]
+  userPasswordPolicyID: ID
   clearUserPasswordPolicy: Boolean
 }
 """
@@ -17721,9 +17720,9 @@ input UserWhereInput {
     """删除配额"""
     deleteQuota(id: ID!): Boolean!
     """设置密码策略"""
-    createUserPasswordPolicy(input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
+    createUserPasswordPolicy(orgID: ID!,input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
     """更新密码策略"""
-    updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
+    updateUserPasswordPolicy(orgID: ID!,input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
     """删除密码策略"""
     deleteUserPasswordPolicy: Boolean!
     """更新用户设备"""

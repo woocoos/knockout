@@ -3371,7 +3371,7 @@ func (c *OrgClient) QueryUserPasswordPolicy(o *Org) *UserPasswordPolicyQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(org.Table, org.FieldID, id),
 			sqlgraph.To(userpasswordpolicy.Table, userpasswordpolicy.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, org.UserPasswordPolicyTable, org.UserPasswordPolicyColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, org.UserPasswordPolicyTable, org.UserPasswordPolicyColumn),
 		)
 		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
 		return fromV, nil
@@ -6451,7 +6451,7 @@ func (c *UserPasswordPolicyClient) QueryOrg(upp *UserPasswordPolicy) *OrgQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(userpasswordpolicy.Table, userpasswordpolicy.FieldID, id),
 			sqlgraph.To(org.Table, org.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
 		)
 		fromV = sqlgraph.Neighbors(upp.driver.Dialect(), step)
 		return fromV, nil

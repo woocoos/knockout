@@ -1430,25 +1430,25 @@ func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUp
 
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
-	Domain                *string
-	CustomDomain          []string
-	Name                  string
-	Profile               *string
-	Status                *typex.SimpleStatus
-	CountryCode           *string
-	Timezone              *string
-	LocalCurrency         *string
-	Logo                  *types.OrgLogo
-	ParentID              int
-	ChildIDs              []int
-	OwnerID               *int
-	UserIDs               []int
-	RolesAndGroupIDs      []int
-	PermissionIDs         []int
-	PolicyIDs             []int
-	AppIDs                []int
-	FileIdentityIDs       []int
-	UserPasswordPolicyIDs []int
+	Domain               *string
+	CustomDomain         []string
+	Name                 string
+	Profile              *string
+	Status               *typex.SimpleStatus
+	CountryCode          *string
+	Timezone             *string
+	LocalCurrency        *string
+	Logo                 *types.OrgLogo
+	ParentID             int
+	ChildIDs             []int
+	OwnerID              *int
+	UserIDs              []int
+	RolesAndGroupIDs     []int
+	PermissionIDs        []int
+	PolicyIDs            []int
+	AppIDs               []int
+	FileIdentityIDs      []int
+	UserPasswordPolicyID *int
 }
 
 // Mutate applies the CreateOrgInput on the OrgMutation builder.
@@ -1503,8 +1503,8 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.FileIdentityIDs; len(v) > 0 {
 		m.AddFileIdentityIDs(v...)
 	}
-	if v := i.UserPasswordPolicyIDs; len(v) > 0 {
-		m.AddUserPasswordPolicyIDs(v...)
+	if v := i.UserPasswordPolicyID; v != nil {
+		m.SetUserPasswordPolicyID(*v)
 	}
 }
 
@@ -1516,51 +1516,50 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 
 // UpdateOrgInput represents a mutation input for updating orgs.
 type UpdateOrgInput struct {
-	ClearDomain                 bool
-	Domain                      *string
-	ClearCustomDomain           bool
-	CustomDomain                []string
-	AppendCustomDomain          []string
-	Name                        *string
-	ClearProfile                bool
-	Profile                     *string
-	ClearStatus                 bool
-	Status                      *typex.SimpleStatus
-	ClearCountryCode            bool
-	CountryCode                 *string
-	ClearTimezone               bool
-	Timezone                    *string
-	ClearLocalCurrency          bool
-	LocalCurrency               *string
-	ClearLogo                   bool
-	Logo                        *types.OrgLogo
-	ParentID                    *int
-	ClearChildren               bool
-	AddChildIDs                 []int
-	RemoveChildIDs              []int
-	ClearOwner                  bool
-	OwnerID                     *int
-	ClearUsers                  bool
-	AddUserIDs                  []int
-	RemoveUserIDs               []int
-	ClearRolesAndGroups         bool
-	AddRolesAndGroupIDs         []int
-	RemoveRolesAndGroupIDs      []int
-	ClearPermissions            bool
-	AddPermissionIDs            []int
-	RemovePermissionIDs         []int
-	ClearPolicies               bool
-	AddPolicyIDs                []int
-	RemovePolicyIDs             []int
-	ClearApps                   bool
-	AddAppIDs                   []int
-	RemoveAppIDs                []int
-	ClearFileIdentities         bool
-	AddFileIdentityIDs          []int
-	RemoveFileIdentityIDs       []int
-	ClearUserPasswordPolicy     bool
-	AddUserPasswordPolicyIDs    []int
-	RemoveUserPasswordPolicyIDs []int
+	ClearDomain             bool
+	Domain                  *string
+	ClearCustomDomain       bool
+	CustomDomain            []string
+	AppendCustomDomain      []string
+	Name                    *string
+	ClearProfile            bool
+	Profile                 *string
+	ClearStatus             bool
+	Status                  *typex.SimpleStatus
+	ClearCountryCode        bool
+	CountryCode             *string
+	ClearTimezone           bool
+	Timezone                *string
+	ClearLocalCurrency      bool
+	LocalCurrency           *string
+	ClearLogo               bool
+	Logo                    *types.OrgLogo
+	ParentID                *int
+	ClearChildren           bool
+	AddChildIDs             []int
+	RemoveChildIDs          []int
+	ClearOwner              bool
+	OwnerID                 *int
+	ClearUsers              bool
+	AddUserIDs              []int
+	RemoveUserIDs           []int
+	ClearRolesAndGroups     bool
+	AddRolesAndGroupIDs     []int
+	RemoveRolesAndGroupIDs  []int
+	ClearPermissions        bool
+	AddPermissionIDs        []int
+	RemovePermissionIDs     []int
+	ClearPolicies           bool
+	AddPolicyIDs            []int
+	RemovePolicyIDs         []int
+	ClearApps               bool
+	AddAppIDs               []int
+	RemoveAppIDs            []int
+	ClearFileIdentities     bool
+	AddFileIdentityIDs      []int
+	RemoveFileIdentityIDs   []int
+	ClearUserPasswordPolicy bool
+	UserPasswordPolicyID    *int
 }
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
@@ -1694,11 +1693,8 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	if i.ClearUserPasswordPolicy {
 		m.ClearUserPasswordPolicy()
 	}
-	if v := i.AddUserPasswordPolicyIDs; len(v) > 0 {
-		m.AddUserPasswordPolicyIDs(v...)
-	}
-	if v := i.RemoveUserPasswordPolicyIDs; len(v) > 0 {
-		m.RemoveUserPasswordPolicyIDs(v...)
+	if v := i.UserPasswordPolicyID; v != nil {
+		m.SetUserPasswordPolicyID(*v)
 	}
 }
 

@@ -40,31 +40,24 @@ func (s *Service) defaultUserPasswordPolicy() (*ent.UserPasswordPolicy, error) {
 	return &upp, nil
 }
 
-func (s *Service) CreateUserPasswordPolicy(ctx context.Context, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+func (s *Service) CreateUserPasswordPolicy(ctx context.Context, orgID int, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
 	client := s.Client
-	// 获取到tenantId
-	tid, err := identity.TenantIDFromContext(ctx)
+	// 查询租户是否已有密码策略
+	has, err := client.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(orgID)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
-	// 查询租户是否已有密码策略
-	has := client.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(tid)).ExistX(ctx)
 	if has {
 		return nil, fmt.Errorf("密码策略已经存在，不能再次创建")
 	}
-	input.OrgID = &tid
+	input.OrgID = &orgID
 	return client.UserPasswordPolicy.Create().SetInput(input).Save(ctx)
 }
 
-func (s *Service) UpdateUserPasswordPolicy(ctx context.Context, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+func (s *Service) UpdateUserPasswordPolicy(ctx context.Context, orgID int, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
 	client := s.Client
-	// 获取到tenantId
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
 	// 查询出租户的密码策略
-	upp, err := client.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(tid)).Only(ctx)
+	upp, err := client.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(orgID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -813,13 +813,13 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "tenant_id", Type: field.TypeInt},
-		{Name: "user_id", Type: field.TypeInt},
 		{Name: "limit", Type: field.TypeInt64},
 		{Name: "used", Type: field.TypeInt64, Default: 0},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeInt},
 		{Name: "quota_item_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
 	}
 	// QuotaTable holds the schema information for the "quota" table.
 	QuotaTable = &schema.Table{
@@ -828,9 +828,21 @@ var (
 		PrimaryKey: []*schema.Column{QuotaColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
+				Symbol:     "quota_org_org_quota",
+				Columns:    []*schema.Column{QuotaColumns[9]},
+				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
 				Symbol:     "quota_quota_item_quota",
-				Columns:    []*schema.Column{QuotaColumns[11]},
+				Columns:    []*schema.Column{QuotaColumns[10]},
 				RefColumns: []*schema.Column{QuotaItemColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "quota_user_user_quota",
+				Columns:    []*schema.Column{QuotaColumns[11]},
+				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -838,7 +850,7 @@ var (
 			{
 				Name:    "quota_tenant_id_user_id_quota_item_id",
 				Unique:  true,
-				Columns: []*schema.Column{QuotaColumns[5], QuotaColumns[6], QuotaColumns[11]},
+				Columns: []*schema.Column{QuotaColumns[9], QuotaColumns[11], QuotaColumns[10]},
 			},
 		},
 	}
@@ -1099,7 +1111,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "length", Type: field.TypeInt32, Nullable: true},
+		{Name: "length", Type: field.TypeInt32, Nullable: true, Default: 6},
 		{Name: "include_element", Type: field.TypeInt32, Nullable: true},
 		{Name: "include_char", Type: field.TypeInt32, Nullable: true},
 		{Name: "allow_include_user_name", Type: field.TypeBool, Nullable: true},
@@ -1107,7 +1119,7 @@ var (
 		{Name: "invalid_login_limit", Type: field.TypeBool, Nullable: true},
 		{Name: "retry", Type: field.TypeInt32, Nullable: true},
 		{Name: "captcha_times", Type: field.TypeInt32, Nullable: true},
-		{Name: "tenant_id", Type: field.TypeInt, Nullable: true},
+		{Name: "tenant_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// UserPasswordPolicyTable holds the schema information for the "user_password_policy" table.
 	UserPasswordPolicyTable = &schema.Table{
@@ -1268,7 +1280,9 @@ func init() {
 	PermissionTable.Annotation = &entsql.Annotation{
 		Table: "permission",
 	}
-	QuotaTable.ForeignKeys[0].RefTable = QuotaItemTable
+	QuotaTable.ForeignKeys[0].RefTable = OrgTable
+	QuotaTable.ForeignKeys[1].RefTable = QuotaItemTable
+	QuotaTable.ForeignKeys[2].RefTable = UserTable
 	QuotaTable.Annotation = &entsql.Annotation{
 		Table: "quota",
 	}

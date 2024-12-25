@@ -403,19 +403,23 @@ func (oc *OrgCreate) AddFileIdentities(f ...*FileIdentity) *OrgCreate {
 	return oc.AddFileIdentityIDs(ids...)
 }
 
-// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
-func (oc *OrgCreate) AddUserPasswordPolicyIDs(ids ...int) *OrgCreate {
-	oc.mutation.AddUserPasswordPolicyIDs(ids...)
+// SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
+func (oc *OrgCreate) SetUserPasswordPolicyID(id int) *OrgCreate {
+	oc.mutation.SetUserPasswordPolicyID(id)
 	return oc
 }
 
-// AddUserPasswordPolicy adds the "user_password_policy" edges to the UserPasswordPolicy entity.
-func (oc *OrgCreate) AddUserPasswordPolicy(u ...*UserPasswordPolicy) *OrgCreate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
+func (oc *OrgCreate) SetNillableUserPasswordPolicyID(id *int) *OrgCreate {
+	if id != nil {
+		oc = oc.SetUserPasswordPolicyID(*id)
 	}
-	return oc.AddUserPasswordPolicyIDs(ids...)
+	return oc
+}
+
+// SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (oc *OrgCreate) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgCreate {
+	return oc.SetUserPasswordPolicyID(u.ID)
 }
 
 // AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
@@ -843,7 +847,7 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	}
 	if nodes := oc.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   org.UserPasswordPolicyTable,
 			Columns: []string{org.UserPasswordPolicyColumn},

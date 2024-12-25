@@ -18729,8 +18729,7 @@ type OrgMutation struct {
 	file_identities             map[int]struct{}
 	removedfile_identities      map[int]struct{}
 	clearedfile_identities      bool
-	user_password_policy        map[int]struct{}
-	removeduser_password_policy map[int]struct{}
+	user_password_policy        *int
 	cleareduser_password_policy bool
 	org_quota                   map[int]struct{}
 	removedorg_quota            map[int]struct{}
@@ -20275,14 +20274,9 @@ func (m *OrgMutation) ResetFileIdentities() {
 	m.removedfile_identities = nil
 }
 
-// AddUserPasswordPolicyIDs adds the "user_password_policy" edge to the UserPasswordPolicy entity by ids.
-func (m *OrgMutation) AddUserPasswordPolicyIDs(ids ...int) {
-	if m.user_password_policy == nil {
-		m.user_password_policy = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.user_password_policy[ids[i]] = struct{}{}
-	}
+// SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by id.
+func (m *OrgMutation) SetUserPasswordPolicyID(id int) {
+	m.user_password_policy = &id
 }
 
 // ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
@@ -20295,29 +20289,20 @@ func (m *OrgMutation) UserPasswordPolicyCleared() bool {
 	return m.cleareduser_password_policy
 }
 
-// RemoveUserPasswordPolicyIDs removes the "user_password_policy" edge to the UserPasswordPolicy entity by IDs.
-func (m *OrgMutation) RemoveUserPasswordPolicyIDs(ids ...int) {
-	if m.removeduser_password_policy == nil {
-		m.removeduser_password_policy = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.user_password_policy, ids[i])
-		m.removeduser_password_policy[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedUserPasswordPolicy returns the removed IDs of the "user_password_policy" edge to the UserPasswordPolicy entity.
-func (m *OrgMutation) RemovedUserPasswordPolicyIDs() (ids []int) {
-	for id := range m.removeduser_password_policy {
-		ids = append(ids, id)
+// UserPasswordPolicyID returns the "user_password_policy" edge ID in the mutation.
+func (m *OrgMutation) UserPasswordPolicyID() (id int, exists bool) {
+	if m.user_password_policy != nil {
+		return *m.user_password_policy, true
 	}
 	return
 }
 
 // UserPasswordPolicyIDs returns the "user_password_policy" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserPasswordPolicyID instead. It exists only for internal usage by the builders.
 func (m *OrgMutation) UserPasswordPolicyIDs() (ids []int) {
-	for id := range m.user_password_policy {
-		ids = append(ids, id)
+	if id := m.user_password_policy; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -20326,7 +20311,6 @@ func (m *OrgMutation) UserPasswordPolicyIDs() (ids []int) {
 func (m *OrgMutation) ResetUserPasswordPolicy() {
 	m.user_password_policy = nil
 	m.cleareduser_password_policy = false
-	m.removeduser_password_policy = nil
 }
 
 // AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by ids.
@@ -21177,11 +21161,9 @@ func (m *OrgMutation) AddedIDs(name string) []ent.Value {
 		}
 		return ids
 	case org.EdgeUserPasswordPolicy:
-		ids := make([]ent.Value, 0, len(m.user_password_policy))
-		for id := range m.user_password_policy {
-			ids = append(ids, id)
+		if id := m.user_password_policy; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case org.EdgeOrgQuota:
 		ids := make([]ent.Value, 0, len(m.org_quota))
 		for id := range m.org_quota {
@@ -21227,9 +21209,6 @@ func (m *OrgMutation) RemovedEdges() []string {
 	}
 	if m.removedfile_identities != nil {
 		edges = append(edges, org.EdgeFileIdentities)
-	}
-	if m.removeduser_password_policy != nil {
-		edges = append(edges, org.EdgeUserPasswordPolicy)
 	}
 	if m.removedorg_quota != nil {
 		edges = append(edges, org.EdgeOrgQuota)
@@ -21286,12 +21265,6 @@ func (m *OrgMutation) RemovedIDs(name string) []ent.Value {
 	case org.EdgeFileIdentities:
 		ids := make([]ent.Value, 0, len(m.removedfile_identities))
 		for id := range m.removedfile_identities {
-			ids = append(ids, id)
-		}
-		return ids
-	case org.EdgeUserPasswordPolicy:
-		ids := make([]ent.Value, 0, len(m.removeduser_password_policy))
-		for id := range m.removeduser_password_policy {
 			ids = append(ids, id)
 		}
 		return ids
@@ -21405,6 +21378,9 @@ func (m *OrgMutation) ClearEdge(name string) error {
 		return nil
 	case org.EdgeOwner:
 		m.ClearOwner()
+		return nil
+	case org.EdgeUserPasswordPolicy:
+		m.ClearUserPasswordPolicy()
 		return nil
 	}
 	return fmt.Errorf("unknown Org unique edge %s", name)

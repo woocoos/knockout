@@ -266,6 +266,10 @@ func (uppc *UserPasswordPolicyCreate) defaults() error {
 		v := userpasswordpolicy.DefaultCreatedAt()
 		uppc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := uppc.mutation.Length(); !ok {
+		v := userpasswordpolicy.DefaultLength
+		uppc.mutation.SetLength(v)
+	}
 	return nil
 }
 
@@ -385,7 +389,7 @@ func (uppc *UserPasswordPolicyCreate) createSpec() (*UserPasswordPolicy, *sqlgra
 	}
 	if nodes := uppc.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   userpasswordpolicy.OrgTable,
 			Columns: []string{userpasswordpolicy.OrgColumn},

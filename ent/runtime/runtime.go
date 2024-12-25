@@ -912,6 +912,8 @@ func init() {
 	userpasswordpolicy.DefaultCreatedAt = userpasswordpolicyDescCreatedAt.Default.(func() time.Time)
 	// userpasswordpolicyDescLength is the schema descriptor for length field.
 	userpasswordpolicyDescLength := userpasswordpolicyFields[1].Descriptor()
+	// userpasswordpolicy.DefaultLength holds the default value on creation for the length field.
+	userpasswordpolicy.DefaultLength = userpasswordpolicyDescLength.Default.(int32)
 	// userpasswordpolicy.LengthValidator is a validator for the "length" field. It is called by the builders before save.
 	userpasswordpolicy.LengthValidator = func() func(int32) error {
 		validators := userpasswordpolicyDescLength.Validators

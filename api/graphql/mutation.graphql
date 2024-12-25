@@ -244,9 +244,9 @@ type Mutation {
     """删除配额"""
     deleteQuota(id: ID!): Boolean!
     """设置密码策略"""
-    createUserPasswordPolicy(input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
+    createUserPasswordPolicy(orgID: ID!,input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
     """更新密码策略"""
-    updateUserPasswordPolicy(input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
+    updateUserPasswordPolicy(orgID: ID!,input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
     """删除密码策略"""
     deleteUserPasswordPolicy: Boolean!
     """更新用户设备"""

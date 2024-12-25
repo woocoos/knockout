@@ -675,7 +675,7 @@ func HasOrg() predicate.UserPasswordPolicy {
 	return predicate.UserPasswordPolicy(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OrgTable, OrgColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, OrgTable, OrgColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
