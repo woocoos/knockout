@@ -17851,7 +17851,7 @@ input UserWhereInput {
     ):UserConnection!
     """获取组织用户偏好"""
     orgUserPreference: OrgUserPreference
-    """用户授权的应用列表"""
+    """用户授权的web应用列表"""
     userApps: [App!]!
     """根据ref_code获取数据字典,用于批量获取"""
     appDictByRefCode(

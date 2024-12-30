@@ -712,7 +712,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
-	).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).All(ctx)
+	).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).Order(ent.Asc(org.FieldID)).All(ctx)
 	if err != nil {
 		return nil, err
 	}

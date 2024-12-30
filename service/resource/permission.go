@@ -929,7 +929,7 @@ func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {
 		acs = append(acs, parts[0])
 	}
 	acs = RemoveDuplicateElement(acs)
-	return s.Client.App.Query().Where(app.CodeIn(acs...)).All(ctx)
+	return s.Client.App.Query().Where(app.CodeIn(acs...), app.Or(app.KindEQ(app.KindWeb), app.KindEQ(app.KindNative))).All(ctx)
 }
 
 func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, appCode string) (bool, error) {

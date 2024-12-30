@@ -139,10 +139,15 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, app.MenusColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(app.MenusColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -227,10 +232,15 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, app.ActionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(app.ActionsColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -315,10 +325,15 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, app.ResourcesColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(app.ResourcesColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -443,10 +458,15 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, app.OrgsPrimaryKey[1], limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(app.OrgsPrimaryKey[1], limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -531,10 +551,15 @@ func (a *AppQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, app.DictsColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(app.DictsColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -2926,10 +2951,15 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, org.UsersPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(org.UsersPrimaryKey[0], limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -3014,10 +3044,15 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, org.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(org.PermissionsColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -3102,10 +3137,15 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, org.PoliciesColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(org.PoliciesColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -3194,10 +3234,15 @@ func (o *OrgQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphq
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, org.AppsPrimaryKey[0], limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(org.AppsPrimaryKey[0], limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -4326,10 +4371,15 @@ func (qi *QuotaItemQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, quotaitem.QuotaColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(quotaitem.QuotaColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
@@ -4771,10 +4821,15 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 				}
 			}
 			if limit := paginateLimit(args.first, args.last); limit > 0 {
-				if args.after == nil && args.last == nil {
+				var offset int
+				sp, ok := pagination.SimplePaginationFromContext(ctx)
+				if ok {
+					offset = sp.Offset(args.first, args.last)
+				}
+				if !ok && args.after == nil && args.before == nil {
 					pager.applyOrder(query.Limit(limit))
 				} else {
-					modify := pagination.LimitPerRow(ctx, user.PermissionsColumn, limit, args.first, args.last, pager.orderExpr(query))
+					modify := pagination.LimitPerRow(user.PermissionsColumn, limit, offset, pager.orderExpr(query))
 					query.modifiers = append(query.modifiers, modify)
 				}
 			} else {
