@@ -23,7 +23,6 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"strconv"
-	"strings"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -717,10 +716,7 @@ func (s *Service) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPo
 	}
 	// 如果是权限，则创建权限策略
 	if input.Kind == apppolicyview.KindPolicy {
-		appCode := a.Code
-		// appCode首字母大写处理
-		appCode = strings.ToUpper(string(appCode[0])) + appCode[1:]
-		name := fmt.Sprintf("Sys%s%s", appCode, strconv.Itoa(apv.ID))
+		name := fmt.Sprintf("%sView%s", a.Code, strconv.Itoa(apv.ID))
 		comments := input.Name
 		if input.ParentID != 0 {
 			parent, err := client.AppPolicyView.Get(ctx, input.ParentID)
