@@ -767,27 +767,29 @@ type ComplexityRoot struct {
 		OrgAppActions               func(childComplexity int, appCode string) int
 		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgPolicyReferences         func(childComplexity int, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		OrgPolicyView               func(childComplexity int, appCode string, orgID *int) int
-		OrgPolicyViewOrgPolicies    func(childComplexity int, appCode string, orgID *int) int
 		OrgPolicyViewRoleAssigned   func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
 		OrgPolicyViewUserAssigned   func(childComplexity int, userID int, appCode string, orgID *int) int
 		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgUserPreference           func(childComplexity int) int
+		OrgUsers                    func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		QuotaItems                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
 		Quotas                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
 		Regions                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
 		UserApps                    func(childComplexity int) int
 		UserDevices                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
-		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserExtendGroupPolicies     func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserExtendRolePolicies      func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserGroups                  func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		UserMenus                   func(childComplexity int, appCode string) int
 		UserPasswordPolicy          func(childComplexity int) int
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
+		UserRoles                   func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserRootOrgs                func(childComplexity int) int
 		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		Viewer                      func(childComplexity int) int
@@ -5561,7 +5563,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["orgID"].(*int), args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
 	case "Query.orgPolicyView":
 		if e.complexity.Query.OrgPolicyView == nil {
@@ -5574,18 +5576,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgPolicyView(childComplexity, args["appCode"].(string), args["orgID"].(*int)), true
-
-	case "Query.orgPolicyViewOrgPolicies":
-		if e.complexity.Query.OrgPolicyViewOrgPolicies == nil {
-			break
-		}
-
-		args, err := ec.field_Query_orgPolicyViewOrgPolicies_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.OrgPolicyViewOrgPolicies(childComplexity, args["appCode"].(string), args["orgID"].(*int)), true
 
 	case "Query.orgPolicyViewRoleAssigned":
 		if e.complexity.Query.OrgPolicyViewRoleAssigned == nil {
@@ -5653,6 +5643,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgUserPreference(childComplexity), true
+
+	case "Query.orgUsers":
+		if e.complexity.Query.OrgUsers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgUsers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgUsers(childComplexity, args["orgID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
 	case "Query.organizations":
 		if e.complexity.Query.Organizations == nil {
@@ -5731,7 +5733,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserExtendGroupPolicies(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+		return e.complexity.Query.UserExtendGroupPolicies(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+
+	case "Query.userExtendRolePolicies":
+		if e.complexity.Query.UserExtendRolePolicies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userExtendRolePolicies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserExtendRolePolicies(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
 	case "Query.userGroups":
 		if e.complexity.Query.UserGroups == nil {
@@ -5743,7 +5757,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+		return e.complexity.Query.UserGroups(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
 	case "Query.userMembers":
 		if e.complexity.Query.UserMembers == nil {
@@ -5787,6 +5801,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserPermissions(childComplexity, args["where"].(*ent.AppActionWhereInput)), true
+
+	case "Query.userRoles":
+		if e.complexity.Query.UserRoles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userRoles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserRoles(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
 	case "Query.userRootOrgs":
 		if e.complexity.Query.UserRootOrgs == nil {
@@ -17820,6 +17846,7 @@ input UserWhereInput {
     appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
     """权限策略引用列表"""
     orgPolicyReferences(
+        orgID: ID
         policyID:ID!
         after: Cursor
         first: Int
@@ -17850,6 +17877,18 @@ input UserWhereInput {
     ):AppResConnection!
     """用户加入的用户组"""
     userGroups(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户加入的角色"""
+    userRoles(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -17860,6 +17899,18 @@ input UserWhereInput {
     ):OrgRoleConnection!
     """用户继承用户组的权限策略"""
     userExtendGroupPolicies(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户继承角色的权限策略"""
+    userExtendRolePolicies(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -17931,17 +17982,26 @@ input UserWhereInput {
     """应用策略视图"""
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
-    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyView!]!
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """应用策略视图角色选中项"""
     appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
     """组织策略视图角色/用户组选中项"""
     orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
     """组织策略视图用户选择项"""
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
-    """组织策略视图对应的orgPolicy"""
-    orgPolicyViewOrgPolicies(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
+    """获取组织用户"""
+    orgUsers(
+        """组织ID或者部门ID"""
+        orgID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""

@@ -64,6 +64,27 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 // CreateRoot 创建组织root
 func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
+	if input.OwnerID != nil {
+		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if u.UserType != user.UserTypeAccount {
+			// TODO 先直接升级为account，后续考虑member用户如何升级account
+			err = client.User.UpdateOneID(*input.OwnerID).SetUserType(user.UserTypeAccount).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID)).Exist(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if has {
+				return nil, fmt.Errorf("the account is the other org owner")
+			}
+		}
+	}
 	o, err := client.Org.Create().SetInput(input).SetKind(org.KindRoot).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -73,9 +94,6 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
 		if err != nil {
 			return nil, err
-		}
-		if u.UserType != user.UserTypeAccount {
-			return nil, fmt.Errorf("owner must be account")
 		}
 		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
 		if err != nil {
@@ -925,14 +943,30 @@ func (s *Service) GetTopOrg(ctx context.Context, orgID int) (*ent.Org, error) {
 	return s.GetTopOrg(ctx, o.ParentID)
 }
 
-func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (s *Service) GetOrg(ctx context.Context, orgID int) (*ent.Org, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if o.Kind == org.KindRoot {
+		return o, nil
+	}
+	return s.GetOrg(ctx, o.ParentID)
+}
+
+func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
 	// 获取用户在当前组织的策略视图
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if orgID != nil {
-		tid = *orgID
+		// 获取组织id，传递的可能是部门
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
 	}
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
@@ -972,6 +1006,19 @@ func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int)
 			apppolicy.IDIn(apIDs...),
 		),
 	).All(ctx)
+	// 获取orgPolicy
+	ops, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.OrgID(tid),
+		orgpolicy.AppPolicyIDIn(apIDs...),
+		orgpolicy.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	opMaps := make(map[int]*ent.OrgPolicy)
+	for _, ap := range ops {
+		if ap.AppPolicyID == nil {
+			continue
+		}
+		opMaps[*ap.AppPolicyID] = ap
+	}
 	// 获取应用的策略视图
 	apvs, err := s.Client.AppPolicyView.Query().Where(apppolicyview.HasAppWith(app.Code(appCode))).All(ctx)
 	// 找出视图的父节点
@@ -988,7 +1035,22 @@ func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int)
 		}
 	}
 	uapvs = append(uapvs, result...)
-	return uapvs, nil
+	// 组装数据
+	res := make([]*model.AppPolicyViewOrgPolicy, 0, len(ops))
+	for _, op := range uapvs {
+		if op.PolicyID == nil {
+			res = append(res, &model.AppPolicyViewOrgPolicy{
+				AppPolicyView: op,
+				OrgPolicy:     nil,
+			})
+			continue
+		}
+		res = append(res, &model.AppPolicyViewOrgPolicy{
+			AppPolicyView: op,
+			OrgPolicy:     opMaps[*op.PolicyID],
+		})
+	}
+	return res, nil
 }
 
 func findAppPolicyViewParents(appPolicyViews, userPolicyViews []*ent.AppPolicyView, parent *[]*ent.AppPolicyView) {

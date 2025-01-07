@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/region"
@@ -44,7 +45,29 @@ func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.Cre
 
 // UpdateOrganization is the resolver for the updateOrganization field.
 func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error) {
-	return r.client.Org.UpdateOneID(orgID).SetInput(input).Save(ctx)
+	client := ent.FromContext(ctx)
+	if input.OwnerID != nil {
+		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if u.UserType != user.UserTypeAccount {
+			// TODO 先直接升级为account，后续考虑member用户如何升级account
+			err = client.User.UpdateOneID(*input.OwnerID).SetUserType(user.UserTypeAccount).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID)).Exist(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if has {
+				return nil, fmt.Errorf("the account is the other org owner")
+			}
+		}
+	}
+	return client.Org.UpdateOneID(orgID).SetInput(input).Save(ctx)
 }
 
 // DeleteOrganization is the resolver for the deleteOrganization field.

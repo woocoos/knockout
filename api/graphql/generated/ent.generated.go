@@ -81,11 +81,13 @@ type QueryResolver interface {
 	OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 	AppRoleAssignedToOrgs(ctx context.Context, roleID int, where *ent.OrgWhereInput) ([]*ent.Org, error)
 	AppPolicyAssignedToOrgs(ctx context.Context, policyID int, where *ent.OrgWhereInput) ([]*ent.Org, error)
-	OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
+	OrgPolicyReferences(ctx context.Context, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 	AppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
 	OrgAppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
-	UserGroups(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
-	UserExtendGroupPolicies(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
+	UserGroups(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
+	UserRoles(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
+	UserExtendGroupPolicies(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
+	UserExtendRolePolicies(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 	UserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error)
 	UserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error)
 	CheckPermission(ctx context.Context, permission string) (bool, error)
@@ -103,12 +105,12 @@ type QueryResolver interface {
 	FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error)
 	UserMembers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	AppPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error)
-	OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
+	OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error)
 	AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error)
 	OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
 	OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
-	OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error)
 	UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPolicy, error)
+	OrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 }
 type UserResolver interface {
 	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
@@ -4110,43 +4112,70 @@ func (ec *executionContext) field_Query_orgGroups_argsWhere(
 func (ec *executionContext) field_Query_orgPolicyReferences_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_orgPolicyReferences_argsPolicyID(ctx, rawArgs)
+	arg0, err := ec.field_Query_orgPolicyReferences_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["policyID"] = arg0
-	arg1, err := ec.field_Query_orgPolicyReferences_argsAfter(ctx, rawArgs)
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_orgPolicyReferences_argsPolicyID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["after"] = arg1
-	arg2, err := ec.field_Query_orgPolicyReferences_argsFirst(ctx, rawArgs)
+	args["policyID"] = arg1
+	arg2, err := ec.field_Query_orgPolicyReferences_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["first"] = arg2
-	arg3, err := ec.field_Query_orgPolicyReferences_argsBefore(ctx, rawArgs)
+	args["after"] = arg2
+	arg3, err := ec.field_Query_orgPolicyReferences_argsFirst(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["before"] = arg3
-	arg4, err := ec.field_Query_orgPolicyReferences_argsLast(ctx, rawArgs)
+	args["first"] = arg3
+	arg4, err := ec.field_Query_orgPolicyReferences_argsBefore(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["last"] = arg4
-	arg5, err := ec.field_Query_orgPolicyReferences_argsOrderBy(ctx, rawArgs)
+	args["before"] = arg4
+	arg5, err := ec.field_Query_orgPolicyReferences_argsLast(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["orderBy"] = arg5
-	arg6, err := ec.field_Query_orgPolicyReferences_argsWhere(ctx, rawArgs)
+	args["last"] = arg5
+	arg6, err := ec.field_Query_orgPolicyReferences_argsOrderBy(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["where"] = arg6
+	args["orderBy"] = arg6
+	arg7, err := ec.field_Query_orgPolicyReferences_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg7
 	return args, nil
 }
+func (ec *executionContext) field_Query_orgPolicyReferences_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_orgPolicyReferences_argsPolicyID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -4298,65 +4327,6 @@ func (ec *executionContext) field_Query_orgPolicyReferences_argsWhere(
 	}
 
 	var zeroVal *ent.PermissionWhereInput
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_orgPolicyViewOrgPolicies_argsAppCode(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["appCode"] = arg0
-	arg1, err := ec.field_Query_orgPolicyViewOrgPolicies_argsOrgID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["orgID"] = arg1
-	return args, nil
-}
-func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_argsAppCode(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["appCode"]
-	if !ok {
-		var zeroVal string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
-	if tmp, ok := rawArgs["appCode"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
-	}
-
-	var zeroVal string
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_argsOrgID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orgID"]
-	if !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-	if tmp, ok := rawArgs["orgID"]; ok {
-		return ec.unmarshalOID2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -5116,6 +5086,200 @@ func (ec *executionContext) field_Query_orgRoles_argsWhere(
 	}
 
 	var zeroVal *ent.OrgRoleWhereInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_orgUsers_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_orgUsers_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg1
+	arg2, err := ec.field_Query_orgUsers_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg2
+	arg3, err := ec.field_Query_orgUsers_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg3
+	arg4, err := ec.field_Query_orgUsers_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg4
+	arg5, err := ec.field_Query_orgUsers_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg5
+	arg6, err := ec.field_Query_orgUsers_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg6
+	return args, nil
+}
+func (ec *executionContext) field_Query_orgUsers_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["first"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["before"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsLast(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["last"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UserOrder, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orderBy"]
+	if !ok {
+		var zeroVal *ent.UserOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOUserOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.UserOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgUsers_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.UserWhereInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["where"]
+	if !ok {
+		var zeroVal *ent.UserWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOUserWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.UserWhereInput
 	return zeroVal, nil
 }
 
@@ -5957,43 +6121,70 @@ func (ec *executionContext) field_Query_userDevices_argsWhere(
 func (ec *executionContext) field_Query_userExtendGroupPolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_userExtendGroupPolicies_argsUserID(ctx, rawArgs)
+	arg0, err := ec.field_Query_userExtendGroupPolicies_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["userID"] = arg0
-	arg1, err := ec.field_Query_userExtendGroupPolicies_argsAfter(ctx, rawArgs)
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_userExtendGroupPolicies_argsUserID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["after"] = arg1
-	arg2, err := ec.field_Query_userExtendGroupPolicies_argsFirst(ctx, rawArgs)
+	args["userID"] = arg1
+	arg2, err := ec.field_Query_userExtendGroupPolicies_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["first"] = arg2
-	arg3, err := ec.field_Query_userExtendGroupPolicies_argsBefore(ctx, rawArgs)
+	args["after"] = arg2
+	arg3, err := ec.field_Query_userExtendGroupPolicies_argsFirst(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["before"] = arg3
-	arg4, err := ec.field_Query_userExtendGroupPolicies_argsLast(ctx, rawArgs)
+	args["first"] = arg3
+	arg4, err := ec.field_Query_userExtendGroupPolicies_argsBefore(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["last"] = arg4
-	arg5, err := ec.field_Query_userExtendGroupPolicies_argsOrderBy(ctx, rawArgs)
+	args["before"] = arg4
+	arg5, err := ec.field_Query_userExtendGroupPolicies_argsLast(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["orderBy"] = arg5
-	arg6, err := ec.field_Query_userExtendGroupPolicies_argsWhere(ctx, rawArgs)
+	args["last"] = arg5
+	arg6, err := ec.field_Query_userExtendGroupPolicies_argsOrderBy(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["where"] = arg6
+	args["orderBy"] = arg6
+	arg7, err := ec.field_Query_userExtendGroupPolicies_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg7
 	return args, nil
 }
+func (ec *executionContext) field_Query_userExtendGroupPolicies_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_userExtendGroupPolicies_argsUserID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -6148,46 +6339,294 @@ func (ec *executionContext) field_Query_userExtendGroupPolicies_argsWhere(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_userExtendRolePolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_userExtendRolePolicies_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_userExtendRolePolicies_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userID"] = arg1
+	arg2, err := ec.field_Query_userExtendRolePolicies_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg2
+	arg3, err := ec.field_Query_userExtendRolePolicies_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg3
+	arg4, err := ec.field_Query_userExtendRolePolicies_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg4
+	arg5, err := ec.field_Query_userExtendRolePolicies_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg5
+	arg6, err := ec.field_Query_userExtendRolePolicies_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg6
+	arg7, err := ec.field_Query_userExtendRolePolicies_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg7
+	return args, nil
+}
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["first"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["before"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsLast(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["last"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.PermissionOrder, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orderBy"]
+	if !ok {
+		var zeroVal *ent.PermissionOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOPermissionOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.PermissionOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userExtendRolePolicies_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.PermissionWhereInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["where"]
+	if !ok {
+		var zeroVal *ent.PermissionWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOPermissionWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.PermissionWhereInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_userGroups_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_userGroups_argsUserID(ctx, rawArgs)
+	arg0, err := ec.field_Query_userGroups_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["userID"] = arg0
-	arg1, err := ec.field_Query_userGroups_argsAfter(ctx, rawArgs)
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_userGroups_argsUserID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["after"] = arg1
-	arg2, err := ec.field_Query_userGroups_argsFirst(ctx, rawArgs)
+	args["userID"] = arg1
+	arg2, err := ec.field_Query_userGroups_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["first"] = arg2
-	arg3, err := ec.field_Query_userGroups_argsBefore(ctx, rawArgs)
+	args["after"] = arg2
+	arg3, err := ec.field_Query_userGroups_argsFirst(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["before"] = arg3
-	arg4, err := ec.field_Query_userGroups_argsLast(ctx, rawArgs)
+	args["first"] = arg3
+	arg4, err := ec.field_Query_userGroups_argsBefore(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["last"] = arg4
-	arg5, err := ec.field_Query_userGroups_argsOrderBy(ctx, rawArgs)
+	args["before"] = arg4
+	arg5, err := ec.field_Query_userGroups_argsLast(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["orderBy"] = arg5
-	arg6, err := ec.field_Query_userGroups_argsWhere(ctx, rawArgs)
+	args["last"] = arg5
+	arg6, err := ec.field_Query_userGroups_argsOrderBy(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["where"] = arg6
+	args["orderBy"] = arg6
+	arg7, err := ec.field_Query_userGroups_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg7
 	return args, nil
 }
+func (ec *executionContext) field_Query_userGroups_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_userGroups_argsUserID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -6570,6 +7009,227 @@ func (ec *executionContext) field_Query_userPermissions_argsWhere(
 	}
 
 	var zeroVal *ent.AppActionWhereInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_userRoles_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg0
+	arg1, err := ec.field_Query_userRoles_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userID"] = arg1
+	arg2, err := ec.field_Query_userRoles_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg2
+	arg3, err := ec.field_Query_userRoles_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg3
+	arg4, err := ec.field_Query_userRoles_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg4
+	arg5, err := ec.field_Query_userRoles_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg5
+	arg6, err := ec.field_Query_userRoles_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg6
+	arg7, err := ec.field_Query_userRoles_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg7
+	return args, nil
+}
+func (ec *executionContext) field_Query_userRoles_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["first"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["before"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsLast(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["last"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.OrgRoleOrder, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orderBy"]
+	if !ok {
+		var zeroVal *ent.OrgRoleOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOOrgRoleOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.OrgRoleOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_userRoles_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.OrgRoleWhereInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["where"]
+	if !ok {
+		var zeroVal *ent.OrgRoleWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOOrgRoleWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.OrgRoleWhereInput
 	return zeroVal, nil
 }
 
@@ -27644,7 +28304,7 @@ func (ec *executionContext) _Query_orgPolicyReferences(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OrgPolicyReferences(rctx, fc.Args["policyID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
+		return ec.resolvers.Query().OrgPolicyReferences(rctx, fc.Args["orgID"].(*int), fc.Args["policyID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27833,7 +28493,7 @@ func (ec *executionContext) _Query_userGroups(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UserGroups(rctx, fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.OrgRoleOrder), fc.Args["where"].(*ent.OrgRoleWhereInput))
+		return ec.resolvers.Query().UserGroups(rctx, fc.Args["orgID"].(*int), fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.OrgRoleOrder), fc.Args["where"].(*ent.OrgRoleWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27882,6 +28542,69 @@ func (ec *executionContext) fieldContext_Query_userGroups(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_userRoles(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userRoles(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserRoles(rctx, fc.Args["orgID"].(*int), fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.OrgRoleOrder), fc.Args["where"].(*ent.OrgRoleWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgRoleConnection)
+	fc.Result = res
+	return ec.marshalNOrgRoleConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgRoleConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userRoles(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_OrgRoleConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_OrgRoleConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_OrgRoleConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgRoleConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_userRoles_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_userExtendGroupPolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_userExtendGroupPolicies(ctx, field)
 	if err != nil {
@@ -27896,7 +28619,7 @@ func (ec *executionContext) _Query_userExtendGroupPolicies(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UserExtendGroupPolicies(rctx, fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
+		return ec.resolvers.Query().UserExtendGroupPolicies(rctx, fc.Args["orgID"].(*int), fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27939,6 +28662,69 @@ func (ec *executionContext) fieldContext_Query_userExtendGroupPolicies(ctx conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_userExtendGroupPolicies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_userExtendRolePolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userExtendRolePolicies(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserExtendRolePolicies(rctx, fc.Args["orgID"].(*int), fc.Args["userID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.PermissionConnection)
+	fc.Result = res
+	return ec.marshalNPermissionConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐPermissionConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userExtendRolePolicies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_PermissionConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_PermissionConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_PermissionConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PermissionConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_userExtendRolePolicies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -29236,9 +30022,9 @@ func (ec *executionContext) _Query_orgPolicyView(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.AppPolicyView)
+	res := resTmp.([]*model.AppPolicyViewOrgPolicy)
 	fc.Result = res
-	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+	return ec.marshalNAppPolicyViewOrgPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicyᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_orgPolicyView(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29249,42 +30035,12 @@ func (ec *executionContext) fieldContext_Query_orgPolicyView(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_AppPolicyView_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppPolicyView_appID(ctx, field)
-			case "parentID":
-				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
-			case "kind":
-				return ec.fieldContext_AppPolicyView_kind(ctx, field)
-			case "name":
-				return ec.fieldContext_AppPolicyView_name(ctx, field)
-			case "comments":
-				return ec.fieldContext_AppPolicyView_comments(ctx, field)
-			case "policyID":
-				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
-			case "path":
-				return ec.fieldContext_AppPolicyView_path(ctx, field)
-			case "displaySort":
-				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
-			case "app":
-				return ec.fieldContext_AppPolicyView_app(ctx, field)
-			case "appPolicy":
-				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
-			case "parent":
-				return ec.fieldContext_AppPolicyView_parent(ctx, field)
-			case "children":
-				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			case "orgPolicy":
+				return ec.fieldContext_AppPolicyViewOrgPolicy_orgPolicy(ctx, field)
+			case "appPolicyView":
+				return ec.fieldContext_AppPolicyViewOrgPolicy_appPolicyView(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyViewOrgPolicy", field.Name)
 		},
 	}
 	defer func() {
@@ -29574,67 +30330,6 @@ func (ec *executionContext) fieldContext_Query_orgPolicyViewUserAssigned(ctx con
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_orgPolicyViewOrgPolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_orgPolicyViewOrgPolicies(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OrgPolicyViewOrgPolicies(rctx, fc.Args["appCode"].(string), fc.Args["orgID"].(*int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.AppPolicyViewOrgPolicy)
-	fc.Result = res
-	return ec.marshalNAppPolicyViewOrgPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicyᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_orgPolicyViewOrgPolicies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyViewOrgPolicy_orgPolicy(ctx, field)
-			case "appPolicyView":
-				return ec.fieldContext_AppPolicyViewOrgPolicy_appPolicyView(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppPolicyViewOrgPolicy", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_orgPolicyViewOrgPolicies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_userPasswordPolicy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_userPasswordPolicy(ctx, field)
 	if err != nil {
@@ -29704,6 +30399,69 @@ func (ec *executionContext) fieldContext_Query_userPasswordPolicy(_ context.Cont
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserPasswordPolicy", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgUsers(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgUsers(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgUsers(rctx, fc.Args["orgID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.UserOrder), fc.Args["where"].(*ent.UserWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.UserConnection)
+	fc.Result = res
+	return ec.marshalNUserConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUserConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgUsers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_UserConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_UserConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_UserConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgUsers_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -75223,6 +75981,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "userRoles":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userRoles(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "userExtendGroupPolicies":
 			field := field
 
@@ -75233,6 +76013,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_userExtendGroupPolicies(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "userExtendRolePolicies":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userExtendRolePolicies(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -75704,28 +76506,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "orgPolicyViewOrgPolicies":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_orgPolicyViewOrgPolicies(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "userPasswordPolicy":
 			field := field
 
@@ -75736,6 +76516,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_userPasswordPolicy(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orgUsers":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgUsers(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

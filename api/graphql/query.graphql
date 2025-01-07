@@ -37,6 +37,7 @@ extend type Query {
     appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
     """权限策略引用列表"""
     orgPolicyReferences(
+        orgID: ID
         policyID:ID!
         after: Cursor
         first: Int
@@ -67,6 +68,18 @@ extend type Query {
     ):AppResConnection!
     """用户加入的用户组"""
     userGroups(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户加入的角色"""
+    userRoles(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -77,6 +90,18 @@ extend type Query {
     ):OrgRoleConnection!
     """用户继承用户组的权限策略"""
     userExtendGroupPolicies(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户继承角色的权限策略"""
+    userExtendRolePolicies(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -148,15 +173,24 @@ extend type Query {
     """应用策略视图"""
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
-    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyView!]!
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """应用策略视图角色选中项"""
     appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
     """组织策略视图角色/用户组选中项"""
     orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
     """组织策略视图用户选择项"""
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
-    """组织策略视图对应的orgPolicy"""
-    orgPolicyViewOrgPolicies(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
+    """获取组织用户"""
+    orgUsers(
+        """组织ID或者部门ID"""
+        orgID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
 }

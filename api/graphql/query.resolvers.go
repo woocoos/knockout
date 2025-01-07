@@ -27,6 +27,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
@@ -50,11 +51,7 @@ func (r *queryResolver) Viewer(ctx context.Context) (*ent.User, error) {
 
 // OrgGroups is the resolver for the orgGroups field.
 func (r *queryResolver) OrgGroups(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return r.client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.KindEQ(orgrole.KindGroup)).Paginate(ctx, after, first, before, last,
+	return r.client.OrgRole.Query().Where(orgrole.KindEQ(orgrole.KindGroup)).Paginate(ctx, after, first, before, last,
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
@@ -70,11 +67,7 @@ func (r *queryResolver) OrgRoleUsers(ctx context.Context, roleID int, after *ent
 
 // OrgRoles is the resolver for the orgRoles field.
 func (r *queryResolver) OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return r.client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.KindEQ(orgrole.KindRole)).Paginate(ctx, after, first, before, last,
+	return r.client.OrgRole.Query().Where(orgrole.KindEQ(orgrole.KindRole)).Paginate(ctx, after, first, before, last,
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
@@ -107,10 +100,17 @@ func (r *queryResolver) AppPolicyAssignedToOrgs(ctx context.Context, policyID in
 }
 
 // OrgPolicyReferences is the resolver for the orgPolicyReferences field.
-func (r *queryResolver) OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+func (r *queryResolver) OrgPolicyReferences(ctx context.Context, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
 	}
 	has, err := r.client.OrgPolicy.Query().Where(orgpolicy.ID(policyID), orgpolicy.OrgID(tid)).Exist(ctx)
 	if err != nil {
@@ -141,23 +141,72 @@ func (r *queryResolver) OrgAppResources(ctx context.Context, appID int, after *e
 }
 
 // UserGroups is the resolver for the userGroups field.
-func (r *queryResolver) UserGroups(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
+func (r *queryResolver) UserGroups(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return r.client.OrgRole.Query().Where(orgrole.HasOrgUsersWith(orguser.OrgID(tid), orguser.UserID(userID)), orgrole.KindIn(orgrole.KindGroup)).
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	return r.client.OrgRole.Query().Where(orgrole.HasOrgUsersWith(orguser.HasOrgRoleUserWith(orgroleuser.OrgID(tid), orgroleuser.UserID(userID))), orgrole.KindIn(orgrole.KindGroup)).
+		Paginate(ctx, after, first, before, last, ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
+}
+
+// UserRoles is the resolver for the userRoles field.
+func (r *queryResolver) UserRoles(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	return r.client.OrgRole.Query().Where(orgrole.HasOrgUsersWith(orguser.HasOrgRoleUserWith(orgroleuser.OrgID(tid), orgroleuser.UserID(userID))), orgrole.KindIn(orgrole.KindRole)).
 		Paginate(ctx, after, first, before, last, ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
 // UserExtendGroupPolicies is the resolver for the userExtendGroupPolicies field.
-func (r *queryResolver) UserExtendGroupPolicies(ctx context.Context, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+func (r *queryResolver) UserExtendGroupPolicies(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
 	return r.client.Permission.Query().Where(permission.OrgID(tid), permission.PrincipalKindEQ(permission.PrincipalKindRole),
-		permission.HasRoleWith(orgrole.HasOrgUsersWith(orguser.UserID(userID), orguser.OrgID(tid)))).
+		permission.HasRoleWith(orgrole.HasOrgUsersWith(orguser.UserID(userID), orguser.OrgID(tid)), orgrole.KindEQ(orgrole.KindGroup))).
+		Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
+}
+
+// UserExtendRolePolicies is the resolver for the userExtendRolePolicies field.
+func (r *queryResolver) UserExtendRolePolicies(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	return r.client.Permission.Query().Where(permission.OrgID(tid), permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.HasRoleWith(orgrole.HasOrgUsersWith(orguser.UserID(userID), orguser.OrgID(tid)), orgrole.KindEQ(orgrole.KindRole))).
 		Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
 }
 
@@ -337,6 +386,7 @@ func (r *queryResolver) FileIdentityAccessKeySecret(ctx context.Context, id int)
 func (r *queryResolver) UserMembers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
+		return nil, err
 	}
 	return r.client.User.Query().Where(
 		user.HasOrgUserWith(
@@ -354,7 +404,7 @@ func (r *queryResolver) AppPolicyView(ctx context.Context, appCode string) ([]*e
 }
 
 // OrgPolicyView is the resolver for the OrgPolicyView field.
-func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
 	return r.resource.OrgPolicyView(ctx, appCode, orgID)
 }
 
@@ -373,12 +423,21 @@ func (r *queryResolver) OrgPolicyViewUserAssigned(ctx context.Context, userID in
 	return r.resource.OrgPolicyViewUserAssigned(ctx, userID, appCode, orgID)
 }
 
-// OrgPolicyViewOrgPolicies is the resolver for the orgPolicyViewOrgPolicies field.
-func (r *queryResolver) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
-	return r.resource.OrgPolicyViewOrgPolicies(ctx, appCode, orgID)
-}
-
 // UserPasswordPolicy is the resolver for the UserPasswordPolicy field.
 func (r *queryResolver) UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPolicy, error) {
 	return r.resource.UserPasswordPolicy(ctx)
+}
+
+// OrgUsers is the resolver for the orgUsers field.
+func (r *queryResolver) OrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+	// 如果是部门，则去组织id
+	o, err := r.resource.GetOrg(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	return r.client.User.Query().Where(
+		user.HasOrgUserWith(orguser.OrgID(o.ID)),
+	).Paginate(ctx, after, first, before, last,
+		ent.WithUserOrder(orderBy),
+		ent.WithUserFilter(where.Filter))
 }
