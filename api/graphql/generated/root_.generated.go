@@ -767,7 +767,7 @@ type ComplexityRoot struct {
 		OrgAppActions               func(childComplexity int, appCode string) int
 		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgPolicyReferences         func(childComplexity int, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		OrgPolicyView               func(childComplexity int, appCode string, orgID *int) int
 		OrgPolicyViewRoleAssigned   func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
 		OrgPolicyViewUserAssigned   func(childComplexity int, userID int, appCode string, orgID *int) int
@@ -5563,7 +5563,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["orgID"].(*int), args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
 	case "Query.orgPolicyView":
 		if e.complexity.Query.OrgPolicyView == nil {
@@ -17846,7 +17846,6 @@ input UserWhereInput {
     appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
     """权限策略引用列表"""
     orgPolicyReferences(
-        orgID: ID
         policyID:ID!
         after: Cursor
         first: Int
@@ -17985,10 +17984,10 @@ input UserWhereInput {
     orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """应用策略视图角色选中项"""
     appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
-    """组织策略视图角色/用户组选中项"""
-    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
-    """组织策略视图用户选择项"""
-    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图用户选择项，返回OrgPolicyIDs"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
     """获取组织用户"""

@@ -81,7 +81,7 @@ type QueryResolver interface {
 	OrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
 	AppRoleAssignedToOrgs(ctx context.Context, roleID int, where *ent.OrgWhereInput) ([]*ent.Org, error)
 	AppPolicyAssignedToOrgs(ctx context.Context, policyID int, where *ent.OrgWhereInput) ([]*ent.Org, error)
-	OrgPolicyReferences(ctx context.Context, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
+	OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error)
 	AppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
 	OrgAppResources(ctx context.Context, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) (*ent.AppResConnection, error)
 	UserGroups(ctx context.Context, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error)
@@ -107,8 +107,8 @@ type QueryResolver interface {
 	AppPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error)
 	OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error)
 	AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error)
-	OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
-	OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
+	OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]int, error)
+	OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]int, error)
 	UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPolicy, error)
 	OrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 }
@@ -4112,70 +4112,43 @@ func (ec *executionContext) field_Query_orgGroups_argsWhere(
 func (ec *executionContext) field_Query_orgPolicyReferences_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_orgPolicyReferences_argsOrgID(ctx, rawArgs)
+	arg0, err := ec.field_Query_orgPolicyReferences_argsPolicyID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["orgID"] = arg0
-	arg1, err := ec.field_Query_orgPolicyReferences_argsPolicyID(ctx, rawArgs)
+	args["policyID"] = arg0
+	arg1, err := ec.field_Query_orgPolicyReferences_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["policyID"] = arg1
-	arg2, err := ec.field_Query_orgPolicyReferences_argsAfter(ctx, rawArgs)
+	args["after"] = arg1
+	arg2, err := ec.field_Query_orgPolicyReferences_argsFirst(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["after"] = arg2
-	arg3, err := ec.field_Query_orgPolicyReferences_argsFirst(ctx, rawArgs)
+	args["first"] = arg2
+	arg3, err := ec.field_Query_orgPolicyReferences_argsBefore(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["first"] = arg3
-	arg4, err := ec.field_Query_orgPolicyReferences_argsBefore(ctx, rawArgs)
+	args["before"] = arg3
+	arg4, err := ec.field_Query_orgPolicyReferences_argsLast(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["before"] = arg4
-	arg5, err := ec.field_Query_orgPolicyReferences_argsLast(ctx, rawArgs)
+	args["last"] = arg4
+	arg5, err := ec.field_Query_orgPolicyReferences_argsOrderBy(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["last"] = arg5
-	arg6, err := ec.field_Query_orgPolicyReferences_argsOrderBy(ctx, rawArgs)
+	args["orderBy"] = arg5
+	arg6, err := ec.field_Query_orgPolicyReferences_argsWhere(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["orderBy"] = arg6
-	arg7, err := ec.field_Query_orgPolicyReferences_argsWhere(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["where"] = arg7
+	args["where"] = arg6
 	return args, nil
 }
-func (ec *executionContext) field_Query_orgPolicyReferences_argsOrgID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orgID"]
-	if !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
-	if tmp, ok := rawArgs["orgID"]; ok {
-		return ec.unmarshalOID2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
 func (ec *executionContext) field_Query_orgPolicyReferences_argsPolicyID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -28304,7 +28277,7 @@ func (ec *executionContext) _Query_orgPolicyReferences(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OrgPolicyReferences(rctx, fc.Args["orgID"].(*int), fc.Args["policyID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
+		return ec.resolvers.Query().OrgPolicyReferences(rctx, fc.Args["policyID"].(int), fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.PermissionOrder), fc.Args["where"].(*ent.PermissionWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30174,9 +30147,9 @@ func (ec *executionContext) _Query_orgPolicyViewRoleAssigned(ctx context.Context
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.AppPolicyView)
+	res := resTmp.([]int)
 	fc.Result = res
-	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+	return ec.marshalNID2ᚕintᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_orgPolicyViewRoleAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30186,43 +30159,7 @@ func (ec *executionContext) fieldContext_Query_orgPolicyViewRoleAssigned(ctx con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_AppPolicyView_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppPolicyView_appID(ctx, field)
-			case "parentID":
-				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
-			case "kind":
-				return ec.fieldContext_AppPolicyView_kind(ctx, field)
-			case "name":
-				return ec.fieldContext_AppPolicyView_name(ctx, field)
-			case "comments":
-				return ec.fieldContext_AppPolicyView_comments(ctx, field)
-			case "policyID":
-				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
-			case "path":
-				return ec.fieldContext_AppPolicyView_path(ctx, field)
-			case "displaySort":
-				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
-			case "app":
-				return ec.fieldContext_AppPolicyView_app(ctx, field)
-			case "appPolicy":
-				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
-			case "parent":
-				return ec.fieldContext_AppPolicyView_parent(ctx, field)
-			case "children":
-				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	defer func() {
@@ -30265,9 +30202,9 @@ func (ec *executionContext) _Query_orgPolicyViewUserAssigned(ctx context.Context
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*ent.AppPolicyView)
+	res := resTmp.([]int)
 	fc.Result = res
-	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+	return ec.marshalNID2ᚕintᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_orgPolicyViewUserAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30277,43 +30214,7 @@ func (ec *executionContext) fieldContext_Query_orgPolicyViewUserAssigned(ctx con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_AppPolicyView_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
-			case "appID":
-				return ec.fieldContext_AppPolicyView_appID(ctx, field)
-			case "parentID":
-				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
-			case "kind":
-				return ec.fieldContext_AppPolicyView_kind(ctx, field)
-			case "name":
-				return ec.fieldContext_AppPolicyView_name(ctx, field)
-			case "comments":
-				return ec.fieldContext_AppPolicyView_comments(ctx, field)
-			case "policyID":
-				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
-			case "path":
-				return ec.fieldContext_AppPolicyView_path(ctx, field)
-			case "displaySort":
-				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
-			case "app":
-				return ec.fieldContext_AppPolicyView_app(ctx, field)
-			case "appPolicy":
-				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
-			case "parent":
-				return ec.fieldContext_AppPolicyView_parent(ctx, field)
-			case "children":
-				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	defer func() {

@@ -100,26 +100,19 @@ func (r *queryResolver) AppPolicyAssignedToOrgs(ctx context.Context, policyID in
 }
 
 // OrgPolicyReferences is the resolver for the orgPolicyReferences field.
-func (r *queryResolver) OrgPolicyReferences(ctx context.Context, orgID *int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
+func (r *queryResolver) OrgPolicyReferences(ctx context.Context, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) (*ent.PermissionConnection, error) {
+	op, err := r.client.OrgPolicy.Get(ctx, policyID)
 	if err != nil {
 		return nil, err
 	}
-	if orgID != nil {
-		o, err := r.resource.GetOrg(ctx, *orgID)
-		if err != nil {
-			return nil, err
-		}
-		tid = o.ID
-	}
-	has, err := r.client.OrgPolicy.Query().Where(orgpolicy.ID(policyID), orgpolicy.OrgID(tid)).Exist(ctx)
+	has, err := r.client.OrgPolicy.Query().Where(orgpolicy.ID(policyID), orgpolicy.OrgID(op.OrgID)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if !has {
 		return nil, fmt.Errorf("policy not exist")
 	}
-	return r.client.Permission.Query().Where(permission.OrgID(tid), permission.OrgPolicyID(policyID)).Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
+	return r.client.Permission.Query().Where(permission.OrgID(op.OrgID), permission.OrgPolicyID(policyID)).Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
 }
 
 // AppResources is the resolver for the appResources field.
@@ -414,12 +407,12 @@ func (r *queryResolver) AppPolicyViewRoleAssigned(ctx context.Context, appRoleID
 }
 
 // OrgPolicyViewRoleAssigned is the resolver for the orgPolicyViewRoleAssigned field.
-func (r *queryResolver) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (r *queryResolver) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]int, error) {
 	return r.resource.OrgPolicyViewRoleAssigned(ctx, orgRoleID, appCode, orgID)
 }
 
 // OrgPolicyViewUserAssigned is the resolver for the orgPolicyViewUserAssigned field.
-func (r *queryResolver) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (r *queryResolver) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]int, error) {
 	return r.resource.OrgPolicyViewUserAssigned(ctx, userID, appCode, orgID)
 }
 

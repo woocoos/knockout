@@ -37,7 +37,6 @@ extend type Query {
     appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
     """权限策略引用列表"""
     orgPolicyReferences(
-        orgID: ID
         policyID:ID!
         after: Cursor
         first: Int
@@ -176,10 +175,10 @@ extend type Query {
     orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """应用策略视图角色选中项"""
     appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
-    """组织策略视图角色/用户组选中项"""
-    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
-    """组织策略视图用户选择项"""
-    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图用户选择项，返回OrgPolicyIDs"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
     """获取组织用户"""

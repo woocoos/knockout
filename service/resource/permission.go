@@ -1264,20 +1264,22 @@ func (s *Service) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, 
 	return res, nil
 }
 
-func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]int, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if orgID != nil {
-		tid = *orgID
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
 	}
 	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
 	opIDs := make([]int, 0, len(ops))
-	opvMaps := make(map[int]*ent.AppPolicyView)
 	for _, op := range ops {
 		opIDs = append(opIDs, op.OrgPolicy.ID)
-		opvMaps[op.OrgPolicy.ID] = op.AppPolicyView
 	}
 	ps, err := s.Client.Permission.Query().Where(
 		permission.RoleID(orgRoleID),
@@ -1286,27 +1288,29 @@ func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, 
 		permission.StatusEQ(typex.SimpleStatusActive),
 		permission.OrgPolicyIDIn(opIDs...),
 	).All(ctx)
-	res := make([]*ent.AppPolicyView, 0, len(ps))
+	res := make([]int, 0, len(ps))
 	for _, p := range ps {
-		res = append(res, opvMaps[p.OrgPolicyID])
+		res = append(res, p.OrgPolicyID)
 	}
 	return res, nil
 }
 
-func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]int, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if orgID != nil {
-		tid = *orgID
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
 	}
 	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
 	opIDs := make([]int, 0, len(ops))
-	opvMaps := make(map[int]*ent.AppPolicyView)
 	for _, op := range ops {
 		opIDs = append(opIDs, op.OrgPolicy.ID)
-		opvMaps[op.OrgPolicy.ID] = op.AppPolicyView
 	}
 	ps, err := s.Client.Permission.Query().Where(
 		permission.UserID(userID),
@@ -1315,9 +1319,9 @@ func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, app
 		permission.StatusEQ(typex.SimpleStatusActive),
 		permission.OrgPolicyIDIn(opIDs...),
 	).All(ctx)
-	res := make([]*ent.AppPolicyView, 0, len(ps))
+	res := make([]int, 0, len(ps))
 	for _, p := range ps {
-		res = append(res, opvMaps[p.OrgPolicyID])
+		res = append(res, p.OrgPolicyID)
 	}
 	return res, nil
 }
