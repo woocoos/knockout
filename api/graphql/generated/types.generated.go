@@ -32,6 +32,158 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _AppPolicyViewOrgPolicy_orgPolicy(ctx context.Context, field graphql.CollectedField, obj *model.AppPolicyViewOrgPolicy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppPolicyViewOrgPolicy_orgPolicy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OrgPolicy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.OrgPolicy)
+	fc.Result = res
+	return ec.marshalOOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgPolicy(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppPolicyViewOrgPolicy_orgPolicy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppPolicyViewOrgPolicy",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_OrgPolicy_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_OrgPolicy_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OrgPolicy_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_OrgPolicy_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_OrgPolicy_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_OrgPolicy_orgID(ctx, field)
+			case "appPolicyID":
+				return ec.fieldContext_OrgPolicy_appPolicyID(ctx, field)
+			case "name":
+				return ec.fieldContext_OrgPolicy_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_OrgPolicy_comments(ctx, field)
+			case "rules":
+				return ec.fieldContext_OrgPolicy_rules(ctx, field)
+			case "org":
+				return ec.fieldContext_OrgPolicy_org(ctx, field)
+			case "permissions":
+				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
+			case "isGrantRole":
+				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
+			case "isGrantUser":
+				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppPolicyViewOrgPolicy_appPolicyView(ctx context.Context, field graphql.CollectedField, obj *model.AppPolicyViewOrgPolicy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppPolicyViewOrgPolicy_appPolicyView(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AppPolicyView, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalOAppPolicyView2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyView(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppPolicyViewOrgPolicy_appPolicyView(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppPolicyViewOrgPolicy",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FileIdentityForApp_id(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileIdentityForApp_id(ctx, field)
 	if err != nil {
@@ -1545,6 +1697,44 @@ func (ec *executionContext) unmarshalInputPolicyRuleInput(ctx context.Context, o
 
 // region    **************************** object.gotpl ****************************
 
+var appPolicyViewOrgPolicyImplementors = []string{"AppPolicyViewOrgPolicy"}
+
+func (ec *executionContext) _AppPolicyViewOrgPolicy(ctx context.Context, sel ast.SelectionSet, obj *model.AppPolicyViewOrgPolicy) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, appPolicyViewOrgPolicyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AppPolicyViewOrgPolicy")
+		case "orgPolicy":
+			out.Values[i] = ec._AppPolicyViewOrgPolicy_orgPolicy(ctx, field, obj)
+		case "appPolicyView":
+			out.Values[i] = ec._AppPolicyViewOrgPolicy_appPolicyView(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var fileIdentityForAppImplementors = []string{"FileIdentityForApp", "Node"}
 
 func (ec *executionContext) _FileIdentityForApp(ctx context.Context, sel ast.SelectionSet, obj *model.FileIdentityForApp) graphql.Marshaler {
@@ -1825,6 +2015,60 @@ func (ec *executionContext) _PolicyRule(ctx context.Context, sel ast.SelectionSe
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) marshalNAppPolicyViewOrgPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.AppPolicyViewOrgPolicy) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAppPolicyViewOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicy(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNAppPolicyViewOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicy(ctx context.Context, sel ast.SelectionSet, v *model.AppPolicyViewOrgPolicy) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AppPolicyViewOrgPolicy(ctx, sel, v)
+}
 
 func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAssignRoleUserInput(ctx context.Context, v interface{}) (model.AssignRoleUserInput, error) {
 	res, err := ec.unmarshalInputAssignRoleUserInput(ctx, v)

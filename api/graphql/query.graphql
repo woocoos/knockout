@@ -148,7 +148,15 @@ extend type Query {
     """应用策略视图"""
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
-    orgPolicyView(appCode: String!): [AppPolicyView!]!
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyView!]!
+    """应用策略视图角色选中项"""
+    appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图用户选择项"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图对应的orgPolicy"""
+    orgPolicyViewOrgPolicies(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
 }

@@ -9351,6 +9351,10 @@ type OrgPolicyWhereInput struct {
 	// "app_policy" edge predicates.
 	HasAppPolicy     *bool                  `json:"hasAppPolicy,omitempty"`
 	HasAppPolicyWith []*AppPolicyWhereInput `json:"hasAppPolicyWith,omitempty"`
+
+	// "app" edge predicates.
+	HasApp     *bool            `json:"hasApp,omitempty"`
+	HasAppWith []*AppWhereInput `json:"hasAppWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -9730,6 +9734,24 @@ func (i *OrgPolicyWhereInput) P() (predicate.OrgPolicy, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, orgpolicy.HasAppPolicyWith(with...))
+	}
+	if i.HasApp != nil {
+		p := orgpolicy.HasApp()
+		if !*i.HasApp {
+			p = orgpolicy.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAppWith) > 0 {
+		with := make([]predicate.App, 0, len(i.HasAppWith))
+		for _, w := range i.HasAppWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAppWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, orgpolicy.HasAppWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

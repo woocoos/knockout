@@ -330,26 +330,6 @@ func AppIDNotIn(vs ...int) predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldNotIn(FieldAppID, vs...))
 }
 
-// AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v int) predicate.OrgPolicy {
-	return predicate.OrgPolicy(sql.FieldGT(FieldAppID, v))
-}
-
-// AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v int) predicate.OrgPolicy {
-	return predicate.OrgPolicy(sql.FieldGTE(FieldAppID, v))
-}
-
-// AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v int) predicate.OrgPolicy {
-	return predicate.OrgPolicy(sql.FieldLT(FieldAppID, v))
-}
-
-// AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v int) predicate.OrgPolicy {
-	return predicate.OrgPolicy(sql.FieldLTE(FieldAppID, v))
-}
-
 // AppIDIsNil applies the IsNil predicate on the "app_id" field.
 func AppIDIsNil() predicate.OrgPolicy {
 	return predicate.OrgPolicy(sql.FieldIsNull(FieldAppID))
@@ -591,6 +571,29 @@ func HasAppPolicy() predicate.OrgPolicy {
 func HasAppPolicyWith(preds ...predicate.AppPolicy) predicate.OrgPolicy {
 	return predicate.OrgPolicy(func(s *sql.Selector) {
 		step := newAppPolicyStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasApp applies the HasEdge predicate on the "app" edge.
+func HasApp() predicate.OrgPolicy {
+	return predicate.OrgPolicy(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
+func HasAppWith(preds ...predicate.App) predicate.OrgPolicy {
+	return predicate.OrgPolicy(func(s *sql.Selector) {
+		step := newAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

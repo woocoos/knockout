@@ -110,9 +110,6 @@ func (r *queryResolver) UserDevices(ctx context.Context, after *entgql.Cursor[in
 // AppPolicy returns generated.AppPolicyResolver implementation.
 func (r *Resolver) AppPolicy() generated.AppPolicyResolver { return &appPolicyResolver{r} }
 
-// AppPolicyView returns generated.AppPolicyViewResolver implementation.
-func (r *Resolver) AppPolicyView() generated.AppPolicyViewResolver { return &appPolicyViewResolver{r} }
-
 // Org returns generated.OrgResolver implementation.
 func (r *Resolver) Org() generated.OrgResolver { return &orgResolver{r} }
 
@@ -137,7 +134,6 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 }
 
 type appPolicyResolver struct{ *Resolver }
-type appPolicyViewResolver struct{ *Resolver }
 type orgResolver struct{ *Resolver }
 type orgPolicyResolver struct{ *Resolver }
 type orgRoleResolver struct{ *Resolver }

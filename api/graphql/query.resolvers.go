@@ -208,7 +208,6 @@ func (r *queryResolver) UserRootOrgs(ctx context.Context) ([]*ent.Org, error) {
 	return r.client.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
-		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
 	).All(ctx)
 }
@@ -355,8 +354,28 @@ func (r *queryResolver) AppPolicyView(ctx context.Context, appCode string) ([]*e
 }
 
 // OrgPolicyView is the resolver for the OrgPolicyView field.
-func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
-	return r.resource.OrgPolicyView(ctx, appCode)
+func (r *queryResolver) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+	return r.resource.OrgPolicyView(ctx, appCode, orgID)
+}
+
+// AppPolicyViewRoleAssigned is the resolver for the appPolicyViewRoleAssigned field.
+func (r *queryResolver) AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error) {
+	return r.resource.AppPolicyViewRoleAssigned(ctx, appRoleID)
+}
+
+// OrgPolicyViewRoleAssigned is the resolver for the orgPolicyViewRoleAssigned field.
+func (r *queryResolver) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+	return r.resource.OrgPolicyViewRoleAssigned(ctx, orgRoleID, appCode, orgID)
+}
+
+// OrgPolicyViewUserAssigned is the resolver for the orgPolicyViewUserAssigned field.
+func (r *queryResolver) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+	return r.resource.OrgPolicyViewUserAssigned(ctx, userID, appCode, orgID)
+}
+
+// OrgPolicyViewOrgPolicies is the resolver for the orgPolicyViewOrgPolicies field.
+func (r *queryResolver) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
+	return r.resource.OrgPolicyViewOrgPolicies(ctx, appCode, orgID)
 }
 
 // UserPasswordPolicy is the resolver for the UserPasswordPolicy field.

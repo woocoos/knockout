@@ -14,6 +14,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/org"
@@ -1196,4 +1197,127 @@ func splitPolicyRules(data []string) ([]string, []string) {
 		}
 	}
 	return allows, denies
+}
+func (s *Service) AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error) {
+	ar, err := s.Client.AppRole.Get(ctx, appRoleID)
+	if err != nil {
+		return nil, err
+	}
+	apIDs, err := s.Client.AppRolePolicy.Query().Where(approlepolicy.AppID(ar.AppID),
+		approlepolicy.AppRoleID(appRoleID)).Select(approlepolicy.FieldAppPolicyID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.Client.AppPolicyView.Query().Where(
+		apppolicyview.AppID(ar.AppID),
+		apppolicyview.KindEQ(apppolicyview.KindPolicy),
+		apppolicyview.PolicyIDIn(apIDs...),
+	).All(ctx)
+}
+
+func (s *Service) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		tid = *orgID
+	}
+	// 根据appcode查出AppPolicyView所有的appPolicyIDs
+	aps, err := s.Client.AppPolicyView.Query().Where(
+		apppolicyview.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	apIDs := make([]int, 0, len(aps))
+	apMaps := make(map[int]*ent.AppPolicyView)
+	for _, ap := range aps {
+		if ap.PolicyID == nil {
+			continue
+		}
+		apIDs = append(apIDs, *ap.PolicyID)
+		apMaps[*ap.PolicyID] = ap
+	}
+	ops, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.OrgID(tid),
+		orgpolicy.AppPolicyIDIn(apIDs...),
+		orgpolicy.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	if ent.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	// 组装数据
+	res := make([]*model.AppPolicyViewOrgPolicy, 0, len(ops))
+	for _, op := range ops {
+		if op.AppPolicyID == nil {
+			continue
+		}
+		res = append(res, &model.AppPolicyViewOrgPolicy{
+			AppPolicyView: apMaps[*op.AppPolicyID],
+			OrgPolicy:     op,
+		})
+	}
+	return res, nil
+}
+
+func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		tid = *orgID
+	}
+	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	opIDs := make([]int, 0, len(ops))
+	opvMaps := make(map[int]*ent.AppPolicyView)
+	for _, op := range ops {
+		opIDs = append(opIDs, op.OrgPolicy.ID)
+		opvMaps[op.OrgPolicy.ID] = op.AppPolicyView
+	}
+	ps, err := s.Client.Permission.Query().Where(
+		permission.RoleID(orgRoleID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyIDIn(opIDs...),
+	).All(ctx)
+	res := make([]*ent.AppPolicyView, 0, len(ps))
+	for _, p := range ps {
+		res = append(res, opvMaps[p.OrgPolicyID])
+	}
+	return res, nil
+}
+
+func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		tid = *orgID
+	}
+	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	opIDs := make([]int, 0, len(ops))
+	opvMaps := make(map[int]*ent.AppPolicyView)
+	for _, op := range ops {
+		opIDs = append(opIDs, op.OrgPolicy.ID)
+		opvMaps[op.OrgPolicy.ID] = op.AppPolicyView
+	}
+	ps, err := s.Client.Permission.Query().Where(
+		permission.UserID(userID),
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyIDIn(opIDs...),
+	).All(ctx)
+	res := make([]*ent.AppPolicyView, 0, len(ps))
+	for _, p := range ps {
+		res = append(res, opvMaps[p.OrgPolicyID])
+	}
+	return res, nil
 }

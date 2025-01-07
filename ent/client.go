@@ -3776,6 +3776,22 @@ func (c *OrgPolicyClient) QueryAppPolicy(op *OrgPolicy) *AppPolicyQuery {
 	return query
 }
 
+// QueryApp queries the app edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryApp(op *OrgPolicy) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgpolicy.AppTable, orgpolicy.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *OrgPolicyClient) Hooks() []Hook {
 	hooks := c.hooks.OrgPolicy

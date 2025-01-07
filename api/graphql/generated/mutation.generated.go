@@ -5942,6 +5942,8 @@ func (ec *executionContext) fieldContext_Mutation_enableDirectory(ctx context.Co
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -6062,6 +6064,8 @@ func (ec *executionContext) fieldContext_Mutation_createRoot(ctx context.Context
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -6182,6 +6186,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganization(ctx context
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -6302,6 +6308,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganization(ctx context
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -9532,6 +9540,8 @@ func (ec *executionContext) fieldContext_Mutation_createOrganizationPolicy(ctx c
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
 			case "isGrantRole":
 				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
 			case "isGrantUser":
@@ -9616,6 +9626,8 @@ func (ec *executionContext) fieldContext_Mutation_updateOrganizationPolicy(ctx c
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
 			case "isGrantRole":
 				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
 			case "isGrantUser":
@@ -12425,14 +12437,6 @@ func (ec *executionContext) fieldContext_Mutation_createAppPolicyView(ctx contex
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -12524,14 +12528,6 @@ func (ec *executionContext) fieldContext_Mutation_updateAppPolicyView(ctx contex
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},

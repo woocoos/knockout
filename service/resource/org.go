@@ -925,11 +925,14 @@ func (s *Service) GetTopOrg(ctx context.Context, orgID int) (*ent.Org, error) {
 	return s.GetTopOrg(ctx, o.ParentID)
 }
 
-func (s *Service) OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error) {
+func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error) {
 	// 获取用户在当前组织的策略视图
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if orgID != nil {
+		tid = *orgID
 	}
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
@@ -1000,4 +1003,18 @@ func findAppPolicyViewParents(appPolicyViews, userPolicyViews []*ent.AppPolicyVi
 			}
 		}
 	}
+}
+
+func (s *Service) ParentDomain(ctx context.Context, orgID int) (string, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	if o.Domain == "" && o.ParentID == 0 {
+		return "", nil
+	}
+	if o.Domain != "" {
+		return o.Domain, nil
+	}
+	return s.ParentDomain(ctx, o.ParentID)
 }

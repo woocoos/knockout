@@ -43,15 +43,10 @@ import (
 type AppPolicyResolver interface {
 	IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error)
 }
-type AppPolicyViewResolver interface {
-	OrgPolicy(ctx context.Context, obj *ent.AppPolicyView) (*ent.OrgPolicy, error)
-	AppRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, appRoleID int) (bool, error)
-	OrgRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, orgRoleID int) (bool, error)
-	OrgUserAssigned(ctx context.Context, obj *ent.AppPolicyView, userID int) (bool, error)
-}
 type OrgResolver interface {
 	TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error)
 	IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error)
+	ActualDomain(ctx context.Context, obj *ent.Org) (string, error)
 }
 type OrgPolicyResolver interface {
 	IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error)
@@ -108,7 +103,11 @@ type QueryResolver interface {
 	FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error)
 	UserMembers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	AppPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error)
-	OrgPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error)
+	OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
+	AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error)
+	OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
+	OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]*ent.AppPolicyView, error)
+	OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error)
 	UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPolicy, error)
 }
 type UserResolver interface {
@@ -127,102 +126,6 @@ type CreateUserInputResolver interface {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_AppPolicyView_appRoleAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_AppPolicyView_appRoleAssigned_argsAppRoleID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["appRoleID"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_AppPolicyView_appRoleAssigned_argsAppRoleID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["appRoleID"]
-	if !ok {
-		var zeroVal int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
-	if tmp, ok := rawArgs["appRoleID"]; ok {
-		return ec.unmarshalNID2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppPolicyView_orgRoleAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_AppPolicyView_orgRoleAssigned_argsOrgRoleID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["orgRoleID"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_AppPolicyView_orgRoleAssigned_argsOrgRoleID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orgRoleID"]
-	if !ok {
-		var zeroVal int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
-	if tmp, ok := rawArgs["orgRoleID"]; ok {
-		return ec.unmarshalNID2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppPolicyView_orgUserAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_AppPolicyView_orgUserAssigned_argsUserID(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["userID"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_AppPolicyView_orgUserAssigned_argsUserID(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["userID"]
-	if !ok {
-		var zeroVal int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-	if tmp, ok := rawArgs["userID"]; ok {
-		return ec.unmarshalNID2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_AppPolicy_isGrantAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -2327,6 +2230,38 @@ func (ec *executionContext) field_Query_appPolicyAssignedToOrgs_argsWhere(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_appPolicyViewRoleAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_appPolicyViewRoleAssigned_argsAppRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["appRoleID"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_appPolicyViewRoleAssigned_argsAppRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appRoleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appRoleID"))
+	if tmp, ok := rawArgs["appRoleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_appPolicyView_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4366,6 +4301,237 @@ func (ec *executionContext) field_Query_orgPolicyReferences_argsWhere(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_orgPolicyViewOrgPolicies_argsAppCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["appCode"] = arg0
+	arg1, err := ec.field_Query_orgPolicyViewOrgPolicies_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_argsAppCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appCode"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+	if tmp, ok := rawArgs["appCode"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewOrgPolicies_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewRoleAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_orgPolicyViewRoleAssigned_argsOrgRoleID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgRoleID"] = arg0
+	arg1, err := ec.field_Query_orgPolicyViewRoleAssigned_argsAppCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["appCode"] = arg1
+	arg2, err := ec.field_Query_orgPolicyViewRoleAssigned_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_orgPolicyViewRoleAssigned_argsOrgRoleID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgRoleID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgRoleID"))
+	if tmp, ok := rawArgs["orgRoleID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewRoleAssigned_argsAppCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appCode"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+	if tmp, ok := rawArgs["appCode"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewRoleAssigned_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewUserAssigned_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_orgPolicyViewUserAssigned_argsUserID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userID"] = arg0
+	arg1, err := ec.field_Query_orgPolicyViewUserAssigned_argsAppCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["appCode"] = arg1
+	arg2, err := ec.field_Query_orgPolicyViewUserAssigned_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_orgPolicyViewUserAssigned_argsUserID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["userID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewUserAssigned_argsAppCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appCode"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+	if tmp, ok := rawArgs["appCode"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyViewUserAssigned_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_orgPolicyView_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4374,6 +4540,11 @@ func (ec *executionContext) field_Query_orgPolicyView_args(ctx context.Context, 
 		return nil, err
 	}
 	args["appCode"] = arg0
+	arg1, err := ec.field_Query_orgPolicyView_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_Query_orgPolicyView_argsAppCode(
@@ -4395,6 +4566,28 @@ func (ec *executionContext) field_Query_orgPolicyView_argsAppCode(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgPolicyView_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -8103,14 +8296,6 @@ func (ec *executionContext) fieldContext_App_policyViews(_ context.Context, fiel
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -10769,6 +10954,8 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -12886,6 +13073,8 @@ func (ec *executionContext) fieldContext_AppPolicy_orgPolicies(_ context.Context
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
 			case "isGrantRole":
 				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
 			case "isGrantUser":
@@ -12967,14 +13156,6 @@ func (ec *executionContext) fieldContext_AppPolicy_policyViews(_ context.Context
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -14097,14 +14278,6 @@ func (ec *executionContext) fieldContext_AppPolicyView_parent(_ context.Context,
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -14182,255 +14355,9 @@ func (ec *executionContext) fieldContext_AppPolicyView_children(_ context.Contex
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppPolicyView_orgPolicy(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AppPolicyView().OrgPolicy(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.OrgPolicy)
-	fc.Result = res
-	return ec.marshalOOrgPolicy2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrgPolicy(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppPolicyView_orgPolicy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppPolicyView",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_OrgPolicy_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_OrgPolicy_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_OrgPolicy_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_OrgPolicy_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_OrgPolicy_updatedAt(ctx, field)
-			case "orgID":
-				return ec.fieldContext_OrgPolicy_orgID(ctx, field)
-			case "appPolicyID":
-				return ec.fieldContext_OrgPolicy_appPolicyID(ctx, field)
-			case "name":
-				return ec.fieldContext_OrgPolicy_name(ctx, field)
-			case "comments":
-				return ec.fieldContext_OrgPolicy_comments(ctx, field)
-			case "rules":
-				return ec.fieldContext_OrgPolicy_rules(ctx, field)
-			case "org":
-				return ec.fieldContext_OrgPolicy_org(ctx, field)
-			case "permissions":
-				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
-			case "appPolicy":
-				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
-			case "isGrantRole":
-				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
-			case "isGrantUser":
-				return ec.fieldContext_OrgPolicy_isGrantUser(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type OrgPolicy", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppPolicyView_appRoleAssigned(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AppPolicyView().AppRoleAssigned(rctx, obj, fc.Args["appRoleID"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppPolicyView_appRoleAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppPolicyView",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AppPolicyView_appRoleAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppPolicyView_orgRoleAssigned(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AppPolicyView().OrgRoleAssigned(rctx, obj, fc.Args["orgRoleID"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppPolicyView_orgRoleAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppPolicyView",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AppPolicyView_orgRoleAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppPolicyView_orgUserAssigned(ctx context.Context, field graphql.CollectedField, obj *ent.AppPolicyView) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AppPolicyView().OrgUserAssigned(rctx, obj, fc.Args["userID"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppPolicyView_orgUserAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppPolicyView",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AppPolicyView_orgUserAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -14650,14 +14577,6 @@ func (ec *executionContext) fieldContext_AppPolicyViewEdge_node(_ context.Contex
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -18161,6 +18080,8 @@ func (ec *executionContext) fieldContext_FileIdentity_org(_ context.Context, fie
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -20872,6 +20793,8 @@ func (ec *executionContext) fieldContext_Org_parent(_ context.Context, field gra
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -20981,6 +20904,8 @@ func (ec *executionContext) fieldContext_Org_children(_ context.Context, field g
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -21668,6 +21593,8 @@ func (ec *executionContext) fieldContext_Org_TopOrg(_ context.Context, field gra
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -21726,6 +21653,50 @@ func (ec *executionContext) fieldContext_Org_isAllowRevokeAppPolicy(ctx context.
 	if fc.Args, err = ec.field_Org_isAllowRevokeAppPolicy_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Org_actualDomain(ctx context.Context, field graphql.CollectedField, obj *ent.Org) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Org_actualDomain(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Org().ActualDomain(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Org_actualDomain(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Org",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -21977,6 +21948,8 @@ func (ec *executionContext) fieldContext_OrgEdge_node(_ context.Context, field g
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -22565,6 +22538,8 @@ func (ec *executionContext) fieldContext_OrgPolicy_org(_ context.Context, field 
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -22723,6 +22698,99 @@ func (ec *executionContext) fieldContext_OrgPolicy_appPolicy(_ context.Context, 
 				return ec.fieldContext_AppPolicy_isGrantAppRole(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicy", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _OrgPolicy_app(ctx context.Context, field graphql.CollectedField, obj *ent.OrgPolicy) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgPolicy_app(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.App(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.App)
+	fc.Result = res
+	return ec.marshalOApp2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐApp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgPolicy_app(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgPolicy",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_App_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_App_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_App_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_App_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_App_updatedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_App_name(ctx, field)
+			case "code":
+				return ec.fieldContext_App_code(ctx, field)
+			case "kind":
+				return ec.fieldContext_App_kind(ctx, field)
+			case "redirectURI":
+				return ec.fieldContext_App_redirectURI(ctx, field)
+			case "appKey":
+				return ec.fieldContext_App_appKey(ctx, field)
+			case "appSecret":
+				return ec.fieldContext_App_appSecret(ctx, field)
+			case "scopes":
+				return ec.fieldContext_App_scopes(ctx, field)
+			case "tokenValidity":
+				return ec.fieldContext_App_tokenValidity(ctx, field)
+			case "refreshTokenValidity":
+				return ec.fieldContext_App_refreshTokenValidity(ctx, field)
+			case "logo":
+				return ec.fieldContext_App_logo(ctx, field)
+			case "comments":
+				return ec.fieldContext_App_comments(ctx, field)
+			case "status":
+				return ec.fieldContext_App_status(ctx, field)
+			case "menus":
+				return ec.fieldContext_App_menus(ctx, field)
+			case "actions":
+				return ec.fieldContext_App_actions(ctx, field)
+			case "resources":
+				return ec.fieldContext_App_resources(ctx, field)
+			case "roles":
+				return ec.fieldContext_App_roles(ctx, field)
+			case "policies":
+				return ec.fieldContext_App_policies(ctx, field)
+			case "policyViews":
+				return ec.fieldContext_App_policyViews(ctx, field)
+			case "orgs":
+				return ec.fieldContext_App_orgs(ctx, field)
+			case "dicts":
+				return ec.fieldContext_App_dicts(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type App", field.Name)
 		},
 	}
 	return fc, nil
@@ -23045,6 +23113,8 @@ func (ec *executionContext) fieldContext_OrgPolicyEdge_node(_ context.Context, f
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
 			case "isGrantRole":
 				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
 			case "isGrantUser":
@@ -24436,6 +24506,8 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -25523,6 +25595,8 @@ func (ec *executionContext) fieldContext_Permission_org(_ context.Context, field
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -25767,6 +25841,8 @@ func (ec *executionContext) fieldContext_Permission_orgPolicy(_ context.Context,
 				return ec.fieldContext_OrgPolicy_permissions(ctx, field)
 			case "appPolicy":
 				return ec.fieldContext_OrgPolicy_appPolicy(ctx, field)
+			case "app":
+				return ec.fieldContext_OrgPolicy_app(ctx, field)
 			case "isGrantRole":
 				return ec.fieldContext_OrgPolicy_isGrantRole(ctx, field)
 			case "isGrantUser":
@@ -27409,6 +27485,8 @@ func (ec *executionContext) fieldContext_Query_appRoleAssignedToOrgs(ctx context
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -27532,6 +27610,8 @@ func (ec *executionContext) fieldContext_Query_appPolicyAssignedToOrgs(ctx conte
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -28337,6 +28417,8 @@ func (ec *executionContext) fieldContext_Query_userRootOrgs(_ context.Context, f
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -29110,14 +29192,6 @@ func (ec *executionContext) fieldContext_Query_appPolicyView(ctx context.Context
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -29150,7 +29224,7 @@ func (ec *executionContext) _Query_orgPolicyView(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OrgPolicyView(rctx, fc.Args["appCode"].(string))
+		return ec.resolvers.Query().OrgPolicyView(rctx, fc.Args["appCode"].(string), fc.Args["orgID"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29209,14 +29283,6 @@ func (ec *executionContext) fieldContext_Query_orgPolicyView(ctx context.Context
 				return ec.fieldContext_AppPolicyView_parent(ctx, field)
 			case "children":
 				return ec.fieldContext_AppPolicyView_children(ctx, field)
-			case "orgPolicy":
-				return ec.fieldContext_AppPolicyView_orgPolicy(ctx, field)
-			case "appRoleAssigned":
-				return ec.fieldContext_AppPolicyView_appRoleAssigned(ctx, field)
-			case "orgRoleAssigned":
-				return ec.fieldContext_AppPolicyView_orgRoleAssigned(ctx, field)
-			case "orgUserAssigned":
-				return ec.fieldContext_AppPolicyView_orgUserAssigned(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
 		},
@@ -29229,6 +29295,340 @@ func (ec *executionContext) fieldContext_Query_orgPolicyView(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_orgPolicyView_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_appPolicyViewRoleAssigned(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_appPolicyViewRoleAssigned(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().AppPolicyViewRoleAssigned(rctx, fc.Args["appRoleID"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_appPolicyViewRoleAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_appPolicyViewRoleAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgPolicyViewRoleAssigned(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgPolicyViewRoleAssigned(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgPolicyViewRoleAssigned(rctx, fc.Args["orgRoleID"].(int), fc.Args["appCode"].(string), fc.Args["orgID"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgPolicyViewRoleAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgPolicyViewRoleAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgPolicyViewUserAssigned(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgPolicyViewUserAssigned(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgPolicyViewUserAssigned(rctx, fc.Args["userID"].(int), fc.Args["appCode"].(string), fc.Args["orgID"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppPolicyView)
+	fc.Result = res
+	return ec.marshalNAppPolicyView2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppPolicyViewᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgPolicyViewUserAssigned(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppPolicyView_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppPolicyView_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppPolicyView_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppPolicyView_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppPolicyView_updatedAt(ctx, field)
+			case "appID":
+				return ec.fieldContext_AppPolicyView_appID(ctx, field)
+			case "parentID":
+				return ec.fieldContext_AppPolicyView_parentID(ctx, field)
+			case "kind":
+				return ec.fieldContext_AppPolicyView_kind(ctx, field)
+			case "name":
+				return ec.fieldContext_AppPolicyView_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppPolicyView_comments(ctx, field)
+			case "policyID":
+				return ec.fieldContext_AppPolicyView_policyID(ctx, field)
+			case "path":
+				return ec.fieldContext_AppPolicyView_path(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppPolicyView_displaySort(ctx, field)
+			case "app":
+				return ec.fieldContext_AppPolicyView_app(ctx, field)
+			case "appPolicy":
+				return ec.fieldContext_AppPolicyView_appPolicy(ctx, field)
+			case "parent":
+				return ec.fieldContext_AppPolicyView_parent(ctx, field)
+			case "children":
+				return ec.fieldContext_AppPolicyView_children(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyView", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgPolicyViewUserAssigned_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgPolicyViewOrgPolicies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgPolicyViewOrgPolicies(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgPolicyViewOrgPolicies(rctx, fc.Args["appCode"].(string), fc.Args["orgID"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.AppPolicyViewOrgPolicy)
+	fc.Result = res
+	return ec.marshalNAppPolicyViewOrgPolicy2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐAppPolicyViewOrgPolicyᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgPolicyViewOrgPolicies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "orgPolicy":
+				return ec.fieldContext_AppPolicyViewOrgPolicy_orgPolicy(ctx, field)
+			case "appPolicyView":
+				return ec.fieldContext_AppPolicyViewOrgPolicy_appPolicyView(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppPolicyViewOrgPolicy", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_orgPolicyViewOrgPolicies_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -30130,6 +30530,8 @@ func (ec *executionContext) fieldContext_Quota_quotaOrg(_ context.Context, field
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -38476,6 +38878,8 @@ func (ec *executionContext) fieldContext_UserPasswordPolicy_org(_ context.Contex
 				return ec.fieldContext_Org_TopOrg(ctx, field)
 			case "isAllowRevokeAppPolicy":
 				return ec.fieldContext_Org_isAllowRevokeAppPolicy(ctx, field)
+			case "actualDomain":
+				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
 		},
@@ -47951,7 +48355,7 @@ func (ec *executionContext) unmarshalInputCreateOrgPolicyInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "comments", "rules", "orgID", "permissionIDs", "appPolicyID"}
+	fieldsInOrder := [...]string{"name", "comments", "rules", "orgID", "permissionIDs", "appPolicyID", "appID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -48000,6 +48404,13 @@ func (ec *executionContext) unmarshalInputCreateOrgPolicyInput(ctx context.Conte
 				return it, err
 			}
 			it.AppPolicyID = data
+		case "appID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppID = data
 		}
 	}
 
@@ -52107,7 +52518,7 @@ func (ec *executionContext) unmarshalInputOrgPolicyWhereInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "orgID", "orgIDNEQ", "orgIDIn", "orgIDNotIn", "orgIDIsNil", "orgIDNotNil", "appPolicyID", "appPolicyIDNEQ", "appPolicyIDIn", "appPolicyIDNotIn", "appPolicyIDIsNil", "appPolicyIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "hasOrg", "hasOrgWith", "hasPermissions", "hasPermissionsWith", "hasAppPolicy", "hasAppPolicyWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "orgID", "orgIDNEQ", "orgIDIn", "orgIDNotIn", "orgIDIsNil", "orgIDNotNil", "appPolicyID", "appPolicyIDNEQ", "appPolicyIDIn", "appPolicyIDNotIn", "appPolicyIDIsNil", "appPolicyIDNotNil", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "comments", "commentsNEQ", "commentsIn", "commentsNotIn", "commentsGT", "commentsGTE", "commentsLT", "commentsLTE", "commentsContains", "commentsHasPrefix", "commentsHasSuffix", "commentsIsNil", "commentsNotNil", "commentsEqualFold", "commentsContainsFold", "hasOrg", "hasOrgWith", "hasPermissions", "hasPermissionsWith", "hasAppPolicy", "hasAppPolicyWith", "hasApp", "hasAppWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -52765,6 +53176,20 @@ func (ec *executionContext) unmarshalInputOrgPolicyWhereInput(ctx context.Contex
 				return it, err
 			}
 			it.HasAppPolicyWith = data
+		case "hasApp":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasApp"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasApp = data
+		case "hasAppWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAppWith"))
+			data, err := ec.unmarshalOAppWhereInput2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasAppWith = data
 		}
 	}
 
@@ -61087,7 +61512,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "comments", "clearComments", "rules", "appendRules", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "appPolicyID", "clearAppPolicy"}
+	fieldsInOrder := [...]string{"name", "comments", "clearComments", "rules", "appendRules", "addPermissionIDs", "removePermissionIDs", "clearPermissions", "appPolicyID", "clearAppPolicy", "appID", "clearApp"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -61164,6 +61589,20 @@ func (ec *executionContext) unmarshalInputUpdateOrgPolicyInput(ctx context.Conte
 				return it, err
 			}
 			it.ClearAppPolicy = data
+		case "appID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appID"))
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppID = data
+		case "clearApp":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearApp"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearApp = data
 		}
 	}
 
@@ -71069,147 +71508,6 @@ func (ec *executionContext) _AppPolicyView(ctx context.Context, sel ast.Selectio
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "orgPolicy":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AppPolicyView_orgPolicy(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "appRoleAssigned":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AppPolicyView_appRoleAssigned(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "orgRoleAssigned":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AppPolicyView_orgRoleAssigned(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "orgUserAssigned":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._AppPolicyView_orgUserAssigned(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -73017,6 +73315,42 @@ func (ec *executionContext) _Org(ctx context.Context, sel ast.SelectionSet, obj 
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "actualDomain":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Org_actualDomain(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -73249,6 +73583,39 @@ func (ec *executionContext) _OrgPolicy(ctx context.Context, sel ast.SelectionSet
 					}
 				}()
 				res = ec._OrgPolicy_appPolicy(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "app":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._OrgPolicy_app(ctx, field, obj)
 				return res
 			}
 
@@ -75259,6 +75626,94 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_orgPolicyView(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "appPolicyViewRoleAssigned":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_appPolicyViewRoleAssigned(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orgPolicyViewRoleAssigned":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgPolicyViewRoleAssigned(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orgPolicyViewUserAssigned":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgPolicyViewUserAssigned(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orgPolicyViewOrgPolicies":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgPolicyViewOrgPolicies(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

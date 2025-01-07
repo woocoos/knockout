@@ -41,6 +41,8 @@ const (
 	EdgePermissions = "permissions"
 	// EdgeAppPolicy holds the string denoting the app_policy edge name in mutations.
 	EdgeAppPolicy = "app_policy"
+	// EdgeApp holds the string denoting the app edge name in mutations.
+	EdgeApp = "app"
 	// Table holds the table name of the orgpolicy in the database.
 	Table = "org_policy"
 	// OrgTable is the table that holds the org relation/edge.
@@ -64,6 +66,13 @@ const (
 	AppPolicyInverseTable = "app_policy"
 	// AppPolicyColumn is the table column denoting the app_policy relation/edge.
 	AppPolicyColumn = "app_policy_id"
+	// AppTable is the table that holds the app relation/edge.
+	AppTable = "org_policy"
+	// AppInverseTable is the table name for the App entity.
+	// It exists in this package in order to avoid circular dependency with the "app" package.
+	AppInverseTable = "app"
+	// AppColumn is the table column denoting the app relation/edge.
+	AppColumn = "app_id"
 )
 
 // Columns holds all SQL columns for orgpolicy fields.
@@ -184,6 +193,13 @@ func ByAppPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newAppPolicyStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByAppField orders the results by app field.
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newOrgStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -203,5 +219,12 @@ func newAppPolicyStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppPolicyInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, AppPolicyTable, AppPolicyColumn),
+	)
+}
+func newAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
 	)
 }

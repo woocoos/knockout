@@ -38,7 +38,6 @@ type Config struct {
 
 type ResolverRoot interface {
 	AppPolicy() AppPolicyResolver
-	AppPolicyView() AppPolicyViewResolver
 	Mutation() MutationResolver
 	Org() OrgResolver
 	OrgPolicy() OrgPolicyResolver
@@ -226,27 +225,23 @@ type ComplexityRoot struct {
 	}
 
 	AppPolicyView struct {
-		App             func(childComplexity int) int
-		AppID           func(childComplexity int) int
-		AppPolicy       func(childComplexity int) int
-		AppRoleAssigned func(childComplexity int, appRoleID int) int
-		Children        func(childComplexity int) int
-		Comments        func(childComplexity int) int
-		CreatedAt       func(childComplexity int) int
-		CreatedBy       func(childComplexity int) int
-		DisplaySort     func(childComplexity int) int
-		ID              func(childComplexity int) int
-		Kind            func(childComplexity int) int
-		Name            func(childComplexity int) int
-		OrgPolicy       func(childComplexity int) int
-		OrgRoleAssigned func(childComplexity int, orgRoleID int) int
-		OrgUserAssigned func(childComplexity int, userID int) int
-		Parent          func(childComplexity int) int
-		ParentID        func(childComplexity int) int
-		Path            func(childComplexity int) int
-		PolicyID        func(childComplexity int) int
-		UpdatedAt       func(childComplexity int) int
-		UpdatedBy       func(childComplexity int) int
+		App         func(childComplexity int) int
+		AppID       func(childComplexity int) int
+		AppPolicy   func(childComplexity int) int
+		Children    func(childComplexity int) int
+		Comments    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Kind        func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Parent      func(childComplexity int) int
+		ParentID    func(childComplexity int) int
+		Path        func(childComplexity int) int
+		PolicyID    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
 	AppPolicyViewConnection struct {
@@ -258,6 +253,11 @@ type ComplexityRoot struct {
 	AppPolicyViewEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
+	}
+
+	AppPolicyViewOrgPolicy struct {
+		AppPolicyView func(childComplexity int) int
+		OrgPolicy     func(childComplexity int) int
 	}
 
 	AppRes struct {
@@ -549,6 +549,7 @@ type ComplexityRoot struct {
 	}
 
 	Org struct {
+		ActualDomain           func(childComplexity int) int
 		Apps                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		Children               func(childComplexity int) int
 		Code                   func(childComplexity int) int
@@ -615,6 +616,7 @@ type ComplexityRoot struct {
 	}
 
 	OrgPolicy struct {
+		App         func(childComplexity int) int
 		AppPolicy   func(childComplexity int) int
 		AppPolicyID func(childComplexity int) int
 		Comments    func(childComplexity int) int
@@ -747,6 +749,7 @@ type ComplexityRoot struct {
 		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
 		AppPolicyAssignedToOrgs     func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
 		AppPolicyView               func(childComplexity int, appCode string) int
+		AppPolicyViewRoleAssigned   func(childComplexity int, appRoleID int) int
 		AppResources                func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
 		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
@@ -765,7 +768,10 @@ type ComplexityRoot struct {
 		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
 		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		OrgPolicyView               func(childComplexity int, appCode string) int
+		OrgPolicyView               func(childComplexity int, appCode string, orgID *int) int
+		OrgPolicyViewOrgPolicies    func(childComplexity int, appCode string, orgID *int) int
+		OrgPolicyViewRoleAssigned   func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
+		OrgPolicyViewUserAssigned   func(childComplexity int, userID int, appCode string, orgID *int) int
 		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -1970,18 +1976,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicyView.AppPolicy(childComplexity), true
 
-	case "AppPolicyView.appRoleAssigned":
-		if e.complexity.AppPolicyView.AppRoleAssigned == nil {
-			break
-		}
-
-		args, err := ec.field_AppPolicyView_appRoleAssigned_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AppPolicyView.AppRoleAssigned(childComplexity, args["appRoleID"].(int)), true
-
 	case "AppPolicyView.children":
 		if e.complexity.AppPolicyView.Children == nil {
 			break
@@ -2037,37 +2031,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppPolicyView.Name(childComplexity), true
-
-	case "AppPolicyView.orgPolicy":
-		if e.complexity.AppPolicyView.OrgPolicy == nil {
-			break
-		}
-
-		return e.complexity.AppPolicyView.OrgPolicy(childComplexity), true
-
-	case "AppPolicyView.orgRoleAssigned":
-		if e.complexity.AppPolicyView.OrgRoleAssigned == nil {
-			break
-		}
-
-		args, err := ec.field_AppPolicyView_orgRoleAssigned_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AppPolicyView.OrgRoleAssigned(childComplexity, args["orgRoleID"].(int)), true
-
-	case "AppPolicyView.orgUserAssigned":
-		if e.complexity.AppPolicyView.OrgUserAssigned == nil {
-			break
-		}
-
-		args, err := ec.field_AppPolicyView_orgUserAssigned_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AppPolicyView.OrgUserAssigned(childComplexity, args["userID"].(int)), true
 
 	case "AppPolicyView.parent":
 		if e.complexity.AppPolicyView.Parent == nil {
@@ -2145,6 +2108,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppPolicyViewEdge.Node(childComplexity), true
+
+	case "AppPolicyViewOrgPolicy.appPolicyView":
+		if e.complexity.AppPolicyViewOrgPolicy.AppPolicyView == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewOrgPolicy.AppPolicyView(childComplexity), true
+
+	case "AppPolicyViewOrgPolicy.orgPolicy":
+		if e.complexity.AppPolicyViewOrgPolicy.OrgPolicy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewOrgPolicy.OrgPolicy(childComplexity), true
 
 	case "AppRes.app":
 		if e.complexity.AppRes.App == nil {
@@ -4282,6 +4259,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OauthClient.UserID(childComplexity), true
 
+	case "Org.actualDomain":
+		if e.complexity.Org.ActualDomain == nil {
+			break
+		}
+
+		return e.complexity.Org.ActualDomain(childComplexity), true
+
 	case "Org.apps":
 		if e.complexity.Org.Apps == nil {
 			break
@@ -4663,6 +4647,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgLogo.ThumbLogo(childComplexity), true
+
+	case "OrgPolicy.app":
+		if e.complexity.OrgPolicy.App == nil {
+			break
+		}
+
+		return e.complexity.OrgPolicy.App(childComplexity), true
 
 	case "OrgPolicy.appPolicy":
 		if e.complexity.OrgPolicy.AppPolicy == nil {
@@ -5344,6 +5335,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AppPolicyView(childComplexity, args["appCode"].(string)), true
 
+	case "Query.appPolicyViewRoleAssigned":
+		if e.complexity.Query.AppPolicyViewRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appPolicyViewRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppPolicyViewRoleAssigned(childComplexity, args["appRoleID"].(int)), true
+
 	case "Query.appResources":
 		if e.complexity.Query.AppResources == nil {
 			break
@@ -5570,7 +5573,43 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.OrgPolicyView(childComplexity, args["appCode"].(string)), true
+		return e.complexity.Query.OrgPolicyView(childComplexity, args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewOrgPolicies":
+		if e.complexity.Query.OrgPolicyViewOrgPolicies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewOrgPolicies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewOrgPolicies(childComplexity, args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewRoleAssigned":
+		if e.complexity.Query.OrgPolicyViewRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewRoleAssigned(childComplexity, args["orgRoleID"].(int), args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewUserAssigned":
+		if e.complexity.Query.OrgPolicyViewUserAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewUserAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewUserAssigned(childComplexity, args["userID"].(int), args["appCode"].(string), args["orgID"].(*int)), true
 
 	case "Query.orgRecycleUsers":
 		if e.complexity.Query.OrgRecycleUsers == nil {
@@ -10460,6 +10499,7 @@ input CreateOrgPolicyInput {
   orgID: ID
   permissionIDs: [ID!]
   appPolicyID: ID
+  appID: ID
 }
 """
 CreateOrgRoleInput is used for create OrgRole object.
@@ -12079,6 +12119,7 @@ type OrgPolicy implements Node {
   org: Org
   permissions: [Permission!]
   appPolicy: AppPolicy
+  app: App
 }
 """
 A connection to a list of items.
@@ -12263,6 +12304,11 @@ input OrgPolicyWhereInput {
   """
   hasAppPolicy: Boolean
   hasAppPolicyWith: [AppPolicyWhereInput!]
+  """
+  app edge predicates
+  """
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
 }
 type OrgRole implements Node {
   id: ID!
@@ -15157,6 +15203,8 @@ input UpdateOrgPolicyInput {
   clearPermissions: Boolean
   appPolicyID: ID
   clearAppPolicy: Boolean
+  appID: ID
+  clearApp: Boolean
 }
 """
 UpdateOrgRoleInput is used for update OrgRole object.
@@ -17851,7 +17899,7 @@ input UserWhereInput {
     ):UserConnection!
     """获取组织用户偏好"""
     orgUserPreference: OrgUserPreference
-    """用户授权的web应用列表"""
+    """用户授权的应用列表"""
     userApps: [App!]!
     """根据ref_code获取数据字典,用于批量获取"""
     appDictByRefCode(
@@ -17883,7 +17931,15 @@ input UserWhereInput {
     """应用策略视图"""
     appPolicyView(appCode: String!): [AppPolicyView!]!
     """登录用户策略视图"""
-    orgPolicyView(appCode: String!): [AppPolicyView!]!
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyView!]!
+    """应用策略视图角色选中项"""
+    appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图用户选择项"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [AppPolicyView!]!
+    """组织策略视图对应的orgPolicy"""
+    orgPolicyViewOrgPolicies(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
 }`, BuiltIn: false},
@@ -17989,6 +18045,8 @@ extend type User {
 extend type Org {
     """是否允许解除应用策略"""
     isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
+    """组织的domain，如果没有设置，则会取最近的父组织的domain"""
+    actualDomain: String!
 }
 
 extend type OrgRole {
@@ -18075,16 +18133,9 @@ input OrgLogoInput {
     thumbLogo: String
     favicon: String
 }
-
-extend type AppPolicyView {
-    """关联的组织策略,取当前登录组织的ID判断,用于组织策略视图授权使用"""
+type AppPolicyViewOrgPolicy{
     orgPolicy: OrgPolicy
-    """应用角色是否授权"""
-    appRoleAssigned(appRoleID: ID!): Boolean!
-    """组织角色/用户组是否授权"""
-    orgRoleAssigned(orgRoleID: ID!): Boolean!
-    """组织用户是否授权"""
-    orgUserAssigned(userID: ID!): Boolean!
+    appPolicyView: AppPolicyView
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

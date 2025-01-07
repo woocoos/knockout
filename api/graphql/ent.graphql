@@ -3135,6 +3135,7 @@ input CreateOrgPolicyInput {
   orgID: ID
   permissionIDs: [ID!]
   appPolicyID: ID
+  appID: ID
 }
 """
 CreateOrgRoleInput is used for create OrgRole object.
@@ -4754,6 +4755,7 @@ type OrgPolicy implements Node {
   org: Org
   permissions: [Permission!]
   appPolicy: AppPolicy
+  app: App
 }
 """
 A connection to a list of items.
@@ -4938,6 +4940,11 @@ input OrgPolicyWhereInput {
   """
   hasAppPolicy: Boolean
   hasAppPolicyWith: [AppPolicyWhereInput!]
+  """
+  app edge predicates
+  """
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
 }
 type OrgRole implements Node {
   id: ID!
@@ -7832,6 +7839,8 @@ input UpdateOrgPolicyInput {
   clearPermissions: Boolean
   appPolicyID: ID
   clearAppPolicy: Boolean
+  appID: ID
+  clearApp: Boolean
 }
 """
 UpdateOrgRoleInput is used for update OrgRole object.

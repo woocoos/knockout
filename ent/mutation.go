@@ -22258,8 +22258,6 @@ type OrgPolicyMutation struct {
 	updated_by         *int
 	addupdated_by      *int
 	updated_at         *time.Time
-	app_id             *int
-	addapp_id          *int
 	name               *string
 	comments           *string
 	rules              *[]*types.PolicyRule
@@ -22272,6 +22270,8 @@ type OrgPolicyMutation struct {
 	clearedpermissions bool
 	app_policy         *int
 	clearedapp_policy  bool
+	app                *int
+	clearedapp         bool
 	done               bool
 	oldValue           func(context.Context) (*OrgPolicy, error)
 	predicates         []predicate.OrgPolicy
@@ -22643,13 +22643,12 @@ func (m *OrgPolicyMutation) ResetOrgID() {
 
 // SetAppID sets the "app_id" field.
 func (m *OrgPolicyMutation) SetAppID(i int) {
-	m.app_id = &i
-	m.addapp_id = nil
+	m.app = &i
 }
 
 // AppID returns the value of the "app_id" field in the mutation.
 func (m *OrgPolicyMutation) AppID() (r int, exists bool) {
-	v := m.app_id
+	v := m.app
 	if v == nil {
 		return
 	}
@@ -22673,28 +22672,9 @@ func (m *OrgPolicyMutation) OldAppID(ctx context.Context) (v int, err error) {
 	return oldValue.AppID, nil
 }
 
-// AddAppID adds i to the "app_id" field.
-func (m *OrgPolicyMutation) AddAppID(i int) {
-	if m.addapp_id != nil {
-		*m.addapp_id += i
-	} else {
-		m.addapp_id = &i
-	}
-}
-
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *OrgPolicyMutation) AddedAppID() (r int, exists bool) {
-	v := m.addapp_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearAppID clears the value of the "app_id" field.
 func (m *OrgPolicyMutation) ClearAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
+	m.app = nil
 	m.clearedFields[orgpolicy.FieldAppID] = struct{}{}
 }
 
@@ -22706,8 +22686,7 @@ func (m *OrgPolicyMutation) AppIDCleared() bool {
 
 // ResetAppID resets all changes to the "app_id" field.
 func (m *OrgPolicyMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
+	m.app = nil
 	delete(m.clearedFields, orgpolicy.FieldAppID)
 }
 
@@ -23004,6 +22983,33 @@ func (m *OrgPolicyMutation) ResetAppPolicy() {
 	m.clearedapp_policy = false
 }
 
+// ClearApp clears the "app" edge to the App entity.
+func (m *OrgPolicyMutation) ClearApp() {
+	m.clearedapp = true
+	m.clearedFields[orgpolicy.FieldAppID] = struct{}{}
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *OrgPolicyMutation) AppCleared() bool {
+	return m.AppIDCleared() || m.clearedapp
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppID instead. It exists only for internal usage by the builders.
+func (m *OrgPolicyMutation) AppIDs() (ids []int) {
+	if id := m.app; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *OrgPolicyMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+}
+
 // Where appends a list predicates to the OrgPolicyMutation builder.
 func (m *OrgPolicyMutation) Where(ps ...predicate.OrgPolicy) {
 	m.predicates = append(m.predicates, ps...)
@@ -23054,7 +23060,7 @@ func (m *OrgPolicyMutation) Fields() []string {
 	if m.org != nil {
 		fields = append(fields, orgpolicy.FieldOrgID)
 	}
-	if m.app_id != nil {
+	if m.app != nil {
 		fields = append(fields, orgpolicy.FieldAppID)
 	}
 	if m.app_policy != nil {
@@ -23219,9 +23225,6 @@ func (m *OrgPolicyMutation) AddedFields() []string {
 	if m.addupdated_by != nil {
 		fields = append(fields, orgpolicy.FieldUpdatedBy)
 	}
-	if m.addapp_id != nil {
-		fields = append(fields, orgpolicy.FieldAppID)
-	}
 	return fields
 }
 
@@ -23234,8 +23237,6 @@ func (m *OrgPolicyMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedBy()
 	case orgpolicy.FieldUpdatedBy:
 		return m.AddedUpdatedBy()
-	case orgpolicy.FieldAppID:
-		return m.AddedAppID()
 	}
 	return nil, false
 }
@@ -23258,13 +23259,6 @@ func (m *OrgPolicyMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedBy(v)
-		return nil
-	case orgpolicy.FieldAppID:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAppID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrgPolicy numeric field %s", name)
@@ -23368,7 +23362,7 @@ func (m *OrgPolicyMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *OrgPolicyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.org != nil {
 		edges = append(edges, orgpolicy.EdgeOrg)
 	}
@@ -23377,6 +23371,9 @@ func (m *OrgPolicyMutation) AddedEdges() []string {
 	}
 	if m.app_policy != nil {
 		edges = append(edges, orgpolicy.EdgeAppPolicy)
+	}
+	if m.app != nil {
+		edges = append(edges, orgpolicy.EdgeApp)
 	}
 	return edges
 }
@@ -23399,13 +23396,17 @@ func (m *OrgPolicyMutation) AddedIDs(name string) []ent.Value {
 		if id := m.app_policy; id != nil {
 			return []ent.Value{*id}
 		}
+	case orgpolicy.EdgeApp:
+		if id := m.app; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OrgPolicyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedpermissions != nil {
 		edges = append(edges, orgpolicy.EdgePermissions)
 	}
@@ -23428,7 +23429,7 @@ func (m *OrgPolicyMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *OrgPolicyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedorg {
 		edges = append(edges, orgpolicy.EdgeOrg)
 	}
@@ -23437,6 +23438,9 @@ func (m *OrgPolicyMutation) ClearedEdges() []string {
 	}
 	if m.clearedapp_policy {
 		edges = append(edges, orgpolicy.EdgeAppPolicy)
+	}
+	if m.clearedapp {
+		edges = append(edges, orgpolicy.EdgeApp)
 	}
 	return edges
 }
@@ -23451,6 +23455,8 @@ func (m *OrgPolicyMutation) EdgeCleared(name string) bool {
 		return m.clearedpermissions
 	case orgpolicy.EdgeAppPolicy:
 		return m.clearedapp_policy
+	case orgpolicy.EdgeApp:
+		return m.clearedapp
 	}
 	return false
 }
@@ -23464,6 +23470,9 @@ func (m *OrgPolicyMutation) ClearEdge(name string) error {
 		return nil
 	case orgpolicy.EdgeAppPolicy:
 		m.ClearAppPolicy()
+		return nil
+	case orgpolicy.EdgeApp:
+		m.ClearApp()
 		return nil
 	}
 	return fmt.Errorf("unknown OrgPolicy unique edge %s", name)
@@ -23481,6 +23490,9 @@ func (m *OrgPolicyMutation) ResetEdge(name string) error {
 		return nil
 	case orgpolicy.EdgeAppPolicy:
 		m.ResetAppPolicy()
+		return nil
+	case orgpolicy.EdgeApp:
+		m.ResetApp()
 		return nil
 	}
 	return fmt.Errorf("unknown OrgPolicy edge %s", name)

@@ -3509,6 +3509,20 @@ func (op *OrgPolicyQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 				selectedFields = append(selectedFields, orgpolicy.FieldAppPolicyID)
 				fieldSeen[orgpolicy.FieldAppPolicyID] = struct{}{}
 			}
+		case "app":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&AppClient{config: op.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, appImplementors)...); err != nil {
+				return err
+			}
+			op.withApp = query
+			if _, ok := fieldSeen[orgpolicy.FieldAppID]; !ok {
+				selectedFields = append(selectedFields, orgpolicy.FieldAppID)
+				fieldSeen[orgpolicy.FieldAppID] = struct{}{}
+			}
 		case "createdBy":
 			if _, ok := fieldSeen[orgpolicy.FieldCreatedBy]; !ok {
 				selectedFields = append(selectedFields, orgpolicy.FieldCreatedBy)

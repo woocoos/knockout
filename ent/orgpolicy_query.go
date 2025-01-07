@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -29,6 +30,7 @@ type OrgPolicyQuery struct {
 	withOrg              *OrgQuery
 	withPermissions      *PermissionQuery
 	withAppPolicy        *AppPolicyQuery
+	withApp              *AppQuery
 	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*OrgPolicy) error
 	withNamedPermissions map[string]*PermissionQuery
@@ -127,6 +129,28 @@ func (opq *OrgPolicyQuery) QueryAppPolicy() *AppPolicyQuery {
 			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, selector),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.AppPolicyTable, orgpolicy.AppPolicyColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryApp chains the current query on the "app" edge.
+func (opq *OrgPolicyQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: opq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := opq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := opq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, selector),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgpolicy.AppTable, orgpolicy.AppColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(opq.driver.Dialect(), step)
 		return fromU, nil
@@ -329,6 +353,7 @@ func (opq *OrgPolicyQuery) Clone() *OrgPolicyQuery {
 		withOrg:         opq.withOrg.Clone(),
 		withPermissions: opq.withPermissions.Clone(),
 		withAppPolicy:   opq.withAppPolicy.Clone(),
+		withApp:         opq.withApp.Clone(),
 		// clone intermediate query.
 		sql:  opq.sql.Clone(),
 		path: opq.path,
@@ -365,6 +390,17 @@ func (opq *OrgPolicyQuery) WithAppPolicy(opts ...func(*AppPolicyQuery)) *OrgPoli
 		opt(query)
 	}
 	opq.withAppPolicy = query
+	return opq
+}
+
+// WithApp tells the query-builder to eager-load the nodes that are connected to
+// the "app" edge. The optional arguments are used to configure the query builder of the edge.
+func (opq *OrgPolicyQuery) WithApp(opts ...func(*AppQuery)) *OrgPolicyQuery {
+	query := (&AppClient{config: opq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	opq.withApp = query
 	return opq
 }
 
@@ -446,10 +482,11 @@ func (opq *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 	var (
 		nodes       = []*OrgPolicy{}
 		_spec       = opq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			opq.withOrg != nil,
 			opq.withPermissions != nil,
 			opq.withAppPolicy != nil,
+			opq.withApp != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -489,6 +526,12 @@ func (opq *OrgPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*O
 	if query := opq.withAppPolicy; query != nil {
 		if err := opq.loadAppPolicy(ctx, query, nodes, nil,
 			func(n *OrgPolicy, e *AppPolicy) { n.Edges.AppPolicy = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := opq.withApp; query != nil {
+		if err := opq.loadApp(ctx, query, nodes, nil,
+			func(n *OrgPolicy, e *App) { n.Edges.App = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -598,6 +641,35 @@ func (opq *OrgPolicyQuery) loadAppPolicy(ctx context.Context, query *AppPolicyQu
 	}
 	return nil
 }
+func (opq *OrgPolicyQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*OrgPolicy, init func(*OrgPolicy), assign func(*OrgPolicy, *App)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*OrgPolicy)
+	for i := range nodes {
+		fk := nodes[i].AppID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(app.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "app_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (opq *OrgPolicyQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := opq.querySpec()
@@ -632,6 +704,9 @@ func (opq *OrgPolicyQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if opq.withAppPolicy != nil {
 			_spec.Node.AddColumnOnce(orgpolicy.FieldAppPolicyID)
+		}
+		if opq.withApp != nil {
+			_spec.Node.AddColumnOnce(orgpolicy.FieldAppID)
 		}
 	}
 	if ps := opq.predicates; len(ps) > 0 {

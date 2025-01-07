@@ -1718,6 +1718,7 @@ type CreateOrgPolicyInput struct {
 	OrgID         *int
 	PermissionIDs []int
 	AppPolicyID   *int
+	AppID         *int
 }
 
 // Mutate applies the CreateOrgPolicyInput on the OrgPolicyMutation builder.
@@ -1737,6 +1738,9 @@ func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if v := i.AppPolicyID; v != nil {
 		m.SetAppPolicyID(*v)
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
 	}
 }
 
@@ -1758,6 +1762,8 @@ type UpdateOrgPolicyInput struct {
 	RemovePermissionIDs []int
 	ClearAppPolicy      bool
 	AppPolicyID         *int
+	ClearApp            bool
+	AppID               *int
 }
 
 // Mutate applies the UpdateOrgPolicyInput on the OrgPolicyMutation builder.
@@ -1791,6 +1797,12 @@ func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if v := i.AppPolicyID; v != nil {
 		m.SetAppPolicyID(*v)
+	}
+	if i.ClearApp {
+		m.ClearApp()
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
 	}
 }
 

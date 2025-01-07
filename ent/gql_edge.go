@@ -557,6 +557,14 @@ func (op *OrgPolicy) AppPolicy(ctx context.Context) (*AppPolicy, error) {
 	return result, MaskNotFound(err)
 }
 
+func (op *OrgPolicy) App(ctx context.Context) (*App, error) {
+	result, err := op.Edges.AppOrErr()
+	if IsNotLoaded(err) {
+		result, err = op.QueryApp().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (oup *OrgUserPreference) User(ctx context.Context) (*User, error) {
 	result, err := oup.Edges.UserOrErr()
 	if IsNotLoaded(err) {

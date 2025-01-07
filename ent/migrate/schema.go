@@ -574,12 +574,12 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
-		{Name: "app_id", Type: field.TypeInt, Nullable: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "rules", Type: field.TypeJSON},
 		{Name: "app_policy_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 		{Name: "org_id", Type: field.TypeInt, Nullable: true},
+		{Name: "app_id", Type: field.TypeInt, Nullable: true, SchemaType: map[string]string{"mysql": "bigint"}},
 	}
 	// OrgPolicyTable holds the schema information for the "org_policy" table.
 	OrgPolicyTable = &schema.Table{
@@ -589,14 +589,20 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_policy_app_policy_org_policies",
-				Columns:    []*schema.Column{OrgPolicyColumns[9]},
+				Columns:    []*schema.Column{OrgPolicyColumns[8]},
 				RefColumns: []*schema.Column{AppPolicyColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "org_policy_org_policies",
-				Columns:    []*schema.Column{OrgPolicyColumns[10]},
+				Columns:    []*schema.Column{OrgPolicyColumns[9]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "org_policy_app_app",
+				Columns:    []*schema.Column{OrgPolicyColumns[10]},
+				RefColumns: []*schema.Column{AppColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -1249,6 +1255,7 @@ func init() {
 	}
 	OrgPolicyTable.ForeignKeys[0].RefTable = AppPolicyTable
 	OrgPolicyTable.ForeignKeys[1].RefTable = OrgTable
+	OrgPolicyTable.ForeignKeys[2].RefTable = AppTable
 	OrgPolicyTable.Annotation = &entsql.Annotation{
 		Table: "org_policy",
 	}

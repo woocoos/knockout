@@ -12,6 +12,11 @@ import (
 	"github.com/woocoos/knockout/ent"
 )
 
+type AppPolicyViewOrgPolicy struct {
+	OrgPolicy     *ent.OrgPolicy     `json:"orgPolicy,omitempty"`
+	AppPolicyView *ent.AppPolicyView `json:"appPolicyView,omitempty"`
+}
+
 // Ordering options for AppRolePolicy connections
 type AppRolePolicyOrder struct {
 	// The ordering direction.

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -55,11 +56,13 @@ type OrgPolicyEdges struct {
 	Permissions []*Permission `json:"permissions,omitempty"`
 	// AppPolicy holds the value of the app_policy edge.
 	AppPolicy *AppPolicy `json:"app_policy,omitempty"`
+	// App holds the value of the app edge.
+	App *App `json:"app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
 
 	namedPermissions map[string][]*Permission
 }
@@ -93,6 +96,17 @@ func (e OrgPolicyEdges) AppPolicyOrErr() (*AppPolicy, error) {
 		return nil, &NotFoundError{label: apppolicy.Label}
 	}
 	return nil, &NotLoadedError{edge: "app_policy"}
+}
+
+// AppOrErr returns the App value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgPolicyEdges) AppOrErr() (*App, error) {
+	if e.App != nil {
+		return e.App, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: app.Label}
+	}
+	return nil, &NotLoadedError{edge: "app"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -218,6 +232,11 @@ func (op *OrgPolicy) QueryPermissions() *PermissionQuery {
 // QueryAppPolicy queries the "app_policy" edge of the OrgPolicy entity.
 func (op *OrgPolicy) QueryAppPolicy() *AppPolicyQuery {
 	return NewOrgPolicyClient(op.config).QueryAppPolicy(op)
+}
+
+// QueryApp queries the "app" edge of the OrgPolicy entity.
+func (op *OrgPolicy) QueryApp() *AppQuery {
+	return NewOrgPolicyClient(op.config).QueryApp(op)
 }
 
 // Update returns a builder for updating this OrgPolicy.

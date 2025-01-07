@@ -7,11 +7,9 @@ package graphql
 import (
 	"context"
 
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
@@ -29,79 +27,6 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 	return exist, nil
 }
 
-// OrgPolicy is the resolver for the orgPolicy field.
-func (r *appPolicyViewResolver) OrgPolicy(ctx context.Context, obj *ent.AppPolicyView) (*ent.OrgPolicy, error) {
-	if obj.PolicyID == nil {
-		return nil, nil
-	}
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	op, err := r.client.OrgPolicy.Query().Where(
-		orgpolicy.OrgID(tid),
-		orgpolicy.AppPolicyID(*obj.PolicyID),
-		orgpolicy.AppID(obj.AppID),
-	).Only(ctx)
-	if ent.IsNotFound(err) {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	return op, nil
-}
-
-// AppRoleAssigned is the resolver for the appRoleAssigned field.
-func (r *appPolicyViewResolver) AppRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, appRoleID int) (bool, error) {
-	if obj.PolicyID == nil {
-		return false, nil
-	}
-	return r.client.AppRolePolicy.Query().Where(
-		approlepolicy.AppID(obj.AppID),
-		approlepolicy.AppRoleID(appRoleID),
-		approlepolicy.AppPolicyID(*obj.PolicyID),
-	).Exist(ctx)
-}
-
-// OrgRoleAssigned is the resolver for the orgRoleAssigned field.
-func (r *appPolicyViewResolver) OrgRoleAssigned(ctx context.Context, obj *ent.AppPolicyView, orgRoleID int) (bool, error) {
-	if obj.PolicyID == nil {
-		return false, nil
-	}
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
-	orgPolicy, err := r.OrgPolicy(ctx, obj)
-	return r.client.Permission.Query().Where(
-		permission.RoleID(orgRoleID),
-		permission.PrincipalKindEQ(permission.PrincipalKindRole),
-		permission.OrgID(tid),
-		permission.StatusEQ(typex.SimpleStatusActive),
-		permission.OrgPolicyID(orgPolicy.ID),
-	).Exist(ctx)
-}
-
-// OrgUserAssigned is the resolver for the orgUserAssigned field.
-func (r *appPolicyViewResolver) OrgUserAssigned(ctx context.Context, obj *ent.AppPolicyView, userID int) (bool, error) {
-	if obj.PolicyID == nil {
-		return false, nil
-	}
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
-	orgPolicy, err := r.OrgPolicy(ctx, obj)
-	return r.client.Permission.Query().Where(
-		permission.UserID(userID),
-		permission.PrincipalKindEQ(permission.PrincipalKindUser),
-		permission.OrgID(tid),
-		permission.StatusEQ(typex.SimpleStatusActive),
-		permission.OrgPolicyID(orgPolicy.ID),
-	).Exist(ctx)
-}
-
 // TopOrg is the resolver for the TopOrg field.
 func (r *orgResolver) TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error) {
 	return r.resource.GetTopOrg(ctx, obj.ID)
@@ -110,6 +35,14 @@ func (r *orgResolver) TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error
 // IsAllowRevokeAppPolicy is the resolver for the isAllowRevokeAppPolicy field.
 func (r *orgResolver) IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error) {
 	return r.resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)
+}
+
+// ActualDomain is the resolver for the actualDomain field.
+func (r *orgResolver) ActualDomain(ctx context.Context, obj *ent.Org) (string, error) {
+	if obj.Domain != "" {
+		return obj.Domain, nil
+	}
+	return r.resource.ParentDomain(ctx, obj.ParentID)
 }
 
 // IsGrantRole is the resolver for the isGrantRole field.
