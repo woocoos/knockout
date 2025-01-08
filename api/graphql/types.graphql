@@ -81,14 +81,14 @@ extend type OrgRole {
 
 extend type OrgPolicy {
     """是否授权role"""
-    isGrantRole(roleID:ID!): Boolean!
+    isGrantRole(roleID:ID!,orgID: ID): Boolean!
     """是否授权user"""
-    isGrantUser(userID:ID!): Boolean!
+    isGrantUser(userID:ID!,orgID: ID): Boolean!
 }
 
 extend type User {
     """是否分配role"""
-    isAssignOrgRole(orgRoleID:ID!): Boolean!
+    isAssignOrgRole(orgRoleID:ID!,orgID: ID): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
@@ -106,7 +106,7 @@ extend type Org {
 
 extend type OrgRole {
     """是否分配给user"""
-    isGrantUser(userID:ID!): Boolean!
+    isGrantUser(userID:ID!,orgID: ID): Boolean!
 }
 
 extend type AppPolicy {

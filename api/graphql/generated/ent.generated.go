@@ -49,12 +49,12 @@ type OrgResolver interface {
 	ActualDomain(ctx context.Context, obj *ent.Org) (string, error)
 }
 type OrgPolicyResolver interface {
-	IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error)
-	IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int) (bool, error)
+	IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int, orgID *int) (bool, error)
+	IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int, orgID *int) (bool, error)
 }
 type OrgRoleResolver interface {
 	IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
-	IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int) (bool, error)
+	IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int, orgID *int) (bool, error)
 }
 type PermissionResolver interface {
 	IsAllowRevoke(ctx context.Context, obj *ent.Permission) (bool, error)
@@ -92,7 +92,7 @@ type QueryResolver interface {
 	UserPermissions(ctx context.Context, where *ent.AppActionWhereInput) ([]*ent.AppAction, error)
 	CheckPermission(ctx context.Context, permission string) (bool, error)
 	CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error)
-	OrgAppActions(ctx context.Context, appCode string) ([]*ent.AppAction, error)
+	OrgAppActions(ctx context.Context, appCode string, orgID int) ([]*ent.AppAction, error)
 	UserRootOrgs(ctx context.Context) ([]*ent.Org, error)
 	OrgRecycleUsers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	OrgUserPreference(ctx context.Context) (*ent.OrgUserPreference, error)
@@ -113,7 +113,7 @@ type QueryResolver interface {
 	OrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 }
 type UserResolver interface {
-	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
+	IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int, orgID *int) (bool, error)
 	IsAllowRevokeRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error)
 	Contact(ctx context.Context, obj *ent.User) (*ent.UserAddr, error)
 	OrgUserType(ctx context.Context, obj *ent.User, orgID int) (orguser.UserType, error)
@@ -1004,6 +1004,11 @@ func (ec *executionContext) field_OrgPolicy_isGrantRole_args(ctx context.Context
 		return nil, err
 	}
 	args["roleID"] = arg0
+	arg1, err := ec.field_OrgPolicy_isGrantRole_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_OrgPolicy_isGrantRole_argsRoleID(
@@ -1028,6 +1033,28 @@ func (ec *executionContext) field_OrgPolicy_isGrantRole_argsRoleID(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_OrgPolicy_isGrantRole_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_OrgPolicy_isGrantUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1036,6 +1063,11 @@ func (ec *executionContext) field_OrgPolicy_isGrantUser_args(ctx context.Context
 		return nil, err
 	}
 	args["userID"] = arg0
+	arg1, err := ec.field_OrgPolicy_isGrantUser_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_OrgPolicy_isGrantUser_argsUserID(
@@ -1060,6 +1092,28 @@ func (ec *executionContext) field_OrgPolicy_isGrantUser_argsUserID(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_OrgPolicy_isGrantUser_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_OrgRole_isGrantUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1068,6 +1122,11 @@ func (ec *executionContext) field_OrgRole_isGrantUser_args(ctx context.Context, 
 		return nil, err
 	}
 	args["userID"] = arg0
+	arg1, err := ec.field_OrgRole_isGrantUser_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_OrgRole_isGrantUser_argsUserID(
@@ -1089,6 +1148,28 @@ func (ec *executionContext) field_OrgRole_isGrantUser_argsUserID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_OrgRole_isGrantUser_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -3724,6 +3805,11 @@ func (ec *executionContext) field_Query_orgAppActions_args(ctx context.Context, 
 		return nil, err
 	}
 	args["appCode"] = arg0
+	arg1, err := ec.field_Query_orgAppActions_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_Query_orgAppActions_argsAppCode(
@@ -3745,6 +3831,28 @@ func (ec *executionContext) field_Query_orgAppActions_argsAppCode(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_orgAppActions_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
 	return zeroVal, nil
 }
 
@@ -7580,6 +7688,11 @@ func (ec *executionContext) field_User_isAssignOrgRole_args(ctx context.Context,
 		return nil, err
 	}
 	args["orgRoleID"] = arg0
+	arg1, err := ec.field_User_isAssignOrgRole_argsOrgID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orgID"] = arg1
 	return args, nil
 }
 func (ec *executionContext) field_User_isAssignOrgRole_argsOrgRoleID(
@@ -7601,6 +7714,28 @@ func (ec *executionContext) field_User_isAssignOrgRole_argsOrgRoleID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_User_isAssignOrgRole_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
+		return ec.unmarshalOID2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
 	return zeroVal, nil
 }
 
@@ -23443,7 +23578,7 @@ func (ec *executionContext) _OrgPolicy_isGrantRole(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OrgPolicy().IsGrantRole(rctx, obj, fc.Args["roleID"].(int))
+		return ec.resolvers.OrgPolicy().IsGrantRole(rctx, obj, fc.Args["roleID"].(int), fc.Args["orgID"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -23498,7 +23633,7 @@ func (ec *executionContext) _OrgPolicy_isGrantUser(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OrgPolicy().IsGrantUser(rctx, obj, fc.Args["userID"].(int))
+		return ec.resolvers.OrgPolicy().IsGrantUser(rctx, obj, fc.Args["userID"].(int), fc.Args["orgID"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24245,7 +24380,7 @@ func (ec *executionContext) _OrgRole_isGrantUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.OrgRole().IsGrantUser(rctx, obj, fc.Args["userID"].(int))
+		return ec.resolvers.OrgRole().IsGrantUser(rctx, obj, fc.Args["userID"].(int), fc.Args["orgID"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29004,7 +29139,7 @@ func (ec *executionContext) _Query_orgAppActions(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().OrgAppActions(rctx, fc.Args["appCode"].(string))
+		return ec.resolvers.Query().OrgAppActions(rctx, fc.Args["appCode"].(string), fc.Args["orgID"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -34846,7 +34981,7 @@ func (ec *executionContext) _User_isAssignOrgRole(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.User().IsAssignOrgRole(rctx, obj, fc.Args["orgRoleID"].(int))
+		return ec.resolvers.User().IsAssignOrgRole(rctx, obj, fc.Args["orgRoleID"].(int), fc.Args["orgID"].(*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

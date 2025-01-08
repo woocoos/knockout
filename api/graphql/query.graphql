@@ -126,7 +126,7 @@ extend type Query {
         appCode:String!
     ):Boolean!
     """组织策略可授权的appActions"""
-    orgAppActions(appCode:String!):[AppAction!]!
+    orgAppActions(appCode:String!,orgID:ID!):[AppAction!]!
     """用户加入的root组织"""
     userRootOrgs:[Org!]!
     """组织回收站列表"""

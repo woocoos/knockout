@@ -46,10 +46,17 @@ func (r *orgResolver) ActualDomain(ctx context.Context, obj *ent.Org) (string, e
 }
 
 // IsGrantRole is the resolver for the isGrantRole field.
-func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error) {
+func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int, orgID *int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return false, err
+		}
+		tid = o.ID
 	}
 	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindRole),
@@ -62,10 +69,17 @@ func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy,
 }
 
 // IsGrantUser is the resolver for the isGrantUser field.
-func (r *orgPolicyResolver) IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int) (bool, error) {
+func (r *orgPolicyResolver) IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int, orgID *int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return false, err
+		}
+		tid = o.ID
 	}
 	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindUser),
@@ -83,10 +97,17 @@ func (r *orgRoleResolver) IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool
 }
 
 // IsGrantUser is the resolver for the isGrantUser field.
-func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int) (bool, error) {
+func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int, orgID *int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return false, err
+		}
+		tid = o.ID
 	}
 	has, err := r.client.OrgRoleUser.Query().Where(
 		orgroleuser.OrgRoleID(obj.ID),
@@ -104,10 +125,17 @@ func (r *permissionResolver) IsAllowRevoke(ctx context.Context, obj *ent.Permiss
 }
 
 // IsAssignOrgRole is the resolver for the isAssignOrgRole field.
-func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
+func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int, orgID *int) (bool, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return false, err
+	}
+	if orgID != nil {
+		o, err := r.resource.GetOrg(ctx, *orgID)
+		if err != nil {
+			return false, err
+		}
+		tid = o.ID
 	}
 	ouid, err := r.client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
 	if err != nil {

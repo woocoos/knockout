@@ -224,18 +224,16 @@ func (r *queryResolver) CheckPermissionByJwt(ctx context.Context, jwtStr string,
 }
 
 // OrgAppActions is the resolver for the orgAppActions field.
-func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string) ([]*ent.AppAction, error) {
-	//获取跟用户ID
-	uid, err := identity.UserIDFromContext(ctx)
+func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string, orgID int) ([]*ent.AppAction, error) {
+	parentOrg, err := r.resource.GetOrg(ctx, orgID)
 	if err != nil {
 		return nil, err
 	}
-	rootOrg, err := r.resource.GetRootOrgByUser(ctx, uid)
-	if err != nil {
-		return nil, err
+	if parentOrg == nil || parentOrg.OwnerID == nil {
+		return nil, fmt.Errorf("org owner not found")
 	}
 	// 获取根用户所有权限
-	return r.resource.GetUserPermissionsByUserID(ctx, *rootOrg.OwnerID, &ent.AppActionWhereInput{
+	return r.resource.GetUserPermissionsByUserID(ctx, *parentOrg.OwnerID, &ent.AppActionWhereInput{
 		HasAppWith: []*ent.AppWhereInput{{Code: &appCode}},
 	})
 }
