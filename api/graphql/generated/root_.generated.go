@@ -623,8 +623,8 @@ type ComplexityRoot struct {
 		CreatedAt   func(childComplexity int) int
 		CreatedBy   func(childComplexity int) int
 		ID          func(childComplexity int) int
-		IsGrantRole func(childComplexity int, roleID int, orgID *int) int
-		IsGrantUser func(childComplexity int, userID int, orgID *int) int
+		IsGrantRole func(childComplexity int, roleID int) int
+		IsGrantUser func(childComplexity int, userID int) int
 		Name        func(childComplexity int) int
 		Org         func(childComplexity int) int
 		OrgID       func(childComplexity int) int
@@ -651,7 +651,7 @@ type ComplexityRoot struct {
 		CreatedBy   func(childComplexity int) int
 		ID          func(childComplexity int) int
 		IsAppRole   func(childComplexity int) int
-		IsGrantUser func(childComplexity int, userID int, orgID *int) int
+		IsGrantUser func(childComplexity int, userID int) int
 		Kind        func(childComplexity int) int
 		Name        func(childComplexity int) int
 		OrgID       func(childComplexity int) int
@@ -899,7 +899,7 @@ type ComplexityRoot struct {
 		ID                func(childComplexity int) int
 		Identities        func(childComplexity int) int
 		IsAllowRevokeRole func(childComplexity int, orgRoleID int) int
-		IsAssignOrgRole   func(childComplexity int, orgRoleID int, orgID *int) int
+		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
 		Lang              func(childComplexity int) int
 		LastName          func(childComplexity int) int
 		LoginProfile      func(childComplexity int) int
@@ -4709,7 +4709,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OrgPolicy.IsGrantRole(childComplexity, args["roleID"].(int), args["orgID"].(*int)), true
+		return e.complexity.OrgPolicy.IsGrantRole(childComplexity, args["roleID"].(int)), true
 
 	case "OrgPolicy.isGrantUser":
 		if e.complexity.OrgPolicy.IsGrantUser == nil {
@@ -4721,7 +4721,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OrgPolicy.IsGrantUser(childComplexity, args["userID"].(int), args["orgID"].(*int)), true
+		return e.complexity.OrgPolicy.IsGrantUser(childComplexity, args["userID"].(int)), true
 
 	case "OrgPolicy.name":
 		if e.complexity.OrgPolicy.Name == nil {
@@ -4852,7 +4852,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.OrgRole.IsGrantUser(childComplexity, args["userID"].(int), args["orgID"].(*int)), true
+		return e.complexity.OrgRole.IsGrantUser(childComplexity, args["userID"].(int)), true
 
 	case "OrgRole.kind":
 		if e.complexity.OrgRole.Kind == nil {
@@ -6392,7 +6392,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.User.IsAssignOrgRole(childComplexity, args["orgRoleID"].(int), args["orgID"].(*int)), true
+		return e.complexity.User.IsAssignOrgRole(childComplexity, args["orgRoleID"].(int)), true
 
 	case "User.lang":
 		if e.complexity.User.Lang == nil {
@@ -18085,14 +18085,14 @@ extend type OrgRole {
 
 extend type OrgPolicy {
     """是否授权role"""
-    isGrantRole(roleID:ID!,orgID: ID): Boolean!
+    isGrantRole(roleID:ID!): Boolean!
     """是否授权user"""
-    isGrantUser(userID:ID!,orgID: ID): Boolean!
+    isGrantUser(userID:ID!): Boolean!
 }
 
 extend type User {
     """是否分配role"""
-    isAssignOrgRole(orgRoleID:ID!,orgID: ID): Boolean!
+    isAssignOrgRole(orgRoleID:ID!): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
     """地址信息"""
@@ -18110,7 +18110,7 @@ extend type Org {
 
 extend type OrgRole {
     """是否分配给user"""
-    isGrantUser(userID:ID!,orgID: ID): Boolean!
+    isGrantUser(userID:ID!): Boolean!
 }
 
 extend type AppPolicy {
