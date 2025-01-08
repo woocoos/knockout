@@ -710,11 +710,13 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	ros, err := s.db.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
-		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
 	).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).Order(ent.Asc(org.FieldID)).All(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if ros == nil || len(ros) == 0 {
+		return nil, fmt.Errorf("not root org")
 	}
 	var domains []*Domain
 	// 查询顶级组织

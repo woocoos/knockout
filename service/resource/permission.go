@@ -287,11 +287,11 @@ func (s *Service) assignRoleUserByTid(ctx context.Context, input model.AssignRol
 
 // AssignRoleUser is the resolver for the assignRoleUser field.
 func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
-	tid, err := identity.TenantIDFromContext(ctx)
+	or, err := s.Client.OrgRole.Get(ctx, input.OrgRoleID)
 	if err != nil {
 		return err
 	}
-	return s.assignRoleUserByTid(ctx, input, tid)
+	return s.assignRoleUserByTid(ctx, input, or.OrgID)
 }
 
 func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) error {

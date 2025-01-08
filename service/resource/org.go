@@ -568,11 +568,7 @@ func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error)
 // EnableMFA 启用用户的MFA验证
 func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
+	usr, err := client.User.Query().Where(user.ID(userID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
