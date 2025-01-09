@@ -724,7 +724,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		// 根据/截取path的第一项
 		code := strings.Split(o.Path, "/")[0]
 		// 转换成十进制id
-		oID, err := strconv.ParseInt(code, 32, 64)
+		oID, err := strconv.ParseInt(code, 36, 64)
 		if err != nil {
 			return nil, err
 		}
@@ -1305,26 +1305,20 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 	return nil
 }
 
-func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
-	uid, err := identity.UserIDFromContext(c)
-	if err != nil {
-		return nil, err
-	}
+func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string) (*ent.FileIdentity, error) {
 	tid, err := s.tryGetTenantID(c)
 	if err != nil {
 		return nil, err
 	}
-
 	ctx := identity.WithTenantID(c, tid)
-
 	var fi *ent.FileIdentity
-	if req.Bucket != "" && req.Endpoint != "" {
+	if bucket != "" && endpoint != "" {
 		// 传参取对应identity
 		fi, err = s.db.FileIdentity.Query().Where(
 			fileidentity.TenantID(tid),
 			fileidentity.HasSourceWith(
-				filesource.Endpoint(req.Endpoint),
-				filesource.Bucket(req.Bucket),
+				filesource.Endpoint(endpoint),
+				filesource.Bucket(bucket),
 			),
 		).WithSource().Only(ctx)
 	} else {
@@ -1340,6 +1334,18 @@ func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse
 	if err != nil {
 		return nil, err
 	}
+	return fi, nil
+}
+
+func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse, error) {
+	uid, err := identity.UserIDFromContext(c)
+	if err != nil {
+		return nil, err
+	}
+	fi, err := s.getFileIdentity(c, req.Bucket, req.Endpoint)
+	if err != nil {
+		return nil, err
+	}
 
 	err = s.kosdk.Fs().RegistryProvider(s.toProviderConfig(fi), fs.GetProviderKey(s.toProviderConfig(fi)))
 	if err != nil {
@@ -1349,11 +1355,11 @@ func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse
 	if err != nil {
 		return nil, err
 	}
-	usr, err := s.db.User.Get(ctx, uid)
+	usr, err := s.db.User.Get(c, uid)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := provider.GetSTS(ctx, usr.PrincipalName)
+	resp, err := provider.GetSTS(c, usr.PrincipalName)
 	if err != nil {
 		return nil, err
 	}

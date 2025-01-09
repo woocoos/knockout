@@ -150,11 +150,10 @@ func pathHook() ent.Hook {
 					if err != nil {
 						return nil, err
 					}
-
 				}
 				return value, nil
 			})
-		}, ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne)
+		}, ent.OpCreate)
 }
 
 func checkDeleteHook() ent.Hook {
