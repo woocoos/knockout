@@ -64,6 +64,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /login/app-orgs:
+    post:
+      summary: Use this API to get app login orgs
+      description: Use this API to get app login orgs
+      tags:
+        - auth
+      operationId: appOrgs
+      requestBody:
+        description: get orgs with appcode
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appCode:
+                  type: string
+                  description: the app code
+              required:
+                - appCode
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Domain"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /login/old-auth:
     post:
       summary: use this API to compatible old app login

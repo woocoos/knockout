@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+// AppOrgsRequest is the request object for (POST /login/app-orgs)
+type AppOrgsRequest struct {
+	// AppCode the app code
+	AppCode string `binding:"required" json:"appCode"`
+}
+
 // BindFingerprintRequest is the request object for (POST /login/bind-fingerprint)
 type BindFingerprintRequest struct {
 	// UserPassword the userPassword

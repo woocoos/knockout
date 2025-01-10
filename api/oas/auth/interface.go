@@ -10,6 +10,9 @@ import (
 
 // AuthServer is the server API for Auth service.
 type AuthServer interface {
+	// AppOrgs Use this API to get app login orgs
+	// (POST /login/app-orgs)
+	AppOrgs(*gin.Context, *AppOrgsRequest) ([]*Domain, error)
 	// BindFingerprint Use this API to enable fingerprint login
 	// (POST /login/bind-fingerprint)
 	BindFingerprint(*gin.Context, *BindFingerprintRequest) (bool, error)
@@ -91,6 +94,11 @@ type AuthServer interface {
 }
 
 type UnimplementedAuthServer struct {
+}
+
+func (UnimplementedAuthServer) AppOrgs(c *gin.Context, req *AppOrgsRequest) (_ []*Domain, err error) {
+	err = fmt.Errorf("method AppOrgs not implemented")
+	return
 }
 
 func (UnimplementedAuthServer) BindFingerprint(c *gin.Context, req *BindFingerprintRequest) (_ bool, err error) {

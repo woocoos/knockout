@@ -12,6 +12,7 @@ import (
 
 // RegisterAuthHandlers creates http.Handler with routing matching OpenAPI spec.
 func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
+	router.POST("/login/app-orgs", wrapAppOrgs(si))
 	router.POST("/login/bind-fingerprint", wrapBindFingerprint(si))
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
@@ -38,6 +39,22 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/login/verify-device", wrapVerifyDevice(si))
 	router.POST("/login/device-captcha", wrapVerifyDeviceSendEmail(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
+}
+
+func wrapAppOrgs(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req AppOrgsRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.AppOrgs(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
 }
 
 func wrapBindFingerprint(si AuthServer) func(c *gin.Context) {

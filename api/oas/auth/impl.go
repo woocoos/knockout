@@ -290,6 +290,55 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	return s.loginToken(ctx, pwd.UserID)
 }
 
+func (s *ServerImpl) AppOrgs(ctx *gin.Context, req *AppOrgsRequest) ([]*Domain, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ros, err := s.db.Org.Query().Where(
+		org.HasOrgUserWith(orguser.UserID(uid)),
+		org.StatusEQ(typex.SimpleStatusActive),
+		org.KindEQ(org.KindRoot),
+	).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).Order(ent.Asc(org.FieldID)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if ros == nil || len(ros) == 0 {
+		return nil, fmt.Errorf("not root org")
+	}
+	var domains []*Domain
+	// 查询顶级组织
+	for _, o := range ros {
+		has, err := s.doCheckPermission(ctx, uid, o.ID, "login", req.AppCode)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			continue
+		}
+		// 根据/截取path的第一项
+		code := strings.Split(o.Path, "/")[0]
+		// 转换成十进制id
+		oID, err := strconv.ParseInt(code, 36, 64)
+		if err != nil {
+			return nil, err
+		}
+		to, err := s.db.Org.Query().Where(org.ID(int(oID))).Select(org.FieldID, org.FieldName, org.FieldPath, org.FieldLocalCurrency).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		domains = append(domains, &Domain{
+			ID:             o.ID,
+			Name:           o.Name,
+			LocalCurrency:  o.LocalCurrency,
+			ParentID:       to.ID,
+			ParentName:     to.Name,
+			ParentCurrency: to.LocalCurrency,
+		})
+	}
+	return domains, nil
+}
+
 func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
 	// 验证密码
 	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, nil)
