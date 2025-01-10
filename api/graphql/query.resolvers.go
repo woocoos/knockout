@@ -73,9 +73,21 @@ func (r *queryResolver) OrgRoles(ctx context.Context, after *entgql.Cursor[int],
 
 // UserOrgRoles is the resolver for the userOrgRoles field.
 func (r *queryResolver) UserOrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
-	return r.client.OrgRole.Query().Paginate(ctx, after, first, before, last,
-		ent.WithOrgRoleOrder(orderBy),
-		ent.WithOrgRoleFilter(where.Filter))
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if where.OrgID != nil {
+		tid = *where.OrgID
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.client.OrgRole.Query().Where(orgrole.KindEQ(orgrole.KindRole),
+		orgrole.HasOrgRoleUserWith(orgroleuser.UserID(uid), orgroleuser.OrgID(tid)),
+	).Paginate(ctx, after, first, before, last,
+		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
 // AppRoleAssignedToOrgs is the resolver for the appRoleAssignedToOrgs field.

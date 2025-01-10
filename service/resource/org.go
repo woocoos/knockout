@@ -117,6 +117,7 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 	client := ent.FromContext(ctx)
 	count, err := client.Org.Query().Where(
 		org.ParentID(id),
+		org.DeletedAtIsNil(),
 	).Count(ctx)
 	if err != nil {
 		return err
