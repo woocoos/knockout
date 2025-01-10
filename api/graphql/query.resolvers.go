@@ -57,7 +57,7 @@ func (r *queryResolver) OrgGroups(ctx context.Context, after *entgql.Cursor[int]
 
 // OrgRoleUsers is the resolver for the orgRoleUsers field.
 func (r *queryResolver) OrgRoleUsers(ctx context.Context, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
-	uIds, err := r.resource.GetRoleUserIds(ctx, roleID)
+	uIds, err := r.resource.GetOrgRoleUserIds(ctx, roleID)
 	if err != nil {
 		return nil, err
 	}

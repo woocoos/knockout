@@ -546,20 +546,20 @@ func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int)
 	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
 }
 
-// GetRoleUserIds 获取组织用户组/角色用户ids
-func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
+// GetOrgRoleUserIds 获取组织用户组/角色用户ids
+func (s *Service) GetOrgRoleUserIds(ctx context.Context, orgRoleID int) ([]int, error) {
+	or, err := s.Client.OrgRole.Get(ctx, orgRoleID)
 	if err != nil {
 		return nil, err
 	}
-	exist, err := s.Client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.ID(roleID)).Exist(ctx)
+	exist, err := s.Client.OrgRole.Query().Where(orgrole.OrgID(or.OrgID), orgrole.ID(orgRoleID)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if !exist {
 		return nil, fmt.Errorf("role not found")
 	}
-	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
+	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(orgRoleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
 	if err != nil {
 		return nil, err
 	}
