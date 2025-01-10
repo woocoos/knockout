@@ -71,6 +71,13 @@ func (r *queryResolver) OrgRoles(ctx context.Context, after *entgql.Cursor[int],
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 
+// UserOrgRoles is the resolver for the userOrgRoles field.
+func (r *queryResolver) UserOrgRoles(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) (*ent.OrgRoleConnection, error) {
+	return r.client.OrgRole.Query().Paginate(ctx, after, first, before, last,
+		ent.WithOrgRoleOrder(orderBy),
+		ent.WithOrgRoleFilter(where.Filter))
+}
+
 // AppRoleAssignedToOrgs is the resolver for the appRoleAssignedToOrgs field.
 func (r *queryResolver) AppRoleAssignedToOrgs(ctx context.Context, roleID int, where *ent.OrgWhereInput) ([]*ent.Org, error) {
 	oIds, err := r.client.OrgRole.Query().Where(orgrole.AppRoleID(roleID)).Select(orgrole.FieldOrgID).Ints(ctx)
@@ -419,15 +426,26 @@ func (r *queryResolver) UserPasswordPolicy(ctx context.Context) (*ent.UserPasswo
 	return r.resource.UserPasswordPolicy(ctx)
 }
 
-// OrgUsers is the resolver for the orgUsers field.
-func (r *queryResolver) OrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
-	// 如果是部门，则去组织id
-	o, err := r.resource.GetOrg(ctx, orgID)
+// ParentOrgUsers is the resolver for the parentOrgUsers field.
+func (r *queryResolver) ParentOrgUsers(ctx context.Context, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	co, err := r.client.Org.Get(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	if co.Kind == org.KindOrganization {
+		o, err := r.resource.GetOrg(ctx, orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
 	return r.client.User.Query().Where(
-		user.HasOrgUserWith(orguser.OrgID(o.ID)),
+		user.HasOrgUserWith(orguser.OrgID(tid)),
+		user.StatusEQ(typex.SimpleStatusActive),
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))

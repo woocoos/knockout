@@ -105,10 +105,11 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 
 // CreateOrganization 创建组织目录,基于根目录创建
 func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
+	client := ent.FromContext(ctx)
 	if input.ParentID == 0 {
 		return nil, fmt.Errorf("parent id is required")
 	}
-	return s.Client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
+	return client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
 }
 
 // DeleteOrganization 删除组织目录

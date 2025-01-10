@@ -775,8 +775,8 @@ type ComplexityRoot struct {
 		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgUserPreference           func(childComplexity int) int
-		OrgUsers                    func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		ParentOrgUsers              func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		QuotaItems                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
 		Quotas                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
 		Regions                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
@@ -787,6 +787,7 @@ type ComplexityRoot struct {
 		UserGroups                  func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		UserMenus                   func(childComplexity int, appCode string) int
+		UserOrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserPasswordPolicy          func(childComplexity int) int
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
 		UserRoles                   func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -5644,18 +5645,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.OrgUserPreference(childComplexity), true
 
-	case "Query.orgUsers":
-		if e.complexity.Query.OrgUsers == nil {
-			break
-		}
-
-		args, err := ec.field_Query_orgUsers_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.OrgUsers(childComplexity, args["orgID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
-
 	case "Query.organizations":
 		if e.complexity.Query.Organizations == nil {
 			break
@@ -5667,6 +5656,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
+
+	case "Query.parentOrgUsers":
+		if e.complexity.Query.ParentOrgUsers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_parentOrgUsers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ParentOrgUsers(childComplexity, args["orgID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
 	case "Query.quotaItems":
 		if e.complexity.Query.QuotaItems == nil {
@@ -5782,6 +5783,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserMenus(childComplexity, args["appCode"].(string)), true
+
+	case "Query.userOrgRoles":
+		if e.complexity.Query.UserOrgRoles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userOrgRoles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserOrgRoles(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
 	case "Query.userPasswordPolicy":
 		if e.complexity.Query.UserPasswordPolicy == nil {
@@ -17840,6 +17853,15 @@ input UserWhereInput {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
+    """用户在登录组织授权的组织角色"""
+    userOrgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
     """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
     """应用策略授权的组织列表"""
@@ -17990,8 +18012,8 @@ input UserWhereInput {
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
-    """获取组织用户"""
-    orgUsers(
+    """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""
+    parentOrgUsers(
         """组织ID或者部门ID"""
         orgID: ID!
         after: Cursor

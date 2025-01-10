@@ -518,10 +518,10 @@ func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int
 			return err
 		}
 		// 增加新的授权
-		err = s.AssignRoleUser(ctx, model.AssignRoleUserInput{
+		err = s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
 			UserID:    oru.UserID,
 			OrgRoleID: orID,
-		})
+		}, oru.OrgID)
 		if err != nil {
 			return err
 		}

@@ -31,6 +31,15 @@ extend type Query {
         orderBy: OrgRoleOrder
         where: OrgRoleWhereInput
     ): OrgRoleConnection!
+    """用户在登录组织授权的组织角色"""
+    userOrgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
     """应用角色授权的组织列表"""
     appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
     """应用策略授权的组织列表"""
@@ -181,8 +190,8 @@ extend type Query {
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
-    """获取组织用户"""
-    orgUsers(
+    """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""
+    parentOrgUsers(
         """组织ID或者部门ID"""
         orgID: ID!
         after: Cursor
