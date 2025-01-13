@@ -7,6 +7,7 @@ package graphql
 import (
 	"context"
 	"fmt"
+	"github.com/woocoos/knockout/ent/predicate"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
@@ -77,16 +78,32 @@ func (r *queryResolver) UserOrgRoles(ctx context.Context, after *entgql.Cursor[i
 	if err != nil {
 		return nil, err
 	}
-	if where.OrgID != nil {
-		tid = *where.OrgID
-	}
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return r.client.OrgRole.Query().Where(orgrole.KindEQ(orgrole.KindRole),
-		orgrole.HasOrgRoleUserWith(orgroleuser.UserID(uid), orgroleuser.OrgID(tid)),
-	).Paginate(ctx, after, first, before, last,
+	ps := make([]predicate.OrgRole, 0)
+	ps = append(ps, orgrole.KindEQ(orgrole.KindRole))
+	if where.OrgID != nil {
+		to, err := r.client.Org.Get(ctx, tid)
+		if err != nil {
+			return nil, err
+		}
+		has, err := r.client.Org.Query().Where(org.PathHasPrefix(to.Path)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			return nil, fmt.Errorf("invalid org")
+		}
+		if tid == *where.OrgID {
+			ps = append(ps, orgrole.HasOrgRoleUserWith(orgroleuser.UserID(uid), orgroleuser.OrgID(tid)))
+		}
+		tid = *where.OrgID
+	} else {
+		ps = append(ps, orgrole.HasOrgRoleUserWith(orgroleuser.UserID(uid), orgroleuser.OrgID(tid)))
+	}
+	return r.client.OrgRole.Query().Where(ps...).Paginate(ctx, after, first, before, last,
 		ent.WithOrgRoleOrder(orderBy), ent.WithOrgRoleFilter(where.Filter))
 }
 

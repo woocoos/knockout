@@ -137,7 +137,7 @@ func (r *userResolver) OrgUserType(ctx context.Context, obj *ent.User, orgID int
 // LoginProfile is the resolver for the loginProfile field.
 func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error {
 	if data != nil {
-		row, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).Save(ctx)
+		row, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).SetCanLogin(true).Save(ctx)
 		if err != nil {
 			return err
 		}
