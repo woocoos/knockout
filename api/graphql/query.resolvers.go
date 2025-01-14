@@ -520,8 +520,9 @@ func (r *queryResolver) UserMfaInfo(ctx context.Context, userID int, orgID int) 
 		return nil, err
 	}
 	return &model.UserMfaInfo{
-		MfaEnabled: ulp.MfaEnabled,
-		QRCodeURI:  key.String(),
-		Secret:     ulp.MfaSecret,
+		MfaEnabled:  ulp.MfaEnabled,
+		QRCodeURI:   key.String(),
+		Secret:      ulp.MfaSecret,
+		AccountName: ulp.Edges.User.PrincipalName,
 	}, nil
 }
