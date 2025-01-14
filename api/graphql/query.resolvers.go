@@ -7,9 +7,11 @@ package graphql
 import (
 	"context"
 	"encoding/base32"
+	"fmt"
+	"strconv"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
-	"fmt"
 	"github.com/pquerna/otp/totp"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
@@ -34,7 +36,6 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
-	"strconv"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -450,6 +451,11 @@ func (r *queryResolver) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID
 // OrgPolicyViewUserAssigned is the resolver for the orgPolicyViewUserAssigned field.
 func (r *queryResolver) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]int, error) {
 	return r.resource.OrgPolicyViewUserAssigned(ctx, userID, appCode, orgID)
+}
+
+// OrgPolicyViewUserRoleAssigned is the resolver for the orgPolicyViewUserRoleAssigned field.
+func (r *queryResolver) OrgPolicyViewUserRoleAssigned(ctx context.Context, userID int, appCode string, orgID int) ([]int, error) {
+	return r.resource.OrgPolicyViewUserRoleAssigned(ctx, userID, appCode, orgID)
 }
 
 // UserPasswordPolicy is the resolver for the UserPasswordPolicy field.

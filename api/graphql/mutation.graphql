@@ -204,7 +204,7 @@ type Mutation {
         action:TreeAction!
     ): Boolean!
     """更改组织用户类型"""
-    changeOrgUserType(userID:ID!,userType:OrgUserUserType!):Boolean!
+    changeOrgUserType(userID:ID!,orgID: ID!,userType:OrgUserUserType!):Boolean!
     """创建货币"""
     createCurrency(input: CreateCurrencyInput!): Currency
     """更新货币"""

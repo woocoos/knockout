@@ -188,6 +188,8 @@ extend type Query {
     orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
     """组织策略视图用户选择项，返回OrgPolicyIDs"""
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图，用户授权的角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewUserRoleAssigned(userID: ID!,appCode: String!,orgID: ID!): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
     """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""

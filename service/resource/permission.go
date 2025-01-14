@@ -1264,6 +1264,28 @@ func (s *Service) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, 
 	return res, nil
 }
 
+func (s *Service) OrgPolicyViewUserRoleAssigned(ctx context.Context, userID int, appCode string, orgID int) ([]int, error) {
+	o, err := s.GetOrg(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	// 查询用户授权的所有角色/用户组
+	orIDs, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.UserID(userID), orgroleuser.OrgID(o.ID)).Select(orgroleuser.FieldOrgRoleID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 查询用户授权的角色/用户组对应的策略id
+	assignIDs := make([]int, 0)
+	for _, orID := range orIDs {
+		ids, err := s.OrgPolicyViewRoleAssigned(ctx, orID, appCode, &o.ID)
+		if err != nil {
+			return nil, err
+		}
+		assignIDs = append(assignIDs, ids...)
+	}
+	return assignIDs, nil
+}
+
 func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]int, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {

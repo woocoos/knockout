@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
 	generated1 "github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -579,13 +578,13 @@ func (r *mutationResolver) MoveRegion(ctx context.Context, sourceID int, targetI
 }
 
 // ChangeOrgUserType is the resolver for the changeOrgUserType field.
-func (r *mutationResolver) ChangeOrgUserType(ctx context.Context, userID int, userType orguser.UserType) (bool, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
+func (r *mutationResolver) ChangeOrgUserType(ctx context.Context, userID int, orgID int, userType orguser.UserType) (bool, error) {
+	co, err := r.client.Org.Get(ctx, orgID)
 	if err != nil {
 		return false, err
 	}
 	client := ent.FromContext(ctx)
-	err = client.OrgUser.Update().Where(orguser.UserID(userID), orguser.OrgID(tid)).SetUserType(userType).Exec(ctx)
+	err = client.OrgUser.Update().Where(orguser.UserID(userID), orguser.OrgID(co.ID)).SetUserType(userType).Exec(ctx)
 	if err != nil {
 		return false, err
 	}

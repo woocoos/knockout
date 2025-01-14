@@ -432,7 +432,7 @@ type ComplexityRoot struct {
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
 		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
-		ChangeOrgUserType           func(childComplexity int, userID int, userType orguser.UserType) int
+		ChangeOrgUserType           func(childComplexity int, userID int, orgID int, userType orguser.UserType) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
@@ -742,59 +742,60 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppAccess                   func(childComplexity int, appCode string) int
-		AppAccessForToken           func(childComplexity int, appCode string, clientID string, clientSecret string) int
-		AppDictByRefCode            func(childComplexity int, refCodes []string) int
-		AppDictItemByRefCode        func(childComplexity int, refCode string) int
-		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
-		AppPolicyAssignedToOrgs     func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
-		AppPolicyView               func(childComplexity int, appCode string) int
-		AppPolicyViewRoleAssigned   func(childComplexity int, appRoleID int) int
-		AppResources                func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
-		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		CheckPermission             func(childComplexity int, permission string) int
-		CheckPermissionByJwt        func(childComplexity int, jwtStr string, orgID int, action string, appCode string) int
-		Countries                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
-		Currencies                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) int
-		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
-		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
-		FileIdentityAccessKeySecret func(childComplexity int, id int) int
-		FileSources                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
-		GlobalID                    func(childComplexity int, typeArg string, id int) int
-		Node                        func(childComplexity int, id string) int
-		Nodes                       func(childComplexity int, ids []string) int
-		OrgAppActions               func(childComplexity int, appCode string, orgID int) int
-		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		OrgPolicyView               func(childComplexity int, appCode string, orgID *int) int
-		OrgPolicyViewRoleAssigned   func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
-		OrgPolicyViewUserAssigned   func(childComplexity int, userID int, appCode string, orgID *int) int
-		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgUserPreference           func(childComplexity int) int
-		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		ParentOrgUsers              func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		QuotaItems                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
-		Quotas                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
-		Regions                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
-		UserApps                    func(childComplexity int) int
-		UserDevices                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
-		UserExtendGroupPolicies     func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		UserExtendRolePolicies      func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		UserGroups                  func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		UserMenus                   func(childComplexity int, appCode string) int
-		UserMfaInfo                 func(childComplexity int, userID int, orgID int) int
-		UserOrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		UserPasswordPolicy          func(childComplexity int) int
-		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
-		UserRoles                   func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		UserRootOrgs                func(childComplexity int) int
-		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		Viewer                      func(childComplexity int) int
+		AppAccess                     func(childComplexity int, appCode string) int
+		AppAccessForToken             func(childComplexity int, appCode string, clientID string, clientSecret string) int
+		AppDictByRefCode              func(childComplexity int, refCodes []string) int
+		AppDictItemByRefCode          func(childComplexity int, refCode string) int
+		AppDicts                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
+		AppPolicyAssignedToOrgs       func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
+		AppPolicyView                 func(childComplexity int, appCode string) int
+		AppPolicyViewRoleAssigned     func(childComplexity int, appRoleID int) int
+		AppResources                  func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		AppRoleAssignedToOrgs         func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
+		Apps                          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		CheckPermission               func(childComplexity int, permission string) int
+		CheckPermissionByJwt          func(childComplexity int, jwtStr string, orgID int, action string, appCode string) int
+		Countries                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
+		Currencies                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) int
+		FileIdentities                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
+		FileIdentitiesForApp          func(childComplexity int, where *ent.FileIdentityWhereInput) int
+		FileIdentityAccessKeySecret   func(childComplexity int, id int) int
+		FileSources                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
+		GlobalID                      func(childComplexity int, typeArg string, id int) int
+		Node                          func(childComplexity int, id string) int
+		Nodes                         func(childComplexity int, ids []string) int
+		OrgAppActions                 func(childComplexity int, appCode string, orgID int) int
+		OrgAppResources               func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		OrgGroups                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgPolicyReferences           func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgPolicyView                 func(childComplexity int, appCode string, orgID *int) int
+		OrgPolicyViewRoleAssigned     func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
+		OrgPolicyViewUserAssigned     func(childComplexity int, userID int, appCode string, orgID *int) int
+		OrgPolicyViewUserRoleAssigned func(childComplexity int, userID int, appCode string, orgID int) int
+		OrgRecycleUsers               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoleUsers                  func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgUserPreference             func(childComplexity int) int
+		Organizations                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		ParentOrgUsers                func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		QuotaItems                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
+		Quotas                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
+		Regions                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
+		UserApps                      func(childComplexity int) int
+		UserDevices                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
+		UserExtendGroupPolicies       func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserExtendRolePolicies        func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserGroups                    func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserMembers                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		UserMenus                     func(childComplexity int, appCode string) int
+		UserMfaInfo                   func(childComplexity int, userID int, orgID int) int
+		UserOrgRoles                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserPasswordPolicy            func(childComplexity int) int
+		UserPermissions               func(childComplexity int, where *ent.AppActionWhereInput) int
+		UserRoles                     func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserRootOrgs                  func(childComplexity int) int
+		Users                         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Viewer                        func(childComplexity int) int
 	}
 
 	Quota struct {
@@ -3018,7 +3019,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ChangeOrgUserType(childComplexity, args["userID"].(int), args["userType"].(orguser.UserType)), true
+		return e.complexity.Mutation.ChangeOrgUserType(childComplexity, args["userID"].(int), args["orgID"].(int), args["userType"].(orguser.UserType)), true
 
 	case "Mutation.changePassword":
 		if e.complexity.Mutation.ChangePassword == nil {
@@ -5609,6 +5610,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgPolicyViewUserAssigned(childComplexity, args["userID"].(int), args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewUserRoleAssigned":
+		if e.complexity.Query.OrgPolicyViewUserRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewUserRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewUserRoleAssigned(childComplexity, args["userID"].(int), args["appCode"].(string), args["orgID"].(int)), true
 
 	case "Query.orgRecycleUsers":
 		if e.complexity.Query.OrgRecycleUsers == nil {
@@ -17815,7 +17828,7 @@ input UserWhereInput {
         action:TreeAction!
     ): Boolean!
     """更改组织用户类型"""
-    changeOrgUserType(userID:ID!,userType:OrgUserUserType!):Boolean!
+    changeOrgUserType(userID:ID!,orgID: ID!,userType:OrgUserUserType!):Boolean!
     """创建货币"""
     createCurrency(input: CreateCurrencyInput!): Currency
     """更新货币"""
@@ -18058,6 +18071,8 @@ input UserWhereInput {
     orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
     """组织策略视图用户选择项，返回OrgPolicyIDs"""
     orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图，用户授权的角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewUserRoleAssigned(userID: ID!,appCode: String!,orgID: ID!): [ID!]!
     """获取租户密码策略"""
     userPasswordPolicy: UserPasswordPolicy
     """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""
@@ -18072,7 +18087,10 @@ input UserWhereInput {
         where: UserWhereInput
     ):UserConnection!
     """查看用户mfa信息"""
-    userMfaInfo(userID: ID!,orgID: ID!):UserMfaInfo!
+    userMfaInfo(
+        userID: ID!,
+        orgID: ID!,
+    ):UserMfaInfo!
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""

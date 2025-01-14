@@ -105,7 +105,7 @@ type MutationResolver interface {
 	UpdateRegion(ctx context.Context, regionID int, input ent.UpdateRegionInput) (*ent.Region, error)
 	DeleteRegion(ctx context.Context, regionID int) (bool, error)
 	MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error)
-	ChangeOrgUserType(ctx context.Context, userID int, userType orguser.UserType) (bool, error)
+	ChangeOrgUserType(ctx context.Context, userID int, orgID int, userType orguser.UserType) (bool, error)
 	CreateCurrency(ctx context.Context, input ent.CreateCurrencyInput) (*ent.Currency, error)
 	UpdateCurrency(ctx context.Context, currencyID int, input ent.UpdateCurrencyInput) (*ent.Currency, error)
 	DeleteCurrency(ctx context.Context, currencyID int) (bool, error)
@@ -927,11 +927,16 @@ func (ec *executionContext) field_Mutation_changeOrgUserType_args(ctx context.Co
 		return nil, err
 	}
 	args["userID"] = arg0
-	arg1, err := ec.field_Mutation_changeOrgUserType_argsUserType(ctx, rawArgs)
+	arg1, err := ec.field_Mutation_changeOrgUserType_argsOrgID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["userType"] = arg1
+	args["orgID"] = arg1
+	arg2, err := ec.field_Mutation_changeOrgUserType_argsUserType(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userType"] = arg2
 	return args, nil
 }
 func (ec *executionContext) field_Mutation_changeOrgUserType_argsUserID(
@@ -949,6 +954,28 @@ func (ec *executionContext) field_Mutation_changeOrgUserType_argsUserID(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
 	if tmp, ok := rawArgs["userID"]; ok {
+		return ec.unmarshalNID2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_changeOrgUserType_argsOrgID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orgID"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orgID"))
+	if tmp, ok := rawArgs["orgID"]; ok {
 		return ec.unmarshalNID2int(ctx, tmp)
 	}
 
@@ -12069,7 +12096,7 @@ func (ec *executionContext) _Mutation_changeOrgUserType(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ChangeOrgUserType(rctx, fc.Args["userID"].(int), fc.Args["userType"].(orguser.UserType))
+		return ec.resolvers.Mutation().ChangeOrgUserType(rctx, fc.Args["userID"].(int), fc.Args["orgID"].(int), fc.Args["userType"].(orguser.UserType))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
