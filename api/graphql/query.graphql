@@ -201,4 +201,9 @@ extend type Query {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """查看用户mfa信息"""
+    userMfaInfo(
+        userID: ID!,
+        orgID: ID!,
+    ):UserMfaInfo!
 }

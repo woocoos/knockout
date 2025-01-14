@@ -112,6 +112,18 @@ type OrgUserPreferenceInput struct {
 	MenuRecent []int `json:"menuRecent,omitempty"`
 }
 
+// 查看用户mfa信息
+type UserMfaInfo struct {
+	// 是否启用mfa
+	MfaEnabled bool `json:"mfaEnabled"`
+	// 秘钥
+	Secret string `json:"secret"`
+	// 二维码
+	QRCodeURI string `json:"qrCodeUri"`
+	// 用户账号
+	AccountName string `json:"accountName"`
+}
+
 // Properties by which AppRolePolicy connections can be ordered.
 type AppRolePolicyOrderField string
 

@@ -192,3 +192,14 @@ type AppPolicyViewOrgPolicy{
     orgPolicy: OrgPolicy
     appPolicyView: AppPolicyView
 }
+"""查看用户mfa信息"""
+type UserMfaInfo {
+    """是否启用mfa"""
+    mfaEnabled: Boolean!
+    """秘钥"""
+    secret: String!
+    """二维码"""
+    qrCodeUri: String!
+    """用户账号"""
+    accountName: String!
+}

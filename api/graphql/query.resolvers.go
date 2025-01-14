@@ -6,12 +6,11 @@ package graphql
 
 import (
 	"context"
-	"fmt"
-	"github.com/woocoos/knockout/ent/predicate"
-	"strconv"
-
+	"encoding/base32"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
+	"fmt"
+	"github.com/pquerna/otp/totp"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -32,7 +31,10 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userloginprofile"
+	"strconv"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -478,4 +480,42 @@ func (r *queryResolver) ParentOrgUsers(ctx context.Context, orgID int, after *en
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))
+}
+
+// UserMfaInfo is the resolver for the userMfaInfo field.
+func (r *queryResolver) UserMfaInfo(ctx context.Context, userID int, orgID int) (*model.UserMfaInfo, error) {
+	ulp, err := r.client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).WithUser().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if !ulp.MfaEnabled {
+		return &model.UserMfaInfo{
+			MfaEnabled: false,
+		}, nil
+	}
+	o, err := r.client.Org.Query().Where(org.ID(orgID), org.HasOrgUserWith(orguser.UserID(userID))).Only(ctx)
+	secByte, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(ulp.MfaSecret)
+	if err != nil {
+		return nil, err
+	}
+	domain := o.Domain
+	if domain == "" {
+		domain, err = r.resource.ParentDomain(ctx, o.ParentID)
+		if err != nil {
+			return nil, err
+		}
+	}
+	key, err := totp.Generate(totp.GenerateOpts{
+		Issuer:      domain,
+		AccountName: ulp.Edges.User.PrincipalName,
+		Secret:      secByte,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &model.UserMfaInfo{
+		MfaEnabled: ulp.MfaEnabled,
+		QRCodeURI:  key.String(),
+		Secret:     ulp.MfaSecret,
+	}, nil
 }

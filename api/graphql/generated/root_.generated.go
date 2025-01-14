@@ -787,6 +787,7 @@ type ComplexityRoot struct {
 		UserGroups                  func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserMembers                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 		UserMenus                   func(childComplexity int, appCode string) int
+		UserMfaInfo                 func(childComplexity int, userID int, orgID int) int
 		UserOrgRoles                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		UserPasswordPolicy          func(childComplexity int) int
 		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
@@ -1008,6 +1009,13 @@ type ComplexityRoot struct {
 		User          func(childComplexity int) int
 		UserID        func(childComplexity int) int
 		VerifyDevice  func(childComplexity int) int
+	}
+
+	UserMfaInfo struct {
+		AccountName func(childComplexity int) int
+		MfaEnabled  func(childComplexity int) int
+		QRCodeURI   func(childComplexity int) int
+		Secret      func(childComplexity int) int
 	}
 
 	UserPassword struct {
@@ -5784,6 +5792,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserMenus(childComplexity, args["appCode"].(string)), true
 
+	case "Query.userMfaInfo":
+		if e.complexity.Query.UserMfaInfo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userMfaInfo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserMfaInfo(childComplexity, args["userID"].(int), args["orgID"].(int)), true
+
 	case "Query.userOrgRoles":
 		if e.complexity.Query.UserOrgRoles == nil {
 			break
@@ -6997,6 +7017,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserLoginProfile.VerifyDevice(childComplexity), true
+
+	case "UserMfaInfo.accountName":
+		if e.complexity.UserMfaInfo.AccountName == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.AccountName(childComplexity), true
+
+	case "UserMfaInfo.mfaEnabled":
+		if e.complexity.UserMfaInfo.MfaEnabled == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.MfaEnabled(childComplexity), true
+
+	case "UserMfaInfo.qrCodeUri":
+		if e.complexity.UserMfaInfo.QRCodeURI == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.QRCodeURI(childComplexity), true
+
+	case "UserMfaInfo.secret":
+		if e.complexity.UserMfaInfo.Secret == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.Secret(childComplexity), true
 
 	case "UserPassword.createdAt":
 		if e.complexity.UserPassword.CreatedAt == nil {
@@ -18023,6 +18071,8 @@ input UserWhereInput {
         orderBy: UserOrder
         where: UserWhereInput
     ):UserConnection!
+    """查看用户mfa信息"""
+    userMfaInfo(userID: ID!,orgID: ID!):UserMfaInfo!
 }`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""
@@ -18217,6 +18267,17 @@ input OrgLogoInput {
 type AppPolicyViewOrgPolicy{
     orgPolicy: OrgPolicy
     appPolicyView: AppPolicyView
+}
+"""查看用户mfa信息"""
+type UserMfaInfo {
+    """是否启用mfa"""
+    mfaEnabled: Boolean!
+    """秘钥"""
+    secret: String!
+    """二维码"""
+    qrCodeUri: String!
+    """用户账号"""
+    accountName: String!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
