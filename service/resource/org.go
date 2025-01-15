@@ -250,12 +250,12 @@ func (s *Service) CreateUserPassword(ctx context.Context, input *ent.CreateUserP
 	if input.Password != nil || *input.Password != "" {
 		hashPwd = SHA256(*input.Password + salt)
 	} else {
-		hashPwd = RandomStr(6)
+		hashPwd = SHA256(RandomStr(6))
 		hashPwd = SHA256(hashPwd + salt)
 	}
+	input.Password = &hashPwd
 	pw, err = ent.FromContext(ctx).UserPassword.Create().
 		SetInput(*input).
-		SetPassword(hashPwd).
 		SetSalt(salt).
 		Save(ctx)
 
@@ -795,7 +795,9 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	}
 	newPwd := RandomStr(6)
 	// 更新用户密码
-	err = client.UserPassword.UpdateOneID(userID).Where(userpassword.SceneEQ(userpassword.SceneLogin)).SetPassword(SaltSecret(newPwd, slat)).Exec(ctx)
+	err = client.UserPassword.UpdateOneID(userID).Where(
+		userpassword.SceneEQ(userpassword.SceneLogin),
+	).SetPassword(SaltSecret(SHA256(newPwd), slat)).Exec(ctx)
 	if err != nil {
 		return err
 	}
