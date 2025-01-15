@@ -327,10 +327,11 @@ func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, u
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	or, err := client.OrgRole.Get(ctx, roleID)
 	if err != nil {
 		return err
 	}
+	tid := or.OrgID
 	if isAllow, err := s.IsAllowRevokeOrgRole(ctx, userID, roleID); err != nil {
 		return err
 	} else if !isAllow {
