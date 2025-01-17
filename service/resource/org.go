@@ -470,60 +470,41 @@ func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.
 // CreateRole 创建角色或工作组
 func (s *Service) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgRole.Create().SetInput(input).SetOrgID(tid).Save(ctx)
+	return client.OrgRole.Create().SetInput(input).Save(ctx)
 }
 
 // UpdateRole 更新角色或工作组
 func (s *Service) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgRole.UpdateOneID(roleID).Where(orgrole.OrgID(tid)).SetInput(input).Save(ctx)
+	return client.OrgRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
 }
 
 // DeleteRole 删除角色或工作组
 func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.OrgRole.DeleteOneID(roleID).Where(orgrole.OrgID(tid)).Exec(ctx)
-	return err
+	return client.OrgRole.DeleteOneID(roleID).Exec(ctx)
 }
 
 // CreateOrganizationPolicy 创建组织策略,该策略属于租户组织
 func (s *Service) CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgPolicy.Create().SetOrgID(tid).SetInput(input).Save(ctx)
+	return client.OrgPolicy.Create().SetInput(input).Save(ctx)
 }
 
-func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
+func (s *Service) UpdateOrganizationPolicy(ctx context.Context, orgPolicyID int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	op, err := client.OrgPolicy.Get(ctx, orgPolicyID)
 	if err != nil {
 		return nil, err
 	}
-
 	// rules不为空，则同步修改casbin授权信息
 	if input.Rules != nil {
-		err := updateOrgPolicyRules(ctx, id, input.Rules, tid)
+		err := updateOrgPolicyRules(ctx, orgPolicyID, input.Rules, op.OrgID)
 		if err != nil {
 			return nil, err
 		}
 	}
-
-	data, err := client.OrgPolicy.UpdateOneID(id).Where(orgpolicy.OrgID(tid)).SetInput(input).Save(ctx)
+	data, err := client.OrgPolicy.UpdateOneID(orgPolicyID).Where(orgpolicy.OrgID(op.OrgID)).SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -532,19 +513,19 @@ func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input en
 
 func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	op, err := client.OrgPolicy.Get(ctx, orgPolicyID)
 	if err != nil {
 		return err
 	}
 	// 存在引用，不能删除
-	has, err := client.Permission.Query().Where(permission.OrgID(tid), permission.OrgPolicyID(orgPolicyID)).Exist(ctx)
+	has, err := client.Permission.Query().Where(permission.OrgID(op.OrgID), permission.OrgPolicyID(orgPolicyID)).Exist(ctx)
 	if err != nil {
 		return err
 	}
 	if has {
 		return fmt.Errorf("policy has be referenced，not allowed to delete")
 	}
-	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
+	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(op.OrgID)).Exec(ctx)
 }
 
 // GetOrgRoleUserIds 获取组织用户组/角色用户ids
@@ -795,7 +776,8 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	}
 	newPwd := RandomStr(6)
 	// 更新用户密码
-	err = client.UserPassword.UpdateOneID(userID).Where(
+	err = client.UserPassword.Update().Where(
+		userpassword.UserID(userID),
 		userpassword.SceneEQ(userpassword.SceneLogin),
 	).SetPassword(SaltSecret(SHA256(newPwd), slat)).Exec(ctx)
 	if err != nil {

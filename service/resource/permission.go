@@ -842,13 +842,8 @@ func (s *Service) IsAllowRevokePermission(ctx context.Context, p *ent.Permission
 	return true, nil
 }
 
-func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
+func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, tid int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
 	client := s.Client
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	// 根据appcode分组
 	grantActions := make(map[string][]string)
 	// 拥有全部权限的app
@@ -908,7 +903,11 @@ func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWh
 	if err != nil {
 		return nil, err
 	}
-	return s.GetUserPermissionsByUserID(ctx, uid, where)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.GetUserPermissionsByUserID(ctx, uid, tid, where)
 }
 
 func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {

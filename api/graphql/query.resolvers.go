@@ -272,7 +272,7 @@ func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string, orgID
 		return nil, fmt.Errorf("org owner not found")
 	}
 	// 获取根用户所有权限
-	return r.resource.GetUserPermissionsByUserID(ctx, *parentOrg.OwnerID, &ent.AppActionWhereInput{
+	return r.resource.GetUserPermissionsByUserID(ctx, *parentOrg.OwnerID, orgID, &ent.AppActionWhereInput{
 		HasAppWith: []*ent.AppWhereInput{{Code: &appCode}},
 	})
 }
