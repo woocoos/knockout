@@ -86,7 +86,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 		return nil, err
 	}
 	// Name更新需同步更新policy中的引用
-	if aa.Name != *input.Name {
+	if input.Name != nil && aa.Name != *input.Name {
 		appid := aa.Edges.App.ID
 
 		// 更新AppPolicy
