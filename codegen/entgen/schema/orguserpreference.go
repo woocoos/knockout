@@ -34,7 +34,7 @@ func (OrgUserPreference) Mixin() []ent.Mixin {
 func (OrgUserPreference) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("user_id").Comment("用户id"),
-		field.Int("org_id").Immutable().Comment("组织ID").
+		field.Int("org_id").Immutable().Comment("租户ID").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.JSON("menu_favorite", []int{}).Optional().Comment("用户收藏菜单").Annotations(entgql.Type("[ID!]")),
 		field.JSON("menu_recent", []int{}).Optional().Comment("用户最近访问菜单").Annotations(entgql.Type("[ID!]")),

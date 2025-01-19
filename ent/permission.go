@@ -30,7 +30,7 @@ type Permission struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 授权的域根组织
+	// 授权的租户
 	OrgID int `json:"org_id,omitempty"`
 	// 授权类型:角色,用户
 	PrincipalKind permission.PrincipalKind `json:"principal_kind,omitempty"`

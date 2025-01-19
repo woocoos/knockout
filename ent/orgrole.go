@@ -26,7 +26,7 @@ type OrgRole struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// 类型,group:组,role:角色
 	Kind orgrole.Kind `json:"kind,omitempty"`

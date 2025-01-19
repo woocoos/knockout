@@ -29535,9 +29535,22 @@ func (m *QuotaMutation) OldTenantID(ctx context.Context) (v int, err error) {
 	return oldValue.TenantID, nil
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (m *QuotaMutation) ClearTenantID() {
+	m.quota_org = nil
+	m.clearedFields[quota.FieldTenantID] = struct{}{}
+}
+
+// TenantIDCleared returns if the "tenant_id" field was cleared in this mutation.
+func (m *QuotaMutation) TenantIDCleared() bool {
+	_, ok := m.clearedFields[quota.FieldTenantID]
+	return ok
+}
+
 // ResetTenantID resets all changes to the "tenant_id" field.
 func (m *QuotaMutation) ResetTenantID() {
 	m.quota_org = nil
+	delete(m.clearedFields, quota.FieldTenantID)
 }
 
 // SetUserID sets the "user_id" field.
@@ -29571,9 +29584,22 @@ func (m *QuotaMutation) OldUserID(ctx context.Context) (v int, err error) {
 	return oldValue.UserID, nil
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (m *QuotaMutation) ClearUserID() {
+	m.quota_user = nil
+	m.clearedFields[quota.FieldUserID] = struct{}{}
+}
+
+// UserIDCleared returns if the "user_id" field was cleared in this mutation.
+func (m *QuotaMutation) UserIDCleared() bool {
+	_, ok := m.clearedFields[quota.FieldUserID]
+	return ok
+}
+
 // ResetUserID resets all changes to the "user_id" field.
 func (m *QuotaMutation) ResetUserID() {
 	m.quota_user = nil
+	delete(m.clearedFields, quota.FieldUserID)
 }
 
 // SetQuotaItemID sets the "quota_item_id" field.
@@ -29862,7 +29888,7 @@ func (m *QuotaMutation) ClearQuotaOrg() {
 
 // QuotaOrgCleared reports if the "quota_org" edge to the Org entity was cleared.
 func (m *QuotaMutation) QuotaOrgCleared() bool {
-	return m.clearedquota_org
+	return m.TenantIDCleared() || m.clearedquota_org
 }
 
 // QuotaOrgID returns the "quota_org" edge ID in the mutation.
@@ -29902,7 +29928,7 @@ func (m *QuotaMutation) ClearQuotaUser() {
 
 // QuotaUserCleared reports if the "quota_user" edge to the User entity was cleared.
 func (m *QuotaMutation) QuotaUserCleared() bool {
-	return m.clearedquota_user
+	return m.UserIDCleared() || m.clearedquota_user
 }
 
 // QuotaUserID returns the "quota_user" edge ID in the mutation.
@@ -30231,6 +30257,12 @@ func (m *QuotaMutation) ClearedFields() []string {
 	if m.FieldCleared(quota.FieldUpdatedAt) {
 		fields = append(fields, quota.FieldUpdatedAt)
 	}
+	if m.FieldCleared(quota.FieldTenantID) {
+		fields = append(fields, quota.FieldTenantID)
+	}
+	if m.FieldCleared(quota.FieldUserID) {
+		fields = append(fields, quota.FieldUserID)
+	}
 	if m.FieldCleared(quota.FieldStartAt) {
 		fields = append(fields, quota.FieldStartAt)
 	}
@@ -30256,6 +30288,12 @@ func (m *QuotaMutation) ClearField(name string) error {
 		return nil
 	case quota.FieldUpdatedAt:
 		m.ClearUpdatedAt()
+		return nil
+	case quota.FieldTenantID:
+		m.ClearTenantID()
+		return nil
+	case quota.FieldUserID:
+		m.ClearUserID()
 		return nil
 	case quota.FieldStartAt:
 		m.ClearStartAt()

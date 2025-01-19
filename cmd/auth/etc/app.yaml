@@ -33,6 +33,7 @@ auth:
   jwt: &jwt
     signingMethod: "HS256"
     signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
+    privateKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
     tokenTTL: 1h
     refreshTokenTTL: 168h
   pwdPolicy:
@@ -123,7 +124,7 @@ cache:
       ttl: 100s
 
 entcache:
-  hashQueryTTL: 5s
+  hashQueryTTL: 3s
 
 kosdk:
   client:

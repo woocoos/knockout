@@ -30,7 +30,7 @@ type OrgPolicy struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// 所属应用
 	AppID int `json:"app_id,omitempty"`

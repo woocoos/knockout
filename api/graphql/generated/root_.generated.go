@@ -7981,7 +7981,7 @@ type AppDictItem implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID,空为全局字典
+  租户ID,空为全局字典
   """
   orgID: ID
   """
@@ -10694,8 +10694,8 @@ input CreateQuotaInput {
   """
   endAt: Time
   quotaItemID: ID!
-  quotaOrgID: ID!
-  quotaUserID: ID!
+  quotaOrgID: ID
+  quotaUserID: ID
 }
 """
 CreateQuotaItemInput is used for create QuotaItem object.
@@ -12197,7 +12197,7 @@ type OrgPolicy implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID
+  租户ID
   """
   orgID: ID
   """
@@ -12417,7 +12417,7 @@ type OrgRole implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID
+  租户ID
   """
   orgID: ID
   """
@@ -12738,7 +12738,7 @@ type OrgUserPreference implements Node {
   """
   userID: ID!
   """
-  组织ID
+  租户ID
   """
   orgID: ID!
   """
@@ -13328,7 +13328,7 @@ type Permission implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  授权的域根组织
+  授权的租户
   """
   orgID: ID!
   """
@@ -14022,11 +14022,11 @@ type Quota implements Node {
   """
   租户ID,来源于root的组织ID.
   """
-  tenantID: ID!
+  tenantID: ID
   """
   来源于用户ID
   """
-  userID: ID!
+  userID: ID
   """
   配额项ID
   """
@@ -14054,11 +14054,11 @@ type Quota implements Node {
   """
   配额关联租户
   """
-  quotaOrg: Org!
+  quotaOrg: Org
   """
   配额关联用户
   """
-  quotaUser: User!
+  quotaUser: User
 }
 """
 A connection to a list of items.
@@ -14436,6 +14436,8 @@ input QuotaWhereInput {
   tenantIDNEQ: ID
   tenantIDIn: [ID!]
   tenantIDNotIn: [ID!]
+  tenantIDIsNil: Boolean
+  tenantIDNotNil: Boolean
   """
   user_id field predicates
   """
@@ -14443,6 +14445,8 @@ input QuotaWhereInput {
   userIDNEQ: ID
   userIDIn: [ID!]
   userIDNotIn: [ID!]
+  userIDIsNil: Boolean
+  userIDNotNil: Boolean
   """
   quota_item_id field predicates
   """
@@ -15405,7 +15409,9 @@ input UpdateQuotaInput {
   clearEndAt: Boolean
   quotaItemID: ID
   quotaOrgID: ID
+  clearQuotaOrg: Boolean
   quotaUserID: ID
+  clearQuotaUser: Boolean
 }
 """
 UpdateQuotaItemInput is used for update QuotaItem object.

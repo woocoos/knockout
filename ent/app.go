@@ -52,7 +52,7 @@ type App struct {
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 私有App,表示由组织创建
 	OrgPrivate bool `json:"org_private,omitempty"`
-	// 创建的根组织ID
+	// 创建的租户ID
 	OwnerOrgID int `json:"owner_org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.

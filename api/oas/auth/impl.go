@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/pquerna/otp/totp"
+	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
@@ -92,6 +93,7 @@ type Options struct {
 	JWT               struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
+		PrivateKey      string        `json:"privateKey"`
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	} `json:"jwt"`
@@ -841,7 +843,11 @@ func createToken(subject string, opts Options, refresh bool) (tokenID, tokenStr 
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
 	}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod(opts.JWT.SigningMethod), claims)
-	tokenStr, err = token.SignedString([]byte(opts.JWT.SigningKey))
+	key, err := auth.ParseSigningKeyFromString(opts.JWT.PrivateKey, opts.JWT.SigningMethod, true)
+	if err != nil {
+		return "", "", err
+	}
+	tokenStr, err = token.SignedString(key)
 	return
 }
 

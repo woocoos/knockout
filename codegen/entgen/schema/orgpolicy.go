@@ -44,7 +44,7 @@ func (OrgPolicy) Mixin() []ent.Mixin {
 // Fields of the OrgPolicy.
 func (OrgPolicy) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Optional().Immutable().Comment("组织ID"),
+		field.Int("org_id").Optional().Immutable().Comment("租户ID"),
 		field.Int("app_id").Optional().Comment("所属应用").Annotations(entgql.Skip(entgql.SkipAll)),
 		field.Int("app_policy_id").Optional().Nillable().Comment("所属应用策略,如果是自定义应用策略,则为空"),
 		field.String("name").Comment("策略名称"),

@@ -79,9 +79,25 @@ func (qc *QuotaCreate) SetTenantID(i int) *QuotaCreate {
 	return qc
 }
 
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (qc *QuotaCreate) SetNillableTenantID(i *int) *QuotaCreate {
+	if i != nil {
+		qc.SetTenantID(*i)
+	}
+	return qc
+}
+
 // SetUserID sets the "user_id" field.
 func (qc *QuotaCreate) SetUserID(i int) *QuotaCreate {
 	qc.mutation.SetUserID(i)
+	return qc
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (qc *QuotaCreate) SetNillableUserID(i *int) *QuotaCreate {
+	if i != nil {
+		qc.SetUserID(*i)
+	}
 	return qc
 }
 
@@ -156,6 +172,14 @@ func (qc *QuotaCreate) SetQuotaOrgID(id int) *QuotaCreate {
 	return qc
 }
 
+// SetNillableQuotaOrgID sets the "quota_org" edge to the Org entity by ID if the given value is not nil.
+func (qc *QuotaCreate) SetNillableQuotaOrgID(id *int) *QuotaCreate {
+	if id != nil {
+		qc = qc.SetQuotaOrgID(*id)
+	}
+	return qc
+}
+
 // SetQuotaOrg sets the "quota_org" edge to the Org entity.
 func (qc *QuotaCreate) SetQuotaOrg(o *Org) *QuotaCreate {
 	return qc.SetQuotaOrgID(o.ID)
@@ -164,6 +188,14 @@ func (qc *QuotaCreate) SetQuotaOrg(o *Org) *QuotaCreate {
 // SetQuotaUserID sets the "quota_user" edge to the User entity by ID.
 func (qc *QuotaCreate) SetQuotaUserID(id int) *QuotaCreate {
 	qc.mutation.SetQuotaUserID(id)
+	return qc
+}
+
+// SetNillableQuotaUserID sets the "quota_user" edge to the User entity by ID if the given value is not nil.
+func (qc *QuotaCreate) SetNillableQuotaUserID(id *int) *QuotaCreate {
+	if id != nil {
+		qc = qc.SetQuotaUserID(*id)
+	}
 	return qc
 }
 
@@ -231,12 +263,6 @@ func (qc *QuotaCreate) check() error {
 	if _, ok := qc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Quota.created_at"`)}
 	}
-	if _, ok := qc.mutation.TenantID(); !ok {
-		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "Quota.tenant_id"`)}
-	}
-	if _, ok := qc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Quota.user_id"`)}
-	}
 	if _, ok := qc.mutation.QuotaItemID(); !ok {
 		return &ValidationError{Name: "quota_item_id", err: errors.New(`ent: missing required field "Quota.quota_item_id"`)}
 	}
@@ -253,12 +279,6 @@ func (qc *QuotaCreate) check() error {
 	}
 	if len(qc.mutation.QuotaItemIDs()) == 0 {
 		return &ValidationError{Name: "quota_item", err: errors.New(`ent: missing required edge "Quota.quota_item"`)}
-	}
-	if len(qc.mutation.QuotaOrgIDs()) == 0 {
-		return &ValidationError{Name: "quota_org", err: errors.New(`ent: missing required edge "Quota.quota_org"`)}
-	}
-	if len(qc.mutation.QuotaUserIDs()) == 0 {
-		return &ValidationError{Name: "quota_user", err: errors.New(`ent: missing required edge "Quota.quota_user"`)}
 	}
 	return nil
 }
@@ -482,6 +502,12 @@ func (u *QuotaUpsert) UpdateTenantID() *QuotaUpsert {
 	return u
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (u *QuotaUpsert) ClearTenantID() *QuotaUpsert {
+	u.SetNull(quota.FieldTenantID)
+	return u
+}
+
 // SetUserID sets the "user_id" field.
 func (u *QuotaUpsert) SetUserID(v int) *QuotaUpsert {
 	u.Set(quota.FieldUserID, v)
@@ -491,6 +517,12 @@ func (u *QuotaUpsert) SetUserID(v int) *QuotaUpsert {
 // UpdateUserID sets the "user_id" field to the value that was provided on create.
 func (u *QuotaUpsert) UpdateUserID() *QuotaUpsert {
 	u.SetExcluded(quota.FieldUserID)
+	return u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *QuotaUpsert) ClearUserID() *QuotaUpsert {
+	u.SetNull(quota.FieldUserID)
 	return u
 }
 
@@ -695,6 +727,13 @@ func (u *QuotaUpsertOne) UpdateTenantID() *QuotaUpsertOne {
 	})
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (u *QuotaUpsertOne) ClearTenantID() *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.ClearTenantID()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *QuotaUpsertOne) SetUserID(v int) *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
@@ -706,6 +745,13 @@ func (u *QuotaUpsertOne) SetUserID(v int) *QuotaUpsertOne {
 func (u *QuotaUpsertOne) UpdateUserID() *QuotaUpsertOne {
 	return u.Update(func(s *QuotaUpsert) {
 		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *QuotaUpsertOne) ClearUserID() *QuotaUpsertOne {
+	return u.Update(func(s *QuotaUpsert) {
+		s.ClearUserID()
 	})
 }
 
@@ -1090,6 +1136,13 @@ func (u *QuotaUpsertBulk) UpdateTenantID() *QuotaUpsertBulk {
 	})
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (u *QuotaUpsertBulk) ClearTenantID() *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.ClearTenantID()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *QuotaUpsertBulk) SetUserID(v int) *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
@@ -1101,6 +1154,13 @@ func (u *QuotaUpsertBulk) SetUserID(v int) *QuotaUpsertBulk {
 func (u *QuotaUpsertBulk) UpdateUserID() *QuotaUpsertBulk {
 	return u.Update(func(s *QuotaUpsert) {
 		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *QuotaUpsertBulk) ClearUserID() *QuotaUpsertBulk {
+	return u.Update(func(s *QuotaUpsert) {
+		s.ClearUserID()
 	})
 }
 

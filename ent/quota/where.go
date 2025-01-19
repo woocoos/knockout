@@ -310,6 +310,16 @@ func TenantIDNotIn(vs ...int) predicate.Quota {
 	return predicate.Quota(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
+// TenantIDIsNil applies the IsNil predicate on the "tenant_id" field.
+func TenantIDIsNil() predicate.Quota {
+	return predicate.Quota(sql.FieldIsNull(FieldTenantID))
+}
+
+// TenantIDNotNil applies the NotNil predicate on the "tenant_id" field.
+func TenantIDNotNil() predicate.Quota {
+	return predicate.Quota(sql.FieldNotNull(FieldTenantID))
+}
+
 // UserIDEQ applies the EQ predicate on the "user_id" field.
 func UserIDEQ(v int) predicate.Quota {
 	return predicate.Quota(sql.FieldEQ(FieldUserID, v))
@@ -328,6 +338,16 @@ func UserIDIn(vs ...int) predicate.Quota {
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
 func UserIDNotIn(vs ...int) predicate.Quota {
 	return predicate.Quota(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// UserIDIsNil applies the IsNil predicate on the "user_id" field.
+func UserIDIsNil() predicate.Quota {
+	return predicate.Quota(sql.FieldIsNull(FieldUserID))
+}
+
+// UserIDNotNil applies the NotNil predicate on the "user_id" field.
+func UserIDNotNil() predicate.Quota {
+	return predicate.Quota(sql.FieldNotNull(FieldUserID))
 }
 
 // QuotaItemIDEQ applies the EQ predicate on the "quota_item_id" field.

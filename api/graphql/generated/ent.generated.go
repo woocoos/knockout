@@ -31256,14 +31256,11 @@ func (ec *executionContext) _Quota_tenantID(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalOID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_tenantID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31300,14 +31297,11 @@ func (ec *executionContext) _Quota_userID(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalOID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_userID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31630,14 +31624,11 @@ func (ec *executionContext) _Quota_quotaOrg(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*ent.Org)
 	fc.Result = res
-	return ec.marshalNOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
+	return ec.marshalOOrg2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐOrg(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_quotaOrg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31744,14 +31735,11 @@ func (ec *executionContext) _Quota_quotaUser(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*ent.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUser(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Quota_quotaUser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -49851,14 +49839,14 @@ func (ec *executionContext) unmarshalInputCreateQuotaInput(ctx context.Context, 
 			it.QuotaItemID = data
 		case "quotaOrgID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaOrgID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.QuotaOrgID = data
 		case "quotaUserID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaUserID"))
-			data, err := ec.unmarshalNID2int(ctx, v)
+			data, err := ec.unmarshalOID2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -59448,7 +59436,7 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasQuotaItem", "hasQuotaItemWith", "hasQuotaOrg", "hasQuotaOrgWith", "hasQuotaUser", "hasQuotaUserWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdBy", "createdByNEQ", "createdByIn", "createdByNotIn", "createdByGT", "createdByGTE", "createdByLT", "createdByLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedBy", "updatedByNEQ", "updatedByIn", "updatedByNotIn", "updatedByGT", "updatedByGTE", "updatedByLT", "updatedByLTE", "updatedByIsNil", "updatedByNotNil", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "updatedAtIsNil", "updatedAtNotNil", "tenantID", "tenantIDNEQ", "tenantIDIn", "tenantIDNotIn", "tenantIDIsNil", "tenantIDNotNil", "userID", "userIDNEQ", "userIDIn", "userIDNotIn", "userIDIsNil", "userIDNotNil", "quotaItemID", "quotaItemIDNEQ", "quotaItemIDIn", "quotaItemIDNotIn", "startAt", "startAtNEQ", "startAtIn", "startAtNotIn", "startAtGT", "startAtGTE", "startAtLT", "startAtLTE", "startAtIsNil", "startAtNotNil", "endAt", "endAtNEQ", "endAtIn", "endAtNotIn", "endAtGT", "endAtGTE", "endAtLT", "endAtLTE", "endAtIsNil", "endAtNotNil", "hasQuotaItem", "hasQuotaItemWith", "hasQuotaOrg", "hasQuotaOrgWith", "hasQuotaUser", "hasQuotaUserWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -59812,6 +59800,20 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.TenantIDNotIn = data
+		case "tenantIDIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDIsNil = data
+		case "tenantIDNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tenantIDNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TenantIDNotNil = data
 		case "userID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -59840,6 +59842,20 @@ func (ec *executionContext) unmarshalInputQuotaWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.UserIDNotIn = data
+		case "userIDIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDIsNil = data
+		case "userIDNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userIDNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserIDNotNil = data
 		case "quotaItemID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaItemID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -63027,7 +63043,7 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "quotaItemID", "quotaOrgID", "quotaUserID"}
+	fieldsInOrder := [...]string{"limit", "startAt", "clearStartAt", "endAt", "clearEndAt", "quotaItemID", "quotaOrgID", "clearQuotaOrg", "quotaUserID", "clearQuotaUser"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -63083,6 +63099,13 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.QuotaOrgID = data
+		case "clearQuotaOrg":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearQuotaOrg"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearQuotaOrg = data
 		case "quotaUserID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quotaUserID"))
 			data, err := ec.unmarshalOID2ᚖint(ctx, v)
@@ -63090,6 +63113,13 @@ func (ec *executionContext) unmarshalInputUpdateQuotaInput(ctx context.Context, 
 				return it, err
 			}
 			it.QuotaUserID = data
+		case "clearQuotaUser":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearQuotaUser"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearQuotaUser = data
 		}
 	}
 
@@ -77102,14 +77132,8 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Quota_updatedAt(ctx, field, obj)
 		case "tenantID":
 			out.Values[i] = ec._Quota_tenantID(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
 		case "userID":
 			out.Values[i] = ec._Quota_userID(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
 		case "quotaItemID":
 			out.Values[i] = ec._Quota_quotaItemID(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -77168,16 +77192,13 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 		case "quotaOrg":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Quota_quotaOrg(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -77204,16 +77225,13 @@ func (ec *executionContext) _Quota(ctx context.Context, sel ast.SelectionSet, ob
 		case "quotaUser":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Quota_quotaUser(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 

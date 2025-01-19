@@ -92,6 +92,12 @@ func (qu *QuotaUpdate) SetNillableTenantID(i *int) *QuotaUpdate {
 	return qu
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (qu *QuotaUpdate) ClearTenantID() *QuotaUpdate {
+	qu.mutation.ClearTenantID()
+	return qu
+}
+
 // SetUserID sets the "user_id" field.
 func (qu *QuotaUpdate) SetUserID(i int) *QuotaUpdate {
 	qu.mutation.SetUserID(i)
@@ -103,6 +109,12 @@ func (qu *QuotaUpdate) SetNillableUserID(i *int) *QuotaUpdate {
 	if i != nil {
 		qu.SetUserID(*i)
 	}
+	return qu
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (qu *QuotaUpdate) ClearUserID() *QuotaUpdate {
+	qu.mutation.ClearUserID()
 	return qu
 }
 
@@ -213,6 +225,14 @@ func (qu *QuotaUpdate) SetQuotaOrgID(id int) *QuotaUpdate {
 	return qu
 }
 
+// SetNillableQuotaOrgID sets the "quota_org" edge to the Org entity by ID if the given value is not nil.
+func (qu *QuotaUpdate) SetNillableQuotaOrgID(id *int) *QuotaUpdate {
+	if id != nil {
+		qu = qu.SetQuotaOrgID(*id)
+	}
+	return qu
+}
+
 // SetQuotaOrg sets the "quota_org" edge to the Org entity.
 func (qu *QuotaUpdate) SetQuotaOrg(o *Org) *QuotaUpdate {
 	return qu.SetQuotaOrgID(o.ID)
@@ -221,6 +241,14 @@ func (qu *QuotaUpdate) SetQuotaOrg(o *Org) *QuotaUpdate {
 // SetQuotaUserID sets the "quota_user" edge to the User entity by ID.
 func (qu *QuotaUpdate) SetQuotaUserID(id int) *QuotaUpdate {
 	qu.mutation.SetQuotaUserID(id)
+	return qu
+}
+
+// SetNillableQuotaUserID sets the "quota_user" edge to the User entity by ID if the given value is not nil.
+func (qu *QuotaUpdate) SetNillableQuotaUserID(id *int) *QuotaUpdate {
+	if id != nil {
+		qu = qu.SetQuotaUserID(*id)
+	}
 	return qu
 }
 
@@ -288,12 +316,6 @@ func (qu *QuotaUpdate) check() error {
 	}
 	if qu.mutation.QuotaItemCleared() && len(qu.mutation.QuotaItemIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Quota.quota_item"`)
-	}
-	if qu.mutation.QuotaOrgCleared() && len(qu.mutation.QuotaOrgIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.quota_org"`)
-	}
-	if qu.mutation.QuotaUserCleared() && len(qu.mutation.QuotaUserIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.quota_user"`)
 	}
 	return nil
 }
@@ -517,6 +539,12 @@ func (quo *QuotaUpdateOne) SetNillableTenantID(i *int) *QuotaUpdateOne {
 	return quo
 }
 
+// ClearTenantID clears the value of the "tenant_id" field.
+func (quo *QuotaUpdateOne) ClearTenantID() *QuotaUpdateOne {
+	quo.mutation.ClearTenantID()
+	return quo
+}
+
 // SetUserID sets the "user_id" field.
 func (quo *QuotaUpdateOne) SetUserID(i int) *QuotaUpdateOne {
 	quo.mutation.SetUserID(i)
@@ -528,6 +556,12 @@ func (quo *QuotaUpdateOne) SetNillableUserID(i *int) *QuotaUpdateOne {
 	if i != nil {
 		quo.SetUserID(*i)
 	}
+	return quo
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (quo *QuotaUpdateOne) ClearUserID() *QuotaUpdateOne {
+	quo.mutation.ClearUserID()
 	return quo
 }
 
@@ -638,6 +672,14 @@ func (quo *QuotaUpdateOne) SetQuotaOrgID(id int) *QuotaUpdateOne {
 	return quo
 }
 
+// SetNillableQuotaOrgID sets the "quota_org" edge to the Org entity by ID if the given value is not nil.
+func (quo *QuotaUpdateOne) SetNillableQuotaOrgID(id *int) *QuotaUpdateOne {
+	if id != nil {
+		quo = quo.SetQuotaOrgID(*id)
+	}
+	return quo
+}
+
 // SetQuotaOrg sets the "quota_org" edge to the Org entity.
 func (quo *QuotaUpdateOne) SetQuotaOrg(o *Org) *QuotaUpdateOne {
 	return quo.SetQuotaOrgID(o.ID)
@@ -646,6 +688,14 @@ func (quo *QuotaUpdateOne) SetQuotaOrg(o *Org) *QuotaUpdateOne {
 // SetQuotaUserID sets the "quota_user" edge to the User entity by ID.
 func (quo *QuotaUpdateOne) SetQuotaUserID(id int) *QuotaUpdateOne {
 	quo.mutation.SetQuotaUserID(id)
+	return quo
+}
+
+// SetNillableQuotaUserID sets the "quota_user" edge to the User entity by ID if the given value is not nil.
+func (quo *QuotaUpdateOne) SetNillableQuotaUserID(id *int) *QuotaUpdateOne {
+	if id != nil {
+		quo = quo.SetQuotaUserID(*id)
+	}
 	return quo
 }
 
@@ -726,12 +776,6 @@ func (quo *QuotaUpdateOne) check() error {
 	}
 	if quo.mutation.QuotaItemCleared() && len(quo.mutation.QuotaItemIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Quota.quota_item"`)
-	}
-	if quo.mutation.QuotaOrgCleared() && len(quo.mutation.QuotaOrgIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.quota_org"`)
-	}
-	if quo.mutation.QuotaUserCleared() && len(quo.mutation.QuotaUserIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "Quota.quota_user"`)
 	}
 	return nil
 }

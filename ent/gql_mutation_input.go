@@ -2100,8 +2100,8 @@ type CreateQuotaInput struct {
 	StartAt     *time.Time
 	EndAt       *time.Time
 	QuotaItemID int
-	QuotaOrgID  int
-	QuotaUserID int
+	QuotaOrgID  *int
+	QuotaUserID *int
 }
 
 // Mutate applies the CreateQuotaInput on the QuotaMutation builder.
@@ -2114,8 +2114,12 @@ func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
 		m.SetEndAt(*v)
 	}
 	m.SetQuotaItemID(i.QuotaItemID)
-	m.SetQuotaOrgID(i.QuotaOrgID)
-	m.SetQuotaUserID(i.QuotaUserID)
+	if v := i.QuotaOrgID; v != nil {
+		m.SetQuotaOrgID(*v)
+	}
+	if v := i.QuotaUserID; v != nil {
+		m.SetQuotaUserID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateQuotaInput on the QuotaCreate builder.
@@ -2126,14 +2130,16 @@ func (c *QuotaCreate) SetInput(i CreateQuotaInput) *QuotaCreate {
 
 // UpdateQuotaInput represents a mutation input for updating quotaslice.
 type UpdateQuotaInput struct {
-	Limit        *int64
-	ClearStartAt bool
-	StartAt      *time.Time
-	ClearEndAt   bool
-	EndAt        *time.Time
-	QuotaItemID  *int
-	QuotaOrgID   *int
-	QuotaUserID  *int
+	Limit          *int64
+	ClearStartAt   bool
+	StartAt        *time.Time
+	ClearEndAt     bool
+	EndAt          *time.Time
+	QuotaItemID    *int
+	ClearQuotaOrg  bool
+	QuotaOrgID     *int
+	ClearQuotaUser bool
+	QuotaUserID    *int
 }
 
 // Mutate applies the UpdateQuotaInput on the QuotaMutation builder.
@@ -2156,8 +2162,14 @@ func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
 	if v := i.QuotaItemID; v != nil {
 		m.SetQuotaItemID(*v)
 	}
+	if i.ClearQuotaOrg {
+		m.ClearQuotaOrg()
+	}
 	if v := i.QuotaOrgID; v != nil {
 		m.SetQuotaOrgID(*v)
+	}
+	if i.ClearQuotaUser {
+		m.ClearQuotaUser()
 	}
 	if v := i.QuotaUserID; v != nil {
 		m.SetQuotaUserID(*v)

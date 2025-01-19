@@ -42,7 +42,7 @@ func (AppDictItem) Mixin() []ent.Mixin {
 // Fields of the AppDictItem.
 func (AppDictItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Optional().Immutable().Comment("组织ID,空为全局字典"),
+		field.Int("org_id").Optional().Immutable().Comment("租户ID,空为全局字典"),
 		field.Int("dict_id").Optional().Immutable().Comment("所属字典"),
 		field.String("ref_code").Comment("关联代码,由app_code和dict_code组成").Annotations(entgql.Skip(
 			entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),

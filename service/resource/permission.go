@@ -111,17 +111,16 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 
 // appPolicy to orgPolicy
 func appPolicyToOrgPolicy(appCode string, rules []*types.PolicyRule, tenantID int) error {
-	//for _, rule := range rules {
-	//	for j, action := range rule.Actions {
-	//		rule.Actions[j] = appCode + ArnSplit + action
-	//	}
-	//	for j, resource := range rule.Resources {
-	//		// 替换tenant_id
-	//		resource = authz.ReplaceTenantID(resource, tenantID)
-	//		// 补充appCode
-	//		rule.Resources[j] = appCode + ArnSplit + authz.FormatResourceArn(resource)
-	//	}
-	//}
+	for _, rule := range rules {
+		//for j, action := range rule.Actions {
+		//	rule.Actions[j] = appCode + ArnSplit + action
+		//}
+		for j, resource := range rule.Resources {
+			// 替换tenant_id
+			resource = authz.ReplaceTenantID(resource, tenantID)
+			rule.Resources[j] = authz.FormatResourceArn(resource)
+		}
+	}
 	return nil
 }
 

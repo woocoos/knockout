@@ -626,7 +626,7 @@ func (q *Quota) QuotaOrg(ctx context.Context) (*Org, error) {
 	if IsNotLoaded(err) {
 		result, err = q.QueryQuotaOrg().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (q *Quota) QuotaUser(ctx context.Context) (*User, error) {
@@ -634,7 +634,7 @@ func (q *Quota) QuotaUser(ctx context.Context) (*User, error) {
 	if IsNotLoaded(err) {
 		result, err = q.QueryQuotaUser().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (qi *QuotaItem) Quota(

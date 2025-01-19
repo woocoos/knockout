@@ -28,7 +28,7 @@ type AppDictItem struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID,空为全局字典
+	// 租户ID,空为全局字典
 	OrgID int `json:"org_id,omitempty"`
 	// 所属字典
 	DictID int `json:"dict_id,omitempty"`

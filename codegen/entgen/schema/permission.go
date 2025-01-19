@@ -36,7 +36,7 @@ func (Permission) Mixin() []ent.Mixin {
 // Fields of the Permission.
 func (Permission) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Immutable().Comment("授权的域根组织"),
+		field.Int("org_id").Immutable().Comment("授权的租户"),
 		field.Enum("principal_kind").Immutable().Values("user", "role").Comment("授权类型:角色,用户"),
 		field.Int("user_id").Optional().Immutable().Comment("授权类型为用户的ID"),
 		field.Int("role_id").Optional().Immutable().Comment("授权类型为角色或用户组的ID"),

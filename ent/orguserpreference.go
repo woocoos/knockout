@@ -30,7 +30,7 @@ type OrgUserPreference struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 用户id
 	UserID int `json:"user_id,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// 用户收藏菜单
 	MenuFavorite []int `json:"menu_favorite,omitempty"`

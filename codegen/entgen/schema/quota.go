@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"context"
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
@@ -8,7 +9,10 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	gen "github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/hook"
 )
 
 // QuotaItem 配额项定义
@@ -88,8 +92,8 @@ func (Quota) Mixin() []ent.Mixin {
 // 目前暂时不添加审批流,只启用已使用值.对于生效期也暂时不限制.
 func (Quota) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("tenant_id").Comment("租户ID,来源于root的组织ID."),
-		field.Int("user_id").Comment("来源于用户ID"),
+		field.Int("tenant_id").Optional().Comment("租户ID,来源于root的组织ID."),
+		field.Int("user_id").Optional().Comment("来源于用户ID"),
 		field.Int("quota_item_id").Comment("配额项ID"),
 		field.Int64("limit").Min(0).Comment("限制值").Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Int64("used").Default(0).Comment("已使用值").Annotations(
@@ -104,8 +108,8 @@ func (Quota) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("quota_item", QuotaItem.Type).Ref("quota").
 			Field("quota_item_id").Unique().Required().Comment("配额定义"),
-		edge.From("quota_org", Org.Type).Unique().Required().Field("tenant_id").Ref("org_quota").Comment("配额关联租户"),
-		edge.From("quota_user", User.Type).Unique().Required().Field("user_id").Ref("user_quota").Comment("配额关联用户"),
+		edge.From("quota_org", Org.Type).Unique().Field("tenant_id").Ref("org_quota").Comment("配额关联租户"),
+		edge.From("quota_user", User.Type).Unique().Field("user_id").Ref("user_quota").Comment("配额关联用户"),
 	}
 }
 
@@ -117,6 +121,24 @@ func (Quota) Indexes() []ent.Index {
 	}
 }
 
-func (Quota) Hooks() []ent.Hook {
-	return nil
+func (q Quota) Hooks() []ent.Hook {
+	return []ent.Hook{
+		q.tenantOrOrgIDHook(),
+	}
+}
+
+func (Quota) tenantOrOrgIDHook() ent.Hook {
+	return hook.On(
+		func(next ent.Mutator) ent.Mutator {
+			return hook.QuotaFunc(func(ctx context.Context, mutation *gen.QuotaMutation) (gen.Value, error) {
+				_, tidOk := mutation.TenantID()
+				_, uidOk := mutation.UserID()
+				if mutation.Op() == ent.OpCreate {
+					if !tidOk && !uidOk {
+						return nil, fmt.Errorf("at least one of tenant_id and org_id has a value")
+					}
+				}
+				return next.Mutate(ctx, mutation)
+			})
+		}, ent.OpCreate)
 }

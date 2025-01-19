@@ -823,9 +823,9 @@ var (
 		{Name: "used", Type: field.TypeInt64, Default: 0},
 		{Name: "start_at", Type: field.TypeTime, Nullable: true},
 		{Name: "end_at", Type: field.TypeTime, Nullable: true},
-		{Name: "tenant_id", Type: field.TypeInt},
+		{Name: "tenant_id", Type: field.TypeInt, Nullable: true},
 		{Name: "quota_item_id", Type: field.TypeInt},
-		{Name: "user_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// QuotaTable holds the schema information for the "quota" table.
 	QuotaTable = &schema.Table{
@@ -837,7 +837,7 @@ var (
 				Symbol:     "quota_org_org_quota",
 				Columns:    []*schema.Column{QuotaColumns[9]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "quota_quota_item_quota",
@@ -849,7 +849,7 @@ var (
 				Symbol:     "quota_user_user_quota",
 				Columns:    []*schema.Column{QuotaColumns[11]},
 				RefColumns: []*schema.Column{UserColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{

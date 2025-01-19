@@ -209,7 +209,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 		return err
 	}
 	nPwd := RandomStr(6)
-	shaPwd := SHA256(RandomStr(6))
+	shaPwd := SHA256(nPwd)
 	// 创建用户密码
 	_, err = s.CreateUserPassword(ctx, &ent.CreateUserPasswordInput{
 		Scene:    userpassword.SceneLogin,

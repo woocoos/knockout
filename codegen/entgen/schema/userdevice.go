@@ -96,8 +96,7 @@ func quotaHook() ent.Hook {
 			if fd, ok := m.Field("user_id"); ok {
 				if id, ok := fd.(int); ok {
 					return &quota.Target{
-						UserID:   id,
-						TenantID: 0,
+						UserID: id,
 					}, nil
 				}
 			}
@@ -110,8 +109,7 @@ func quotaHook() ent.Hook {
 						return nil, err
 					}
 					return &quota.Target{
-						UserID:   ud.UserID,
-						TenantID: 0,
+						UserID: ud.UserID,
 					}, nil
 				}
 			}
@@ -121,8 +119,7 @@ func quotaHook() ent.Hook {
 				if err == nil {
 					if id, ok := oldValues.(int); ok {
 						return &quota.Target{
-							UserID:   id,
-							TenantID: 0,
+							UserID: id,
 						}, nil
 					}
 				}

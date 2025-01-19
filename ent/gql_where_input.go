@@ -12117,16 +12117,20 @@ type QuotaWhereInput struct {
 	UpdatedAtNotNil bool        `json:"updatedAtNotNil,omitempty"`
 
 	// "tenant_id" field predicates.
-	TenantID      *int  `json:"tenantID,omitempty"`
-	TenantIDNEQ   *int  `json:"tenantIDNEQ,omitempty"`
-	TenantIDIn    []int `json:"tenantIDIn,omitempty"`
-	TenantIDNotIn []int `json:"tenantIDNotIn,omitempty"`
+	TenantID       *int  `json:"tenantID,omitempty"`
+	TenantIDNEQ    *int  `json:"tenantIDNEQ,omitempty"`
+	TenantIDIn     []int `json:"tenantIDIn,omitempty"`
+	TenantIDNotIn  []int `json:"tenantIDNotIn,omitempty"`
+	TenantIDIsNil  bool  `json:"tenantIDIsNil,omitempty"`
+	TenantIDNotNil bool  `json:"tenantIDNotNil,omitempty"`
 
 	// "user_id" field predicates.
-	UserID      *int  `json:"userID,omitempty"`
-	UserIDNEQ   *int  `json:"userIDNEQ,omitempty"`
-	UserIDIn    []int `json:"userIDIn,omitempty"`
-	UserIDNotIn []int `json:"userIDNotIn,omitempty"`
+	UserID       *int  `json:"userID,omitempty"`
+	UserIDNEQ    *int  `json:"userIDNEQ,omitempty"`
+	UserIDIn     []int `json:"userIDIn,omitempty"`
+	UserIDNotIn  []int `json:"userIDNotIn,omitempty"`
+	UserIDIsNil  bool  `json:"userIDIsNil,omitempty"`
+	UserIDNotNil bool  `json:"userIDNotNil,omitempty"`
 
 	// "quota_item_id" field predicates.
 	QuotaItemID      *int  `json:"quotaItemID,omitempty"`
@@ -12386,6 +12390,12 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 	if len(i.TenantIDNotIn) > 0 {
 		predicates = append(predicates, quota.TenantIDNotIn(i.TenantIDNotIn...))
 	}
+	if i.TenantIDIsNil {
+		predicates = append(predicates, quota.TenantIDIsNil())
+	}
+	if i.TenantIDNotNil {
+		predicates = append(predicates, quota.TenantIDNotNil())
+	}
 	if i.UserID != nil {
 		predicates = append(predicates, quota.UserIDEQ(*i.UserID))
 	}
@@ -12397,6 +12407,12 @@ func (i *QuotaWhereInput) P() (predicate.Quota, error) {
 	}
 	if len(i.UserIDNotIn) > 0 {
 		predicates = append(predicates, quota.UserIDNotIn(i.UserIDNotIn...))
+	}
+	if i.UserIDIsNil {
+		predicates = append(predicates, quota.UserIDIsNil())
+	}
+	if i.UserIDNotNil {
+		predicates = append(predicates, quota.UserIDNotNil())
 	}
 	if i.QuotaItemID != nil {
 		predicates = append(predicates, quota.QuotaItemIDEQ(*i.QuotaItemID))
