@@ -127,7 +127,10 @@ extend type Query {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
-    """检测权限 ko-proxy使用"""
+    """
+    检测权限 ko-proxy使用
+    @deprecated 未来将弃用.
+    """
     checkPermissionByJwt(
         jwtStr:String!
         orgID:ID!

@@ -45,13 +45,7 @@ func (t *graphqlSuite) SetupSuite() {
 	t.Require().NoError(err)
 	data.InitBase(t.DriverName, t.DSN)
 
-	buildCashbin(t.Cnf, t.AuthDbClient)
-
-	t.server = &Server{
-		casbinClient: t.AuthDbClient,
-		portalClient: t.CacheClient,
-	}
-	t.server.buildWebEngine(t.Cnf)
+	t.server = NewServer(t.Cnf, WithPortalDB(t.CacheClient), WithCasbinDB(t.AuthDbClient))
 	t.mr = &mutationResolver{
 		Resolver: t.server.resolver,
 	}
@@ -106,6 +100,15 @@ func (t *graphqlSuite) Test_DeleteApp() {
 	t.Require().False(ok)
 }
 
+func (t *graphqlSuite) TestOrganization() {
+	t.Run("query", func() {
+		ctx := t.NewTestCtx(1, 1)
+		orgs, err := t.qr.Organizations(ctx, nil, nil, nil, nil, nil, nil)
+		t.Require().NoError(err)
+		t.Require().NotNil(orgs)
+	})
+}
+
 func (t *graphqlSuite) Test_UserPermissions() {
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
 	ctx = identity.WithTenantID(ctx, 1)
@@ -120,6 +123,23 @@ func (t *graphqlSuite) Test_UserPermissions() {
 	acs, err := t.Client.AppAction.Query().Where(appaction.AppID(1)).Count(ctx)
 	t.Require().NoError(err)
 	t.Equal(len(as), acs)
+}
+
+func (t *graphqlSuite) TestGqlTypeQuery() {
+	const query = `
+query AppKind{
+  __type(name: "AppKind"){
+    name,
+    enumValues{
+      name, 
+      description
+    }
+  }
+}
+`
+	var resp map[string]any
+	err := t.gqlClient.Post(query, &resp)
+	t.Require().NoError(err)
 }
 
 func (t *graphqlSuite) TestQuota() {

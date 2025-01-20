@@ -984,8 +984,8 @@ func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permissio
 
 func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
 	token, err := jwt.ParseWithClaims(jwtStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
-		token.Method = jwt.GetSigningMethod(s.Cfg.Sub("jwt").String("signingMethod"))
-		return []byte(s.Cfg.Sub("jwt").String("signingKey")), nil
+		token.Method = jwt.GetSigningMethod(s.jwtConfig.SigningMethod)
+		return []byte(s.jwtConfig.SigningKey), nil
 	})
 	if err != nil || !token.Valid {
 		return false, err

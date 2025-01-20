@@ -28,14 +28,14 @@ func (s *Service) UserPasswordPolicy(ctx context.Context) (*ent.UserPasswordPoli
 
 func (s *Service) defaultUserPasswordPolicy() (*ent.UserPasswordPolicy, error) {
 	var upp = ent.UserPasswordPolicy{
-		Length:               s.PwdPolicy.Length,
-		IncludeElement:       s.PwdPolicy.IncludeElement,
-		IncludeChar:          s.PwdPolicy.IncludeChar,
-		AllowIncludeUserName: s.PwdPolicy.AllowIncludeUserName,
-		InvalidDay:           s.PwdPolicy.InvalidDay,
-		InvalidLoginLimit:    s.PwdPolicy.InvalidLoginLimit,
-		Retry:                s.PwdPolicy.Retry,
-		CaptchaTimes:         s.PwdPolicy.CaptchaTimes,
+		Length:               s.passwordPolicy.Length,
+		IncludeElement:       s.passwordPolicy.IncludeElement,
+		IncludeChar:          s.passwordPolicy.IncludeChar,
+		AllowIncludeUserName: s.passwordPolicy.AllowIncludeUserName,
+		InvalidDay:           s.passwordPolicy.InvalidDay,
+		InvalidLoginLimit:    s.passwordPolicy.InvalidLoginLimit,
+		Retry:                s.passwordPolicy.Retry,
+		CaptchaTimes:         s.passwordPolicy.CaptchaTimes,
 	}
 	return &upp, nil
 }

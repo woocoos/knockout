@@ -1,3 +1,7 @@
+jwt:
+  signingMethod: "HS256"
+  signingKey: "secret"
+
 auth:
   stateTokenTTL: 5m
   stateTokenSecret: "secret"
@@ -49,7 +53,7 @@ web:
           - tenant:
           - graphql:
               group: "/graphql"
-              withAuthorization: false
+              withAuthorization: true
               appCode: "resource"
 
 kosdk:

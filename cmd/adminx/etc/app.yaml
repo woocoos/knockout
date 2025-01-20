@@ -29,7 +29,11 @@ authz:
     ignoreSelf: true
     channel: "/casbin"
   model: "etc/rbac_model.conf"
-
+  # 数据条件本地缓存配置
+  cache:
+    size: 1000
+    ttl: 1m
+    
 jwt: &jwt
   signingMethod: "HS256"
   signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"

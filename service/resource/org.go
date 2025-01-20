@@ -33,6 +33,21 @@ import (
 	"time"
 )
 
+// GetRefTenants 获取当前租户下的所有子租户ID,包括当前租户.
+func (s *Service) GetRefTenants(ctx context.Context) (ids []int, err error) {
+	client := ent.FromContext(ctx)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	path, err := client.Org.Query().Where(org.ID(tid)).Select(org.FieldPath).String(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ids, err = client.Org.Query().Where(org.PathHasPrefix(path), org.KindEQ(org.KindRoot)).Select(org.FieldID).Ints(ctx)
+	return
+}
+
 // EnableOrganization 开启组织目录
 func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)

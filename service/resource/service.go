@@ -6,33 +6,56 @@ import (
 	"github.com/woocoos/knockout/ent"
 )
 
+var (
+	// TODO 添加注释
+	defaultPwdPolicy = PasswordPolicy{
+		Length:               6,
+		IncludeElement:       3,
+		IncludeChar:          4,
+		AllowIncludeUserName: false,
+		InvalidDay:           30,
+		InvalidLoginLimit:    false,
+		Retry:                5,
+		CaptchaTimes:         3,
+	}
+)
+
 type Option func(*Service)
 
-type PwdPolicy struct {
+// PasswordPolicy 密码策略
+type PasswordPolicy struct {
 	// 密码最短长度，长度应在6-32位之间
-	Length               int32 `json:"length"`
+	Length int32 `json:"length"`
 	// 必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
-	IncludeElement       int32 `json:"includeElement"`
+	IncludeElement int32 `json:"includeElement"`
 	// 最少包含的不同字符数，最多8个，0代表不限制
-	IncludeChar          int32 `json:"includeChar"`
+	IncludeChar int32 `json:"includeChar"`
 	// 是否允许包含用户名
-	AllowIncludeUserName bool  `json:"allowIncludeUserName"`
+	AllowIncludeUserName bool `json:"allowIncludeUserName"`
 	// 有效天数，最大1095天，0代表不过期
-	InvalidDay           int32 `json:"invalidDay"`
+	InvalidDay int32 `json:"invalidDay"`
 	// 过期后是否限制登录
-	InvalidLoginLimit    bool  `json:"invalidLoginLimit"`
+	InvalidLoginLimit bool `json:"invalidLoginLimit"`
 	// 一小时内密码错误最多尝试次数，最大32次，0代表不限次数
-	Retry                int32 `json:"retry"`
+	Retry int32 `json:"retry"`
 	// 密码错误多少次出现验证码，最大5次，0代表不出现验证码
-	CaptchaTimes         int32 `json:"captchaTimes"`
+	CaptchaTimes int32 `json:"captchaTimes"`
+}
+
+// JwtConfig 用于JWT,在ko-proxy移除后, 应该删除
+type JwtConfig struct {
+	SigningMethod string
+	SigningKey    string
 }
 
 // Service 企业目录服务管理
 type Service struct {
-	Client    *ent.Client
-	KOSDK     *api.SDK
-	Cfg       *conf.AppConfiguration
-	PwdPolicy *PwdPolicy
+	Client *ent.Client
+	KOSDK  *api.SDK
+	cnf    *conf.AppConfiguration
+	// 已经暴露一个密码策略, 这边不需要再暴露了
+	passwordPolicy PasswordPolicy
+	jwtConfig      JwtConfig
 }
 
 func WithClient(client *ent.Client) Option {
@@ -49,31 +72,27 @@ func WithKOSDK(sdk *api.SDK) Option {
 
 func WithCfg(cnf *conf.AppConfiguration) Option {
 	return func(s *Service) {
-		s.Cfg = cnf
+		s.cnf = cnf
 	}
 }
 
 func NewService(opt ...Option) *Service {
-	r := &Service{}
+	r := &Service{
+		cnf: conf.Global(),
+	}
 	for _, option := range opt {
 		option(r)
 	}
-	pp := PwdPolicy{
-		Length:               6,
-		IncludeElement:       3,
-		IncludeChar:          4,
-		AllowIncludeUserName: false,
-		InvalidDay:           30,
-		InvalidLoginLimit:    false,
-		Retry:                5,
-		CaptchaTimes:         3,
-	}
-	if r.Cfg != nil && r.Cfg.IsSet("adminx.pwdPolicy") {
-		err := r.Cfg.Sub("adminx.pwdPolicy").Unmarshal(&pp)
+	pp := defaultPwdPolicy
+	if r.cnf.IsSet("adminx.pwdPolicy") {
+		err := r.cnf.Sub("adminx.pwdPolicy").Unmarshal(&pp)
 		if err != nil {
 			panic(err)
 		}
 	}
-	r.PwdPolicy = &pp
+	r.passwordPolicy = pp
+	if err := r.cnf.Sub("jwt").Unmarshal(&r.jwtConfig); err != nil {
+		panic(err)
+	}
 	return r
 }
