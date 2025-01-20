@@ -668,7 +668,10 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	if err != nil {
 		return "", err
 	}
-
+	tid, err := s.GetTopOrgId(uorg)
+	if err != nil {
+		return "", err
+	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -681,7 +684,7 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 				Labels: map[string]string{
 					"receiver":  "email",
 					"alertname": "SendCaptchaCode",
-					"tenant":    strconv.Itoa(uorg.ID),
+					"tenant":    strconv.Itoa(tid),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},
@@ -1006,12 +1009,22 @@ func (s *ServerImpl) UnBindMfa(ctx *gin.Context, req *UnBindMfaRequest) (bool, e
 
 func (s *ServerImpl) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
 	uorg, err = s.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
-		QueryOrg().Unique(false).Where(org.KindEQ(org.KindRoot), org.StatusEQ(typex.SimpleStatusActive)).Order(ent.Desc(org.FieldPath)).
-		First(ctx)
+		QueryOrg().Unique(false).Where(
+		org.KindEQ(org.KindRoot),
+		org.StatusEQ(typex.SimpleStatusActive),
+	).Order(ent.Desc(org.FieldPath)).First(ctx)
 	if err != nil {
 		return nil, err
 	}
 	return uorg, nil
+}
+func (s *ServerImpl) GetTopOrgId(org *ent.Org) (int, error) {
+	code := strings.Split(org.Path, "/")[0]
+	oID, err := strconv.ParseInt(code, 36, 64)
+	if err != nil {
+		return 0, err
+	}
+	return int(oID), nil
 }
 
 func (s *ServerImpl) logFailHandler(ctx *gin.Context, uid string, clear bool) (int32, error) {
@@ -1132,7 +1145,10 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	if err != nil {
 		return "", err
 	}
-
+	tid, err := s.GetTopOrgId(uorg)
+	if err != nil {
+		return "", err
+	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -1145,7 +1161,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 				Labels: map[string]string{
 					"receiver":  "email",
 					"alertname": "SendCaptchaCode",
-					"tenant":    strconv.Itoa(uorg.ID),
+					"tenant":    strconv.Itoa(tid),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},

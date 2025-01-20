@@ -164,6 +164,7 @@ func Test_CreateToken(t *testing.T) {
 	type jwtOpt struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
+		PrivateKey      string        `json:"privateKey"`
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	}
@@ -171,6 +172,7 @@ func Test_CreateToken(t *testing.T) {
 		JWT: jwtOpt{
 			SigningMethod:   "HS256",
 			SigningKey:      "e262608e-926d-4a4a-9b53-a25a96b95689",
+			PrivateKey:      "e262608e-926d-4a4a-9b53-a25a96b95689",
 			TokenTTL:        time.Hour * 100000,
 			RefreshTokenTTL: time.Hour * 100000,
 		},
