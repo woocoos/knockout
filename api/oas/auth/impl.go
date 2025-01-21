@@ -1539,7 +1539,7 @@ func (s *ServerImpl) doCheckPermission(ctx context.Context, uid, tid int, action
 		strconv.Itoa(uid),
 		strconv.Itoa(tid),
 		fmt.Sprintf("%s%s%s", appCode, authz.ArnSplit, action),
-		"read",
+		authz.ActionTypeRead,
 	}
 	has, err = security.CheckUserPermission(rule...)
 	if err != nil {

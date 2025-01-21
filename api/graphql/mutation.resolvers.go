@@ -10,7 +10,7 @@ import (
 
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
-	generated1 "github.com/woocoos/knockout/api/graphql/generated"
+	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/country"
@@ -818,6 +818,6 @@ func (r *mutationResolver) DeleteUserDevice(ctx context.Context, userID int, dev
 }
 
 // Mutation returns generated1.MutationResolver implementation.
-func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
