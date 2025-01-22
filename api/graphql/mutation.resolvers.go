@@ -817,7 +817,7 @@ func (r *mutationResolver) DeleteUserDevice(ctx context.Context, userID int, dev
 	return err == nil, err
 }
 
-// Mutation returns generated1.MutationResolver implementation.
+// Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }

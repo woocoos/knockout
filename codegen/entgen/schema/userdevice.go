@@ -27,7 +27,6 @@ func (UserDevice) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "user_device"},
 		entgql.RelayConnection(),
-		entgql.QueryField().Description("用户设备查询"),
 		entgql.Mutations(
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),

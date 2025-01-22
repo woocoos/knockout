@@ -14,6 +14,15 @@ import (
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/orguserpreference"
+	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/service/resource"
 )
 
@@ -97,5 +106,24 @@ func buildCasbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 
 func buildPortalHook(db *ent.Client, ss *resource.Service) {
 	hook := resource.NewEntHook(ss)
-	db.Org.Intercept(hook.OrgTraverseFunc())
+	db.Org.Intercept(hook.OrgTraverseFunc(org.FieldID))
+	// 需要判断parent_id
+	db.Org.Use(hook.OrgMutationInAllowOrg())
+	db.OrgRole.Intercept(hook.OrgTraverseFunc(orgrole.FieldOrgID))
+	db.OrgRole.Use(hook.MutationInAllowOrg())
+	db.OrgPolicy.Intercept(hook.OrgTraverseFunc(orgpolicy.FieldOrgID))
+	db.OrgPolicy.Use(hook.MutationInAllowOrg())
+	db.OrgUser.Intercept(hook.OrgTraverseFunc(orguser.FieldOrgID))
+	db.OrgUser.Use(hook.MutationInAllowOrg())
+	db.OrgApp.Intercept(hook.OrgTraverseFunc(orgapp.FieldOrgID))
+	db.OrgApp.Use(hook.MutationInAllowOrg())
+	db.App.Intercept(hook.OrgTraverseFunc(app.FieldOwnerOrgID))
+	// 需要取owner_org_id处理
+	db.App.Use(hook.AppMutationInAllowOrg())
+	db.Permission.Intercept(hook.OrgTraverseFunc(permission.FieldOrgID))
+	db.Permission.Use(hook.MutationInAllowOrg())
+	db.OrgRoleUser.Intercept(hook.OrgTraverseFunc(orgroleuser.FieldOrgID))
+	db.OrgRoleUser.Use(hook.MutationInAllowOrg())
+	db.OrgUserPreference.Intercept(hook.OrgTraverseFunc(orguserpreference.FieldOrgID))
+	db.OrgUserPreference.Use(hook.MutationInAllowOrg())
 }

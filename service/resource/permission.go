@@ -998,28 +998,6 @@ func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID
 	return s.doCheckPermission(ctx, uid, orgID, action, appCode)
 }
 
-// GetOrgDomain 获取组织域名.orgID为根组织.
-func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
-	c := s.Client
-	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
-	if orgr.Domain == "" {
-		return "", fmt.Errorf("organization %d domain is empty", orgID)
-	}
-	return orgr.Domain, nil
-}
-
-// IsRootOrg 判断组织是否root
-func (s *Service) IsRootOrg(ctx context.Context, orgID int) (bool, error) {
-	return s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Exist(ctx)
-}
-
-// GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
-func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
-	c := s.Client
-	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
-		Order(ent.Asc(org.FieldPath)).First(ctx)
-}
-
 // updateOrgPolicyRules 更新策略规则
 // 策略rules更新，需根据策略的引用同步更新casbin
 func updateOrgPolicyRules(ctx context.Context, orgPolicyId int, rules []*types.PolicyRule, domain int) error {

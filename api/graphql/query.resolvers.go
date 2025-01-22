@@ -36,6 +36,7 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
+	"github.com/woocoos/knockout/service/resource"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -288,7 +289,8 @@ func (r *queryResolver) UserRootOrgs(ctx context.Context) ([]*ent.Org, error) {
 		org.HasOrgUserWith(orguser.UserID(uid)),
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.KindEQ(org.KindRoot),
-	).All(ctx)
+		org.OwnerIDNotNil(),
+	).All(resource.SkipTenantTraverse(ctx))
 }
 
 // OrgRecycleUsers is the resolver for the orgRecycleUsers field.

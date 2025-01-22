@@ -6514,40 +6514,6 @@ type Query {
     """
     where: UserWhereInput
   ): UserConnection!
-  """
-  用户设备查询
-  """
-  userDevices(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for UserDevices returned from the connection.
-    """
-    orderBy: UserDeviceOrder
-
-    """
-    Filtering options for UserDevices returned from the connection.
-    """
-    where: UserDeviceWhereInput
-  ): UserDeviceConnection!
 }
 type Quota implements Node {
   id: ID!
@@ -8355,10 +8321,37 @@ type User implements Node {
   登陆设置
   """
   loginProfile: UserLoginProfile
-  """
-  用户设备
-  """
-  devices: [UserDevice!]
+  devices(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for UserDevices returned from the connection.
+    """
+    orderBy: UserDeviceOrder
+
+    """
+    Filtering options for UserDevices returned from the connection.
+    """
+    where: UserDeviceWhereInput
+  ): UserDeviceConnection!
   permissions(
     """
     Returns the elements in the list that come after the specified cursor.

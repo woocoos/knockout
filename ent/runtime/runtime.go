@@ -606,7 +606,9 @@ func init() {
 	orgrole.DefaultID = orgroleDescID.Default.(func() int)
 	orgroleuserMixin := schema.OrgRoleUser{}.Mixin()
 	orgroleuserMixinHooks1 := orgroleuserMixin[1].Hooks()
+	orgroleuserMixinHooks2 := orgroleuserMixin[2].Hooks()
 	orgroleuser.Hooks[0] = orgroleuserMixinHooks1[0]
+	orgroleuser.Hooks[1] = orgroleuserMixinHooks2[0]
 	orgroleuserMixinFields1 := orgroleuserMixin[1].Fields()
 	_ = orgroleuserMixinFields1
 	orgroleuserFields := schema.OrgRoleUser{}.Fields()

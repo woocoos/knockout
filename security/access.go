@@ -140,6 +140,12 @@ func GetUserPermissions(userID int, domain int) [][]string {
 	return authorizer.Enforcer.GetPermissionsForUserInDomain(strconv.Itoa(userID), strconv.Itoa(domain))
 }
 
+func HasRoleForUser(userID, roleID, domain int) (bool, error) {
+	authorizer := security.DefaultAuthorizer.(*kocasbin.Authorizer)
+	return authorizer.Enforcer.HasRoleForUser(strconv.Itoa(userID), strconv.Itoa(roleID),
+		strconv.Itoa(domain))
+}
+
 func CheckUserPermission(rvals ...interface{}) (bool, error) {
 	authorizer := security.DefaultAuthorizer.(*kocasbin.Authorizer)
 	return authorizer.Enforcer.Enforce(rvals...)

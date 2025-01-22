@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
@@ -35,16 +36,20 @@ import (
 
 // GetRefTenants 获取当前租户下的所有子租户ID,包括当前租户.
 func (s *Service) GetRefTenants(ctx context.Context) (ids []int, err error) {
-	client := ent.FromContext(ctx)
+	client := s.Client
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
+	ctx = SkipTenantTraverse(ctx)
 	path, err := client.Org.Query().Where(org.ID(tid)).Select(org.FieldPath).String(ctx)
 	if err != nil {
 		return nil, err
 	}
 	ids, err = client.Org.Query().Where(org.PathHasPrefix(path), org.KindEQ(org.KindRoot)).Select(org.FieldID).Ints(ctx)
+	if ids != nil {
+		err = cache.Set(ctx, RefTenantsCacheKey(tid), ids)
+	}
 	return
 }
 
@@ -1076,4 +1081,26 @@ func (s *Service) ParentDomain(ctx context.Context, orgID int) (string, error) {
 		return o.Domain, nil
 	}
 	return s.ParentDomain(ctx, o.ParentID)
+}
+
+// GetOrgDomain 获取组织域名.orgID为根组织.
+func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
+	c := s.Client
+	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
+	if orgr.Domain == "" {
+		return "", fmt.Errorf("organization %d domain is empty", orgID)
+	}
+	return orgr.Domain, nil
+}
+
+// IsRootOrg 判断组织是否root
+func (s *Service) IsRootOrg(ctx context.Context, orgID int) (bool, error) {
+	return s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Exist(ctx)
+}
+
+// GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
+func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
+	c := s.Client
+	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
+		Order(ent.Asc(org.FieldPath)).First(ctx)
 }

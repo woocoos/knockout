@@ -782,7 +782,6 @@ type ComplexityRoot struct {
 		Quotas                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
 		Regions                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
 		UserApps                      func(childComplexity int) int
-		UserDevices                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
 		UserExtendGroupPolicies       func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserExtendRolePolicies        func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		UserGroups                    func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
@@ -895,7 +894,7 @@ type ComplexityRoot struct {
 		CreatedBy         func(childComplexity int) int
 		CreationType      func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
-		Devices           func(childComplexity int) int
+		Devices           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
 		DisplayName       func(childComplexity int) int
 		FirstName         func(childComplexity int) int
 		Gender            func(childComplexity int) int
@@ -5733,18 +5732,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserApps(childComplexity), true
 
-	case "Query.userDevices":
-		if e.complexity.Query.UserDevices == nil {
-			break
-		}
-
-		args, err := ec.field_Query_userDevices_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.UserDevices(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserDeviceOrder), args["where"].(*ent.UserDeviceWhereInput)), true
-
 	case "Query.userExtendGroupPolicies":
 		if e.complexity.Query.UserExtendGroupPolicies == nil {
 			break
@@ -6379,7 +6366,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.User.Devices(childComplexity), true
+		args, err := ec.field_User_devices_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.Devices(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserDeviceOrder), args["where"].(*ent.UserDeviceWhereInput)), true
 
 	case "User.displayName":
 		if e.complexity.User.DisplayName == nil {
@@ -13978,40 +13970,6 @@ type Query {
     """
     where: UserWhereInput
   ): UserConnection!
-  """
-  用户设备查询
-  """
-  userDevices(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for UserDevices returned from the connection.
-    """
-    orderBy: UserDeviceOrder
-
-    """
-    Filtering options for UserDevices returned from the connection.
-    """
-    where: UserDeviceWhereInput
-  ): UserDeviceConnection!
 }
 type Quota implements Node {
   id: ID!
@@ -15819,10 +15777,37 @@ type User implements Node {
   登陆设置
   """
   loginProfile: UserLoginProfile
-  """
-  用户设备
-  """
-  devices: [UserDevice!]
+  devices(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for UserDevices returned from the connection.
+    """
+    orderBy: UserDeviceOrder
+
+    """
+    Filtering options for UserDevices returned from the connection.
+    """
+    where: UserDeviceWhereInput
+  ): UserDeviceConnection!
   permissions(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -18016,7 +18001,10 @@ input UserWhereInput {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
-    """检测权限 ko-proxy使用"""
+    """
+    检测权限 ko-proxy使用
+    @deprecated 未来将弃用.
+    """
     checkPermissionByJwt(
         jwtStr:String!
         orgID:ID!

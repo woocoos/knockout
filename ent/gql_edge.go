@@ -706,16 +706,25 @@ func (u *User) LoginProfile(ctx context.Context) (*UserLoginProfile, error) {
 	return result, MaskNotFound(err)
 }
 
-func (u *User) Devices(ctx context.Context) (result []*UserDevice, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedDevices(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = u.Edges.DevicesOrErr()
+func (u *User) Devices(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserDeviceOrder, where *UserDeviceWhereInput,
+) (*UserDeviceConnection, error) {
+	opts := []UserDevicePaginateOption{
+		WithUserDeviceOrder(orderBy),
+		WithUserDeviceFilter(where.Filter),
 	}
-	if IsNotLoaded(err) {
-		result, err = u.QueryDevices().All(ctx)
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := u.Edges.totalCount[2][alias]
+	if nodes, err := u.NamedDevices(alias); err == nil || hasTotalCount {
+		pager, err := newUserDevicePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &UserDeviceConnection{Edges: []*UserDeviceEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
 	}
-	return result, err
+	return u.QueryDevices().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (u *User) Permissions(
