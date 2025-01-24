@@ -97,7 +97,11 @@ func (o *BaseSuite) BearToken() string {
 }
 
 func (o *BaseSuite) NewTestCtx(uid, oid int) context.Context {
-	ctx := ent.NewContext(context.Background(), o.Client)
+	return NewTestCtx(uid, oid, o.Client)
+}
+
+func NewTestCtx(uid, oid int, client *ent.Client) context.Context {
+	ctx := ent.NewContext(context.Background(), client)
 	// with identity
 	ctx = security.WithContext(ctx, security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": strconv.Itoa(uid)}))
 	if oid != 0 {
