@@ -951,8 +951,10 @@ func (s *ServerImpl) BindMfaPrepare(ctx *gin.Context) (*Mfa, error) {
 	if tid, err = s.tryGetTenantID(ctx); err != nil {
 		return nil, err
 	}
-	uorg, err := s.db.Org.Query().Where(org.ID(tid)).Only(ctx)
-	issuer := uorg.Domain
+	issuer, err := s.ParentDomain(ctx, tid)
+	if err != nil {
+		return nil, err
+	}
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
 		AccountName: pn,
@@ -968,6 +970,20 @@ func (s *ServerImpl) BindMfaPrepare(ctx *gin.Context) (*Mfa, error) {
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
 	}, nil
+}
+
+func (s *ServerImpl) ParentDomain(ctx context.Context, orgID int) (string, error) {
+	o, err := s.db.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	if o.Domain == "" && o.ParentID == 0 {
+		return "", nil
+	}
+	if o.Domain != "" {
+		return o.Domain, nil
+	}
+	return s.ParentDomain(ctx, o.ParentID)
 }
 
 func (s *ServerImpl) BindMfa(ctx *gin.Context, req *BindMfaRequest) (bool, error) {
