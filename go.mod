@@ -21,7 +21,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.19
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.1.0
-	github.com/woocoos/knockout-go v0.0.2-0.20250121065005-c43ce057787e
+	github.com/woocoos/knockout-go v0.0.2-0.20250124165314-4a81d5ed73b9
 	go.opentelemetry.io/contrib/propagators/b3 v1.26.0
 	golang.org/x/sync v0.10.0
 )
