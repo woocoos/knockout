@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout-go/pkg/middleware"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -23,6 +24,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 	"github.com/woocoos/knockout/service/resource"
 )
 
@@ -110,20 +112,44 @@ func buildPortalHook(db *ent.Client, ss *resource.Service) {
 	// 需要判断parent_id
 	db.Org.Use(hook.OrgMutationInAllowOrg())
 	db.OrgRole.Intercept(hook.OrgTraverseFunc(orgrole.FieldOrgID))
-	db.OrgRole.Use(hook.MutationInAllowOrg())
+	db.OrgRole.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgRole.Query().Where(orgrole.ID(id)).Select(orgrole.FieldOrgID).Int(ctx)
+	}))
 	db.OrgPolicy.Intercept(hook.OrgTraverseFunc(orgpolicy.FieldOrgID))
-	db.OrgPolicy.Use(hook.MutationInAllowOrg())
+	db.OrgPolicy.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgPolicy.Query().Where(orgpolicy.ID(id)).Select(orgpolicy.FieldOrgID).Int(ctx)
+	}))
 	db.OrgUser.Intercept(hook.OrgTraverseFunc(orguser.FieldOrgID))
-	db.OrgUser.Use(hook.MutationInAllowOrg())
+	db.OrgUser.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgUser.Query().Where(orguser.ID(id)).Select(orguser.FieldOrgID).Int(ctx)
+	}))
 	db.OrgApp.Intercept(hook.OrgTraverseFunc(orgapp.FieldOrgID))
-	db.OrgApp.Use(hook.MutationInAllowOrg())
+	db.OrgApp.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgApp.Query().Where(orgapp.ID(id)).Select(orgapp.FieldOrgID).Int(ctx)
+	}))
 	db.App.Intercept(hook.OrgTraverseFunc(app.FieldOwnerOrgID))
 	// 需要取owner_org_id处理
 	db.App.Use(hook.AppMutationInAllowOrg())
 	db.Permission.Intercept(hook.OrgTraverseFunc(permission.FieldOrgID))
-	db.Permission.Use(hook.MutationInAllowOrg())
+	db.Permission.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.Permission.Query().Where(permission.ID(id)).Select(permission.FieldOrgID).Int(ctx)
+	}))
 	db.OrgRoleUser.Intercept(hook.OrgTraverseFunc(orgroleuser.FieldOrgID))
-	db.OrgRoleUser.Use(hook.MutationInAllowOrg())
+	db.OrgRoleUser.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgRoleUser.Query().Where(orgroleuser.ID(id)).Select(orgroleuser.FieldOrgID).Int(ctx)
+	}))
 	db.OrgUserPreference.Intercept(hook.OrgTraverseFunc(orguserpreference.FieldOrgID))
-	db.OrgUserPreference.Use(hook.MutationInAllowOrg())
+	db.OrgUserPreference.Use(hook.MutationInAllowOrg(func(ctx context.Context, id int, client *ent.Client) (int, error) {
+		return client.OrgUserPreference.Query().Where(orguserpreference.ID(id)).Select(orguserpreference.FieldOrgID).Int(ctx)
+	}))
+	db.UserPasswordPolicy.Intercept(hook.OrgTraverseFunc(userpasswordpolicy.FieldTenantID))
+	db.UserPasswordPolicy.Use(hook.UPPMutationInAllowOrg())
+	db.User.Use(hook.UserMutationAllowAll())
+	db.UserLoginProfile.Use(hook.UserLoginProfileMutationAllowAll())
+	db.UserIdentity.Use(hook.UserIdentityMutationAllowAll())
+	db.UserDevice.Use(hook.UserDeviceMutationAllowAll())
+	db.OauthClient.Use(hook.OauthClientMutationAllowAll())
+	db.FileIdentity.Intercept(hook.OrgTraverseFunc(fileidentity.FieldTenantID))
+	db.FileIdentity.Use(hook.FileIdentityMutationInAllowOrg())
+
 }

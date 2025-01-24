@@ -46,9 +46,9 @@ func (s *Service) GetRefTenants(ctx context.Context) (ids []int, err error) {
 	if err != nil {
 		return nil, err
 	}
-	ids, err = client.Org.Query().Where(org.PathHasPrefix(path), org.KindEQ(org.KindRoot)).Select(org.FieldID).Ints(ctx)
+	ids, err = client.Org.Query().Where(org.PathHasPrefix(path)).Select(org.FieldID).Ints(ctx)
 	if ids != nil {
-		err = cache.Set(ctx, RefTenantsCacheKey(tid), ids)
+		err = cache.Set(ctx, RefTenantsCacheKey(tid), ids, cache.WithTTL(time.Minute*5))
 	}
 	return
 }
@@ -120,6 +120,12 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 			return nil, err
 		}
 	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 清除缓存
+	err = cache.Del(ctx, RefTenantsCacheKey(tid))
 	return o, nil
 }
 
@@ -129,7 +135,17 @@ func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInp
 	if input.ParentID == 0 {
 		return nil, fmt.Errorf("parent id is required")
 	}
-	return client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
+	o, err := client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 清除缓存
+	err = cache.Del(ctx, RefTenantsCacheKey(tid))
+	return o, nil
 }
 
 // DeleteOrganization 删除组织目录
@@ -578,8 +594,12 @@ func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error)
 	if usr == nil {
 		return nil, fmt.Errorf("user not found")
 	}
+	ulp, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	sec := GeneralMFASecret()
-	err = client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
+	err = client.UserLoginProfile.UpdateOne(ulp).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -591,18 +611,11 @@ func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error)
 
 func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	ulp, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Only(ctx)
 	if err != nil {
 		return err
 	}
-	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
-	if err != nil {
-		return err
-	}
-	if usr == nil {
-		return fmt.Errorf("user not found")
-	}
-	return client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
+	return client.UserLoginProfile.UpdateOne(ulp).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
 }
 
 func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
