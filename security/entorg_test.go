@@ -2,10 +2,12 @@ package security
 
 import (
 	"github.com/stretchr/testify/suite"
+	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/test/testsuite"
 	"testing"
 
@@ -15,7 +17,8 @@ import (
 
 type testSuite struct {
 	testsuite.BaseSuite
-	entHook *EntHook
+	authorizer *casbin.Authorizer
+	entHook    *EntHook
 }
 
 func TestSuite(t *testing.T) {
@@ -33,10 +36,14 @@ func (t *testSuite) SetupSuite() {
 	if err != nil {
 		panic(err)
 	}
+	t.authorizer = security.DefaultAuthorizer.(*casbin.Authorizer)
 	t.entHook = NewEntHook(t.Client)
+	t.initData()
+	_, err = t.authorizer.Enforcer.AddRoleForUserInDomain("1", "r_1", "1")
+	t.Require().NoError(err)
 }
 
-func (t *testSuite) TestOrgHook() {
+func (t *testSuite) initData() {
 	ctx := testsuite.NewTestCtx(1, 1, t.Client)
 	client := t.Client.Debug()
 	client.Org.CreateBulk(
@@ -48,6 +55,11 @@ func (t *testSuite) TestOrgHook() {
 	client.OrgRole.CreateBulk(
 		client.OrgRole.Create().SetID(1).SetName("administrators").SetOrgID(1).SetKind(orgrole.KindGroup).SetCreatedBy(1),
 	).ExecX(ctx)
+}
+
+func (t *testSuite) TestOrgHook() {
+	ctx := testsuite.NewTestCtx(1, 1, t.Client)
+	client := t.Client.Debug()
 
 	t.Run("org", func() {
 		org2 := client.Org.GetX(ctx, 2)
@@ -84,6 +96,7 @@ func (t *testSuite) TestOrgHook() {
 		client.OrgApp.CreateBulk(
 			client.OrgApp.Create().SetID(1).SetOrgID(1).SetAppID(1).SetCreatedBy(1),
 			client.OrgApp.Create().SetID(2).SetOrgID(2).SetAppID(2).SetCreatedBy(1),
+			client.OrgApp.Create().SetID(3).SetOrgID(3).SetAppID(3).SetCreatedBy(1),
 		).ExecX(ctx)
 		client.OrgApp.Use(t.entHook.OrgMutationInAllowOrg(
 			AllOp,
@@ -105,5 +118,40 @@ func (t *testSuite) TestOrgHook() {
 		t.Require().NoError(err)
 		err = client.OrgApp.Create().SetOrgID(2).SetAppID(3).SetCreatedBy(1).Exec(ctx)
 		t.Require().Error(err)
+		ctx2 := testsuite.NewTestCtx(2, 22, t.Client)
+		_, err = client.OrgApp.UpdateOneID(3).SetUpdatedBy(2).Save(ctx2)
+		t.Require().Error(err)
 	})
+}
+
+func (t *testSuite) TestUser() {
+	ctx := testsuite.NewTestCtx(1, 1, t.Client)
+	client := t.Client.Debug()
+	client.OrgUserPreference.CreateBulk(
+		client.OrgUserPreference.Create().SetID(1).SetOrgID(1).SetUserID(1).SetMenuFavorite([]int{1, 2}).SetCreatedBy(1),
+		client.OrgUserPreference.Create().SetID(2).SetOrgID(1).SetUserID(2).SetMenuFavorite([]int{1, 2}).SetCreatedBy(1),
+	).ExecX(ctx)
+
+	client.OrgUserPreference.Use(t.entHook.UserMutationAllow(
+		AllOp,
+		orguserpreference.FieldUserID))
+
+	_, err := t.authorizer.Enforcer.AddPolicy("r_1", "1", userOtherRes, "read", "allow")
+	t.Require().NoError(err)
+	err = client.OrgUserPreference.Create().SetID(3).SetOrgID(1).SetUserID(3).SetMenuFavorite([]int{1, 2}).
+		SetCreatedBy(1).Exec(ctx)
+	t.Require().NoError(err)
+	ctx2 := testsuite.NewTestCtx(2, 1, t.Client)
+	_, err = client.OrgUserPreference.UpdateOneID(3).SetUpdatedBy(2).Save(ctx2)
+	t.Require().ErrorIs(err, ErrMutationOtherUserNotAllow)
+	err = client.OrgUserPreference.DeleteOneID(3).Exec(ctx2)
+	t.Require().ErrorIs(err, ErrMutationOtherUserNotAllow)
+
+	cc, err := client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(ctx2)
+	t.Require().NoError(err)
+	t.Equal(1, cc, "删除之前创建的")
+
+	cc, err = client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(ctx)
+	t.Require().NoError(err)
+	t.Equal(2, cc, "删除现存的所有的")
 }
