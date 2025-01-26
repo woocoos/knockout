@@ -229,6 +229,8 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 
 		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").
 			SetCreatedBy(1).SetKind(orgrole.KindRole))
+		ors = append(ors, client.OrgRole.Create().SetID(2).SetOrgID(1).SetName("administrators").
+			SetCreatedBy(1).SetKind(orgrole.KindRole))
 
 		ps = append(ps, client.Permission.Create().SetID(i).SetOrgID(1).SetOrgPolicyID(i).SetCreatedBy(1).
 			SetPrincipalKind(permission.PrincipalKindRole).SetRoleID(i).SetStatus(typex.SimpleStatusActive))

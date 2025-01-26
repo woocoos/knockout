@@ -15,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/apppolicyview"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -28,30 +29,12 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/security"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
-
-// GetRefTenants 获取当前租户下的所有子租户ID,包括当前租户.
-func (s *Service) GetRefTenants(ctx context.Context) (ids []int, err error) {
-	client := s.Client
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	ctx = SkipTenantTraverse(ctx)
-	path, err := client.Org.Query().Where(org.ID(tid)).Select(org.FieldPath).String(ctx)
-	if err != nil {
-		return nil, err
-	}
-	ids, err = client.Org.Query().Where(org.PathHasPrefix(path)).Select(org.FieldID).Ints(ctx)
-	if ids != nil {
-		err = cache.Set(ctx, RefTenantsCacheKey(tid), ids, cache.WithTTL(time.Minute*5))
-	}
-	return
-}
 
 // EnableOrganization 开启组织目录
 func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDirectoryInput) (*ent.Org, error) {
@@ -125,7 +108,7 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 		return nil, err
 	}
 	// 清除缓存
-	err = cache.Del(ctx, RefTenantsCacheKey(tid))
+	err = cache.Del(ctx, security.RefTenantsCacheKey(tid))
 	return o, nil
 }
 
@@ -144,7 +127,7 @@ func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInp
 		return nil, err
 	}
 	// 清除缓存
-	err = cache.Del(ctx, RefTenantsCacheKey(tid))
+	err = cache.Del(ctx, security.RefTenantsCacheKey(tid))
 	return o, nil
 }
 
@@ -1116,4 +1099,22 @@ func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, erro
 	c := s.Client
 	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
 		Order(ent.Asc(org.FieldPath)).First(ctx)
+}
+
+func (s *Service) OrgFileIdentities(ctx context.Context, tid int) ([]*ent.FileIdentity, error) {
+	fis, err := s.Client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(fis) == 0 {
+		t, err := s.Client.Org.Get(ctx, tid)
+		if err != nil {
+			return nil, err
+		}
+		if t.ParentID == 0 {
+			return nil, nil
+		}
+		return s.OrgFileIdentities(ctx, t.ParentID)
+	}
+	return fis, nil
 }

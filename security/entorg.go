@@ -216,7 +216,7 @@ func (e *EntHook) OrgMutationInAllowOrg(op ent.Op, fieldName string) ent.Hook {
 				if !slices.Contains(ids, orgId) {
 					return nil, ErrTenantIDNotAllow
 				}
-			case ent.OpUpdateOne, ent.OpDeleteOne:
+			case ent.OpUpdateOne:
 				id, err := getOrgIdInOne(ctx, m)
 				if err != nil {
 					return nil, err
@@ -224,7 +224,7 @@ func (e *EntHook) OrgMutationInAllowOrg(op ent.Op, fieldName string) ent.Hook {
 				if !slices.Contains(ids, id) {
 					return nil, ErrTenantIDNotAllow
 				}
-			case ent.OpUpdate, ent.OpDelete:
+			case ent.OpUpdate, ent.OpDelete, ent.OpDeleteOne:
 				where(m, ids)
 			}
 			return next.Mutate(ctx, m)
@@ -305,7 +305,7 @@ func (e *EntHook) UserMutationAllow(op ent.Op, fieldName string) ent.Hook {
 				if tid != uid && !has {
 					return nil, ErrMutationOtherUserNotAllow
 				}
-			case ent.OpUpdateOne, ent.OpDeleteOne:
+			case ent.OpUpdateOne:
 				tid, err := getUserIdInOne(ctx, m)
 				if err != nil {
 					return nil, ErrMutationOtherUserNotAllow
@@ -313,7 +313,7 @@ func (e *EntHook) UserMutationAllow(op ent.Op, fieldName string) ent.Hook {
 				if tid != uid && !has {
 					return nil, ErrMutationOtherUserNotAllow
 				}
-			case ent.OpUpdate, ent.OpDelete:
+			case ent.OpUpdate, ent.OpDelete, ent.OpDeleteOne:
 				if !has {
 					where(m, uid)
 				}

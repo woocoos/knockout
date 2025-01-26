@@ -81,6 +81,8 @@ func quotaHook() ent.Hook {
 				return 1, nil
 			case ent.OpDeleteOne:
 				return -1, nil
+			case ent.OpUpdateOne:
+				return 0, nil
 			default:
 				return 0, quota.ErrNoCurrentOp
 			}

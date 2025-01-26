@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
+	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -80,17 +81,26 @@ func (t *testSuite) TestOrgHook() {
 		cc, err := client.Org.Update().SetUpdatedBy(2).Where(org.IDIn(1, 11, 2, 22)).Save(ctx)
 		t.Require().NoError(err)
 		t.Equal(2, cc)
+		err = client.Org.UpdateOneID(11).SetUpdatedBy(2).Exec(ctx)
+		t.NoError(err)
+		err = client.Org.UpdateOneID(22).SetUpdatedBy(2).Exec(ctx)
+		t.ErrorIs(err, ErrTenantIDNotAllow, "cannot update org 22")
+		err = client.Org.DeleteOneID(22).Exec(ctx)
+		t.True(ent.IsNotFound(err), "cannot delete org 22")
 		ctx2 := testsuite.NewTestCtx(1, 2, t.Client)
 		cc, err = client.Org.Delete().Where(org.IDIn(1, 11, 2, 22)).Exec(ctx2)
 		t.Require().NoError(err)
 		t.Equal(2, cc, "only delete org 2")
+		err = client.Org.DeleteOneID(11).Exec(ctx2)
+		t.True(ent.IsNotFound(err), "cannot delete org 11")
+
 		client.Org.GetX(ctx, 1)
 		err = client.Org.Create().SetName("new").SetParentID(11).SetKind(org.KindOrganization).SetCreatedBy(1).
 			Exec(ctx)
 		t.Require().NoError(err)
 		err = client.Org.Create().SetName("new").SetParentID(22).SetKind(org.KindOrganization).SetCreatedBy(1).
 			Exec(ctx)
-		t.Require().Error(err)
+		t.Require().ErrorIs(err, ErrTenantIDNotAllow)
 	})
 	t.Run("ref", func() {
 		client.OrgApp.CreateBulk(
@@ -111,9 +121,15 @@ func (t *testSuite) TestOrgHook() {
 		cc, err := client.OrgApp.Update().SetUpdatedBy(2).Where(orgapp.AppIDIn(1, 2)).Save(ctx)
 		t.Require().NoError(err)
 		t.Equal(1, cc)
+		err = client.OrgApp.UpdateOneID(1).SetUpdatedBy(2).Exec(ctx)
+		t.Require().NoError(err)
+		err = client.OrgApp.UpdateOneID(2).SetUpdatedBy(2).Exec(ctx)
+		t.Require().ErrorIs(err, ErrTenantIDNotAllow)
 		cc, err = client.OrgApp.Delete().Where(orgapp.AppIDIn(1, 2)).Exec(ctx)
 		t.Require().NoError(err)
 		t.Equal(1, cc)
+		err = client.OrgApp.DeleteOneID(2).Exec(ctx)
+		t.Require().True(ent.IsNotFound(err), "cannot delete orgapp 2")
 		err = client.OrgApp.Create().SetOrgID(1).SetAppID(3).SetCreatedBy(1).Exec(ctx)
 		t.Require().NoError(err)
 		err = client.OrgApp.Create().SetOrgID(2).SetAppID(3).SetCreatedBy(1).Exec(ctx)
@@ -141,11 +157,13 @@ func (t *testSuite) TestUser() {
 	err = client.OrgUserPreference.Create().SetID(3).SetOrgID(1).SetUserID(3).SetMenuFavorite([]int{1, 2}).
 		SetCreatedBy(1).Exec(ctx)
 	t.Require().NoError(err)
+	_, err = client.OrgUserPreference.UpdateOneID(3).SetUpdatedBy(2).Save(ctx)
+	t.Require().NoError(err)
 	ctx2 := testsuite.NewTestCtx(2, 1, t.Client)
 	_, err = client.OrgUserPreference.UpdateOneID(3).SetUpdatedBy(2).Save(ctx2)
 	t.Require().ErrorIs(err, ErrMutationOtherUserNotAllow)
 	err = client.OrgUserPreference.DeleteOneID(3).Exec(ctx2)
-	t.Require().ErrorIs(err, ErrMutationOtherUserNotAllow)
+	t.Require().True(ent.IsNotFound(err))
 
 	cc, err := client.OrgUserPreference.Delete().Where(orguserpreference.IDIn(1, 2, 3)).Exec(ctx2)
 	t.Require().NoError(err)

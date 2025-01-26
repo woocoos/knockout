@@ -36,7 +36,6 @@ import (
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
-	"github.com/woocoos/knockout/service/resource"
 )
 
 // GlobalID is the resolver for the globalID field.
@@ -290,7 +289,8 @@ func (r *queryResolver) UserRootOrgs(ctx context.Context) ([]*ent.Org, error) {
 		org.StatusEQ(typex.SimpleStatusActive),
 		org.KindEQ(org.KindRoot),
 		org.OwnerIDNotNil(),
-	).All(resource.SkipTenantTraverse(ctx))
+		org.DomainNotNil(),
+	).All(schemax.SkipTenantPrivacy(ctx))
 }
 
 // OrgRecycleUsers is the resolver for the orgRecycleUsers field.
@@ -412,6 +412,15 @@ func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.Fil
 // FileIdentityAccessKeySecret is the resolver for the fileIdentityAccessKeySecret field.
 func (r *queryResolver) FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error) {
 	return r.client.FileIdentity.Query().Where(fileidentity.ID(id)).Select(fileidentity.FieldAccessKeySecret).String(ctx)
+}
+
+// OrgFileIdentities is the resolver for the orgFileIdentities field.
+func (r *queryResolver) OrgFileIdentities(ctx context.Context) ([]*ent.FileIdentity, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.resource.OrgFileIdentities(ctx, tid)
 }
 
 // UserMembers is the resolver for the UserMembers field.

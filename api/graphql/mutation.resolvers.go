@@ -787,7 +787,11 @@ func (r *mutationResolver) EnableVerifyUserDevice(ctx context.Context, userID in
 	}
 	// 如果存在则更新
 	if has {
-		err = client.UserDevice.Update().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).SetInput(ent.UpdateUserDeviceInput{
+		ud, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).Only(ctx)
+		if err != nil {
+			return false, err
+		}
+		err = client.UserDevice.UpdateOne(ud).SetInput(ent.UpdateUserDeviceInput{
 			DeviceName:    deviceInfoInput.DeviceName,
 			SystemName:    deviceInfoInput.SystemName,
 			SystemVersion: deviceInfoInput.SystemVersion,

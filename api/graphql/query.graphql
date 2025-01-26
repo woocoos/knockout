@@ -172,6 +172,8 @@ extend type Query {
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
+    """获取登录组织的文件凭证，登录组织未取到，则往上级组织获取"""
+    orgFileIdentities: [FileIdentity!]!
     """成员列表"""
     userMembers(
         after: Cursor

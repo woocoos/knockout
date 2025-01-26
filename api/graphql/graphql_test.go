@@ -5,7 +5,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orgrole"
 	"strconv"
 	"testing"
 	"time"
@@ -26,6 +29,7 @@ import (
 	"github.com/woocoos/knockout/ent/orgapp"
 	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/script/data"
+	sec "github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/test/testsuite"
 )
 
@@ -382,5 +386,148 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 		err := t.gqlClient.Post(nodeQuery, &nodeResp)
 		t.Require().NoError(err)
 		t.Require().Len(nodeResp.Node.Rules[0].Actions, 3)
+	})
+}
+
+// TestOrgRoleHook 测试组织角色Hook
+func (t *graphqlSuite) TestOrgRoleHook() {
+	uid := 1
+	loginTid := 1
+	otherTid := 100
+	rootRoleID := 2
+	otherTidRoleID := 100
+	loginTidRoleID := 99
+	ctx := ent.NewContext(context.Background(), t.CacheClient)
+	// with identity
+	ctx = security.WithContext(ctx, security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": strconv.Itoa(uid)}))
+	ctx = identity.WithTenantID(ctx, loginTid)
+	// 创建其他根组织
+	err := t.Client.Org.Create().SetID(otherTid).SetKind(org.KindOrganization).SetParentID(0).SetStatus(typex.SimpleStatusActive).
+		SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(otherTid)).Exec(ctx)
+	// 登录组织创建角色
+	err = t.Client.OrgRole.Create().SetID(loginTidRoleID).SetOrgID(loginTid).SetName("测试角色99").
+		SetCreatedBy(uid).SetKind(orgrole.KindRole).Exec(ctx)
+	t.Require().NoError(err)
+	// 其他根组织创建角色
+	err = t.Client.OrgRole.Create().SetID(otherTidRoleID).SetOrgID(otherTid).SetName("测试角色100").
+		SetCreatedBy(uid).SetKind(orgrole.KindRole).Exec(ctx)
+	t.Require().NoError(err)
+
+	t.Run("OrgTraverseFunc：query orgRoles with not assign administrators role", func() {
+		first := 20
+		kind := orgrole.KindRole
+		ors, err := t.qr.OrgRoles(ctx, nil, &first, nil, nil, nil, &ent.OrgRoleWhereInput{
+			Kind:  &kind,
+			OrgID: &loginTid,
+		})
+		t.Require().NoError(err)
+		// 当前登录组织，应该返回数据
+		t.Require().Greater(len(ors.Edges), 0)
+		ors2, err := t.qr.OrgRoles(ctx, nil, &first, nil, nil, nil, &ent.OrgRoleWhereInput{
+			Kind:  &kind,
+			OrgID: &otherTid,
+		})
+		t.Require().NoError(err)
+		// 其他组织，没授权administrators，无法访问角色
+		t.Require().Len(ors2.Edges, 0)
+	})
+	t.Run("MutationInAllowOrg：create orgRole with not assign administrators role", func() {
+		// 未授权administrators角色，loginTid能创建角色，otherTid抛异常无法创建
+		_, err = t.mr.CreateRole(ctx, ent.CreateOrgRoleInput{
+			Kind:  orgrole.KindRole,
+			Name:  "测试角色102",
+			OrgID: &loginTid,
+		})
+		t.Require().NoError(err)
+		_, err = t.mr.CreateRole(ctx, ent.CreateOrgRoleInput{
+			Kind:  orgrole.KindRole,
+			Name:  "测试角色103",
+			OrgID: &otherTid,
+		})
+		t.Require().ErrorIs(err, sec.ErrTenantIDNotAllow)
+	})
+	t.Run("MutationInAllowOrg：update orgRole with not assign administrators role", func() {
+		// 未授权administrators角色，loginTid能更新角色与otherTid不能更新角色
+		comments := "测试更新"
+		_, err = t.mr.UpdateRole(ctx, loginTidRoleID, ent.UpdateOrgRoleInput{
+			Comments: &comments,
+		})
+		t.Require().NoError(err)
+		_, err = t.mr.UpdateRole(ctx, otherTidRoleID, ent.UpdateOrgRoleInput{
+			Comments: &comments,
+		})
+		t.Require().ErrorIs(err, sec.ErrTenantIDNotAllow)
+	})
+	t.Run("MutationInAllowOrg：delete orgRole with not assign administrators role", func() {
+		// 未授权administrators角色，loginTidRoleID允许删除，otherTidRoleID不允许删除
+		_, err = t.mr.DeleteRole(ctx, loginTidRoleID)
+		t.Require().NoError(err)
+		_, err = t.mr.DeleteRole(ctx, otherTidRoleID)
+		t.Require().True(ent.IsNotFound(err))
+		// 恢复登录组织角色
+		err = t.Client.OrgRole.Create().SetID(loginTidRoleID).SetOrgID(loginTid).SetName("测试角色99").
+			SetCreatedBy(uid).SetKind(orgrole.KindRole).Exec(ctx)
+		t.Require().NoError(err)
+	})
+
+	// 给root角色添加用户
+	has, err := t.mr.AssignRoleUser(ctx, model.AssignRoleUserInput{
+		OrgRoleID: rootRoleID,
+		UserID:    uid,
+	})
+	t.Require().NoError(err)
+	t.Require().True(has)
+
+	t.Run("OrgTraverseFunc：query orgRoles with has assign administrators role", func() {
+		first := 20
+		kind := orgrole.KindRole
+		ors, err := t.qr.OrgRoles(ctx, nil, &first, nil, nil, nil, &ent.OrgRoleWhereInput{
+			Kind:  &kind,
+			OrgID: &loginTid,
+		})
+		t.Require().NoError(err)
+		// 当前登录组织，返回数据
+		t.Require().Greater(len(ors.Edges), 0)
+		ors2, err := t.qr.OrgRoles(ctx, nil, &first, nil, nil, nil, &ent.OrgRoleWhereInput{
+			Kind:  &kind,
+			OrgID: &otherTid,
+		})
+		t.Require().NoError(err)
+		// 其他组织，授权了administrators，返回角色
+		t.Require().Greater(len(ors2.Edges), 0)
+	})
+	t.Run("MutationInAllowOrg：create orgRole with has assign administrators role", func() {
+		// 授权administrators角色，loginTid与otherTid都能创建角色
+		_, err = t.mr.CreateRole(ctx, ent.CreateOrgRoleInput{
+			Kind:  orgrole.KindRole,
+			Name:  "测试角色104",
+			OrgID: &loginTid,
+		})
+		t.Require().NoError(err)
+		_, err = t.mr.CreateRole(ctx, ent.CreateOrgRoleInput{
+			Kind:  orgrole.KindRole,
+			Name:  "测试角色105",
+			OrgID: &otherTid,
+		})
+		t.Require().NoError(err)
+	})
+	t.Run("MutationInAllowOrg：update orgRole with has assign administrators role", func() {
+		// 授权administrators角色，loginTid与otherTid都能更新角色
+		comments := "测试更新"
+		_, err = t.mr.UpdateRole(ctx, loginTidRoleID, ent.UpdateOrgRoleInput{
+			Comments: &comments,
+		})
+		t.Require().NoError(err)
+		_, err = t.mr.UpdateRole(ctx, otherTidRoleID, ent.UpdateOrgRoleInput{
+			Comments: &comments,
+		})
+		t.Require().NoError(err)
+	})
+	t.Run("MutationInAllowOrg：delete orgRole with has assign administrators role", func() {
+		// 授权administrators角色，otherTidRoleID允许被删除
+		_, err = t.mr.DeleteRole(ctx, loginTidRoleID)
+		t.Require().NoError(err)
+		_, err = t.mr.DeleteRole(ctx, otherTidRoleID)
+		t.Require().NoError(err)
 	})
 }

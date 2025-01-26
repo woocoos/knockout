@@ -766,6 +766,7 @@ type ComplexityRoot struct {
 		Nodes                         func(childComplexity int, ids []string) int
 		OrgAppActions                 func(childComplexity int, appCode string, orgID int) int
 		OrgAppResources               func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		OrgFileIdentities             func(childComplexity int) int
 		OrgGroups                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
 		OrgPolicyReferences           func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		OrgPolicyView                 func(childComplexity int, appCode string, orgID *int) int
@@ -5549,6 +5550,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgAppResources(childComplexity, args["appID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppResOrder), args["where"].(*ent.AppResWhereInput)), true
+
+	case "Query.orgFileIdentities":
+		if e.complexity.Query.OrgFileIdentities == nil {
+			break
+		}
+
+		return e.complexity.Query.OrgFileIdentities(childComplexity), true
 
 	case "Query.orgGroups":
 		if e.complexity.Query.OrgGroups == nil {
@@ -18046,6 +18054,8 @@ input UserWhereInput {
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
+    """获取登录组织的文件凭证，登录组织未取到，则往上级组织获取"""
+    orgFileIdentities: [FileIdentity!]!
     """成员列表"""
     userMembers(
         after: Cursor

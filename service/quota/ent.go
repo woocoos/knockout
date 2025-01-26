@@ -46,6 +46,9 @@ func EntHook(schemaType ItemCode, resource Resource) ent.Hook {
 			if err != nil {
 				return nil, fmt.Errorf("failed to get org ID: %w", err)
 			}
+			if tar.TenantID == 0 && tar.UserID == 0 {
+				return nil, fmt.Errorf("failed to get orgID or userID")
+			}
 
 			var change int64
 			op := m.Op()
@@ -78,12 +81,17 @@ func EntHook(schemaType ItemCode, resource Resource) ent.Hook {
 				return nil, fmt.Errorf("failed to find quota item: %w", err)
 			}
 
-			q, err := mc.Client().Quota.Query().
+			quotaQuery := mc.Client().Quota.Query().
 				Where(
-					quota.TenantID(tar.TenantID),
-					quota.UserID(tar.UserID),
 					quota.QuotaItemID(quotaItem.ID),
-				).Only(ctx)
+				)
+			if tar.TenantID != 0 {
+				quotaQuery.Where(quota.TenantID(tar.TenantID))
+			}
+			if tar.UserID != 0 {
+				quotaQuery.Where(quota.UserID(tar.UserID))
+			}
+			q, err := quotaQuery.Only(ctx)
 			if err != nil {
 				if !gen.IsNotFound(err) {
 					return nil, err
@@ -99,13 +107,17 @@ func EntHook(schemaType ItemCode, resource Resource) ent.Hook {
 				}
 				// 如果是增加操作，使用默认值创建新配额
 				if quotaItem.DefaultLimit != 0 {
-					q, err = mc.Client().Quota.Create().
-						SetTenantID(tar.TenantID).
-						SetUserID(tar.UserID).
+					create := mc.Client().Quota.Create().
 						SetQuotaItemID(quotaItem.ID).
 						SetLimit(quotaItem.DefaultLimit).
-						SetUsed(change).
-						Save(ctx)
+						SetUsed(change)
+					if tar.TenantID != 0 {
+						create.SetTenantID(tar.TenantID)
+					}
+					if tar.UserID != 0 {
+						create.SetUserID(tar.UserID)
+					}
+					q, err = create.Save(ctx)
 				} else {
 					return nil, fmt.Errorf("no quota limit defined for item %s", res.QuotaItemCode)
 				}

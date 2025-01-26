@@ -103,6 +103,7 @@ type QueryResolver interface {
 	AppAccessForToken(ctx context.Context, appCode string, clientID string, clientSecret string) (bool, error)
 	FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error)
 	FileIdentityAccessKeySecret(ctx context.Context, id int) (string, error)
+	OrgFileIdentities(ctx context.Context) ([]*ent.FileIdentity, error)
 	UserMembers(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error)
 	AppPolicyView(ctx context.Context, appCode string) ([]*ent.AppPolicyView, error)
 	OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error)
@@ -30152,6 +30153,82 @@ func (ec *executionContext) fieldContext_Query_fileIdentityAccessKeySecret(ctx c
 	if fc.Args, err = ec.field_Query_fileIdentityAccessKeySecret_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_orgFileIdentities(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_orgFileIdentities(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().OrgFileIdentities(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.FileIdentity)
+	fc.Result = res
+	return ec.marshalNFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_orgFileIdentities(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_FileIdentity_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_FileIdentity_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_FileIdentity_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_FileIdentity_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_FileIdentity_updatedAt(ctx, field)
+			case "tenantID":
+				return ec.fieldContext_FileIdentity_tenantID(ctx, field)
+			case "accessKeyID":
+				return ec.fieldContext_FileIdentity_accessKeyID(ctx, field)
+			case "fileSourceID":
+				return ec.fieldContext_FileIdentity_fileSourceID(ctx, field)
+			case "roleArn":
+				return ec.fieldContext_FileIdentity_roleArn(ctx, field)
+			case "policy":
+				return ec.fieldContext_FileIdentity_policy(ctx, field)
+			case "durationSeconds":
+				return ec.fieldContext_FileIdentity_durationSeconds(ctx, field)
+			case "isDefault":
+				return ec.fieldContext_FileIdentity_isDefault(ctx, field)
+			case "comments":
+				return ec.fieldContext_FileIdentity_comments(ctx, field)
+			case "source":
+				return ec.fieldContext_FileIdentity_source(ctx, field)
+			case "org":
+				return ec.fieldContext_FileIdentity_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type FileIdentity", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -76756,6 +76833,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "orgFileIdentities":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_orgFileIdentities(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "userMembers":
 			field := field
 
@@ -80095,6 +80194,50 @@ func (ec *executionContext) marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCurso
 
 func (ec *executionContext) marshalNFileIdentity2githubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx context.Context, sel ast.SelectionSet, v ent.FileIdentity) graphql.Marshaler {
 	return ec._FileIdentity(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNFileIdentity2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentityᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.FileIdentity) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNFileIdentity2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐFileIdentity(ctx context.Context, sel ast.SelectionSet, v *ent.FileIdentity) graphql.Marshaler {
