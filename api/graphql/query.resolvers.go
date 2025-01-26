@@ -420,7 +420,7 @@ func (r *queryResolver) OrgFileIdentities(ctx context.Context) ([]*ent.FileIdent
 	if err != nil {
 		return nil, err
 	}
-	return r.resource.OrgFileIdentities(ctx, tid)
+	return r.resource.OrgFileIdentities(schemax.SkipTenantPrivacy(ctx), tid)
 }
 
 // UserMembers is the resolver for the UserMembers field.

@@ -5,10 +5,12 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/ent/clientx"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/api/graphql"
 	"github.com/woocoos/knockout/api/oas/auth"
+	"github.com/woocoos/knockout/ent"
 	"go.opentelemetry.io/contrib/propagators/b3"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -35,7 +37,15 @@ func main() {
 
 	koapp.BuildCacheComponents(rmscnf)
 	app.AppConfiguration().Configuration = rmscnf.Configuration
-	rmsSvr := graphql.NewServer(app)
+	ents := koapp.BuildEntComponents(app.AppConfiguration())
+	drv := ents["portal"]
+	portalClient := ent.NewClient(ent.Driver(drv))
+	casbinClient := casbinent.NewClient(casbinent.Driver(drv))
+	if app.AppConfiguration().Development {
+		portalClient = portalClient.Debug()
+		casbinClient = casbinClient.Debug()
+	}
+	rmsSvr := graphql.NewServer(rmscnf, graphql.WithCasbinDB(casbinClient), graphql.WithPortalDB(portalClient))
 
 	authcnf := &conf.AppConfiguration{
 		Configuration: conf.New(conf.WithBaseDir(*authConfig), conf.WithGlobal(false)).Load(),

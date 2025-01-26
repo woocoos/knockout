@@ -127,11 +127,7 @@ func (r *userResolver) Contact(ctx context.Context, obj *ent.User) (*ent.UserAdd
 
 // OrgUserType is the resolver for the orgUserType field.
 func (r *userResolver) OrgUserType(ctx context.Context, obj *ent.User, orgID int) (orguser.UserType, error) {
-	client := ent.FromContext(ctx)
-	if client == nil {
-		client = r.client
-	}
-	ou, err := client.OrgUser.Query().Select(orguser.FieldUserType).Where(orguser.UserID(obj.ID), orguser.OrgID(orgID)).Only(ctx)
+	ou, err := obj.QueryOrgUser().Select(orguser.FieldUserType).Where(orguser.UserID(obj.ID), orguser.OrgID(orgID)).Only(ctx)
 	if ent.IsNotFound(err) {
 		return "", nil
 	}

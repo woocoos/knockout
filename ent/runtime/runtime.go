@@ -399,12 +399,8 @@ func init() {
 	fileidentityMixin := schema.FileIdentity{}.Mixin()
 	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
 	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()
-	fileidentityMixinHooks3 := fileidentityMixin[3].Hooks()
 	fileidentity.Hooks[0] = fileidentityMixinHooks1[0]
 	fileidentity.Hooks[1] = fileidentityMixinHooks2[0]
-	fileidentity.Hooks[2] = fileidentityMixinHooks3[0]
-	fileidentityMixinInters2 := fileidentityMixin[2].Interceptors()
-	fileidentity.Interceptors[0] = fileidentityMixinInters2[0]
 	fileidentityMixinFields1 := fileidentityMixin[1].Fields()
 	_ = fileidentityMixinFields1
 	fileidentityFields := schema.FileIdentity{}.Fields()

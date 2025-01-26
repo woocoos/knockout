@@ -397,10 +397,7 @@ func (t *graphqlSuite) TestOrgRoleHook() {
 	rootRoleID := 2
 	otherTidRoleID := 100
 	loginTidRoleID := 99
-	ctx := ent.NewContext(context.Background(), t.CacheClient)
-	// with identity
-	ctx = security.WithContext(ctx, security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": strconv.Itoa(uid)}))
-	ctx = identity.WithTenantID(ctx, loginTid)
+	ctx := testsuite.NewTestCtx(1, 1, t.CacheClient)
 	// 创建其他根组织
 	err := t.Client.Org.Create().SetID(otherTid).SetKind(org.KindOrganization).SetParentID(0).SetStatus(typex.SimpleStatusActive).
 		SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(otherTid)).Exec(ctx)
@@ -530,4 +527,18 @@ func (t *graphqlSuite) TestOrgRoleHook() {
 		_, err = t.mr.DeleteRole(ctx, otherTidRoleID)
 		t.Require().NoError(err)
 	})
+}
+
+func (t *graphqlSuite) TestFileIdentity() {
+	ctx := testsuite.NewTestCtx(1, 1, t.CacheClient)
+	fis, err := t.qr.OrgFileIdentities(ctx)
+	t.Require().NoError(err)
+	t.Equal(1, len(fis))
+	t.Equal(1, fis[0].TenantID)
+	// 测试子组织2没配置文件来源，取上级组织配置
+	ctx2 := testsuite.NewTestCtx(1, 2, t.CacheClient)
+	fis, err = t.qr.OrgFileIdentities(ctx2)
+	t.Require().NoError(err)
+	t.Equal(1, len(fis))
+	t.Equal(1, fis[0].TenantID)
 }
