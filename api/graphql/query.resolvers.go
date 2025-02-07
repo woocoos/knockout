@@ -244,7 +244,7 @@ func (r *queryResolver) UserExtendRolePolicies(ctx context.Context, orgID *int, 
 
 // UserMenus is the resolver for the userMenus field.
 func (r *queryResolver) UserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
-	return r.resource.GetUserMenus(ctx, appCode)
+	return r.resource.GetUserMenus(schemax.SkipTenantPrivacy(ctx), appCode)
 }
 
 // UserPermissions is the resolver for the userPermissions field.
@@ -332,7 +332,7 @@ func (r *queryResolver) OrgUserPreference(ctx context.Context) (*ent.OrgUserPref
 
 // UserApps is the resolver for the userApps field.
 func (r *queryResolver) UserApps(ctx context.Context) ([]*ent.App, error) {
-	return r.resource.GetUserApps(ctx)
+	return r.resource.GetUserApps(schemax.SkipTenantPrivacy(ctx))
 }
 
 // AppDictByRefCode is the resolver for the appDictByRefCode field.
