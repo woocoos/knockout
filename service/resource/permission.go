@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
@@ -985,7 +986,11 @@ func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permissio
 func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
 	token, err := jwt.ParseWithClaims(jwtStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.jwtConfig.SigningMethod)
-		return []byte(s.jwtConfig.SigningKey), nil
+		key, err := auth.ParseSigningKeyFromString(s.jwtConfig.SigningKey, s.jwtConfig.SigningMethod, false)
+		if err != nil {
+			return nil, err
+		}
+		return key, nil
 	})
 	if err != nil || !token.Valid {
 		return false, err

@@ -403,7 +403,11 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*LoginResponse, error) {
 	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
-		return []byte(s.Options.JWT.SigningKey), nil
+		key, err := auth.ParseSigningKeyFromString(s.Options.JWT.SigningKey, s.Options.JWT.SigningMethod, false)
+		if err != nil {
+			return nil, err
+		}
+		return key, nil
 	})
 	if err != nil || !token.Valid {
 		return nil, err
@@ -481,7 +485,11 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 func (s *ServerImpl) FingerprintLogin(ctx *gin.Context, req *FingerprintLoginRequest) (*LoginResponse, error) {
 	token, err := jwt.ParseWithClaims(req.RefreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
 		token.Method = jwt.GetSigningMethod(s.Options.JWT.SigningMethod)
-		return []byte(s.Options.JWT.SigningKey), nil
+		key, err := auth.ParseSigningKeyFromString(s.Options.JWT.SigningKey, s.Options.JWT.SigningMethod, false)
+		if err != nil {
+			return nil, err
+		}
+		return key, nil
 	})
 	if err != nil || !token.Valid {
 		return nil, err
