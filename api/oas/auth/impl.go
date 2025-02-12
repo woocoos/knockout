@@ -360,7 +360,6 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 	roIDs, err := s.db.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(pwd.UserID)),
 		org.StatusEQ(typex.SimpleStatusActive),
-		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
 	).Select(org.FieldID).Ints(ctx)
 	if err != nil {
@@ -451,7 +450,6 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 	roIDs, err := s.db.Org.Query().Where(
 		org.HasOrgUserWith(orguser.UserID(pwd.UserID)),
 		org.StatusEQ(typex.SimpleStatusActive),
-		org.DomainNotNil(),
 		org.KindEQ(org.KindRoot),
 	).Select(org.FieldID).Ints(ctx)
 	if err != nil {

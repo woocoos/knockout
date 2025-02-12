@@ -15,7 +15,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pquerna/otp v1.4.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tsingsun/woocoo v0.5.2
+	github.com/tsingsun/woocoo v0.5.4-0.20250124074927-bb166707fe2a
 	github.com/tsingsun/woocoo/contrib/gql v0.0.3-0.20250119164019-10d449dc5734
 	github.com/tsingsun/woocoo/contrib/telemetry v0.1.5-0.20240522021626-a2b6e6d10802
 	github.com/vektah/gqlparser/v2 v2.5.19
@@ -161,7 +161,7 @@ require (
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30 // indirect
 	golang.org/x/mod v0.20.0 // indirect
-	golang.org/x/net v0.29.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect; indirectgo
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
