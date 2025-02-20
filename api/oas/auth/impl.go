@@ -743,12 +743,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	now := time.Now()
-	loc, err := time.LoadLocation("Asia/Shanghai")
-	if err != nil {
-		return nil, err
-	}
-	loginTime := now.In(loc).Format("2006-01-02 15:04:05")
+	loginTime := time.Now().Format("2006-01-02 15:04:05")
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
