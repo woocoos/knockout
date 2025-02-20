@@ -405,7 +405,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("user has been referenced")
+		return fmt.Errorf("please remove the policies before remove user")
 	}
 	// 根据角色判断是否被引用
 	has, err = client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.UserID(userID)), orgroleuser.HasOrgRoleWith(orgrole.HasOrgWith(org.ID(tid)))).Exist(ctx)
@@ -413,7 +413,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("user has been referenced")
+		return fmt.Errorf("please remove the role before remove user")
 	}
 
 	_, err = client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(tid)).Exec(ctx)
@@ -454,6 +454,10 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	if oldPwd == newPwd {
 		return fmt.Errorf("old password can not equal new password")
 	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
+	}
 	client := ent.FromContext(ctx)
 	uid, err := identity.UserIDFromContext(ctx)
 	if err != nil {
@@ -472,9 +476,46 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 
 	_, err = client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
 		SetPassword(n).Save(ctx)
+	if err != nil {
+		return err
+	}
 	// 更新PasswordReset
 	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
-	return err
+	// 发送修改密码邮件提醒
+	usr, addr, err := s.getUserInfo(ctx, uid)
+	if err != nil {
+		return err
+	}
+	params := msg.PostableAlerts{
+		{
+			Annotations: map[string]string{
+				"to":            addr.Email,
+				"displayName":   usr.DisplayName,
+				"principalName": usr.PrincipalName,
+			},
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "ChangeUserPassword",
+					"tenant":    strconv.Itoa(tid),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
+			},
+		},
+	}
+	return s.postAlerts(ctx, params)
+}
+
+func (s *Service) getUserInfo(ctx context.Context, uid int) (*ent.User, *ent.UserAddr, error) {
+	usr, err := s.Client.User.Get(ctx, uid)
+	if err != nil {
+		return nil, nil, err
+	}
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	return usr, addr, nil
 }
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
@@ -501,6 +542,14 @@ func (s *Service) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOr
 // DeleteRole 删除角色或工作组
 func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
+	// 判断是否有授权用户，有则不能删除
+	has, err := client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if has {
+		return fmt.Errorf("unable to delete，role has users")
+	}
 	return client.OrgRole.DeleteOneID(roleID).Exec(ctx)
 }
 
@@ -1117,4 +1166,47 @@ func (s *Service) OrgFileIdentities(ctx context.Context, tid int) ([]*ent.FileId
 		return s.OrgFileIdentities(ctx, t.ParentID)
 	}
 	return fis, nil
+}
+
+func (s *Service) DeleteUserIdentity(ctx context.Context, id int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 只有一个凭证则不允许删除
+	ui, err := client.UserIdentity.Get(ctx, id)
+	c, err := client.UserIdentity.Query().Where(useridentity.UserID(ui.UserID)).Count(ctx)
+	if err != nil {
+		return false, err
+	}
+	if c <= 1 {
+		return false, fmt.Errorf("at least one identity is required")
+	}
+	// 更新用户的PrincipalName
+	has, err := client.User.Query().Where(user.ID(ui.UserID), user.PrincipalName(ui.Code)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		uis, err := client.UserIdentity.Query().Where(useridentity.UserID(ui.UserID)).All(ctx)
+		if err != nil {
+			return false, err
+		}
+		principalName := ""
+		for _, i := range uis {
+			if i.ID == id {
+				continue
+			}
+			if i.Kind == useridentity.KindEmail {
+				principalName = i.Code
+				break
+			} else {
+				principalName = i.Code
+			}
+		}
+		err = client.User.UpdateOneID(ui.UserID).SetPrincipalName(principalName).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	}
+	// 删除凭证
+	err = client.UserIdentity.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
 }

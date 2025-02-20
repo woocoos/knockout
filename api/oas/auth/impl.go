@@ -659,18 +659,14 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
 	}
-	usr, err := s.db.User.Get(ctx, uid)
-	if err != nil {
-		return "", err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	usr, addr, err := s.getUserInfo(ctx, uid)
 	if err != nil {
 		return "", err
 	}
 	if addr == nil || addr.Email == "" || req.Email != addr.Email {
 		return "", fmt.Errorf("未找到邮箱，请确认邮箱是否正确")
 	}
-	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
+	uorg, err := s.GetUserRootOrg(ctx, uid)
 	if err != nil {
 		return "", err
 	}
@@ -738,7 +734,57 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	}
 	// no need use transaction
 	err = updateLastLogin(ctx, s.db.UserLoginProfile, uid)
-	return s.loginToken(ctx, uid)
+	loginResp, err := s.loginToken(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	// 发送新设备登录提醒
+	usr, addr, err := s.getUserInfo(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	now := time.Now()
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		return nil, err
+	}
+	loginTime := now.In(loc).Format("2006-01-02 15:04:05")
+	params := msg.PostableAlerts{
+		{
+			Annotations: map[string]string{
+				"to":            addr.Email,
+				"displayName":   loginResp.User.DisplayName,
+				"principalName": usr.PrincipalName,
+				"loginTime":     loginTime,
+				"deviceName":    req.DeviceInfo.DeviceName,
+			},
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "NewDeviceLogin",
+					"tenant":    strconv.Itoa(loginResp.User.Domains[0].ParentID),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
+			},
+		},
+	}
+	err = s.postAlerts(ctx, params)
+	if err != nil {
+		return nil, err
+	}
+	return loginResp, nil
+}
+
+func (s *ServerImpl) getUserInfo(ctx *gin.Context, uid int) (*ent.User, *ent.UserAddr, error) {
+	usr, err := s.db.User.Get(ctx, uid)
+	if err != nil {
+		return nil, nil, err
+	}
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	return usr, addr, nil
 }
 
 func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) error {
@@ -1152,11 +1198,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
 	}
-	usr, err := s.db.User.Get(ctx, uid)
-	if err != nil {
-		return "", err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	usr, addr, err := s.getUserInfo(ctx, uid)
 	if err != nil {
 		return "", err
 	}

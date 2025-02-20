@@ -170,14 +170,14 @@ func Test_CreateToken(t *testing.T) {
 	}
 	opts := Options{
 		JWT: jwtOpt{
-			SigningMethod:   "HS256",
-			SigningKey:      "e262608e-926d-4a4a-9b53-a25a96b95689",
-			PrivateKey:      "e262608e-926d-4a4a-9b53-a25a96b95689",
+			SigningMethod:   "RS256",
+			SigningKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_pub.pem",
+			PrivateKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_auth_pkcs8.pem",
 			TokenTTL:        time.Hour * 100000,
 			RefreshTokenTTL: time.Hour * 100000,
 		},
 	}
-	_, token, err := createToken("2", opts, false)
+	_, token, err := createToken("1", opts, false)
 	if err != nil {
 		panic(err)
 	}

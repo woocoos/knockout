@@ -7,7 +7,6 @@ package graphql
 import (
 	"context"
 	"fmt"
-
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
 	"github.com/woocoos/knockout/api/graphql/generated"
@@ -129,8 +128,7 @@ func (r *mutationResolver) BindUserIdentity(ctx context.Context, input ent.Creat
 
 // DeleteUserIdentity is the resolver for the deleteUserIdentity field.
 func (r *mutationResolver) DeleteUserIdentity(ctx context.Context, id int) (bool, error) {
-	err := ent.FromContext(ctx).UserIdentity.DeleteOneID(id).Exec(ctx)
-	return err == nil, err
+	return r.resource.DeleteUserIdentity(ctx, id)
 }
 
 // ChangePassword is the resolver for the changePassword field.
