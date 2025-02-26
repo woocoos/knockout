@@ -720,6 +720,18 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	ctx1 := securityX.WithContext(ctx, securityX.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": strconv.Itoa(uid),
 	}))
+	// 如果超出设备限制数，则提醒用户
+	uds, err := client.UserDevice.Query().Where(userdevice.UserID(uid)).Count(ctx1)
+	if err != nil {
+		return nil, err
+	}
+	qi, err := client.QuotaItem.Query().Where(quotaitem.Code(string(quotaService.ItemCodeUserDevice))).Only(ctx1)
+	if err != nil {
+		return nil, err
+	}
+	if int64(uds) >= qi.DefaultLimit {
+		return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", qi.DefaultLimit)
+	}
 	err = client.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
 		DeviceName:    &req.DeviceInfo.DeviceName,
 		DeviceModel:   &req.DeviceInfo.DeviceModel,
