@@ -772,7 +772,11 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	} else if !isAllow {
 		return fmt.Errorf("no allow to revoke")
 	}
+	return s.RevokeImpl(ctx, orgID, p)
+}
 
+func (s *Service) RevokeImpl(ctx context.Context, orgID int, p *ent.Permission) error {
+	client := ent.FromContext(ctx)
 	// 判断actions、resources是否存在主体其他授权的policy
 	var ops []*ent.OrgPolicy
 	wheres := []predicate.Permission{
@@ -802,7 +806,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 		return err
 	}
 
-	_, err = client.Permission.Delete().Where(permission.ID(permissionID), permission.OrgID(orgID)).Exec(ctx)
+	_, err = client.Permission.Delete().Where(permission.ID(p.ID), permission.OrgID(orgID)).Exec(ctx)
 	return err
 }
 

@@ -513,12 +513,12 @@ func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int
 		if err != nil {
 			return err
 		}
-		if has {
-			continue
-		}
-		err = s.AssignOrganizationAppPolicy(ctx, orgID, addID)
-		if err != nil {
-			return err
+		if !has {
+			// 如果策略不存在组织则分配给组织
+			err = s.AssignOrganizationAppPolicy(ctx, orgID, addID)
+			if err != nil {
+				return err
+			}
 		}
 		// 组织策略授权给角色
 		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(addID), orgpolicy.OrgID(orgID)).Only(ctx)
@@ -535,48 +535,44 @@ func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int
 			return err
 		}
 	}
-	// 删除的策略：如果是视图策略，则直接删除orgPolicy及解除策略对组织角色及用户授权。
-	// 如果是普通策略，则需先判断是否其他授权给组织的应用策略是否包含该策略在执行删除操作
+	// 删除的策略：如果其他的授权角色不包含该策略则直接删除orgPolicy，以及解除策略对组织的授权。
+	// 如果其他授权角色包含该策略则取消当前授权组织角色的授权。
 	for _, rmID := range rmIDs {
 		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(rmID), orgpolicy.OrgID(orgID)).WithAppPolicy().Only(ctx)
 		if err != nil {
 			return err
 		}
-		if op.Edges.AppPolicy.Kind == apppolicy.KindView {
-			// 视图策略，直接从组织移除
-			err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
+
+		// 判断是否被其他授权角色引用
+		has, err := client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgPolicyID(op.ID),
+			permission.HasRoleWith(orgrole.AppRoleIDNotNil()),
+			permission.RoleIDNEQ(or.ID),
+		).Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if has {
+			// 如果其他授权角色有包含该策略，则只取消当前角色的授权
+			p, err := client.Permission.Query().Where(
+				permission.OrgID(orgID),
+				permission.OrgPolicyID(op.ID),
+				permission.RoleID(or.ID),
+				permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			).WithOrgPolicy().Only(ctx)
+			if err != nil {
+				return err
+			}
+			err = s.RevokeImpl(ctx, orgID, p)
 			if err != nil {
 				return err
 			}
 		} else {
-			// 普通策略，判断是否被其他授权角色引用
-			has, err := client.Permission.Query().Where(
-				permission.PrincipalKindEQ(permission.PrincipalKindRole),
-				permission.OrgPolicyID(op.ID),
-				permission.HasRoleWith(orgrole.AppRoleIDNotNil()),
-				permission.RoleIDNEQ(or.ID),
-			).Exist(ctx)
+			// 直接移除该策略
+			err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
 			if err != nil {
 				return err
-			}
-			if has {
-				// 如果其他授权角色有包含该策略，则只取消当前角色的授权
-				pID, err := client.Permission.Query().Where(
-					permission.OrgID(orgID),
-					permission.OrgPolicyID(op.ID),
-					permission.RoleID(or.ID),
-					permission.PrincipalKindEQ(permission.PrincipalKindRole),
-				).Select(permission.FieldID).Int(ctx)
-				err = s.Revoke(ctx, orgID, pID)
-				if err != nil {
-					return err
-				}
-			} else {
-				// 直接移除该策略
-				err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
-				if err != nil {
-					return err
-				}
 			}
 		}
 	}
