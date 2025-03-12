@@ -321,6 +321,11 @@ func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgI
 
 // RevokeOrganizationAppPolicy is the resolver for the revokeOrganizationAppPolicy field.
 func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	if has, err := r.resource.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
+		return false, err
+	} else if !has {
+		return false, fmt.Errorf("no allow to revoke")
+	}
 	err := r.resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
 	return err == nil, err
 }

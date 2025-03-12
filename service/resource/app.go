@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -21,7 +22,7 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
-	"github.com/woocoos/knockout/ent/orgroleuser"
+	"github.com/woocoos/knockout/ent/permission"
 	"strconv"
 )
 
@@ -471,59 +472,112 @@ func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int
 	return err
 }
 
+// SyncAppRoleToOrg 同步应用角色到组织角色，需处理权限视图的策略，及添加的权限策略
 func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int) error {
 	client := ent.FromContext(ctx)
-	rootOrg, err := s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Only(ctx)
-	if rootOrg == nil || err != nil {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
-	}
-	if rootOrg.OwnerID == nil {
-		return fmt.Errorf("organization %d is not has ownerID", orgID)
-	}
-	// 查询组织角色授权的用户
-	orgRoleUsers, err := client.OrgRoleUser.Query().Where(
-		orgroleuser.OrgID(orgID),
-		orgroleuser.UserIDNEQ(*rootOrg.OwnerID),
-		orgroleuser.HasOrgRoleWith(orgrole.AppRoleID(appRoleID)),
-	).All(ctx)
+	// 获取appRole授权的策略
+	arps, err := client.AppRolePolicy.Query().Where(approlepolicy.AppRoleID(appRoleID)).All(ctx)
 	if err != nil {
 		return err
 	}
-	// 取消组织角色用户授权
-	for _, oru := range orgRoleUsers {
-		// 取消旧的授权
-		err = s.RevokeRoleUser(ctx, oru.OrgRoleID, oru.UserID)
+	apIds := make([]int, len(arps))
+	for i, arp := range arps {
+		apIds[i] = arp.AppPolicyID
+	}
+	// 查询授权的组织角色
+	or, err := client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgIDIn(orgID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	// 组织角色授权的策略
+	orps, err := client.Permission.Query().Where(
+		permission.OrgID(orgID),
+		permission.RoleID(or.ID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.StatusEQ(typex.SimpleStatusActive),
+	).WithOrgPolicy().All(ctx)
+	// 组织策略的应用策略ID
+	opaIDs := make([]int, 0, len(orps))
+	for _, op := range orps {
+		if op.Edges.OrgPolicy == nil || op.Edges.OrgPolicy.AppPolicyID == nil {
+			continue
+		}
+		opaIDs = append(opaIDs, *op.Edges.OrgPolicy.AppPolicyID)
+	}
+	// 比较应用角色策略与组织角色策略，找出删除的及增加的策略
+	addIDs, rmIDs := DiffArrays(apIds, opaIDs)
+	// 增加的策略：增加orgPolicy及授权给组织的角色添加策略
+	for _, addID := range addIDs {
+		// 策略授权给组织
+		has, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(addID), orgpolicy.OrgID(orgID)).Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if has {
+			continue
+		}
+		err = s.AssignOrganizationAppPolicy(ctx, orgID, addID)
+		if err != nil {
+			return err
+		}
+		// 组织策略授权给角色
+		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(addID), orgpolicy.OrgID(orgID)).Only(ctx)
+		if err != nil {
+			return err
+		}
+		_, err = s.Grant(ctx, ent.CreatePermissionInput{
+			RoleID:        &or.ID,
+			PrincipalKind: permission.PrincipalKindRole,
+			OrgPolicyID:   op.ID,
+			OrgID:         orgID,
+		})
 		if err != nil {
 			return err
 		}
 	}
-	// 取消应用角色对组织的授权
-	err = s.RevokeOrganizationAppRole(ctx, orgID, appRoleID)
-	if err != nil {
-		return err
-	}
-	// 重新授权应用角色给组织
-	err = s.AssignOrganizationAppRole(ctx, orgID, appRoleID)
-	if err != nil {
-		return err
-	}
-	// 重新对组织角色用户授权
-	for _, oru := range orgRoleUsers {
-		orID, err := client.OrgRole.Query().Where(
-			orgrole.OrgID(oru.OrgID),
-			orgrole.AppRoleID(appRoleID),
-			orgrole.KindEQ(orgrole.KindRole),
-		).Select(orgrole.FieldID).Int(ctx)
+	// 删除的策略：如果是视图策略，则直接删除orgPolicy及解除策略对组织角色及用户授权。
+	// 如果是普通策略，则需先判断是否其他授权给组织的应用策略是否包含该策略在执行删除操作
+	for _, rmID := range rmIDs {
+		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(rmID), orgpolicy.OrgID(orgID)).WithAppPolicy().Only(ctx)
 		if err != nil {
 			return err
 		}
-		// 增加新的授权
-		err = s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
-			UserID:    oru.UserID,
-			OrgRoleID: orID,
-		}, oru.OrgID)
-		if err != nil {
-			return err
+		if op.Edges.AppPolicy.Kind == apppolicy.KindView {
+			// 视图策略，直接从组织移除
+			err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
+			if err != nil {
+				return err
+			}
+		} else {
+			// 普通策略，判断是否被其他授权角色引用
+			has, err := client.Permission.Query().Where(
+				permission.PrincipalKindEQ(permission.PrincipalKindRole),
+				permission.OrgPolicyID(op.ID),
+				permission.HasRoleWith(orgrole.AppRoleIDNotNil()),
+				permission.RoleIDNEQ(or.ID),
+			).Exist(ctx)
+			if err != nil {
+				return err
+			}
+			if has {
+				// 如果其他授权角色有包含该策略，则只取消当前角色的授权
+				pID, err := client.Permission.Query().Where(
+					permission.OrgID(orgID),
+					permission.OrgPolicyID(op.ID),
+					permission.RoleID(or.ID),
+					permission.PrincipalKindEQ(permission.PrincipalKindRole),
+				).Select(permission.FieldID).Int(ctx)
+				err = s.Revoke(ctx, orgID, pID)
+				if err != nil {
+					return err
+				}
+			} else {
+				// 直接移除该策略
+				err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil

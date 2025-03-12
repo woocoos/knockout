@@ -9,6 +9,7 @@ import (
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
 	"strconv"
 	"testing"
 	"time"
@@ -541,4 +542,142 @@ func (t *graphqlSuite) TestFileIdentity() {
 	t.Require().NoError(err)
 	t.Equal(1, len(fis))
 	t.Equal(1, fis[0].TenantID)
+}
+
+// TestSyncAppRoleToOrg 测试应用角色同步到组织，由于数据问题，子用例无法单独跑
+func (t *graphqlSuite) TestSyncAppRoleToOrg() {
+	ctx := t.NewTestCtx(1, 1)
+	appID := 1
+	orgID := 1
+	appCode := "resource"
+	// 应用权限
+	ras := make([]*ent.AppActionCreate, 0)
+	for i := 0; i < 9; i++ {
+		ras = append(ras, t.Client.AppAction.Create().SetAppID(appID).SetCreatedBy(1).
+			SetName(fmt.Sprintf("testAction%d", i)).SetKind(appaction.KindGraphql).SetComments("登陆授权").SetMethod(appaction.MethodRead),
+		)
+	}
+	t.Client.AppAction.CreateBulk(ras...).ExecX(ctx)
+	// 应用策略1
+	ap1, err := t.Client.AppPolicy.Create().SetCreatedBy(1).SetVersion("1").SetRules([]*types.PolicyRule{
+		{
+			Effect: types.PolicyEffectAllow,
+			Actions: []string{
+				appCode + ":testAction1",
+				appCode + ":testAction2",
+				appCode + ":testAction3",
+			},
+		},
+	}).SetName("ResourceTest1").SetAppID(appID).SetStatus(typex.SimpleStatusActive).Save(ctx)
+	t.NoError(err)
+	// 应用策略2
+	ap2, err := t.Client.AppPolicy.Create().SetCreatedBy(1).SetVersion("1").SetRules([]*types.PolicyRule{
+		{
+			Effect: types.PolicyEffectAllow,
+			Actions: []string{
+				appCode + ":testAction3",
+				appCode + ":testAction4",
+			},
+		},
+	}).SetName("ResourceTest2").SetAppID(appID).SetStatus(typex.SimpleStatusActive).Save(ctx)
+	t.NoError(err)
+	// 应用角色
+	ar, err := t.Client.AppRole.Create().SetAppID(appID).SetCreatedBy(1).SetName("测试角色同步").
+		SetComments("管理员角色").SetAutoGrant(true).SetEditable(true).Save(ctx)
+	t.NoError(err)
+	// 策略1给应用角色
+	_, err = t.mr.AssignAppRolePolicy(ctx, appID, ar.ID, []int{ap1.ID})
+	t.NoError(err)
+	// 角色授权给组织
+	_, err = t.mr.AssignOrganizationAppRole(ctx, orgID, ar.ID)
+	t.NoError(err)
+	// 查询授权的组织角色
+	or, err := t.Client.OrgRole.Query().Where(orgrole.AppRoleID(ar.ID), orgrole.OrgID(orgID), orgrole.KindEQ(orgrole.KindRole)).Only(ctx)
+	t.NoError(err)
+	t.Run("应用角色添加策略2，并同步到组织", func() {
+		// 应用角色添加策略2
+		_, err = t.mr.AssignAppRolePolicy(ctx, appID, ar.ID, []int{ap2.ID})
+		t.NoError(err)
+		// 查询现有授权的ap1
+		ps, err := t.Client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgID(orgID),
+			permission.RoleID(or.ID),
+		).WithOrgPolicy().All(ctx)
+		t.NoError(err)
+		if len(ps) != 1 || *ps[0].Edges.OrgPolicy.AppPolicyID != ap1.ID {
+			t.Fail("策略ap1未正确授权到组织角色")
+		}
+		// 应用角色同步到组织
+		_, err = t.mr.SyncAppRoleToOrg(ctx, orgID, ar.ID)
+		t.NoError(err)
+		// 查询应用角色授权了ap1、ap2
+		ps, err = t.Client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgID(orgID),
+			permission.RoleID(or.ID),
+		).All(ctx)
+		t.NoError(err)
+		if len(ps) != 2 {
+			t.Fail("策略ap1、ap2未正确授权到组织角色")
+		}
+	})
+	var group *ent.OrgRole
+	t.Run("组织角色策略授权给用户组", func() {
+		// 创建用户组
+		group, err = t.Client.OrgRole.Create().SetOrgID(1).SetName("测试用户组1").
+			SetCreatedBy(1).SetKind(orgrole.KindGroup).Save(ctx)
+		t.NoError(err)
+		//
+		ps, err := t.Client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgID(orgID),
+			permission.RoleID(or.ID),
+		).All(ctx)
+		t.NoError(err)
+		// 给用户组授权策略ap1、ap2
+		_, err = t.mr.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindRole,
+			OrgID:         orgID,
+			RoleID:        &group.ID,
+			OrgPolicyID:   ps[0].OrgPolicyID,
+		})
+		t.NoError(err)
+		_, err = t.mr.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindRole,
+			OrgID:         orgID,
+			RoleID:        &group.ID,
+			OrgPolicyID:   ps[1].OrgPolicyID,
+		})
+		t.NoError(err)
+	})
+	t.Run("应用角色移除策略1，并同步到组织", func() {
+		// 应用角色移除策略1
+		_, err = t.mr.RevokeAppRolePolicy(ctx, appID, ar.ID, []int{ap1.ID})
+		t.NoError(err)
+		// 应用角色同步到组织
+		_, err = t.mr.SyncAppRoleToOrg(ctx, orgID, ar.ID)
+		// 查询组织角色现有授权的ap2
+		ps, err := t.Client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgID(orgID),
+			permission.RoleID(or.ID),
+		).WithOrgPolicy().All(ctx)
+		t.NoError(err)
+		if len(ps) != 1 || *ps[0].Edges.OrgPolicy.AppPolicyID != ap2.ID {
+			t.Fail("组织角色策略同步失败")
+			fmt.Println(len(ps))
+		}
+		// 查询用户组授权策略ap2
+		ps, err = t.Client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgID(orgID),
+			permission.RoleID(group.ID),
+		).WithOrgPolicy().All(ctx)
+		t.NoError(err)
+		if len(ps) != 1 || *ps[0].Edges.OrgPolicy.AppPolicyID != ap2.ID {
+			t.Fail("组织用户组同步策略失败")
+			fmt.Println(len(ps))
+		}
+	})
 }

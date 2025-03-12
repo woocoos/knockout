@@ -651,7 +651,7 @@ func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 }
 
 func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
-	ams, err := s.Client.AppMenu.Query().Where(appmenu.StatusEQ(typex.SimpleStatusActive), appmenu.HasAppWith(app.Code(appCode))).All(ctx)
+	ams, err := s.Client.AppMenu.Query().Where(appmenu.StatusEQ(typex.SimpleStatusActive), appmenu.HasAppWith(app.Code(appCode))).WithApp().All(ctx)
 	if err != nil {
 		return nil, err
 	}

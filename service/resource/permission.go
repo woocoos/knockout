@@ -597,13 +597,6 @@ func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	if !isRoot {
 		return fmt.Errorf("organization %d is not a root organization", orgID)
 	}
-
-	if has, err := s.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
-		return err
-	} else if !has {
-		return fmt.Errorf("no allow to revoke")
-	}
-
 	// 查找对应授权的组织策略
 	op, err := client.OrgPolicy.Query().Where(orgpolicy.OrgID(orgID), orgpolicy.AppPolicyID(appPolicyID)).Only(ctx)
 	if err != nil {
