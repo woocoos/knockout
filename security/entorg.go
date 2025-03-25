@@ -295,14 +295,8 @@ func (e *EntHook) UserMutationAllow(op ent.Op, fieldName string) ent.Hook {
 
 			switch m.Op() {
 			case ent.OpCreate:
-				var value ent.Value
-				if isSelf {
-					value, _ = m.Field(user.FieldID)
-				} else {
-					value, _ = m.Field(fieldName)
-				}
-				tid := value.(int)
-				if tid != uid && !has {
+				// 创建没有userID与登录用户比较，目前只判断是否有权限创建用户
+				if !has {
 					return nil, ErrMutationOtherUserNotAllow
 				}
 			case ent.OpUpdateOne:
