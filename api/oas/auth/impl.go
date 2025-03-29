@@ -533,6 +533,7 @@ func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return nil, err
 	}
 
@@ -569,6 +570,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return nil, err
 	}
 
@@ -645,6 +647,7 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return "", err
 	}
 	var uid int
@@ -708,6 +711,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return nil, err
 	}
 	var uid int
@@ -1052,6 +1056,7 @@ func (s *ServerImpl) BindMfa(ctx *gin.Context, req *BindMfaRequest) (bool, error
 	}
 	id, err := parseStateToken(req.StateToken, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return false, err
 	}
 	//
@@ -1158,6 +1163,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return false, err
 	}
 	var uid int
@@ -1191,6 +1197,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return "", err
 	}
 	var uid int
@@ -1250,6 +1257,7 @@ func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerify
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return nil, err
 	}
 	var uid int
@@ -1279,6 +1287,7 @@ func (s *ServerImpl) ForgetPwdVerifyMfa(ctx *gin.Context, req *ForgetPwdVerifyMf
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
+		ctx.Status(401)
 		return nil, err
 	}
 	var uid int
