@@ -932,15 +932,32 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 		}
 		cps := oup.ClientPreferences
 		has = false
+		var currCP *types.ClientPreference
 		for i, v := range cps {
 			if v.AppCode == input.ClientPreference.AppCode {
-				cps[i] = *input.ClientPreference
+				currCP = &cps[i]
 				has = true
 				break
 			}
 		}
 		if !has {
+			// 不存在则直接添加
 			cps = append(cps, *input.ClientPreference)
+		} else {
+			// 存在则更新/添加对应的key
+			for _, v := range input.ClientPreference.Values {
+				has = false
+				for j, vv := range currCP.Values {
+					if vv.Key == v.Key {
+						has = true
+						currCP.Values[j] = v
+						break
+					}
+				}
+				if !has {
+					currCP.Values = append(currCP.Values, v)
+				}
+			}
 		}
 		update.SetClientPreferences(cps)
 	}

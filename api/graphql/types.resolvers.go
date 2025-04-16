@@ -7,10 +7,10 @@ package graphql
 import (
 	"context"
 	"fmt"
-	"github.com/woocoos/knockout/ent/app"
 
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"

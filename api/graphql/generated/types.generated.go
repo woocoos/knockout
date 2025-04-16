@@ -298,11 +298,14 @@ func (ec *executionContext) _ClientPreferenceValue_key(ctx context.Context, fiel
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ClientPreferenceValue_key(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1933,7 +1936,7 @@ func (ec *executionContext) unmarshalInputClientPreferenceValueInput(ctx context
 		switch k {
 		case "key":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("key"))
-			data, err := ec.unmarshalOString2string(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2263,6 +2266,9 @@ func (ec *executionContext) _ClientPreferenceValue(ctx context.Context, sel ast.
 			out.Values[i] = graphql.MarshalString("ClientPreferenceValue")
 		case "key":
 			out.Values[i] = ec._ClientPreferenceValue_key(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "value":
 			out.Values[i] = ec._ClientPreferenceValue_value(ctx, field, obj)
 		case "extension":

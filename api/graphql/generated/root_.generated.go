@@ -18398,19 +18398,24 @@ type ClientPreference {
 }
 
 type ClientPreferenceValue {
-    key: String
+    key: String!
     value: String
     extension: String
 }
 
 input ClientPreferenceInput {
+    """应用编码"""
     appCode: String!
+    """应用偏好设置数据"""
     values: [ClientPreferenceValueInput!]
 }
 
 input ClientPreferenceValueInput {
-    key: String
+    """根据业务场景定义key，存储时根据key更新"""
+    key: String!
+    """业务场景对应的值"""
     value: String
+    """扩展字段，根据业务场景需求使用"""
     extension: String
 }`, BuiltIn: false},
 }
