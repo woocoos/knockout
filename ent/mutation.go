@@ -26845,27 +26845,29 @@ func (m *OrgUserMutation) ResetEdge(name string) error {
 // OrgUserPreferenceMutation represents an operation that mutates the OrgUserPreference nodes in the graph.
 type OrgUserPreferenceMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *int
-	created_by          *int
-	addcreated_by       *int
-	created_at          *time.Time
-	updated_by          *int
-	addupdated_by       *int
-	updated_at          *time.Time
-	menu_favorite       *[]int
-	appendmenu_favorite []int
-	menu_recent         *[]int
-	appendmenu_recent   []int
-	clearedFields       map[string]struct{}
-	user                *int
-	cleareduser         bool
-	org                 *int
-	clearedorg          bool
-	done                bool
-	oldValue            func(context.Context) (*OrgUserPreference, error)
-	predicates          []predicate.OrgUserPreference
+	op                       Op
+	typ                      string
+	id                       *int
+	created_by               *int
+	addcreated_by            *int
+	created_at               *time.Time
+	updated_by               *int
+	addupdated_by            *int
+	updated_at               *time.Time
+	menu_favorite            *[]int
+	appendmenu_favorite      []int
+	menu_recent              *[]int
+	appendmenu_recent        []int
+	client_preferences       *[]types.ClientPreference
+	appendclient_preferences []types.ClientPreference
+	clearedFields            map[string]struct{}
+	user                     *int
+	cleareduser              bool
+	org                      *int
+	clearedorg               bool
+	done                     bool
+	oldValue                 func(context.Context) (*OrgUserPreference, error)
+	predicates               []predicate.OrgUserPreference
 }
 
 var _ ent.Mutation = (*OrgUserPreferenceMutation)(nil)
@@ -27385,6 +27387,71 @@ func (m *OrgUserPreferenceMutation) ResetMenuRecent() {
 	delete(m.clearedFields, orguserpreference.FieldMenuRecent)
 }
 
+// SetClientPreferences sets the "client_preferences" field.
+func (m *OrgUserPreferenceMutation) SetClientPreferences(tp []types.ClientPreference) {
+	m.client_preferences = &tp
+	m.appendclient_preferences = nil
+}
+
+// ClientPreferences returns the value of the "client_preferences" field in the mutation.
+func (m *OrgUserPreferenceMutation) ClientPreferences() (r []types.ClientPreference, exists bool) {
+	v := m.client_preferences
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientPreferences returns the old "client_preferences" field's value of the OrgUserPreference entity.
+// If the OrgUserPreference object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrgUserPreferenceMutation) OldClientPreferences(ctx context.Context) (v []types.ClientPreference, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientPreferences is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientPreferences requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientPreferences: %w", err)
+	}
+	return oldValue.ClientPreferences, nil
+}
+
+// AppendClientPreferences adds tp to the "client_preferences" field.
+func (m *OrgUserPreferenceMutation) AppendClientPreferences(tp []types.ClientPreference) {
+	m.appendclient_preferences = append(m.appendclient_preferences, tp...)
+}
+
+// AppendedClientPreferences returns the list of values that were appended to the "client_preferences" field in this mutation.
+func (m *OrgUserPreferenceMutation) AppendedClientPreferences() ([]types.ClientPreference, bool) {
+	if len(m.appendclient_preferences) == 0 {
+		return nil, false
+	}
+	return m.appendclient_preferences, true
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (m *OrgUserPreferenceMutation) ClearClientPreferences() {
+	m.client_preferences = nil
+	m.appendclient_preferences = nil
+	m.clearedFields[orguserpreference.FieldClientPreferences] = struct{}{}
+}
+
+// ClientPreferencesCleared returns if the "client_preferences" field was cleared in this mutation.
+func (m *OrgUserPreferenceMutation) ClientPreferencesCleared() bool {
+	_, ok := m.clearedFields[orguserpreference.FieldClientPreferences]
+	return ok
+}
+
+// ResetClientPreferences resets all changes to the "client_preferences" field.
+func (m *OrgUserPreferenceMutation) ResetClientPreferences() {
+	m.client_preferences = nil
+	m.appendclient_preferences = nil
+	delete(m.clearedFields, orguserpreference.FieldClientPreferences)
+}
+
 // ClearUser clears the "user" edge to the User entity.
 func (m *OrgUserPreferenceMutation) ClearUser() {
 	m.cleareduser = true
@@ -27473,7 +27540,7 @@ func (m *OrgUserPreferenceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrgUserPreferenceMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_by != nil {
 		fields = append(fields, orguserpreference.FieldCreatedBy)
 	}
@@ -27497,6 +27564,9 @@ func (m *OrgUserPreferenceMutation) Fields() []string {
 	}
 	if m.menu_recent != nil {
 		fields = append(fields, orguserpreference.FieldMenuRecent)
+	}
+	if m.client_preferences != nil {
+		fields = append(fields, orguserpreference.FieldClientPreferences)
 	}
 	return fields
 }
@@ -27522,6 +27592,8 @@ func (m *OrgUserPreferenceMutation) Field(name string) (ent.Value, bool) {
 		return m.MenuFavorite()
 	case orguserpreference.FieldMenuRecent:
 		return m.MenuRecent()
+	case orguserpreference.FieldClientPreferences:
+		return m.ClientPreferences()
 	}
 	return nil, false
 }
@@ -27547,6 +27619,8 @@ func (m *OrgUserPreferenceMutation) OldField(ctx context.Context, name string) (
 		return m.OldMenuFavorite(ctx)
 	case orguserpreference.FieldMenuRecent:
 		return m.OldMenuRecent(ctx)
+	case orguserpreference.FieldClientPreferences:
+		return m.OldClientPreferences(ctx)
 	}
 	return nil, fmt.Errorf("unknown OrgUserPreference field %s", name)
 }
@@ -27611,6 +27685,13 @@ func (m *OrgUserPreferenceMutation) SetField(name string, value ent.Value) error
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMenuRecent(v)
+		return nil
+	case orguserpreference.FieldClientPreferences:
+		v, ok := value.([]types.ClientPreference)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientPreferences(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrgUserPreference field %s", name)
@@ -27681,6 +27762,9 @@ func (m *OrgUserPreferenceMutation) ClearedFields() []string {
 	if m.FieldCleared(orguserpreference.FieldMenuRecent) {
 		fields = append(fields, orguserpreference.FieldMenuRecent)
 	}
+	if m.FieldCleared(orguserpreference.FieldClientPreferences) {
+		fields = append(fields, orguserpreference.FieldClientPreferences)
+	}
 	return fields
 }
 
@@ -27706,6 +27790,9 @@ func (m *OrgUserPreferenceMutation) ClearField(name string) error {
 		return nil
 	case orguserpreference.FieldMenuRecent:
 		m.ClearMenuRecent()
+		return nil
+	case orguserpreference.FieldClientPreferences:
+		m.ClearClientPreferences()
 		return nil
 	}
 	return fmt.Errorf("unknown OrgUserPreference nullable field %s", name)
@@ -27738,6 +27825,9 @@ func (m *OrgUserPreferenceMutation) ResetField(name string) error {
 		return nil
 	case orguserpreference.FieldMenuRecent:
 		m.ResetMenuRecent()
+		return nil
+	case orguserpreference.FieldClientPreferences:
+		m.ResetClientPreferences()
 		return nil
 	}
 	return fmt.Errorf("unknown OrgUserPreference field %s", name)

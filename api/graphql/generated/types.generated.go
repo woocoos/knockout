@@ -184,6 +184,222 @@ func (ec *executionContext) fieldContext_AppPolicyViewOrgPolicy_appPolicyView(_ 
 	return fc, nil
 }
 
+func (ec *executionContext) _ClientPreference_appCode(ctx context.Context, field graphql.CollectedField, obj *types.ClientPreference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClientPreference_appCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AppCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClientPreference_appCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClientPreference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClientPreference_values(ctx context.Context, field graphql.CollectedField, obj *types.ClientPreference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClientPreference_values(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Values, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]types.ClientPreferenceValue)
+	fc.Result = res
+	return ec.marshalOClientPreferenceValue2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClientPreference_values(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClientPreference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "key":
+				return ec.fieldContext_ClientPreferenceValue_key(ctx, field)
+			case "value":
+				return ec.fieldContext_ClientPreferenceValue_value(ctx, field)
+			case "extension":
+				return ec.fieldContext_ClientPreferenceValue_extension(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ClientPreferenceValue", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClientPreferenceValue_key(ctx context.Context, field graphql.CollectedField, obj *types.ClientPreferenceValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClientPreferenceValue_key(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Key, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClientPreferenceValue_key(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClientPreferenceValue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClientPreferenceValue_value(ctx context.Context, field graphql.CollectedField, obj *types.ClientPreferenceValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClientPreferenceValue_value(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClientPreferenceValue_value(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClientPreferenceValue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClientPreferenceValue_extension(ctx context.Context, field graphql.CollectedField, obj *types.ClientPreferenceValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClientPreferenceValue_extension(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Extension, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClientPreferenceValue_extension(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClientPreferenceValue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _FileIdentityForApp_id(ctx context.Context, field graphql.CollectedField, obj *model.FileIdentityForApp) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_FileIdentityForApp_id(ctx, field)
 	if err != nil {
@@ -1667,6 +1883,81 @@ func (ec *executionContext) unmarshalInputAssignRoleUserInput(ctx context.Contex
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputClientPreferenceInput(ctx context.Context, obj interface{}) (types.ClientPreference, error) {
+	var it types.ClientPreference
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"appCode", "values"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "appCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppCode = data
+		case "values":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("values"))
+			data, err := ec.unmarshalOClientPreferenceValueInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Values = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputClientPreferenceValueInput(ctx context.Context, obj interface{}) (types.ClientPreferenceValue, error) {
+	var it types.ClientPreferenceValue
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"key", "value", "extension"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "key":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("key"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Key = data
+		case "value":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Value = data
+		case "extension":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("extension"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Extension = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputEnableDirectoryInput(ctx context.Context, obj interface{}) (model.EnableDirectoryInput, error) {
 	var it model.EnableDirectoryInput
 	asMap := map[string]interface{}{}
@@ -1790,7 +2081,7 @@ func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Con
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"menuFavorite", "menuRecent"}
+	fieldsInOrder := [...]string{"menuFavorite", "menuRecent", "clientPreference"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -1811,6 +2102,13 @@ func (ec *executionContext) unmarshalInputOrgUserPreferenceInput(ctx context.Con
 				return it, err
 			}
 			it.MenuRecent = data
+		case "clientPreference":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientPreference"))
+			data, err := ec.unmarshalOClientPreferenceInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClientPreference = data
 		}
 	}
 
@@ -1888,6 +2186,87 @@ func (ec *executionContext) _AppPolicyViewOrgPolicy(ctx context.Context, sel ast
 			out.Values[i] = ec._AppPolicyViewOrgPolicy_orgPolicy(ctx, field, obj)
 		case "appPolicyView":
 			out.Values[i] = ec._AppPolicyViewOrgPolicy_appPolicyView(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var clientPreferenceImplementors = []string{"ClientPreference"}
+
+func (ec *executionContext) _ClientPreference(ctx context.Context, sel ast.SelectionSet, obj *types.ClientPreference) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, clientPreferenceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ClientPreference")
+		case "appCode":
+			out.Values[i] = ec._ClientPreference_appCode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "values":
+			out.Values[i] = ec._ClientPreference_values(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var clientPreferenceValueImplementors = []string{"ClientPreferenceValue"}
+
+func (ec *executionContext) _ClientPreferenceValue(ctx context.Context, sel ast.SelectionSet, obj *types.ClientPreferenceValue) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, clientPreferenceValueImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ClientPreferenceValue")
+		case "key":
+			out.Values[i] = ec._ClientPreferenceValue_key(ctx, field, obj)
+		case "value":
+			out.Values[i] = ec._ClientPreferenceValue_value(ctx, field, obj)
+		case "extension":
+			out.Values[i] = ec._ClientPreferenceValue_extension(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2305,6 +2684,34 @@ func (ec *executionContext) unmarshalNAssignRoleUserInput2githubᚗcomᚋwoocoos
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNClientPreference2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, sel ast.SelectionSet, v types.ClientPreference) graphql.Marshaler {
+	return ec._ClientPreference(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, sel ast.SelectionSet, v *types.ClientPreference) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ClientPreference(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNClientPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v interface{}) (types.ClientPreference, error) {
+	res, err := ec.unmarshalInputClientPreferenceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNClientPreferenceValue2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx context.Context, sel ast.SelectionSet, v types.ClientPreferenceValue) graphql.Marshaler {
+	return ec._ClientPreferenceValue(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalNClientPreferenceValueInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx context.Context, v interface{}) (types.ClientPreferenceValue, error) {
+	res, err := ec.unmarshalInputClientPreferenceValueInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNEnableDirectoryInput2githubᚗcomᚋwoocoosᚋknockoutᚋapiᚋgraphqlᚋmodelᚐEnableDirectoryInput(ctx context.Context, v interface{}) (model.EnableDirectoryInput, error) {
 	res, err := ec.unmarshalInputEnableDirectoryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2480,6 +2887,148 @@ func (ec *executionContext) marshalNUserMfaInfo2ᚖgithubᚗcomᚋwoocoosᚋknoc
 		return graphql.Null
 	}
 	return ec._UserMfaInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOClientPreference2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx context.Context, sel ast.SelectionSet, v []types.ClientPreference) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNClientPreference2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx context.Context, v interface{}) ([]types.ClientPreference, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]types.ClientPreference, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNClientPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOClientPreferenceInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v interface{}) (*types.ClientPreference, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputClientPreferenceInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOClientPreferenceValue2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx context.Context, sel ast.SelectionSet, v []types.ClientPreferenceValue) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNClientPreferenceValue2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOClientPreferenceValueInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValueᚄ(ctx context.Context, v interface{}) ([]types.ClientPreferenceValue, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]types.ClientPreferenceValue, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNClientPreferenceValueInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceValue(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) marshalOOrgLogo2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐOrgLogo(ctx context.Context, sel ast.SelectionSet, v *types.OrgLogo) graphql.Marshaler {

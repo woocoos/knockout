@@ -42,6 +42,7 @@ type ResolverRoot interface {
 	Org() OrgResolver
 	OrgPolicy() OrgPolicyResolver
 	OrgRole() OrgRoleResolver
+	OrgUserPreference() OrgUserPreferenceResolver
 	Permission() PermissionResolver
 	Query() QueryResolver
 	User() UserResolver
@@ -297,6 +298,17 @@ type ComplexityRoot struct {
 		Policies  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
+	}
+
+	ClientPreference struct {
+		AppCode func(childComplexity int) int
+		Values  func(childComplexity int) int
+	}
+
+	ClientPreferenceValue struct {
+		Extension func(childComplexity int) int
+		Key       func(childComplexity int) int
+		Value     func(childComplexity int) int
 	}
 
 	Country struct {
@@ -671,17 +683,19 @@ type ComplexityRoot struct {
 	}
 
 	OrgUserPreference struct {
-		CreatedAt    func(childComplexity int) int
-		CreatedBy    func(childComplexity int) int
-		ID           func(childComplexity int) int
-		MenuFavorite func(childComplexity int) int
-		MenuRecent   func(childComplexity int) int
-		Org          func(childComplexity int) int
-		OrgID        func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		UpdatedBy    func(childComplexity int) int
-		User         func(childComplexity int) int
-		UserID       func(childComplexity int) int
+		ClientPreference  func(childComplexity int, appCode string) int
+		ClientPreferences func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		CreatedBy         func(childComplexity int) int
+		ID                func(childComplexity int) int
+		MenuFavorite      func(childComplexity int) int
+		MenuRecent        func(childComplexity int) int
+		Org               func(childComplexity int) int
+		OrgID             func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+		UpdatedBy         func(childComplexity int) int
+		User              func(childComplexity int) int
+		UserID            func(childComplexity int) int
 	}
 
 	OrgUserPreferenceConnection struct {
@@ -2323,6 +2337,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppRole.UpdatedBy(childComplexity), true
+
+	case "ClientPreference.appCode":
+		if e.complexity.ClientPreference.AppCode == nil {
+			break
+		}
+
+		return e.complexity.ClientPreference.AppCode(childComplexity), true
+
+	case "ClientPreference.values":
+		if e.complexity.ClientPreference.Values == nil {
+			break
+		}
+
+		return e.complexity.ClientPreference.Values(childComplexity), true
+
+	case "ClientPreferenceValue.extension":
+		if e.complexity.ClientPreferenceValue.Extension == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Extension(childComplexity), true
+
+	case "ClientPreferenceValue.key":
+		if e.complexity.ClientPreferenceValue.Key == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Key(childComplexity), true
+
+	case "ClientPreferenceValue.value":
+		if e.complexity.ClientPreferenceValue.Value == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Value(childComplexity), true
 
 	case "Country.code":
 		if e.complexity.Country.Code == nil {
@@ -4934,6 +4983,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OrgRoleEdge.Node(childComplexity), true
 
+	case "OrgUserPreference.clientPreference":
+		if e.complexity.OrgUserPreference.ClientPreference == nil {
+			break
+		}
+
+		args, err := ec.field_OrgUserPreference_clientPreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.OrgUserPreference.ClientPreference(childComplexity, args["appCode"].(string)), true
+
+	case "OrgUserPreference.clientPreferences":
+		if e.complexity.OrgUserPreference.ClientPreferences == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.ClientPreferences(childComplexity), true
+
 	case "OrgUserPreference.createdAt":
 		if e.complexity.OrgUserPreference.CreatedAt == nil {
 			break
@@ -7256,6 +7324,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppRoleWhereInput,
 		ec.unmarshalInputAppWhereInput,
 		ec.unmarshalInputAssignRoleUserInput,
+		ec.unmarshalInputClientPreferenceInput,
+		ec.unmarshalInputClientPreferenceValueInput,
 		ec.unmarshalInputCountryOrder,
 		ec.unmarshalInputCountryWhereInput,
 		ec.unmarshalInputCreateAppActionInput,
@@ -10653,6 +10723,10 @@ input CreateOrgUserPreferenceInput {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
 }
 """
 CreatePermissionInput is used for create Permission object.
@@ -12749,6 +12823,10 @@ type OrgUserPreference implements Node {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreference!]
   user: User!
   org: Org!
 }
@@ -15332,6 +15410,12 @@ input UpdateOrgUserPreferenceInput {
   menuRecent: [ID!]
   appendMenuRecent: [ID!]
   clearMenuRecent: Boolean
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
+  appendClientPreferences: [ClientPreferenceInput!]
+  clearClientPreferences: Boolean
 }
 """
 UpdatePermissionInput is used for update Permission object.
@@ -18222,6 +18306,8 @@ input OrgUserPreferenceInput {
     menuFavorite: [ID!]
     """用户最近访问菜单"""
     menuRecent: [ID!]
+    """客户端偏好设置"""
+    clientPreference: ClientPreferenceInput
 }
 
 """业务调用的fileIdentity"""
@@ -18300,6 +18386,32 @@ type UserMfaInfo {
     qrCodeUri: String!
     """用户账号"""
     accountName: String!
+}
+
+extend type OrgUserPreference {
+    clientPreference(appCode: String!): ClientPreference!
+}
+
+type ClientPreference {
+    appCode: String!
+    values: [ClientPreferenceValue!]
+}
+
+type ClientPreferenceValue {
+    key: String
+    value: String
+    extension: String
+}
+
+input ClientPreferenceInput {
+    appCode: String!
+    values: [ClientPreferenceValueInput!]
+}
+
+input ClientPreferenceValueInput {
+    key: String
+    value: String
+    extension: String
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

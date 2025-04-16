@@ -18,6 +18,8 @@ const (
 	ItemCodeUserDevice ItemCode = "user_device"
 	// ItemCodeOrgUser 配额项代码: 组织用户
 	ItemCodeOrgUser ItemCode = "org_user"
+	// ItemCodeClientPreference 配额项代码: 客户端偏好设置字段长度
+	ItemCodeClientPreference ItemCode = "client_preference"
 )
 
 // Target 定义了配额目标,租户或者用户

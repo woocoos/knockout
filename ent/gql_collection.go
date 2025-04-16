@@ -3844,6 +3844,11 @@ func (oup *OrgUserPreferenceQuery) collectField(ctx context.Context, oneNode boo
 				selectedFields = append(selectedFields, orguserpreference.FieldMenuRecent)
 				fieldSeen[orguserpreference.FieldMenuRecent] = struct{}{}
 			}
+		case "clientPreferences":
+			if _, ok := fieldSeen[orguserpreference.FieldClientPreferences]; !ok {
+				selectedFields = append(selectedFields, orguserpreference.FieldClientPreferences)
+				fieldSeen[orguserpreference.FieldClientPreferences] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/user"
@@ -93,6 +94,12 @@ func (oupc *OrgUserPreferenceCreate) SetMenuFavorite(i []int) *OrgUserPreference
 // SetMenuRecent sets the "menu_recent" field.
 func (oupc *OrgUserPreferenceCreate) SetMenuRecent(i []int) *OrgUserPreferenceCreate {
 	oupc.mutation.SetMenuRecent(i)
+	return oupc
+}
+
+// SetClientPreferences sets the "client_preferences" field.
+func (oupc *OrgUserPreferenceCreate) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceCreate {
+	oupc.mutation.SetClientPreferences(tp)
 	return oupc
 }
 
@@ -235,6 +242,10 @@ func (oupc *OrgUserPreferenceCreate) createSpec() (*OrgUserPreference, *sqlgraph
 	if value, ok := oupc.mutation.MenuRecent(); ok {
 		_spec.SetField(orguserpreference.FieldMenuRecent, field.TypeJSON, value)
 		_node.MenuRecent = value
+	}
+	if value, ok := oupc.mutation.ClientPreferences(); ok {
+		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
+		_node.ClientPreferences = value
 	}
 	if nodes := oupc.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -412,6 +423,24 @@ func (u *OrgUserPreferenceUpsert) ClearMenuRecent() *OrgUserPreferenceUpsert {
 	return u
 }
 
+// SetClientPreferences sets the "client_preferences" field.
+func (u *OrgUserPreferenceUpsert) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpsert {
+	u.Set(orguserpreference.FieldClientPreferences, v)
+	return u
+}
+
+// UpdateClientPreferences sets the "client_preferences" field to the value that was provided on create.
+func (u *OrgUserPreferenceUpsert) UpdateClientPreferences() *OrgUserPreferenceUpsert {
+	u.SetExcluded(orguserpreference.FieldClientPreferences)
+	return u
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (u *OrgUserPreferenceUpsert) ClearClientPreferences() *OrgUserPreferenceUpsert {
+	u.SetNull(orguserpreference.FieldClientPreferences)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -571,6 +600,27 @@ func (u *OrgUserPreferenceUpsertOne) UpdateMenuRecent() *OrgUserPreferenceUpsert
 func (u *OrgUserPreferenceUpsertOne) ClearMenuRecent() *OrgUserPreferenceUpsertOne {
 	return u.Update(func(s *OrgUserPreferenceUpsert) {
 		s.ClearMenuRecent()
+	})
+}
+
+// SetClientPreferences sets the "client_preferences" field.
+func (u *OrgUserPreferenceUpsertOne) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpsertOne {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.SetClientPreferences(v)
+	})
+}
+
+// UpdateClientPreferences sets the "client_preferences" field to the value that was provided on create.
+func (u *OrgUserPreferenceUpsertOne) UpdateClientPreferences() *OrgUserPreferenceUpsertOne {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.UpdateClientPreferences()
+	})
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (u *OrgUserPreferenceUpsertOne) ClearClientPreferences() *OrgUserPreferenceUpsertOne {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.ClearClientPreferences()
 	})
 }
 
@@ -899,6 +949,27 @@ func (u *OrgUserPreferenceUpsertBulk) UpdateMenuRecent() *OrgUserPreferenceUpser
 func (u *OrgUserPreferenceUpsertBulk) ClearMenuRecent() *OrgUserPreferenceUpsertBulk {
 	return u.Update(func(s *OrgUserPreferenceUpsert) {
 		s.ClearMenuRecent()
+	})
+}
+
+// SetClientPreferences sets the "client_preferences" field.
+func (u *OrgUserPreferenceUpsertBulk) SetClientPreferences(v []types.ClientPreference) *OrgUserPreferenceUpsertBulk {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.SetClientPreferences(v)
+	})
+}
+
+// UpdateClientPreferences sets the "client_preferences" field to the value that was provided on create.
+func (u *OrgUserPreferenceUpsertBulk) UpdateClientPreferences() *OrgUserPreferenceUpsertBulk {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.UpdateClientPreferences()
+	})
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (u *OrgUserPreferenceUpsertBulk) ClearClientPreferences() *OrgUserPreferenceUpsertBulk {
+	return u.Update(func(s *OrgUserPreferenceUpsert) {
+		s.ClearClientPreferences()
 	})
 }
 

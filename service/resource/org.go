@@ -9,6 +9,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -903,6 +904,15 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 			if input.MenuFavorite != nil {
 				create.SetMenuFavorite(input.MenuFavorite)
 			}
+			if input.ClientPreference != nil {
+				has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(ctx)
+				if err != nil || !has {
+					return nil, fmt.Errorf("app not exists")
+				}
+				create.SetClientPreferences([]types.ClientPreference{
+					*input.ClientPreference,
+				})
+			}
 			return create.Save(ctx)
 		}
 		return nil, err
@@ -914,6 +924,25 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 	}
 	if input.MenuFavorite != nil {
 		update.SetMenuFavorite(input.MenuFavorite)
+	}
+	if input.ClientPreference != nil {
+		has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(ctx)
+		if err != nil || !has {
+			return nil, fmt.Errorf("app not exists")
+		}
+		cps := oup.ClientPreferences
+		has = false
+		for i, v := range cps {
+			if v.AppCode == input.ClientPreference.AppCode {
+				cps[i] = *input.ClientPreference
+				has = true
+				break
+			}
+		}
+		if !has {
+			cps = append(cps, *input.ClientPreference)
+		}
+		update.SetClientPreferences(cps)
 	}
 	return update.Save(ctx)
 }

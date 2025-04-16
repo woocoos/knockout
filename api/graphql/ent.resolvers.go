@@ -111,6 +111,11 @@ func (r *Resolver) OrgPolicy() generated.OrgPolicyResolver { return &orgPolicyRe
 // OrgRole returns generated.OrgRoleResolver implementation.
 func (r *Resolver) OrgRole() generated.OrgRoleResolver { return &orgRoleResolver{r} }
 
+// OrgUserPreference returns generated.OrgUserPreferenceResolver implementation.
+func (r *Resolver) OrgUserPreference() generated.OrgUserPreferenceResolver {
+	return &orgUserPreferenceResolver{r}
+}
+
 // Permission returns generated.PermissionResolver implementation.
 func (r *Resolver) Permission() generated.PermissionResolver { return &permissionResolver{r} }
 
@@ -129,6 +134,7 @@ type appPolicyResolver struct{ *Resolver }
 type orgResolver struct{ *Resolver }
 type orgPolicyResolver struct{ *Resolver }
 type orgRoleResolver struct{ *Resolver }
+type orgUserPreferenceResolver struct{ *Resolver }
 type permissionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }

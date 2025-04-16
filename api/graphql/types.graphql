@@ -124,6 +124,8 @@ input OrgUserPreferenceInput {
     menuFavorite: [ID!]
     """用户最近访问菜单"""
     menuRecent: [ID!]
+    """客户端偏好设置"""
+    clientPreference: ClientPreferenceInput
 }
 
 """业务调用的fileIdentity"""
@@ -202,4 +204,30 @@ type UserMfaInfo {
     qrCodeUri: String!
     """用户账号"""
     accountName: String!
+}
+
+extend type OrgUserPreference {
+    clientPreference(appCode: String!): ClientPreference!
+}
+
+type ClientPreference {
+    appCode: String!
+    values: [ClientPreferenceValue!]
+}
+
+type ClientPreferenceValue {
+    key: String
+    value: String
+    extension: String
+}
+
+input ClientPreferenceInput {
+    appCode: String!
+    values: [ClientPreferenceValueInput!]
+}
+
+input ClientPreferenceValueInput {
+    key: String
+    value: String
+    extension: String
 }

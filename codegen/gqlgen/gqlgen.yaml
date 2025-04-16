@@ -57,6 +57,18 @@ models:
   OrgLogoInput:
     model:
       - github.com/woocoos/knockout/codegen/entgen/types.OrgLogo
+  ClientPreference:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.ClientPreference
+  ClientPreferenceValue:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.ClientPreferenceValue
+  ClientPreferenceInput:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.ClientPreference
+  ClientPreferenceValueInput:
+    model:
+      - github.com/woocoos/knockout/codegen/entgen/types.ClientPreferenceValue
 directives:
   constraint:
     skip_runtime: true

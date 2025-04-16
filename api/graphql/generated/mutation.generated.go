@@ -11516,10 +11516,14 @@ func (ec *executionContext) fieldContext_Mutation_saveOrgUserPreference(ctx cont
 				return ec.fieldContext_OrgUserPreference_menuFavorite(ctx, field)
 			case "menuRecent":
 				return ec.fieldContext_OrgUserPreference_menuRecent(ctx, field)
+			case "clientPreferences":
+				return ec.fieldContext_OrgUserPreference_clientPreferences(ctx, field)
 			case "user":
 				return ec.fieldContext_OrgUserPreference_user(ctx, field)
 			case "org":
 				return ec.fieldContext_OrgUserPreference_org(ctx, field)
+			case "clientPreference":
+				return ec.fieldContext_OrgUserPreference_clientPreference(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgUserPreference", field.Name)
 		},

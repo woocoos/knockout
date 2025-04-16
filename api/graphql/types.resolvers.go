@@ -6,7 +6,10 @@ package graphql
 
 import (
 	"context"
+	"fmt"
+	"github.com/woocoos/knockout/ent/app"
 
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
@@ -83,6 +86,21 @@ func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, use
 		return false, err
 	}
 	return has, nil
+}
+
+// ClientPreference is the resolver for the clientPreference field.
+func (r *orgUserPreferenceResolver) ClientPreference(ctx context.Context, obj *ent.OrgUserPreference, appCode string) (*types.ClientPreference, error) {
+	has, err := r.client.App.Query().Where(app.Code(appCode)).Exist(ctx)
+	if err != nil || !has {
+		return nil, fmt.Errorf("app not exists")
+	}
+	cps := obj.ClientPreferences
+	for _, v := range cps {
+		if v.AppCode == appCode {
+			return &v, nil
+		}
+	}
+	return nil, nil
 }
 
 // IsAllowRevoke is the resolver for the isAllowRevoke field.

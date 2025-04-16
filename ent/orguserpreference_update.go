@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
@@ -127,6 +128,24 @@ func (oupu *OrgUserPreferenceUpdate) ClearMenuRecent() *OrgUserPreferenceUpdate 
 	return oupu
 }
 
+// SetClientPreferences sets the "client_preferences" field.
+func (oupu *OrgUserPreferenceUpdate) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdate {
+	oupu.mutation.SetClientPreferences(tp)
+	return oupu
+}
+
+// AppendClientPreferences appends tp to the "client_preferences" field.
+func (oupu *OrgUserPreferenceUpdate) AppendClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdate {
+	oupu.mutation.AppendClientPreferences(tp)
+	return oupu
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (oupu *OrgUserPreferenceUpdate) ClearClientPreferences() *OrgUserPreferenceUpdate {
+	oupu.mutation.ClearClientPreferences()
+	return oupu
+}
+
 // SetUser sets the "user" edge to the User entity.
 func (oupu *OrgUserPreferenceUpdate) SetUser(u *User) *OrgUserPreferenceUpdate {
 	return oupu.SetUserID(u.ID)
@@ -229,6 +248,17 @@ func (oupu *OrgUserPreferenceUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if oupu.mutation.MenuRecentCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuRecent, field.TypeJSON)
+	}
+	if value, ok := oupu.mutation.ClientPreferences(); ok {
+		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
+	}
+	if value, ok := oupu.mutation.AppendedClientPreferences(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, orguserpreference.FieldClientPreferences, value)
+		})
+	}
+	if oupu.mutation.ClientPreferencesCleared() {
+		_spec.ClearField(orguserpreference.FieldClientPreferences, field.TypeJSON)
 	}
 	if oupu.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -376,6 +406,24 @@ func (oupuo *OrgUserPreferenceUpdateOne) ClearMenuRecent() *OrgUserPreferenceUpd
 	return oupuo
 }
 
+// SetClientPreferences sets the "client_preferences" field.
+func (oupuo *OrgUserPreferenceUpdateOne) SetClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdateOne {
+	oupuo.mutation.SetClientPreferences(tp)
+	return oupuo
+}
+
+// AppendClientPreferences appends tp to the "client_preferences" field.
+func (oupuo *OrgUserPreferenceUpdateOne) AppendClientPreferences(tp []types.ClientPreference) *OrgUserPreferenceUpdateOne {
+	oupuo.mutation.AppendClientPreferences(tp)
+	return oupuo
+}
+
+// ClearClientPreferences clears the value of the "client_preferences" field.
+func (oupuo *OrgUserPreferenceUpdateOne) ClearClientPreferences() *OrgUserPreferenceUpdateOne {
+	oupuo.mutation.ClearClientPreferences()
+	return oupuo
+}
+
 // SetUser sets the "user" edge to the User entity.
 func (oupuo *OrgUserPreferenceUpdateOne) SetUser(u *User) *OrgUserPreferenceUpdateOne {
 	return oupuo.SetUserID(u.ID)
@@ -508,6 +556,17 @@ func (oupuo *OrgUserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *Or
 	}
 	if oupuo.mutation.MenuRecentCleared() {
 		_spec.ClearField(orguserpreference.FieldMenuRecent, field.TypeJSON)
+	}
+	if value, ok := oupuo.mutation.ClientPreferences(); ok {
+		_spec.SetField(orguserpreference.FieldClientPreferences, field.TypeJSON, value)
+	}
+	if value, ok := oupuo.mutation.AppendedClientPreferences(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, orguserpreference.FieldClientPreferences, value)
+		})
+	}
+	if oupuo.mutation.ClientPreferencesCleared() {
+		_spec.ClearField(orguserpreference.FieldClientPreferences, field.TypeJSON)
 	}
 	if oupuo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{

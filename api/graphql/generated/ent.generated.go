@@ -56,6 +56,9 @@ type OrgRoleResolver interface {
 	IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool, error)
 	IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int) (bool, error)
 }
+type OrgUserPreferenceResolver interface {
+	ClientPreference(ctx context.Context, obj *ent.OrgUserPreference, appCode string) (*types.ClientPreference, error)
+}
 type PermissionResolver interface {
 	IsAllowRevoke(ctx context.Context, obj *ent.Permission) (bool, error)
 }
@@ -1092,6 +1095,38 @@ func (ec *executionContext) field_OrgRole_isGrantUser_argsUserID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_OrgUserPreference_clientPreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_OrgUserPreference_clientPreference_argsAppCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["appCode"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_OrgUserPreference_clientPreference_argsAppCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["appCode"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("appCode"))
+	if tmp, ok := rawArgs["appCode"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
 	return zeroVal, nil
 }
 
@@ -25266,6 +25301,53 @@ func (ec *executionContext) fieldContext_OrgUserPreference_menuRecent(_ context.
 	return fc, nil
 }
 
+func (ec *executionContext) _OrgUserPreference_clientPreferences(ctx context.Context, field graphql.CollectedField, obj *ent.OrgUserPreference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgUserPreference_clientPreferences(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientPreferences, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]types.ClientPreference)
+	fc.Result = res
+	return ec.marshalOClientPreference2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgUserPreference_clientPreferences(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgUserPreference",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "appCode":
+				return ec.fieldContext_ClientPreference_appCode(ctx, field)
+			case "values":
+				return ec.fieldContext_ClientPreference_values(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ClientPreference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _OrgUserPreference_user(ctx context.Context, field graphql.CollectedField, obj *ent.OrgUserPreference) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_OrgUserPreference_user(ctx, field)
 	if err != nil {
@@ -25490,6 +25572,67 @@ func (ec *executionContext) fieldContext_OrgUserPreference_org(_ context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _OrgUserPreference_clientPreference(ctx context.Context, field graphql.CollectedField, obj *ent.OrgUserPreference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_OrgUserPreference_clientPreference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.OrgUserPreference().ClientPreference(rctx, obj, fc.Args["appCode"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.ClientPreference)
+	fc.Result = res
+	return ec.marshalNClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_OrgUserPreference_clientPreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "OrgUserPreference",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "appCode":
+				return ec.fieldContext_ClientPreference_appCode(ctx, field)
+			case "values":
+				return ec.fieldContext_ClientPreference_values(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ClientPreference", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_OrgUserPreference_clientPreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _OrgUserPreferenceConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.OrgUserPreferenceConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_OrgUserPreferenceConnection_edges(ctx, field)
 	if err != nil {
@@ -25689,10 +25832,14 @@ func (ec *executionContext) fieldContext_OrgUserPreferenceEdge_node(_ context.Co
 				return ec.fieldContext_OrgUserPreference_menuFavorite(ctx, field)
 			case "menuRecent":
 				return ec.fieldContext_OrgUserPreference_menuRecent(ctx, field)
+			case "clientPreferences":
+				return ec.fieldContext_OrgUserPreference_clientPreferences(ctx, field)
 			case "user":
 				return ec.fieldContext_OrgUserPreference_user(ctx, field)
 			case "org":
 				return ec.fieldContext_OrgUserPreference_org(ctx, field)
+			case "clientPreference":
+				return ec.fieldContext_OrgUserPreference_clientPreference(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgUserPreference", field.Name)
 		},
@@ -29644,10 +29791,14 @@ func (ec *executionContext) fieldContext_Query_orgUserPreference(_ context.Conte
 				return ec.fieldContext_OrgUserPreference_menuFavorite(ctx, field)
 			case "menuRecent":
 				return ec.fieldContext_OrgUserPreference_menuRecent(ctx, field)
+			case "clientPreferences":
+				return ec.fieldContext_OrgUserPreference_clientPreferences(ctx, field)
 			case "user":
 				return ec.fieldContext_OrgUserPreference_user(ctx, field)
 			case "org":
 				return ec.fieldContext_OrgUserPreference_org(ctx, field)
+			case "clientPreference":
+				return ec.fieldContext_OrgUserPreference_clientPreference(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OrgUserPreference", field.Name)
 		},
@@ -49702,7 +49853,7 @@ func (ec *executionContext) unmarshalInputCreateOrgUserPreferenceInput(ctx conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"menuFavorite", "menuRecent"}
+	fieldsInOrder := [...]string{"menuFavorite", "menuRecent", "clientPreferences"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -49723,6 +49874,13 @@ func (ec *executionContext) unmarshalInputCreateOrgUserPreferenceInput(ctx conte
 				return it, err
 			}
 			it.MenuRecent = data
+		case "clientPreferences":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientPreferences"))
+			data, err := ec.unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClientPreferences = data
 		}
 	}
 
@@ -62922,7 +63080,7 @@ func (ec *executionContext) unmarshalInputUpdateOrgUserPreferenceInput(ctx conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"menuFavorite", "appendMenuFavorite", "clearMenuFavorite", "menuRecent", "appendMenuRecent", "clearMenuRecent"}
+	fieldsInOrder := [...]string{"menuFavorite", "appendMenuFavorite", "clearMenuFavorite", "menuRecent", "appendMenuRecent", "clearMenuRecent", "clientPreferences", "appendClientPreferences", "clearClientPreferences"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -62971,6 +63129,27 @@ func (ec *executionContext) unmarshalInputUpdateOrgUserPreferenceInput(ctx conte
 				return it, err
 			}
 			it.ClearMenuRecent = data
+		case "clientPreferences":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientPreferences"))
+			data, err := ec.unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClientPreferences = data
+		case "appendClientPreferences":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("appendClientPreferences"))
+			data, err := ec.unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AppendClientPreferences = data
+		case "clearClientPreferences":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clearClientPreferences"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClearClientPreferences = data
 		}
 	}
 
@@ -75308,6 +75487,8 @@ func (ec *executionContext) _OrgUserPreference(ctx context.Context, sel ast.Sele
 			out.Values[i] = ec._OrgUserPreference_menuFavorite(ctx, field, obj)
 		case "menuRecent":
 			out.Values[i] = ec._OrgUserPreference_menuRecent(ctx, field, obj)
+		case "clientPreferences":
+			out.Values[i] = ec._OrgUserPreference_clientPreferences(ctx, field, obj)
 		case "user":
 			field := field
 
@@ -75354,6 +75535,42 @@ func (ec *executionContext) _OrgUserPreference(ctx context.Context, sel ast.Sele
 					}
 				}()
 				res = ec._OrgUserPreference_org(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "clientPreference":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._OrgUserPreference_clientPreference(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

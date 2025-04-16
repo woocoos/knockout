@@ -741,6 +741,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "menu_favorite", Type: field.TypeJSON, Nullable: true},
 		{Name: "menu_recent", Type: field.TypeJSON, Nullable: true},
+		{Name: "client_preferences", Type: field.TypeJSON, Nullable: true},
 		{Name: "user_id", Type: field.TypeInt},
 		{Name: "org_id", Type: field.TypeInt},
 	}
@@ -752,13 +753,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "org_user_preference_user_user",
-				Columns:    []*schema.Column{OrgUserPreferenceColumns[7]},
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[8]},
 				RefColumns: []*schema.Column{UserColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "org_user_preference_org_org",
-				Columns:    []*schema.Column{OrgUserPreferenceColumns[8]},
+				Columns:    []*schema.Column{OrgUserPreferenceColumns[9]},
 				RefColumns: []*schema.Column{OrgColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

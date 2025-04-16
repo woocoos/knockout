@@ -3189,6 +3189,10 @@ input CreateOrgUserPreferenceInput {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
 }
 """
 CreatePermissionInput is used for create Permission object.
@@ -5285,6 +5289,10 @@ type OrgUserPreference implements Node {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreference!]
   user: User!
   org: Org!
 }
@@ -7868,6 +7876,12 @@ input UpdateOrgUserPreferenceInput {
   menuRecent: [ID!]
   appendMenuRecent: [ID!]
   clearMenuRecent: Boolean
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
+  appendClientPreferences: [ClientPreferenceInput!]
+  clearClientPreferences: Boolean
 }
 """
 UpdatePermissionInput is used for update Permission object.

@@ -1950,8 +1950,9 @@ func (c *OrgUserUpdateOne) SetInput(i UpdateOrgUserInput) *OrgUserUpdateOne {
 
 // CreateOrgUserPreferenceInput represents a mutation input for creating orguserpreferences.
 type CreateOrgUserPreferenceInput struct {
-	MenuFavorite []int
-	MenuRecent   []int
+	MenuFavorite      []int
+	MenuRecent        []int
+	ClientPreferences []types.ClientPreference
 }
 
 // Mutate applies the CreateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
@@ -1961,6 +1962,9 @@ func (i *CreateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
 	}
 	if v := i.MenuRecent; v != nil {
 		m.SetMenuRecent(v)
+	}
+	if v := i.ClientPreferences; v != nil {
+		m.SetClientPreferences(v)
 	}
 }
 
@@ -1972,12 +1976,15 @@ func (c *OrgUserPreferenceCreate) SetInput(i CreateOrgUserPreferenceInput) *OrgU
 
 // UpdateOrgUserPreferenceInput represents a mutation input for updating orguserpreferences.
 type UpdateOrgUserPreferenceInput struct {
-	ClearMenuFavorite  bool
-	MenuFavorite       []int
-	AppendMenuFavorite []int
-	ClearMenuRecent    bool
-	MenuRecent         []int
-	AppendMenuRecent   []int
+	ClearMenuFavorite       bool
+	MenuFavorite            []int
+	AppendMenuFavorite      []int
+	ClearMenuRecent         bool
+	MenuRecent              []int
+	AppendMenuRecent        []int
+	ClearClientPreferences  bool
+	ClientPreferences       []types.ClientPreference
+	AppendClientPreferences []types.ClientPreference
 }
 
 // Mutate applies the UpdateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
@@ -1999,6 +2006,15 @@ func (i *UpdateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
 	}
 	if i.AppendMenuRecent != nil {
 		m.AppendMenuRecent(i.MenuRecent)
+	}
+	if i.ClearClientPreferences {
+		m.ClearClientPreferences()
+	}
+	if v := i.ClientPreferences; v != nil {
+		m.SetClientPreferences(v)
+	}
+	if i.AppendClientPreferences != nil {
+		m.AppendClientPreferences(i.ClientPreferences)
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"entgo.io/contrib/entgql"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 )
 
@@ -110,6 +111,8 @@ type OrgUserPreferenceInput struct {
 	MenuFavorite []int `json:"menuFavorite,omitempty"`
 	// 用户最近访问菜单
 	MenuRecent []int `json:"menuRecent,omitempty"`
+	// 客户端偏好设置
+	ClientPreference *types.ClientPreference `json:"clientPreference,omitempty"`
 }
 
 // 查看用户mfa信息
