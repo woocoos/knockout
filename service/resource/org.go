@@ -6,6 +6,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api/msg"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -453,7 +454,7 @@ func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUs
 
 func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) error {
 	if oldPwd == newPwd {
-		return fmt.Errorf("old password can not equal new password")
+		return fmt.Errorf("new password cannot be the same as the old password")
 	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -905,7 +906,7 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 				create.SetMenuFavorite(input.MenuFavorite)
 			}
 			if input.ClientPreference != nil {
-				has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(ctx)
+				has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
 				if err != nil || !has {
 					return nil, fmt.Errorf("app not exists")
 				}
@@ -926,7 +927,7 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 		update.SetMenuFavorite(input.MenuFavorite)
 	}
 	if input.ClientPreference != nil {
-		has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(ctx)
+		has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
 		if err != nil || !has {
 			return nil, fmt.Errorf("app not exists")
 		}

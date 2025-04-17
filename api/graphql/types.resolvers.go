@@ -7,6 +7,7 @@ package graphql
 import (
 	"context"
 	"fmt"
+	"github.com/woocoos/knockout-go/ent/schemax"
 
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -90,7 +91,7 @@ func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, use
 
 // ClientPreference is the resolver for the clientPreference field.
 func (r *orgUserPreferenceResolver) ClientPreference(ctx context.Context, obj *ent.OrgUserPreference, appCode string) (*types.ClientPreference, error) {
-	has, err := r.client.App.Query().Where(app.Code(appCode)).Exist(ctx)
+	has, err := r.client.App.Query().Where(app.Code(appCode)).Exist(schemax.SkipTenantPrivacy(ctx))
 	if err != nil || !has {
 		return nil, fmt.Errorf("app not exists")
 	}

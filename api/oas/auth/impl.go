@@ -583,6 +583,10 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 	pwd := s.db.UserPassword.Query().Where(userpassword.UserID(uid),
 		userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
 	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
+	// 判断密码是否旧密码
+	if npwd == pwd.Password {
+		return nil, errors.New("new password cannot be the same as the old password")
+	}
 
 	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
 		return s.db.Tx(ctx)
@@ -1174,6 +1178,10 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 	//
 	pwd := s.db.UserPassword.Query().Where(userpassword.UserID(uid), userpassword.SceneEQ(userpassword.SceneLogin)).OnlyX(ctx)
 	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
+	// 判断密码是否旧密码
+	if npwd == pwd.Password {
+		return false, errors.New("new password cannot be the same as the old password")
+	}
 
 	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
 		return s.db.Tx(ctx)
