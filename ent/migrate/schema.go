@@ -112,7 +112,7 @@ var (
 		{Name: "updated_by", Type: field.TypeInt, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "ref_code", Type: field.TypeString},
-		{Name: "code", Type: field.TypeString, Size: 20},
+		{Name: "code", Type: field.TypeString, Size: 255},
 		{Name: "name", Type: field.TypeString, Size: 45},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "display_sort", Type: field.TypeInt32, Nullable: true},
