@@ -7,8 +7,8 @@ package graphql
 import (
 	"context"
 	"fmt"
-	"github.com/woocoos/knockout-go/ent/schemax"
 
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"

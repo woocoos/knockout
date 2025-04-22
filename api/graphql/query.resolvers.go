@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/base32"
 	"fmt"
+	"github.com/woocoos/entcache"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
@@ -320,7 +321,7 @@ func (r *queryResolver) OrgUserPreference(ctx context.Context) (*ent.OrgUserPref
 	if err != nil {
 		return nil, err
 	}
-	oup, err := r.client.OrgUserPreference.Query().Where(orguserpreference.UserID(uid), orguserpreference.OrgID(tid)).Only(ctx)
+	oup, err := r.client.OrgUserPreference.Query().Where(orguserpreference.UserID(uid), orguserpreference.OrgID(tid)).Only(entcache.Skip(ctx))
 	if err != nil {
 		if ent.IsNotFound(err) {
 			return nil, nil
