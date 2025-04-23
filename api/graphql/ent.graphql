@@ -478,7 +478,37 @@ type AppDict implements Node {
   """
   comments: String
   app: App
-  items: [AppDictItem!]
+  items(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for AppDictItems returned from the connection.
+    """
+    orderBy: AppDictItemOrder
+
+    """
+    Filtering options for AppDictItems returned from the connection.
+    """
+    where: AppDictItemWhereInput
+  ): AppDictItemConnection!
 }
 """
 A connection to a list of items.
@@ -547,6 +577,36 @@ type AppDictItem implements Node {
   status: AppDictItemSimpleStatus
   dict: AppDict
   org: Org
+}
+"""
+A connection to a list of items.
+"""
+type AppDictItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [AppDictItemEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type AppDictItemEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: AppDictItem
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
 }
 """
 Ordering options for AppDictItem connections

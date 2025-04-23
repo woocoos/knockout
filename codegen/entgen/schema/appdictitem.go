@@ -27,6 +27,7 @@ type AppDictItem struct {
 func (AppDictItem) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app_dict_item"},
+		entgql.RelayConnection(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}
 }
@@ -47,9 +48,9 @@ func (AppDictItem) Fields() []ent.Field {
 		field.String("ref_code").Comment("关联代码,由app_code和dict_code组成").Annotations(entgql.Skip(
 			entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
 		),
-		field.String("code").MinLen(3).MaxLen(255).Immutable().
+		field.String("code").MinLen(3).MaxLen(45).Immutable().
 			Comment("字典值唯一编码,生效后不可修改."),
-		field.String("name").MaxLen(45).Comment("名称"),
+		field.String("name").MaxLen(255).Comment("名称"),
 		field.String("comments").Optional().Comment("备注").Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Int32("display_sort").Optional().Annotations(entgql.OrderField("displaySort"),
 			entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
@@ -84,8 +85,16 @@ func (AppDictItem) Hooks() []ent.Hook {
 				if cok && iok && dok {
 					return next.Mutate(ctx, m)
 				}
-				has, err := m.Client().AppDictItem.Query().Where(
-					appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id)).Exist(ctx)
+				oid, ook := m.OrgID()
+				var err error
+				var has bool
+				if ook {
+					has, err = m.Client().AppDictItem.Query().Where(
+						appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id), appdictitem.OrgID(oid)).Exist(ctx)
+				} else {
+					has, err = m.Client().AppDictItem.Query().Where(
+						appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id), appdictitem.OrgIDIsNil()).Exist(ctx)
+				}
 				if err != nil {
 					return nil, err
 				}
@@ -98,11 +107,11 @@ func (AppDictItem) Hooks() []ent.Hook {
 		hook.On(func(next ent.Mutator) ent.Mutator {
 			return hook.AppDictItemFunc(func(ctx context.Context, m *gen.AppDictItemMutation) (gen.Value, error) {
 				dict, _ := m.DictID()
-				dr, err := m.Client().AppDict.Query().Where(appdict.ID(dict)).WithApp().Only(ctx)
+				dr, err := m.Client().AppDict.Query().Where(appdict.ID(dict)).WithApp().Only(schemax.SkipTenantPrivacy(ctx))
 				if err != nil {
 					return nil, err
 				}
-				app, err := dr.App(ctx)
+				app, err := dr.App(schemax.SkipTenantPrivacy(ctx))
 				if err != nil {
 					return nil, err
 				}

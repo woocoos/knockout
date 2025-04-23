@@ -53,7 +53,7 @@ func (AppDict) Fields() []ent.Field {
 func (AppDict) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("app", App.Type).Ref("dicts").Unique().Immutable().Field("app_id"),
-		edge.To("items", AppDictItem.Type),
+		edge.To("items", AppDictItem.Type).Annotations(entgql.RelayConnection()),
 	}
 }
 

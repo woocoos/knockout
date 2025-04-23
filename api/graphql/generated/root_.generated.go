@@ -121,7 +121,7 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
 		ID        func(childComplexity int) int
-		Items     func(childComplexity int) int
+		Items     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictItemOrder, where *ent.AppDictItemWhereInput) int
 		Name      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
@@ -154,6 +154,17 @@ type ComplexityRoot struct {
 		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
+	}
+
+	AppDictItemConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	AppDictItemEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	AppEdge struct {
@@ -1477,7 +1488,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.AppDict.Items(childComplexity), true
+		args, err := ec.field_AppDict_items_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppDict.Items(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppDictItemOrder), args["where"].(*ent.AppDictItemWhereInput)), true
 
 	case "AppDict.name":
 		if e.complexity.AppDict.Name == nil {
@@ -1639,6 +1655,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppDictItem.UpdatedBy(childComplexity), true
+
+	case "AppDictItemConnection.edges":
+		if e.complexity.AppDictItemConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.AppDictItemConnection.Edges(childComplexity), true
+
+	case "AppDictItemConnection.pageInfo":
+		if e.complexity.AppDictItemConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.AppDictItemConnection.PageInfo(childComplexity), true
+
+	case "AppDictItemConnection.totalCount":
+		if e.complexity.AppDictItemConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.AppDictItemConnection.TotalCount(childComplexity), true
+
+	case "AppDictItemEdge.cursor":
+		if e.complexity.AppDictItemEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.AppDictItemEdge.Cursor(childComplexity), true
+
+	case "AppDictItemEdge.node":
+		if e.complexity.AppDictItemEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.AppDictItemEdge.Node(childComplexity), true
 
 	case "AppEdge.cursor":
 		if e.complexity.AppEdge.Cursor == nil {
@@ -8012,7 +8063,37 @@ type AppDict implements Node {
   """
   comments: String
   app: App
-  items: [AppDictItem!]
+  items(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for AppDictItems returned from the connection.
+    """
+    orderBy: AppDictItemOrder
+
+    """
+    Filtering options for AppDictItems returned from the connection.
+    """
+    where: AppDictItemWhereInput
+  ): AppDictItemConnection!
 }
 """
 A connection to a list of items.
@@ -8081,6 +8162,36 @@ type AppDictItem implements Node {
   status: AppDictItemSimpleStatus
   dict: AppDict
   org: Org
+}
+"""
+A connection to a list of items.
+"""
+type AppDictItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [AppDictItemEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type AppDictItemEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: AppDictItem
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
 }
 """
 Ordering options for AppDictItem connections
