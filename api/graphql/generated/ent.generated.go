@@ -41,7 +41,7 @@ import (
 // region    ************************** generated!.gotpl **************************
 
 type AppDictResolver interface {
-	OrgItems(ctx context.Context, obj *ent.AppDict) ([]*ent.AppDictItem, error)
+	OrgItems(ctx context.Context, obj *ent.AppDict, noFilterCode *bool) ([]*ent.AppDictItem, error)
 }
 type AppPolicyResolver interface {
 	IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error)
@@ -137,6 +137,38 @@ type CreateUserInputResolver interface {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_AppDict_orgItems_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_AppDict_orgItems_argsNoFilterCode(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["noFilterCode"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_AppDict_orgItems_argsNoFilterCode(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*bool, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["noFilterCode"]
+	if !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("noFilterCode"))
+	if tmp, ok := rawArgs["noFilterCode"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
 
 func (ec *executionContext) field_AppPolicy_isGrantAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -11009,7 +11041,7 @@ func (ec *executionContext) _AppDict_orgItems(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AppDict().OrgItems(rctx, obj)
+		return ec.resolvers.AppDict().OrgItems(rctx, obj, fc.Args["noFilterCode"].(*bool))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11026,7 +11058,7 @@ func (ec *executionContext) _AppDict_orgItems(ctx context.Context, field graphql
 	return ec.marshalNAppDictItem2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AppDict_orgItems(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AppDict_orgItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AppDict",
 		Field:      field,
@@ -11067,6 +11099,17 @@ func (ec *executionContext) fieldContext_AppDict_orgItems(_ context.Context, fie
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AppDict_orgItems_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }

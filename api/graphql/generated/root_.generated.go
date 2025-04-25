@@ -124,7 +124,7 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		Items     func(childComplexity int) int
 		Name      func(childComplexity int) int
-		OrgItems  func(childComplexity int) int
+		OrgItems  func(childComplexity int, noFilterCode *bool) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
 	}
@@ -1493,7 +1493,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.AppDict.OrgItems(childComplexity), true
+		args, err := ec.field_AppDict_orgItems_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppDict.OrgItems(childComplexity, args["noFilterCode"].(*bool)), true
 
 	case "AppDict.updatedAt":
 		if e.complexity.AppDict.UpdatedAt == nil {
@@ -18430,7 +18435,10 @@ input ClientPreferenceValueInput {
 
 extend type AppDict {
     """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
-    orgItems: [AppDictItem!]!
+    orgItems(
+        """是否取消code过滤"""
+        noFilterCode: Boolean
+    ): [AppDictItem!]!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

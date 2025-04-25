@@ -23,7 +23,7 @@ import (
 )
 
 // OrgItems is the resolver for the orgItems field.
-func (r *appDictResolver) OrgItems(ctx context.Context, obj *ent.AppDict) ([]*ent.AppDictItem, error) {
+func (r *appDictResolver) OrgItems(ctx context.Context, obj *ent.AppDict, noFilterCode *bool) ([]*ent.AppDictItem, error) {
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -37,6 +37,9 @@ func (r *appDictResolver) OrgItems(ctx context.Context, obj *ent.AppDict) ([]*en
 		appdictitem.StatusEQ(typex.SimpleStatusActive)).All(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if noFilterCode != nil && *noFilterCode {
+		return items, nil
 	}
 	return r.resource.RemoveDuplicatesAppDictItems(items), nil
 }

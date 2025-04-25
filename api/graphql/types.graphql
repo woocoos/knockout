@@ -239,5 +239,8 @@ input ClientPreferenceValueInput {
 
 extend type AppDict {
     """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
-    orgItems: [AppDictItem!]!
+    orgItems(
+        """是否取消code过滤，不传会过滤重复的code"""
+        noFilterCode: Boolean
+    ): [AppDictItem!]!
 }
