@@ -338,23 +338,36 @@ func (r *queryResolver) UserApps(ctx context.Context) ([]*ent.App, error) {
 
 // AppDictByRefCode is the resolver for the appDictByRefCode field.
 func (r *queryResolver) AppDictByRefCode(ctx context.Context, refCodes []string) ([]*ent.AppDict, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return r.client.AppDict.Query().Where(
 		appdict.HasItemsWith(
 			appdictitem.RefCodeIn(refCodes...),
 			appdictitem.StatusEQ(typex.SimpleStatusActive),
 		)).
 		WithNamedItems(appdict.EdgeItems, func(query *ent.AppDictItemQuery) {
-			query.Where(appdictitem.StatusEQ(typex.SimpleStatusActive)).
+			query.Where(appdictitem.StatusEQ(typex.SimpleStatusActive), appdictitem.Or(appdictitem.OrgIDIsNil(), appdictitem.OrgIDEQ(tid))).
 				Order(appdictitem.ByDisplaySort(sql.OrderAsc()))
 		}).All(ctx)
 }
 
 // AppDictItemByRefCode is the resolver for the appDictItemByRefCode field.
 func (r *queryResolver) AppDictItemByRefCode(ctx context.Context, refCode string) ([]*ent.AppDictItem, error) {
-	return r.client.AppDictItem.Query().Where(
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items, err := r.client.AppDictItem.Query().Where(
 		appdictitem.RefCode(refCode),
 		appdictitem.StatusEQ(typex.SimpleStatusActive),
+		appdictitem.Or(appdictitem.OrgIDIsNil(), appdictitem.OrgIDEQ(tid)),
 	).Order(appdictitem.ByDisplaySort(sql.OrderAsc())).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.resource.RemoveDuplicatesAppDictItems(items), nil
 }
 
 // AppAccess is the resolver for the appAccess field.

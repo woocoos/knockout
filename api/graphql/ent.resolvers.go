@@ -99,6 +99,9 @@ func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], fi
 		ent.WithUserFilter(where.Filter))
 }
 
+// AppDict returns generated.AppDictResolver implementation.
+func (r *Resolver) AppDict() generated.AppDictResolver { return &appDictResolver{r} }
+
 // AppPolicy returns generated.AppPolicyResolver implementation.
 func (r *Resolver) AppPolicy() generated.AppPolicyResolver { return &appPolicyResolver{r} }
 
@@ -130,6 +133,7 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 	return &createUserInputResolver{r}
 }
 
+type appDictResolver struct{ *Resolver }
 type appPolicyResolver struct{ *Resolver }
 type orgResolver struct{ *Resolver }
 type orgPolicyResolver struct{ *Resolver }

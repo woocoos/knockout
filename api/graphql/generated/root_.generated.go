@@ -37,6 +37,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	AppDict() AppDictResolver
 	AppPolicy() AppPolicyResolver
 	Mutation() MutationResolver
 	Org() OrgResolver
@@ -121,8 +122,9 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
 		ID        func(childComplexity int) int
-		Items     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictItemOrder, where *ent.AppDictItemWhereInput) int
+		Items     func(childComplexity int) int
 		Name      func(childComplexity int) int
+		OrgItems  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
 	}
@@ -154,17 +156,6 @@ type ComplexityRoot struct {
 		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
-	}
-
-	AppDictItemConnection struct {
-		Edges      func(childComplexity int) int
-		PageInfo   func(childComplexity int) int
-		TotalCount func(childComplexity int) int
-	}
-
-	AppDictItemEdge struct {
-		Cursor func(childComplexity int) int
-		Node   func(childComplexity int) int
 	}
 
 	AppEdge struct {
@@ -1488,12 +1479,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_AppDict_items_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AppDict.Items(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppDictItemOrder), args["where"].(*ent.AppDictItemWhereInput)), true
+		return e.complexity.AppDict.Items(childComplexity), true
 
 	case "AppDict.name":
 		if e.complexity.AppDict.Name == nil {
@@ -1501,6 +1487,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppDict.Name(childComplexity), true
+
+	case "AppDict.orgItems":
+		if e.complexity.AppDict.OrgItems == nil {
+			break
+		}
+
+		return e.complexity.AppDict.OrgItems(childComplexity), true
 
 	case "AppDict.updatedAt":
 		if e.complexity.AppDict.UpdatedAt == nil {
@@ -1655,41 +1648,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppDictItem.UpdatedBy(childComplexity), true
-
-	case "AppDictItemConnection.edges":
-		if e.complexity.AppDictItemConnection.Edges == nil {
-			break
-		}
-
-		return e.complexity.AppDictItemConnection.Edges(childComplexity), true
-
-	case "AppDictItemConnection.pageInfo":
-		if e.complexity.AppDictItemConnection.PageInfo == nil {
-			break
-		}
-
-		return e.complexity.AppDictItemConnection.PageInfo(childComplexity), true
-
-	case "AppDictItemConnection.totalCount":
-		if e.complexity.AppDictItemConnection.TotalCount == nil {
-			break
-		}
-
-		return e.complexity.AppDictItemConnection.TotalCount(childComplexity), true
-
-	case "AppDictItemEdge.cursor":
-		if e.complexity.AppDictItemEdge.Cursor == nil {
-			break
-		}
-
-		return e.complexity.AppDictItemEdge.Cursor(childComplexity), true
-
-	case "AppDictItemEdge.node":
-		if e.complexity.AppDictItemEdge.Node == nil {
-			break
-		}
-
-		return e.complexity.AppDictItemEdge.Node(childComplexity), true
 
 	case "AppEdge.cursor":
 		if e.complexity.AppEdge.Cursor == nil {
@@ -8063,37 +8021,7 @@ type AppDict implements Node {
   """
   comments: String
   app: App
-  items(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for AppDictItems returned from the connection.
-    """
-    orderBy: AppDictItemOrder
-
-    """
-    Filtering options for AppDictItems returned from the connection.
-    """
-    where: AppDictItemWhereInput
-  ): AppDictItemConnection!
+  items: [AppDictItem!]
 }
 """
 A connection to a list of items.
@@ -8162,36 +8090,6 @@ type AppDictItem implements Node {
   status: AppDictItemSimpleStatus
   dict: AppDict
   org: Org
-}
-"""
-A connection to a list of items.
-"""
-type AppDictItemConnection {
-  """
-  A list of edges.
-  """
-  edges: [AppDictItemEdge]
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-  """
-  Identifies the total count of items in the connection.
-  """
-  totalCount: Int!
-}
-"""
-An edge in a connection.
-"""
-type AppDictItemEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: AppDictItem
-  """
-  A cursor for use in pagination.
-  """
-  cursor: Cursor!
 }
 """
 Ordering options for AppDictItem connections
@@ -18528,6 +18426,11 @@ input ClientPreferenceValueInput {
     value: String
     """扩展字段，根据业务场景需求使用"""
     extension: String
+}
+
+extend type AppDict {
+    """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
+    orgItems: [AppDictItem!]!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

@@ -27,7 +27,6 @@ type AppDictItem struct {
 func (AppDictItem) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "app_dict_item"},
-		entgql.RelayConnection(),
 		entgql.Mutations(entgql.MutationCreate(), entgql.MutationUpdate()),
 	}
 }
@@ -48,9 +47,9 @@ func (AppDictItem) Fields() []ent.Field {
 		field.String("ref_code").Comment("关联代码,由app_code和dict_code组成").Annotations(entgql.Skip(
 			entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
 		),
-		field.String("code").MinLen(3).MaxLen(45).Immutable().
+		field.String("code").MinLen(3).MaxLen(20).Immutable().
 			Comment("字典值唯一编码,生效后不可修改."),
-		field.String("name").MaxLen(255).Comment("名称"),
+		field.String("name").MaxLen(45).Comment("名称"),
 		field.String("comments").Optional().Comment("备注").Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Int32("display_sort").Optional().Annotations(entgql.OrderField("displaySort"),
 			entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),

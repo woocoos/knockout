@@ -8583,6 +8583,8 @@ func (ec *executionContext) fieldContext_Mutation_createAppDict(ctx context.Cont
 				return ec.fieldContext_AppDict_app(ctx, field)
 			case "items":
 				return ec.fieldContext_AppDict_items(ctx, field)
+			case "orgItems":
+				return ec.fieldContext_AppDict_orgItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
 		},
@@ -8659,6 +8661,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAppDict(ctx context.Cont
 				return ec.fieldContext_AppDict_app(ctx, field)
 			case "items":
 				return ec.fieldContext_AppDict_items(ctx, field)
+			case "orgItems":
+				return ec.fieldContext_AppDict_orgItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
 		},

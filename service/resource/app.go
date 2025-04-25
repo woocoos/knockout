@@ -847,3 +847,27 @@ func (s *Service) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, 
 	}
 	return client.AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)
 }
+
+func (s *Service) RemoveDuplicatesAppDictItems(items []*ent.AppDictItem) []*ent.AppDictItem {
+	// 遍历items，如果orgID存在，则忽略掉默认的code
+	orgItems := make([]*ent.AppDictItem, 0)
+	for _, item := range items {
+		if item.OrgID != 0 {
+			orgItems = append(orgItems, item)
+			continue
+		}
+		has := false
+		for _, orgItem := range items {
+			if orgItem.OrgID != 0 {
+				if orgItem.Code == item.Code {
+					has = true
+					break
+				}
+			}
+		}
+		if !has {
+			orgItems = append(orgItems, item)
+		}
+	}
+	return orgItems
+}

@@ -177,25 +177,16 @@ func (ad *AppDict) App(ctx context.Context) (*App, error) {
 	return result, MaskNotFound(err)
 }
 
-func (ad *AppDict) Items(
-	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *AppDictItemOrder, where *AppDictItemWhereInput,
-) (*AppDictItemConnection, error) {
-	opts := []AppDictItemPaginateOption{
-		WithAppDictItemOrder(orderBy),
-		WithAppDictItemFilter(where.Filter),
+func (ad *AppDict) Items(ctx context.Context) (result []*AppDictItem, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ad.NamedItems(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ad.Edges.ItemsOrErr()
 	}
-	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := ad.Edges.totalCount[1][alias]
-	if nodes, err := ad.NamedItems(alias); err == nil || hasTotalCount {
-		pager, err := newAppDictItemPager(opts, last != nil)
-		if err != nil {
-			return nil, err
-		}
-		conn := &AppDictItemConnection{Edges: []*AppDictItemEdge{}, TotalCount: totalCount}
-		conn.build(nodes, pager, after, first, before, last)
-		return conn, nil
+	if IsNotLoaded(err) {
+		result, err = ad.QueryItems().All(ctx)
 	}
-	return ad.QueryItems().Paginate(ctx, after, first, before, last, opts...)
+	return result, err
 }
 
 func (adi *AppDictItem) Dict(ctx context.Context) (*AppDict, error) {

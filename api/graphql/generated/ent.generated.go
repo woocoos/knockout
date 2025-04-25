@@ -40,6 +40,9 @@ import (
 
 // region    ************************** generated!.gotpl **************************
 
+type AppDictResolver interface {
+	OrgItems(ctx context.Context, obj *ent.AppDict) ([]*ent.AppDictItem, error)
+}
 type AppPolicyResolver interface {
 	IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error)
 }
@@ -134,173 +137,6 @@ type CreateUserInputResolver interface {
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
-
-func (ec *executionContext) field_AppDict_items_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_AppDict_items_argsAfter(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["after"] = arg0
-	arg1, err := ec.field_AppDict_items_argsFirst(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["first"] = arg1
-	arg2, err := ec.field_AppDict_items_argsBefore(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["before"] = arg2
-	arg3, err := ec.field_AppDict_items_argsLast(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["last"] = arg3
-	arg4, err := ec.field_AppDict_items_argsOrderBy(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["orderBy"] = arg4
-	arg5, err := ec.field_AppDict_items_argsWhere(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["where"] = arg5
-	return args, nil
-}
-func (ec *executionContext) field_AppDict_items_argsAfter(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
-		var zeroVal *entgql.Cursor[int]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-	if tmp, ok := rawArgs["after"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[int]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppDict_items_argsFirst(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-	if tmp, ok := rawArgs["first"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppDict_items_argsBefore(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
-		var zeroVal *entgql.Cursor[int]
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
-	if tmp, ok := rawArgs["before"]; ok {
-		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
-	}
-
-	var zeroVal *entgql.Cursor[int]
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppDict_items_argsLast(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
-		var zeroVal *int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-	if tmp, ok := rawArgs["last"]; ok {
-		return ec.unmarshalOInt2ᚖint(ctx, tmp)
-	}
-
-	var zeroVal *int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppDict_items_argsOrderBy(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*ent.AppDictItemOrder, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orderBy"]
-	if !ok {
-		var zeroVal *ent.AppDictItemOrder
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		return ec.unmarshalOAppDictItemOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemOrder(ctx, tmp)
-	}
-
-	var zeroVal *ent.AppDictItemOrder
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_AppDict_items_argsWhere(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (*ent.AppDictItemWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
-		var zeroVal *ent.AppDictItemWhereInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
-	if tmp, ok := rawArgs["where"]; ok {
-		return ec.unmarshalOAppDictItemWhereInput2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemWhereInput(ctx, tmp)
-	}
-
-	var zeroVal *ent.AppDictItemWhereInput
-	return zeroVal, nil
-}
 
 func (ec *executionContext) field_AppPolicy_isGrantAppRole_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -11100,7 +10936,80 @@ func (ec *executionContext) _AppDict_items(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Items(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.AppDictItemOrder), fc.Args["where"].(*ent.AppDictItemWhereInput))
+		return obj.Items(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.AppDictItem)
+	fc.Result = res
+	return ec.marshalOAppDictItem2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AppDict_items(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AppDict",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AppDictItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDictItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDictItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_AppDictItem_orgID(ctx, field)
+			case "dictID":
+				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDictItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDictItem_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDictItem_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppDictItem_status(ctx, field)
+			case "dict":
+				return ec.fieldContext_AppDictItem_dict(ctx, field)
+			case "org":
+				return ec.fieldContext_AppDictItem_org(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AppDict_orgItems(ctx context.Context, field graphql.CollectedField, obj *ent.AppDict) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AppDict_orgItems(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AppDict().OrgItems(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11112,39 +11021,52 @@ func (ec *executionContext) _AppDict_items(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ent.AppDictItemConnection)
+	res := resTmp.([]*ent.AppDictItem)
 	fc.Result = res
-	return ec.marshalNAppDictItemConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemConnection(ctx, field.Selections, res)
+	return ec.marshalNAppDictItem2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AppDict_items(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AppDict_orgItems(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AppDict",
 		Field:      field,
 		IsMethod:   true,
-		IsResolver: false,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "edges":
-				return ec.fieldContext_AppDictItemConnection_edges(ctx, field)
-			case "pageInfo":
-				return ec.fieldContext_AppDictItemConnection_pageInfo(ctx, field)
-			case "totalCount":
-				return ec.fieldContext_AppDictItemConnection_totalCount(ctx, field)
+			case "id":
+				return ec.fieldContext_AppDictItem_id(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_AppDictItem_createdBy(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_AppDictItem_createdAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
+			case "orgID":
+				return ec.fieldContext_AppDictItem_orgID(ctx, field)
+			case "dictID":
+				return ec.fieldContext_AppDictItem_dictID(ctx, field)
+			case "refCode":
+				return ec.fieldContext_AppDictItem_refCode(ctx, field)
+			case "code":
+				return ec.fieldContext_AppDictItem_code(ctx, field)
+			case "name":
+				return ec.fieldContext_AppDictItem_name(ctx, field)
+			case "comments":
+				return ec.fieldContext_AppDictItem_comments(ctx, field)
+			case "displaySort":
+				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
+			case "status":
+				return ec.fieldContext_AppDictItem_status(ctx, field)
+			case "dict":
+				return ec.fieldContext_AppDictItem_dict(ctx, field)
+			case "org":
+				return ec.fieldContext_AppDictItem_org(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type AppDictItemConnection", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AppDict_items_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -11352,6 +11274,8 @@ func (ec *executionContext) fieldContext_AppDictEdge_node(_ context.Context, fie
 				return ec.fieldContext_AppDict_app(ctx, field)
 			case "items":
 				return ec.fieldContext_AppDict_items(ctx, field)
+			case "orgItems":
+				return ec.fieldContext_AppDict_orgItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
 		},
@@ -12012,6 +11936,8 @@ func (ec *executionContext) fieldContext_AppDictItem_dict(_ context.Context, fie
 				return ec.fieldContext_AppDict_app(ctx, field)
 			case "items":
 				return ec.fieldContext_AppDict_items(ctx, field)
+			case "orgItems":
+				return ec.fieldContext_AppDict_orgItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
 		},
@@ -12125,268 +12051,6 @@ func (ec *executionContext) fieldContext_AppDictItem_org(_ context.Context, fiel
 				return ec.fieldContext_Org_actualDomain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Org", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppDictItemConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItemConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppDictItemConnection_edges(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*ent.AppDictItemEdge)
-	fc.Result = res
-	return ec.marshalOAppDictItemEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemEdge(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppDictItemConnection_edges(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppDictItemConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "node":
-				return ec.fieldContext_AppDictItemEdge_node(ctx, field)
-			case "cursor":
-				return ec.fieldContext_AppDictItemEdge_cursor(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppDictItemEdge", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppDictItemConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItemConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppDictItemConnection_pageInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(entgql.PageInfo[int])
-	fc.Result = res
-	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppDictItemConnection_pageInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppDictItemConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "hasNextPage":
-				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
-			case "hasPreviousPage":
-				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
-			case "startCursor":
-				return ec.fieldContext_PageInfo_startCursor(ctx, field)
-			case "endCursor":
-				return ec.fieldContext_PageInfo_endCursor(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppDictItemConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItemConnection) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppDictItemConnection_totalCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalCount, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppDictItemConnection_totalCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppDictItemConnection",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppDictItemEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItemEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppDictItemEdge_node(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.AppDictItem)
-	fc.Result = res
-	return ec.marshalOAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppDictItemEdge_node(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppDictItemEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_AppDictItem_id(ctx, field)
-			case "createdBy":
-				return ec.fieldContext_AppDictItem_createdBy(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AppDictItem_createdAt(ctx, field)
-			case "updatedBy":
-				return ec.fieldContext_AppDictItem_updatedBy(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AppDictItem_updatedAt(ctx, field)
-			case "orgID":
-				return ec.fieldContext_AppDictItem_orgID(ctx, field)
-			case "dictID":
-				return ec.fieldContext_AppDictItem_dictID(ctx, field)
-			case "refCode":
-				return ec.fieldContext_AppDictItem_refCode(ctx, field)
-			case "code":
-				return ec.fieldContext_AppDictItem_code(ctx, field)
-			case "name":
-				return ec.fieldContext_AppDictItem_name(ctx, field)
-			case "comments":
-				return ec.fieldContext_AppDictItem_comments(ctx, field)
-			case "displaySort":
-				return ec.fieldContext_AppDictItem_displaySort(ctx, field)
-			case "status":
-				return ec.fieldContext_AppDictItem_status(ctx, field)
-			case "dict":
-				return ec.fieldContext_AppDictItem_dict(ctx, field)
-			case "org":
-				return ec.fieldContext_AppDictItem_org(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AppDictItem", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AppDictItemEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.AppDictItemEdge) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AppDictItemEdge_cursor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(entgql.Cursor[int])
-	fc.Result = res
-	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AppDictItemEdge_cursor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AppDictItemEdge",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Cursor does not have child fields")
 		},
 	}
 	return fc, nil
@@ -30382,6 +30046,8 @@ func (ec *executionContext) fieldContext_Query_appDictByRefCode(ctx context.Cont
 				return ec.fieldContext_AppDict_app(ctx, field)
 			case "items":
 				return ec.fieldContext_AppDict_items(ctx, field)
+			case "orgItems":
+				return ec.fieldContext_AppDict_orgItems(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AppDict", field.Name)
 		},
@@ -72170,13 +71836,46 @@ func (ec *executionContext) _AppDict(ctx context.Context, sel ast.SelectionSet, 
 		case "items":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._AppDict_items(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "orgItems":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AppDict_orgItems(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -72434,93 +72133,6 @@ func (ec *executionContext) _AppDictItem(ctx context.Context, sel ast.SelectionS
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var appDictItemConnectionImplementors = []string{"AppDictItemConnection"}
-
-func (ec *executionContext) _AppDictItemConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.AppDictItemConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, appDictItemConnectionImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("AppDictItemConnection")
-		case "edges":
-			out.Values[i] = ec._AppDictItemConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._AppDictItemConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "totalCount":
-			out.Values[i] = ec._AppDictItemConnection_totalCount(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var appDictItemEdgeImplementors = []string{"AppDictItemEdge"}
-
-func (ec *executionContext) _AppDictItemEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.AppDictItemEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, appDictItemEdgeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("AppDictItemEdge")
-		case "node":
-			out.Values[i] = ec._AppDictItemEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._AppDictItemEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -80236,16 +79848,6 @@ func (ec *executionContext) marshalNAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknoc
 	return ec._AppDictItem(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNAppDictItemConnection2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemConnection(ctx context.Context, sel ast.SelectionSet, v *ent.AppDictItemConnection) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AppDictItemConnection(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNAppDictItemOrderField2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemOrderField(ctx context.Context, v interface{}) (*ent.AppDictItemOrderField, error) {
 	var res = new(ent.AppDictItemOrderField)
 	err := res.UnmarshalGQL(v)
@@ -82525,14 +82127,7 @@ func (ec *executionContext) marshalOAppDictEdge2ᚖgithubᚗcomᚋwoocoosᚋknoc
 	return ec._AppDictEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx context.Context, sel ast.SelectionSet, v *ent.AppDictItem) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._AppDictItem(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOAppDictItemEdge2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.AppDictItemEdge) graphql.Marshaler {
+func (ec *executionContext) marshalOAppDictItem2ᚕᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.AppDictItem) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -82559,7 +82154,7 @@ func (ec *executionContext) marshalOAppDictItemEdge2ᚕᚖgithubᚗcomᚋwoocoos
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOAppDictItemEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemEdge(ctx, sel, v[i])
+			ret[i] = ec.marshalNAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -82570,22 +82165,20 @@ func (ec *executionContext) marshalOAppDictItemEdge2ᚕᚖgithubᚗcomᚋwoocoos
 	}
 	wg.Wait()
 
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
 	return ret
 }
 
-func (ec *executionContext) marshalOAppDictItemEdge2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemEdge(ctx context.Context, sel ast.SelectionSet, v *ent.AppDictItemEdge) graphql.Marshaler {
+func (ec *executionContext) marshalOAppDictItem2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItem(ctx context.Context, sel ast.SelectionSet, v *ent.AppDictItem) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._AppDictItemEdge(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOAppDictItemOrder2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋentᚐAppDictItemOrder(ctx context.Context, v interface{}) (*ent.AppDictItemOrder, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputAppDictItemOrder(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	return ec._AppDictItem(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOAppDictItemSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {

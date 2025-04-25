@@ -236,3 +236,8 @@ input ClientPreferenceValueInput {
     """扩展字段，根据业务场景需求使用"""
     extension: String
 }
+
+extend type AppDict {
+    """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
+    orgItems: [AppDictItem!]!
+}

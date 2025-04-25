@@ -9,15 +9,37 @@ import (
 	"fmt"
 
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/useraddr"
 )
+
+// OrgItems is the resolver for the orgItems field.
+func (r *appDictResolver) OrgItems(ctx context.Context, obj *ent.AppDict) ([]*ent.AppDictItem, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items, err := r.client.AppDictItem.Query().Where(
+		appdictitem.DictID(obj.ID),
+		appdictitem.Or(
+			appdictitem.OrgIDIsNil(),
+			appdictitem.OrgIDEQ(tid),
+		),
+		appdictitem.StatusEQ(typex.SimpleStatusActive)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return r.resource.RemoveDuplicatesAppDictItems(items), nil
+}
 
 // IsGrantAppRole is the resolver for the isGrantAppRole field.
 func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error) {

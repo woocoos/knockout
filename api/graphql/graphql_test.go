@@ -681,3 +681,53 @@ func (t *graphqlSuite) TestSyncAppRoleToOrg() {
 		}
 	})
 }
+
+func (t *graphqlSuite) TestAppDictByRefCode() {
+	const query = `
+query appDictByRefCode{
+  appDictByRefCode(refCodes: ["resource:DLSH"]){
+    id,code,name,items{
+		id,code,name,refCode,orgID
+	}
+  }
+}
+`
+	var resp struct {
+		AppDictByRefCode []struct {
+			ID    string
+			Code  string
+			Name  string
+			Items []struct {
+				ID      string
+				Code    string
+				OrgID   string
+				Name    string
+				RefCode string
+			}
+		}
+	}
+	err := t.gqlClient.Post(query, &resp)
+	t.Require().NoError(err)
+	t.Equal(3, len(resp.AppDictByRefCode[0].Items))
+}
+
+func (t *graphqlSuite) TestAppDictItemByRefCode() {
+	const query = `
+query appDictItemByRefCode{
+  appDictItemByRefCode(refCode: "resource:DLSH"){
+    id,code,name,refCode
+  }
+}
+`
+	var resp struct {
+		AppDictItemByRefCode []struct {
+			ID      string
+			Code    string
+			Name    string
+			RefCode string
+		}
+	}
+	err := t.gqlClient.Post(query, &resp)
+	t.Require().NoError(err)
+	t.Equal(2, len(resp.AppDictItemByRefCode))
+}

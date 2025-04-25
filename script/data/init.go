@@ -101,6 +101,8 @@ func InitBase(name, dsn string) {
 	ds.initOrg(tx)
 	// 初始化国家地区
 	ds.initRegion(tx)
+	// 初始化字典数据
+	ds.initAppDict(tx)
 }
 
 func (*dataset) initOrg(client *ent.Tx) {
@@ -596,4 +598,21 @@ func (*dataset) initRegion(client *ent.Tx) {
 	r8 := client.Region.Create().SetID(8).SetCreatedBy(1).SetName("新界").SetParentID(5).SetCountryID(2)
 	regs = append(regs, r5, r6, r7, r8)
 	client.Region.CreateBulk(regs...).ExecX(context.Background())
+}
+
+func (*dataset) initAppDict(client *ent.Tx) {
+	ctx := identity.WithTenantID(context.Background(), 1)
+	// appdict
+	dicts := make([]*ent.AppDictCreate, 0)
+	d1 := client.AppDict.Create().SetID(1).SetCreatedBy(1).SetAppID(1).SetName("地理时区").SetCode("DLSH")
+	dicts = append(dicts, d1)
+	client.AppDict.CreateBulk(dicts...).ExecX(ctx)
+	// appdictitems
+	items := make([]*ent.AppDictItemCreate, 0)
+	i1 := client.AppDictItem.Create().SetID(1).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(1).SetDictID(1).SetName("Asia/Hong_Kong").SetCode("Asia/Hong_Kong").SetStatus(typex.SimpleStatusActive)
+	i2 := client.AppDictItem.Create().SetID(2).SetCreatedBy(1).SetRefCode("resource:DLSH").SetDictID(1).SetName("Asia/Shanghai").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	i3 := client.AppDictItem.Create().SetID(3).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(1).SetDictID(1).SetName("上海时区").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	i4 := client.AppDictItem.Create().SetID(4).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(2).SetDictID(1).SetName("上海时区").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	items = append(items, i1, i2, i3, i4)
+	client.AppDictItem.CreateBulk(items...).ExecX(ctx)
 }
