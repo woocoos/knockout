@@ -33139,7 +33139,7 @@ type UserMutation struct {
 	user_type            *user.UserType
 	creation_type        *user.CreationType
 	register_ip          *string
-	status               *typex.SimpleStatus
+	status               *types.UserStatus
 	comments             *string
 	avatar               *string
 	gender               *user.Gender
@@ -33729,12 +33729,12 @@ func (m *UserMutation) ResetRegisterIP() {
 }
 
 // SetStatus sets the "status" field.
-func (m *UserMutation) SetStatus(ts typex.SimpleStatus) {
+func (m *UserMutation) SetStatus(ts types.UserStatus) {
 	m.status = &ts
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *UserMutation) Status() (r typex.SimpleStatus, exists bool) {
+func (m *UserMutation) Status() (r types.UserStatus, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -33745,7 +33745,7 @@ func (m *UserMutation) Status() (r typex.SimpleStatus, exists bool) {
 // OldStatus returns the old "status" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldStatus(ctx context.Context) (v typex.SimpleStatus, err error) {
+func (m *UserMutation) OldStatus(ctx context.Context) (v types.UserStatus, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -34973,7 +34973,7 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		m.SetRegisterIP(v)
 		return nil
 	case user.FieldStatus:
-		v, ok := value.(typex.SimpleStatus)
+		v, ok := value.(types.UserStatus)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

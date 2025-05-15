@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 )
 
 const (
@@ -269,9 +269,9 @@ func CreationTypeValidator(ct CreationType) error {
 }
 
 // StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
-func StatusValidator(s typex.SimpleStatus) error {
+func StatusValidator(s types.UserStatus) error {
 	switch s.String() {
-	case "active", "inactive", "processing", "disabled":
+	case "active", "inactive", "locked", "disabled":
 		return nil
 	default:
 		return fmt.Errorf("user: invalid enum value for status field: %q", s)
@@ -662,10 +662,10 @@ func (e *CreationType) UnmarshalGQL(val interface{}) error {
 }
 
 var (
-	// typex.SimpleStatus must implement graphql.Marshaler.
-	_ graphql.Marshaler = (*typex.SimpleStatus)(nil)
-	// typex.SimpleStatus must implement graphql.Unmarshaler.
-	_ graphql.Unmarshaler = (*typex.SimpleStatus)(nil)
+	// types.UserStatus must implement graphql.Marshaler.
+	_ graphql.Marshaler = (*types.UserStatus)(nil)
+	// types.UserStatus must implement graphql.Unmarshaler.
+	_ graphql.Unmarshaler = (*types.UserStatus)(nil)
 )
 
 // MarshalGQL implements graphql.Marshaler interface.

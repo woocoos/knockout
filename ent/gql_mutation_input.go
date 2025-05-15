@@ -2454,7 +2454,7 @@ func (c *RegionUpdateOne) SetInput(i UpdateRegionInput) *RegionUpdateOne {
 type CreateUserInput struct {
 	PrincipalName  string
 	DisplayName    string
-	Status         *typex.SimpleStatus
+	Status         *types.UserStatus
 	Comments       *string
 	Avatar         *string
 	Gender         *user.Gender

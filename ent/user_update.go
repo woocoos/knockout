@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -178,13 +178,13 @@ func (uu *UserUpdate) SetNillableRegisterIP(s *string) *UserUpdate {
 }
 
 // SetStatus sets the "status" field.
-func (uu *UserUpdate) SetStatus(ts typex.SimpleStatus) *UserUpdate {
+func (uu *UserUpdate) SetStatus(ts types.UserStatus) *UserUpdate {
 	uu.mutation.SetStatus(ts)
 	return uu
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableStatus(ts *typex.SimpleStatus) *UserUpdate {
+func (uu *UserUpdate) SetNillableStatus(ts *types.UserStatus) *UserUpdate {
 	if ts != nil {
 		uu.SetStatus(*ts)
 	}
@@ -1519,13 +1519,13 @@ func (uuo *UserUpdateOne) SetNillableRegisterIP(s *string) *UserUpdateOne {
 }
 
 // SetStatus sets the "status" field.
-func (uuo *UserUpdateOne) SetStatus(ts typex.SimpleStatus) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetStatus(ts types.UserStatus) *UserUpdateOne {
 	uuo.mutation.SetStatus(ts)
 	return uuo
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableStatus(ts *typex.SimpleStatus) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetNillableStatus(ts *types.UserStatus) *UserUpdateOne {
 	if ts != nil {
 		uuo.SetStatus(*ts)
 	}

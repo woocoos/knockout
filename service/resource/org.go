@@ -435,7 +435,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	return client.User.Update().Where(user.ID(userID)).ClearIdentities().ClearPasswords().
-		SetDeletedAt(time.Now()).SetStatus(typex.SimpleStatusInactive).Exec(ctx)
+		SetDeletedAt(time.Now()).SetStatus(types.UserStatusInactive).Exec(ctx)
 }
 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
@@ -730,7 +730,7 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	if err != nil {
 		return nil, err
 	}
-	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(typex.SimpleStatusActive).ClearDeletedAt().Save(ctx)
+	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(types.UserStatusActive).ClearDeletedAt().Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -842,11 +842,16 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 		}
 	}
 	newPwd := RandomStr(6)
-	// 更新用户密码
+	// 更新用户密码，status设置为active处理密码过期的status
 	err = client.UserPassword.Update().Where(
 		userpassword.UserID(userID),
 		userpassword.SceneEQ(userpassword.SceneLogin),
-	).SetPassword(SaltSecret(SHA256(newPwd), slat)).Exec(ctx)
+	).SetPassword(SaltSecret(SHA256(newPwd), slat)).SetStatus(typex.SimpleStatusActive).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	// 如果用户被锁定则重置用户状态
+	err = client.User.UpdateOneID(userID).SetStatus(types.UserStatusActive).Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -1219,6 +1224,9 @@ func (s *Service) DeleteUserIdentity(ctx context.Context, id int) (bool, error) 
 	client := ent.FromContext(ctx)
 	// 只有一个凭证则不允许删除
 	ui, err := client.UserIdentity.Get(ctx, id)
+	if err != nil {
+		return false, err
+	}
 	c, err := client.UserIdentity.Query().Where(useridentity.UserID(ui.UserID)).Count(ctx)
 	if err != nil {
 		return false, err

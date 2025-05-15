@@ -931,7 +931,7 @@ var (
 		{Name: "user_type", Type: field.TypeEnum, Enums: []string{"account", "member"}},
 		{Name: "creation_type", Type: field.TypeEnum, Enums: []string{"invitation", "register", "manual"}},
 		{Name: "register_ip", Type: field.TypeString, Size: 45},
-		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "locked", "disabled"}},
 		{Name: "comments", Type: field.TypeString, Nullable: true},
 		{Name: "avatar", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "gender", Type: field.TypeEnum, Enums: []string{"privacy", "male", "female"}, Default: "privacy"},

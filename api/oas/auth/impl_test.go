@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quotaitem"
@@ -93,7 +94,7 @@ func (ts *loginFlowSuite) SetupSuite() {
 	ts.Redis.FlushAll()
 	db := ts.AuthService.db
 	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").
-		SetStatus(typex.SimpleStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
+		SetStatus(types.UserStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
 		SetCreationType(user.CreationTypeManual).SetRegisterIP("")
 	_, err := db.User.CreateBulk(
 		adm,

@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/fieldx"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/intercept"
 )
@@ -77,7 +77,7 @@ func (User) Fields() []ent.Field {
 		field.String("register_ip").Comment("注册时IP").Nillable().MaxLen(45).
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
 				entproto.Skip()),
-		field.Enum("status").GoType(typex.SimpleStatus("")).Optional().Comment("状态").
+		field.Enum("status").GoType(types.UserStatus("")).Optional().Comment("状态").
 			Annotations(entgql.Skip(entgql.SkipMutationUpdateInput),
 				entproto.Skip(),
 			),

@@ -143,7 +143,7 @@ func (*dataset) initUser(client *ent.Tx) {
 	for i := 1; i < 4; i++ {
 		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
 			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
-			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1)
+			SetStatus(types.UserStatusActive).SetCreatedBy(1)
 		if i == 1 {
 			c.SetPrincipalName("admin").SetDisplayName("admin")
 		}

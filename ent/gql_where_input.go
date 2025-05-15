@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -13826,12 +13827,12 @@ type UserWhereInput struct {
 	RegisterIPContainsFold *string  `json:"registerIPContainsFold,omitempty"`
 
 	// "status" field predicates.
-	Status       *typex.SimpleStatus  `json:"status,omitempty"`
-	StatusNEQ    *typex.SimpleStatus  `json:"statusNEQ,omitempty"`
-	StatusIn     []typex.SimpleStatus `json:"statusIn,omitempty"`
-	StatusNotIn  []typex.SimpleStatus `json:"statusNotIn,omitempty"`
-	StatusIsNil  bool                 `json:"statusIsNil,omitempty"`
-	StatusNotNil bool                 `json:"statusNotNil,omitempty"`
+	Status       *types.UserStatus  `json:"status,omitempty"`
+	StatusNEQ    *types.UserStatus  `json:"statusNEQ,omitempty"`
+	StatusIn     []types.UserStatus `json:"statusIn,omitempty"`
+	StatusNotIn  []types.UserStatus `json:"statusNotIn,omitempty"`
+	StatusIsNil  bool               `json:"statusIsNil,omitempty"`
+	StatusNotNil bool               `json:"statusNotNil,omitempty"`
 
 	// "gender" field predicates.
 	Gender      *user.Gender  `json:"gender,omitempty"`

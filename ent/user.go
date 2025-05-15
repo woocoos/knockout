@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
@@ -41,7 +41,7 @@ type User struct {
 	// 注册时IP
 	RegisterIP *string `json:"register_ip,omitempty"`
 	// 状态
-	Status typex.SimpleStatus `json:"status,omitempty"`
+	Status types.UserStatus `json:"status,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
 	// 头像地址
@@ -305,7 +305,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				u.Status = typex.SimpleStatus(value.String)
+				u.Status = types.UserStatus(value.String)
 			}
 		case user.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {

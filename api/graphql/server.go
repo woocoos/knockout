@@ -37,12 +37,12 @@ import (
 type ServerOptions struct {
 	portalDB *ent.Client
 	casbinDB *casbinent.Client
+	kosdk    *api.SDK
 }
 
 type Server struct {
 	ServerOptions
 	webSrv   *web.Server
-	kosdk    *api.SDK
 	resolver *Resolver
 }
 
@@ -56,12 +56,6 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) *Server {
 	}
 
 	buildCasbin(cnf, s.casbinDB)
-
-	var err error
-	s.kosdk, err = api.NewSDK(cnf.Sub("kosdk"))
-	if err != nil {
-		panic(err)
-	}
 
 	rs := resource.NewService(
 		resource.WithClient(s.portalDB),

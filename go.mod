@@ -14,6 +14,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pquerna/otp v1.4.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
 	github.com/tsingsun/woocoo v0.5.5
 	github.com/tsingsun/woocoo/contrib/gql v0.1.0

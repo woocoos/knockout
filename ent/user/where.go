@@ -7,7 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -597,19 +597,19 @@ func RegisterIPContainsFold(v string) predicate.User {
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v typex.SimpleStatus) predicate.User {
+func StatusEQ(v types.UserStatus) predicate.User {
 	vc := v
 	return predicate.User(sql.FieldEQ(FieldStatus, vc))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v typex.SimpleStatus) predicate.User {
+func StatusNEQ(v types.UserStatus) predicate.User {
 	vc := v
 	return predicate.User(sql.FieldNEQ(FieldStatus, vc))
 }
 
 // StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...typex.SimpleStatus) predicate.User {
+func StatusIn(vs ...types.UserStatus) predicate.User {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -618,7 +618,7 @@ func StatusIn(vs ...typex.SimpleStatus) predicate.User {
 }
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...typex.SimpleStatus) predicate.User {
+func StatusNotIn(vs ...types.UserStatus) predicate.User {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]

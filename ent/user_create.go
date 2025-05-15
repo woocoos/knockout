@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
@@ -127,13 +127,13 @@ func (uc *UserCreate) SetRegisterIP(s string) *UserCreate {
 }
 
 // SetStatus sets the "status" field.
-func (uc *UserCreate) SetStatus(ts typex.SimpleStatus) *UserCreate {
+func (uc *UserCreate) SetStatus(ts types.UserStatus) *UserCreate {
 	uc.mutation.SetStatus(ts)
 	return uc
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uc *UserCreate) SetNillableStatus(ts *typex.SimpleStatus) *UserCreate {
+func (uc *UserCreate) SetNillableStatus(ts *types.UserStatus) *UserCreate {
 	if ts != nil {
 		uc.SetStatus(*ts)
 	}
@@ -998,7 +998,7 @@ func (u *UserUpsert) UpdateRegisterIP() *UserUpsert {
 }
 
 // SetStatus sets the "status" field.
-func (u *UserUpsert) SetStatus(v typex.SimpleStatus) *UserUpsert {
+func (u *UserUpsert) SetStatus(v types.UserStatus) *UserUpsert {
 	u.Set(user.FieldStatus, v)
 	return u
 }
@@ -1348,7 +1348,7 @@ func (u *UserUpsertOne) UpdateRegisterIP() *UserUpsertOne {
 }
 
 // SetStatus sets the "status" field.
-func (u *UserUpsertOne) SetStatus(v typex.SimpleStatus) *UserUpsertOne {
+func (u *UserUpsertOne) SetStatus(v types.UserStatus) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.SetStatus(v)
 	})
@@ -1890,7 +1890,7 @@ func (u *UserUpsertBulk) UpdateRegisterIP() *UserUpsertBulk {
 }
 
 // SetStatus sets the "status" field.
-func (u *UserUpsertBulk) SetStatus(v typex.SimpleStatus) *UserUpsertBulk {
+func (u *UserUpsertBulk) SetStatus(v types.UserStatus) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.SetStatus(v)
 	})

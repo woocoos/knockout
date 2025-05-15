@@ -18,6 +18,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -307,7 +308,7 @@ func (r *queryResolver) OrgRecycleUsers(ctx context.Context, after *entgql.Curso
 	return r.client.User.Query().Where(
 		user.PrincipalNameHasSuffix("@"+o.Domain),
 		user.DeletedAtNotNil(),
-		user.StatusEQ(typex.SimpleStatusInactive),
+		user.StatusEQ(types.UserStatusInactive),
 	).Paginate(schemax.SkipSoftDelete(ctx), after, first, before, last, ent.WithUserOrder(orderBy), ent.WithUserFilter(where.Filter))
 }
 
@@ -507,7 +508,7 @@ func (r *queryResolver) ParentOrgUsers(ctx context.Context, orgID int, after *en
 	}
 	return r.client.User.Query().Where(
 		user.HasOrgUserWith(orguser.OrgID(tid)),
-		user.StatusEQ(typex.SimpleStatusActive),
+		user.StatusEQ(types.UserStatusActive),
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))

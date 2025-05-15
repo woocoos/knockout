@@ -34728,9 +34728,9 @@ func (ec *executionContext) _User_status(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(typex.SimpleStatus)
+	res := resTmp.(types.UserStatus)
 	fc.Result = res
-	return ec.marshalOUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, field.Selections, res)
+	return ec.marshalOUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -34740,7 +34740,7 @@ func (ec *executionContext) fieldContext_User_status(_ context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type UserSimpleStatus does not have child fields")
+			return nil, errors.New("field of type UserUserStatus does not have child fields")
 		},
 	}
 	return fc, nil
@@ -50556,7 +50556,7 @@ func (ec *executionContext) unmarshalInputCreateUserInput(ctx context.Context, o
 			it.DisplayName = data
 		case "status":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			data, err := ec.unmarshalOUserSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			data, err := ec.unmarshalOUserUserStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -70332,28 +70332,28 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 			it.RegisterIPContainsFold = data
 		case "status":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
-			data, err := ec.unmarshalOUserSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			data, err := ec.unmarshalOUserUserStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Status = data
 		case "statusNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNEQ"))
-			data, err := ec.unmarshalOUserSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, v)
+			data, err := ec.unmarshalOUserUserStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.StatusNEQ = data
 		case "statusIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusIn"))
-			data, err := ec.unmarshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			data, err := ec.unmarshalOUserUserStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatusᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.StatusIn = data
 		case "statusNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusNotIn"))
-			data, err := ec.unmarshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx, v)
+			data, err := ec.unmarshalOUserUserStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatusᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -81826,13 +81826,13 @@ func (ec *executionContext) unmarshalNUserPasswordWhereInput2ᚖgithubᚗcomᚋw
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {
-	var res typex.SimpleStatus
+func (ec *executionContext) unmarshalNUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, v interface{}) (types.UserStatus, error) {
+	var res types.UserStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v typex.SimpleStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, sel ast.SelectionSet, v types.UserStatus) graphql.Marshaler {
 	return v
 }
 
@@ -87752,17 +87752,17 @@ func (ec *executionContext) unmarshalOUserPasswordWhereInput2ᚖgithubᚗcomᚋw
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (typex.SimpleStatus, error) {
-	var res typex.SimpleStatus
+func (ec *executionContext) unmarshalOUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, v interface{}) (types.UserStatus, error) {
+	var res types.UserStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v typex.SimpleStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, sel ast.SelectionSet, v types.UserStatus) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx context.Context, v interface{}) ([]typex.SimpleStatus, error) {
+func (ec *executionContext) unmarshalOUserUserStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatusᚄ(ctx context.Context, v interface{}) ([]types.UserStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -87771,10 +87771,10 @@ func (ec *executionContext) unmarshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoos
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]typex.SimpleStatus, len(vSlice))
+	res := make([]types.UserStatus, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -87782,7 +87782,7 @@ func (ec *executionContext) unmarshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoos
 	return res, nil
 }
 
-func (ec *executionContext) marshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []typex.SimpleStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOUserUserStatus2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []types.UserStatus) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -87809,7 +87809,7 @@ func (ec *executionContext) marshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoos�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUserSimpleStatus2githubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx, sel, v[i])
+			ret[i] = ec.marshalNUserUserStatus2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -87829,16 +87829,16 @@ func (ec *executionContext) marshalOUserSimpleStatus2ᚕgithubᚗcomᚋwoocoos�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOUserSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, v interface{}) (*typex.SimpleStatus, error) {
+func (ec *executionContext) unmarshalOUserUserStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, v interface{}) (*types.UserStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(typex.SimpleStatus)
+	var res = new(types.UserStatus)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOUserSimpleStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚑgoᚋentᚋschemaxᚋtypexᚐSimpleStatus(ctx context.Context, sel ast.SelectionSet, v *typex.SimpleStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOUserUserStatus2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐUserStatus(ctx context.Context, sel ast.SelectionSet, v *types.UserStatus) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

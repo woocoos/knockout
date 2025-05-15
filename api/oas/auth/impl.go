@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -34,7 +35,6 @@ import (
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
-	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -70,6 +70,7 @@ const (
 	callBackUrlResetPassword = "/login/reset-password"
 	callBackUrlMFA           = "/login/verify-factor"
 	callBackUrlCaptcha       = "/captcha"
+	callBackUrlUserLocked    = "/user/locked"
 	callBackUrlVerifyDevice  = "/login/verify-device"
 
 	captchaWidth  = 200
@@ -211,6 +212,31 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		ctx.Status(http.StatusBadRequest)
 		return nil, err
 	}
+	// 判断用户是否锁定状态
+	ui, err := s.db.UserIdentity.Query().Where(
+		useridentity.Code(req.Username),
+		useridentity.StatusEQ(typex.SimpleStatusActive),
+	).WithUser().Only(ctx)
+	if err != nil {
+		ctx.Status(http.StatusBadRequest)
+		return nil, status.ErrUserOrPWD
+	}
+	if ui.Edges.User.Status == types.UserStatusLocked {
+		ctx.Status(http.StatusBadRequest)
+		return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
+	}
+	// 判断密码是否过期
+	has, err := s.db.UserPassword.Query().Where(
+		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Username))),
+		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusDisabled),
+	).Exist(entcache.Skip(ctx))
+	if err != nil {
+		return nil, err
+	}
+	if has {
+		return nil, fmt.Errorf("密码已过期，请重置密码或联系客服修改密码恢复")
+	}
+	// 错误次数过多需要验证码
 	if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
 		// 若错误次数大于验证码应该出现的次数，则前端展示验证码
 		if req.CaptchaId == "" || req.Captcha == "" {
@@ -218,27 +244,13 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		}
 		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 			ctx.Status(http.StatusBadRequest)
-			s.logFailHandler(ctx, req.Username, false)
 			return nil, status.ErrCaptchaNotMatch
 		}
 	}
-	pwd, err := s.checkPwd(ctx, req, upp)
+	pwd, err := s.checkPwd(ctx, req)
 	if err != nil {
-		if errors.Is(err, status.ErrMismatchPWD) {
-			ctx.Status(http.StatusBadRequest)
-			var errL error
-			failCount, errL = s.logFailHandler(ctx, req.Username, false)
-			if errL != nil {
-				return nil, errors.Join(err, errL)
-			}
-			if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
-				return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, err
-			}
-			if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
-				return nil, status.ErrLoginFailUpperLimit
-			}
-		}
-		return nil, err
+		// 处理密码错误
+		return s.dealPwdError(ctx, req, ui.UserID, upp, err)
 	}
 
 	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
@@ -253,19 +265,19 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	// 设备验证：开启设备验证及传递了deviceId
 	if profile.VerifyDevice && req.DeviceId != "" {
 		// 判断是否需要验证设备
-		q, err := s.db.Quota.Query().Where(
-			quota.TenantID(0),
-			quota.UserID(pwd.UserID),
-			quota.HasQuotaItemWith(
-				quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
-			),
-		).Only(ctx)
-		if err != nil && !ent.IsNotFound(err) {
-			return nil, err
-		}
-		if q != nil && q.Used >= q.Limit {
-			return nil, fmt.Errorf("登录设备超过%d台限制", q.Limit)
-		}
+		//q, err := s.db.Quota.Query().Where(
+		//	quota.TenantID(0),
+		//	quota.UserID(pwd.UserID),
+		//	quota.HasQuotaItemWith(
+		//		quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+		//	),
+		//).Only(ctx)
+		//if err != nil && !ent.IsNotFound(err) {
+		//	return nil, err
+		//}
+		//if q != nil && q.Used >= q.Limit {
+		//	return nil, fmt.Errorf("登录设备超过%d台限制", q.Limit)
+		//}
 		// 验证设备
 		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID), userdevice.DeviceUID(req.DeviceId)).Exist(ctx)
 		if err != nil {
@@ -290,6 +302,64 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
 	s.logFailHandler(ctx, req.Username, true)
 	return s.loginToken(ctx, pwd.UserID)
+}
+
+func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID int, upp *ent.UserPasswordPolicy, err error) (*LoginResponse, error) {
+	ctx.Status(http.StatusBadRequest)
+	if errors.Is(err, status.ErrMismatchPWD) {
+		var errL error
+		failCount, errL := s.logFailHandler(ctx, req.Username, false)
+		if errL != nil {
+			return nil, errors.Join(err, errL)
+		}
+		// 登录失败次数大于设定值，锁定用户
+		if upp.Retry > 0 && failCount >= upp.Retry {
+			// 锁定用户，更新用户状态
+			err = s.db.User.UpdateOneID(userID).SetUpdatedBy(userID).SetStatus(types.UserStatusLocked).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+			// 发送邮件给指定用户，指定的用户在邮件模板配置
+			usr, addr, err := s.getUserInfo(ctx, userID)
+			if err != nil {
+				return nil, err
+			}
+			uorg, err := s.GetUserRootOrg(ctx, userID)
+			if err != nil {
+				return nil, err
+			}
+			tid, err := s.GetTopOrgId(uorg)
+			if err != nil {
+				return nil, err
+			}
+			params := msg.PostableAlerts{
+				{
+					Annotations: map[string]string{
+						"to":            addr.Email,
+						"displayName":   usr.DisplayName,
+						"principalName": req.Username,
+						"pwdRetry":      strconv.Itoa(int(upp.Retry)),
+					},
+					Alert: &msg.Alert{
+						Labels: map[string]string{
+							"receiver":  "email",
+							"alertname": "UserLockedNotify",
+							"tenant":    strconv.Itoa(tid),
+							"timestamp": strconv.Itoa(int(time.Now().Unix())),
+						},
+					},
+				},
+			}
+			_ = s.postAlerts(ctx, params)
+			return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
+		}
+		// 失败次数大于设定值，显示验证码
+		//if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
+		//	return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
+		//}
+		return nil, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
+	}
+	return nil, err
 }
 
 func (s *ServerImpl) AppOrgs(ctx *gin.Context, req *AppOrgsRequest) ([]*Domain, error) {
@@ -343,7 +413,7 @@ func (s *ServerImpl) AppOrgs(ctx *gin.Context, req *AppOrgsRequest) ([]*Domain, 
 
 func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest) (res *LoginResponse, err error) {
 	// 验证密码
-	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, nil)
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
 		return nil, status.ErrUserOrPWD
 	}
@@ -433,7 +503,7 @@ func (s *ServerImpl) RefreshToken(ctx *gin.Context, req *RefreshTokenRequest) (*
 }
 func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLoginRequest) (*LoginResponse, error) {
 	// 验证密码
-	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password}, nil)
+	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
 		return nil, fmt.Errorf("username or password error")
 	}
@@ -875,16 +945,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 	}, nil
 }
 
-func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest, upp *ent.UserPasswordPolicy) (*ent.UserPassword, error) {
-	if upp != nil {
-		var failCount int32
-		s.cache.Get(ctx, loginFailCachePrefix+req.Username, &failCount)
-		if upp.Retry > 0 && failCount >= upp.Retry && upp.InvalidLoginLimit {
-			// 密码错误次数大于重试次数，且限制登录，则返回登录限制
-			ctx.Status(http.StatusForbidden)
-			return nil, status.ErrLoginFailUpperLimit
-		}
-	}
+func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest) (*ent.UserPassword, error) {
 	pwd, err := s.db.UserPassword.Query().Where(
 		userpassword.HasUserWith(user.HasIdentitiesWith(useridentity.Code(req.Username))),
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
@@ -1137,6 +1198,10 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 	if err != nil {
 		return nil, err
 	}
+	// 判断用户锁定不能重置密码
+	if u.Status == types.UserStatusLocked {
+		return nil, status.ErrLoginFailUpperLimit
+	}
 	verifies := make([]*ForgetPwdVerify, 0)
 	if u.Edges.LoginProfile.MfaEnabled {
 		verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
@@ -1187,7 +1252,8 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		return s.db.Tx(ctx)
 	}, func(itx clientx.Transactor) error {
 		tx := itx.(*ent.Tx)
-		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).Exec(ctx)
+		// SetStatus用于处理密码过期状态恢复
+		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).SetStatus(typex.SimpleStatusActive).Exec(ctx)
 		if err != nil {
 			return err
 		}
@@ -1650,9 +1716,6 @@ func (s *ServerImpl) getPasswordPolicy(ctx *gin.Context) (*ent.UserPasswordPolic
 		return s.defaultPwdPolicy(), nil
 	}
 	host := u.Hostname()
-	if err != nil {
-		return s.defaultPwdPolicy(), nil
-	}
 	// 先根据host找domain
 	o, err := s.db.Org.Query().Where(org.Domain(host), org.ParentID(0)).Only(ctx)
 	// 如果没找到，再找自定义域名
@@ -1676,10 +1739,7 @@ func (s *ServerImpl) getPasswordPolicy(ctx *gin.Context) (*ent.UserPasswordPolic
 		return s.defaultPwdPolicy(), nil
 	}
 	upp, err := s.db.UserPasswordPolicy.Query().Where(userpasswordpolicy.TenantID(o.ID)).Only(ctx)
-	if err != nil {
-		return s.defaultPwdPolicy(), nil
-	}
-	if upp == nil {
+	if err != nil || upp == nil {
 		return s.defaultPwdPolicy(), nil
 	}
 	return upp, nil

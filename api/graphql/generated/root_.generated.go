@@ -10967,7 +10967,7 @@ input CreateUserInput {
   """
   状态
   """
-  status: UserSimpleStatus
+  status: UserUserStatus
   """
   备注
   """
@@ -15842,7 +15842,7 @@ type User implements Node {
   """
   状态
   """
-  status: UserSimpleStatus
+  status: UserUserStatus
   """
   备注
   """
@@ -17418,12 +17418,12 @@ input UserPasswordWhereInput {
   hasUserWith: [UserWhereInput!]
 }
 """
-UserSimpleStatus is enum for the field status
+UserUserStatus is enum for the field status
 """
-enum UserSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+enum UserUserStatus @goModel(model: "github.com/woocoos/knockout/codegen/entgen/types.UserStatus") {
   active
   inactive
-  processing
+  locked
   disabled
 }
 """
@@ -17578,10 +17578,10 @@ input UserWhereInput {
   """
   status field predicates
   """
-  status: UserSimpleStatus
-  statusNEQ: UserSimpleStatus
-  statusIn: [UserSimpleStatus!]
-  statusNotIn: [UserSimpleStatus!]
+  status: UserUserStatus
+  statusNEQ: UserUserStatus
+  statusIn: [UserUserStatus!]
+  statusNotIn: [UserUserStatus!]
   statusIsNil: Boolean
   statusNotNil: Boolean
   """
@@ -18436,7 +18436,7 @@ input ClientPreferenceValueInput {
 extend type AppDict {
     """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
     orgItems(
-        """是否取消code过滤"""
+        """是否取消code过滤，不传会过滤重复的code"""
         noFilterCode: Boolean
     ): [AppDictItem!]!
 }`, BuiltIn: false},
