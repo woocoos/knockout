@@ -11024,7 +11024,7 @@ input CreateUserLoginProfileInput {
   """
   是否开启设备认证
   """
-  verifyDevice: Boolean!
+  verifyDevice: Boolean
   userID: ID
 }
 """

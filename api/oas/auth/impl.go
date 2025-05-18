@@ -35,6 +35,7 @@ import (
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
@@ -71,7 +72,6 @@ const (
 	callBackUrlMFA           = "/login/verify-factor"
 	callBackUrlCaptcha       = "/captcha"
 	callBackUrlUserLocked    = "/user/locked"
-	callBackUrlVerifyDevice  = "/login/verify-device"
 
 	captchaWidth  = 200
 	captchaHeight = 100
@@ -262,35 +262,6 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return nil, errors.New("user not allowed to login")
 	}
 
-	// 设备验证：开启设备验证及传递了deviceId
-	if profile.VerifyDevice && req.DeviceId != "" {
-		// 判断是否需要验证设备
-		//q, err := s.db.Quota.Query().Where(
-		//	quota.TenantID(0),
-		//	quota.UserID(pwd.UserID),
-		//	quota.HasQuotaItemWith(
-		//		quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
-		//	),
-		//).Only(ctx)
-		//if err != nil && !ent.IsNotFound(err) {
-		//	return nil, err
-		//}
-		//if q != nil && q.Used >= q.Limit {
-		//	return nil, fmt.Errorf("登录设备超过%d台限制", q.Limit)
-		//}
-		// 验证设备
-		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(pwd.UserID), userdevice.DeviceUID(req.DeviceId)).Exist(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if !has {
-			// 进行设备验证
-			return s.verifyDevicePrepare(ctx, profile)
-		} else {
-			s.db.UserDevice.Update().Where(userdevice.DeviceUID(req.DeviceId), userdevice.UserID(pwd.UserID)).SetUpdatedBy(pwd.UserID).Exec(ctx)
-		}
-	}
-
 	if profile.MfaEnabled {
 		return s.mfaPrepare(ctx, profile)
 	}
@@ -353,10 +324,6 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			_ = s.postAlerts(ctx, params)
 			return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
 		}
-		// 失败次数大于设定值，显示验证码
-		//if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
-		//	return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
-		//}
 		return nil, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
 	}
 	return nil, err
@@ -706,16 +673,6 @@ func (s *ServerImpl) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile)
 	return
 }
 
-func (s *ServerImpl) verifyDevicePrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *LoginResponse, err error) {
-	sid := uuid.New().String()
-	res = &LoginResponse{
-		CallbackUrl: callBackUrlVerifyDevice,
-		StateToken:  createStateToken(sid, s.Options),
-	}
-	err = s.cache.Set(ctx, verifyDeviceCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
-	return
-}
-
 // VerifyDeviceSendEmail 验证登录设备 发送邮件验证码
 func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSendEmailRequest) (string, error) {
 	token := req.StateToken
@@ -776,12 +733,79 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	return captchaId, nil
 }
 
+func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*CheckDeviceResponse, error) {
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	usr, err := s.db.User.Get(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	profile, err := usr.QueryLoginProfile().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 设备验证：开启设备验证及传递了deviceId
+	if profile.VerifyDevice && req.DeviceInfo.DeviceUid != "" {
+		// 查询设备绑定数
+		q, err := s.db.Quota.Query().Where(
+			quota.TenantIDIsNil(),
+			quota.UserID(profile.UserID),
+			quota.HasQuotaItemWith(
+				quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+			),
+		).Only(ctx)
+		if err != nil && !ent.IsNotFound(err) {
+			return nil, err
+		}
+		// 验证设备
+		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID), userdevice.DeviceUID(req.DeviceInfo.DeviceUid)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if !has {
+			// 判断设备是否超出限制
+			if q != nil && q.Used >= q.Limit {
+				return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", q.Limit)
+			}
+			// 进行设备验证
+			sid := uuid.New().String()
+			verifies := make([]*ForgetPwdVerify, 0)
+			if profile.MfaEnabled {
+				verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
+			}
+			addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if &addr.Email != nil {
+				verifies = append(verifies, &ForgetPwdVerify{Kind: "email", Value: resource.MaskEmail(addr.Email)})
+			}
+			res := &CheckDeviceResponse{
+				VerifyDevice: true,
+				StateToken:   createStateToken(sid, s.Options),
+				Verifies:     verifies,
+			}
+			err = s.cache.Set(ctx, verifyDeviceCachePrefix+sid, profile.UserID, cache.WithTTL(s.Options.StateTokenTTL))
+			if err != nil {
+				return nil, err
+			}
+			return res, nil
+		} else {
+			// 正常登录，更新设备信息
+			s.db.UserDevice.Update().Where(
+				userdevice.DeviceUID(req.DeviceInfo.DeviceUid),
+				userdevice.UserID(profile.UserID),
+			).SetUpdatedBy(profile.UserID).SetDeviceModel(req.DeviceInfo.DeviceModel).SetDeviceName(req.DeviceInfo.DeviceName).
+				SetAppVersion(req.DeviceInfo.AppVersion).SetSystemVersion(req.DeviceInfo.SystemVersion).Exec(ctx)
+		}
+	}
+	return &CheckDeviceResponse{VerifyDevice: false}, nil
+}
+
 // VerifyDevice 验证登录设备并绑定
 func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*LoginResponse, error) {
-	// 验证验证码
-	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
-		return nil, fmt.Errorf("验证码错误")
-	}
 	token := req.StateToken
 	id, err := parseStateToken(token, s.Options)
 	if err != nil {
@@ -789,8 +813,30 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	var uid int
-	if err = s.cache.Get(ctx, verifyDeviceCachePrefix+id, &uid); err != nil {
+	cacheKey := verifyDeviceCachePrefix + id
+	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
+	}
+	if req.Kind == KindEmail {
+		// 验证验证码
+		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
+			return nil, fmt.Errorf("验证码错误")
+		}
+	} else if req.Kind == KindMfa {
+		profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		// 验证mfa
+		if profile.MfaEnabled {
+			if !totp.Validate(req.OtpToken, profile.MfaSecret) {
+				return nil, errors.New("invalid code")
+			}
+		} else {
+			return nil, fmt.Errorf("the MFA is disabled")
+		}
+	} else {
+		return nil, fmt.Errorf("不支持的验证方式")
 	}
 	// 保存设备信息
 	client := s.db
@@ -803,12 +849,18 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	if err != nil {
 		return nil, err
 	}
-	qi, err := client.QuotaItem.Query().Where(quotaitem.Code(string(quotaService.ItemCodeUserDevice))).Only(ctx1)
-	if err != nil {
+	q, err := s.db.Quota.Query().Where(
+		quota.TenantIDIsNil(),
+		quota.UserID(uid),
+		quota.HasQuotaItemWith(
+			quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+		),
+	).Only(ctx)
+	if err != nil && !ent.IsNotFound(err) {
 		return nil, err
 	}
-	if int64(uds) >= qi.DefaultLimit {
-		return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", qi.DefaultLimit)
+	if q != nil && int64(uds) >= q.Limit {
+		return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", q.Limit)
 	}
 	err = client.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
 		DeviceName:    &req.DeviceInfo.DeviceName,
@@ -857,6 +909,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	if err != nil {
 		return nil, err
 	}
+	_ = s.cache.Del(ctx, cacheKey)
 	return loginResp, nil
 }
 

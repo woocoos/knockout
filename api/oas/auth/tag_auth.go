@@ -33,6 +33,20 @@ type CaptchaRequest struct {
 	H *int `form:"h"`
 }
 
+// CheckDeviceRequest is the request object for (POST /login/check-device)
+type CheckDeviceRequest struct {
+	// DeviceInfo device info
+	DeviceInfo DeviceInfo `json:"deviceInfo"`
+}
+
+// CheckDeviceResponse whether the device needs verification.
+type CheckDeviceResponse struct {
+	// StateToken use the state token to request callback_url
+	StateToken   string             `json:"stateToken,omitempty"`
+	Verifies     []*ForgetPwdVerify `json:"verifies,omitempty"`
+	VerifyDevice bool               `json:"verifyDevice,omitempty"`
+}
+
 // FingerprintLoginRequest is the request object for (POST /login/fingerprint)
 type FingerprintLoginRequest struct {
 	// RefreshToken the refreshToken
@@ -199,11 +213,36 @@ type UnBindMfaRequest struct {
 
 // VerifyDeviceRequest is the request object for (POST /login/verify-device)
 type VerifyDeviceRequest struct {
-	Captcha   string `binding:"required" json:"captcha"`
-	CaptchaId string `binding:"required" json:"captchaId"`
+	Captcha   string `json:"captcha,omitempty"`
+	CaptchaId string `json:"captchaId,omitempty"`
 	// DeviceInfo device info
-	DeviceInfo DeviceInfo `json:"deviceInfo"`
+	DeviceInfo DeviceInfo `json:"deviceInfo,omitempty"`
+	Kind       Kind       `binding:"required,oneof=email mfa" json:"kind"`
+	OtpToken   string     `json:"otpToken,omitempty"`
 	StateToken string     `binding:"required" json:"stateToken"`
+}
+
+// Kind defines the type for the kind.kind enum field.
+type Kind string
+
+// Kind values.
+const (
+	KindEmail Kind = "email"
+	KindMfa   Kind = "mfa"
+)
+
+func (k Kind) String() string {
+	return string(k)
+}
+
+// KindValidator is a validator for the Kind field enum values.
+func KindValidator(k Kind) error {
+	switch k {
+	case KindEmail, KindMfa:
+		return nil
+	default:
+		return fmt.Errorf("Kind does not allow the value '%s'", k)
+	}
 }
 
 // VerifyDeviceSendEmailRequest is the request object for (POST /login/device-captcha)

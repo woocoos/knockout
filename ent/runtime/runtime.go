@@ -878,6 +878,10 @@ func init() {
 	userloginprofileDescCreatedAt := userloginprofileMixinFields1[1].Descriptor()
 	// userloginprofile.DefaultCreatedAt holds the default value on creation for the created_at field.
 	userloginprofile.DefaultCreatedAt = userloginprofileDescCreatedAt.Default.(func() time.Time)
+	// userloginprofileDescVerifyDevice is the schema descriptor for verify_device field.
+	userloginprofileDescVerifyDevice := userloginprofileFields[6].Descriptor()
+	// userloginprofile.DefaultVerifyDevice holds the default value on creation for the verify_device field.
+	userloginprofile.DefaultVerifyDevice = userloginprofileDescVerifyDevice.Default.(bool)
 	// userloginprofileDescMfaSecret is the schema descriptor for mfa_secret field.
 	userloginprofileDescMfaSecret := userloginprofileFields[8].Descriptor()
 	// userloginprofile.MfaSecretValidator is a validator for the "mfa_secret" field. It is called by the builders before save.

@@ -25,6 +25,9 @@ type AuthServer interface {
 	// Captcha Use this API to get captcha
 	// (GET /captcha)
 	Captcha(*gin.Context, *CaptchaRequest) (*Captcha, error)
+	// CheckDevice Check whether the device needs verification.
+	// (POST /login/check-device)
+	CheckDevice(*gin.Context, *CheckDeviceRequest) (*CheckDeviceResponse, error)
 	// CreateSpm create spm key.
 	// (POST /spm/create)
 	CreateSpm(*gin.Context) (string, error)
@@ -118,6 +121,11 @@ func (UnimplementedAuthServer) BindMfaPrepare(c *gin.Context) (_ *Mfa, err error
 
 func (UnimplementedAuthServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *Captcha, err error) {
 	err = fmt.Errorf("method Captcha not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) CheckDevice(c *gin.Context, req *CheckDeviceRequest) (_ *CheckDeviceResponse, err error) {
+	err = fmt.Errorf("method CheckDevice not implemented")
 	return
 }
 

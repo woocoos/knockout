@@ -396,17 +396,21 @@ paths:
             schema:
               type: object
               properties:
+                kind:
+                  type: string
+                  enum: [ "email","mfa" ]
                 captcha:
                   type: string
                 captchaId:
+                  type: string
+                otpToken:
                   type: string
                 stateToken:
                   type: string
                 deviceInfo:
                   $ref: '#/components/schemas/DeviceInfo'
               required:
-                - captcha
-                - captchaId
+                - kind
                 - stateToken
                 - deviceInfo
       responses:
@@ -416,6 +420,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/check-device:
+    post:
+      description: Check whether the device needs verification.
+      tags:
+        - auth
+      operationId: checkDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+              required:
+                - deviceInfo
+      responses:
+        '200':
+          description: whether the device needs verification.
+          content:
+            application/json:
+              schema:
+                properties:
+                  verifyDevice:
+                    type: boolean
+                  stateToken:
+                    type: string
+                    description: use the state token to request callback_url
+                  verifies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ForgetPwdVerify'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
   /logout:

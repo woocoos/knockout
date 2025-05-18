@@ -1064,7 +1064,7 @@ var (
 		{Name: "can_login", Type: field.TypeBool, Nullable: true},
 		{Name: "set_kind", Type: field.TypeEnum, Enums: []string{"keep", "customer", "auto"}},
 		{Name: "password_reset", Type: field.TypeBool, Nullable: true},
-		{Name: "verify_device", Type: field.TypeBool},
+		{Name: "verify_device", Type: field.TypeBool, Default: true},
 		{Name: "mfa_enabled", Type: field.TypeBool, Nullable: true},
 		{Name: "mfa_secret", Type: field.TypeString, Nullable: true, Size: 100},
 		{Name: "mfa_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"active", "inactive", "processing", "disabled"}},

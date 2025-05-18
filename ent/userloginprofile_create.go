@@ -154,6 +154,14 @@ func (ulpc *UserLoginProfileCreate) SetVerifyDevice(b bool) *UserLoginProfileCre
 	return ulpc
 }
 
+// SetNillableVerifyDevice sets the "verify_device" field if the given value is not nil.
+func (ulpc *UserLoginProfileCreate) SetNillableVerifyDevice(b *bool) *UserLoginProfileCreate {
+	if b != nil {
+		ulpc.SetVerifyDevice(*b)
+	}
+	return ulpc
+}
+
 // SetMfaEnabled sets the "mfa_enabled" field.
 func (ulpc *UserLoginProfileCreate) SetMfaEnabled(b bool) *UserLoginProfileCreate {
 	ulpc.mutation.SetMfaEnabled(b)
@@ -250,6 +258,10 @@ func (ulpc *UserLoginProfileCreate) defaults() error {
 		}
 		v := userloginprofile.DefaultCreatedAt()
 		ulpc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ulpc.mutation.VerifyDevice(); !ok {
+		v := userloginprofile.DefaultVerifyDevice
+		ulpc.mutation.SetVerifyDevice(v)
 	}
 	return nil
 }

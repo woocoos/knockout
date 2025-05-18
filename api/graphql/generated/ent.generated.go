@@ -50729,7 +50729,7 @@ func (ec *executionContext) unmarshalInputCreateUserLoginProfileInput(ctx contex
 			it.PasswordReset = data
 		case "verifyDevice":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifyDevice"))
-			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}

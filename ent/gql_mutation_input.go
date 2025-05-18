@@ -2971,7 +2971,7 @@ type CreateUserLoginProfileInput struct {
 	CanLogin      *bool
 	SetKind       userloginprofile.SetKind
 	PasswordReset *bool
-	VerifyDevice  bool
+	VerifyDevice  *bool
 	UserID        *int
 }
 
@@ -2984,7 +2984,9 @@ func (i *CreateUserLoginProfileInput) Mutate(m *UserLoginProfileMutation) {
 	if v := i.PasswordReset; v != nil {
 		m.SetPasswordReset(*v)
 	}
-	m.SetVerifyDevice(i.VerifyDevice)
+	if v := i.VerifyDevice; v != nil {
+		m.SetVerifyDevice(*v)
+	}
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)
 	}

@@ -17,6 +17,7 @@ func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
+	router.POST("/login/check-device", wrapCheckDevice(si))
 	router.POST("/spm/create", wrapCreateSpm(si))
 	router.POST("/login/fingerprint", wrapFingerprintLogin(si))
 	router.POST("/forget-pwd/begin", wrapForgetPwdBegin(si))
@@ -111,6 +112,22 @@ func wrapCaptcha(si AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.Captcha(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapCheckDevice(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req CheckDeviceRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.CheckDevice(c, &req)
 		if err != nil {
 			c.Error(err)
 			return
