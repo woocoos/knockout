@@ -18403,7 +18403,7 @@ type UserMfaInfo {
 }
 
 extend type OrgUserPreference {
-    clientPreference(appCode: String!): ClientPreference!
+    clientPreference(appCode: String!): ClientPreference
 }
 
 type ClientPreference {

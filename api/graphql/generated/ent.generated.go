@@ -25719,14 +25719,11 @@ func (ec *executionContext) _OrgUserPreference_clientPreference(ctx context.Cont
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(*types.ClientPreference)
 	fc.Result = res
-	return ec.marshalNClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, field.Selections, res)
+	return ec.marshalOClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OrgUserPreference_clientPreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -75728,16 +75725,13 @@ func (ec *executionContext) _OrgUserPreference(ctx context.Context, sel ast.Sele
 		case "clientPreference":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._OrgUserPreference_clientPreference(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 

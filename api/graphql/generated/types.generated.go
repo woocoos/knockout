@@ -2694,16 +2694,6 @@ func (ec *executionContext) marshalNClientPreference2githubᚗcomᚋwoocoosᚋkn
 	return ec._ClientPreference(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, sel ast.SelectionSet, v *types.ClientPreference) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._ClientPreference(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNClientPreferenceInput2githubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, v interface{}) (types.ClientPreference, error) {
 	res, err := ec.unmarshalInputClientPreferenceInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2940,6 +2930,13 @@ func (ec *executionContext) marshalOClientPreference2ᚕgithubᚗcomᚋwoocoos�
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOClientPreference2ᚖgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreference(ctx context.Context, sel ast.SelectionSet, v *types.ClientPreference) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ClientPreference(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOClientPreferenceInput2ᚕgithubᚗcomᚋwoocoosᚋknockoutᚋcodegenᚋentgenᚋtypesᚐClientPreferenceᚄ(ctx context.Context, v interface{}) ([]types.ClientPreference, error) {
