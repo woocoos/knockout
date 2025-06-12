@@ -222,7 +222,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return nil, status.ErrUserOrPWD
 	}
 	if ui.Edges.User.Status == types.UserStatusLocked {
-		ctx.Status(http.StatusBadRequest)
+		ctx.Status(http.StatusAccepted)
 		return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
 	}
 	// 判断密码是否过期
@@ -240,6 +240,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
 		// 若错误次数大于验证码应该出现的次数，则前端展示验证码
 		if req.CaptchaId == "" || req.Captcha == "" {
+			ctx.Status(http.StatusAccepted)
 			return &LoginResponse{CallbackUrl: callBackUrlCaptcha}, nil
 		}
 		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
@@ -262,6 +263,8 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return nil, errors.New("user not allowed to login")
 	}
 
+	// 清除登录失败次数缓存
+	s.logFailHandler(ctx, req.Username, true)
 	if profile.MfaEnabled {
 		return s.mfaPrepare(ctx, profile)
 	}
@@ -271,7 +274,6 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	}
 
 	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
-	s.logFailHandler(ctx, req.Username, true)
 	return s.loginToken(ctx, pwd.UserID)
 }
 
@@ -322,6 +324,7 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 				},
 			}
 			_ = s.postAlerts(ctx, params)
+			ctx.Status(http.StatusAccepted)
 			return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
 		}
 		return nil, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
@@ -594,7 +597,7 @@ func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*
 	}
 
 	// no need use transaction
-	err = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
 	return s.loginToken(ctx, profile.UserID)
 }
 
@@ -637,10 +640,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 		if err != nil {
 			return err
 		}
-		err = updateLastLogin(ctx, tx.UserLoginProfile, uid)
-		if err != nil {
-			return err
-		}
+		_ = updateLastLogin(ctx, tx.UserLoginProfile, uid)
 		s.cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
@@ -649,6 +649,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 
 func (s *ServerImpl) resetPasswordPrepare(ctx *gin.Context, profile *ent.UserLoginProfile) (res *LoginResponse, err error) {
 	sid := uuid.New().String()
+	ctx.Status(http.StatusAccepted)
 	res = &LoginResponse{
 		CallbackUrl: callBackUrlResetPassword,
 		StateToken:  createStateToken(sid, s.Options),
@@ -665,6 +666,7 @@ func (s *ServerImpl) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile)
 		return nil, errors.New("mfa not active")
 	}
 	sid := uuid.New().String()
+	ctx.Status(http.StatusAccepted)
 	res = &LoginResponse{
 		CallbackUrl: callBackUrlMFA,
 		StateToken:  createStateToken(sid, s.Options),
@@ -794,11 +796,11 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 			return res, nil
 		} else {
 			// 正常登录，更新设备信息
-			s.db.UserDevice.Update().Where(
-				userdevice.DeviceUID(req.DeviceInfo.DeviceUid),
-				userdevice.UserID(profile.UserID),
-			).SetUpdatedBy(profile.UserID).SetDeviceModel(req.DeviceInfo.DeviceModel).SetDeviceName(req.DeviceInfo.DeviceName).
-				SetAppVersion(req.DeviceInfo.AppVersion).SetSystemVersion(req.DeviceInfo.SystemVersion).Exec(ctx)
+			ud, _ := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID), userdevice.DeviceUID(req.DeviceInfo.DeviceUid)).Only(ctx)
+			if ud != nil {
+				_ = s.db.UserDevice.UpdateOne(ud).SetUpdatedBy(profile.UserID).SetDeviceModel(req.DeviceInfo.DeviceModel).SetDeviceName(req.DeviceInfo.DeviceName).
+					SetAppVersion(req.DeviceInfo.AppVersion).SetSystemVersion(req.DeviceInfo.SystemVersion).Exec(ctx)
+			}
 		}
 	}
 	return &CheckDeviceResponse{VerifyDevice: false}, nil
@@ -875,7 +877,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	// no need use transaction
-	err = updateLastLogin(ctx, s.db.UserLoginProfile, uid)
+	_ = updateLastLogin(ctx, s.db.UserLoginProfile, uid)
 	loginResp, err := s.loginToken(ctx, uid)
 	if err != nil {
 		return nil, err
@@ -934,7 +936,7 @@ func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) 
 }
 
 func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, error) {
-	usr := s.db.User.GetX(ctx, uid)
+	usr := s.db.User.GetX(entcache.Skip(ctx), uid)
 
 	tid, tstr, err := createToken(strconv.Itoa(uid), s.Options, false)
 	if err != nil {

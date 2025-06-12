@@ -9,8 +9,10 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/security"
@@ -183,6 +185,14 @@ func Test_CreateToken(t *testing.T) {
 		panic(err)
 	}
 	fmt.Println(token)
+}
+
+func Test_CreateStateToken(t *testing.T) {
+	sid := uuid.New().String()
+	fmt.Println("sid:" + sid)
+	token := createStateToken(sid, Options{StateTokenTTL: 20 * time.Minute, StateTokenSecret: "setret"})
+	fmt.Println("token:" + token)
+	assert.NotEqual(t, "", token)
 }
 
 func (ts *loginFlowSuite) Test_AuthFail() {

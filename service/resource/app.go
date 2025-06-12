@@ -400,6 +400,7 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 	if !has {
 		return nil, fmt.Errorf("role not exist")
 	}
+	// TODO 更新组织角色的信息
 	return ent.FromContext(ctx).AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
 }
 
