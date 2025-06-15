@@ -400,8 +400,23 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 	if !has {
 		return nil, fmt.Errorf("role not exist")
 	}
-	// TODO 更新组织角色的信息
-	return ent.FromContext(ctx).AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
+	// 更新应用角色
+	r, err := client.AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 查找授权的组织角色
+	ors, err := client.OrgRole.Query().Where(orgrole.AppRoleID(r.ID)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, or := range ors {
+		err = or.Update().SetName(r.Name).SetComments(r.Comments).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return r, nil
 }
 
 func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {

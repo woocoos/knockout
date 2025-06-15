@@ -97,12 +97,12 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 			date = up.CreatedAt
 		}
 		// 判断密码是否过期
-		effectD, err := parseCustomDuration(p.Options.EffectiveDays)
+		effectDur, err := parseCustomDuration(p.Options.EffectiveDays)
 		if err != nil {
 			logger.Error("parse duration error", zap.Error(err))
 			continue
 		}
-		if date.Add(effectD).Before(time.Now()) {
+		if date.Add(effectDur).Before(time.Now()) {
 			// 密码已过期
 			if up.Status == typex.SimpleStatusActive {
 				// 密码过期设置密码状态为disabled
@@ -149,7 +149,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("parse duration error", zap.Error(err))
 					continue
 				}
-				if isSameDate(date.Add(effectD), time.Now().Add(d)) {
+				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
 					// 发送邮件通知客户密码已超过多久没改，需修改密码
 					tid, err := p.getUserTopOrgId(ctx, up.UserID)
 					if err != nil {
@@ -161,7 +161,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 						logger.Error("get user info error", zap.Error(err))
 						continue
 					}
-					months := (effectD.Hours() - d.Hours()) / 24 / 30
+					months := (effectDur.Hours() - d.Hours()) / 24 / 30
 					params := msg.PostableAlerts{
 						{
 							Annotations: map[string]string{
@@ -191,7 +191,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("parse duration error", zap.Error(err))
 					continue
 				}
-				if isSameDate(date.Add(effectD), time.Now().Add(d)) {
+				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
 					// 发送邮件通知客户密码即将过期，尽快修改密码，否则到期无法登录
 					tid, err := p.getUserTopOrgId(ctx, up.UserID)
 					if err != nil {

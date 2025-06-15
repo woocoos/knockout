@@ -2,6 +2,8 @@ namespace: default
 appName: adminx
 version: 0.0.1
 development: true
+includeFiles:
+#  - "etc/local.yaml"
 log:
   withTraceID: true
   traceIDKey: "traceId"
@@ -134,7 +136,7 @@ adminx:
 
 job:
   password:
-    cronSpec: "0 0 8 * * ?"
+    cronSpec: "0 05 16 * * ?"
     # 密码有效天数
     effectiveDays: "365d"
     # 常规提醒修改密码，离到期日还比较长
