@@ -136,6 +136,9 @@ adminx:
 
 job:
   password:
+    # 忽略的凭证，不处理过期
+    ignoreIdentities:
+      - ""
     cronSpec: "0 05 16 * * ?"
     # 密码有效天数
     effectiveDays: "365d"

@@ -10,6 +10,8 @@ development: true
 #    client:
 #      dialOption:
 #        - timeout: 5s
+includeFiles:
+#  - "etc/local.yaml"
 authz:
   expireTime: 10s
   autoSave: false

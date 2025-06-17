@@ -13,6 +13,7 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useraddr"
+	"github.com/woocoos/knockout/ent/useridentity"
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
@@ -21,7 +22,9 @@ import (
 )
 
 type PwdOptions struct {
-	CronSpec string `yaml:"cronSpec" json:"cronSpec"`
+	// 白名单，不处理密码过期用户
+	IgnoreIdentities []string `yaml:"ignoreIdentities" json:"ignoreIdentities"`
+	CronSpec         string   `yaml:"cronSpec" json:"cronSpec"`
 	// 密码有效天数
 	EffectiveDays string `yaml:"cronSpec" json:"effectiveDays"`
 	// 常规提醒修改密码，离到期日还比较长
@@ -77,6 +80,10 @@ func (p *PasswordExpiredJob) JobFunc() {
 	// 检测密码
 	ups, err := p.db.UserPassword.Query().WithUser(func(query *ent.UserQuery) {
 		query.Where(user.StatusEQ(types.UserStatusActive))
+		if p.Options.IgnoreIdentities != nil && len(p.Options.IgnoreIdentities) > 0 {
+			// 忽略指定凭证
+			query.Where(user.HasIdentitiesWith(useridentity.CodeNotIn(p.Options.IgnoreIdentities...)))
+		}
 	}).All(ctx)
 	if err != nil {
 		logger.Error("query user password error", zap.Error(err))

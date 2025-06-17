@@ -222,8 +222,9 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return nil, status.ErrUserOrPWD
 	}
 	if ui.Edges.User.Status == types.UserStatusLocked {
-		ctx.Status(http.StatusAccepted)
-		return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
+		ctx.Status(http.StatusBadRequest)
+		// TODO需给前端提供错误代码来展示弹框
+		return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, fmt.Errorf("账号已锁定，请联系客服修改密码解除锁定")
 	}
 	// 判断密码是否过期
 	has, err := s.db.UserPassword.Query().Where(
@@ -231,9 +232,11 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusDisabled),
 	).Exist(entcache.Skip(ctx))
 	if err != nil {
+		ctx.Status(http.StatusBadRequest)
 		return nil, err
 	}
 	if has {
+		ctx.Status(http.StatusBadRequest)
 		return nil, fmt.Errorf("密码已过期，请重置密码或联系客服修改密码恢复")
 	}
 	// 错误次数过多需要验证码
@@ -324,8 +327,9 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 				},
 			}
 			_ = s.postAlerts(ctx, params)
-			ctx.Status(http.StatusAccepted)
-			return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, nil
+			ctx.Status(http.StatusBadRequest)
+			// TODO需给前端提供错误代码来展示弹框
+			return &LoginResponse{CallbackUrl: callBackUrlUserLocked}, fmt.Errorf("账号已锁定，请联系客服修改密码解除锁定")
 		}
 		return nil, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
 	}
