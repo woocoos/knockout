@@ -11,6 +11,7 @@ import (
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/internal/status"
 )
 
 type Server struct {
@@ -47,6 +48,8 @@ func (s *Server) buildWebServer(cnf *conf.AppConfiguration) *web.Server {
 		web.WithGracefulStop(),
 		otelweb.RegisterMiddleware(),
 	)
+	// 设置错误映射
+	handler.SetErrorMap(status.ErrorCodeMap, nil)
 	// default group is '/'
 	dr := s.webServer.Router().FindGroup("/").Group
 	if mdl, ok := s.webServer.HandlerManager().GetMiddleware(web.GetMiddlewareKey("/", "jwt")); ok {

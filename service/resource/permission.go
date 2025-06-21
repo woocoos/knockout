@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/log"
@@ -27,6 +28,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/security"
 	"strconv"
 	"strings"
@@ -936,7 +938,7 @@ func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, a
 		return false, err
 	}
 	if !has {
-		return false, fmt.Errorf("invalid permission")
+		return false, &gin.Error{Type: status.ErrInvalidPermission}
 	}
 	rule := []any{
 		strconv.Itoa(uid),
@@ -966,7 +968,7 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, fmt.Errorf("invalid permission")
+		return false, &gin.Error{Type: status.ErrInvalidPermission}
 	}
 	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
 }
@@ -975,7 +977,7 @@ func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permissio
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, fmt.Errorf("invalid permission")
+		return false, &gin.Error{Type: status.ErrInvalidPermission}
 	}
 	return s.doCheckPermission(ctx, userID, orgID, parts[1], parts[0])
 }

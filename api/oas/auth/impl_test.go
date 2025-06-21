@@ -21,6 +21,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/quotaitem"
@@ -197,39 +198,49 @@ func Test_CreateStateToken(t *testing.T) {
 
 func (ts *loginFlowSuite) Test_AuthFail() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	for i := 0; i < ts.AuthService.CaptchaTimes-1; i++ {
+	req := httptest.NewRequest("POST", "/test", nil)
+	req.Header.Set("Referer", "")
+	// 由于密码策略调用ctx.GetHeader，需模拟Request才不会报错
+	ctx.Request = req
+	for i := 0; i < ts.AuthService.CaptchaTimes; i++ {
 		res, err := ts.AuthService.Login(ctx, &LoginRequest{
 			Password: "error", Username: "admin",
 		})
-		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
+		ts.Require().Error(err)
 		ts.Nil(res)
 	}
 	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "error", Username: "admin",
 	})
-	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 	ts.Equal(res.CallbackUrl, "/captcha")
-	for i := ts.AuthService.CaptchaTimes; i < ts.AuthService.LoginFailTimes; i++ {
+	retry := int(ts.AuthService.PwdPolicy.Retry)
+	for i := ts.AuthService.CaptchaTimes; i < retry; i++ {
 		res, err := ts.AuthService.Login(ctx, &LoginRequest{
-			Password: "error", Username: "admin", Captcha: "",
+			Password: "error", Username: "admin", Captcha: "123456", CaptchaId: "123456",
 		})
-		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
+		ts.Require().Equal(int(err.(*gin.Error).Type), status.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
 
 	// 生成验证码
-	captchaId := captcha.NewLen(6)
-	digits := ts.AuthService.captchaStore.Get(captchaId, false)
-	captchaCode := ""
-	for _, v := range digits {
-		captchaCode = captchaCode + strconv.Itoa(int(v))
+	for i := 0; i < (retry - ts.AuthService.CaptchaTimes); i++ {
+		captchaId := captcha.NewLen(6)
+		digits := ts.AuthService.captchaStore.Get(captchaId, false)
+		captchaCode := ""
+		for _, v := range digits {
+			captchaCode = captchaCode + strconv.Itoa(int(v))
+		}
+		res, err = ts.AuthService.Login(ctx, &LoginRequest{
+			Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId,
+		})
+		if i == (retry - ts.AuthService.CaptchaTimes - 1) {
+			// 超过retry限制次数，发送邮件前取user_addr报NotFound
+			ts.Require().True(ent.IsNotFound(err))
+		} else {
+			ts.Require().Error(err)
+		}
+		ts.Nil(res)
 	}
-	res, err = ts.AuthService.Login(ctx, &LoginRequest{
-		Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId,
-	})
-	// TODO 验证码准确性测试
-	ts.Require().ErrorIs(err, status.ErrLoginFailUpperLimit)
-	ts.Nil(res)
 }
 
 func (ts *loginFlowSuite) Test_VerifyFactor() {

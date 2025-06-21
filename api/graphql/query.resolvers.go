@@ -508,7 +508,7 @@ func (r *queryResolver) ParentOrgUsers(ctx context.Context, orgID int, after *en
 	}
 	return r.client.User.Query().Where(
 		user.HasOrgUserWith(orguser.OrgID(tid)),
-		user.StatusEQ(types.UserStatusActive),
+		user.StatusIn(types.UserStatusActive, types.UserStatusLocked),
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))
