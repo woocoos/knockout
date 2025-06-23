@@ -834,7 +834,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		var captchaCode string
 		captchaKey := verifyDeviceCachePrefix + req.CaptchaId
 		if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
-			return nil, err
+			return nil, &gin.Error{Type: status.ErrCaptchaInvalid}
 		}
 		if captchaCode != req.Captcha {
 			return nil, &gin.Error{Type: status.ErrCaptchaNotMatch}
@@ -1421,7 +1421,7 @@ func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerify
 	var captchaCode string
 	captchaKey := forgetPwdBeginCachePrefix + req.CaptchaId
 	if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
-		return nil, err
+		return nil, &gin.Error{Type: status.ErrCaptchaInvalid}
 	}
 	if captchaCode != req.Captcha {
 		return nil, &gin.Error{Type: status.ErrCaptchaNotMatch}

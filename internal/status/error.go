@@ -1,7 +1,5 @@
 package status
 
-import "errors"
-
 const (
 	ErrUserNameOrPassword     = 10000
 	ErrUserHasLocked          = 10001
@@ -25,17 +23,18 @@ const (
 	ErrClientIdOrClientSecret = 10019
 	ErrFileIdentityIsNull     = 10020
 	ErrUnsupportedVerify      = 10021
+	ErrCaptchaInvalid         = 10022
 )
 
 var (
-	ErrMismatchPWD = errors.New("password not match")
-	ErrorCodeMap   = map[int]string{
+	ErrorCodeMap = map[int]string{
 		ErrUserNameOrPassword:     "用户名或密码错误",
 		ErrPasswordNotMatch:       "密码错误",
 		ErrOldPasswordNotMatch:    "旧密码错误",
 		ErrUserHasLocked:          "账号已锁定，请联系客服修改密码解除锁定",
 		ErrPasswordExpired:        "密码已过期，请重置密码或联系客服修改密码恢复",
 		ErrCaptchaNotMatch:        "验证码错误",
+		ErrCaptchaInvalid:         "验证码失效",
 		ErrMfaInvalidCode:         "身份验证码错误",
 		ErrUserCanNotLogin:        "账号禁止登录",
 		ErrInvalidToken:           "无效的令牌",
