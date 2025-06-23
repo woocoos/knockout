@@ -693,10 +693,17 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	}
 	// 生成验证码
 	captchaId := captcha.NewLen(6)
-	digits := s.captchaStore.Get(captchaId, false)
+	digits := s.captchaStore.Get(captchaId, true)
 	captchaCode := ""
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
+	}
+	// 保存到redis
+	captchaId = uuid.New().String()
+	captchaKey := verifyDeviceCachePrefix + captchaId
+	err = s.cache.Set(ctx, captchaKey, captchaCode, cache.WithTTL(s.CaptchaExpire))
+	if err != nil {
+		return "", err
 	}
 	usr, addr, err := s.getUserInfo(ctx, uid)
 	if err != nil {
@@ -824,7 +831,12 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	}
 	if req.Kind == KindEmail {
 		// 验证验证码
-		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
+		var captchaCode string
+		captchaKey := verifyDeviceCachePrefix + req.CaptchaId
+		if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
+			return nil, err
+		}
+		if captchaCode != req.Captcha {
 			return nil, &gin.Error{Type: status.ErrCaptchaNotMatch}
 		}
 	} else if req.Kind == KindMfa {
@@ -1340,10 +1352,17 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	}
 	// 生成验证码
 	captchaId := captcha.NewLen(6)
-	digits := s.captchaStore.Get(captchaId, false)
+	digits := s.captchaStore.Get(captchaId, true)
 	captchaCode := ""
 	for _, v := range digits {
 		captchaCode = captchaCode + strconv.Itoa(int(v))
+	}
+	// 保存到redis
+	captchaId = uuid.New().String()
+	captchaKey := forgetPwdBeginCachePrefix + captchaId
+	err = s.cache.Set(ctx, captchaKey, captchaCode, cache.WithTTL(s.CaptchaExpire))
+	if err != nil {
+		return "", err
 	}
 	usr, addr, err := s.getUserInfo(ctx, uid)
 	if err != nil {
@@ -1399,7 +1418,12 @@ func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerify
 		return nil, err
 	}
 	// 验证验证码
-	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
+	var captchaCode string
+	captchaKey := forgetPwdBeginCachePrefix + req.CaptchaId
+	if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
+		return nil, err
+	}
+	if captchaCode != req.Captcha {
 		return nil, &gin.Error{Type: status.ErrCaptchaNotMatch}
 	}
 	sid := uuid.New().String()
