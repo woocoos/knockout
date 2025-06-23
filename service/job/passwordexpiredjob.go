@@ -6,6 +6,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/msg"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -113,9 +114,10 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 			// 密码已过期
 			if up.Status == typex.SimpleStatusActive {
 				// 密码过期设置密码状态为disabled
-				err = p.db.UserPassword.UpdateOneID(up.ID).SetStatus(typex.SimpleStatusDisabled).Exec(ctx)
+				err = p.db.UserPassword.UpdateOneID(up.ID).SetStatus(typex.SimpleStatusDisabled).SetUpdatedBy(up.UserID).Exec(ctx)
 				if err != nil {
 					logger.Error("update user password error", zap.Error(err))
+					continue
 				}
 				// 发送邮件通知用户密码已过期，需重置密码能够登录
 				tid, err := p.getUserTopOrgId(ctx, up.UserID)
@@ -267,7 +269,7 @@ func (p *PasswordExpiredJob) getUserTopOrgId(ctx context.Context, uid int) (int,
 		QueryOrg().Unique(false).Where(
 		org.KindEQ(org.KindRoot),
 		org.StatusEQ(typex.SimpleStatusActive),
-	).Order(ent.Desc(org.FieldPath)).First(ctx)
+	).Order(ent.Desc(org.FieldPath)).First(schemax.SkipTenantPrivacy(ctx))
 	if err != nil {
 		return 0, err
 	}
