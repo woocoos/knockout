@@ -134,15 +134,15 @@ adminx:
     # 密码错误多少次出现验证码，最大5次，0代表不出现验证码
     captchaTimes: 3
 
-job:
-  password:
-    # 忽略的凭证，不处理过期
-    ignoreIdentities:
-      - ""
-    cronSpec: "0 05 16 * * ?"
-    # 密码有效天数
-    effectiveDays: "365d"
-    # 常规提醒修改密码，离到期日还比较长
-    remindTimePeriod: "270d|180d|90d|30d"
-    # 即将到期提修改密码
-    expiringTimePeriod: "14d|7d|3d|1d"
+#job:
+#  password:
+#    # 忽略的凭证，不处理过期
+#    ignoreIdentities:
+#      - "deo_admin"
+#    cronSpec: "0 */2 * * * *"
+#    # 密码有效天数
+#    effectiveDays: "365d"
+#    # 常规提醒修改密码，离到期日还比较长
+#    remindTimePeriod: "270d|180d|90d|30d"
+#    # 即将到期提修改密码
+#    expiringTimePeriod: "14d|7d|3d|1d"

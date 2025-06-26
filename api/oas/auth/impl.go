@@ -79,18 +79,19 @@ const (
 // Options is the configuration of AuthServer in the `auth` section.
 type Options struct {
 	// the path key of cache config, default `redis`
-	CacheDriverName   string        `json:"cacheDriverName"`
-	CaptchaCollectNum int           `json:"captchaCollectNum"` // captcha memory store collect num
-	CaptchaExpire     time.Duration `json:"captchaExpire"`     // captcha expire time
-	CaptchaLength     int           `json:"captchaLength"`     // captcha length
-	CaptchaTimes      int           `json:"captchaTimes"`      // if login fail times, captcha will force show
-	CaptchaTTL        time.Duration `json:"captchaTTL"`        // captcha ttl
-	LoginFailTimes    int           `json:"loginFailTimes"`    // if login fail times, captcha will force show
-	LoginFailLockTime time.Duration `json:"loginFailLockTime"` // lock time while login upper to max fail times
-	StateTokenTTL     time.Duration `json:"stateTokenTTL"`     // state token ttl
-	StateTokenSecret  string        `json:"stateTokenSecret"`  // state token secret
-	SpmTTL            time.Duration `json:"spmTTL"`            // spm ttl
-	JWT               struct {
+	CacheDriverName    string        `json:"cacheDriverName"`
+	CaptchaCollectNum  int           `json:"captchaCollectNum"`  // captcha memory store collect num
+	CaptchaExpire      time.Duration `json:"captchaExpire"`      // captcha expire time
+	CaptchaLength      int           `json:"captchaLength"`      // captcha length
+	CaptchaTimes       int           `json:"captchaTimes"`       // if login fail times, captcha will force show
+	CaptchaTTL         time.Duration `json:"captchaTTL"`         // captcha ttl
+	LoginFailTimes     int           `json:"loginFailTimes"`     // if login fail times, captcha will force show
+	LoginFailLockTime  time.Duration `json:"loginFailLockTime"`  // lock time while login upper to max fail times
+	StateTokenTTL      time.Duration `json:"stateTokenTTL"`      // state token ttl
+	StateTokenSecret   string        `json:"stateTokenSecret"`   // state token secret
+	SpmTTL             time.Duration `json:"spmTTL"`             // spm ttl
+	DefaultBoundDevice bool          `json:"defaultBoundDevice"` // The device is bound by default when logging in for the first time
+	JWT                struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
 		PrivateKey      string        `json:"privateKey"`
@@ -152,14 +153,15 @@ func NewServerImpl(cnf *conf.AppConfiguration) *ServerImpl {
 
 func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 	s.Options = Options{
-		CacheDriverName:   "redis",
-		CaptchaCollectNum: 1000,
-		CaptchaExpire:     time.Minute * 2,
-		CaptchaLength:     6,
-		CaptchaTimes:      3,
-		LoginFailTimes:    10,
-		LoginFailLockTime: time.Hour * 24,
-		SpmTTL:            time.Second * 5,
+		CacheDriverName:    "redis",
+		CaptchaCollectNum:  1000,
+		CaptchaExpire:      time.Minute * 2,
+		CaptchaLength:      6,
+		CaptchaTimes:       3,
+		LoginFailTimes:     10,
+		LoginFailLockTime:  time.Hour * 24,
+		SpmTTL:             time.Second * 5,
+		DefaultBoundDevice: false,
 		PwdPolicy: OptionsPwdPolicy{
 			Length:               6,
 			IncludeElement:       3,
@@ -771,8 +773,35 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 		if err != nil && !ent.IsNotFound(err) {
 			return nil, err
 		}
+		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		// 判断是否有设备绑定，如果允许默认绑定则无需验证
+		if !has && s.DefaultBoundDevice {
+			// 未绑定设备，默认直接绑定
+			ctx1 := securityX.WithContext(ctx, securityX.NewGenericPrincipalByClaims(jwt.MapClaims{
+				"sub": strconv.Itoa(uid),
+			}))
+			err = s.db.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
+				DeviceName:    &req.DeviceInfo.DeviceName,
+				DeviceModel:   &req.DeviceInfo.DeviceModel,
+				DeviceUID:     req.DeviceInfo.DeviceUid,
+				SystemName:    &req.DeviceInfo.SystemName,
+				SystemVersion: &req.DeviceInfo.SystemVersion,
+				AppVersion:    &req.DeviceInfo.AppVersion,
+				Comments:      &req.DeviceInfo.Comments,
+			}).SetStatus(typex.SimpleStatusActive).SetUserID(uid).SetUpdatedBy(profile.UserID).Exec(ctx1)
+			if err != nil {
+				return nil, err
+			}
+			return &CheckDeviceResponse{VerifyDevice: false}, nil
+		}
 		// 验证设备
-		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID), userdevice.DeviceUID(req.DeviceInfo.DeviceUid)).Exist(ctx)
+		has, err = s.db.UserDevice.Query().Where(
+			userdevice.UserID(profile.UserID),
+			userdevice.DeviceUID(req.DeviceInfo.DeviceUid),
+		).Exist(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -829,10 +858,10 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	if err = s.cache.Get(ctx, cacheKey, &uid); err != nil {
 		return nil, err
 	}
+	captchaKey := verifyDeviceCachePrefix + req.CaptchaId
 	if req.Kind == KindEmail {
 		// 验证验证码
 		var captchaCode string
-		captchaKey := verifyDeviceCachePrefix + req.CaptchaId
 		if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
 			return nil, &gin.Error{Type: status.ErrCaptchaInvalid}
 		}
@@ -927,6 +956,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	_ = s.cache.Del(ctx, cacheKey)
+	_ = s.cache.Del(ctx, captchaKey)
 	return loginResp, nil
 }
 
@@ -1433,6 +1463,7 @@ func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerify
 		return nil, err
 	}
 	s.cache.Del(ctx, cacheKey)
+	s.cache.Del(ctx, captchaKey)
 	return &ForgetPwdBeginResponse{
 		StateToken:    stateToken,
 		StateTokenTTL: s.Options.StateTokenTTL.Seconds(),
