@@ -65,6 +65,7 @@ const (
 	forgetPwdEmailCachePrefix  = "forgetpwdemail:"
 	forgetPwdVerifyCachePrefix = "forgetpwdverify:"
 	verifyDeviceCachePrefix    = "verifyDevice:"
+	isLogonCachePrefix         = "isLogon:"
 
 	spmKeyPrefix = "spm:"
 
@@ -284,7 +285,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return s.resetPasswordPrepare(ctx, profile)
 	}
 
-	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	_ = s.updateLastLogin(ctx, profile.UserID)
 	return s.loginToken(ctx, pwd.UserID)
 }
 
@@ -305,6 +306,8 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			if err != nil {
 				return nil, err
 			}
+			// 账户锁定，清除失败次数缓存
+			_, _ = s.logFailHandler(ctx, req.Username, true)
 			// 发送邮件给指定用户，指定的用户在邮件模板配置
 			usr, addr, err := s.getUserInfo(ctx, userID)
 			if err != nil {
@@ -557,7 +560,7 @@ func (s *ServerImpl) FingerprintLogin(ctx *gin.Context, req *FingerprintLoginReq
 	if !profile.CanLogin {
 		return nil, &gin.Error{Type: status.ErrUserCanNotLogin}
 	}
-	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	_ = s.updateLastLogin(ctx, profile.UserID)
 	return s.loginToken(ctx, uid)
 }
 
@@ -608,7 +611,7 @@ func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*
 	}
 
 	// no need use transaction
-	_ = updateLastLogin(ctx, s.db.UserLoginProfile, profile.UserID)
+	_ = s.updateLastLogin(ctx, profile.UserID)
 	return s.loginToken(ctx, profile.UserID)
 }
 
@@ -651,7 +654,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 		if err != nil {
 			return err
 		}
-		_ = updateLastLogin(ctx, tx.UserLoginProfile, uid)
+		_ = s.updateLastLogin(ctx, uid)
 		s.cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
@@ -768,21 +771,6 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 	}
 	// 设备验证：开启设备验证及传递了deviceId
 	if profile.VerifyDevice && req.DeviceInfo.DeviceUid != "" {
-		// 查询设备绑定数
-		q, err := s.db.Quota.Query().Where(
-			quota.TenantIDIsNil(),
-			quota.UserID(profile.UserID),
-			quota.HasQuotaItemWith(
-				quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
-			),
-		).Only(ctx)
-		if err != nil && !ent.IsNotFound(err) {
-			return nil, err
-		}
-		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID)).Exist(ctx)
-		if err != nil {
-			return nil, err
-		}
 		// 判断是否忽略账户
 		excludeAccounts := s.VerifyDeviceParams.ExcludeAccounts
 		if excludeAccounts != nil && len(excludeAccounts) > 0 {
@@ -799,8 +787,15 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 				}
 			}
 		}
-		// 判断是否有设备绑定，如果允许默认绑定则无需验证
-		if !has && s.VerifyDeviceParams.DefaultBound {
+		has, err := s.db.UserDevice.Query().Where(userdevice.UserID(profile.UserID)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		// 如果没有设备绑定，允许默认绑定或非第一次登录则无需验证设备
+		key := isLogonCachePrefix + strconv.Itoa(uid)
+		var isLogon bool
+		_ = s.cache.Get(ctx, key, &isLogon)
+		if !has && (s.VerifyDeviceParams.DefaultBound || isLogon) {
 			// 未绑定设备，默认直接绑定
 			ctx1 := securityX.WithContext(ctx, securityX.NewGenericPrincipalByClaims(jwt.MapClaims{
 				"sub": strconv.Itoa(uid),
@@ -818,6 +813,17 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 				return nil, err
 			}
 			return &CheckDeviceResponse{VerifyDevice: false}, nil
+		}
+		// 查询设备绑定数
+		q, err := s.db.Quota.Query().Where(
+			quota.TenantIDIsNil(),
+			quota.UserID(profile.UserID),
+			quota.HasQuotaItemWith(
+				quotaitem.Code(string(quotaService.ItemCodeUserDevice)),
+			),
+		).Only(ctx)
+		if err != nil && !ent.IsNotFound(err) {
+			return nil, err
 		}
 		// 验证设备
 		has, err = s.db.UserDevice.Query().Where(
@@ -943,7 +949,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	// no need use transaction
-	_ = updateLastLogin(ctx, s.db.UserLoginProfile, uid)
+	_ = s.updateLastLogin(ctx, uid)
 	loginResp, err := s.loginToken(ctx, uid)
 	if err != nil {
 		return nil, err
@@ -994,7 +1000,21 @@ func (s *ServerImpl) getUserInfo(ctx *gin.Context, uid int) (*ent.User, *ent.Use
 	return usr, addr, nil
 }
 
-func updateLastLogin(ctx *gin.Context, pc *ent.UserLoginProfileClient, uid int) error {
+func (s *ServerImpl) updateLastLogin(ctx *gin.Context, uid int) error {
+	pc := s.db.UserLoginProfile
+	// 判断是否有ip及loginAt来确定是否首次登录
+	profile, err := pc.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	key := isLogonCachePrefix + strconv.Itoa(uid)
+	if profile.LastLoginIP != "" && !profile.LastLoginAt.IsZero() {
+		// 有值，登录过
+		err = s.cache.Set(ctx, key, true, cache.WithTTL(time.Minute*1))
+	} else {
+		err = s.cache.Set(ctx, key, false, cache.WithTTL(time.Minute*1))
+	}
+	//
 	cip := ctx.ClientIP()
 	// no mater what, update last login time and ip
 	return pc.Update().Where(userloginprofile.UserID(uid)).
