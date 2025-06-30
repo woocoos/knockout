@@ -489,6 +489,10 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	if err != nil {
 		return err
 	}
+	topOrg, err := s.GetTopOrg(ctx, tid)
+	if err != nil {
+		return err
+	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -500,7 +504,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 				Labels: map[string]string{
 					"receiver":  "email",
 					"alertname": "ChangeUserPassword",
-					"tenant":    strconv.Itoa(tid),
+					"tenant":    strconv.Itoa(topOrg.ID),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},

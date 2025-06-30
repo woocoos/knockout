@@ -1400,6 +1400,40 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		if err != nil {
 			return err
 		}
+		usr, addr, err := s.getUserInfo(ctx, uid)
+		if err != nil {
+			return err
+		}
+		if addr.Email == "" {
+			return &gin.Error{Type: status.ErrEmailEmpty}
+		}
+		uorg, err := s.GetUserRootOrg(ctx, usr.ID)
+		if err != nil {
+			return err
+		}
+		tid, err := s.GetTopOrgId(uorg)
+		if err != nil {
+			return err
+		}
+		// 增加重置密码邮件通知
+		params := msg.PostableAlerts{
+			{
+				Annotations: map[string]string{
+					"to":            addr.Email,
+					"displayName":   usr.DisplayName,
+					"principalName": usr.PrincipalName,
+				},
+				Alert: &msg.Alert{
+					Labels: map[string]string{
+						"receiver":  "email",
+						"alertname": "ChangeUserPassword",
+						"tenant":    strconv.Itoa(tid),
+						"timestamp": strconv.Itoa(int(time.Now().Unix())),
+					},
+				},
+			},
+		}
+		_ = s.postAlerts(ctx, params)
 		s.cache.Del(ctx, cacheKey) // lint:ignore
 		return nil
 	})
