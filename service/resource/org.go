@@ -489,7 +489,11 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	if err != nil {
 		return err
 	}
-	topOrg, err := s.GetTopOrg(ctx, tid)
+	curOrg, err := s.Client.Org.Get(ctx, tid)
+	if err != nil {
+		return err
+	}
+	topOID, err := s.getTopOrgIdByPath(curOrg.Path)
 	if err != nil {
 		return err
 	}
@@ -504,7 +508,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 				Labels: map[string]string{
 					"receiver":  "email",
 					"alertname": "ChangeUserPassword",
-					"tenant":    strconv.Itoa(topOrg.ID),
+					"tenant":    strconv.Itoa(topOID),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},
@@ -1056,6 +1060,15 @@ func (s *Service) GetOrg(ctx context.Context, orgID int) (*ent.Org, error) {
 		return o, nil
 	}
 	return s.GetOrg(ctx, o.ParentID)
+}
+
+func (s *Service) getTopOrgIdByPath(path string) (int, error) {
+	code := strings.Split(path, "/")[0]
+	oID, err := strconv.ParseInt(code, 36, 64)
+	if err != nil {
+		return 0, err
+	}
+	return int(oID), nil
 }
 
 func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
