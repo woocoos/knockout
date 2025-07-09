@@ -91,6 +91,11 @@ type ForgetPwdVerifyMfaRequest struct {
 	StateToken string `binding:"required" json:"stateToken"`
 }
 
+// GetDomainRequest is the request object for (GET /org/domain)
+type GetDomainRequest struct {
+	OrgID int `binding:"required" json:"orgID"`
+}
+
 // GetPreSignUrlRequest is the request object for (POST /oss/presignurl)
 type GetPreSignUrlRequest struct {
 	// Bucket do not use the default identity,must be used with endpoint

@@ -31,7 +31,6 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
-	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/security"
 	"github.com/woocoos/knockout/service/resource"
 )
@@ -91,7 +90,14 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 		middleware.RegisterTokenSigner(),
 	)
 	// 设置错误映射
-	webHandler.SetErrorMap(status.ErrorCodeMap, nil)
+	if cnf.IsSet("adminx.errorCodeMap") {
+		errorCodeMap := map[int]string{}
+		err := cnf.Sub("adminx.errorCodeMap").Unmarshal(&errorCodeMap)
+		if err != nil {
+			panic(err)
+		}
+		webHandler.SetErrorMap(errorCodeMap, nil)
+	}
 	gqlSrv := handler.NewDefaultServer(NewSchema(s.resolver))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction

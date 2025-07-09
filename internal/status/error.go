@@ -1,5 +1,10 @@
 package status
 
+import (
+	"errors"
+	"github.com/gin-gonic/gin"
+)
+
 const (
 	ErrUserNameOrPassword     = 10000
 	ErrUserHasLocked          = 10001
@@ -27,29 +32,12 @@ const (
 )
 
 var (
-	ErrorCodeMap = map[int]string{
-		ErrUserNameOrPassword:     "用户名或密码错误",
-		ErrPasswordNotMatch:       "密码错误",
-		ErrOldPasswordNotMatch:    "旧密码错误",
-		ErrUserHasLocked:          "账号已锁定，请联系客服修改密码解除锁定",
-		ErrPasswordExpired:        "密码已过期，请重置密码或联系客服修改密码恢复",
-		ErrCaptchaNotMatch:        "验证码错误",
-		ErrCaptchaInvalid:         "验证码失效",
-		ErrMfaInvalidCode:         "身份验证码错误",
-		ErrUserCanNotLogin:        "账号禁止登录",
-		ErrInvalidToken:           "无效的令牌",
-		ErrPasswordDuplicate:      "新密码不能与最近一次使用的密码相同",
-		ErrMfaNotActive:           "MFA未激活",
-		ErrMfaDisable:             "MFA未启用",
-		ErrEmailEmpty:             "邮箱不存在",
-		ErrEmailVerify:            "未找到邮箱，请确认邮箱是否正确",
-		ErrInvalidPermission:      "无效的权限",
-		ErrOrgNotFound:            "组织未找到",
-		ErrNotLoginPermission:     "没有登录权限",
-		ErrInvalidSpm:             "无效的SPM",
-		ErrClientIdOrClientSecret: "the clientID or clientSecret is incorrect or the status is not active",
-		ErrFileIdentityIsNull:     "文件凭证不存在",
-		ErrUnsupportedVerify:      "不支持的验证方式",
-		ErrInvalidUser:            "账号验证错误",
-	}
+	ErrUndefined = errors.New("undefined error")
 )
+
+func CodeError(errCode gin.ErrorType) error {
+	return &gin.Error{
+		Type: errCode,
+		Err:  ErrUndefined,
+	}
+}

@@ -884,6 +884,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /org/domain:
+    get:
+      summary: Use this API to get domain
+      description: Use this API to get domain
+      tags:
+        - auth
+      operationId: getDomain
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orgID:
+                  type: integer
+              required:
+                - orgID
+      responses:
+        '200':
+          description: get domain successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   responses:
     UnauthorizedError:

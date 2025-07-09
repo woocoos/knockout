@@ -2,7 +2,6 @@ package resource
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/auth"
@@ -938,7 +937,7 @@ func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, a
 		return false, err
 	}
 	if !has {
-		return false, errors.New(status.ErrorCodeMap[status.ErrInvalidPermission])
+		return false, status.CodeError(status.ErrInvalidPermission)
 	}
 	rule := []any{
 		strconv.Itoa(uid),
@@ -968,7 +967,7 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, errors.New(status.ErrorCodeMap[status.ErrInvalidPermission])
+		return false, status.CodeError(status.ErrInvalidPermission)
 	}
 	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
 }
@@ -977,7 +976,7 @@ func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permissio
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, errors.New(status.ErrorCodeMap[status.ErrInvalidPermission])
+		return false, status.CodeError(status.ErrInvalidPermission)
 	}
 	return s.doCheckPermission(ctx, userID, orgID, parts[1], parts[0])
 }

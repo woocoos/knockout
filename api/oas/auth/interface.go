@@ -49,6 +49,9 @@ type AuthServer interface {
 	// ForgetPwdVerifyMfa verify the email to reset-password.
 	// (POST /forget-pwd/verify-mfa)
 	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
+	// GetDomain Use this API to get domain
+	// (GET /org/domain)
+	GetDomain(*gin.Context, *GetDomainRequest) (*Domain, error)
 	// GetPreSignUrl return the temporary authorization access url
 	// (POST /oss/presignurl)
 	GetPreSignUrl(*gin.Context, *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error)
@@ -161,6 +164,11 @@ func (UnimplementedAuthServer) ForgetPwdVerifyEmail(c *gin.Context, req *ForgetP
 
 func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwdVerifyMfaRequest) (_ *ForgetPwdBeginResponse, err error) {
 	err = fmt.Errorf("method ForgetPwdVerifyMfa not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) GetDomain(c *gin.Context, req *GetDomainRequest) (_ *Domain, err error) {
+	err = fmt.Errorf("method GetDomain not implemented")
 	return
 }
 
