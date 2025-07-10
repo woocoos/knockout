@@ -247,7 +247,7 @@ func wrapForgetPwdVerifyMfa(si AuthServer) func(c *gin.Context) {
 func wrapGetDomain(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req GetDomainRequest
-		if err := c.ShouldBind(&req); err != nil {
+		if err := c.ShouldBindQuery(&req); err != nil {
 			handler.AbortWithError(c, http.StatusBadRequest, err)
 			return
 		}

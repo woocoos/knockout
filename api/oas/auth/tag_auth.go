@@ -93,7 +93,7 @@ type ForgetPwdVerifyMfaRequest struct {
 
 // GetDomainRequest is the request object for (GET /org/domain)
 type GetDomainRequest struct {
-	OrgID int `binding:"required" json:"orgID"`
+	OrgID int `binding:"required" form:"orgID"`
 }
 
 // GetPreSignUrlRequest is the request object for (POST /oss/presignurl)
