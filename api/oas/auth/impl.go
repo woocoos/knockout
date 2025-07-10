@@ -402,7 +402,7 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 	// 验证密码
 	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
-		return nil, gin.Error{Type: status.ErrUserNameOrPassword}
+		return nil, status.CodeError(status.ErrUserNameOrPassword)
 	}
 
 	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
@@ -1097,7 +1097,7 @@ func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest) (*ent.UserPas
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
 	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
-		return nil, gin.Error{Type: status.ErrUserNameOrPassword}
+		return nil, status.CodeError(status.ErrUserNameOrPassword)
 	}
 
 	given := resource.SaltSecret(req.Password, pwd.Salt)
