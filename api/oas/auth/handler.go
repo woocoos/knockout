@@ -12,25 +12,67 @@ import (
 
 // RegisterAuthHandlers creates http.Handler with routing matching OpenAPI spec.
 func RegisterAuthHandlers(router *gin.RouterGroup, si AuthServer) {
+	router.POST("/login/app-orgs", wrapAppOrgs(si))
+	router.POST("/login/bind-fingerprint", wrapBindFingerprint(si))
 	router.POST("/mfa/bind", wrapBindMfa(si))
 	router.POST("/mfa/bind-prepare", wrapBindMfaPrepare(si))
 	router.GET("/captcha", wrapCaptcha(si))
+	router.POST("/login/check-device", wrapCheckDevice(si))
 	router.POST("/spm/create", wrapCreateSpm(si))
+	router.POST("/login/fingerprint", wrapFingerprintLogin(si))
 	router.POST("/forget-pwd/begin", wrapForgetPwdBegin(si))
 	router.POST("/forget-pwd/reset", wrapForgetPwdReset(si))
 	router.POST("/forget-pwd/send-email", wrapForgetPwdSendEmail(si))
 	router.POST("/forget-pwd/verify-email", wrapForgetPwdVerifyEmail(si))
 	router.POST("/forget-pwd/verify-mfa", wrapForgetPwdVerifyMfa(si))
+	router.GET("/org/domain", wrapGetDomain(si))
 	router.POST("/oss/presignurl", wrapGetPreSignUrl(si))
 	router.POST("/oss/sts", wrapGetSTS(si))
 	router.POST("/spm/auth", wrapGetSpmAuth(si))
 	router.POST("/login/auth", wrapLogin(si))
 	router.POST("/logout", wrapLogout(si))
+	router.POST("/login/old-fingerprint", wrapOldFingerprintLogin(si))
+	router.POST("/login/old-auth", wrapOldLoginForApp(si))
+	router.GET("/pwd/policy", wrapPasswordPolicy(si))
 	router.POST("/login/refresh-token", wrapRefreshToken(si))
 	router.POST("/login/reset-password", wrapResetPassword(si))
 	router.POST("/token", wrapToken(si))
 	router.POST("/mfa/unbind", wrapUnBindMfa(si))
+	router.POST("/login/verify-device", wrapVerifyDevice(si))
+	router.POST("/login/device-captcha", wrapVerifyDeviceSendEmail(si))
 	router.POST("/login/verify-factor", wrapVerifyFactor(si))
+}
+
+func wrapAppOrgs(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req AppOrgsRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.AppOrgs(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapBindFingerprint(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req BindFingerprintRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.BindFingerprint(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
 }
 
 func wrapBindMfa(si AuthServer) func(c *gin.Context) {
@@ -79,9 +121,41 @@ func wrapCaptcha(si AuthServer) func(c *gin.Context) {
 	}
 }
 
+func wrapCheckDevice(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req CheckDeviceRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.CheckDevice(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
 func wrapCreateSpm(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		resp, err := si.CreateSpm(c)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapFingerprintLogin(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req FingerprintLoginRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.FingerprintLogin(c, &req)
 		if err != nil {
 			c.Error(err)
 			return
@@ -170,6 +244,22 @@ func wrapForgetPwdVerifyMfa(si AuthServer) func(c *gin.Context) {
 	}
 }
 
+func wrapGetDomain(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req GetDomainRequest
+		if err := c.ShouldBindQuery(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.GetDomain(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
 func wrapGetPreSignUrl(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req GetPreSignUrlRequest
@@ -244,6 +334,49 @@ func wrapLogout(si AuthServer) func(c *gin.Context) {
 	}
 }
 
+func wrapOldFingerprintLogin(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req OldFingerprintLoginRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.OldFingerprintLogin(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapOldLoginForApp(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req OldLoginForAppRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.OldLoginForApp(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapPasswordPolicy(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		resp, err := si.PasswordPolicy(c)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
 func wrapRefreshToken(si AuthServer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var req RefreshTokenRequest
@@ -300,6 +433,38 @@ func wrapUnBindMfa(si AuthServer) func(c *gin.Context) {
 			return
 		}
 		resp, err := si.UnBindMfa(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapVerifyDevice(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req VerifyDeviceRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.VerifyDevice(c, &req)
+		if err != nil {
+			c.Error(err)
+			return
+		}
+		handler.NegotiateResponse(c, http.StatusOK, resp, []string{"application/json"})
+	}
+}
+
+func wrapVerifyDeviceSendEmail(si AuthServer) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var req VerifyDeviceSendEmailRequest
+		if err := c.ShouldBind(&req); err != nil {
+			handler.AbortWithError(c, http.StatusBadRequest, err)
+			return
+		}
+		resp, err := si.VerifyDeviceSendEmail(c, &req)
 		if err != nil {
 			c.Error(err)
 			return

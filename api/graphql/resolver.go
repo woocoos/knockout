@@ -35,8 +35,8 @@ func NewResolver(opt ...Option) *Resolver {
 }
 
 // NewSchema creates a graphql executable schema.
-func NewSchema(opts ...Option) graphql.ExecutableSchema {
+func NewSchema(resolver *Resolver) graphql.ExecutableSchema {
 	return generated.NewExecutableSchema(generated.Config{
-		Resolvers: NewResolver(opts...),
+		Resolvers: resolver,
 	})
 }

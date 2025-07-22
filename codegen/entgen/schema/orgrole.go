@@ -26,7 +26,7 @@ func (OrgRole) Annotations() []schema.Annotation {
 
 func (OrgRole) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		schemax.IntID{},
+		schemax.SnowFlakeID{},
 		schemax.AuditMixin{},
 		schemax.NotifyMixin{},
 	}
@@ -35,7 +35,7 @@ func (OrgRole) Mixin() []ent.Mixin {
 // Fields of the OrgRole.
 func (OrgRole) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Optional().Immutable().Comment("组织ID"),
+		field.Int("org_id").Optional().Immutable().Comment("租户ID"),
 		field.Enum("kind").Values("group", "role").Comment("类型,group:组,role:角色"),
 		field.String("name").Comment("名称"),
 		field.Int("app_role_id").Optional().Comment("角色ID,如有表示该角色来源于应用角色").Annotations(entgql.Skip(entgql.SkipAll)),

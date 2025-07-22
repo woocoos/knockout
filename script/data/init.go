@@ -4,6 +4,8 @@ package data
 import (
 	"context"
 	"entgo.io/ent/dialect/sql"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tsingsun/woocoo/pkg/security"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -12,11 +14,13 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -95,6 +99,10 @@ func InitBase(name, dsn string) {
 	ds.initUser(tx)
 	// 初始化组织
 	ds.initOrg(tx)
+	// 初始化国家地区
+	ds.initRegion(tx)
+	// 初始化字典数据
+	ds.initAppDict(tx)
 }
 
 func (*dataset) initOrg(client *ent.Tx) {
@@ -102,11 +110,12 @@ func (*dataset) initOrg(client *ent.Tx) {
 	for i := 1; i < 4; i++ {
 		// 由于path字段是计算字段，所以这里不需要设置,但需要对org独立保存.
 		c := client.Org.Create().SetID(i).SetKind(org.KindOrganization).SetParentID(i - 1).SetStatus(typex.SimpleStatusActive).
-			SetCreatedBy(1).SetName("org" + strconv.Itoa(i))
+			SetCreatedBy(1).SetUpdatedBy(1).SetName("org" + strconv.Itoa(i))
 		if i == 1 {
 			c.SetKind(org.KindRoot).SetDomain("woocoo.com").SetOwnerID(1)
 		}
-		if err := c.Exec(context.Background()); err != nil {
+		ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{"sub": "1"}))
+		if err := c.Exec(ctx); err != nil {
 			panic(err)
 		}
 
@@ -127,20 +136,27 @@ func (*dataset) initOrg(client *ent.Tx) {
 
 func (*dataset) initUser(client *ent.Tx) {
 	ub := make([]*ent.UserCreate, 0)
+	ua := make([]*ent.UserAddrCreate, 0)
 	ulp := make([]*ent.UserLoginProfileCreate, 0)
 	up := make([]*ent.UserPasswordCreate, 0)
 	ui := make([]*ent.UserIdentityCreate, 0)
 	for i := 1; i < 4; i++ {
 		c := client.User.Create().SetID(i).SetUserType(user.UserTypeAccount).SetCreationType(user.CreationTypeManual).
 			SetRegisterIP("").SetPrincipalName("user" + strconv.Itoa(i)).SetDisplayName("user" + strconv.Itoa(i)).
-			SetStatus(typex.SimpleStatusActive).SetCreatedBy(1).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+			SetStatus(types.UserStatusActive).SetCreatedBy(1)
 		if i == 1 {
-			c.SetPrincipalName("admin").SetDisplayName("admin").SetEmail("admin@localhost")
+			c.SetPrincipalName("admin").SetDisplayName("admin")
 		}
 		ub = append(ub, c)
 
+		a := client.UserAddr.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetAddrType(useraddr.AddrTypeContact).SetEmail("user" + strconv.Itoa(i) + "@localhost")
+		if i == 1 {
+			a.SetEmail("admin@localhost")
+		}
+		ua = append(ua, a)
+
 		lp := client.UserLoginProfile.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetSetKind(userloginprofile.SetKindKeep).
-			SetCanLogin(true).SetPasswordReset(false).SetMfaSecret("UWZLIIUMPX53NYXB").SetVerifyDevice(false)
+			SetCanLogin(true).SetPasswordReset(false).SetMfaSecret("UWZLIIUMPX53NYXB").SetVerifyDevice(true)
 		ulp = append(ulp, lp)
 
 		p := client.UserPassword.Create().SetID(i).SetUserID(i).SetCreatedBy(1).SetScene(userpassword.SceneLogin).
@@ -155,6 +171,7 @@ func (*dataset) initUser(client *ent.Tx) {
 		ui = append(ui, id)
 	}
 	client.User.CreateBulk(ub...).ExecX(context.Background())
+	client.UserAddr.CreateBulk(ua...).ExecX(context.Background())
 	client.UserLoginProfile.CreateBulk(ulp...).ExecX(context.Background())
 	client.UserPassword.CreateBulk(up...).ExecX(context.Background())
 	client.UserIdentity.CreateBulk(ui...).ExecX(context.Background())
@@ -187,11 +204,11 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 			SetComments("管理员角色").SetAutoGrant(true).SetEditable(true),
 		)
 		aps = append(aps, client.AppPolicy.Create().SetID(i).SetAppID(i).SetCreatedBy(1).SetName("全部管理权限").
-			SetComments("全部管理权限").SetAutoGrant(true).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
+			SetComments("全部管理权限").SetAutoGrant(true).SetKind(apppolicy.KindApp).SetStatus(typex.SimpleStatusActive).SetVersion("V1").
 			SetRules([]*types.PolicyRule{
 				{
 					Effect:    "allow",
-					Actions:   []string{"*"},
+					Actions:   []string{ac + ":*"},
 					Resources: []string{},
 				},
 			}),
@@ -213,6 +230,8 @@ func (set *dataset) initApp(client *ent.Tx, casbinClient *casbinent.Tx) {
 		}))
 
 		ors = append(ors, client.OrgRole.Create().SetID(i).SetOrgID(1).SetAppRoleID(i).SetName("管理员").
+			SetCreatedBy(1).SetKind(orgrole.KindRole))
+		ors = append(ors, client.OrgRole.Create().SetID(2).SetOrgID(1).SetName("administrators").
 			SetCreatedBy(1).SetKind(orgrole.KindRole))
 
 		ps = append(ps, client.Permission.Create().SetID(i).SetOrgID(1).SetOrgPolicyID(i).SetCreatedBy(1).
@@ -276,8 +295,8 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"userPermissions", "userMenus", "userRootOrgs", "node", "login", "appAccess", "/", "orgRoles", "orgGroups", "/user/info",
-				"updateUser", "/user/safety", "changePassword", "userApps", "orgUserPreference",
+				"resource:userPermissions", "resource:userMenus", "resource:userRootOrgs", "resource:node", "resource:login", "resource:appAccess", "resource:/", "resource:orgRoles", "resource:orgGroups", "resource:/user/info",
+				"resource:updateUser", "resource:/user/safety", "resource:changePassword", "resource:userApps", "resource:orgUserPreference",
 			},
 		},
 	}).SetName("KOResAccess").SetComments("资源权限管理应用授权，拥有该策略允许登录后台").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true)
@@ -287,7 +306,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/org/departments", "organizations",
+				"resource:/org/departments", "resource:organizations",
 			},
 		},
 	}).SetName("KOResDepartmentRead").SetComments("资源权限管理部门管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -296,7 +315,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"createOrganization", "updateOrganization",
+				"resource:createOrganization", "resource:updateOrganization",
 			},
 		},
 	}).SetName("KOResDepartmentEdit").SetComments("资源权限管理部门管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -305,7 +324,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteOrganization",
+				"resource:deleteOrganization",
 			},
 		},
 	}).SetName("KOResDepartmentDel").SetComments("资源权限管理部门管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -315,7 +334,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/org/users", "organizations", "orgRecycleUsers", "userGroups", "orgGroups", "userExtendGroupPolicies",
+				"resource:/org/users", "resource:organizations", "resource:orgRecycleUsers", "resource:userGroups", "resource:orgGroups", "resource:userExtendGroupPolicies",
 			},
 		},
 	}).SetName("KOResOrgUsersRead").SetComments("资源权限管理用户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -324,9 +343,9 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"createOrganizationUser", "moveOrganization", "recoverOrgUser", "updateUser", "updateLoginProfile", "bindUserIdentity",
-				"deleteUserIdentity", "sendMFAToUserByEmail", "enableMFA", "createOauthClient", "enableOauthClient", "disableOauthClient",
-				"deleteOauthClient", "grant", "revoke", "removeOrganizationUser",
+				"resource:createOrganizationUser", "resource:moveOrganization", "resource:recoverOrgUser", "resource:updateUser", "resource:updateLoginProfile", "resource:bindUserIdentity",
+				"resource:deleteUserIdentity", "resource:sendMFAToUserByEmail", "resource:enableMFA", "resource:createOauthClient", "resource:enableOauthClient", "resource:disableOauthClient",
+				"resource:deleteOauthClient", "resource:grant", "resource:revoke", "resource:removeOrganizationUser",
 			},
 		},
 	}).SetName("KOResOrgUsersEdit").SetComments("资源权限管理用户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -336,7 +355,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/org/policys", "orgPolicyReferences", "orgAppActions",
+				"resource:/org/policys", "resource:orgPolicyReferences", "resource:orgAppActions",
 			},
 		},
 	}).SetName("KOResOrgPoliciesRead").SetComments("资源权限管理权限策略只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -345,7 +364,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"updateOrganizationPolicy", "createOrganizationPolicy",
+				"resource:updateOrganizationPolicy", "resource:createOrganizationPolicy",
 			},
 		},
 	}).SetName("KOResOrgPoliciesEdit").SetComments("资源权限管理权限策略修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -354,7 +373,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteOrganizationPolicy",
+				"resource:deleteOrganizationPolicy",
 			},
 		},
 	}).SetName("KOResOrgPoliciesDel").SetComments("资源权限管理权限策略删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -364,7 +383,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/org/groups", "orgGroups", "orgRoleUsers",
+				"resource:/org/groups", "resource:orgGroups", "resource:orgRoleUsers",
 			},
 		},
 	}).SetName("KOResOrgGroupsRead").SetComments("资源权限管理用户组只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -373,7 +392,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"assignRoleUser", "grant", "createRole", "updateRole", "revokeRoleUser",
+				"resource:assignRoleUser", "resource:grant", "resource:createRole", "resource:updateRole", "resource:revokeRoleUser",
 			},
 		},
 	}).SetName("KOResOrgGroupsEdit").SetComments("资源权限管理用户组修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -382,7 +401,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteRole",
+				"resource:deleteRole",
 			},
 		},
 	}).SetName("KOResOrgGroupsDel").SetComments("资源权限管理用户组删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -392,7 +411,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/org/roles", "orgRoles", "orgRoleUsers",
+				"resource:/org/roles", "resource:orgRoles", "resource:orgRoleUsers",
 			},
 		},
 	}).SetName("KOResOrgRolesRead").SetComments("资源权限管理角色只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -401,7 +420,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"assignRoleUser", "grant", "createRole", "updateRole", "revokeRoleUser",
+				"resource:assignRoleUser", "resource:grant", "resource:createRole", "resource:updateRole", "resource:revokeRoleUser",
 			},
 		},
 	}).SetName("KOResOrgRolesEdit").SetComments("资源权限管理角色修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -410,7 +429,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteRole",
+				"resource:deleteRole",
 			},
 		},
 	}).SetName("KOResOrgRolesDel").SetComments("资源权限管理角色删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -420,8 +439,8 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/system/org", "organizations", "orgGroups", "orgRoleUsers", "orgPolicyReferences", "orgAppActions", "apps",
-				"orgRecycleUsers", "userGroups", "userExtendGroupPolicies",
+				"resource:/system/org", "resource:organizations", "resource:orgGroups", "resource:orgRoleUsers", "resource:orgPolicyReferences", "resource:orgAppActions", "resource:apps",
+				"resource:orgRecycleUsers", "resource:userGroups", "resource:userExtendGroupPolicies",
 			},
 		},
 	}).SetName("KOResSystemOrgRead").SetComments("资源权限管理组织管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -429,12 +448,12 @@ func InitResourcePolicy(client *ent.Tx) {
 	KOResSystemOrgEdit := client.AppPolicy.Create().SetCreatedBy(createBy).SetVersion(version).SetRules([]*types.PolicyRule{
 		{
 			Effect: types.PolicyEffectAllow,
-			Actions: []string{"createRoot", "updateOrganization", "assignRoleUser", "grant", "createRole", "updateRole", "revokeRoleUser",
-				"deleteRole", "updateOrganizationPolicy", "createOrganizationPolicy", "deleteOrganizationPolicy", "revokeOrganizationApp",
-				"assignOrganizationApp", "deleteOrganization", "createOrganization", "createOrganizationUser", "moveOrganization",
-				"recoverOrgUser", "updateUser", "updateLoginProfile", "bindUserIdentity", "deleteUserIdentity", "sendMFAToUserByEmail",
-				"enableMFA", "createOauthClient", "enableOauthClient", "disableOauthClient", "deleteOauthClient",
-				"revoke"},
+			Actions: []string{"resource:createRoot", "resource:updateOrganization", "resource:assignRoleUser", "resource:grant", "resource:createRole", "resource:updateRole", "resource:revokeRoleUser",
+				"resource:deleteRole", "resource:updateOrganizationPolicy", "resource:createOrganizationPolicy", "resource:deleteOrganizationPolicy", "resource:revokeOrganizationApp",
+				"resource:assignOrganizationApp", "resource:deleteOrganization", "resource:createOrganization", "resource:createOrganizationUser", "resource:moveOrganization",
+				"resource:recoverOrgUser", "resource:updateUser", "resource:updateLoginProfile", "resource:bindUserIdentity", "resource:deleteUserIdentity", "resource:sendMFAToUserByEmail",
+				"resource:enableMFA", "resource:createOauthClient", "resource:enableOauthClient", "resource:disableOauthClient", "resource:deleteOauthClient",
+				"resource:revoke"},
 		},
 	}).SetName("KOResSystemOrgEdit").SetComments("资源权限管理组织管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResSystemOrgEdit)
@@ -443,7 +462,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/system/account", "users", "userGroups", "orgGroups",
+				"resource:/system/account", "resource:users", "resource:userGroups", "resource:orgGroups",
 			},
 		},
 	}).SetName("KOResSystemAccountRead").SetComments("资源权限管理账户管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -452,9 +471,9 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"updateUser", "updateLoginProfile", "bindUserIdentity", "deleteUserIdentity", "sendMFAToUserByEmail", "enableMFA",
-				"createOauthClient", "enableOauthClient", "disableOauthClient", "deleteOauthClient", "grant", "revoke",
-				"createOrganizationAccount", "resetUserPasswordByEmail",
+				"resource:updateUser", "resource:updateLoginProfile", "resource:bindUserIdentity", "resource:deleteUserIdentity", "resource:sendMFAToUserByEmail", "resource:enableMFA",
+				"resource:createOauthClient", "resource:enableOauthClient", "resource:disableOauthClient", "resource:deleteOauthClient", "resource:grant", "resource:revoke",
+				"resource:createOrganizationAccount", "resource:resetUserPasswordByEmail",
 			},
 		},
 	}).SetName("KOResSystemAccountEdit").SetComments("资源权限管理账户管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -463,7 +482,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteUser",
+				"resource:deleteUser",
 			},
 		},
 	}).SetName("KOResSystemAccountDel").SetComments("资源权限管理账户管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -473,7 +492,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/system/app", "apps", "appPolicyAssignedToOrgs", "appRoleAssignedToOrgs",
+				"resource:/system/app", "resource:apps", "resource:appPolicyAssignedToOrgs", "resource:appRoleAssignedToOrgs",
 			},
 		},
 	}).SetName("KOResSystemAppRead").SetComments("资源权限管理应用管理只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -482,10 +501,10 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"createApp", "updateApp", "createAppActions", "updateAppAction", "deleteAppAction", "createAppPolicy", "updateAppPolicy",
-				"deleteAppPolicy", "assignOrganizationAppPolicy", "revokeOrganizationAppPolicy", "createAppMenus", "deleteAppMenu", "updateAppMenu",
-				"moveAppMenu", "createAppRole", "updateAppRole", "deleteAppRole", "assignAppRolePolicy", "revokeAppRolePolicy", "revokeOrganizationAppRole",
-				"assignOrganizationAppRole", "updateAppRes",
+				"resource:createApp", "resource:updateApp", "resource:createAppActions", "resource:updateAppAction", "resource:deleteAppAction", "resource:createAppPolicy", "resource:updateAppPolicy",
+				"resource:deleteAppPolicy", "resource:assignOrganizationAppPolicy", "resource:revokeOrganizationAppPolicy", "resource:createAppMenus", "resource:deleteAppMenu", "resource:updateAppMenu",
+				"resource:moveAppMenu", "resource:createAppRole", "resource:updateAppRole", "resource:deleteAppRole", "resource:assignAppRolePolicy", "resource:revokeAppRolePolicy", "resource:revokeOrganizationAppRole",
+				"resource:assignOrganizationAppRole", "resource:updateAppRes",
 			},
 		},
 	}).SetName("KOResSystemAppEdit").SetComments("资源权限管理应用管理修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -494,7 +513,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteApp",
+				"resource:deleteApp",
 			},
 		},
 	}).SetName("KOResSystemAppDel").SetComments("资源权限管理应用管理删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -504,7 +523,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/system/file/source", "fileSources",
+				"resource:/system/file/source", "resource:fileSources",
 			},
 		},
 	}).SetName("KOResFileSourceRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -513,7 +532,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"createFileSource", "updateFileSource",
+				"resource:createFileSource", "resource:updateFileSource",
 			},
 		},
 	}).SetName("KOResFileSourceEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -522,7 +541,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteFileSource",
+				"resource:deleteFileSource",
 			},
 		},
 	}).SetName("KOResFileSourceDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -532,7 +551,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"/dict", "appDicts",
+				"resource:/dict", "resource:appDicts",
 			},
 		},
 	}).SetName("KOResDictRead").SetComments("资源权限管理文件来源只读").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -541,7 +560,7 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"updateAppDict", "createAppDict", "updateAppDictItem", "createAppDictItem", "deleteAppDictItem", "moveAppDictItem",
+				"resource:updateAppDict", "resource:createAppDict", "resource:updateAppDictItem", "resource:createAppDictItem", "resource:deleteAppDictItem", "resource:moveAppDictItem",
 			},
 		},
 	}).SetName("KOResDictEdit").SetComments("资源权限管理文件来源修改").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
@@ -550,11 +569,50 @@ func InitResourcePolicy(client *ent.Tx) {
 		{
 			Effect: types.PolicyEffectAllow,
 			Actions: []string{
-				"deleteAppDict",
+				"resource:deleteAppDict",
 			},
 		},
 	}).SetName("KOResDictDel").SetComments("资源权限管理文件来源删除").SetAppID(ap.ID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(false)
 	aps = append(aps, KOResDictDel)
 	// 创建策略
 	client.AppPolicy.CreateBulk(aps...).ExecX(context.Background())
+}
+
+func (*dataset) initRegion(client *ent.Tx) {
+	// country
+	cnty := make([]*ent.CountryCreate, 0)
+	c1 := client.Country.Create().SetID(1).SetCreatedBy(1).SetName("中国").SetCode("86").SetNameEn("China")
+	c2 := client.Country.Create().SetID(2).SetCreatedBy(1).SetName("中国香港").SetCode("852").SetNameEn("HongKong")
+	cnty = append(cnty, c1, c2)
+	client.Country.CreateBulk(cnty...).ExecX(context.Background())
+	// region
+	regs := make([]*ent.RegionCreate, 0)
+	r1 := client.Region.Create().SetID(1).SetCreatedBy(1).SetName("北京").SetCountryID(1)
+	r2 := client.Region.Create().SetID(2).SetCreatedBy(1).SetName("北京市").SetParentID(1).SetCountryID(1)
+	r3 := client.Region.Create().SetID(3).SetCreatedBy(1).SetName("东城区").SetParentID(2).SetCountryID(1)
+	r4 := client.Region.Create().SetID(4).SetCreatedBy(1).SetName("西城区").SetParentID(2).SetCountryID(1)
+	regs = append(regs, r1, r2, r3, r4)
+	r5 := client.Region.Create().SetID(5).SetCreatedBy(1).SetName("香港特别行政区").SetCountryID(2)
+	r6 := client.Region.Create().SetID(6).SetCreatedBy(1).SetName("九龙").SetParentID(5).SetCountryID(2)
+	r7 := client.Region.Create().SetID(7).SetCreatedBy(1).SetName("香港岛").SetParentID(5).SetCountryID(2)
+	r8 := client.Region.Create().SetID(8).SetCreatedBy(1).SetName("新界").SetParentID(5).SetCountryID(2)
+	regs = append(regs, r5, r6, r7, r8)
+	client.Region.CreateBulk(regs...).ExecX(context.Background())
+}
+
+func (*dataset) initAppDict(client *ent.Tx) {
+	ctx := identity.WithTenantID(context.Background(), 1)
+	// appdict
+	dicts := make([]*ent.AppDictCreate, 0)
+	d1 := client.AppDict.Create().SetID(1).SetCreatedBy(1).SetAppID(1).SetName("地理时区").SetCode("DLSH")
+	dicts = append(dicts, d1)
+	client.AppDict.CreateBulk(dicts...).ExecX(ctx)
+	// appdictitems
+	items := make([]*ent.AppDictItemCreate, 0)
+	i1 := client.AppDictItem.Create().SetID(1).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(1).SetDictID(1).SetName("Asia/Hong_Kong").SetCode("Asia/Hong_Kong").SetStatus(typex.SimpleStatusActive)
+	i2 := client.AppDictItem.Create().SetID(2).SetCreatedBy(1).SetRefCode("resource:DLSH").SetDictID(1).SetName("Asia/Shanghai").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	i3 := client.AppDictItem.Create().SetID(3).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(1).SetDictID(1).SetName("上海时区").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	i4 := client.AppDictItem.Create().SetID(4).SetCreatedBy(1).SetRefCode("resource:DLSH").SetOrgID(2).SetDictID(1).SetName("上海时区").SetCode("Asia/Shanghai").SetStatus(typex.SimpleStatusActive)
+	items = append(items, i1, i2, i3, i4)
+	client.AppDictItem.CreateBulk(items...).ExecX(ctx)
 }

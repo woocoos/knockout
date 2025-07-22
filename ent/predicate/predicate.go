@@ -24,6 +24,9 @@ type AppMenu func(*sql.Selector)
 // AppPolicy is the predicate function for apppolicy builders.
 type AppPolicy func(*sql.Selector)
 
+// AppPolicyView is the predicate function for apppolicyview builders.
+type AppPolicyView func(*sql.Selector)
+
 // AppRes is the predicate function for appres builders.
 type AppRes func(*sql.Selector)
 
@@ -32,6 +35,12 @@ type AppRole func(*sql.Selector)
 
 // AppRolePolicy is the predicate function for approlepolicy builders.
 type AppRolePolicy func(*sql.Selector)
+
+// Country is the predicate function for country builders.
+type Country func(*sql.Selector)
+
+// Currency is the predicate function for currency builders.
+type Currency func(*sql.Selector)
 
 // FileIdentity is the predicate function for fileidentity builders.
 type FileIdentity func(*sql.Selector)
@@ -66,8 +75,20 @@ type OrgUserPreference func(*sql.Selector)
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)
 
+// Quota is the predicate function for quota builders.
+type Quota func(*sql.Selector)
+
+// QuotaItem is the predicate function for quotaitem builders.
+type QuotaItem func(*sql.Selector)
+
+// Region is the predicate function for region builders.
+type Region func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserAddr is the predicate function for useraddr builders.
+type UserAddr func(*sql.Selector)
 
 // UserDevice is the predicate function for userdevice builders.
 type UserDevice func(*sql.Selector)
@@ -80,3 +101,6 @@ type UserLoginProfile func(*sql.Selector)
 
 // UserPassword is the predicate function for userpassword builders.
 type UserPassword func(*sql.Selector)
+
+// UserPasswordPolicy is the predicate function for userpasswordpolicy builders.
+type UserPasswordPolicy func(*sql.Selector)

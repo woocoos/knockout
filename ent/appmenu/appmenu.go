@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 )
 
 const (
@@ -44,10 +46,16 @@ const (
 	FieldComments = "comments"
 	// FieldDisplaySort holds the string denoting the display_sort field in the database.
 	FieldDisplaySort = "display_sort"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// EdgeApp holds the string denoting the app edge name in mutations.
 	EdgeApp = "app"
 	// EdgeAction holds the string denoting the action edge name in mutations.
 	EdgeAction = "action"
+	// EdgeParent holds the string denoting the parent edge name in mutations.
+	EdgeParent = "parent"
+	// EdgeChildren holds the string denoting the children edge name in mutations.
+	EdgeChildren = "children"
 	// Table holds the table name of the appmenu in the database.
 	Table = "app_menu"
 	// AppTable is the table that holds the app relation/edge.
@@ -64,6 +72,14 @@ const (
 	ActionInverseTable = "app_action"
 	// ActionColumn is the table column denoting the action relation/edge.
 	ActionColumn = "action_id"
+	// ParentTable is the table that holds the parent relation/edge.
+	ParentTable = "app_menu"
+	// ParentColumn is the table column denoting the parent relation/edge.
+	ParentColumn = "parent_id"
+	// ChildrenTable is the table that holds the children relation/edge.
+	ChildrenTable = "app_menu"
+	// ChildrenColumn is the table column denoting the children relation/edge.
+	ChildrenColumn = "parent_id"
 )
 
 // Columns holds all SQL columns for appmenu fields.
@@ -82,6 +98,7 @@ var Columns = []string{
 	FieldActionID,
 	FieldComments,
 	FieldDisplaySort,
+	FieldStatus,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -127,6 +144,18 @@ func KindValidator(k Kind) error {
 		return nil
 	default:
 		return fmt.Errorf("appmenu: invalid enum value for kind field: %q", k)
+	}
+}
+
+const DefaultStatus typex.SimpleStatus = "active"
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s typex.SimpleStatus) error {
+	switch s.String() {
+	case "active", "inactive", "processing", "disabled":
+		return nil
+	default:
+		return fmt.Errorf("appmenu: invalid enum value for status field: %q", s)
 	}
 }
 
@@ -203,6 +232,11 @@ func ByDisplaySort(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDisplaySort, opts...).ToFunc()
 }
 
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
 // ByAppField orders the results by app field.
 func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -214,6 +248,27 @@ func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByActionField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newActionStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByParentField orders the results by parent field.
+func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newParentStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByChildrenCount orders the results by children count.
+func ByChildrenCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newChildrenStep(), opts...)
+	}
+}
+
+// ByChildren orders the results by children terms.
+func ByChildren(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newChildrenStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newAppStep() *sqlgraph.Step {
@@ -228,6 +283,20 @@ func newActionStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, ActionTable, ActionColumn),
+	)
+}
+func newParentStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+	)
+}
+func newChildrenStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
 	)
 }
 
@@ -248,3 +317,10 @@ func (e *Kind) UnmarshalGQL(val interface{}) error {
 	}
 	return nil
 }
+
+var (
+	// typex.SimpleStatus must implement graphql.Marshaler.
+	_ graphql.Marshaler = (*typex.SimpleStatus)(nil)
+	// typex.SimpleStatus must implement graphql.Unmarshaler.
+	_ graphql.Unmarshaler = (*typex.SimpleStatus)(nil)
+)

@@ -3,15 +3,21 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api/msg"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
+	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
@@ -19,10 +25,14 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/security"
 	"net/http"
 	"strconv"
 	"strings"
@@ -60,6 +70,27 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 // CreateRoot 创建组织root
 func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
+	if input.OwnerID != nil {
+		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if u.UserType != user.UserTypeAccount {
+			// TODO 先直接升级为account，后续考虑member用户如何升级account
+			err = client.User.UpdateOneID(*input.OwnerID).SetUserType(user.UserTypeAccount).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID)).Exist(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if has {
+				return nil, fmt.Errorf("the account is the other org owner")
+			}
+		}
+	}
 	o, err := client.Org.Create().SetInput(input).SetKind(org.KindRoot).Save(ctx)
 	if err != nil {
 		return nil, err
@@ -70,23 +101,37 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 		if err != nil {
 			return nil, err
 		}
-		if u.UserType != user.UserTypeAccount {
-			return nil, fmt.Errorf("owner must be account")
-		}
 		err = client.OrgUser.Create().SetOrgID(o.ID).SetUserID(*input.OwnerID).SetDisplayName(u.DisplayName).Exec(ctx)
 		if err != nil {
 			return nil, err
 		}
 	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 清除缓存
+	err = cache.Del(ctx, security.RefTenantsCacheKey(tid))
 	return o, nil
 }
 
 // CreateOrganization 创建组织目录,基于根目录创建
 func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
+	client := ent.FromContext(ctx)
 	if input.ParentID == 0 {
 		return nil, fmt.Errorf("parent id is required")
 	}
-	return s.Client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
+	o, err := client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 清除缓存
+	err = cache.Del(ctx, security.RefTenantsCacheKey(tid))
+	return o, nil
 }
 
 // DeleteOrganization 删除组织目录
@@ -94,6 +139,7 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 	client := ent.FromContext(ctx)
 	count, err := client.Org.Query().Where(
 		org.ParentID(id),
+		org.DeletedAtIsNil(),
 	).Count(ctx)
 	if err != nil {
 		return err
@@ -115,17 +161,24 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 //
 // - 管理员账户才能创建下级组织目录的账户
 func (s *Service) CreateOrganizationAccount(ctx context.Context, orgId int, input ent.CreateUserInput) (*ent.User, error) {
-	return s.CreateOrganizationUser(ctx, orgId, input, user.UserTypeAccount)
+	var external = orguser.UserTypeExternal
+	return s.CreateOrganizationUser(ctx, orgId, input, user.UserTypeAccount, &external)
 }
 
 // CreateOrganizationUser 创建组织目录用户
 //
 // TODO 新用户需要激活,如在国内,用户往往需要绑定手机或邮箱,然后通过邮件或短信激活.
-func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input ent.CreateUserInput, ut user.UserType) (*ent.User, error) {
+func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input ent.CreateUserInput, ut user.UserType, orgUserType *orguser.UserType) (*ent.User, error) {
 	client := ent.FromContext(ctx)
 	_, err := client.Org.Query().Where(org.ID(orgId), org.StatusEQ(typex.SimpleStatusActive)).Only(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
+	}
+
+	// 默认创建为外部用户
+	if orgUserType == nil {
+		var external = orguser.UserTypeExternal
+		orgUserType = &external
 	}
 
 	us, err := client.User.Create().SetInput(input).
@@ -144,7 +197,7 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	}
 
 	if ut != user.UserTypeAccount {
-		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetDisplayName(us.DisplayName).Save(ctx)
+		_, err = client.OrgUser.Create().SetOrgID(orgId).SetUserID(us.ID).SetUserType(*orgUserType).SetDisplayName(us.DisplayName).Save(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -166,7 +219,11 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 
 // generationAndSendUserPwd 自动生成密码并发邮件给用户
 func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) error {
-	if usr.Email == "" {
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is nil")
 	}
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -174,7 +231,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 		return err
 	}
 	nPwd := RandomStr(6)
-	shaPwd := SHA256(RandomStr(6))
+	shaPwd := SHA256(nPwd)
 	// 创建用户密码
 	_, err = s.CreateUserPassword(ctx, &ent.CreateUserPasswordInput{
 		Scene:    userpassword.SceneLogin,
@@ -188,7 +245,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            usr.Email,
+				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.PrincipalName,
 				"password":      nPwd,
@@ -215,12 +272,12 @@ func (s *Service) CreateUserPassword(ctx context.Context, input *ent.CreateUserP
 	if input.Password != nil || *input.Password != "" {
 		hashPwd = SHA256(*input.Password + salt)
 	} else {
-		hashPwd = RandomStr(6)
+		hashPwd = SHA256(RandomStr(6))
 		hashPwd = SHA256(hashPwd + salt)
 	}
+	input.Password = &hashPwd
 	pw, err = ent.FromContext(ctx).UserPassword.Create().
 		SetInput(*input).
-		SetPassword(hashPwd).
 		SetSalt(salt).
 		Save(ctx)
 
@@ -289,7 +346,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 		return fmt.Errorf("invalid org id or root org id")
 	}
 	if !strings.HasPrefix(orgs[1].Path, orgs[0].Path) {
-		return fmt.Errorf("org not match")
+		return status.CodeError(status.ErrOrgNotFound)
 	}
 
 	usr := client.User.GetX(ctx, input.UserID)
@@ -351,7 +408,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("user has been referenced")
+		return fmt.Errorf("please remove the policies before remove user")
 	}
 	// 根据角色判断是否被引用
 	has, err = client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.UserID(userID)), orgroleuser.HasOrgRoleWith(orgrole.HasOrgWith(org.ID(tid)))).Exist(ctx)
@@ -359,7 +416,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("user has been referenced")
+		return fmt.Errorf("please remove the role before remove user")
 	}
 
 	_, err = client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(tid)).Exec(ctx)
@@ -379,21 +436,27 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	return client.User.Update().Where(user.ID(userID)).ClearIdentities().ClearPasswords().
-		SetDeletedAt(time.Now()).SetStatus(typex.SimpleStatusInactive).Exec(ctx)
+		SetDeletedAt(time.Now()).SetStatus(types.UserStatusInactive).Exec(ctx)
 }
 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
-func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
+func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
 	if input.PrincipalName != nil {
 		return nil, fmt.Errorf("principal name can not update")
 	}
 	client := ent.FromContext(ctx)
+	// 更新地址信息
+	err := client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).SetInput(*contact).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return client.User.UpdateOneID(userID).SetInput(input).Save(ctx)
 }
 
 func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) error {
-	if oldPwd == newPwd {
-		return fmt.Errorf("old password can not equal new password")
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return err
 	}
 	client := ent.FromContext(ctx)
 	uid, err := identity.UserIDFromContext(ctx)
@@ -408,12 +471,61 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	o := SaltSecret(oldPwd, usr.Edges.Passwords[0].Salt)
 	n := SaltSecret(newPwd, usr.Edges.Passwords[0].Salt)
 	if o != usr.Edges.Passwords[0].Password {
-		return fmt.Errorf("old password not match")
+		return status.CodeError(status.ErrOldPasswordNotMatch)
 	}
-
+	if oldPwd == newPwd {
+		return status.CodeError(status.ErrPasswordDuplicate)
+	}
 	_, err = client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
 		SetPassword(n).Save(ctx)
-	return err
+	if err != nil {
+		return err
+	}
+	// 更新PasswordReset
+	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
+	// 发送修改密码邮件提醒
+	usr, addr, err := s.getUserInfo(ctx, uid)
+	if err != nil {
+		return err
+	}
+	curOrg, err := s.Client.Org.Get(ctx, tid)
+	if err != nil {
+		return err
+	}
+	topOID, err := s.getTopOrgIdByPath(curOrg.Path)
+	if err != nil {
+		return err
+	}
+	params := msg.PostableAlerts{
+		{
+			Annotations: map[string]string{
+				"to":            addr.Email,
+				"displayName":   usr.DisplayName,
+				"principalName": usr.PrincipalName,
+			},
+			Alert: &msg.Alert{
+				Labels: map[string]string{
+					"receiver":  "email",
+					"alertname": "ChangeUserPassword",
+					"tenant":    strconv.Itoa(topOID),
+					"timestamp": strconv.Itoa(int(time.Now().Unix())),
+				},
+			},
+		},
+	}
+	return s.postAlerts(ctx, params)
+}
+
+func (s *Service) getUserInfo(ctx context.Context, uid int) (*ent.User, *ent.UserAddr, error) {
+	usr, err := s.Client.User.Get(ctx, uid)
+	if err != nil {
+		return nil, nil, err
+	}
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	return usr, addr, nil
 }
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
@@ -428,60 +540,49 @@ func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.
 // CreateRole 创建角色或工作组
 func (s *Service) CreateRole(ctx context.Context, input ent.CreateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgRole.Create().SetInput(input).SetOrgID(tid).Save(ctx)
+	return client.OrgRole.Create().SetInput(input).Save(ctx)
 }
 
 // UpdateRole 更新角色或工作组
 func (s *Service) UpdateRole(ctx context.Context, roleID int, input ent.UpdateOrgRoleInput) (*ent.OrgRole, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgRole.UpdateOneID(roleID).Where(orgrole.OrgID(tid)).SetInput(input).Save(ctx)
+	return client.OrgRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
 }
 
 // DeleteRole 删除角色或工作组
 func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	// 判断是否有授权用户，有则不能删除
+	has, err := client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Exist(ctx)
 	if err != nil {
 		return err
 	}
-	err = client.OrgRole.DeleteOneID(roleID).Where(orgrole.OrgID(tid)).Exec(ctx)
-	return err
+	if has {
+		return fmt.Errorf("unable to delete，role has users")
+	}
+	return client.OrgRole.DeleteOneID(roleID).Exec(ctx)
 }
 
 // CreateOrganizationPolicy 创建组织策略,该策略属于租户组织
 func (s *Service) CreateOrganizationPolicy(ctx context.Context, input ent.CreateOrgPolicyInput) (*ent.OrgPolicy, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return client.OrgPolicy.Create().SetOrgID(tid).SetInput(input).Save(ctx)
+	return client.OrgPolicy.Create().SetInput(input).Save(ctx)
 }
 
-func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
+func (s *Service) UpdateOrganizationPolicy(ctx context.Context, orgPolicyID int, input ent.UpdateOrgPolicyInput) (*ent.OrgPolicy, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	op, err := client.OrgPolicy.Get(ctx, orgPolicyID)
 	if err != nil {
 		return nil, err
 	}
-
 	// rules不为空，则同步修改casbin授权信息
 	if input.Rules != nil {
-		err := updateOrgPolicyRules(ctx, id, input.Rules, tid)
+		err := updateOrgPolicyRules(ctx, orgPolicyID, input.Rules, op.OrgID)
 		if err != nil {
 			return nil, err
 		}
 	}
-
-	data, err := client.OrgPolicy.UpdateOneID(id).Where(orgpolicy.OrgID(tid)).SetInput(input).Save(ctx)
+	data, err := client.OrgPolicy.UpdateOneID(orgPolicyID).Where(orgpolicy.OrgID(op.OrgID)).SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -490,35 +591,35 @@ func (s *Service) UpdateOrganizationPolicy(ctx context.Context, id int, input en
 
 func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	op, err := client.OrgPolicy.Get(ctx, orgPolicyID)
 	if err != nil {
 		return err
 	}
 	// 存在引用，不能删除
-	has, err := client.Permission.Query().Where(permission.OrgID(tid), permission.OrgPolicyID(orgPolicyID)).Exist(ctx)
+	has, err := client.Permission.Query().Where(permission.OrgID(op.OrgID), permission.OrgPolicyID(orgPolicyID)).Exist(ctx)
 	if err != nil {
 		return err
 	}
 	if has {
 		return fmt.Errorf("policy has be referenced，not allowed to delete")
 	}
-	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(tid)).Exec(ctx)
+	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(op.OrgID)).Exec(ctx)
 }
 
-// GetRoleUserIds 获取组织用户组/角色用户ids
-func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
+// GetOrgRoleUserIds 获取组织用户组/角色用户ids
+func (s *Service) GetOrgRoleUserIds(ctx context.Context, orgRoleID int) ([]int, error) {
+	or, err := s.Client.OrgRole.Get(ctx, orgRoleID)
 	if err != nil {
 		return nil, err
 	}
-	exist, err := s.Client.OrgRole.Query().Where(orgrole.OrgID(tid), orgrole.ID(roleID)).Exist(ctx)
+	exist, err := s.Client.OrgRole.Query().Where(orgrole.OrgID(or.OrgID), orgrole.ID(orgRoleID)).Exist(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if !exist {
 		return nil, fmt.Errorf("role not found")
 	}
-	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(roleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
+	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(orgRoleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -528,19 +629,19 @@ func (s *Service) GetRoleUserIds(ctx context.Context, roleID int) ([]int, error)
 // EnableMFA 启用用户的MFA验证
 func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error) {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
+	usr, err := client.User.Query().Where(user.ID(userID)).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if usr == nil {
 		return nil, fmt.Errorf("user not found")
 	}
+	ulp, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	sec := GeneralMFASecret()
-	err = client.UserLoginProfile.UpdateOneID(userID).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
+	err = client.UserLoginProfile.UpdateOne(ulp).SetMfaEnabled(true).SetMfaSecret(sec).SetMfaStatus(typex.SimpleStatusActive).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -552,22 +653,15 @@ func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error)
 
 func (s *Service) DisableMFA(ctx context.Context, userID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	ulp, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Only(ctx)
 	if err != nil {
 		return err
 	}
-	usr, err := client.User.Query().Where(user.ID(userID), user.HasOrgUserWith(orguser.OrgID(tid))).Only(ctx)
-	if err != nil {
-		return err
-	}
-	if usr == nil {
-		return fmt.Errorf("user not found")
-	}
-	return client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
+	return client.UserLoginProfile.UpdateOne(ulp).ClearMfaEnabled().ClearMfaSecret().ClearMfaStatus().Exec(ctx)
 }
 
 func (s *Service) GetUserMenus(ctx context.Context, appCode string) ([]*ent.AppMenu, error) {
-	ams, err := s.Client.AppMenu.Query().Where(appmenu.HasAppWith(app.Code(appCode))).All(ctx)
+	ams, err := s.Client.AppMenu.Query().Where(appmenu.StatusEQ(typex.SimpleStatusActive), appmenu.HasAppWith(app.Code(appCode))).WithApp().All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -629,7 +723,7 @@ func findMenuParents(appMenus, userMenus []*ent.AppMenu, parentMenus *[]*ent.App
 }
 
 // RecoverOrgUser 恢复删除用户
-func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
+func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -639,8 +733,12 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	if !has || err != nil {
 		return nil, fmt.Errorf("organization not exists or inactive")
 	}
-
-	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(typex.SimpleStatusActive).ClearDeletedAt().Save(ctx)
+	// 更新地址信息
+	err = client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).SetInput(*contact).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	us, err := client.User.UpdateOneID(userID).SetInput(userInput).SetStatus(types.UserStatusActive).ClearDeletedAt().Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -687,7 +785,11 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	if err != nil {
 		return err
 	}
-	if usr.Email == "" {
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is null")
 	}
 	if !usr.Edges.LoginProfile.MfaEnabled {
@@ -704,7 +806,7 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":          usr.Email,
+				"to":          addr.Email,
 				"displayName": usr.DisplayName,
 				"mfaSecret":   usr.Edges.LoginProfile.MfaSecret,
 			},
@@ -727,7 +829,11 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	if err != nil {
 		return err
 	}
-	if usr.Email == "" {
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	if addr.Email == "" {
 		return fmt.Errorf("email is null")
 	}
 
@@ -744,15 +850,23 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 		}
 	}
 	newPwd := RandomStr(6)
-	// 更新用户密码
-	err = client.UserPassword.UpdateOneID(userID).Where(userpassword.SceneEQ(userpassword.SceneLogin)).SetPassword(SaltSecret(newPwd, slat)).Exec(ctx)
+	// 更新用户密码，status设置为active处理密码过期的status
+	err = client.UserPassword.Update().Where(
+		userpassword.UserID(userID),
+		userpassword.SceneEQ(userpassword.SceneLogin),
+	).SetPassword(SaltSecret(SHA256(newPwd), slat)).SetStatus(typex.SimpleStatusActive).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	// 如果用户被锁定则重置用户状态
+	err = client.User.UpdateOneID(userID).SetStatus(types.UserStatusActive).Exec(ctx)
 	if err != nil {
 		return err
 	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            usr.Email,
+				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.Edges.Identities[0].Code,
 				"password":      newPwd,
@@ -804,6 +918,15 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 			if input.MenuFavorite != nil {
 				create.SetMenuFavorite(input.MenuFavorite)
 			}
+			if input.ClientPreference != nil {
+				has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
+				if err != nil || !has {
+					return nil, fmt.Errorf("app not exists")
+				}
+				create.SetClientPreferences([]types.ClientPreference{
+					*input.ClientPreference,
+				})
+			}
 			return create.Save(ctx)
 		}
 		return nil, err
@@ -816,5 +939,346 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 	if input.MenuFavorite != nil {
 		update.SetMenuFavorite(input.MenuFavorite)
 	}
+	if input.ClientPreference != nil {
+		has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
+		if err != nil || !has {
+			return nil, fmt.Errorf("app not exists")
+		}
+		cps := oup.ClientPreferences
+		has = false
+		var currCP *types.ClientPreference
+		for i, v := range cps {
+			if v.AppCode == input.ClientPreference.AppCode {
+				currCP = &cps[i]
+				has = true
+				break
+			}
+		}
+		if !has {
+			// 不存在则直接添加
+			cps = append(cps, *input.ClientPreference)
+		} else {
+			// 存在则更新/添加对应的key
+			for _, v := range input.ClientPreference.Values {
+				has = false
+				for j, vv := range currCP.Values {
+					if vv.Key == v.Key {
+						has = true
+						currCP.Values[j] = v
+						break
+					}
+				}
+				if !has {
+					currCP.Values = append(currCP.Values, v)
+				}
+			}
+		}
+		update.SetClientPreferences(cps)
+	}
 	return update.Save(ctx)
+}
+
+// MoveCountry 移动国家.
+func (s *Service) MoveCountry(ctx context.Context, src, tar int, action model.ListAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarRegion := client.Country.GetX(ctx, tar)
+	builder := client.Country.UpdateOneID(src)
+	var start int32 = 0
+	switch action {
+	case model.ListActionUp:
+		start = tarRegion.DisplaySort
+		builder.SetDisplaySort(start)
+	case model.ListActionDown:
+		start = tarRegion.DisplaySort + 1
+		builder.SetDisplaySort(start)
+	}
+	err = client.Region.Update().Where(region.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+	if err != nil {
+		return
+	}
+	return builder.Exec(ctx)
+}
+
+// MoveRegion 移动地区目录.
+func (s *Service) MoveRegion(ctx context.Context, src, tar int, action model.TreeAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarRegion := client.Region.GetX(ctx, tar)
+	builder := client.Region.UpdateOneID(src)
+	var start int32 = 0
+	var resort = true
+	switch action {
+	case model.TreeActionChild:
+		var agg []struct {
+			Max *int32
+		}
+		err = client.Region.Query().Where(region.ParentID(tarRegion.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		if err != nil {
+			return err
+		}
+		if agg[0].Max == nil {
+			start = 1
+		} else {
+			start = *agg[0].Max + 1
+		}
+		builder.SetParentID(tarRegion.ID)
+		resort = false
+	case model.TreeActionUp:
+		start = tarRegion.DisplaySort
+		builder.SetParentID(tarRegion.ParentID).SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = tarRegion.DisplaySort + 1
+		builder.SetParentID(tarRegion.ParentID).SetDisplaySort(start)
+	}
+	if resort {
+		err = client.Region.Update().Where(region.ParentID(tarRegion.ParentID), region.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+		if err != nil {
+			return
+		}
+	}
+
+	return builder.Exec(ctx)
+}
+
+func (s *Service) GetTopOrg(ctx context.Context, orgID int) (*ent.Org, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if o.ParentID == 0 {
+		return o, nil
+	}
+	return s.GetTopOrg(ctx, o.ParentID)
+}
+
+func (s *Service) GetOrg(ctx context.Context, orgID int) (*ent.Org, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if o.Kind == org.KindRoot {
+		return o, nil
+	}
+	return s.GetOrg(ctx, o.ParentID)
+}
+
+func (s *Service) getTopOrgIdByPath(path string) (int, error) {
+	code := strings.Split(path, "/")[0]
+	oID, err := strconv.ParseInt(code, 36, 64)
+	if err != nil {
+		return 0, err
+	}
+	return int(oID), nil
+}
+
+func (s *Service) OrgPolicyView(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
+	// 获取用户在当前组织的策略视图
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		// 获取组织id，传递的可能是部门
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	uid, err := identity.UserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 用户授权的角色
+	rIDs, err := s.Client.OrgRoleUser.Query().Where(
+		orgroleuser.OrgID(tid),
+		orgroleuser.UserID(uid),
+	).Select(orgroleuser.FieldOrgRoleID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 获取用户所有策略视图相关的应用权限策略
+	apIDs, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.HasPermissionsWith(
+			permission.OrgID(tid),
+			permission.HasOrgPolicyWith(
+				orgpolicy.AppPolicyIDNotNil(),
+				orgpolicy.HasAppPolicyWith(
+					apppolicy.KindEQ(apppolicy.KindView),
+					apppolicy.HasAppWith(app.Code(appCode)),
+				),
+			),
+			permission.Or(
+				permission.UserID(uid),
+				permission.RoleIDIn(rIDs...),
+			),
+		),
+	).Select(orgpolicy.FieldAppPolicyID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 根据用户的应用权限策略获取用户策略视图
+	uapvs, err := s.Client.AppPolicyView.Query().Where(
+		apppolicyview.HasAppPolicyWith(
+			apppolicy.IDIn(apIDs...),
+		),
+	).All(ctx)
+	// 获取orgPolicy
+	ops, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.OrgID(tid),
+		orgpolicy.AppPolicyIDIn(apIDs...),
+		orgpolicy.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	opMaps := make(map[int]*ent.OrgPolicy)
+	for _, ap := range ops {
+		if ap.AppPolicyID == nil {
+			continue
+		}
+		opMaps[*ap.AppPolicyID] = ap
+	}
+	// 获取应用的策略视图
+	apvs, err := s.Client.AppPolicyView.Query().Where(apppolicyview.HasAppWith(app.Code(appCode))).All(ctx)
+	// 找出视图的父节点
+	papvs := make([]*ent.AppPolicyView, 0)
+	findAppPolicyViewParents(apvs, uapvs, &papvs)
+	// pms 去重
+	temp := make(map[string]bool)
+	result := make([]*ent.AppPolicyView, 0, len(papvs))
+	for _, v := range papvs {
+		key := strconv.Itoa(v.ID)
+		if _, ok := temp[key]; !ok {
+			temp[key] = true
+			result = append(result, v)
+		}
+	}
+	uapvs = append(uapvs, result...)
+	// 组装数据
+	res := make([]*model.AppPolicyViewOrgPolicy, 0, len(ops))
+	for _, op := range uapvs {
+		if op.PolicyID == nil {
+			res = append(res, &model.AppPolicyViewOrgPolicy{
+				AppPolicyView: op,
+				OrgPolicy:     nil,
+			})
+			continue
+		}
+		res = append(res, &model.AppPolicyViewOrgPolicy{
+			AppPolicyView: op,
+			OrgPolicy:     opMaps[*op.PolicyID],
+		})
+	}
+	return res, nil
+}
+
+func findAppPolicyViewParents(appPolicyViews, userPolicyViews []*ent.AppPolicyView, parent *[]*ent.AppPolicyView) {
+	for _, upv := range userPolicyViews {
+		for _, apv := range appPolicyViews {
+			if upv.ParentID == apv.ID {
+				*parent = append(*parent, apv)
+				if upv.ParentID != 0 {
+					findAppPolicyViewParents(appPolicyViews, []*ent.AppPolicyView{apv}, parent)
+				}
+				continue
+			}
+		}
+	}
+}
+
+func (s *Service) ParentDomain(ctx context.Context, orgID int) (string, error) {
+	o, err := s.Client.Org.Query().Where(org.ID(orgID)).Only(ctx)
+	if err != nil {
+		return "", err
+	}
+	if o.Domain == "" && o.ParentID == 0 {
+		return "", nil
+	}
+	if o.Domain != "" {
+		return o.Domain, nil
+	}
+	return s.ParentDomain(ctx, o.ParentID)
+}
+
+// GetOrgDomain 获取组织域名.orgID为根组织.
+func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
+	c := s.Client
+	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
+	if orgr.Domain == "" {
+		return "", fmt.Errorf("organization %d domain is empty", orgID)
+	}
+	return orgr.Domain, nil
+}
+
+// IsRootOrg 判断组织是否root
+func (s *Service) IsRootOrg(ctx context.Context, orgID int) (bool, error) {
+	return s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Exist(ctx)
+}
+
+// GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
+func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
+	c := s.Client
+	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
+		Order(ent.Asc(org.FieldPath)).First(ctx)
+}
+
+func (s *Service) OrgFileIdentities(ctx context.Context, tid int) ([]*ent.FileIdentity, error) {
+	fis, err := s.Client.FileIdentity.Query().Where(fileidentity.TenantID(tid)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if len(fis) == 0 {
+		t, err := s.Client.Org.Get(ctx, tid)
+		if err != nil {
+			return nil, err
+		}
+		if t.ParentID == 0 {
+			return nil, nil
+		}
+		return s.OrgFileIdentities(ctx, t.ParentID)
+	}
+	return fis, nil
+}
+
+func (s *Service) DeleteUserIdentity(ctx context.Context, id int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 只有一个凭证则不允许删除
+	ui, err := client.UserIdentity.Get(ctx, id)
+	if err != nil {
+		return false, err
+	}
+	c, err := client.UserIdentity.Query().Where(useridentity.UserID(ui.UserID)).Count(ctx)
+	if err != nil {
+		return false, err
+	}
+	if c <= 1 {
+		return false, fmt.Errorf("at least one identity is required")
+	}
+	// 更新用户的PrincipalName
+	has, err := client.User.Query().Where(user.ID(ui.UserID), user.PrincipalName(ui.Code)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		uis, err := client.UserIdentity.Query().Where(useridentity.UserID(ui.UserID)).All(ctx)
+		if err != nil {
+			return false, err
+		}
+		principalName := ""
+		for _, i := range uis {
+			if i.ID == id {
+				continue
+			}
+			if i.Kind == useridentity.KindEmail {
+				principalName = i.Code
+				break
+			} else {
+				principalName = i.Code
+			}
+		}
+		err = client.User.UpdateOneID(ui.UserID).SetPrincipalName(principalName).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	}
+	// 删除凭证
+	err = client.UserIdentity.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
 }

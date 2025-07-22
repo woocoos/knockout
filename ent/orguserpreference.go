@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/user"
@@ -30,12 +31,14 @@ type OrgUserPreference struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 用户id
 	UserID int `json:"user_id,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// 用户收藏菜单
 	MenuFavorite []int `json:"menu_favorite,omitempty"`
 	// 用户最近访问菜单
 	MenuRecent []int `json:"menu_recent,omitempty"`
+	// 客户端偏好设置
+	ClientPreferences []types.ClientPreference `json:"client_preferences,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgUserPreferenceQuery when eager-loading is set.
 	Edges        OrgUserPreferenceEdges `json:"edges"`
@@ -82,7 +85,7 @@ func (*OrgUserPreference) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orguserpreference.FieldMenuFavorite, orguserpreference.FieldMenuRecent:
+		case orguserpreference.FieldMenuFavorite, orguserpreference.FieldMenuRecent, orguserpreference.FieldClientPreferences:
 			values[i] = new([]byte)
 		case orguserpreference.FieldID, orguserpreference.FieldCreatedBy, orguserpreference.FieldUpdatedBy, orguserpreference.FieldUserID, orguserpreference.FieldOrgID:
 			values[i] = new(sql.NullInt64)
@@ -161,6 +164,14 @@ func (oup *OrgUserPreference) assignValues(columns []string, values []any) error
 					return fmt.Errorf("unmarshal field menu_recent: %w", err)
 				}
 			}
+		case orguserpreference.FieldClientPreferences:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field client_preferences", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &oup.ClientPreferences); err != nil {
+					return fmt.Errorf("unmarshal field client_preferences: %w", err)
+				}
+			}
 		default:
 			oup.selectValues.Set(columns[i], values[i])
 		}
@@ -230,6 +241,9 @@ func (oup *OrgUserPreference) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("menu_recent=")
 	builder.WriteString(fmt.Sprintf("%v", oup.MenuRecent))
+	builder.WriteString(", ")
+	builder.WriteString("client_preferences=")
+	builder.WriteString(fmt.Sprintf("%v", oup.ClientPreferences))
 	builder.WriteByte(')')
 	return builder.String()
 }

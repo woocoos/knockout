@@ -10,13 +10,19 @@ import (
 
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
-	generated1 "github.com/woocoos/knockout/api/graphql/generated"
+	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
+	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/orguser"
+	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/service/resource"
 )
@@ -38,7 +44,29 @@ func (r *mutationResolver) CreateOrganization(ctx context.Context, input ent.Cre
 
 // UpdateOrganization is the resolver for the updateOrganization field.
 func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, input ent.UpdateOrgInput) (*ent.Org, error) {
-	return r.client.Org.UpdateOneID(orgID).SetInput(input).Save(ctx)
+	client := ent.FromContext(ctx)
+	if input.OwnerID != nil {
+		u, err := client.User.Query().Where(user.ID(*input.OwnerID)).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if u.UserType != user.UserTypeAccount {
+			// TODO 先直接升级为account，后续考虑member用户如何升级account
+			err = client.User.UpdateOneID(*input.OwnerID).SetUserType(user.UserTypeAccount).Exec(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID)).Exist(ctx)
+			if err != nil {
+				return nil, err
+			}
+			if has {
+				return nil, fmt.Errorf("the account is the other org owner")
+			}
+		}
+	}
+	return client.Org.UpdateOneID(orgID).SetInput(input).Save(ctx)
 }
 
 // DeleteOrganization is the resolver for the deleteOrganization field.
@@ -62,8 +90,8 @@ func (r *mutationResolver) CreateOrganizationAccount(ctx context.Context, rootOr
 }
 
 // CreateOrganizationUser is the resolver for the createOrganizationUser field.
-func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput) (*ent.User, error) {
-	return r.resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember)
+func (r *mutationResolver) CreateOrganizationUser(ctx context.Context, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) (*ent.User, error) {
+	return r.resource.CreateOrganizationUser(ctx, rootOrgID, input, user.UserTypeMember, orgUserType)
 }
 
 // AllotOrganizationUser is the resolver for the allotOrganizationUser field.
@@ -79,8 +107,8 @@ func (r *mutationResolver) RemoveOrganizationUser(ctx context.Context, orgID int
 }
 
 // UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput) (*ent.User, error) {
-	return r.resource.UpdateUser(ctx, userID, input)
+func (r *mutationResolver) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.UpdateUser(ctx, userID, input, contact)
 }
 
 // UpdateLoginProfile is the resolver for the updateLoginProfile field.
@@ -101,8 +129,7 @@ func (r *mutationResolver) BindUserIdentity(ctx context.Context, input ent.Creat
 
 // DeleteUserIdentity is the resolver for the deleteUserIdentity field.
 func (r *mutationResolver) DeleteUserIdentity(ctx context.Context, id int) (bool, error) {
-	err := ent.FromContext(ctx).UserIdentity.DeleteOneID(id).Exec(ctx)
-	return err == nil, err
+	return r.resource.DeleteUserIdentity(ctx, id)
 }
 
 // ChangePassword is the resolver for the changePassword field.
@@ -151,8 +178,8 @@ func (r *mutationResolver) DeleteAppAction(ctx context.Context, actionID int) (b
 }
 
 // CreateAppPolicy is the resolver for the createAppPolicy field.
-func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
-	return r.resource.CreateAppPolicy(ctx, appID, input)
+func (r *mutationResolver) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+	return r.resource.CreateAppPolicy(ctx, appID, appPolicyViewID, input)
 }
 
 // UpdateAppPolicy is the resolver for the updateAppPolicy field.
@@ -266,6 +293,15 @@ func (r *mutationResolver) RevokeAppRolePolicy(ctx context.Context, appID int, r
 	return err == nil, err
 }
 
+// SyncAppRoleToOrg is the resolver for the syncAppRoleToOrg field.
+func (r *mutationResolver) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int) (bool, error) {
+	err := r.resource.SyncAppRoleToOrg(ctx, orgID, appRoleID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // AssignOrganizationApp is the resolver for the assignOrganizationApp field.
 func (r *mutationResolver) AssignOrganizationApp(ctx context.Context, orgID int, appID int) (bool, error) {
 	err := r.resource.AssignOrganizationApp(ctx, orgID, appID)
@@ -286,6 +322,11 @@ func (r *mutationResolver) AssignOrganizationAppPolicy(ctx context.Context, orgI
 
 // RevokeOrganizationAppPolicy is the resolver for the revokeOrganizationAppPolicy field.
 func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, appPolicyID int) (bool, error) {
+	if has, err := r.resource.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
+		return false, err
+	} else if !has {
+		return false, fmt.Errorf("no allow to revoke")
+	}
 	err := r.resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
 	return err == nil, err
 }
@@ -373,8 +414,8 @@ func (r *mutationResolver) UpdateAppRes(ctx context.Context, appResID int, input
 }
 
 // RecoverOrgUser is the resolver for the recoverOrgUser field.
-func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) (*ent.User, error) {
-	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput)
+func (r *mutationResolver) RecoverOrgUser(ctx context.Context, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
+	return r.resource.RecoverOrgUser(ctx, userID, userInput, pwdKind, pwdInput, contact)
 }
 
 // CreateFileSource is the resolver for the createFileSource field.
@@ -478,21 +519,313 @@ func (r *mutationResolver) SaveOrgUserPreference(ctx context.Context, input mode
 	return r.resource.SaveOrgUserPreference(ctx, input)
 }
 
-// Mutation returns generated1.MutationResolver implementation.
-func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
+// CreateCountry is the resolver for the createCountry field.
+func (r *mutationResolver) CreateCountry(ctx context.Context, input ent.CreateCountryInput) (*ent.Country, error) {
+	return ent.FromContext(ctx).Country.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateCountry is the resolver for the updateCountry field.
+func (r *mutationResolver) UpdateCountry(ctx context.Context, countryID int, input ent.UpdateCountryInput) (*ent.Country, error) {
+	return ent.FromContext(ctx).Country.UpdateOneID(countryID).SetInput(input).Save(ctx)
+}
+
+// DeleteCountry is the resolver for the deleteCountry field.
+func (r *mutationResolver) DeleteCountry(ctx context.Context, countryID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 判断是否被引用
+	has, err := client.Country.Query().Where(country.HasRegionsWith(region.CountryID(countryID))).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("country has children")
+	}
+	err = client.Country.DeleteOneID(countryID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveCountry is the resolver for the moveCountry field.
+func (r *mutationResolver) MoveCountry(ctx context.Context, sourceID int, targetID int, action model.ListAction) (bool, error) {
+	err := r.resource.MoveCountry(ctx, sourceID, targetID, action)
+	return err == nil, err
+}
+
+// CreateRegion is the resolver for the createRegion field.
+func (r *mutationResolver) CreateRegion(ctx context.Context, input ent.CreateRegionInput) (*ent.Region, error) {
+	return ent.FromContext(ctx).Region.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateRegion is the resolver for the updateRegion field.
+func (r *mutationResolver) UpdateRegion(ctx context.Context, regionID int, input ent.UpdateRegionInput) (*ent.Region, error) {
+	return ent.FromContext(ctx).Region.UpdateOneID(regionID).SetInput(input).Save(ctx)
+}
+
+// DeleteRegion is the resolver for the deleteRegion field.
+func (r *mutationResolver) DeleteRegion(ctx context.Context, regionID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	// 判断是否被引用
+	has, err := client.Region.Query().Where(region.ParentID(regionID)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("region has children")
+	}
+	err = client.Region.DeleteOneID(regionID).Exec(ctx)
+	return err == nil, err
+}
+
+// MoveRegion is the resolver for the moveRegion field.
+func (r *mutationResolver) MoveRegion(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.resource.MoveRegion(ctx, sourceID, targetID, action)
+	return err == nil, err
+}
+
+// ChangeOrgUserType is the resolver for the changeOrgUserType field.
+func (r *mutationResolver) ChangeOrgUserType(ctx context.Context, userID int, orgID int, userType orguser.UserType) (bool, error) {
+	co, err := r.client.Org.Get(ctx, orgID)
+	if err != nil {
+		return false, err
+	}
+	client := ent.FromContext(ctx)
+	err = client.OrgUser.Update().Where(orguser.UserID(userID), orguser.OrgID(co.ID)).SetUserType(userType).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// CreateCurrency is the resolver for the createCurrency field.
+func (r *mutationResolver) CreateCurrency(ctx context.Context, input ent.CreateCurrencyInput) (*ent.Currency, error) {
+	return ent.FromContext(ctx).Currency.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateCurrency is the resolver for the updateCurrency field.
+func (r *mutationResolver) UpdateCurrency(ctx context.Context, currencyID int, input ent.UpdateCurrencyInput) (*ent.Currency, error) {
+	return ent.FromContext(ctx).Currency.UpdateOneID(currencyID).SetInput(input).Save(ctx)
+}
+
+// DeleteCurrency is the resolver for the deleteCurrency field.
+func (r *mutationResolver) DeleteCurrency(ctx context.Context, currencyID int) (bool, error) {
+	err := ent.FromContext(ctx).Currency.DeleteOneID(currencyID).Exec(ctx)
+	return err == nil, err
+}
+
+// AutoGrantApp is the resolver for the AutoGrantApp field.
+func (r *mutationResolver) AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) (bool, error) {
+	err := r.resource.AutoGrantApp(ctx, appCode, orgID, userID)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// CreateAppPolicyView is the resolver for the createAppPolicyView field.
+func (r *mutationResolver) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	return r.resource.CreateAppPolicyView(ctx, input)
+}
+
+// UpdateAppPolicyView is the resolver for the updateAppPolicyView field.
+func (r *mutationResolver) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	return r.resource.UpdateAppPolicyView(ctx, appPolicyViewID, input)
+}
+
+// DeleteAppPolicyView is the resolver for the deleteAppPolicyView field.
+func (r *mutationResolver) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error) {
+	return r.resource.DeleteAppPolicyView(ctx, appPolicyViewID)
+}
+
+// MoveAppPolicyView is the resolver for the moveAppPolicyView field.
+func (r *mutationResolver) MoveAppPolicyView(ctx context.Context, sourceID int, targetID int, action model.TreeAction) (bool, error) {
+	err := r.resource.MoveAppPolicyView(ctx, sourceID, targetID, action)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// AssignAppRolePolicyView is the resolver for the assignAppRolePolicyView field.
+func (r *mutationResolver) AssignAppRolePolicyView(ctx context.Context, appID int, roleID int, addAppPolicyIDs []int, rmAppPolicyIDs []int) (bool, error) {
+	// TODO 是否需要判断appPolicyIDs已经添加？
+	// 添加
+	err := r.resource.AssignAppRolePolicy(ctx, appID, roleID, addAppPolicyIDs)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	err = r.resource.RevokeAppRolePolicy(ctx, appID, roleID, rmAppPolicyIDs)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// AssignOrgUserPolicyView is the resolver for the assignOrgUserPolicyView field.
+func (r *mutationResolver) AssignOrgUserPolicyView(ctx context.Context, orgID int, userID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
+	// TODO 先使用grant处理，后期考虑批量处理
+	for _, orgPolicyID := range addOrgPolicyIDs {
+		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindUser,
+			UserID:        &userID,
+			OrgID:         orgID,
+			OrgPolicyID:   orgPolicyID,
+		})
+		if err != nil {
+			return false, err
+		}
+	}
+	pIDs, err := r.client.Permission.Query().Where(
+		permission.OrgPolicyIDIn(rmOrgPolicyIDs...),
+		permission.UserID(userID),
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+	).Select(permission.FieldID).Ints(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	for _, pID := range pIDs {
+		err = r.resource.Revoke(ctx, orgID, pID)
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+// AssignOrgRolePolicyView is the resolver for the assignOrgRolePolicyView field.
+func (r *mutationResolver) AssignOrgRolePolicyView(ctx context.Context, orgID int, roleID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) (bool, error) {
+	// TODO 先使用grant处理，后期考虑批量处理
+	for _, orgPolicyID := range addOrgPolicyIDs {
+		_, err := r.resource.Grant(ctx, ent.CreatePermissionInput{
+			PrincipalKind: permission.PrincipalKindRole,
+			RoleID:        &roleID,
+			OrgID:         orgID,
+			OrgPolicyID:   orgPolicyID,
+		})
+		if err != nil {
+			return false, err
+		}
+	}
+	pIDs, err := r.client.Permission.Query().Where(
+		permission.OrgPolicyIDIn(rmOrgPolicyIDs...),
+		permission.RoleID(roleID),
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+	).Select(permission.FieldID).Ints(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 删除
+	for _, pID := range pIDs {
+		err = r.resource.Revoke(ctx, orgID, pID)
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+// CreateQuotaItem is the resolver for the createQuotaItem field.
+func (r *mutationResolver) CreateQuotaItem(ctx context.Context, input ent.CreateQuotaItemInput) (*ent.QuotaItem, error) {
+	return ent.FromContext(ctx).QuotaItem.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateQuotaItem is the resolver for the updateQuotaItem field.
+func (r *mutationResolver) UpdateQuotaItem(ctx context.Context, id int, input ent.UpdateQuotaItemInput) (*ent.QuotaItem, error) {
+	return ent.FromContext(ctx).QuotaItem.UpdateOneID(id).SetInput(input).Save(ctx)
+}
+
+// DeleteQuotaItem is the resolver for the deleteQuotaItem field.
+func (r *mutationResolver) DeleteQuotaItem(ctx context.Context, id int) (bool, error) {
+	err := ent.FromContext(ctx).QuotaItem.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateQuota is the resolver for the createQuota field.
+func (r *mutationResolver) CreateQuota(ctx context.Context, input ent.CreateQuotaInput) (*ent.Quota, error) {
+	return ent.FromContext(ctx).Quota.Create().SetInput(input).Save(ctx)
+}
+
+// UpdateQuota is the resolver for the updateQuota field.
+func (r *mutationResolver) UpdateQuota(ctx context.Context, id int, input ent.UpdateQuotaInput) (*ent.Quota, error) {
+	return ent.FromContext(ctx).Quota.UpdateOneID(id).SetInput(input).Save(ctx)
+}
+
+// DeleteQuota is the resolver for the deleteQuota field.
+func (r *mutationResolver) DeleteQuota(ctx context.Context, id int) (bool, error) {
+	err := ent.FromContext(ctx).Quota.DeleteOneID(id).Exec(ctx)
+	return err == nil, err
+}
+
+// CreateUserPasswordPolicy is the resolver for the createUserPasswordPolicy field.
+func (r *mutationResolver) CreateUserPasswordPolicy(ctx context.Context, orgID int, input ent.CreateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.CreateUserPasswordPolicy(ctx, orgID, input)
+}
+
+// UpdateUserPasswordPolicy is the resolver for the updateUserPasswordPolicy field.
+func (r *mutationResolver) UpdateUserPasswordPolicy(ctx context.Context, orgID int, input ent.UpdateUserPasswordPolicyInput) (*ent.UserPasswordPolicy, error) {
+	return r.resource.UpdateUserPasswordPolicy(ctx, orgID, input)
+}
+
+// DeleteUserPasswordPolicy is the resolver for the deleteUserPasswordPolicy field.
+func (r *mutationResolver) DeleteUserPasswordPolicy(ctx context.Context) (bool, error) {
+	return r.resource.DeleteUserPasswordPolicy(ctx)
+}
+
+// UpdateUserDevice is the resolver for the updateUserDevice field.
+func (r *mutationResolver) UpdateUserDevice(ctx context.Context, deviceID int, input ent.UpdateUserDeviceInput) (*ent.UserDevice, error) {
+	return ent.FromContext(ctx).UserDevice.UpdateOneID(deviceID).SetInput(input).Save(ctx)
+}
+
+// EnableVerifyUserDevice is the resolver for the enableVerifyUserDevice field.
+func (r *mutationResolver) EnableVerifyUserDevice(ctx context.Context, userID int, enable bool, deviceInfoInput ent.CreateUserDeviceInput) (bool, error) {
+	client := ent.FromContext(ctx)
+	err := client.UserLoginProfile.Update().Where(userloginprofile.UserID(userID)).SetVerifyDevice(enable).Exec(ctx)
+	if err != nil {
+		return false, err
+	}
+	has, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	// 如果存在则更新
+	if has {
+		ud, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.DeviceUID(deviceInfoInput.DeviceUID)).Only(ctx)
+		if err != nil {
+			return false, err
+		}
+		err = client.UserDevice.UpdateOne(ud).SetInput(ent.UpdateUserDeviceInput{
+			DeviceName:    deviceInfoInput.DeviceName,
+			SystemName:    deviceInfoInput.SystemName,
+			SystemVersion: deviceInfoInput.SystemVersion,
+			AppVersion:    deviceInfoInput.AppVersion,
+			DeviceModel:   deviceInfoInput.DeviceModel,
+		}).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	} else {
+		err = client.UserDevice.Create().SetInput(deviceInfoInput).SetStatus(typex.SimpleStatusActive).SetUserID(userID).Exec(ctx)
+		if err != nil {
+			return false, err
+		}
+	}
+	return true, nil
+}
+
+// DeleteUserDevice is the resolver for the deleteUserDevice field.
+func (r *mutationResolver) DeleteUserDevice(ctx context.Context, userID int, deviceID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	ud, err := client.UserDevice.Query().Where(userdevice.UserID(userID), userdevice.ID(deviceID)).Only(ctx)
+	if err != nil {
+		return false, err
+	}
+	err = client.UserDevice.DeleteOne(ud).Exec(ctx)
+	return err == nil, err
+}
+
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *mutationResolver) UpdateDefaultFileIdentity(ctx context.Context, identityID int, orgID *int) (bool, error) {
-	// 不传取默认
-	if orgID == nil {
-
-	}
-	panic("")
-}

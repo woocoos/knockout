@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
@@ -174,6 +175,20 @@ func (amc *AppMenuCreate) SetNillableDisplaySort(i *int32) *AppMenuCreate {
 	return amc
 }
 
+// SetStatus sets the "status" field.
+func (amc *AppMenuCreate) SetStatus(ts typex.SimpleStatus) *AppMenuCreate {
+	amc.mutation.SetStatus(ts)
+	return amc
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (amc *AppMenuCreate) SetNillableStatus(ts *typex.SimpleStatus) *AppMenuCreate {
+	if ts != nil {
+		amc.SetStatus(*ts)
+	}
+	return amc
+}
+
 // SetID sets the "id" field.
 func (amc *AppMenuCreate) SetID(i int) *AppMenuCreate {
 	amc.mutation.SetID(i)
@@ -196,6 +211,26 @@ func (amc *AppMenuCreate) SetApp(a *App) *AppMenuCreate {
 // SetAction sets the "action" edge to the AppAction entity.
 func (amc *AppMenuCreate) SetAction(a *AppAction) *AppMenuCreate {
 	return amc.SetActionID(a.ID)
+}
+
+// SetParent sets the "parent" edge to the AppMenu entity.
+func (amc *AppMenuCreate) SetParent(a *AppMenu) *AppMenuCreate {
+	return amc.SetParentID(a.ID)
+}
+
+// AddChildIDs adds the "children" edge to the AppMenu entity by IDs.
+func (amc *AppMenuCreate) AddChildIDs(ids ...int) *AppMenuCreate {
+	amc.mutation.AddChildIDs(ids...)
+	return amc
+}
+
+// AddChildren adds the "children" edges to the AppMenu entity.
+func (amc *AppMenuCreate) AddChildren(a ...*AppMenu) *AppMenuCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return amc.AddChildIDs(ids...)
 }
 
 // Mutation returns the AppMenuMutation object of the builder.
@@ -242,6 +277,10 @@ func (amc *AppMenuCreate) defaults() error {
 		v := appmenu.DefaultCreatedAt()
 		amc.mutation.SetCreatedAt(v)
 	}
+	if _, ok := amc.mutation.Status(); !ok {
+		v := appmenu.DefaultStatus
+		amc.mutation.SetStatus(v)
+	}
 	if _, ok := amc.mutation.ID(); !ok {
 		if appmenu.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized appmenu.DefaultID (forgotten import ent/runtime?)")
@@ -273,6 +312,14 @@ func (amc *AppMenuCreate) check() error {
 	}
 	if _, ok := amc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppMenu.name"`)}
+	}
+	if v, ok := amc.mutation.Status(); ok {
+		if err := appmenu.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "AppMenu.status": %w`, err)}
+		}
+	}
+	if len(amc.mutation.ParentIDs()) == 0 {
+		return &ValidationError{Name: "parent", err: errors.New(`ent: missing required edge "AppMenu.parent"`)}
 	}
 	return nil
 }
@@ -323,10 +370,6 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 		_spec.SetField(appmenu.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
 	}
-	if value, ok := amc.mutation.ParentID(); ok {
-		_spec.SetField(appmenu.FieldParentID, field.TypeInt, value)
-		_node.ParentID = value
-	}
 	if value, ok := amc.mutation.Kind(); ok {
 		_spec.SetField(appmenu.FieldKind, field.TypeEnum, value)
 		_node.Kind = value
@@ -350,6 +393,10 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 	if value, ok := amc.mutation.DisplaySort(); ok {
 		_spec.SetField(appmenu.FieldDisplaySort, field.TypeInt32, value)
 		_node.DisplaySort = value
+	}
+	if value, ok := amc.mutation.Status(); ok {
+		_spec.SetField(appmenu.FieldStatus, field.TypeEnum, value)
+		_node.Status = value
 	}
 	if nodes := amc.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -383,6 +430,39 @@ func (amc *AppMenuCreate) createSpec() (*AppMenu, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.ActionID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := amc.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   appmenu.ParentTable,
+			Columns: []string{appmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := amc.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   appmenu.ChildrenTable,
+			Columns: []string{appmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appmenu.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -488,12 +568,6 @@ func (u *AppMenuUpsert) SetParentID(v int) *AppMenuUpsert {
 // UpdateParentID sets the "parent_id" field to the value that was provided on create.
 func (u *AppMenuUpsert) UpdateParentID() *AppMenuUpsert {
 	u.SetExcluded(appmenu.FieldParentID)
-	return u
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsert) AddParentID(v int) *AppMenuUpsert {
-	u.Add(appmenu.FieldParentID, v)
 	return u
 }
 
@@ -617,6 +691,24 @@ func (u *AppMenuUpsert) ClearDisplaySort() *AppMenuUpsert {
 	return u
 }
 
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsert) SetStatus(v typex.SimpleStatus) *AppMenuUpsert {
+	u.Set(appmenu.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsert) UpdateStatus() *AppMenuUpsert {
+	u.SetExcluded(appmenu.FieldStatus)
+	return u
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsert) ClearStatus() *AppMenuUpsert {
+	u.SetNull(appmenu.FieldStatus)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -727,13 +819,6 @@ func (u *AppMenuUpsertOne) ClearUpdatedAt() *AppMenuUpsertOne {
 func (u *AppMenuUpsertOne) SetParentID(v int) *AppMenuUpsertOne {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.SetParentID(v)
-	})
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsertOne) AddParentID(v int) *AppMenuUpsertOne {
-	return u.Update(func(s *AppMenuUpsert) {
-		s.AddParentID(v)
 	})
 }
 
@@ -881,6 +966,27 @@ func (u *AppMenuUpsertOne) UpdateDisplaySort() *AppMenuUpsertOne {
 func (u *AppMenuUpsertOne) ClearDisplaySort() *AppMenuUpsertOne {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsertOne) SetStatus(v typex.SimpleStatus) *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsertOne) UpdateStatus() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsertOne) ClearStatus() *AppMenuUpsertOne {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearStatus()
 	})
 }
 
@@ -1163,13 +1269,6 @@ func (u *AppMenuUpsertBulk) SetParentID(v int) *AppMenuUpsertBulk {
 	})
 }
 
-// AddParentID adds v to the "parent_id" field.
-func (u *AppMenuUpsertBulk) AddParentID(v int) *AppMenuUpsertBulk {
-	return u.Update(func(s *AppMenuUpsert) {
-		s.AddParentID(v)
-	})
-}
-
 // UpdateParentID sets the "parent_id" field to the value that was provided on create.
 func (u *AppMenuUpsertBulk) UpdateParentID() *AppMenuUpsertBulk {
 	return u.Update(func(s *AppMenuUpsert) {
@@ -1314,6 +1413,27 @@ func (u *AppMenuUpsertBulk) UpdateDisplaySort() *AppMenuUpsertBulk {
 func (u *AppMenuUpsertBulk) ClearDisplaySort() *AppMenuUpsertBulk {
 	return u.Update(func(s *AppMenuUpsert) {
 		s.ClearDisplaySort()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *AppMenuUpsertBulk) SetStatus(v typex.SimpleStatus) *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *AppMenuUpsertBulk) UpdateStatus() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.UpdateStatus()
+	})
+}
+
+// ClearStatus clears the value of the "status" field.
+func (u *AppMenuUpsertBulk) ClearStatus() *AppMenuUpsertBulk {
+	return u.Update(func(s *AppMenuUpsert) {
+		s.ClearStatus()
 	})
 }
 

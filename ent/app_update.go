@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
@@ -306,23 +307,23 @@ func (au *AppUpdate) ClearStatus() *AppUpdate {
 	return au
 }
 
-// SetPrivate sets the "private" field.
-func (au *AppUpdate) SetPrivate(b bool) *AppUpdate {
-	au.mutation.SetPrivate(b)
+// SetOrgPrivate sets the "org_private" field.
+func (au *AppUpdate) SetOrgPrivate(b bool) *AppUpdate {
+	au.mutation.SetOrgPrivate(b)
 	return au
 }
 
-// SetNillablePrivate sets the "private" field if the given value is not nil.
-func (au *AppUpdate) SetNillablePrivate(b *bool) *AppUpdate {
+// SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
+func (au *AppUpdate) SetNillableOrgPrivate(b *bool) *AppUpdate {
 	if b != nil {
-		au.SetPrivate(*b)
+		au.SetOrgPrivate(*b)
 	}
 	return au
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (au *AppUpdate) ClearPrivate() *AppUpdate {
-	au.mutation.ClearPrivate()
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (au *AppUpdate) ClearOrgPrivate() *AppUpdate {
+	au.mutation.ClearOrgPrivate()
 	return au
 }
 
@@ -426,6 +427,21 @@ func (au *AppUpdate) AddPolicies(a ...*AppPolicy) *AppUpdate {
 		ids[i] = a[i].ID
 	}
 	return au.AddPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (au *AppUpdate) AddPolicyViewIDs(ids ...int) *AppUpdate {
+	au.mutation.AddPolicyViewIDs(ids...)
+	return au
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (au *AppUpdate) AddPolicyViews(a ...*AppPolicyView) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
@@ -581,6 +597,27 @@ func (au *AppUpdate) RemovePolicies(a ...*AppPolicy) *AppUpdate {
 		ids[i] = a[i].ID
 	}
 	return au.RemovePolicyIDs(ids...)
+}
+
+// ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
+func (au *AppUpdate) ClearPolicyViews() *AppUpdate {
+	au.mutation.ClearPolicyViews()
+	return au
+}
+
+// RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
+func (au *AppUpdate) RemovePolicyViewIDs(ids ...int) *AppUpdate {
+	au.mutation.RemovePolicyViewIDs(ids...)
+	return au
+}
+
+// RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
+func (au *AppUpdate) RemovePolicyViews(a ...*AppPolicyView) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemovePolicyViewIDs(ids...)
 }
 
 // ClearOrgs clears all "orgs" edges to the Org entity.
@@ -806,11 +843,11 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := au.mutation.Private(); ok {
-		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
+	if value, ok := au.mutation.OrgPrivate(); ok {
+		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if au.mutation.PrivateCleared() {
-		_spec.ClearField(app.FieldPrivate, field.TypeBool)
+	if au.mutation.OrgPrivateCleared() {
+		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
 	if value, ok := au.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
@@ -1039,6 +1076,51 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !au.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1482,23 +1564,23 @@ func (auo *AppUpdateOne) ClearStatus() *AppUpdateOne {
 	return auo
 }
 
-// SetPrivate sets the "private" field.
-func (auo *AppUpdateOne) SetPrivate(b bool) *AppUpdateOne {
-	auo.mutation.SetPrivate(b)
+// SetOrgPrivate sets the "org_private" field.
+func (auo *AppUpdateOne) SetOrgPrivate(b bool) *AppUpdateOne {
+	auo.mutation.SetOrgPrivate(b)
 	return auo
 }
 
-// SetNillablePrivate sets the "private" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillablePrivate(b *bool) *AppUpdateOne {
+// SetNillableOrgPrivate sets the "org_private" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableOrgPrivate(b *bool) *AppUpdateOne {
 	if b != nil {
-		auo.SetPrivate(*b)
+		auo.SetOrgPrivate(*b)
 	}
 	return auo
 }
 
-// ClearPrivate clears the value of the "private" field.
-func (auo *AppUpdateOne) ClearPrivate() *AppUpdateOne {
-	auo.mutation.ClearPrivate()
+// ClearOrgPrivate clears the value of the "org_private" field.
+func (auo *AppUpdateOne) ClearOrgPrivate() *AppUpdateOne {
+	auo.mutation.ClearOrgPrivate()
 	return auo
 }
 
@@ -1602,6 +1684,21 @@ func (auo *AppUpdateOne) AddPolicies(a ...*AppPolicy) *AppUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return auo.AddPolicyIDs(ids...)
+}
+
+// AddPolicyViewIDs adds the "policy_views" edge to the AppPolicyView entity by IDs.
+func (auo *AppUpdateOne) AddPolicyViewIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.AddPolicyViewIDs(ids...)
+	return auo
+}
+
+// AddPolicyViews adds the "policy_views" edges to the AppPolicyView entity.
+func (auo *AppUpdateOne) AddPolicyViews(a ...*AppPolicyView) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddPolicyViewIDs(ids...)
 }
 
 // AddOrgIDs adds the "orgs" edge to the Org entity by IDs.
@@ -1757,6 +1854,27 @@ func (auo *AppUpdateOne) RemovePolicies(a ...*AppPolicy) *AppUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return auo.RemovePolicyIDs(ids...)
+}
+
+// ClearPolicyViews clears all "policy_views" edges to the AppPolicyView entity.
+func (auo *AppUpdateOne) ClearPolicyViews() *AppUpdateOne {
+	auo.mutation.ClearPolicyViews()
+	return auo
+}
+
+// RemovePolicyViewIDs removes the "policy_views" edge to AppPolicyView entities by IDs.
+func (auo *AppUpdateOne) RemovePolicyViewIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.RemovePolicyViewIDs(ids...)
+	return auo
+}
+
+// RemovePolicyViews removes "policy_views" edges to AppPolicyView entities.
+func (auo *AppUpdateOne) RemovePolicyViews(a ...*AppPolicyView) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemovePolicyViewIDs(ids...)
 }
 
 // ClearOrgs clears all "orgs" edges to the Org entity.
@@ -2012,11 +2130,11 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.StatusCleared() {
 		_spec.ClearField(app.FieldStatus, field.TypeEnum)
 	}
-	if value, ok := auo.mutation.Private(); ok {
-		_spec.SetField(app.FieldPrivate, field.TypeBool, value)
+	if value, ok := auo.mutation.OrgPrivate(); ok {
+		_spec.SetField(app.FieldOrgPrivate, field.TypeBool, value)
 	}
-	if auo.mutation.PrivateCleared() {
-		_spec.ClearField(app.FieldPrivate, field.TypeBool)
+	if auo.mutation.OrgPrivateCleared() {
+		_spec.ClearField(app.FieldOrgPrivate, field.TypeBool)
 	}
 	if value, ok := auo.mutation.OwnerOrgID(); ok {
 		_spec.SetField(app.FieldOwnerOrgID, field.TypeInt, value)
@@ -2245,6 +2363,51 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(apppolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedPolicyViewsIDs(); len(nodes) > 0 && !auo.mutation.PolicyViewsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.PolicyViewsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.PolicyViewsTable,
+			Columns: []string{app.PolicyViewsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppolicyview.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

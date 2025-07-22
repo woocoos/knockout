@@ -12,9 +12,12 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -26,11 +29,16 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -92,10 +100,10 @@ func init() {
 	appDescLogo := appFields[9].Descriptor()
 	// app.LogoValidator is a validator for the "logo" field. It is called by the builders before save.
 	app.LogoValidator = appDescLogo.Validators[0].(func(string) error)
-	// appDescPrivate is the schema descriptor for private field.
-	appDescPrivate := appFields[12].Descriptor()
-	// app.DefaultPrivate holds the default value on creation for the private field.
-	app.DefaultPrivate = appDescPrivate.Default.(bool)
+	// appDescOrgPrivate is the schema descriptor for org_private field.
+	appDescOrgPrivate := appFields[12].Descriptor()
+	// app.DefaultOrgPrivate holds the default value on creation for the org_private field.
+	app.DefaultOrgPrivate = appDescOrgPrivate.Default.(bool)
 	// appDescID is the schema descriptor for id field.
 	appDescID := appMixinFields0[0].Descriptor()
 	// app.DefaultID holds the default value on creation for the id field.
@@ -254,17 +262,43 @@ func init() {
 	// apppolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppolicy.DefaultCreatedAt = apppolicyDescCreatedAt.Default.(func() time.Time)
 	// apppolicyDescVersion is the schema descriptor for version field.
-	apppolicyDescVersion := apppolicyFields[4].Descriptor()
+	apppolicyDescVersion := apppolicyFields[5].Descriptor()
 	// apppolicy.DefaultVersion holds the default value on creation for the version field.
 	apppolicy.DefaultVersion = apppolicyDescVersion.Default.(string)
 	// apppolicyDescAutoGrant is the schema descriptor for auto_grant field.
-	apppolicyDescAutoGrant := apppolicyFields[5].Descriptor()
+	apppolicyDescAutoGrant := apppolicyFields[6].Descriptor()
 	// apppolicy.DefaultAutoGrant holds the default value on creation for the auto_grant field.
 	apppolicy.DefaultAutoGrant = apppolicyDescAutoGrant.Default.(bool)
 	// apppolicyDescID is the schema descriptor for id field.
 	apppolicyDescID := apppolicyMixinFields0[0].Descriptor()
 	// apppolicy.DefaultID holds the default value on creation for the id field.
 	apppolicy.DefaultID = apppolicyDescID.Default.(func() int)
+	apppolicyviewMixin := schema.AppPolicyView{}.Mixin()
+	apppolicyviewMixinHooks1 := apppolicyviewMixin[1].Hooks()
+	apppolicyviewMixinHooks2 := apppolicyviewMixin[2].Hooks()
+	apppolicyviewHooks := schema.AppPolicyView{}.Hooks()
+	apppolicyview.Hooks[0] = apppolicyviewMixinHooks1[0]
+	apppolicyview.Hooks[1] = apppolicyviewMixinHooks2[0]
+	apppolicyview.Hooks[2] = apppolicyviewHooks[0]
+	apppolicyview.Hooks[3] = apppolicyviewHooks[1]
+	apppolicyviewMixinFields0 := apppolicyviewMixin[0].Fields()
+	_ = apppolicyviewMixinFields0
+	apppolicyviewMixinFields1 := apppolicyviewMixin[1].Fields()
+	_ = apppolicyviewMixinFields1
+	apppolicyviewFields := schema.AppPolicyView{}.Fields()
+	_ = apppolicyviewFields
+	// apppolicyviewDescCreatedAt is the schema descriptor for created_at field.
+	apppolicyviewDescCreatedAt := apppolicyviewMixinFields1[1].Descriptor()
+	// apppolicyview.DefaultCreatedAt holds the default value on creation for the created_at field.
+	apppolicyview.DefaultCreatedAt = apppolicyviewDescCreatedAt.Default.(func() time.Time)
+	// apppolicyviewDescParentID is the schema descriptor for parent_id field.
+	apppolicyviewDescParentID := apppolicyviewFields[1].Descriptor()
+	// apppolicyview.DefaultParentID holds the default value on creation for the parent_id field.
+	apppolicyview.DefaultParentID = apppolicyviewDescParentID.Default.(int)
+	// apppolicyviewDescID is the schema descriptor for id field.
+	apppolicyviewDescID := apppolicyviewMixinFields0[0].Descriptor()
+	// apppolicyview.DefaultID holds the default value on creation for the id field.
+	apppolicyview.DefaultID = apppolicyviewDescID.Default.(func() int)
 	appresMixin := schema.AppRes{}.Mixin()
 	appresMixinHooks1 := appresMixin[1].Hooks()
 	appresMixinHooks2 := appresMixin[2].Hooks()
@@ -324,15 +358,49 @@ func init() {
 	approlepolicyDescCreatedAt := approlepolicyMixinFields1[1].Descriptor()
 	// approlepolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
 	approlepolicy.DefaultCreatedAt = approlepolicyDescCreatedAt.Default.(func() time.Time)
+	countryMixin := schema.Country{}.Mixin()
+	countryMixinHooks1 := countryMixin[1].Hooks()
+	country.Hooks[0] = countryMixinHooks1[0]
+	countryMixinFields1 := countryMixin[1].Fields()
+	_ = countryMixinFields1
+	countryFields := schema.Country{}.Fields()
+	_ = countryFields
+	// countryDescCreatedAt is the schema descriptor for created_at field.
+	countryDescCreatedAt := countryMixinFields1[1].Descriptor()
+	// country.DefaultCreatedAt holds the default value on creation for the created_at field.
+	country.DefaultCreatedAt = countryDescCreatedAt.Default.(func() time.Time)
+	// countryDescCode is the schema descriptor for code field.
+	countryDescCode := countryFields[2].Descriptor()
+	// country.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	country.CodeValidator = countryDescCode.Validators[0].(func(string) error)
+	currencyMixin := schema.Currency{}.Mixin()
+	currencyMixinHooks1 := currencyMixin[1].Hooks()
+	currency.Hooks[0] = currencyMixinHooks1[0]
+	currencyMixinFields1 := currencyMixin[1].Fields()
+	_ = currencyMixinFields1
+	currencyFields := schema.Currency{}.Fields()
+	_ = currencyFields
+	// currencyDescCreatedAt is the schema descriptor for created_at field.
+	currencyDescCreatedAt := currencyMixinFields1[1].Descriptor()
+	// currency.DefaultCreatedAt holds the default value on creation for the created_at field.
+	currency.DefaultCreatedAt = currencyDescCreatedAt.Default.(func() time.Time)
+	// currencyDescCode is the schema descriptor for code field.
+	currencyDescCode := currencyFields[0].Descriptor()
+	// currency.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	currency.CodeValidator = currencyDescCode.Validators[0].(func(string) error)
+	// currencyDescName is the schema descriptor for name field.
+	currencyDescName := currencyFields[1].Descriptor()
+	// currency.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	currency.NameValidator = currencyDescName.Validators[0].(func(string) error)
+	// currencyDescSign is the schema descriptor for sign field.
+	currencyDescSign := currencyFields[2].Descriptor()
+	// currency.SignValidator is a validator for the "sign" field. It is called by the builders before save.
+	currency.SignValidator = currencyDescSign.Validators[0].(func(string) error)
 	fileidentityMixin := schema.FileIdentity{}.Mixin()
 	fileidentityMixinHooks1 := fileidentityMixin[1].Hooks()
 	fileidentityMixinHooks2 := fileidentityMixin[2].Hooks()
-	fileidentityMixinHooks3 := fileidentityMixin[3].Hooks()
 	fileidentity.Hooks[0] = fileidentityMixinHooks1[0]
 	fileidentity.Hooks[1] = fileidentityMixinHooks2[0]
-	fileidentity.Hooks[2] = fileidentityMixinHooks3[0]
-	fileidentityMixinInters2 := fileidentityMixin[2].Interceptors()
-	fileidentity.Interceptors[0] = fileidentityMixinInters2[0]
 	fileidentityMixinFields1 := fileidentityMixin[1].Fields()
 	_ = fileidentityMixinFields1
 	fileidentityFields := schema.FileIdentity{}.Fields()
@@ -342,23 +410,23 @@ func init() {
 	// fileidentity.DefaultCreatedAt holds the default value on creation for the created_at field.
 	fileidentity.DefaultCreatedAt = fileidentityDescCreatedAt.Default.(func() time.Time)
 	// fileidentityDescAccessKeyID is the schema descriptor for access_key_id field.
-	fileidentityDescAccessKeyID := fileidentityFields[0].Descriptor()
+	fileidentityDescAccessKeyID := fileidentityFields[1].Descriptor()
 	// fileidentity.AccessKeyIDValidator is a validator for the "access_key_id" field. It is called by the builders before save.
 	fileidentity.AccessKeyIDValidator = fileidentityDescAccessKeyID.Validators[0].(func(string) error)
 	// fileidentityDescAccessKeySecret is the schema descriptor for access_key_secret field.
-	fileidentityDescAccessKeySecret := fileidentityFields[1].Descriptor()
+	fileidentityDescAccessKeySecret := fileidentityFields[2].Descriptor()
 	// fileidentity.AccessKeySecretValidator is a validator for the "access_key_secret" field. It is called by the builders before save.
 	fileidentity.AccessKeySecretValidator = fileidentityDescAccessKeySecret.Validators[0].(func(string) error)
 	// fileidentityDescRoleArn is the schema descriptor for role_arn field.
-	fileidentityDescRoleArn := fileidentityFields[3].Descriptor()
+	fileidentityDescRoleArn := fileidentityFields[4].Descriptor()
 	// fileidentity.RoleArnValidator is a validator for the "role_arn" field. It is called by the builders before save.
 	fileidentity.RoleArnValidator = fileidentityDescRoleArn.Validators[0].(func(string) error)
 	// fileidentityDescDurationSeconds is the schema descriptor for duration_seconds field.
-	fileidentityDescDurationSeconds := fileidentityFields[5].Descriptor()
+	fileidentityDescDurationSeconds := fileidentityFields[6].Descriptor()
 	// fileidentity.DefaultDurationSeconds holds the default value on creation for the duration_seconds field.
 	fileidentity.DefaultDurationSeconds = fileidentityDescDurationSeconds.Default.(int)
 	// fileidentityDescIsDefault is the schema descriptor for is_default field.
-	fileidentityDescIsDefault := fileidentityFields[6].Descriptor()
+	fileidentityDescIsDefault := fileidentityFields[7].Descriptor()
 	// fileidentity.DefaultIsDefault holds the default value on creation for the is_default field.
 	fileidentity.DefaultIsDefault = fileidentityDescIsDefault.Default.(bool)
 	filesourceMixin := schema.FileSource{}.Mixin()
@@ -443,8 +511,6 @@ func init() {
 	org.Hooks[6] = orgHooks[3]
 	orgMixinInters2 := orgMixin[2].Interceptors()
 	org.Interceptors[0] = orgMixinInters2[0]
-	orgMixinFields0 := orgMixin[0].Fields()
-	_ = orgMixinFields0
 	orgMixinFields1 := orgMixin[1].Fields()
 	_ = orgMixinFields1
 	orgFields := schema.Org{}.Fields()
@@ -462,25 +528,25 @@ func init() {
 	// org.DomainValidator is a validator for the "domain" field. It is called by the builders before save.
 	org.DomainValidator = orgDescDomain.Validators[0].(func(string) error)
 	// orgDescCode is the schema descriptor for code field.
-	orgDescCode := orgFields[4].Descriptor()
+	orgDescCode := orgFields[5].Descriptor()
 	// org.CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	org.CodeValidator = orgDescCode.Validators[0].(func(string) error)
 	// orgDescName is the schema descriptor for name field.
-	orgDescName := orgFields[5].Descriptor()
+	orgDescName := orgFields[6].Descriptor()
 	// org.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	org.NameValidator = orgDescName.Validators[0].(func(string) error)
 	// orgDescCountryCode is the schema descriptor for country_code field.
-	orgDescCountryCode := orgFields[10].Descriptor()
+	orgDescCountryCode := orgFields[11].Descriptor()
 	// org.CountryCodeValidator is a validator for the "country_code" field. It is called by the builders before save.
 	org.CountryCodeValidator = orgDescCountryCode.Validators[0].(func(string) error)
 	// orgDescTimezone is the schema descriptor for timezone field.
-	orgDescTimezone := orgFields[11].Descriptor()
+	orgDescTimezone := orgFields[12].Descriptor()
 	// org.TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	org.TimezoneValidator = orgDescTimezone.Validators[0].(func(string) error)
-	// orgDescID is the schema descriptor for id field.
-	orgDescID := orgMixinFields0[0].Descriptor()
-	// org.DefaultID holds the default value on creation for the id field.
-	org.DefaultID = orgDescID.Default.(func() int)
+	// orgDescLocalCurrency is the schema descriptor for local_currency field.
+	orgDescLocalCurrency := orgFields[13].Descriptor()
+	// org.LocalCurrencyValidator is a validator for the "local_currency" field. It is called by the builders before save.
+	org.LocalCurrencyValidator = orgDescLocalCurrency.Validators[0].(func(string) error)
 	orgappMixin := schema.OrgApp{}.Mixin()
 	orgappMixinHooks1 := orgappMixin[1].Hooks()
 	orgappMixinHooks2 := orgappMixin[2].Hooks()
@@ -520,6 +586,8 @@ func init() {
 	orgroleMixinHooks2 := orgroleMixin[2].Hooks()
 	orgrole.Hooks[0] = orgroleMixinHooks1[0]
 	orgrole.Hooks[1] = orgroleMixinHooks2[0]
+	orgroleMixinFields0 := orgroleMixin[0].Fields()
+	_ = orgroleMixinFields0
 	orgroleMixinFields1 := orgroleMixin[1].Fields()
 	_ = orgroleMixinFields1
 	orgroleFields := schema.OrgRole{}.Fields()
@@ -528,9 +596,15 @@ func init() {
 	orgroleDescCreatedAt := orgroleMixinFields1[1].Descriptor()
 	// orgrole.DefaultCreatedAt holds the default value on creation for the created_at field.
 	orgrole.DefaultCreatedAt = orgroleDescCreatedAt.Default.(func() time.Time)
+	// orgroleDescID is the schema descriptor for id field.
+	orgroleDescID := orgroleMixinFields0[0].Descriptor()
+	// orgrole.DefaultID holds the default value on creation for the id field.
+	orgrole.DefaultID = orgroleDescID.Default.(func() int)
 	orgroleuserMixin := schema.OrgRoleUser{}.Mixin()
 	orgroleuserMixinHooks1 := orgroleuserMixin[1].Hooks()
+	orgroleuserMixinHooks2 := orgroleuserMixin[2].Hooks()
 	orgroleuser.Hooks[0] = orgroleuserMixinHooks1[0]
+	orgroleuser.Hooks[1] = orgroleuserMixinHooks2[0]
 	orgroleuserMixinFields1 := orgroleuserMixin[1].Fields()
 	_ = orgroleuserMixinFields1
 	orgroleuserFields := schema.OrgRoleUser{}.Fields()
@@ -558,7 +632,9 @@ func init() {
 	orguser.DefaultJoinedAt = orguserDescJoinedAt.Default.(func() time.Time)
 	orguserpreferenceMixin := schema.OrgUserPreference{}.Mixin()
 	orguserpreferenceMixinHooks1 := orguserpreferenceMixin[1].Hooks()
+	orguserpreferenceHooks := schema.OrgUserPreference{}.Hooks()
 	orguserpreference.Hooks[0] = orguserpreferenceMixinHooks1[0]
+	orguserpreference.Hooks[1] = orguserpreferenceHooks[0]
 	orguserpreferenceMixinFields1 := orguserpreferenceMixin[1].Fields()
 	_ = orguserpreferenceMixinFields1
 	orguserpreferenceFields := schema.OrgUserPreference{}.Fields()
@@ -586,6 +662,75 @@ func init() {
 	permissionDescID := permissionMixinFields0[0].Descriptor()
 	// permission.DefaultID holds the default value on creation for the id field.
 	permission.DefaultID = permissionDescID.Default.(func() int)
+	quotaMixin := schema.Quota{}.Mixin()
+	quotaMixinHooks1 := quotaMixin[1].Hooks()
+	quotaHooks := schema.Quota{}.Hooks()
+	quota.Hooks[0] = quotaMixinHooks1[0]
+	quota.Hooks[1] = quotaHooks[0]
+	quotaMixinFields1 := quotaMixin[1].Fields()
+	_ = quotaMixinFields1
+	quotaFields := schema.Quota{}.Fields()
+	_ = quotaFields
+	// quotaDescCreatedAt is the schema descriptor for created_at field.
+	quotaDescCreatedAt := quotaMixinFields1[1].Descriptor()
+	// quota.DefaultCreatedAt holds the default value on creation for the created_at field.
+	quota.DefaultCreatedAt = quotaDescCreatedAt.Default.(func() time.Time)
+	// quotaDescLimit is the schema descriptor for limit field.
+	quotaDescLimit := quotaFields[3].Descriptor()
+	// quota.LimitValidator is a validator for the "limit" field. It is called by the builders before save.
+	quota.LimitValidator = quotaDescLimit.Validators[0].(func(int64) error)
+	// quotaDescUsed is the schema descriptor for used field.
+	quotaDescUsed := quotaFields[4].Descriptor()
+	// quota.DefaultUsed holds the default value on creation for the used field.
+	quota.DefaultUsed = quotaDescUsed.Default.(int64)
+	quotaitemMixin := schema.QuotaItem{}.Mixin()
+	quotaitemMixinHooks1 := quotaitemMixin[1].Hooks()
+	quotaitem.Hooks[0] = quotaitemMixinHooks1[0]
+	quotaitemMixinFields1 := quotaitemMixin[1].Fields()
+	_ = quotaitemMixinFields1
+	quotaitemFields := schema.QuotaItem{}.Fields()
+	_ = quotaitemFields
+	// quotaitemDescCreatedAt is the schema descriptor for created_at field.
+	quotaitemDescCreatedAt := quotaitemMixinFields1[1].Descriptor()
+	// quotaitem.DefaultCreatedAt holds the default value on creation for the created_at field.
+	quotaitem.DefaultCreatedAt = quotaitemDescCreatedAt.Default.(func() time.Time)
+	// quotaitemDescActive is the schema descriptor for active field.
+	quotaitemDescActive := quotaitemFields[5].Descriptor()
+	// quotaitem.DefaultActive holds the default value on creation for the active field.
+	quotaitem.DefaultActive = quotaitemDescActive.Default.(bool)
+	regionMixin := schema.Region{}.Mixin()
+	regionMixinHooks1 := regionMixin[1].Hooks()
+	regionHooks := schema.Region{}.Hooks()
+	region.Hooks[0] = regionMixinHooks1[0]
+	region.Hooks[1] = regionHooks[0]
+	regionMixinFields1 := regionMixin[1].Fields()
+	_ = regionMixinFields1
+	regionFields := schema.Region{}.Fields()
+	_ = regionFields
+	// regionDescCreatedAt is the schema descriptor for created_at field.
+	regionDescCreatedAt := regionMixinFields1[1].Descriptor()
+	// region.DefaultCreatedAt holds the default value on creation for the created_at field.
+	region.DefaultCreatedAt = regionDescCreatedAt.Default.(func() time.Time)
+	// regionDescParentID is the schema descriptor for parent_id field.
+	regionDescParentID := regionFields[0].Descriptor()
+	// region.DefaultParentID holds the default value on creation for the parent_id field.
+	region.DefaultParentID = regionDescParentID.Default.(int)
+	// regionDescName is the schema descriptor for name field.
+	regionDescName := regionFields[1].Descriptor()
+	// region.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	region.NameValidator = regionDescName.Validators[0].(func(string) error)
+	// regionDescNameEn is the schema descriptor for name_en field.
+	regionDescNameEn := regionFields[2].Descriptor()
+	// region.NameEnValidator is a validator for the "name_en" field. It is called by the builders before save.
+	region.NameEnValidator = regionDescNameEn.Validators[0].(func(string) error)
+	// regionDescShortCode is the schema descriptor for short_code field.
+	regionDescShortCode := regionFields[3].Descriptor()
+	// region.ShortCodeValidator is a validator for the "short_code" field. It is called by the builders before save.
+	region.ShortCodeValidator = regionDescShortCode.Validators[0].(func(string) error)
+	// regionDescZipCode is the schema descriptor for zip_code field.
+	regionDescZipCode := regionFields[4].Descriptor()
+	// region.ZipCodeValidator is a validator for the "zip_code" field. It is called by the builders before save.
+	region.ZipCodeValidator = regionDescZipCode.Validators[0].(func(string) error)
 	userMixin := schema.User{}.Mixin()
 	userMixinHooks1 := userMixin[1].Hooks()
 	userMixinHooks2 := userMixin[2].Hooks()
@@ -595,8 +740,6 @@ func init() {
 	user.Hooks[2] = userMixinHooks3[0]
 	userMixinInters2 := userMixin[2].Interceptors()
 	user.Interceptors[0] = userMixinInters2[0]
-	userMixinFields0 := userMixin[0].Fields()
-	_ = userMixinFields0
 	userMixinFields1 := userMixin[1].Fields()
 	_ = userMixinFields1
 	userFields := schema.User{}.Fields()
@@ -605,31 +748,76 @@ func init() {
 	userDescCreatedAt := userMixinFields1[1].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
-	// userDescEmail is the schema descriptor for email field.
-	userDescEmail := userFields[2].Descriptor()
-	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
-	// userDescMobile is the schema descriptor for mobile field.
-	userDescMobile := userFields[3].Descriptor()
-	// user.MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
-	user.MobileValidator = userDescMobile.Validators[0].(func(string) error)
 	// userDescRegisterIP is the schema descriptor for register_ip field.
-	userDescRegisterIP := userFields[6].Descriptor()
+	userDescRegisterIP := userFields[4].Descriptor()
 	// user.RegisterIPValidator is a validator for the "register_ip" field. It is called by the builders before save.
 	user.RegisterIPValidator = userDescRegisterIP.Validators[0].(func(string) error)
 	// userDescAvatar is the schema descriptor for avatar field.
-	userDescAvatar := userFields[9].Descriptor()
+	userDescAvatar := userFields[7].Descriptor()
 	// user.AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
 	user.AvatarValidator = userDescAvatar.Validators[0].(func(string) error)
-	// userDescID is the schema descriptor for id field.
-	userDescID := userMixinFields0[0].Descriptor()
-	// user.DefaultID holds the default value on creation for the id field.
-	user.DefaultID = userDescID.Default.(func() int)
+	// userDescFirstName is the schema descriptor for first_name field.
+	userDescFirstName := userFields[10].Descriptor()
+	// user.FirstNameValidator is a validator for the "first_name" field. It is called by the builders before save.
+	user.FirstNameValidator = userDescFirstName.Validators[0].(func(string) error)
+	// userDescMiddleName is the schema descriptor for middle_name field.
+	userDescMiddleName := userFields[11].Descriptor()
+	// user.MiddleNameValidator is a validator for the "middle_name" field. It is called by the builders before save.
+	user.MiddleNameValidator = userDescMiddleName.Validators[0].(func(string) error)
+	// userDescLastName is the schema descriptor for last_name field.
+	userDescLastName := userFields[12].Descriptor()
+	// user.LastNameValidator is a validator for the "last_name" field. It is called by the builders before save.
+	user.LastNameValidator = userDescLastName.Validators[0].(func(string) error)
+	useraddrMixin := schema.UserAddr{}.Mixin()
+	useraddrMixinHooks1 := useraddrMixin[1].Hooks()
+	useraddrMixinHooks2 := useraddrMixin[2].Hooks()
+	useraddrHooks := schema.UserAddr{}.Hooks()
+	useraddr.Hooks[0] = useraddrMixinHooks1[0]
+	useraddr.Hooks[1] = useraddrMixinHooks2[0]
+	useraddr.Hooks[2] = useraddrHooks[0]
+	useraddrMixinFields1 := useraddrMixin[1].Fields()
+	_ = useraddrMixinFields1
+	useraddrFields := schema.UserAddr{}.Fields()
+	_ = useraddrFields
+	// useraddrDescCreatedAt is the schema descriptor for created_at field.
+	useraddrDescCreatedAt := useraddrMixinFields1[1].Descriptor()
+	// useraddr.DefaultCreatedAt holds the default value on creation for the created_at field.
+	useraddr.DefaultCreatedAt = useraddrDescCreatedAt.Default.(func() time.Time)
+	// useraddrDescEmail is the schema descriptor for email field.
+	useraddrDescEmail := useraddrFields[4].Descriptor()
+	// useraddr.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	useraddr.EmailValidator = useraddrDescEmail.Validators[0].(func(string) error)
+	// useraddrDescFax is the schema descriptor for fax field.
+	useraddrDescFax := useraddrFields[5].Descriptor()
+	// useraddr.FaxValidator is a validator for the "fax" field. It is called by the builders before save.
+	useraddr.FaxValidator = useraddrDescFax.Validators[0].(func(string) error)
+	// useraddrDescZipCode is the schema descriptor for zip_code field.
+	useraddrDescZipCode := useraddrFields[6].Descriptor()
+	// useraddr.ZipCodeValidator is a validator for the "zip_code" field. It is called by the builders before save.
+	useraddr.ZipCodeValidator = useraddrDescZipCode.Validators[0].(func(string) error)
+	// useraddrDescTel is the schema descriptor for tel field.
+	useraddrDescTel := useraddrFields[7].Descriptor()
+	// useraddr.TelValidator is a validator for the "tel" field. It is called by the builders before save.
+	useraddr.TelValidator = useraddrDescTel.Validators[0].(func(string) error)
+	// useraddrDescMobile is the schema descriptor for mobile field.
+	useraddrDescMobile := useraddrFields[8].Descriptor()
+	// useraddr.MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
+	useraddr.MobileValidator = useraddrDescMobile.Validators[0].(func(string) error)
+	// useraddrDescName is the schema descriptor for name field.
+	useraddrDescName := useraddrFields[9].Descriptor()
+	// useraddr.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	useraddr.NameValidator = useraddrDescName.Validators[0].(func(string) error)
+	// useraddrDescIsDefault is the schema descriptor for is_default field.
+	useraddrDescIsDefault := useraddrFields[10].Descriptor()
+	// useraddr.DefaultIsDefault holds the default value on creation for the is_default field.
+	useraddr.DefaultIsDefault = useraddrDescIsDefault.Default.(bool)
 	userdeviceMixin := schema.UserDevice{}.Mixin()
 	userdeviceMixinHooks1 := userdeviceMixin[1].Hooks()
 	userdeviceMixinHooks2 := userdeviceMixin[2].Hooks()
+	userdeviceHooks := schema.UserDevice{}.Hooks()
 	userdevice.Hooks[0] = userdeviceMixinHooks1[0]
 	userdevice.Hooks[1] = userdeviceMixinHooks2[0]
+	userdevice.Hooks[2] = userdeviceHooks[0]
 	userdeviceMixinFields1 := userdeviceMixin[1].Fields()
 	_ = userdeviceMixinFields1
 	userdeviceFields := schema.UserDevice{}.Fields()
@@ -690,6 +878,10 @@ func init() {
 	userloginprofileDescCreatedAt := userloginprofileMixinFields1[1].Descriptor()
 	// userloginprofile.DefaultCreatedAt holds the default value on creation for the created_at field.
 	userloginprofile.DefaultCreatedAt = userloginprofileDescCreatedAt.Default.(func() time.Time)
+	// userloginprofileDescVerifyDevice is the schema descriptor for verify_device field.
+	userloginprofileDescVerifyDevice := userloginprofileFields[6].Descriptor()
+	// userloginprofile.DefaultVerifyDevice holds the default value on creation for the verify_device field.
+	userloginprofile.DefaultVerifyDevice = userloginprofileDescVerifyDevice.Default.(bool)
 	// userloginprofileDescMfaSecret is the schema descriptor for mfa_secret field.
 	userloginprofileDescMfaSecret := userloginprofileFields[8].Descriptor()
 	// userloginprofile.MfaSecretValidator is a validator for the "mfa_secret" field. It is called by the builders before save.
@@ -711,9 +903,58 @@ func init() {
 	userpasswordDescSalt := userpasswordFields[3].Descriptor()
 	// userpassword.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
 	userpassword.SaltValidator = userpasswordDescSalt.Validators[0].(func(string) error)
+	userpasswordpolicyMixin := schema.UserPasswordPolicy{}.Mixin()
+	userpasswordpolicyMixinHooks1 := userpasswordpolicyMixin[1].Hooks()
+	userpasswordpolicyMixinHooks2 := userpasswordpolicyMixin[2].Hooks()
+	userpasswordpolicy.Hooks[0] = userpasswordpolicyMixinHooks1[0]
+	userpasswordpolicy.Hooks[1] = userpasswordpolicyMixinHooks2[0]
+	userpasswordpolicyMixinFields1 := userpasswordpolicyMixin[1].Fields()
+	_ = userpasswordpolicyMixinFields1
+	userpasswordpolicyFields := schema.UserPasswordPolicy{}.Fields()
+	_ = userpasswordpolicyFields
+	// userpasswordpolicyDescCreatedAt is the schema descriptor for created_at field.
+	userpasswordpolicyDescCreatedAt := userpasswordpolicyMixinFields1[1].Descriptor()
+	// userpasswordpolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
+	userpasswordpolicy.DefaultCreatedAt = userpasswordpolicyDescCreatedAt.Default.(func() time.Time)
+	// userpasswordpolicyDescLength is the schema descriptor for length field.
+	userpasswordpolicyDescLength := userpasswordpolicyFields[1].Descriptor()
+	// userpasswordpolicy.DefaultLength holds the default value on creation for the length field.
+	userpasswordpolicy.DefaultLength = userpasswordpolicyDescLength.Default.(int32)
+	// userpasswordpolicy.LengthValidator is a validator for the "length" field. It is called by the builders before save.
+	userpasswordpolicy.LengthValidator = func() func(int32) error {
+		validators := userpasswordpolicyDescLength.Validators
+		fns := [...]func(int32) error{
+			validators[0].(func(int32) error),
+			validators[1].(func(int32) error),
+		}
+		return func(length int32) error {
+			for _, fn := range fns {
+				if err := fn(length); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userpasswordpolicyDescIncludeChar is the schema descriptor for include_char field.
+	userpasswordpolicyDescIncludeChar := userpasswordpolicyFields[3].Descriptor()
+	// userpasswordpolicy.IncludeCharValidator is a validator for the "include_char" field. It is called by the builders before save.
+	userpasswordpolicy.IncludeCharValidator = userpasswordpolicyDescIncludeChar.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescInvalidDay is the schema descriptor for invalid_day field.
+	userpasswordpolicyDescInvalidDay := userpasswordpolicyFields[5].Descriptor()
+	// userpasswordpolicy.InvalidDayValidator is a validator for the "invalid_day" field. It is called by the builders before save.
+	userpasswordpolicy.InvalidDayValidator = userpasswordpolicyDescInvalidDay.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescRetry is the schema descriptor for retry field.
+	userpasswordpolicyDescRetry := userpasswordpolicyFields[7].Descriptor()
+	// userpasswordpolicy.RetryValidator is a validator for the "retry" field. It is called by the builders before save.
+	userpasswordpolicy.RetryValidator = userpasswordpolicyDescRetry.Validators[0].(func(int32) error)
+	// userpasswordpolicyDescCaptchaTimes is the schema descriptor for captcha_times field.
+	userpasswordpolicyDescCaptchaTimes := userpasswordpolicyFields[8].Descriptor()
+	// userpasswordpolicy.CaptchaTimesValidator is a validator for the "captcha_times" field. It is called by the builders before save.
+	userpasswordpolicy.CaptchaTimesValidator = userpasswordpolicyDescCaptchaTimes.Validators[0].(func(int32) error)
 }
 
 const (
-	Version = "v0.14.0"                                         // Version of ent codegen.
-	Sum     = "h1:EO3Z9aZ5bXJatJeGqu/EVdnNr6K4mRq3rWe5owt0MC4=" // Sum of ent codegen.
+	Version = "v0.14.2"                                         // Version of ent codegen.
+	Sum     = "h1:ywld/j2Rx4EmnIKs8eZ29cbFA1zpB+DA9TLL5l3rlq0=" // Sum of ent codegen.
 )

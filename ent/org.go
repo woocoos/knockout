@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -10,8 +11,10 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // Org is the model entity for the Org schema.
@@ -37,6 +40,8 @@ type Org struct {
 	ParentID int `json:"parent_id,omitempty"`
 	// 默认域名
 	Domain string `json:"domain,omitempty"`
+	// 自定义域名
+	CustomDomain []string `json:"custom_domain,omitempty"`
 	// 系统代码
 	Code string `json:"code,omitempty"`
 	// 组织名称
@@ -53,6 +58,10 @@ type Org struct {
 	CountryCode string `json:"country_code,omitempty"`
 	// 时区
 	Timezone string `json:"timezone,omitempty"`
+	// 组织本位币
+	LocalCurrency string `json:"local_currency,omitempty"`
+	// 组织图标
+	Logo *types.OrgLogo `json:"logo,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgQuery when eager-loading is set.
 	Edges        OrgEdges `json:"edges"`
@@ -79,15 +88,19 @@ type OrgEdges struct {
 	Apps []*App `json:"apps,omitempty"`
 	// 组织下文件凭证
 	FileIdentities []*FileIdentity `json:"file_identities,omitempty"`
+	// 组织下密码策略
+	UserPasswordPolicy *UserPasswordPolicy `json:"user_password_policy,omitempty"`
+	// 组织下登录策略
+	OrgQuota []*Quota `json:"org_quota,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// OrgApp holds the value of the org_app edge.
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [13]bool
 	// totalCount holds the count of the edges above.
-	totalCount [8]map[string]int
+	totalCount [10]map[string]int
 
 	namedChildren       map[string][]*Org
 	namedUsers          map[string][]*User
@@ -96,6 +109,7 @@ type OrgEdges struct {
 	namedPolicies       map[string][]*OrgPolicy
 	namedApps           map[string][]*App
 	namedFileIdentities map[string][]*FileIdentity
+	namedOrgQuota       map[string][]*Quota
 	namedOrgUser        map[string][]*OrgUser
 	namedOrgApp         map[string][]*OrgApp
 }
@@ -185,10 +199,30 @@ func (e OrgEdges) FileIdentitiesOrErr() ([]*FileIdentity, error) {
 	return nil, &NotLoadedError{edge: "file_identities"}
 }
 
+// UserPasswordPolicyOrErr returns the UserPasswordPolicy value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgEdges) UserPasswordPolicyOrErr() (*UserPasswordPolicy, error) {
+	if e.UserPasswordPolicy != nil {
+		return e.UserPasswordPolicy, nil
+	} else if e.loadedTypes[9] {
+		return nil, &NotFoundError{label: userpasswordpolicy.Label}
+	}
+	return nil, &NotLoadedError{edge: "user_password_policy"}
+}
+
+// OrgQuotaOrErr returns the OrgQuota value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrgEdges) OrgQuotaOrErr() ([]*Quota, error) {
+	if e.loadedTypes[10] {
+		return e.OrgQuota, nil
+	}
+	return nil, &NotLoadedError{edge: "org_quota"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[11] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -197,7 +231,7 @@ func (e OrgEdges) OrgUserOrErr() ([]*OrgUser, error) {
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrgEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[12] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -208,9 +242,11 @@ func (*Org) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case org.FieldCustomDomain, org.FieldLogo:
+			values[i] = new([]byte)
 		case org.FieldID, org.FieldCreatedBy, org.FieldUpdatedBy, org.FieldOwnerID, org.FieldParentID, org.FieldDisplaySort:
 			values[i] = new(sql.NullInt64)
-		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone:
+		case org.FieldKind, org.FieldDomain, org.FieldCode, org.FieldName, org.FieldProfile, org.FieldStatus, org.FieldPath, org.FieldCountryCode, org.FieldTimezone, org.FieldLocalCurrency:
 			values[i] = new(sql.NullString)
 		case org.FieldCreatedAt, org.FieldUpdatedAt, org.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -290,6 +326,14 @@ func (o *Org) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				o.Domain = value.String
 			}
+		case org.FieldCustomDomain:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field custom_domain", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &o.CustomDomain); err != nil {
+					return fmt.Errorf("unmarshal field custom_domain: %w", err)
+				}
+			}
 		case org.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
@@ -337,6 +381,20 @@ func (o *Org) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field timezone", values[i])
 			} else if value.Valid {
 				o.Timezone = value.String
+			}
+		case org.FieldLocalCurrency:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field local_currency", values[i])
+			} else if value.Valid {
+				o.LocalCurrency = value.String
+			}
+		case org.FieldLogo:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &o.Logo); err != nil {
+					return fmt.Errorf("unmarshal field logo: %w", err)
+				}
 			}
 		default:
 			o.selectValues.Set(columns[i], values[i])
@@ -394,6 +452,16 @@ func (o *Org) QueryApps() *AppQuery {
 // QueryFileIdentities queries the "file_identities" edge of the Org entity.
 func (o *Org) QueryFileIdentities() *FileIdentityQuery {
 	return NewOrgClient(o.config).QueryFileIdentities(o)
+}
+
+// QueryUserPasswordPolicy queries the "user_password_policy" edge of the Org entity.
+func (o *Org) QueryUserPasswordPolicy() *UserPasswordPolicyQuery {
+	return NewOrgClient(o.config).QueryUserPasswordPolicy(o)
+}
+
+// QueryOrgQuota queries the "org_quota" edge of the Org entity.
+func (o *Org) QueryOrgQuota() *QuotaQuery {
+	return NewOrgClient(o.config).QueryOrgQuota(o)
 }
 
 // QueryOrgUser queries the "org_user" edge of the Org entity.
@@ -458,6 +526,9 @@ func (o *Org) String() string {
 	builder.WriteString("domain=")
 	builder.WriteString(o.Domain)
 	builder.WriteString(", ")
+	builder.WriteString("custom_domain=")
+	builder.WriteString(fmt.Sprintf("%v", o.CustomDomain))
+	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(o.Code)
 	builder.WriteString(", ")
@@ -481,6 +552,12 @@ func (o *Org) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("timezone=")
 	builder.WriteString(o.Timezone)
+	builder.WriteString(", ")
+	builder.WriteString("local_currency=")
+	builder.WriteString(o.LocalCurrency)
+	builder.WriteString(", ")
+	builder.WriteString("logo=")
+	builder.WriteString(fmt.Sprintf("%v", o.Logo))
 	builder.WriteByte(')')
 	return builder.String()
 }
@@ -650,6 +727,30 @@ func (o *Org) appendNamedFileIdentities(name string, edges ...*FileIdentity) {
 		o.Edges.namedFileIdentities[name] = []*FileIdentity{}
 	} else {
 		o.Edges.namedFileIdentities[name] = append(o.Edges.namedFileIdentities[name], edges...)
+	}
+}
+
+// NamedOrgQuota returns the OrgQuota named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (o *Org) NamedOrgQuota(name string) ([]*Quota, error) {
+	if o.Edges.namedOrgQuota == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := o.Edges.namedOrgQuota[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (o *Org) appendNamedOrgQuota(name string, edges ...*Quota) {
+	if o.Edges.namedOrgQuota == nil {
+		o.Edges.namedOrgQuota = make(map[string][]*Quota)
+	}
+	if len(edges) == 0 {
+		o.Edges.namedOrgQuota[name] = []*Quota{}
+	} else {
+		o.Edges.namedOrgQuota[name] = append(o.Edges.namedOrgQuota[name], edges...)
 	}
 }
 

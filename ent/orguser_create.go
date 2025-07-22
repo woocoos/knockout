@@ -106,6 +106,20 @@ func (ouc *OrgUserCreate) SetDisplayName(s string) *OrgUserCreate {
 	return ouc
 }
 
+// SetUserType sets the "user_type" field.
+func (ouc *OrgUserCreate) SetUserType(ot orguser.UserType) *OrgUserCreate {
+	ouc.mutation.SetUserType(ot)
+	return ouc
+}
+
+// SetNillableUserType sets the "user_type" field if the given value is not nil.
+func (ouc *OrgUserCreate) SetNillableUserType(ot *orguser.UserType) *OrgUserCreate {
+	if ot != nil {
+		ouc.SetUserType(*ot)
+	}
+	return ouc
+}
+
 // SetID sets the "id" field.
 func (ouc *OrgUserCreate) SetID(i int) *OrgUserCreate {
 	ouc.mutation.SetID(i)
@@ -203,6 +217,10 @@ func (ouc *OrgUserCreate) defaults() error {
 		v := orguser.DefaultJoinedAt()
 		ouc.mutation.SetJoinedAt(v)
 	}
+	if _, ok := ouc.mutation.UserType(); !ok {
+		v := orguser.DefaultUserType
+		ouc.mutation.SetUserType(v)
+	}
 	return nil
 }
 
@@ -225,6 +243,14 @@ func (ouc *OrgUserCreate) check() error {
 	}
 	if _, ok := ouc.mutation.DisplayName(); !ok {
 		return &ValidationError{Name: "display_name", err: errors.New(`ent: missing required field "OrgUser.display_name"`)}
+	}
+	if _, ok := ouc.mutation.UserType(); !ok {
+		return &ValidationError{Name: "user_type", err: errors.New(`ent: missing required field "OrgUser.user_type"`)}
+	}
+	if v, ok := ouc.mutation.UserType(); ok {
+		if err := orguser.UserTypeValidator(v); err != nil {
+			return &ValidationError{Name: "user_type", err: fmt.Errorf(`ent: validator failed for field "OrgUser.user_type": %w`, err)}
+		}
 	}
 	if len(ouc.mutation.OrgIDs()) == 0 {
 		return &ValidationError{Name: "org", err: errors.New(`ent: missing required edge "OrgUser.org"`)}
@@ -288,6 +314,10 @@ func (ouc *OrgUserCreate) createSpec() (*OrgUser, *sqlgraph.CreateSpec) {
 	if value, ok := ouc.mutation.DisplayName(); ok {
 		_spec.SetField(orguser.FieldDisplayName, field.TypeString, value)
 		_node.DisplayName = value
+	}
+	if value, ok := ouc.mutation.UserType(); ok {
+		_spec.SetField(orguser.FieldUserType, field.TypeEnum, value)
+		_node.UserType = value
 	}
 	if nodes := ouc.mutation.OrgIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -501,6 +531,18 @@ func (u *OrgUserUpsert) UpdateDisplayName() *OrgUserUpsert {
 	return u
 }
 
+// SetUserType sets the "user_type" field.
+func (u *OrgUserUpsert) SetUserType(v orguser.UserType) *OrgUserUpsert {
+	u.Set(orguser.FieldUserType, v)
+	return u
+}
+
+// UpdateUserType sets the "user_type" field to the value that was provided on create.
+func (u *OrgUserUpsert) UpdateUserType() *OrgUserUpsert {
+	u.SetExcluded(orguser.FieldUserType)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -657,6 +699,20 @@ func (u *OrgUserUpsertOne) SetDisplayName(v string) *OrgUserUpsertOne {
 func (u *OrgUserUpsertOne) UpdateDisplayName() *OrgUserUpsertOne {
 	return u.Update(func(s *OrgUserUpsert) {
 		s.UpdateDisplayName()
+	})
+}
+
+// SetUserType sets the "user_type" field.
+func (u *OrgUserUpsertOne) SetUserType(v orguser.UserType) *OrgUserUpsertOne {
+	return u.Update(func(s *OrgUserUpsert) {
+		s.SetUserType(v)
+	})
+}
+
+// UpdateUserType sets the "user_type" field to the value that was provided on create.
+func (u *OrgUserUpsertOne) UpdateUserType() *OrgUserUpsertOne {
+	return u.Update(func(s *OrgUserUpsert) {
+		s.UpdateUserType()
 	})
 }
 
@@ -982,6 +1038,20 @@ func (u *OrgUserUpsertBulk) SetDisplayName(v string) *OrgUserUpsertBulk {
 func (u *OrgUserUpsertBulk) UpdateDisplayName() *OrgUserUpsertBulk {
 	return u.Update(func(s *OrgUserUpsert) {
 		s.UpdateDisplayName()
+	})
+}
+
+// SetUserType sets the "user_type" field.
+func (u *OrgUserUpsertBulk) SetUserType(v orguser.UserType) *OrgUserUpsertBulk {
+	return u.Update(func(s *OrgUserUpsert) {
+		s.SetUserType(v)
+	})
+}
+
+// UpdateUserType sets the "user_type" field to the value that was provided on create.
+func (u *OrgUserUpsertBulk) UpdateUserType() *OrgUserUpsertBulk {
+	return u.Update(func(s *OrgUserUpsert) {
+		s.UpdateUserType()
 	})
 }
 

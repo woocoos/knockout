@@ -38,6 +38,8 @@ const (
 	FieldParentID = "parent_id"
 	// FieldDomain holds the string denoting the domain field in the database.
 	FieldDomain = "domain"
+	// FieldCustomDomain holds the string denoting the custom_domain field in the database.
+	FieldCustomDomain = "custom_domain"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
 	// FieldName holds the string denoting the name field in the database.
@@ -54,6 +56,10 @@ const (
 	FieldCountryCode = "country_code"
 	// FieldTimezone holds the string denoting the timezone field in the database.
 	FieldTimezone = "timezone"
+	// FieldLocalCurrency holds the string denoting the local_currency field in the database.
+	FieldLocalCurrency = "local_currency"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// EdgeParent holds the string denoting the parent edge name in mutations.
 	EdgeParent = "parent"
 	// EdgeChildren holds the string denoting the children edge name in mutations.
@@ -72,6 +78,10 @@ const (
 	EdgeApps = "apps"
 	// EdgeFileIdentities holds the string denoting the file_identities edge name in mutations.
 	EdgeFileIdentities = "file_identities"
+	// EdgeUserPasswordPolicy holds the string denoting the user_password_policy edge name in mutations.
+	EdgeUserPasswordPolicy = "user_password_policy"
+	// EdgeOrgQuota holds the string denoting the org_quota edge name in mutations.
+	EdgeOrgQuota = "org_quota"
 	// EdgeOrgUser holds the string denoting the org_user edge name in mutations.
 	EdgeOrgUser = "org_user"
 	// EdgeOrgApp holds the string denoting the org_app edge name in mutations.
@@ -131,6 +141,20 @@ const (
 	FileIdentitiesInverseTable = "file_identity"
 	// FileIdentitiesColumn is the table column denoting the file_identities relation/edge.
 	FileIdentitiesColumn = "tenant_id"
+	// UserPasswordPolicyTable is the table that holds the user_password_policy relation/edge.
+	UserPasswordPolicyTable = "user_password_policy"
+	// UserPasswordPolicyInverseTable is the table name for the UserPasswordPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "userpasswordpolicy" package.
+	UserPasswordPolicyInverseTable = "user_password_policy"
+	// UserPasswordPolicyColumn is the table column denoting the user_password_policy relation/edge.
+	UserPasswordPolicyColumn = "tenant_id"
+	// OrgQuotaTable is the table that holds the org_quota relation/edge.
+	OrgQuotaTable = "quota"
+	// OrgQuotaInverseTable is the table name for the Quota entity.
+	// It exists in this package in order to avoid circular dependency with the "quota" package.
+	OrgQuotaInverseTable = "quota"
+	// OrgQuotaColumn is the table column denoting the org_quota relation/edge.
+	OrgQuotaColumn = "tenant_id"
 	// OrgUserTable is the table that holds the org_user relation/edge.
 	OrgUserTable = "org_user"
 	// OrgUserInverseTable is the table name for the OrgUser entity.
@@ -159,6 +183,7 @@ var Columns = []string{
 	FieldKind,
 	FieldParentID,
 	FieldDomain,
+	FieldCustomDomain,
 	FieldCode,
 	FieldName,
 	FieldProfile,
@@ -167,6 +192,8 @@ var Columns = []string{
 	FieldDisplaySort,
 	FieldCountryCode,
 	FieldTimezone,
+	FieldLocalCurrency,
+	FieldLogo,
 }
 
 var (
@@ -210,8 +237,8 @@ var (
 	CountryCodeValidator func(string) error
 	// TimezoneValidator is a validator for the "timezone" field. It is called by the builders before save.
 	TimezoneValidator func(string) error
-	// DefaultID holds the default value on creation for the "id" field.
-	DefaultID func() int
+	// LocalCurrencyValidator is a validator for the "local_currency" field. It is called by the builders before save.
+	LocalCurrencyValidator func(string) error
 )
 
 // Kind defines the type for the "kind" enum field.
@@ -345,6 +372,11 @@ func ByTimezone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTimezone, opts...).ToFunc()
 }
 
+// ByLocalCurrency orders the results by the local_currency field.
+func ByLocalCurrency(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLocalCurrency, opts...).ToFunc()
+}
+
 // ByParentField orders the results by parent field.
 func ByParentField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -457,6 +489,27 @@ func ByFileIdentities(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByUserPasswordPolicyField orders the results by user_password_policy field.
+func ByUserPasswordPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserPasswordPolicyStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByOrgQuotaCount orders the results by org_quota count.
+func ByOrgQuotaCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newOrgQuotaStep(), opts...)
+	}
+}
+
+// ByOrgQuota orders the results by org_quota terms.
+func ByOrgQuota(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOrgQuotaStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByOrgUserCount orders the results by org_user count.
 func ByOrgUserCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -545,6 +598,20 @@ func newFileIdentitiesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FileIdentitiesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FileIdentitiesTable, FileIdentitiesColumn),
+	)
+}
+func newUserPasswordPolicyStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserPasswordPolicyInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
+	)
+}
+func newOrgQuotaStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OrgQuotaInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, OrgQuotaTable, OrgQuotaColumn),
 	)
 }
 func newOrgUserStep() *sqlgraph.Step {

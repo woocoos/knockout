@@ -95,6 +95,18 @@ func (a *App) Policies(ctx context.Context) (result []*AppPolicy, err error) {
 	return result, err
 }
 
+func (a *App) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = a.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = a.Edges.PolicyViewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = a.QueryPolicyViews().All(ctx)
+	}
+	return result, err
+}
+
 func (a *App) Orgs(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *OrgOrder, where *OrgWhereInput,
 ) (*OrgConnection, error) {
@@ -103,7 +115,7 @@ func (a *App) Orgs(
 		WithOrgFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[5][alias]
+	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
 	if nodes, err := a.NamedOrgs(alias); err == nil || hasTotalCount {
 		pager, err := newOrgPager(opts, last != nil)
 		if err != nil {
@@ -124,7 +136,7 @@ func (a *App) Dicts(
 		WithAppDictFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := a.Edges.totalCount[7][alias]
 	if nodes, err := a.NamedDicts(alias); err == nil || hasTotalCount {
 		pager, err := newAppDictPager(opts, last != nil)
 		if err != nil {
@@ -209,6 +221,26 @@ func (am *AppMenu) Action(ctx context.Context) (*AppAction, error) {
 	return result, MaskNotFound(err)
 }
 
+func (am *AppMenu) Parent(ctx context.Context) (*AppMenu, error) {
+	result, err := am.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = am.QueryParent().Only(ctx)
+	}
+	return result, err
+}
+
+func (am *AppMenu) Children(ctx context.Context) (result []*AppMenu, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = am.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = am.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = am.QueryChildren().All(ctx)
+	}
+	return result, err
+}
+
 func (ap *AppPolicy) App(ctx context.Context) (*App, error) {
 	result, err := ap.Edges.AppOrErr()
 	if IsNotLoaded(err) {
@@ -225,6 +257,66 @@ func (ap *AppPolicy) Roles(ctx context.Context) (result []*AppRole, err error) {
 	}
 	if IsNotLoaded(err) {
 		result, err = ap.QueryRoles().All(ctx)
+	}
+	return result, err
+}
+
+func (ap *AppPolicy) OrgPolicies(ctx context.Context) (result []*OrgPolicy, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ap.NamedOrgPolicies(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ap.Edges.OrgPoliciesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ap.QueryOrgPolicies().All(ctx)
+	}
+	return result, err
+}
+
+func (ap *AppPolicy) PolicyViews(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = ap.NamedPolicyViews(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = ap.Edges.PolicyViewsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = ap.QueryPolicyViews().All(ctx)
+	}
+	return result, err
+}
+
+func (apv *AppPolicyView) App(ctx context.Context) (*App, error) {
+	result, err := apv.Edges.AppOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryApp().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (apv *AppPolicyView) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := apv.Edges.AppPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryAppPolicy().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (apv *AppPolicyView) Parent(ctx context.Context) (*AppPolicyView, error) {
+	result, err := apv.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = apv.QueryParent().Only(ctx)
+	}
+	return result, err
+}
+
+func (apv *AppPolicyView) Children(ctx context.Context) (result []*AppPolicyView, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = apv.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = apv.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = apv.QueryChildren().All(ctx)
 	}
 	return result, err
 }
@@ -253,6 +345,18 @@ func (ar *AppRole) Policies(ctx context.Context) (result []*AppPolicy, err error
 	}
 	if IsNotLoaded(err) {
 		result, err = ar.QueryPolicies().All(ctx)
+	}
+	return result, err
+}
+
+func (c *Country) Regions(ctx context.Context) (result []*Region, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = c.NamedRegions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = c.Edges.RegionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = c.QueryRegions().All(ctx)
 	}
 	return result, err
 }
@@ -405,6 +509,26 @@ func (o *Org) FileIdentities(ctx context.Context) (result []*FileIdentity, err e
 	return result, err
 }
 
+func (o *Org) UserPasswordPolicy(ctx context.Context) (*UserPasswordPolicy, error) {
+	result, err := o.Edges.UserPasswordPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = o.QueryUserPasswordPolicy().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (o *Org) OrgQuota(ctx context.Context) (result []*Quota, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = o.NamedOrgQuota(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = o.Edges.OrgQuotaOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = o.QueryOrgQuota().All(ctx)
+	}
+	return result, err
+}
+
 func (op *OrgPolicy) Org(ctx context.Context) (*Org, error) {
 	result, err := op.Edges.OrgOrErr()
 	if IsNotLoaded(err) {
@@ -423,6 +547,22 @@ func (op *OrgPolicy) Permissions(ctx context.Context) (result []*Permission, err
 		result, err = op.QueryPermissions().All(ctx)
 	}
 	return result, err
+}
+
+func (op *OrgPolicy) AppPolicy(ctx context.Context) (*AppPolicy, error) {
+	result, err := op.Edges.AppPolicyOrErr()
+	if IsNotLoaded(err) {
+		result, err = op.QueryAppPolicy().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (op *OrgPolicy) App(ctx context.Context) (*App, error) {
+	result, err := op.Edges.AppOrErr()
+	if IsNotLoaded(err) {
+		result, err = op.QueryApp().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (oup *OrgUserPreference) User(ctx context.Context) (*User, error) {
@@ -473,6 +613,79 @@ func (pe *Permission) OrgPolicy(ctx context.Context) (*OrgPolicy, error) {
 	return result, err
 }
 
+func (q *Quota) QuotaItem(ctx context.Context) (*QuotaItem, error) {
+	result, err := q.Edges.QuotaItemOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaItem().Only(ctx)
+	}
+	return result, err
+}
+
+func (q *Quota) QuotaOrg(ctx context.Context) (*Org, error) {
+	result, err := q.Edges.QuotaOrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaOrg().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (q *Quota) QuotaUser(ctx context.Context) (*User, error) {
+	result, err := q.Edges.QuotaUserOrErr()
+	if IsNotLoaded(err) {
+		result, err = q.QueryQuotaUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (qi *QuotaItem) Quota(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *QuotaOrder, where *QuotaWhereInput,
+) (*QuotaConnection, error) {
+	opts := []QuotaPaginateOption{
+		WithQuotaOrder(orderBy),
+		WithQuotaFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := qi.Edges.totalCount[0][alias]
+	if nodes, err := qi.NamedQuota(alias); err == nil || hasTotalCount {
+		pager, err := newQuotaPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &QuotaConnection{Edges: []*QuotaEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return qi.QueryQuota().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (r *Region) Parent(ctx context.Context) (*Region, error) {
+	result, err := r.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = r.QueryParent().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (r *Region) Children(ctx context.Context) (result []*Region, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = r.NamedChildren(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = r.Edges.ChildrenOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = r.QueryChildren().All(ctx)
+	}
+	return result, err
+}
+
+func (r *Region) Country(ctx context.Context) (*Country, error) {
+	result, err := r.Edges.CountryOrErr()
+	if IsNotLoaded(err) {
+		result, err = r.QueryCountry().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (u *User) Identities(ctx context.Context) (result []*UserIdentity, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = u.NamedIdentities(graphql.GetFieldContext(ctx).Field.Alias)
@@ -493,16 +706,25 @@ func (u *User) LoginProfile(ctx context.Context) (*UserLoginProfile, error) {
 	return result, MaskNotFound(err)
 }
 
-func (u *User) Devices(ctx context.Context) (result []*UserDevice, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = u.NamedDevices(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = u.Edges.DevicesOrErr()
+func (u *User) Devices(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *UserDeviceOrder, where *UserDeviceWhereInput,
+) (*UserDeviceConnection, error) {
+	opts := []UserDevicePaginateOption{
+		WithUserDeviceOrder(orderBy),
+		WithUserDeviceFilter(where.Filter),
 	}
-	if IsNotLoaded(err) {
-		result, err = u.QueryDevices().All(ctx)
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := u.Edges.totalCount[2][alias]
+	if nodes, err := u.NamedDevices(alias); err == nil || hasTotalCount {
+		pager, err := newUserDevicePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &UserDeviceConnection{Edges: []*UserDeviceEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
 	}
-	return result, err
+	return u.QueryDevices().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (u *User) Permissions(
@@ -538,6 +760,54 @@ func (u *User) OauthClients(ctx context.Context) (result []*OauthClient, err err
 	return result, err
 }
 
+func (u *User) Addresses(ctx context.Context) (result []*UserAddr, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedAddresses(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.AddressesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryAddresses().All(ctx)
+	}
+	return result, err
+}
+
+func (u *User) Citizenship(ctx context.Context) (*Country, error) {
+	result, err := u.Edges.CitizenshipOrErr()
+	if IsNotLoaded(err) {
+		result, err = u.QueryCitizenship().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (u *User) UserQuota(ctx context.Context) (result []*Quota, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = u.NamedUserQuota(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = u.Edges.UserQuotaOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = u.QueryUserQuota().All(ctx)
+	}
+	return result, err
+}
+
+func (ua *UserAddr) User(ctx context.Context) (*User, error) {
+	result, err := ua.Edges.UserOrErr()
+	if IsNotLoaded(err) {
+		result, err = ua.QueryUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ua *UserAddr) Region(ctx context.Context) (*Region, error) {
+	result, err := ua.Edges.RegionOrErr()
+	if IsNotLoaded(err) {
+		result, err = ua.QueryRegion().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (ud *UserDevice) User(ctx context.Context) (*User, error) {
 	result, err := ud.Edges.UserOrErr()
 	if IsNotLoaded(err) {
@@ -566,6 +836,14 @@ func (up *UserPassword) User(ctx context.Context) (*User, error) {
 	result, err := up.Edges.UserOrErr()
 	if IsNotLoaded(err) {
 		result, err = up.QueryUser().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (upp *UserPasswordPolicy) Org(ctx context.Context) (*Org, error) {
+	result, err := upp.Edges.OrgOrErr()
+	if IsNotLoaded(err) {
+		result, err = upp.QueryOrg().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

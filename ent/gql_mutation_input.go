@@ -10,10 +10,15 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
+	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
 	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
@@ -38,6 +43,7 @@ type CreateAppInput struct {
 	ResourceIDs          []int
 	RoleIDs              []int
 	PolicyIDs            []int
+	PolicyViewIDs        []int
 	DictIDs              []int
 }
 
@@ -88,6 +94,9 @@ func (i *CreateAppInput) Mutate(m *AppMutation) {
 	if v := i.PolicyIDs; len(v) > 0 {
 		m.AddPolicyIDs(v...)
 	}
+	if v := i.PolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
 	if v := i.DictIDs; len(v) > 0 {
 		m.AddDictIDs(v...)
 	}
@@ -136,6 +145,9 @@ type UpdateAppInput struct {
 	ClearPolicies             bool
 	AddPolicyIDs              []int
 	RemovePolicyIDs           []int
+	ClearPolicyViews          bool
+	AddPolicyViewIDs          []int
+	RemovePolicyViewIDs       []int
 	ClearDicts                bool
 	AddDictIDs                []int
 	RemoveDictIDs             []int
@@ -247,6 +259,15 @@ func (i *UpdateAppInput) Mutate(m *AppMutation) {
 	}
 	if v := i.RemovePolicyIDs; len(v) > 0 {
 		m.RemovePolicyIDs(v...)
+	}
+	if i.ClearPolicyViews {
+		m.ClearPolicyViews()
+	}
+	if v := i.AddPolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
+	if v := i.RemovePolicyViewIDs; len(v) > 0 {
+		m.RemovePolicyViewIDs(v...)
 	}
 	if i.ClearDicts {
 		m.ClearDicts()
@@ -505,19 +526,20 @@ func (c *AppDictItemUpdateOne) SetInput(i UpdateAppDictItemInput) *AppDictItemUp
 
 // CreateAppMenuInput represents a mutation input for creating appmenus.
 type CreateAppMenuInput struct {
-	ParentID int
 	Kind     appmenu.Kind
 	Name     string
 	Icon     *string
 	Route    *string
 	Comments *string
+	Status   *typex.SimpleStatus
 	AppID    *int
 	ActionID *int
+	ParentID int
+	ChildIDs []int
 }
 
 // Mutate applies the CreateAppMenuInput on the AppMenuMutation builder.
 func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
-	m.SetParentID(i.ParentID)
 	m.SetKind(i.Kind)
 	m.SetName(i.Name)
 	if v := i.Icon; v != nil {
@@ -529,11 +551,18 @@ func (i *CreateAppMenuInput) Mutate(m *AppMenuMutation) {
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
 	if v := i.AppID; v != nil {
 		m.SetAppID(*v)
 	}
 	if v := i.ActionID; v != nil {
 		m.SetActionID(*v)
+	}
+	m.SetParentID(i.ParentID)
+	if v := i.ChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
 	}
 }
 
@@ -545,24 +574,26 @@ func (c *AppMenuCreate) SetInput(i CreateAppMenuInput) *AppMenuCreate {
 
 // UpdateAppMenuInput represents a mutation input for updating appmenus.
 type UpdateAppMenuInput struct {
-	ParentID      *int
-	Kind          *appmenu.Kind
-	Name          *string
-	ClearIcon     bool
-	Icon          *string
-	ClearRoute    bool
-	Route         *string
-	ClearComments bool
-	Comments      *string
-	ClearAction   bool
-	ActionID      *int
+	Kind           *appmenu.Kind
+	Name           *string
+	ClearIcon      bool
+	Icon           *string
+	ClearRoute     bool
+	Route          *string
+	ClearComments  bool
+	Comments       *string
+	ClearStatus    bool
+	Status         *typex.SimpleStatus
+	ClearAction    bool
+	ActionID       *int
+	ParentID       *int
+	ClearChildren  bool
+	AddChildIDs    []int
+	RemoveChildIDs []int
 }
 
 // Mutate applies the UpdateAppMenuInput on the AppMenuMutation builder.
 func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
-	if v := i.ParentID; v != nil {
-		m.SetParentID(*v)
-	}
 	if v := i.Kind; v != nil {
 		m.SetKind(*v)
 	}
@@ -587,11 +618,29 @@ func (i *UpdateAppMenuInput) Mutate(m *AppMenuMutation) {
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
 	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
 	if i.ClearAction {
 		m.ClearAction()
 	}
 	if v := i.ActionID; v != nil {
 		m.SetActionID(*v)
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if i.ClearChildren {
+		m.ClearChildren()
+	}
+	if v := i.AddChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.RemoveChildIDs; len(v) > 0 {
+		m.RemoveChildIDs(v...)
 	}
 }
 
@@ -609,17 +658,23 @@ func (c *AppMenuUpdateOne) SetInput(i UpdateAppMenuInput) *AppMenuUpdateOne {
 
 // CreateAppPolicyInput represents a mutation input for creating apppolicies.
 type CreateAppPolicyInput struct {
-	Name      string
-	Comments  *string
-	Rules     []*types.PolicyRule
-	AutoGrant *bool
-	Status    *typex.SimpleStatus
-	AppID     *int
-	RoleIDs   []int
+	Kind          *apppolicy.Kind
+	Name          string
+	Comments      *string
+	Rules         []*types.PolicyRule
+	AutoGrant     *bool
+	Status        *typex.SimpleStatus
+	AppID         *int
+	RoleIDs       []int
+	OrgPolicyIDs  []int
+	PolicyViewIDs []int
 }
 
 // Mutate applies the CreateAppPolicyInput on the AppPolicyMutation builder.
 func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -639,6 +694,12 @@ func (i *CreateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	if v := i.RoleIDs; len(v) > 0 {
 		m.AddRoleIDs(v...)
 	}
+	if v := i.OrgPolicyIDs; len(v) > 0 {
+		m.AddOrgPolicyIDs(v...)
+	}
+	if v := i.PolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateAppPolicyInput on the AppPolicyCreate builder.
@@ -649,21 +710,31 @@ func (c *AppPolicyCreate) SetInput(i CreateAppPolicyInput) *AppPolicyCreate {
 
 // UpdateAppPolicyInput represents a mutation input for updating apppolicies.
 type UpdateAppPolicyInput struct {
-	Name          *string
-	ClearComments bool
-	Comments      *string
-	Rules         []*types.PolicyRule
-	AppendRules   []*types.PolicyRule
-	AutoGrant     *bool
-	ClearStatus   bool
-	Status        *typex.SimpleStatus
-	ClearRoles    bool
-	AddRoleIDs    []int
-	RemoveRoleIDs []int
+	Kind                *apppolicy.Kind
+	Name                *string
+	ClearComments       bool
+	Comments            *string
+	Rules               []*types.PolicyRule
+	AppendRules         []*types.PolicyRule
+	AutoGrant           *bool
+	ClearStatus         bool
+	Status              *typex.SimpleStatus
+	ClearRoles          bool
+	AddRoleIDs          []int
+	RemoveRoleIDs       []int
+	ClearOrgPolicies    bool
+	AddOrgPolicyIDs     []int
+	RemoveOrgPolicyIDs  []int
+	ClearPolicyViews    bool
+	AddPolicyViewIDs    []int
+	RemovePolicyViewIDs []int
 }
 
 // Mutate applies the UpdateAppPolicyInput on the AppPolicyMutation builder.
 func (i *UpdateAppPolicyInput) Mutate(m *AppPolicyMutation) {
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
@@ -697,6 +768,24 @@ func (i *UpdateAppPolicyInput) Mutate(m *AppPolicyMutation) {
 	if v := i.RemoveRoleIDs; len(v) > 0 {
 		m.RemoveRoleIDs(v...)
 	}
+	if i.ClearOrgPolicies {
+		m.ClearOrgPolicies()
+	}
+	if v := i.AddOrgPolicyIDs; len(v) > 0 {
+		m.AddOrgPolicyIDs(v...)
+	}
+	if v := i.RemoveOrgPolicyIDs; len(v) > 0 {
+		m.RemoveOrgPolicyIDs(v...)
+	}
+	if i.ClearPolicyViews {
+		m.ClearPolicyViews()
+	}
+	if v := i.AddPolicyViewIDs; len(v) > 0 {
+		m.AddPolicyViewIDs(v...)
+	}
+	if v := i.RemovePolicyViewIDs; len(v) > 0 {
+		m.RemovePolicyViewIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the UpdateAppPolicyInput on the AppPolicyUpdate builder.
@@ -707,6 +796,102 @@ func (c *AppPolicyUpdate) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdate {
 
 // SetInput applies the change-set in the UpdateAppPolicyInput on the AppPolicyUpdateOne builder.
 func (c *AppPolicyUpdateOne) SetInput(i UpdateAppPolicyInput) *AppPolicyUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateAppPolicyViewInput represents a mutation input for creating apppolicyviews.
+type CreateAppPolicyViewInput struct {
+	Kind        apppolicyview.Kind
+	Name        string
+	Comments    *string
+	AppID       *int
+	AppPolicyID *int
+	ParentID    int
+	ChildIDs    []int
+}
+
+// Mutate applies the CreateAppPolicyViewInput on the AppPolicyViewMutation builder.
+func (i *CreateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
+	m.SetKind(i.Kind)
+	m.SetName(i.Name)
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+	m.SetParentID(i.ParentID)
+	if v := i.ChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateAppPolicyViewInput on the AppPolicyViewCreate builder.
+func (c *AppPolicyViewCreate) SetInput(i CreateAppPolicyViewInput) *AppPolicyViewCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateAppPolicyViewInput represents a mutation input for updating apppolicyviews.
+type UpdateAppPolicyViewInput struct {
+	Kind           *apppolicyview.Kind
+	Name           *string
+	ClearComments  bool
+	Comments       *string
+	ClearAppPolicy bool
+	AppPolicyID    *int
+	ParentID       *int
+	ClearChildren  bool
+	AddChildIDs    []int
+	RemoveChildIDs []int
+}
+
+// Mutate applies the UpdateAppPolicyViewInput on the AppPolicyViewMutation builder.
+func (i *UpdateAppPolicyViewInput) Mutate(m *AppPolicyViewMutation) {
+	if v := i.Kind; v != nil {
+		m.SetKind(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if i.ClearAppPolicy {
+		m.ClearAppPolicy()
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if i.ClearChildren {
+		m.ClearChildren()
+	}
+	if v := i.AddChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.RemoveChildIDs; len(v) > 0 {
+		m.RemoveChildIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateAppPolicyViewInput on the AppPolicyViewUpdate builder.
+func (c *AppPolicyViewUpdate) SetInput(i UpdateAppPolicyViewInput) *AppPolicyViewUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateAppPolicyViewInput on the AppPolicyViewUpdateOne builder.
+func (c *AppPolicyViewUpdateOne) SetInput(i UpdateAppPolicyViewInput) *AppPolicyViewUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -827,6 +1012,164 @@ func (c *AppRoleUpdate) SetInput(i UpdateAppRoleInput) *AppRoleUpdate {
 
 // SetInput applies the change-set in the UpdateAppRoleInput on the AppRoleUpdateOne builder.
 func (c *AppRoleUpdateOne) SetInput(i UpdateAppRoleInput) *AppRoleUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateCountryInput represents a mutation input for creating countries.
+type CreateCountryInput struct {
+	Name      *string
+	NameEn    *string
+	Code      string
+	Status    *typex.SimpleStatus
+	RegionIDs []int
+}
+
+// Mutate applies the CreateCountryInput on the CountryMutation builder.
+func (i *CreateCountryInput) Mutate(m *CountryMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.NameEn; v != nil {
+		m.SetNameEn(*v)
+	}
+	m.SetCode(i.Code)
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if v := i.RegionIDs; len(v) > 0 {
+		m.AddRegionIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateCountryInput on the CountryCreate builder.
+func (c *CountryCreate) SetInput(i CreateCountryInput) *CountryCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCountryInput represents a mutation input for updating countries.
+type UpdateCountryInput struct {
+	ClearName       bool
+	Name            *string
+	ClearNameEn     bool
+	NameEn          *string
+	Code            *string
+	ClearStatus     bool
+	Status          *typex.SimpleStatus
+	ClearRegions    bool
+	AddRegionIDs    []int
+	RemoveRegionIDs []int
+}
+
+// Mutate applies the UpdateCountryInput on the CountryMutation builder.
+func (i *UpdateCountryInput) Mutate(m *CountryMutation) {
+	if i.ClearName {
+		m.ClearName()
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearNameEn {
+		m.ClearNameEn()
+	}
+	if v := i.NameEn; v != nil {
+		m.SetNameEn(*v)
+	}
+	if v := i.Code; v != nil {
+		m.SetCode(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if i.ClearRegions {
+		m.ClearRegions()
+	}
+	if v := i.AddRegionIDs; len(v) > 0 {
+		m.AddRegionIDs(v...)
+	}
+	if v := i.RemoveRegionIDs; len(v) > 0 {
+		m.RemoveRegionIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCountryInput on the CountryUpdate builder.
+func (c *CountryUpdate) SetInput(i UpdateCountryInput) *CountryUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCountryInput on the CountryUpdateOne builder.
+func (c *CountryUpdateOne) SetInput(i UpdateCountryInput) *CountryUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateCurrencyInput represents a mutation input for creating currencies.
+type CreateCurrencyInput struct {
+	Code   string
+	Name   string
+	Sign   *string
+	Status *typex.SimpleStatus
+}
+
+// Mutate applies the CreateCurrencyInput on the CurrencyMutation builder.
+func (i *CreateCurrencyInput) Mutate(m *CurrencyMutation) {
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Sign; v != nil {
+		m.SetSign(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateCurrencyInput on the CurrencyCreate builder.
+func (c *CurrencyCreate) SetInput(i CreateCurrencyInput) *CurrencyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateCurrencyInput represents a mutation input for updating currencies.
+type UpdateCurrencyInput struct {
+	Code      *string
+	Name      *string
+	ClearSign bool
+	Sign      *string
+	Status    *typex.SimpleStatus
+}
+
+// Mutate applies the UpdateCurrencyInput on the CurrencyMutation builder.
+func (i *UpdateCurrencyInput) Mutate(m *CurrencyMutation) {
+	if v := i.Code; v != nil {
+		m.SetCode(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearSign {
+		m.ClearSign()
+	}
+	if v := i.Sign; v != nil {
+		m.SetSign(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateCurrencyInput on the CurrencyUpdate builder.
+func (c *CurrencyUpdate) SetInput(i UpdateCurrencyInput) *CurrencyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateCurrencyInput on the CurrencyUpdateOne builder.
+func (c *CurrencyUpdateOne) SetInput(i UpdateCurrencyInput) *CurrencyUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -1087,27 +1430,34 @@ func (c *OauthClientUpdateOne) SetInput(i UpdateOauthClientInput) *OauthClientUp
 
 // CreateOrgInput represents a mutation input for creating orgs.
 type CreateOrgInput struct {
-	Domain           *string
-	Name             string
-	Profile          *string
-	Status           *typex.SimpleStatus
-	CountryCode      *string
-	Timezone         *string
-	ParentID         int
-	ChildIDs         []int
-	OwnerID          *int
-	UserIDs          []int
-	RolesAndGroupIDs []int
-	PermissionIDs    []int
-	PolicyIDs        []int
-	AppIDs           []int
-	FileIdentityIDs  []int
+	Domain               *string
+	CustomDomain         []string
+	Name                 string
+	Profile              *string
+	Status               *typex.SimpleStatus
+	CountryCode          *string
+	Timezone             *string
+	LocalCurrency        *string
+	Logo                 *types.OrgLogo
+	ParentID             int
+	ChildIDs             []int
+	OwnerID              *int
+	UserIDs              []int
+	RolesAndGroupIDs     []int
+	PermissionIDs        []int
+	PolicyIDs            []int
+	AppIDs               []int
+	FileIdentityIDs      []int
+	UserPasswordPolicyID *int
 }
 
 // Mutate applies the CreateOrgInput on the OrgMutation builder.
 func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.Domain; v != nil {
 		m.SetDomain(*v)
+	}
+	if v := i.CustomDomain; v != nil {
+		m.SetCustomDomain(v)
 	}
 	m.SetName(i.Name)
 	if v := i.Profile; v != nil {
@@ -1121,6 +1471,12 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.Timezone; v != nil {
 		m.SetTimezone(*v)
+	}
+	if v := i.LocalCurrency; v != nil {
+		m.SetLocalCurrency(*v)
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(v)
 	}
 	m.SetParentID(i.ParentID)
 	if v := i.ChildIDs; len(v) > 0 {
@@ -1147,6 +1503,9 @@ func (i *CreateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.FileIdentityIDs; len(v) > 0 {
 		m.AddFileIdentityIDs(v...)
 	}
+	if v := i.UserPasswordPolicyID; v != nil {
+		m.SetUserPasswordPolicyID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateOrgInput on the OrgCreate builder.
@@ -1157,41 +1516,50 @@ func (c *OrgCreate) SetInput(i CreateOrgInput) *OrgCreate {
 
 // UpdateOrgInput represents a mutation input for updating orgs.
 type UpdateOrgInput struct {
-	ClearDomain            bool
-	Domain                 *string
-	Name                   *string
-	ClearProfile           bool
-	Profile                *string
-	ClearStatus            bool
-	Status                 *typex.SimpleStatus
-	ClearCountryCode       bool
-	CountryCode            *string
-	ClearTimezone          bool
-	Timezone               *string
-	ParentID               *int
-	ClearChildren          bool
-	AddChildIDs            []int
-	RemoveChildIDs         []int
-	ClearOwner             bool
-	OwnerID                *int
-	ClearUsers             bool
-	AddUserIDs             []int
-	RemoveUserIDs          []int
-	ClearRolesAndGroups    bool
-	AddRolesAndGroupIDs    []int
-	RemoveRolesAndGroupIDs []int
-	ClearPermissions       bool
-	AddPermissionIDs       []int
-	RemovePermissionIDs    []int
-	ClearPolicies          bool
-	AddPolicyIDs           []int
-	RemovePolicyIDs        []int
-	ClearApps              bool
-	AddAppIDs              []int
-	RemoveAppIDs           []int
-	ClearFileIdentities    bool
-	AddFileIdentityIDs     []int
-	RemoveFileIdentityIDs  []int
+	ClearDomain             bool
+	Domain                  *string
+	ClearCustomDomain       bool
+	CustomDomain            []string
+	AppendCustomDomain      []string
+	Name                    *string
+	ClearProfile            bool
+	Profile                 *string
+	ClearStatus             bool
+	Status                  *typex.SimpleStatus
+	ClearCountryCode        bool
+	CountryCode             *string
+	ClearTimezone           bool
+	Timezone                *string
+	ClearLocalCurrency      bool
+	LocalCurrency           *string
+	ClearLogo               bool
+	Logo                    *types.OrgLogo
+	ParentID                *int
+	ClearChildren           bool
+	AddChildIDs             []int
+	RemoveChildIDs          []int
+	ClearOwner              bool
+	OwnerID                 *int
+	ClearUsers              bool
+	AddUserIDs              []int
+	RemoveUserIDs           []int
+	ClearRolesAndGroups     bool
+	AddRolesAndGroupIDs     []int
+	RemoveRolesAndGroupIDs  []int
+	ClearPermissions        bool
+	AddPermissionIDs        []int
+	RemovePermissionIDs     []int
+	ClearPolicies           bool
+	AddPolicyIDs            []int
+	RemovePolicyIDs         []int
+	ClearApps               bool
+	AddAppIDs               []int
+	RemoveAppIDs            []int
+	ClearFileIdentities     bool
+	AddFileIdentityIDs      []int
+	RemoveFileIdentityIDs   []int
+	ClearUserPasswordPolicy bool
+	UserPasswordPolicyID    *int
 }
 
 // Mutate applies the UpdateOrgInput on the OrgMutation builder.
@@ -1201,6 +1569,15 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.Domain; v != nil {
 		m.SetDomain(*v)
+	}
+	if i.ClearCustomDomain {
+		m.ClearCustomDomain()
+	}
+	if v := i.CustomDomain; v != nil {
+		m.SetCustomDomain(v)
+	}
+	if i.AppendCustomDomain != nil {
+		m.AppendCustomDomain(i.CustomDomain)
 	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
@@ -1228,6 +1605,18 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	}
 	if v := i.Timezone; v != nil {
 		m.SetTimezone(*v)
+	}
+	if i.ClearLocalCurrency {
+		m.ClearLocalCurrency()
+	}
+	if v := i.LocalCurrency; v != nil {
+		m.SetLocalCurrency(*v)
+	}
+	if i.ClearLogo {
+		m.ClearLogo()
+	}
+	if v := i.Logo; v != nil {
+		m.SetLogo(v)
 	}
 	if v := i.ParentID; v != nil {
 		m.SetParentID(*v)
@@ -1301,6 +1690,12 @@ func (i *UpdateOrgInput) Mutate(m *OrgMutation) {
 	if v := i.RemoveFileIdentityIDs; len(v) > 0 {
 		m.RemoveFileIdentityIDs(v...)
 	}
+	if i.ClearUserPasswordPolicy {
+		m.ClearUserPasswordPolicy()
+	}
+	if v := i.UserPasswordPolicyID; v != nil {
+		m.SetUserPasswordPolicyID(*v)
+	}
 }
 
 // SetInput applies the change-set in the UpdateOrgInput on the OrgUpdate builder.
@@ -1317,19 +1712,17 @@ func (c *OrgUpdateOne) SetInput(i UpdateOrgInput) *OrgUpdateOne {
 
 // CreateOrgPolicyInput represents a mutation input for creating orgpolicies.
 type CreateOrgPolicyInput struct {
-	AppPolicyID   *int
 	Name          string
 	Comments      *string
 	Rules         []*types.PolicyRule
 	OrgID         *int
 	PermissionIDs []int
+	AppPolicyID   *int
+	AppID         *int
 }
 
 // Mutate applies the CreateOrgPolicyInput on the OrgPolicyMutation builder.
 func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
-	if v := i.AppPolicyID; v != nil {
-		m.SetAppPolicyID(*v)
-	}
 	m.SetName(i.Name)
 	if v := i.Comments; v != nil {
 		m.SetComments(*v)
@@ -1343,6 +1736,12 @@ func (i *CreateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	if v := i.PermissionIDs; len(v) > 0 {
 		m.AddPermissionIDs(v...)
 	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateOrgPolicyInput on the OrgPolicyCreate builder.
@@ -1353,8 +1752,6 @@ func (c *OrgPolicyCreate) SetInput(i CreateOrgPolicyInput) *OrgPolicyCreate {
 
 // UpdateOrgPolicyInput represents a mutation input for updating orgpolicies.
 type UpdateOrgPolicyInput struct {
-	ClearAppPolicyID    bool
-	AppPolicyID         *int
 	Name                *string
 	ClearComments       bool
 	Comments            *string
@@ -1363,16 +1760,14 @@ type UpdateOrgPolicyInput struct {
 	ClearPermissions    bool
 	AddPermissionIDs    []int
 	RemovePermissionIDs []int
+	ClearAppPolicy      bool
+	AppPolicyID         *int
+	ClearApp            bool
+	AppID               *int
 }
 
 // Mutate applies the UpdateOrgPolicyInput on the OrgPolicyMutation builder.
 func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
-	if i.ClearAppPolicyID {
-		m.ClearAppPolicyID()
-	}
-	if v := i.AppPolicyID; v != nil {
-		m.SetAppPolicyID(*v)
-	}
 	if v := i.Name; v != nil {
 		m.SetName(*v)
 	}
@@ -1396,6 +1791,18 @@ func (i *UpdateOrgPolicyInput) Mutate(m *OrgPolicyMutation) {
 	}
 	if v := i.RemovePermissionIDs; len(v) > 0 {
 		m.RemovePermissionIDs(v...)
+	}
+	if i.ClearAppPolicy {
+		m.ClearAppPolicy()
+	}
+	if v := i.AppPolicyID; v != nil {
+		m.SetAppPolicyID(*v)
+	}
+	if i.ClearApp {
+		m.ClearApp()
+	}
+	if v := i.AppID; v != nil {
+		m.SetAppID(*v)
 	}
 }
 
@@ -1477,6 +1884,7 @@ func (c *OrgRoleUpdateOne) SetInput(i UpdateOrgRoleInput) *OrgRoleUpdateOne {
 type CreateOrgUserInput struct {
 	JoinedAt    *time.Time
 	DisplayName string
+	UserType    *orguser.UserType
 	OrgID       int
 	UserID      int
 }
@@ -1487,6 +1895,9 @@ func (i *CreateOrgUserInput) Mutate(m *OrgUserMutation) {
 		m.SetJoinedAt(*v)
 	}
 	m.SetDisplayName(i.DisplayName)
+	if v := i.UserType; v != nil {
+		m.SetUserType(*v)
+	}
 	m.SetOrgID(i.OrgID)
 	m.SetUserID(i.UserID)
 }
@@ -1501,6 +1912,7 @@ func (c *OrgUserCreate) SetInput(i CreateOrgUserInput) *OrgUserCreate {
 type UpdateOrgUserInput struct {
 	JoinedAt    *time.Time
 	DisplayName *string
+	UserType    *orguser.UserType
 	OrgID       *int
 	UserID      *int
 }
@@ -1512,6 +1924,9 @@ func (i *UpdateOrgUserInput) Mutate(m *OrgUserMutation) {
 	}
 	if v := i.DisplayName; v != nil {
 		m.SetDisplayName(*v)
+	}
+	if v := i.UserType; v != nil {
+		m.SetUserType(*v)
 	}
 	if v := i.OrgID; v != nil {
 		m.SetOrgID(*v)
@@ -1535,8 +1950,9 @@ func (c *OrgUserUpdateOne) SetInput(i UpdateOrgUserInput) *OrgUserUpdateOne {
 
 // CreateOrgUserPreferenceInput represents a mutation input for creating orguserpreferences.
 type CreateOrgUserPreferenceInput struct {
-	MenuFavorite []int
-	MenuRecent   []int
+	MenuFavorite      []int
+	MenuRecent        []int
+	ClientPreferences []types.ClientPreference
 }
 
 // Mutate applies the CreateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
@@ -1546,6 +1962,9 @@ func (i *CreateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
 	}
 	if v := i.MenuRecent; v != nil {
 		m.SetMenuRecent(v)
+	}
+	if v := i.ClientPreferences; v != nil {
+		m.SetClientPreferences(v)
 	}
 }
 
@@ -1557,12 +1976,15 @@ func (c *OrgUserPreferenceCreate) SetInput(i CreateOrgUserPreferenceInput) *OrgU
 
 // UpdateOrgUserPreferenceInput represents a mutation input for updating orguserpreferences.
 type UpdateOrgUserPreferenceInput struct {
-	ClearMenuFavorite  bool
-	MenuFavorite       []int
-	AppendMenuFavorite []int
-	ClearMenuRecent    bool
-	MenuRecent         []int
-	AppendMenuRecent   []int
+	ClearMenuFavorite       bool
+	MenuFavorite            []int
+	AppendMenuFavorite      []int
+	ClearMenuRecent         bool
+	MenuRecent              []int
+	AppendMenuRecent        []int
+	ClearClientPreferences  bool
+	ClientPreferences       []types.ClientPreference
+	AppendClientPreferences []types.ClientPreference
 }
 
 // Mutate applies the UpdateOrgUserPreferenceInput on the OrgUserPreferenceMutation builder.
@@ -1584,6 +2006,15 @@ func (i *UpdateOrgUserPreferenceInput) Mutate(m *OrgUserPreferenceMutation) {
 	}
 	if i.AppendMenuRecent != nil {
 		m.AppendMenuRecent(i.MenuRecent)
+	}
+	if i.ClearClientPreferences {
+		m.ClearClientPreferences()
+	}
+	if v := i.ClientPreferences; v != nil {
+		m.SetClientPreferences(v)
+	}
+	if i.AppendClientPreferences != nil {
+		m.AppendClientPreferences(i.ClientPreferences)
 	}
 }
 
@@ -1679,32 +2110,371 @@ func (c *PermissionUpdateOne) SetInput(i UpdatePermissionInput) *PermissionUpdat
 	return c
 }
 
+// CreateQuotaInput represents a mutation input for creating quotaslice.
+type CreateQuotaInput struct {
+	Limit       int64
+	StartAt     *time.Time
+	EndAt       *time.Time
+	QuotaItemID int
+	QuotaOrgID  *int
+	QuotaUserID *int
+}
+
+// Mutate applies the CreateQuotaInput on the QuotaMutation builder.
+func (i *CreateQuotaInput) Mutate(m *QuotaMutation) {
+	m.SetLimit(i.Limit)
+	if v := i.StartAt; v != nil {
+		m.SetStartAt(*v)
+	}
+	if v := i.EndAt; v != nil {
+		m.SetEndAt(*v)
+	}
+	m.SetQuotaItemID(i.QuotaItemID)
+	if v := i.QuotaOrgID; v != nil {
+		m.SetQuotaOrgID(*v)
+	}
+	if v := i.QuotaUserID; v != nil {
+		m.SetQuotaUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateQuotaInput on the QuotaCreate builder.
+func (c *QuotaCreate) SetInput(i CreateQuotaInput) *QuotaCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateQuotaInput represents a mutation input for updating quotaslice.
+type UpdateQuotaInput struct {
+	Limit          *int64
+	ClearStartAt   bool
+	StartAt        *time.Time
+	ClearEndAt     bool
+	EndAt          *time.Time
+	QuotaItemID    *int
+	ClearQuotaOrg  bool
+	QuotaOrgID     *int
+	ClearQuotaUser bool
+	QuotaUserID    *int
+}
+
+// Mutate applies the UpdateQuotaInput on the QuotaMutation builder.
+func (i *UpdateQuotaInput) Mutate(m *QuotaMutation) {
+	if v := i.Limit; v != nil {
+		m.SetLimit(*v)
+	}
+	if i.ClearStartAt {
+		m.ClearStartAt()
+	}
+	if v := i.StartAt; v != nil {
+		m.SetStartAt(*v)
+	}
+	if i.ClearEndAt {
+		m.ClearEndAt()
+	}
+	if v := i.EndAt; v != nil {
+		m.SetEndAt(*v)
+	}
+	if v := i.QuotaItemID; v != nil {
+		m.SetQuotaItemID(*v)
+	}
+	if i.ClearQuotaOrg {
+		m.ClearQuotaOrg()
+	}
+	if v := i.QuotaOrgID; v != nil {
+		m.SetQuotaOrgID(*v)
+	}
+	if i.ClearQuotaUser {
+		m.ClearQuotaUser()
+	}
+	if v := i.QuotaUserID; v != nil {
+		m.SetQuotaUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateQuotaInput on the QuotaUpdate builder.
+func (c *QuotaUpdate) SetInput(i UpdateQuotaInput) *QuotaUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateQuotaInput on the QuotaUpdateOne builder.
+func (c *QuotaUpdateOne) SetInput(i UpdateQuotaInput) *QuotaUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateQuotaItemInput represents a mutation input for creating quotaitems.
+type CreateQuotaItemInput struct {
+	Code         string
+	Name         string
+	Description  *string
+	ResourceType quotaitem.ResourceType
+	Unit         *string
+	Active       *bool
+	DefaultLimit *int64
+	QuotumIDs    []int
+}
+
+// Mutate applies the CreateQuotaItemInput on the QuotaItemMutation builder.
+func (i *CreateQuotaItemInput) Mutate(m *QuotaItemMutation) {
+	m.SetCode(i.Code)
+	m.SetName(i.Name)
+	if v := i.Description; v != nil {
+		m.SetDescription(*v)
+	}
+	m.SetResourceType(i.ResourceType)
+	if v := i.Unit; v != nil {
+		m.SetUnit(*v)
+	}
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if v := i.DefaultLimit; v != nil {
+		m.SetDefaultLimit(*v)
+	}
+	if v := i.QuotumIDs; len(v) > 0 {
+		m.AddQuotumIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the CreateQuotaItemInput on the QuotaItemCreate builder.
+func (c *QuotaItemCreate) SetInput(i CreateQuotaItemInput) *QuotaItemCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateQuotaItemInput represents a mutation input for updating quotaitems.
+type UpdateQuotaItemInput struct {
+	Code              *string
+	Name              *string
+	ClearDescription  bool
+	Description       *string
+	ResourceType      *quotaitem.ResourceType
+	ClearUnit         bool
+	Unit              *string
+	Active            *bool
+	ClearDefaultLimit bool
+	DefaultLimit      *int64
+	ClearQuota        bool
+	AddQuotumIDs      []int
+	RemoveQuotumIDs   []int
+}
+
+// Mutate applies the UpdateQuotaItemInput on the QuotaItemMutation builder.
+func (i *UpdateQuotaItemInput) Mutate(m *QuotaItemMutation) {
+	if v := i.Code; v != nil {
+		m.SetCode(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearDescription {
+		m.ClearDescription()
+	}
+	if v := i.Description; v != nil {
+		m.SetDescription(*v)
+	}
+	if v := i.ResourceType; v != nil {
+		m.SetResourceType(*v)
+	}
+	if i.ClearUnit {
+		m.ClearUnit()
+	}
+	if v := i.Unit; v != nil {
+		m.SetUnit(*v)
+	}
+	if v := i.Active; v != nil {
+		m.SetActive(*v)
+	}
+	if i.ClearDefaultLimit {
+		m.ClearDefaultLimit()
+	}
+	if v := i.DefaultLimit; v != nil {
+		m.SetDefaultLimit(*v)
+	}
+	if i.ClearQuota {
+		m.ClearQuota()
+	}
+	if v := i.AddQuotumIDs; len(v) > 0 {
+		m.AddQuotumIDs(v...)
+	}
+	if v := i.RemoveQuotumIDs; len(v) > 0 {
+		m.RemoveQuotumIDs(v...)
+	}
+}
+
+// SetInput applies the change-set in the UpdateQuotaItemInput on the QuotaItemUpdate builder.
+func (c *QuotaItemUpdate) SetInput(i UpdateQuotaItemInput) *QuotaItemUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateQuotaItemInput on the QuotaItemUpdateOne builder.
+func (c *QuotaItemUpdateOne) SetInput(i UpdateQuotaItemInput) *QuotaItemUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateRegionInput represents a mutation input for creating regions.
+type CreateRegionInput struct {
+	Name      *string
+	NameEn    *string
+	ShortCode *string
+	ZipCode   *string
+	Status    *typex.SimpleStatus
+	ParentID  *int
+	ChildIDs  []int
+	CountryID *int
+}
+
+// Mutate applies the CreateRegionInput on the RegionMutation builder.
+func (i *CreateRegionInput) Mutate(m *RegionMutation) {
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.NameEn; v != nil {
+		m.SetNameEn(*v)
+	}
+	if v := i.ShortCode; v != nil {
+		m.SetShortCode(*v)
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if v := i.ChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.CountryID; v != nil {
+		m.SetCountryID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateRegionInput on the RegionCreate builder.
+func (c *RegionCreate) SetInput(i CreateRegionInput) *RegionCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateRegionInput represents a mutation input for updating regions.
+type UpdateRegionInput struct {
+	ClearName      bool
+	Name           *string
+	ClearNameEn    bool
+	NameEn         *string
+	ClearShortCode bool
+	ShortCode      *string
+	ClearZipCode   bool
+	ZipCode        *string
+	ClearStatus    bool
+	Status         *typex.SimpleStatus
+	ClearParent    bool
+	ParentID       *int
+	ClearChildren  bool
+	AddChildIDs    []int
+	RemoveChildIDs []int
+	ClearCountry   bool
+	CountryID      *int
+}
+
+// Mutate applies the UpdateRegionInput on the RegionMutation builder.
+func (i *UpdateRegionInput) Mutate(m *RegionMutation) {
+	if i.ClearName {
+		m.ClearName()
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if i.ClearNameEn {
+		m.ClearNameEn()
+	}
+	if v := i.NameEn; v != nil {
+		m.SetNameEn(*v)
+	}
+	if i.ClearShortCode {
+		m.ClearShortCode()
+	}
+	if v := i.ShortCode; v != nil {
+		m.SetShortCode(*v)
+	}
+	if i.ClearZipCode {
+		m.ClearZipCode()
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if i.ClearParent {
+		m.ClearParent()
+	}
+	if v := i.ParentID; v != nil {
+		m.SetParentID(*v)
+	}
+	if i.ClearChildren {
+		m.ClearChildren()
+	}
+	if v := i.AddChildIDs; len(v) > 0 {
+		m.AddChildIDs(v...)
+	}
+	if v := i.RemoveChildIDs; len(v) > 0 {
+		m.RemoveChildIDs(v...)
+	}
+	if i.ClearCountry {
+		m.ClearCountry()
+	}
+	if v := i.CountryID; v != nil {
+		m.SetCountryID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateRegionInput on the RegionUpdate builder.
+func (c *RegionUpdate) SetInput(i UpdateRegionInput) *RegionUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateRegionInput on the RegionUpdateOne builder.
+func (c *RegionUpdateOne) SetInput(i UpdateRegionInput) *RegionUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
 // CreateUserInput represents a mutation input for creating users.
 type CreateUserInput struct {
 	PrincipalName  string
 	DisplayName    string
-	Email          *string
-	Mobile         *string
-	Status         *typex.SimpleStatus
+	Status         *types.UserStatus
 	Comments       *string
 	Avatar         *string
+	Gender         *user.Gender
+	FirstName      *string
+	MiddleName     *string
+	LastName       *string
+	Lang           *string
 	IdentityIDs    []int
 	LoginProfileID *int
 	PasswordIDs    []int
 	DeviceIDs      []int
 	OauthClientIDs []int
+	AddressIDs     []int
+	CitizenshipID  *int
 }
 
 // Mutate applies the CreateUserInput on the UserMutation builder.
 func (i *CreateUserInput) Mutate(m *UserMutation) {
 	m.SetPrincipalName(i.PrincipalName)
 	m.SetDisplayName(i.DisplayName)
-	if v := i.Email; v != nil {
-		m.SetEmail(*v)
-	}
-	if v := i.Mobile; v != nil {
-		m.SetMobile(*v)
-	}
 	if v := i.Status; v != nil {
 		m.SetStatus(*v)
 	}
@@ -1713,6 +2483,21 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.Avatar; v != nil {
 		m.SetAvatar(*v)
+	}
+	if v := i.Gender; v != nil {
+		m.SetGender(*v)
+	}
+	if v := i.FirstName; v != nil {
+		m.SetFirstName(*v)
+	}
+	if v := i.MiddleName; v != nil {
+		m.SetMiddleName(*v)
+	}
+	if v := i.LastName; v != nil {
+		m.SetLastName(*v)
+	}
+	if v := i.Lang; v != nil {
+		m.SetLang(*v)
 	}
 	if v := i.IdentityIDs; len(v) > 0 {
 		m.AddIdentityIDs(v...)
@@ -1729,6 +2514,12 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.OauthClientIDs; len(v) > 0 {
 		m.AddOauthClientIDs(v...)
 	}
+	if v := i.AddressIDs; len(v) > 0 {
+		m.AddAddressIDs(v...)
+	}
+	if v := i.CitizenshipID; v != nil {
+		m.SetCitizenshipID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateUserInput on the UserCreate builder.
@@ -1739,16 +2530,23 @@ func (c *UserCreate) SetInput(i CreateUserInput) *UserCreate {
 
 // UpdateUserInput represents a mutation input for updating users.
 type UpdateUserInput struct {
-	PrincipalName *string
-	DisplayName   *string
-	ClearEmail    bool
-	Email         *string
-	ClearMobile   bool
-	Mobile        *string
-	ClearComments bool
-	Comments      *string
-	ClearAvatar   bool
-	Avatar        *string
+	PrincipalName    *string
+	DisplayName      *string
+	ClearComments    bool
+	Comments         *string
+	ClearAvatar      bool
+	Avatar           *string
+	Gender           *user.Gender
+	ClearFirstName   bool
+	FirstName        *string
+	ClearMiddleName  bool
+	MiddleName       *string
+	ClearLastName    bool
+	LastName         *string
+	ClearLang        bool
+	Lang             *string
+	ClearCitizenship bool
+	CitizenshipID    *int
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -1758,18 +2556,6 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.DisplayName; v != nil {
 		m.SetDisplayName(*v)
-	}
-	if i.ClearEmail {
-		m.ClearEmail()
-	}
-	if v := i.Email; v != nil {
-		m.SetEmail(*v)
-	}
-	if i.ClearMobile {
-		m.ClearMobile()
-	}
-	if v := i.Mobile; v != nil {
-		m.SetMobile(*v)
 	}
 	if i.ClearComments {
 		m.ClearComments()
@@ -1783,6 +2569,39 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	if v := i.Avatar; v != nil {
 		m.SetAvatar(*v)
 	}
+	if v := i.Gender; v != nil {
+		m.SetGender(*v)
+	}
+	if i.ClearFirstName {
+		m.ClearFirstName()
+	}
+	if v := i.FirstName; v != nil {
+		m.SetFirstName(*v)
+	}
+	if i.ClearMiddleName {
+		m.ClearMiddleName()
+	}
+	if v := i.MiddleName; v != nil {
+		m.SetMiddleName(*v)
+	}
+	if i.ClearLastName {
+		m.ClearLastName()
+	}
+	if v := i.LastName; v != nil {
+		m.SetLastName(*v)
+	}
+	if i.ClearLang {
+		m.ClearLang()
+	}
+	if v := i.Lang; v != nil {
+		m.SetLang(*v)
+	}
+	if i.ClearCitizenship {
+		m.ClearCitizenship()
+	}
+	if v := i.CitizenshipID; v != nil {
+		m.SetCitizenshipID(*v)
+	}
 }
 
 // SetInput applies the change-set in the UpdateUserInput on the UserUpdate builder.
@@ -1793,6 +2612,276 @@ func (c *UserUpdate) SetInput(i UpdateUserInput) *UserUpdate {
 
 // SetInput applies the change-set in the UpdateUserInput on the UserUpdateOne builder.
 func (c *UserUpdateOne) SetInput(i UpdateUserInput) *UserUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateUserAddrInput represents a mutation input for creating useraddrs.
+type CreateUserAddrInput struct {
+	Addr      *string
+	Email     *string
+	Fax       *string
+	ZipCode   *string
+	Tel       *string
+	Mobile    *string
+	Name      *string
+	IsDefault *bool
+	UserID    *int
+	RegionID  *int
+}
+
+// Mutate applies the CreateUserAddrInput on the UserAddrMutation builder.
+func (i *CreateUserAddrInput) Mutate(m *UserAddrMutation) {
+	if v := i.Addr; v != nil {
+		m.SetAddr(*v)
+	}
+	if v := i.Email; v != nil {
+		m.SetEmail(*v)
+	}
+	if v := i.Fax; v != nil {
+		m.SetFax(*v)
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
+	}
+	if v := i.Tel; v != nil {
+		m.SetTel(*v)
+	}
+	if v := i.Mobile; v != nil {
+		m.SetMobile(*v)
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.IsDefault; v != nil {
+		m.SetIsDefault(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+	if v := i.RegionID; v != nil {
+		m.SetRegionID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateUserAddrInput on the UserAddrCreate builder.
+func (c *UserAddrCreate) SetInput(i CreateUserAddrInput) *UserAddrCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateUserAddrInput represents a mutation input for updating useraddrs.
+type UpdateUserAddrInput struct {
+	ClearAddr    bool
+	Addr         *string
+	ClearEmail   bool
+	Email        *string
+	ClearFax     bool
+	Fax          *string
+	ClearZipCode bool
+	ZipCode      *string
+	ClearTel     bool
+	Tel          *string
+	ClearMobile  bool
+	Mobile       *string
+	ClearName    bool
+	Name         *string
+	IsDefault    *bool
+	ClearRegion  bool
+	RegionID     *int
+}
+
+// Mutate applies the UpdateUserAddrInput on the UserAddrMutation builder.
+func (i *UpdateUserAddrInput) Mutate(m *UserAddrMutation) {
+	if i.ClearAddr {
+		m.ClearAddr()
+	}
+	if v := i.Addr; v != nil {
+		m.SetAddr(*v)
+	}
+	if i.ClearEmail {
+		m.ClearEmail()
+	}
+	if v := i.Email; v != nil {
+		m.SetEmail(*v)
+	}
+	if i.ClearFax {
+		m.ClearFax()
+	}
+	if v := i.Fax; v != nil {
+		m.SetFax(*v)
+	}
+	if i.ClearZipCode {
+		m.ClearZipCode()
+	}
+	if v := i.ZipCode; v != nil {
+		m.SetZipCode(*v)
+	}
+	if i.ClearTel {
+		m.ClearTel()
+	}
+	if v := i.Tel; v != nil {
+		m.SetTel(*v)
+	}
+	if i.ClearMobile {
+		m.ClearMobile()
+	}
+	if v := i.Mobile; v != nil {
+		m.SetMobile(*v)
+	}
+	if i.ClearName {
+		m.ClearName()
+	}
+	if v := i.Name; v != nil {
+		m.SetName(*v)
+	}
+	if v := i.IsDefault; v != nil {
+		m.SetIsDefault(*v)
+	}
+	if i.ClearRegion {
+		m.ClearRegion()
+	}
+	if v := i.RegionID; v != nil {
+		m.SetRegionID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateUserAddrInput on the UserAddrUpdate builder.
+func (c *UserAddrUpdate) SetInput(i UpdateUserAddrInput) *UserAddrUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateUserAddrInput on the UserAddrUpdateOne builder.
+func (c *UserAddrUpdateOne) SetInput(i UpdateUserAddrInput) *UserAddrUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateUserDeviceInput represents a mutation input for creating userdevices.
+type CreateUserDeviceInput struct {
+	DeviceUID     string
+	DeviceName    *string
+	SystemName    *string
+	SystemVersion *string
+	AppVersion    *string
+	DeviceModel   *string
+	Status        *typex.SimpleStatus
+	Comments      *string
+	UserID        *int
+}
+
+// Mutate applies the CreateUserDeviceInput on the UserDeviceMutation builder.
+func (i *CreateUserDeviceInput) Mutate(m *UserDeviceMutation) {
+	m.SetDeviceUID(i.DeviceUID)
+	if v := i.DeviceName; v != nil {
+		m.SetDeviceName(*v)
+	}
+	if v := i.SystemName; v != nil {
+		m.SetSystemName(*v)
+	}
+	if v := i.SystemVersion; v != nil {
+		m.SetSystemVersion(*v)
+	}
+	if v := i.AppVersion; v != nil {
+		m.SetAppVersion(*v)
+	}
+	if v := i.DeviceModel; v != nil {
+		m.SetDeviceModel(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+	if v := i.UserID; v != nil {
+		m.SetUserID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateUserDeviceInput on the UserDeviceCreate builder.
+func (c *UserDeviceCreate) SetInput(i CreateUserDeviceInput) *UserDeviceCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateUserDeviceInput represents a mutation input for updating userdevices.
+type UpdateUserDeviceInput struct {
+	DeviceUID          *string
+	ClearDeviceName    bool
+	DeviceName         *string
+	ClearSystemName    bool
+	SystemName         *string
+	ClearSystemVersion bool
+	SystemVersion      *string
+	ClearAppVersion    bool
+	AppVersion         *string
+	ClearDeviceModel   bool
+	DeviceModel        *string
+	ClearStatus        bool
+	Status             *typex.SimpleStatus
+	ClearComments      bool
+	Comments           *string
+}
+
+// Mutate applies the UpdateUserDeviceInput on the UserDeviceMutation builder.
+func (i *UpdateUserDeviceInput) Mutate(m *UserDeviceMutation) {
+	if v := i.DeviceUID; v != nil {
+		m.SetDeviceUID(*v)
+	}
+	if i.ClearDeviceName {
+		m.ClearDeviceName()
+	}
+	if v := i.DeviceName; v != nil {
+		m.SetDeviceName(*v)
+	}
+	if i.ClearSystemName {
+		m.ClearSystemName()
+	}
+	if v := i.SystemName; v != nil {
+		m.SetSystemName(*v)
+	}
+	if i.ClearSystemVersion {
+		m.ClearSystemVersion()
+	}
+	if v := i.SystemVersion; v != nil {
+		m.SetSystemVersion(*v)
+	}
+	if i.ClearAppVersion {
+		m.ClearAppVersion()
+	}
+	if v := i.AppVersion; v != nil {
+		m.SetAppVersion(*v)
+	}
+	if i.ClearDeviceModel {
+		m.ClearDeviceModel()
+	}
+	if v := i.DeviceModel; v != nil {
+		m.SetDeviceModel(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if i.ClearComments {
+		m.ClearComments()
+	}
+	if v := i.Comments; v != nil {
+		m.SetComments(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateUserDeviceInput on the UserDeviceUpdate builder.
+func (c *UserDeviceUpdate) SetInput(i UpdateUserDeviceInput) *UserDeviceUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateUserDeviceInput on the UserDeviceUpdateOne builder.
+func (c *UserDeviceUpdateOne) SetInput(i UpdateUserDeviceInput) *UserDeviceUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -1882,7 +2971,7 @@ type CreateUserLoginProfileInput struct {
 	CanLogin      *bool
 	SetKind       userloginprofile.SetKind
 	PasswordReset *bool
-	VerifyDevice  bool
+	VerifyDevice  *bool
 	UserID        *int
 }
 
@@ -1895,7 +2984,9 @@ func (i *CreateUserLoginProfileInput) Mutate(m *UserLoginProfileMutation) {
 	if v := i.PasswordReset; v != nil {
 		m.SetPasswordReset(*v)
 	}
-	m.SetVerifyDevice(i.VerifyDevice)
+	if v := i.VerifyDevice; v != nil {
+		m.SetVerifyDevice(*v)
+	}
 	if v := i.UserID; v != nil {
 		m.SetUserID(*v)
 	}
@@ -2015,6 +3106,140 @@ func (c *UserPasswordUpdate) SetInput(i UpdateUserPasswordInput) *UserPasswordUp
 
 // SetInput applies the change-set in the UpdateUserPasswordInput on the UserPasswordUpdateOne builder.
 func (c *UserPasswordUpdateOne) SetInput(i UpdateUserPasswordInput) *UserPasswordUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateUserPasswordPolicyInput represents a mutation input for creating userpasswordpolicies.
+type CreateUserPasswordPolicyInput struct {
+	Length               *int32
+	IncludeElement       *int32
+	IncludeChar          *int32
+	AllowIncludeUserName *bool
+	InvalidDay           *int32
+	InvalidLoginLimit    *bool
+	Retry                *int32
+	CaptchaTimes         *int32
+	OrgID                *int
+}
+
+// Mutate applies the CreateUserPasswordPolicyInput on the UserPasswordPolicyMutation builder.
+func (i *CreateUserPasswordPolicyInput) Mutate(m *UserPasswordPolicyMutation) {
+	if v := i.Length; v != nil {
+		m.SetLength(*v)
+	}
+	if v := i.IncludeElement; v != nil {
+		m.SetIncludeElement(*v)
+	}
+	if v := i.IncludeChar; v != nil {
+		m.SetIncludeChar(*v)
+	}
+	if v := i.AllowIncludeUserName; v != nil {
+		m.SetAllowIncludeUserName(*v)
+	}
+	if v := i.InvalidDay; v != nil {
+		m.SetInvalidDay(*v)
+	}
+	if v := i.InvalidLoginLimit; v != nil {
+		m.SetInvalidLoginLimit(*v)
+	}
+	if v := i.Retry; v != nil {
+		m.SetRetry(*v)
+	}
+	if v := i.CaptchaTimes; v != nil {
+		m.SetCaptchaTimes(*v)
+	}
+	if v := i.OrgID; v != nil {
+		m.SetOrgID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateUserPasswordPolicyInput on the UserPasswordPolicyCreate builder.
+func (c *UserPasswordPolicyCreate) SetInput(i CreateUserPasswordPolicyInput) *UserPasswordPolicyCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateUserPasswordPolicyInput represents a mutation input for updating userpasswordpolicies.
+type UpdateUserPasswordPolicyInput struct {
+	ClearLength               bool
+	Length                    *int32
+	ClearIncludeElement       bool
+	IncludeElement            *int32
+	ClearIncludeChar          bool
+	IncludeChar               *int32
+	ClearAllowIncludeUserName bool
+	AllowIncludeUserName      *bool
+	ClearInvalidDay           bool
+	InvalidDay                *int32
+	ClearInvalidLoginLimit    bool
+	InvalidLoginLimit         *bool
+	ClearRetry                bool
+	Retry                     *int32
+	ClearCaptchaTimes         bool
+	CaptchaTimes              *int32
+}
+
+// Mutate applies the UpdateUserPasswordPolicyInput on the UserPasswordPolicyMutation builder.
+func (i *UpdateUserPasswordPolicyInput) Mutate(m *UserPasswordPolicyMutation) {
+	if i.ClearLength {
+		m.ClearLength()
+	}
+	if v := i.Length; v != nil {
+		m.SetLength(*v)
+	}
+	if i.ClearIncludeElement {
+		m.ClearIncludeElement()
+	}
+	if v := i.IncludeElement; v != nil {
+		m.SetIncludeElement(*v)
+	}
+	if i.ClearIncludeChar {
+		m.ClearIncludeChar()
+	}
+	if v := i.IncludeChar; v != nil {
+		m.SetIncludeChar(*v)
+	}
+	if i.ClearAllowIncludeUserName {
+		m.ClearAllowIncludeUserName()
+	}
+	if v := i.AllowIncludeUserName; v != nil {
+		m.SetAllowIncludeUserName(*v)
+	}
+	if i.ClearInvalidDay {
+		m.ClearInvalidDay()
+	}
+	if v := i.InvalidDay; v != nil {
+		m.SetInvalidDay(*v)
+	}
+	if i.ClearInvalidLoginLimit {
+		m.ClearInvalidLoginLimit()
+	}
+	if v := i.InvalidLoginLimit; v != nil {
+		m.SetInvalidLoginLimit(*v)
+	}
+	if i.ClearRetry {
+		m.ClearRetry()
+	}
+	if v := i.Retry; v != nil {
+		m.SetRetry(*v)
+	}
+	if i.ClearCaptchaTimes {
+		m.ClearCaptchaTimes()
+	}
+	if v := i.CaptchaTimes; v != nil {
+		m.SetCaptchaTimes(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateUserPasswordPolicyInput on the UserPasswordPolicyUpdate builder.
+func (c *UserPasswordPolicyUpdate) SetInput(i UpdateUserPasswordPolicyInput) *UserPasswordPolicyUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateUserPasswordPolicyInput on the UserPasswordPolicyUpdateOne builder.
+func (c *UserPasswordPolicyUpdateOne) SetInput(i UpdateUserPasswordPolicyInput) *UserPasswordPolicyUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

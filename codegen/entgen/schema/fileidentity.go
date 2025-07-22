@@ -8,9 +8,6 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
-	gen "github.com/woocoos/knockout/ent"
-	"github.com/woocoos/knockout/ent/intercept"
-	"github.com/woocoos/knockout/version"
 )
 
 // FileIdentity holds the schema definition for the FileIdentity entity.
@@ -35,7 +32,6 @@ func (FileIdentity) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.IntID{},
 		schemax.AuditMixin{},
-		schemax.NewTenantMixin[intercept.Query, *gen.Client](version.AppCode, intercept.NewQuery),
 		schemax.NotifyMixin{},
 	}
 }
@@ -43,6 +39,7 @@ func (FileIdentity) Mixin() []ent.Mixin {
 // Fields of the FileIdentity.
 func (FileIdentity) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int(schemax.FieldTenantID).Immutable().Comment("租户ID"),
 		field.String("access_key_id").MaxLen(255).Comment("accesskey id"),
 		field.String("access_key_secret").MaxLen(255).Sensitive().Comment("accesskey secret"),
 		field.Int("file_source_id").Comment("文件来源ID"),

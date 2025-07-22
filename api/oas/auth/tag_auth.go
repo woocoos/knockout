@@ -7,6 +7,18 @@ import (
 	"time"
 )
 
+// AppOrgsRequest is the request object for (POST /login/app-orgs)
+type AppOrgsRequest struct {
+	// AppCode the app code
+	AppCode string `binding:"required" json:"appCode"`
+}
+
+// BindFingerprintRequest is the request object for (POST /login/bind-fingerprint)
+type BindFingerprintRequest struct {
+	// UserPassword the userPassword
+	UserPassword string `binding:"required" json:"userPassword"`
+}
+
 // BindMfaRequest is the request object for (POST /mfa/bind)
 type BindMfaRequest struct {
 	OtpToken   string `binding:"required" json:"otpToken"`
@@ -19,6 +31,26 @@ type CaptchaRequest struct {
 	W *int `form:"w"`
 	// H height of captcha
 	H *int `form:"h"`
+}
+
+// CheckDeviceRequest is the request object for (POST /login/check-device)
+type CheckDeviceRequest struct {
+	// DeviceInfo device info
+	DeviceInfo DeviceInfo `json:"deviceInfo"`
+}
+
+// CheckDeviceResponse whether the device needs verification.
+type CheckDeviceResponse struct {
+	// StateToken use the state token to request callback_url
+	StateToken   string             `json:"stateToken,omitempty"`
+	Verifies     []*ForgetPwdVerify `json:"verifies,omitempty"`
+	VerifyDevice bool               `json:"verifyDevice,omitempty"`
+}
+
+// FingerprintLoginRequest is the request object for (POST /login/fingerprint)
+type FingerprintLoginRequest struct {
+	// RefreshToken the refreshToken
+	RefreshToken string `binding:"required" json:"refreshToken"`
 }
 
 // ForgetPwdBeginRequest is the request object for (POST /forget-pwd/begin)
@@ -57,6 +89,11 @@ type ForgetPwdVerifyMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
 	// StateToken form begin
 	StateToken string `binding:"required" json:"stateToken"`
+}
+
+// GetDomainRequest is the request object for (GET /org/domain)
+type GetDomainRequest struct {
+	OrgID int `binding:"required" form:"orgID"`
 }
 
 // GetPreSignUrlRequest is the request object for (POST /oss/presignurl)
@@ -100,6 +137,27 @@ type LoginRequest struct {
 	Captcha string `json:"captcha,omitempty"`
 	// CaptchaId captcha id,if login fail 3 times, the login profile will demand captcha.
 	CaptchaId string `json:"captchaId,omitempty"`
+	// DeviceId device id,app verify the login device.
+	DeviceId string `json:"deviceId,omitempty"`
+	// Password hashed password
+	Password string `binding:"required" json:"password"`
+	// Username username or email
+	Username string `binding:"required" json:"username"`
+}
+
+// OldFingerprintLoginRequest is the request object for (POST /login/old-fingerprint)
+type OldFingerprintLoginRequest struct {
+	AppCode  string `binding:"required" json:"appCode"`
+	Password string `binding:"required" json:"password"`
+	Username string `binding:"required" json:"username"`
+}
+
+// OldLoginForAppRequest is the request object for (POST /login/old-auth)
+type OldLoginForAppRequest struct {
+	// AppCode app code,verify login permissions
+	AppCode string `binding:"required" json:"appCode"`
+	// OtpToken mfa random code
+	OtpToken string `binding:"required" json:"otpToken"`
 	// Password hashed password
 	Password string `binding:"required" json:"password"`
 	// Username username or email
@@ -156,6 +214,46 @@ type TokenResponse struct {
 // UnBindMfaRequest is the request object for (POST /mfa/unbind)
 type UnBindMfaRequest struct {
 	OtpToken string `binding:"required" json:"otpToken"`
+}
+
+// VerifyDeviceRequest is the request object for (POST /login/verify-device)
+type VerifyDeviceRequest struct {
+	Captcha   string `json:"captcha,omitempty"`
+	CaptchaId string `json:"captchaId,omitempty"`
+	// DeviceInfo device info
+	DeviceInfo DeviceInfo `json:"deviceInfo,omitempty"`
+	Kind       Kind       `binding:"required,oneof=email mfa" json:"kind"`
+	OtpToken   string     `json:"otpToken,omitempty"`
+	StateToken string     `binding:"required" json:"stateToken"`
+}
+
+// Kind defines the type for the kind.kind enum field.
+type Kind string
+
+// Kind values.
+const (
+	KindEmail Kind = "email"
+	KindMfa   Kind = "mfa"
+)
+
+func (k Kind) String() string {
+	return string(k)
+}
+
+// KindValidator is a validator for the Kind field enum values.
+func KindValidator(k Kind) error {
+	switch k {
+	case KindEmail, KindMfa:
+		return nil
+	default:
+		return fmt.Errorf("Kind does not allow the value '%s'", k)
+	}
+}
+
+// VerifyDeviceSendEmailRequest is the request object for (POST /login/device-captcha)
+type VerifyDeviceSendEmailRequest struct {
+	Email      string `binding:"required" json:"email"`
+	StateToken string `json:"stateToken,omitempty"`
 }
 
 // VerifyFactorRequest is the request object for (POST /login/verify-factor)

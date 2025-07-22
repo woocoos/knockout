@@ -131,6 +131,11 @@ func Timezone(v string) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldTimezone, v))
 }
 
+// LocalCurrency applies equality check predicate on the "local_currency" field. It's identical to LocalCurrencyEQ.
+func LocalCurrency(v string) predicate.Org {
+	return predicate.Org(sql.FieldEQ(FieldLocalCurrency, v))
+}
+
 // CreatedByEQ applies the EQ predicate on the "created_by" field.
 func CreatedByEQ(v int) predicate.Org {
 	return predicate.Org(sql.FieldEQ(FieldCreatedBy, v))
@@ -504,6 +509,16 @@ func DomainEqualFold(v string) predicate.Org {
 // DomainContainsFold applies the ContainsFold predicate on the "domain" field.
 func DomainContainsFold(v string) predicate.Org {
 	return predicate.Org(sql.FieldContainsFold(FieldDomain, v))
+}
+
+// CustomDomainIsNil applies the IsNil predicate on the "custom_domain" field.
+func CustomDomainIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldCustomDomain))
+}
+
+// CustomDomainNotNil applies the NotNil predicate on the "custom_domain" field.
+func CustomDomainNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldCustomDomain))
 }
 
 // CodeEQ applies the EQ predicate on the "code" field.
@@ -1036,6 +1051,91 @@ func TimezoneContainsFold(v string) predicate.Org {
 	return predicate.Org(sql.FieldContainsFold(FieldTimezone, v))
 }
 
+// LocalCurrencyEQ applies the EQ predicate on the "local_currency" field.
+func LocalCurrencyEQ(v string) predicate.Org {
+	return predicate.Org(sql.FieldEQ(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyNEQ applies the NEQ predicate on the "local_currency" field.
+func LocalCurrencyNEQ(v string) predicate.Org {
+	return predicate.Org(sql.FieldNEQ(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyIn applies the In predicate on the "local_currency" field.
+func LocalCurrencyIn(vs ...string) predicate.Org {
+	return predicate.Org(sql.FieldIn(FieldLocalCurrency, vs...))
+}
+
+// LocalCurrencyNotIn applies the NotIn predicate on the "local_currency" field.
+func LocalCurrencyNotIn(vs ...string) predicate.Org {
+	return predicate.Org(sql.FieldNotIn(FieldLocalCurrency, vs...))
+}
+
+// LocalCurrencyGT applies the GT predicate on the "local_currency" field.
+func LocalCurrencyGT(v string) predicate.Org {
+	return predicate.Org(sql.FieldGT(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyGTE applies the GTE predicate on the "local_currency" field.
+func LocalCurrencyGTE(v string) predicate.Org {
+	return predicate.Org(sql.FieldGTE(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyLT applies the LT predicate on the "local_currency" field.
+func LocalCurrencyLT(v string) predicate.Org {
+	return predicate.Org(sql.FieldLT(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyLTE applies the LTE predicate on the "local_currency" field.
+func LocalCurrencyLTE(v string) predicate.Org {
+	return predicate.Org(sql.FieldLTE(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyContains applies the Contains predicate on the "local_currency" field.
+func LocalCurrencyContains(v string) predicate.Org {
+	return predicate.Org(sql.FieldContains(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyHasPrefix applies the HasPrefix predicate on the "local_currency" field.
+func LocalCurrencyHasPrefix(v string) predicate.Org {
+	return predicate.Org(sql.FieldHasPrefix(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyHasSuffix applies the HasSuffix predicate on the "local_currency" field.
+func LocalCurrencyHasSuffix(v string) predicate.Org {
+	return predicate.Org(sql.FieldHasSuffix(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyIsNil applies the IsNil predicate on the "local_currency" field.
+func LocalCurrencyIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldLocalCurrency))
+}
+
+// LocalCurrencyNotNil applies the NotNil predicate on the "local_currency" field.
+func LocalCurrencyNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldLocalCurrency))
+}
+
+// LocalCurrencyEqualFold applies the EqualFold predicate on the "local_currency" field.
+func LocalCurrencyEqualFold(v string) predicate.Org {
+	return predicate.Org(sql.FieldEqualFold(FieldLocalCurrency, v))
+}
+
+// LocalCurrencyContainsFold applies the ContainsFold predicate on the "local_currency" field.
+func LocalCurrencyContainsFold(v string) predicate.Org {
+	return predicate.Org(sql.FieldContainsFold(FieldLocalCurrency, v))
+}
+
+// LogoIsNil applies the IsNil predicate on the "logo" field.
+func LogoIsNil() predicate.Org {
+	return predicate.Org(sql.FieldIsNull(FieldLogo))
+}
+
+// LogoNotNil applies the NotNil predicate on the "logo" field.
+func LogoNotNil() predicate.Org {
+	return predicate.Org(sql.FieldNotNull(FieldLogo))
+}
+
 // HasParent applies the HasEdge predicate on the "parent" edge.
 func HasParent() predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {
@@ -1235,6 +1335,52 @@ func HasFileIdentities() predicate.Org {
 func HasFileIdentitiesWith(preds ...predicate.FileIdentity) predicate.Org {
 	return predicate.Org(func(s *sql.Selector) {
 		step := newFileIdentitiesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasUserPasswordPolicy applies the HasEdge predicate on the "user_password_policy" edge.
+func HasUserPasswordPolicy() predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, UserPasswordPolicyTable, UserPasswordPolicyColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserPasswordPolicyWith applies the HasEdge predicate on the "user_password_policy" edge with a given conditions (other predicates).
+func HasUserPasswordPolicyWith(preds ...predicate.UserPasswordPolicy) predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := newUserPasswordPolicyStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasOrgQuota applies the HasEdge predicate on the "org_quota" edge.
+func HasOrgQuota() predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, OrgQuotaTable, OrgQuotaColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOrgQuotaWith applies the HasEdge predicate on the "org_quota" edge with a given conditions (other predicates).
+func HasOrgQuotaWith(preds ...predicate.Quota) predicate.Org {
+	return predicate.Org(func(s *sql.Selector) {
+		step := newOrgQuotaStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

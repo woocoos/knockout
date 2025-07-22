@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 )
@@ -28,12 +30,12 @@ type OrgPolicy struct {
 	UpdatedBy int `json:"updated_by,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// 所属应用
 	AppID int `json:"app_id,omitempty"`
 	// 所属应用策略,如果是自定义应用策略,则为空
-	AppPolicyID int `json:"app_policy_id,omitempty"`
+	AppPolicyID *int `json:"app_policy_id,omitempty"`
 	// 策略名称
 	Name string `json:"name,omitempty"`
 	// 描述
@@ -52,11 +54,15 @@ type OrgPolicyEdges struct {
 	Org *Org `json:"org,omitempty"`
 	// Permissions holds the value of the permissions edge.
 	Permissions []*Permission `json:"permissions,omitempty"`
+	// AppPolicy holds the value of the app_policy edge.
+	AppPolicy *AppPolicy `json:"app_policy,omitempty"`
+	// App holds the value of the app edge.
+	App *App `json:"app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [4]map[string]int
 
 	namedPermissions map[string][]*Permission
 }
@@ -79,6 +85,28 @@ func (e OrgPolicyEdges) PermissionsOrErr() ([]*Permission, error) {
 		return e.Permissions, nil
 	}
 	return nil, &NotLoadedError{edge: "permissions"}
+}
+
+// AppPolicyOrErr returns the AppPolicy value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgPolicyEdges) AppPolicyOrErr() (*AppPolicy, error) {
+	if e.AppPolicy != nil {
+		return e.AppPolicy, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: apppolicy.Label}
+	}
+	return nil, &NotLoadedError{edge: "app_policy"}
+}
+
+// AppOrErr returns the App value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e OrgPolicyEdges) AppOrErr() (*App, error) {
+	if e.App != nil {
+		return e.App, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: app.Label}
+	}
+	return nil, &NotLoadedError{edge: "app"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -155,7 +183,8 @@ func (op *OrgPolicy) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field app_policy_id", values[i])
 			} else if value.Valid {
-				op.AppPolicyID = int(value.Int64)
+				op.AppPolicyID = new(int)
+				*op.AppPolicyID = int(value.Int64)
 			}
 		case orgpolicy.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -200,6 +229,16 @@ func (op *OrgPolicy) QueryPermissions() *PermissionQuery {
 	return NewOrgPolicyClient(op.config).QueryPermissions(op)
 }
 
+// QueryAppPolicy queries the "app_policy" edge of the OrgPolicy entity.
+func (op *OrgPolicy) QueryAppPolicy() *AppPolicyQuery {
+	return NewOrgPolicyClient(op.config).QueryAppPolicy(op)
+}
+
+// QueryApp queries the "app" edge of the OrgPolicy entity.
+func (op *OrgPolicy) QueryApp() *AppQuery {
+	return NewOrgPolicyClient(op.config).QueryApp(op)
+}
+
 // Update returns a builder for updating this OrgPolicy.
 // Note that you need to call OrgPolicy.Unwrap() before calling this method if this OrgPolicy
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -241,8 +280,10 @@ func (op *OrgPolicy) String() string {
 	builder.WriteString("app_id=")
 	builder.WriteString(fmt.Sprintf("%v", op.AppID))
 	builder.WriteString(", ")
-	builder.WriteString("app_policy_id=")
-	builder.WriteString(fmt.Sprintf("%v", op.AppPolicyID))
+	if v := op.AppPolicyID; v != nil {
+		builder.WriteString("app_policy_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(op.Name)

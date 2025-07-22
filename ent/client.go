@@ -22,9 +22,12 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -36,11 +39,18 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
+
+	stdsql "database/sql"
 )
 
 // Client is the client that holds all ent builders.
@@ -60,12 +70,18 @@ type Client struct {
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
 	AppPolicy *AppPolicyClient
+	// AppPolicyView is the client for interacting with the AppPolicyView builders.
+	AppPolicyView *AppPolicyViewClient
 	// AppRes is the client for interacting with the AppRes builders.
 	AppRes *AppResClient
 	// AppRole is the client for interacting with the AppRole builders.
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
+	// Currency is the client for interacting with the Currency builders.
+	Currency *CurrencyClient
 	// FileIdentity is the client for interacting with the FileIdentity builders.
 	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
@@ -88,8 +104,16 @@ type Client struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Quota is the client for interacting with the Quota builders.
+	Quota *QuotaClient
+	// QuotaItem is the client for interacting with the QuotaItem builders.
+	QuotaItem *QuotaItemClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAddr is the client for interacting with the UserAddr builders.
+	UserAddr *UserAddrClient
 	// UserDevice is the client for interacting with the UserDevice builders.
 	UserDevice *UserDeviceClient
 	// UserIdentity is the client for interacting with the UserIdentity builders.
@@ -98,6 +122,8 @@ type Client struct {
 	UserLoginProfile *UserLoginProfileClient
 	// UserPassword is the client for interacting with the UserPassword builders.
 	UserPassword *UserPasswordClient
+	// UserPasswordPolicy is the client for interacting with the UserPasswordPolicy builders.
+	UserPasswordPolicy *UserPasswordPolicyClient
 	// additional fields for node api
 	tables tables
 }
@@ -117,9 +143,12 @@ func (c *Client) init() {
 	c.AppDictItem = NewAppDictItemClient(c.config)
 	c.AppMenu = NewAppMenuClient(c.config)
 	c.AppPolicy = NewAppPolicyClient(c.config)
+	c.AppPolicyView = NewAppPolicyViewClient(c.config)
 	c.AppRes = NewAppResClient(c.config)
 	c.AppRole = NewAppRoleClient(c.config)
 	c.AppRolePolicy = NewAppRolePolicyClient(c.config)
+	c.Country = NewCountryClient(c.config)
+	c.Currency = NewCurrencyClient(c.config)
 	c.FileIdentity = NewFileIdentityClient(c.config)
 	c.FileSource = NewFileSourceClient(c.config)
 	c.OauthClient = NewOauthClientClient(c.config)
@@ -131,11 +160,16 @@ func (c *Client) init() {
 	c.OrgUser = NewOrgUserClient(c.config)
 	c.OrgUserPreference = NewOrgUserPreferenceClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
+	c.Quota = NewQuotaClient(c.config)
+	c.QuotaItem = NewQuotaItemClient(c.config)
+	c.Region = NewRegionClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserAddr = NewUserAddrClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
 	c.UserIdentity = NewUserIdentityClient(c.config)
 	c.UserLoginProfile = NewUserLoginProfileClient(c.config)
 	c.UserPassword = NewUserPasswordClient(c.config)
+	c.UserPasswordPolicy = NewUserPasswordPolicyClient(c.config)
 }
 
 type (
@@ -226,33 +260,41 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		App:               NewAppClient(cfg),
-		AppAction:         NewAppActionClient(cfg),
-		AppDict:           NewAppDictClient(cfg),
-		AppDictItem:       NewAppDictItemClient(cfg),
-		AppMenu:           NewAppMenuClient(cfg),
-		AppPolicy:         NewAppPolicyClient(cfg),
-		AppRes:            NewAppResClient(cfg),
-		AppRole:           NewAppRoleClient(cfg),
-		AppRolePolicy:     NewAppRolePolicyClient(cfg),
-		FileIdentity:      NewFileIdentityClient(cfg),
-		FileSource:        NewFileSourceClient(cfg),
-		OauthClient:       NewOauthClientClient(cfg),
-		Org:               NewOrgClient(cfg),
-		OrgApp:            NewOrgAppClient(cfg),
-		OrgPolicy:         NewOrgPolicyClient(cfg),
-		OrgRole:           NewOrgRoleClient(cfg),
-		OrgRoleUser:       NewOrgRoleUserClient(cfg),
-		OrgUser:           NewOrgUserClient(cfg),
-		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
-		Permission:        NewPermissionClient(cfg),
-		User:              NewUserClient(cfg),
-		UserDevice:        NewUserDeviceClient(cfg),
-		UserIdentity:      NewUserIdentityClient(cfg),
-		UserLoginProfile:  NewUserLoginProfileClient(cfg),
-		UserPassword:      NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppDict:            NewAppDictClient(cfg),
+		AppDictItem:        NewAppDictItemClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppPolicyView:      NewAppPolicyViewClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Country:            NewCountryClient(cfg),
+		Currency:           NewCurrencyClient(cfg),
+		FileIdentity:       NewFileIdentityClient(cfg),
+		FileSource:         NewFileSourceClient(cfg),
+		OauthClient:        NewOauthClientClient(cfg),
+		Org:                NewOrgClient(cfg),
+		OrgApp:             NewOrgAppClient(cfg),
+		OrgPolicy:          NewOrgPolicyClient(cfg),
+		OrgRole:            NewOrgRoleClient(cfg),
+		OrgRoleUser:        NewOrgRoleUserClient(cfg),
+		OrgUser:            NewOrgUserClient(cfg),
+		OrgUserPreference:  NewOrgUserPreferenceClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		Quota:              NewQuotaClient(cfg),
+		QuotaItem:          NewQuotaItemClient(cfg),
+		Region:             NewRegionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserAddr:           NewUserAddrClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
+		UserPasswordPolicy: NewUserPasswordPolicyClient(cfg),
 	}, nil
 }
 
@@ -270,33 +312,41 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:               ctx,
-		config:            cfg,
-		App:               NewAppClient(cfg),
-		AppAction:         NewAppActionClient(cfg),
-		AppDict:           NewAppDictClient(cfg),
-		AppDictItem:       NewAppDictItemClient(cfg),
-		AppMenu:           NewAppMenuClient(cfg),
-		AppPolicy:         NewAppPolicyClient(cfg),
-		AppRes:            NewAppResClient(cfg),
-		AppRole:           NewAppRoleClient(cfg),
-		AppRolePolicy:     NewAppRolePolicyClient(cfg),
-		FileIdentity:      NewFileIdentityClient(cfg),
-		FileSource:        NewFileSourceClient(cfg),
-		OauthClient:       NewOauthClientClient(cfg),
-		Org:               NewOrgClient(cfg),
-		OrgApp:            NewOrgAppClient(cfg),
-		OrgPolicy:         NewOrgPolicyClient(cfg),
-		OrgRole:           NewOrgRoleClient(cfg),
-		OrgRoleUser:       NewOrgRoleUserClient(cfg),
-		OrgUser:           NewOrgUserClient(cfg),
-		OrgUserPreference: NewOrgUserPreferenceClient(cfg),
-		Permission:        NewPermissionClient(cfg),
-		User:              NewUserClient(cfg),
-		UserDevice:        NewUserDeviceClient(cfg),
-		UserIdentity:      NewUserIdentityClient(cfg),
-		UserLoginProfile:  NewUserLoginProfileClient(cfg),
-		UserPassword:      NewUserPasswordClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		App:                NewAppClient(cfg),
+		AppAction:          NewAppActionClient(cfg),
+		AppDict:            NewAppDictClient(cfg),
+		AppDictItem:        NewAppDictItemClient(cfg),
+		AppMenu:            NewAppMenuClient(cfg),
+		AppPolicy:          NewAppPolicyClient(cfg),
+		AppPolicyView:      NewAppPolicyViewClient(cfg),
+		AppRes:             NewAppResClient(cfg),
+		AppRole:            NewAppRoleClient(cfg),
+		AppRolePolicy:      NewAppRolePolicyClient(cfg),
+		Country:            NewCountryClient(cfg),
+		Currency:           NewCurrencyClient(cfg),
+		FileIdentity:       NewFileIdentityClient(cfg),
+		FileSource:         NewFileSourceClient(cfg),
+		OauthClient:        NewOauthClientClient(cfg),
+		Org:                NewOrgClient(cfg),
+		OrgApp:             NewOrgAppClient(cfg),
+		OrgPolicy:          NewOrgPolicyClient(cfg),
+		OrgRole:            NewOrgRoleClient(cfg),
+		OrgRoleUser:        NewOrgRoleUserClient(cfg),
+		OrgUser:            NewOrgUserClient(cfg),
+		OrgUserPreference:  NewOrgUserPreferenceClient(cfg),
+		Permission:         NewPermissionClient(cfg),
+		Quota:              NewQuotaClient(cfg),
+		QuotaItem:          NewQuotaItemClient(cfg),
+		Region:             NewRegionClient(cfg),
+		User:               NewUserClient(cfg),
+		UserAddr:           NewUserAddrClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserIdentity:       NewUserIdentityClient(cfg),
+		UserLoginProfile:   NewUserLoginProfileClient(cfg),
+		UserPassword:       NewUserPasswordClient(cfg),
+		UserPasswordPolicy: NewUserPasswordPolicyClient(cfg),
 	}, nil
 }
 
@@ -326,11 +376,12 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.FileIdentity, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy,
+		c.AppPolicyView, c.AppRes, c.AppRole, c.AppRolePolicy, c.Country, c.Currency,
+		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
+		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
+		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword, c.UserPasswordPolicy,
 	} {
 		n.Use(hooks...)
 	}
@@ -340,11 +391,12 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy, c.AppRes,
-		c.AppRole, c.AppRolePolicy, c.FileIdentity, c.FileSource, c.OauthClient, c.Org,
-		c.OrgApp, c.OrgPolicy, c.OrgRole, c.OrgRoleUser, c.OrgUser,
-		c.OrgUserPreference, c.Permission, c.User, c.UserDevice, c.UserIdentity,
-		c.UserLoginProfile, c.UserPassword,
+		c.App, c.AppAction, c.AppDict, c.AppDictItem, c.AppMenu, c.AppPolicy,
+		c.AppPolicyView, c.AppRes, c.AppRole, c.AppRolePolicy, c.Country, c.Currency,
+		c.FileIdentity, c.FileSource, c.OauthClient, c.Org, c.OrgApp, c.OrgPolicy,
+		c.OrgRole, c.OrgRoleUser, c.OrgUser, c.OrgUserPreference, c.Permission,
+		c.Quota, c.QuotaItem, c.Region, c.User, c.UserAddr, c.UserDevice,
+		c.UserIdentity, c.UserLoginProfile, c.UserPassword, c.UserPasswordPolicy,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -365,12 +417,18 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppMenu.mutate(ctx, m)
 	case *AppPolicyMutation:
 		return c.AppPolicy.mutate(ctx, m)
+	case *AppPolicyViewMutation:
+		return c.AppPolicyView.mutate(ctx, m)
 	case *AppResMutation:
 		return c.AppRes.mutate(ctx, m)
 	case *AppRoleMutation:
 		return c.AppRole.mutate(ctx, m)
 	case *AppRolePolicyMutation:
 		return c.AppRolePolicy.mutate(ctx, m)
+	case *CountryMutation:
+		return c.Country.mutate(ctx, m)
+	case *CurrencyMutation:
+		return c.Currency.mutate(ctx, m)
 	case *FileIdentityMutation:
 		return c.FileIdentity.mutate(ctx, m)
 	case *FileSourceMutation:
@@ -393,8 +451,16 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.OrgUserPreference.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
+	case *QuotaMutation:
+		return c.Quota.mutate(ctx, m)
+	case *QuotaItemMutation:
+		return c.QuotaItem.mutate(ctx, m)
+	case *RegionMutation:
+		return c.Region.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserAddrMutation:
+		return c.UserAddr.mutate(ctx, m)
 	case *UserDeviceMutation:
 		return c.UserDevice.mutate(ctx, m)
 	case *UserIdentityMutation:
@@ -403,6 +469,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.UserLoginProfile.mutate(ctx, m)
 	case *UserPasswordMutation:
 		return c.UserPassword.mutate(ctx, m)
+	case *UserPasswordPolicyMutation:
+		return c.UserPasswordPolicy.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -589,6 +657,22 @@ func (c *AppClient) QueryPolicies(a *App) *AppPolicyQuery {
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.PoliciesTable, app.PoliciesColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPolicyViews queries the policy_views edge of a App.
+func (c *AppClient) QueryPolicyViews(a *App) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.PolicyViewsTable, app.PolicyViewsColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -1308,6 +1392,38 @@ func (c *AppMenuClient) QueryAction(am *AppMenu) *AppActionQuery {
 	return query
 }
 
+// QueryParent queries the parent edge of a AppMenu.
+func (c *AppMenuClient) QueryParent(am *AppMenu) *AppMenuQuery {
+	query := (&AppMenuClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := am.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, id),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appmenu.ParentTable, appmenu.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a AppMenu.
+func (c *AppMenuClient) QueryChildren(am *AppMenu) *AppMenuQuery {
+	query := (&AppMenuClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := am.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appmenu.Table, appmenu.FieldID, id),
+			sqlgraph.To(appmenu.Table, appmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, appmenu.ChildrenTable, appmenu.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AppMenuClient) Hooks() []Hook {
 	hooks := c.hooks.AppMenu
@@ -1474,6 +1590,38 @@ func (c *AppPolicyClient) QueryRoles(ap *AppPolicy) *AppRoleQuery {
 	return query
 }
 
+// QueryOrgPolicies queries the org_policies edge of a AppPolicy.
+func (c *AppPolicyClient) QueryOrgPolicies(ap *AppPolicy) *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, id),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.OrgPoliciesTable, apppolicy.OrgPoliciesColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPolicyViews queries the policy_views edge of a AppPolicy.
+func (c *AppPolicyClient) QueryPolicyViews(ap *AppPolicy) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.PolicyViewsTable, apppolicy.PolicyViewsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryAppRolePolicy queries the app_role_policy edge of a AppPolicy.
 func (c *AppPolicyClient) QueryAppRolePolicy(ap *AppPolicy) *AppRolePolicyQuery {
 	query := (&AppRolePolicyClient{config: c.config}).Query()
@@ -1513,6 +1661,204 @@ func (c *AppPolicyClient) mutate(ctx context.Context, m *AppPolicyMutation) (Val
 		return (&AppPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppPolicy mutation op: %q", m.Op())
+	}
+}
+
+// AppPolicyViewClient is a client for the AppPolicyView schema.
+type AppPolicyViewClient struct {
+	config
+}
+
+// NewAppPolicyViewClient returns a client for the AppPolicyView from the given config.
+func NewAppPolicyViewClient(c config) *AppPolicyViewClient {
+	return &AppPolicyViewClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `apppolicyview.Hooks(f(g(h())))`.
+func (c *AppPolicyViewClient) Use(hooks ...Hook) {
+	c.hooks.AppPolicyView = append(c.hooks.AppPolicyView, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `apppolicyview.Intercept(f(g(h())))`.
+func (c *AppPolicyViewClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppPolicyView = append(c.inters.AppPolicyView, interceptors...)
+}
+
+// Create returns a builder for creating a AppPolicyView entity.
+func (c *AppPolicyViewClient) Create() *AppPolicyViewCreate {
+	mutation := newAppPolicyViewMutation(c.config, OpCreate)
+	return &AppPolicyViewCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppPolicyView entities.
+func (c *AppPolicyViewClient) CreateBulk(builders ...*AppPolicyViewCreate) *AppPolicyViewCreateBulk {
+	return &AppPolicyViewCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppPolicyViewClient) MapCreateBulk(slice any, setFunc func(*AppPolicyViewCreate, int)) *AppPolicyViewCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppPolicyViewCreateBulk{err: fmt.Errorf("calling to AppPolicyViewClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppPolicyViewCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppPolicyViewCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppPolicyView.
+func (c *AppPolicyViewClient) Update() *AppPolicyViewUpdate {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdate)
+	return &AppPolicyViewUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppPolicyViewClient) UpdateOne(apv *AppPolicyView) *AppPolicyViewUpdateOne {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdateOne, withAppPolicyView(apv))
+	return &AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppPolicyViewClient) UpdateOneID(id int) *AppPolicyViewUpdateOne {
+	mutation := newAppPolicyViewMutation(c.config, OpUpdateOne, withAppPolicyViewID(id))
+	return &AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppPolicyView.
+func (c *AppPolicyViewClient) Delete() *AppPolicyViewDelete {
+	mutation := newAppPolicyViewMutation(c.config, OpDelete)
+	return &AppPolicyViewDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppPolicyViewClient) DeleteOne(apv *AppPolicyView) *AppPolicyViewDeleteOne {
+	return c.DeleteOneID(apv.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppPolicyViewClient) DeleteOneID(id int) *AppPolicyViewDeleteOne {
+	builder := c.Delete().Where(apppolicyview.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppPolicyViewDeleteOne{builder}
+}
+
+// Query returns a query builder for AppPolicyView.
+func (c *AppPolicyViewClient) Query() *AppPolicyViewQuery {
+	return &AppPolicyViewQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppPolicyView},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppPolicyView entity by its id.
+func (c *AppPolicyViewClient) Get(ctx context.Context, id int) (*AppPolicyView, error) {
+	return c.Query().Where(apppolicyview.ID(id)).Only(entcache.WithEntryKey(ctx, "AppPolicyView", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppPolicyViewClient) GetX(ctx context.Context, id int) *AppPolicyView {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryApp queries the app edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryApp(apv *AppPolicyView) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppTable, apppolicyview.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPolicy queries the app_policy edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryAppPolicy(apv *AppPolicyView) *AppPolicyQuery {
+	query := (&AppPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.AppPolicyTable, apppolicyview.AppPolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryParent queries the parent edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryParent(apv *AppPolicyView) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppolicyview.ParentTable, apppolicyview.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a AppPolicyView.
+func (c *AppPolicyViewClient) QueryChildren(apv *AppPolicyView) *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := apv.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicyview.Table, apppolicyview.FieldID, id),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicyview.ChildrenTable, apppolicyview.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(apv.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AppPolicyViewClient) Hooks() []Hook {
+	hooks := c.hooks.AppPolicyView
+	return append(hooks[:len(hooks):len(hooks)], apppolicyview.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppPolicyViewClient) Interceptors() []Interceptor {
+	return c.inters.AppPolicyView
+}
+
+func (c *AppPolicyViewClient) mutate(ctx context.Context, m *AppPolicyViewMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppPolicyViewCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppPolicyViewUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppPolicyViewUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppPolicyViewDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppPolicyView mutation op: %q", m.Op())
 	}
 }
 
@@ -2014,6 +2360,290 @@ func (c *AppRolePolicyClient) mutate(ctx context.Context, m *AppRolePolicyMutati
 	}
 }
 
+// CountryClient is a client for the Country schema.
+type CountryClient struct {
+	config
+}
+
+// NewCountryClient returns a client for the Country from the given config.
+func NewCountryClient(c config) *CountryClient {
+	return &CountryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `country.Hooks(f(g(h())))`.
+func (c *CountryClient) Use(hooks ...Hook) {
+	c.hooks.Country = append(c.hooks.Country, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `country.Intercept(f(g(h())))`.
+func (c *CountryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Country = append(c.inters.Country, interceptors...)
+}
+
+// Create returns a builder for creating a Country entity.
+func (c *CountryClient) Create() *CountryCreate {
+	mutation := newCountryMutation(c.config, OpCreate)
+	return &CountryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Country entities.
+func (c *CountryClient) CreateBulk(builders ...*CountryCreate) *CountryCreateBulk {
+	return &CountryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CountryClient) MapCreateBulk(slice any, setFunc func(*CountryCreate, int)) *CountryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CountryCreateBulk{err: fmt.Errorf("calling to CountryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CountryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CountryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Country.
+func (c *CountryClient) Update() *CountryUpdate {
+	mutation := newCountryMutation(c.config, OpUpdate)
+	return &CountryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CountryClient) UpdateOne(co *Country) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountry(co))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CountryClient) UpdateOneID(id int) *CountryUpdateOne {
+	mutation := newCountryMutation(c.config, OpUpdateOne, withCountryID(id))
+	return &CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Country.
+func (c *CountryClient) Delete() *CountryDelete {
+	mutation := newCountryMutation(c.config, OpDelete)
+	return &CountryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CountryClient) DeleteOne(co *Country) *CountryDeleteOne {
+	return c.DeleteOneID(co.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CountryClient) DeleteOneID(id int) *CountryDeleteOne {
+	builder := c.Delete().Where(country.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CountryDeleteOne{builder}
+}
+
+// Query returns a query builder for Country.
+func (c *CountryClient) Query() *CountryQuery {
+	return &CountryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCountry},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Country entity by its id.
+func (c *CountryClient) Get(ctx context.Context, id int) (*Country, error) {
+	return c.Query().Where(country.ID(id)).Only(entcache.WithEntryKey(ctx, "Country", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CountryClient) GetX(ctx context.Context, id int) *Country {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryRegions queries the regions edge of a Country.
+func (c *CountryClient) QueryRegions(co *Country) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(country.Table, country.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, country.RegionsTable, country.RegionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CountryClient) Hooks() []Hook {
+	hooks := c.hooks.Country
+	return append(hooks[:len(hooks):len(hooks)], country.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *CountryClient) Interceptors() []Interceptor {
+	return c.inters.Country
+}
+
+func (c *CountryClient) mutate(ctx context.Context, m *CountryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CountryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CountryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CountryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CountryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Country mutation op: %q", m.Op())
+	}
+}
+
+// CurrencyClient is a client for the Currency schema.
+type CurrencyClient struct {
+	config
+}
+
+// NewCurrencyClient returns a client for the Currency from the given config.
+func NewCurrencyClient(c config) *CurrencyClient {
+	return &CurrencyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `currency.Hooks(f(g(h())))`.
+func (c *CurrencyClient) Use(hooks ...Hook) {
+	c.hooks.Currency = append(c.hooks.Currency, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `currency.Intercept(f(g(h())))`.
+func (c *CurrencyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Currency = append(c.inters.Currency, interceptors...)
+}
+
+// Create returns a builder for creating a Currency entity.
+func (c *CurrencyClient) Create() *CurrencyCreate {
+	mutation := newCurrencyMutation(c.config, OpCreate)
+	return &CurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Currency entities.
+func (c *CurrencyClient) CreateBulk(builders ...*CurrencyCreate) *CurrencyCreateBulk {
+	return &CurrencyCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *CurrencyClient) MapCreateBulk(slice any, setFunc func(*CurrencyCreate, int)) *CurrencyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &CurrencyCreateBulk{err: fmt.Errorf("calling to CurrencyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*CurrencyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &CurrencyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Currency.
+func (c *CurrencyClient) Update() *CurrencyUpdate {
+	mutation := newCurrencyMutation(c.config, OpUpdate)
+	return &CurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CurrencyClient) UpdateOne(cu *Currency) *CurrencyUpdateOne {
+	mutation := newCurrencyMutation(c.config, OpUpdateOne, withCurrency(cu))
+	return &CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CurrencyClient) UpdateOneID(id int) *CurrencyUpdateOne {
+	mutation := newCurrencyMutation(c.config, OpUpdateOne, withCurrencyID(id))
+	return &CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Currency.
+func (c *CurrencyClient) Delete() *CurrencyDelete {
+	mutation := newCurrencyMutation(c.config, OpDelete)
+	return &CurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CurrencyClient) DeleteOne(cu *Currency) *CurrencyDeleteOne {
+	return c.DeleteOneID(cu.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CurrencyClient) DeleteOneID(id int) *CurrencyDeleteOne {
+	builder := c.Delete().Where(currency.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CurrencyDeleteOne{builder}
+}
+
+// Query returns a query builder for Currency.
+func (c *CurrencyClient) Query() *CurrencyQuery {
+	return &CurrencyQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeCurrency},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Currency entity by its id.
+func (c *CurrencyClient) Get(ctx context.Context, id int) (*Currency, error) {
+	return c.Query().Where(currency.ID(id)).Only(entcache.WithEntryKey(ctx, "Currency", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CurrencyClient) GetX(ctx context.Context, id int) *Currency {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CurrencyClient) Hooks() []Hook {
+	hooks := c.hooks.Currency
+	return append(hooks[:len(hooks):len(hooks)], currency.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *CurrencyClient) Interceptors() []Interceptor {
+	return c.inters.Currency
+}
+
+func (c *CurrencyClient) mutate(ctx context.Context, m *CurrencyMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&CurrencyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&CurrencyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&CurrencyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&CurrencyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Currency mutation op: %q", m.Op())
+	}
+}
+
 // FileIdentityClient is a client for the FileIdentity schema.
 type FileIdentityClient struct {
 	config
@@ -2162,8 +2792,7 @@ func (c *FileIdentityClient) Hooks() []Hook {
 
 // Interceptors returns the client interceptors.
 func (c *FileIdentityClient) Interceptors() []Interceptor {
-	inters := c.inters.FileIdentity
-	return append(inters[:len(inters):len(inters)], fileidentity.Interceptors[:]...)
+	return c.inters.FileIdentity
 }
 
 func (c *FileIdentityClient) mutate(ctx context.Context, m *FileIdentityMutation) (Value, error) {
@@ -2733,6 +3362,38 @@ func (c *OrgClient) QueryFileIdentities(o *Org) *FileIdentityQuery {
 	return query
 }
 
+// QueryUserPasswordPolicy queries the user_password_policy edge of a Org.
+func (c *OrgClient) QueryUserPasswordPolicy(o *Org) *UserPasswordPolicyQuery {
+	query := (&UserPasswordPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(userpasswordpolicy.Table, userpasswordpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, org.UserPasswordPolicyTable, org.UserPasswordPolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOrgQuota queries the org_quota edge of a Org.
+func (c *OrgClient) QueryOrgQuota(o *Org) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := o.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(org.Table, org.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, org.OrgQuotaTable, org.OrgQuotaColumn),
+		)
+		fromV = sqlgraph.Neighbors(o.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgUser queries the org_user edge of a Org.
 func (c *OrgClient) QueryOrgUser(o *Org) *OrgUserQuery {
 	query := (&OrgUserClient{config: c.config}).Query()
@@ -3091,6 +3752,38 @@ func (c *OrgPolicyClient) QueryPermissions(op *OrgPolicy) *PermissionQuery {
 			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
 			sqlgraph.To(permission.Table, permission.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, orgpolicy.PermissionsTable, orgpolicy.PermissionsColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPolicy queries the app_policy edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryAppPolicy(op *OrgPolicy) *AppPolicyQuery {
+	query := (&AppPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, orgpolicy.AppPolicyTable, orgpolicy.AppPolicyColumn),
+		)
+		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryApp queries the app edge of a OrgPolicy.
+func (c *OrgPolicyClient) QueryApp(op *OrgPolicy) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := op.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(orgpolicy.Table, orgpolicy.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, orgpolicy.AppTable, orgpolicy.AppColumn),
 		)
 		fromV = sqlgraph.Neighbors(op.driver.Dialect(), step)
 		return fromV, nil
@@ -4066,6 +4759,520 @@ func (c *PermissionClient) mutate(ctx context.Context, m *PermissionMutation) (V
 	}
 }
 
+// QuotaClient is a client for the Quota schema.
+type QuotaClient struct {
+	config
+}
+
+// NewQuotaClient returns a client for the Quota from the given config.
+func NewQuotaClient(c config) *QuotaClient {
+	return &QuotaClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `quota.Hooks(f(g(h())))`.
+func (c *QuotaClient) Use(hooks ...Hook) {
+	c.hooks.Quota = append(c.hooks.Quota, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `quota.Intercept(f(g(h())))`.
+func (c *QuotaClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Quota = append(c.inters.Quota, interceptors...)
+}
+
+// Create returns a builder for creating a Quota entity.
+func (c *QuotaClient) Create() *QuotaCreate {
+	mutation := newQuotaMutation(c.config, OpCreate)
+	return &QuotaCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Quota entities.
+func (c *QuotaClient) CreateBulk(builders ...*QuotaCreate) *QuotaCreateBulk {
+	return &QuotaCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *QuotaClient) MapCreateBulk(slice any, setFunc func(*QuotaCreate, int)) *QuotaCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &QuotaCreateBulk{err: fmt.Errorf("calling to QuotaClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*QuotaCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &QuotaCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Quota.
+func (c *QuotaClient) Update() *QuotaUpdate {
+	mutation := newQuotaMutation(c.config, OpUpdate)
+	return &QuotaUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *QuotaClient) UpdateOne(q *Quota) *QuotaUpdateOne {
+	mutation := newQuotaMutation(c.config, OpUpdateOne, withQuota(q))
+	return &QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *QuotaClient) UpdateOneID(id int) *QuotaUpdateOne {
+	mutation := newQuotaMutation(c.config, OpUpdateOne, withQuotaID(id))
+	return &QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Quota.
+func (c *QuotaClient) Delete() *QuotaDelete {
+	mutation := newQuotaMutation(c.config, OpDelete)
+	return &QuotaDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *QuotaClient) DeleteOne(q *Quota) *QuotaDeleteOne {
+	return c.DeleteOneID(q.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *QuotaClient) DeleteOneID(id int) *QuotaDeleteOne {
+	builder := c.Delete().Where(quota.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &QuotaDeleteOne{builder}
+}
+
+// Query returns a query builder for Quota.
+func (c *QuotaClient) Query() *QuotaQuery {
+	return &QuotaQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeQuota},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Quota entity by its id.
+func (c *QuotaClient) Get(ctx context.Context, id int) (*Quota, error) {
+	return c.Query().Where(quota.ID(id)).Only(entcache.WithEntryKey(ctx, "Quota", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *QuotaClient) GetX(ctx context.Context, id int) *Quota {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryQuotaItem queries the quota_item edge of a Quota.
+func (c *QuotaClient) QueryQuotaItem(q *Quota) *QuotaItemQuery {
+	query := (&QuotaItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(quotaitem.Table, quotaitem.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaItemTable, quota.QuotaItemColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQuotaOrg queries the quota_org edge of a Quota.
+func (c *QuotaClient) QueryQuotaOrg(q *Quota) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaOrgTable, quota.QuotaOrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryQuotaUser queries the quota_user edge of a Quota.
+func (c *QuotaClient) QueryQuotaUser(q *Quota) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := q.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quota.Table, quota.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, quota.QuotaUserTable, quota.QuotaUserColumn),
+		)
+		fromV = sqlgraph.Neighbors(q.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *QuotaClient) Hooks() []Hook {
+	hooks := c.hooks.Quota
+	return append(hooks[:len(hooks):len(hooks)], quota.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *QuotaClient) Interceptors() []Interceptor {
+	return c.inters.Quota
+}
+
+func (c *QuotaClient) mutate(ctx context.Context, m *QuotaMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&QuotaCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&QuotaUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&QuotaUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&QuotaDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Quota mutation op: %q", m.Op())
+	}
+}
+
+// QuotaItemClient is a client for the QuotaItem schema.
+type QuotaItemClient struct {
+	config
+}
+
+// NewQuotaItemClient returns a client for the QuotaItem from the given config.
+func NewQuotaItemClient(c config) *QuotaItemClient {
+	return &QuotaItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `quotaitem.Hooks(f(g(h())))`.
+func (c *QuotaItemClient) Use(hooks ...Hook) {
+	c.hooks.QuotaItem = append(c.hooks.QuotaItem, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `quotaitem.Intercept(f(g(h())))`.
+func (c *QuotaItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.QuotaItem = append(c.inters.QuotaItem, interceptors...)
+}
+
+// Create returns a builder for creating a QuotaItem entity.
+func (c *QuotaItemClient) Create() *QuotaItemCreate {
+	mutation := newQuotaItemMutation(c.config, OpCreate)
+	return &QuotaItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of QuotaItem entities.
+func (c *QuotaItemClient) CreateBulk(builders ...*QuotaItemCreate) *QuotaItemCreateBulk {
+	return &QuotaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *QuotaItemClient) MapCreateBulk(slice any, setFunc func(*QuotaItemCreate, int)) *QuotaItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &QuotaItemCreateBulk{err: fmt.Errorf("calling to QuotaItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*QuotaItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &QuotaItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for QuotaItem.
+func (c *QuotaItemClient) Update() *QuotaItemUpdate {
+	mutation := newQuotaItemMutation(c.config, OpUpdate)
+	return &QuotaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *QuotaItemClient) UpdateOne(qi *QuotaItem) *QuotaItemUpdateOne {
+	mutation := newQuotaItemMutation(c.config, OpUpdateOne, withQuotaItem(qi))
+	return &QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *QuotaItemClient) UpdateOneID(id int) *QuotaItemUpdateOne {
+	mutation := newQuotaItemMutation(c.config, OpUpdateOne, withQuotaItemID(id))
+	return &QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for QuotaItem.
+func (c *QuotaItemClient) Delete() *QuotaItemDelete {
+	mutation := newQuotaItemMutation(c.config, OpDelete)
+	return &QuotaItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *QuotaItemClient) DeleteOne(qi *QuotaItem) *QuotaItemDeleteOne {
+	return c.DeleteOneID(qi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *QuotaItemClient) DeleteOneID(id int) *QuotaItemDeleteOne {
+	builder := c.Delete().Where(quotaitem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &QuotaItemDeleteOne{builder}
+}
+
+// Query returns a query builder for QuotaItem.
+func (c *QuotaItemClient) Query() *QuotaItemQuery {
+	return &QuotaItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeQuotaItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a QuotaItem entity by its id.
+func (c *QuotaItemClient) Get(ctx context.Context, id int) (*QuotaItem, error) {
+	return c.Query().Where(quotaitem.ID(id)).Only(entcache.WithEntryKey(ctx, "QuotaItem", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *QuotaItemClient) GetX(ctx context.Context, id int) *QuotaItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryQuota queries the quota edge of a QuotaItem.
+func (c *QuotaItemClient) QueryQuota(qi *QuotaItem) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := qi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(quotaitem.Table, quotaitem.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, quotaitem.QuotaTable, quotaitem.QuotaColumn),
+		)
+		fromV = sqlgraph.Neighbors(qi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *QuotaItemClient) Hooks() []Hook {
+	hooks := c.hooks.QuotaItem
+	return append(hooks[:len(hooks):len(hooks)], quotaitem.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *QuotaItemClient) Interceptors() []Interceptor {
+	return c.inters.QuotaItem
+}
+
+func (c *QuotaItemClient) mutate(ctx context.Context, m *QuotaItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&QuotaItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&QuotaItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&QuotaItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&QuotaItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown QuotaItem mutation op: %q", m.Op())
+	}
+}
+
+// RegionClient is a client for the Region schema.
+type RegionClient struct {
+	config
+}
+
+// NewRegionClient returns a client for the Region from the given config.
+func NewRegionClient(c config) *RegionClient {
+	return &RegionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `region.Hooks(f(g(h())))`.
+func (c *RegionClient) Use(hooks ...Hook) {
+	c.hooks.Region = append(c.hooks.Region, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `region.Intercept(f(g(h())))`.
+func (c *RegionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Region = append(c.inters.Region, interceptors...)
+}
+
+// Create returns a builder for creating a Region entity.
+func (c *RegionClient) Create() *RegionCreate {
+	mutation := newRegionMutation(c.config, OpCreate)
+	return &RegionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Region entities.
+func (c *RegionClient) CreateBulk(builders ...*RegionCreate) *RegionCreateBulk {
+	return &RegionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *RegionClient) MapCreateBulk(slice any, setFunc func(*RegionCreate, int)) *RegionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &RegionCreateBulk{err: fmt.Errorf("calling to RegionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*RegionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &RegionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Region.
+func (c *RegionClient) Update() *RegionUpdate {
+	mutation := newRegionMutation(c.config, OpUpdate)
+	return &RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RegionClient) UpdateOne(r *Region) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegion(r))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RegionClient) UpdateOneID(id int) *RegionUpdateOne {
+	mutation := newRegionMutation(c.config, OpUpdateOne, withRegionID(id))
+	return &RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Region.
+func (c *RegionClient) Delete() *RegionDelete {
+	mutation := newRegionMutation(c.config, OpDelete)
+	return &RegionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RegionClient) DeleteOne(r *Region) *RegionDeleteOne {
+	return c.DeleteOneID(r.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *RegionClient) DeleteOneID(id int) *RegionDeleteOne {
+	builder := c.Delete().Where(region.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RegionDeleteOne{builder}
+}
+
+// Query returns a query builder for Region.
+func (c *RegionClient) Query() *RegionQuery {
+	return &RegionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeRegion},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Region entity by its id.
+func (c *RegionClient) Get(ctx context.Context, id int) (*Region, error) {
+	return c.Query().Where(region.ID(id)).Only(entcache.WithEntryKey(ctx, "Region", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RegionClient) GetX(ctx context.Context, id int) *Region {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryParent queries the parent edge of a Region.
+func (c *RegionClient) QueryParent(r *Region) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, region.ParentTable, region.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a Region.
+func (c *RegionClient) QueryChildren(r *Region) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, region.ChildrenTable, region.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCountry queries the country edge of a Region.
+func (c *RegionClient) QueryCountry(r *Region) *CountryQuery {
+	query := (&CountryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := r.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(region.Table, region.FieldID, id),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, region.CountryTable, region.CountryColumn),
+		)
+		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *RegionClient) Hooks() []Hook {
+	hooks := c.hooks.Region
+	return append(hooks[:len(hooks):len(hooks)], region.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *RegionClient) Interceptors() []Interceptor {
+	return c.inters.Region
+}
+
+func (c *RegionClient) mutate(ctx context.Context, m *RegionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&RegionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&RegionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&RegionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&RegionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Region mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -4286,6 +5493,54 @@ func (c *UserClient) QueryOauthClients(u *User) *OauthClientQuery {
 	return query
 }
 
+// QueryAddresses queries the addresses edge of a User.
+func (c *UserClient) QueryAddresses(u *User) *UserAddrQuery {
+	query := (&UserAddrClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(useraddr.Table, useraddr.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AddressesTable, user.AddressesColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCitizenship queries the citizenship edge of a User.
+func (c *UserClient) QueryCitizenship(u *User) *CountryQuery {
+	query := (&CountryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(country.Table, country.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, user.CitizenshipTable, user.CitizenshipColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryUserQuota queries the user_quota edge of a User.
+func (c *UserClient) QueryUserQuota(u *User) *QuotaQuery {
+	query := (&QuotaClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(quota.Table, quota.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.UserQuotaTable, user.UserQuotaColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryOrgUser queries the org_user edge of a User.
 func (c *UserClient) QueryOrgUser(u *User) *OrgUserQuery {
 	query := (&OrgUserClient{config: c.config}).Query()
@@ -4326,6 +5581,172 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 		return (&UserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown User mutation op: %q", m.Op())
+	}
+}
+
+// UserAddrClient is a client for the UserAddr schema.
+type UserAddrClient struct {
+	config
+}
+
+// NewUserAddrClient returns a client for the UserAddr from the given config.
+func NewUserAddrClient(c config) *UserAddrClient {
+	return &UserAddrClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `useraddr.Hooks(f(g(h())))`.
+func (c *UserAddrClient) Use(hooks ...Hook) {
+	c.hooks.UserAddr = append(c.hooks.UserAddr, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `useraddr.Intercept(f(g(h())))`.
+func (c *UserAddrClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserAddr = append(c.inters.UserAddr, interceptors...)
+}
+
+// Create returns a builder for creating a UserAddr entity.
+func (c *UserAddrClient) Create() *UserAddrCreate {
+	mutation := newUserAddrMutation(c.config, OpCreate)
+	return &UserAddrCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserAddr entities.
+func (c *UserAddrClient) CreateBulk(builders ...*UserAddrCreate) *UserAddrCreateBulk {
+	return &UserAddrCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserAddrClient) MapCreateBulk(slice any, setFunc func(*UserAddrCreate, int)) *UserAddrCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserAddrCreateBulk{err: fmt.Errorf("calling to UserAddrClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserAddrCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserAddrCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserAddr.
+func (c *UserAddrClient) Update() *UserAddrUpdate {
+	mutation := newUserAddrMutation(c.config, OpUpdate)
+	return &UserAddrUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserAddrClient) UpdateOne(ua *UserAddr) *UserAddrUpdateOne {
+	mutation := newUserAddrMutation(c.config, OpUpdateOne, withUserAddr(ua))
+	return &UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserAddrClient) UpdateOneID(id int) *UserAddrUpdateOne {
+	mutation := newUserAddrMutation(c.config, OpUpdateOne, withUserAddrID(id))
+	return &UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserAddr.
+func (c *UserAddrClient) Delete() *UserAddrDelete {
+	mutation := newUserAddrMutation(c.config, OpDelete)
+	return &UserAddrDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserAddrClient) DeleteOne(ua *UserAddr) *UserAddrDeleteOne {
+	return c.DeleteOneID(ua.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserAddrClient) DeleteOneID(id int) *UserAddrDeleteOne {
+	builder := c.Delete().Where(useraddr.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserAddrDeleteOne{builder}
+}
+
+// Query returns a query builder for UserAddr.
+func (c *UserAddrClient) Query() *UserAddrQuery {
+	return &UserAddrQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserAddr},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserAddr entity by its id.
+func (c *UserAddrClient) Get(ctx context.Context, id int) (*UserAddr, error) {
+	return c.Query().Where(useraddr.ID(id)).Only(entcache.WithEntryKey(ctx, "UserAddr", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserAddrClient) GetX(ctx context.Context, id int) *UserAddr {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a UserAddr.
+func (c *UserAddrClient) QueryUser(ua *UserAddr) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ua.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(useraddr.Table, useraddr.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, useraddr.UserTable, useraddr.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(ua.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryRegion queries the region edge of a UserAddr.
+func (c *UserAddrClient) QueryRegion(ua *UserAddr) *RegionQuery {
+	query := (&RegionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ua.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(useraddr.Table, useraddr.FieldID, id),
+			sqlgraph.To(region.Table, region.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, useraddr.RegionTable, useraddr.RegionColumn),
+		)
+		fromV = sqlgraph.Neighbors(ua.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserAddrClient) Hooks() []Hook {
+	hooks := c.hooks.UserAddr
+	return append(hooks[:len(hooks):len(hooks)], useraddr.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserAddrClient) Interceptors() []Interceptor {
+	return c.inters.UserAddr
+}
+
+func (c *UserAddrClient) mutate(ctx context.Context, m *UserAddrMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserAddrCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserAddrUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserAddrUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserAddrDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserAddr mutation op: %q", m.Op())
 	}
 }
 
@@ -4929,18 +6350,196 @@ func (c *UserPasswordClient) mutate(ctx context.Context, m *UserPasswordMutation
 	}
 }
 
+// UserPasswordPolicyClient is a client for the UserPasswordPolicy schema.
+type UserPasswordPolicyClient struct {
+	config
+}
+
+// NewUserPasswordPolicyClient returns a client for the UserPasswordPolicy from the given config.
+func NewUserPasswordPolicyClient(c config) *UserPasswordPolicyClient {
+	return &UserPasswordPolicyClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `userpasswordpolicy.Hooks(f(g(h())))`.
+func (c *UserPasswordPolicyClient) Use(hooks ...Hook) {
+	c.hooks.UserPasswordPolicy = append(c.hooks.UserPasswordPolicy, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `userpasswordpolicy.Intercept(f(g(h())))`.
+func (c *UserPasswordPolicyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserPasswordPolicy = append(c.inters.UserPasswordPolicy, interceptors...)
+}
+
+// Create returns a builder for creating a UserPasswordPolicy entity.
+func (c *UserPasswordPolicyClient) Create() *UserPasswordPolicyCreate {
+	mutation := newUserPasswordPolicyMutation(c.config, OpCreate)
+	return &UserPasswordPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserPasswordPolicy entities.
+func (c *UserPasswordPolicyClient) CreateBulk(builders ...*UserPasswordPolicyCreate) *UserPasswordPolicyCreateBulk {
+	return &UserPasswordPolicyCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserPasswordPolicyClient) MapCreateBulk(slice any, setFunc func(*UserPasswordPolicyCreate, int)) *UserPasswordPolicyCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserPasswordPolicyCreateBulk{err: fmt.Errorf("calling to UserPasswordPolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserPasswordPolicyCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserPasswordPolicyCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Update() *UserPasswordPolicyUpdate {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdate)
+	return &UserPasswordPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserPasswordPolicyClient) UpdateOne(upp *UserPasswordPolicy) *UserPasswordPolicyUpdateOne {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdateOne, withUserPasswordPolicy(upp))
+	return &UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserPasswordPolicyClient) UpdateOneID(id int) *UserPasswordPolicyUpdateOne {
+	mutation := newUserPasswordPolicyMutation(c.config, OpUpdateOne, withUserPasswordPolicyID(id))
+	return &UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Delete() *UserPasswordPolicyDelete {
+	mutation := newUserPasswordPolicyMutation(c.config, OpDelete)
+	return &UserPasswordPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserPasswordPolicyClient) DeleteOne(upp *UserPasswordPolicy) *UserPasswordPolicyDeleteOne {
+	return c.DeleteOneID(upp.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserPasswordPolicyClient) DeleteOneID(id int) *UserPasswordPolicyDeleteOne {
+	builder := c.Delete().Where(userpasswordpolicy.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserPasswordPolicyDeleteOne{builder}
+}
+
+// Query returns a query builder for UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) Query() *UserPasswordPolicyQuery {
+	return &UserPasswordPolicyQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserPasswordPolicy},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserPasswordPolicy entity by its id.
+func (c *UserPasswordPolicyClient) Get(ctx context.Context, id int) (*UserPasswordPolicy, error) {
+	return c.Query().Where(userpasswordpolicy.ID(id)).Only(entcache.WithEntryKey(ctx, "UserPasswordPolicy", id))
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserPasswordPolicyClient) GetX(ctx context.Context, id int) *UserPasswordPolicy {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOrg queries the org edge of a UserPasswordPolicy.
+func (c *UserPasswordPolicyClient) QueryOrg(upp *UserPasswordPolicy) *OrgQuery {
+	query := (&OrgClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := upp.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(userpasswordpolicy.Table, userpasswordpolicy.FieldID, id),
+			sqlgraph.To(org.Table, org.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, userpasswordpolicy.OrgTable, userpasswordpolicy.OrgColumn),
+		)
+		fromV = sqlgraph.Neighbors(upp.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserPasswordPolicyClient) Hooks() []Hook {
+	hooks := c.hooks.UserPasswordPolicy
+	return append(hooks[:len(hooks):len(hooks)], userpasswordpolicy.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserPasswordPolicyClient) Interceptors() []Interceptor {
+	return c.inters.UserPasswordPolicy
+}
+
+func (c *UserPasswordPolicyClient) mutate(ctx context.Context, m *UserPasswordPolicyMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserPasswordPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserPasswordPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserPasswordPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserPasswordPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserPasswordPolicy mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, FileIdentity, FileSource, OauthClient, Org, OrgApp, OrgPolicy,
-		OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Hook
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppPolicyView, AppRes,
+		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
+		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword,
+		UserPasswordPolicy []ent.Hook
 	}
 	inters struct {
-		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppRes, AppRole,
-		AppRolePolicy, FileIdentity, FileSource, OauthClient, Org, OrgApp, OrgPolicy,
-		OrgRole, OrgRoleUser, OrgUser, OrgUserPreference, Permission, User, UserDevice,
-		UserIdentity, UserLoginProfile, UserPassword []ent.Interceptor
+		App, AppAction, AppDict, AppDictItem, AppMenu, AppPolicy, AppPolicyView, AppRes,
+		AppRole, AppRolePolicy, Country, Currency, FileIdentity, FileSource,
+		OauthClient, Org, OrgApp, OrgPolicy, OrgRole, OrgRoleUser, OrgUser,
+		OrgUserPreference, Permission, Quota, QuotaItem, Region, User, UserAddr,
+		UserDevice, UserIdentity, UserLoginProfile, UserPassword,
+		UserPasswordPolicy []ent.Interceptor
 	}
 )
+
+// ExecContext allows calling the underlying ExecContext method of the driver if it is supported by it.
+// See, database/sql#DB.ExecContext for more information.
+func (c *config) ExecContext(ctx context.Context, query string, args ...any) (stdsql.Result, error) {
+	ex, ok := c.driver.(interface {
+		ExecContext(context.Context, string, ...any) (stdsql.Result, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Driver.ExecContext is not supported")
+	}
+	return ex.ExecContext(ctx, query, args...)
+}
+
+// QueryContext allows calling the underlying QueryContext method of the driver if it is supported by it.
+// See, database/sql#DB.QueryContext for more information.
+func (c *config) QueryContext(ctx context.Context, query string, args ...any) (*stdsql.Rows, error) {
+	q, ok := c.driver.(interface {
+		QueryContext(context.Context, string, ...any) (*stdsql.Rows, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Driver.QueryContext is not supported")
+	}
+	return q.QueryContext(ctx, query, args...)
+}

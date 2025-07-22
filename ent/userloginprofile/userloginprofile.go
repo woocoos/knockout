@@ -99,6 +99,8 @@ var (
 	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
+	// DefaultVerifyDevice holds the default value on creation for the "verify_device" field.
+	DefaultVerifyDevice bool
 	// MfaSecretValidator is a validator for the "mfa_secret" field. It is called by the builders before save.
 	MfaSecretValidator func(string) error
 )

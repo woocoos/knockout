@@ -41,6 +41,10 @@ func (OrgUser) Fields() []ent.Field {
 		field.Int("user_id").Comment("用户ID"),
 		field.Time("joined_at").Default(time.Now).Comment("加入时间"),
 		field.String("display_name").Comment("在组织内的显示名称"),
+		field.Enum("user_type").NamedValues(
+			"internal", "internal",
+			"external", "external",
+		).Default("external").Comment("用户类型，区分内部及外部用户"),
 	}
 }
 

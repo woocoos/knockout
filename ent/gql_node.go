@@ -21,8 +21,11 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -31,11 +34,16 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -74,6 +82,11 @@ var apppolicyImplementors = []string{"AppPolicy", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*AppPolicy) IsNode() {}
 
+var apppolicyviewImplementors = []string{"AppPolicyView", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*AppPolicyView) IsNode() {}
+
 var appresImplementors = []string{"AppRes", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -83,6 +96,16 @@ var approleImplementors = []string{"AppRole", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*AppRole) IsNode() {}
+
+var countryImplementors = []string{"Country", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Country) IsNode() {}
+
+var currencyImplementors = []string{"Currency", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Currency) IsNode() {}
 
 var fileidentityImplementors = []string{"FileIdentity", "Node"}
 
@@ -124,10 +147,30 @@ var permissionImplementors = []string{"Permission", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*Permission) IsNode() {}
 
+var quotaImplementors = []string{"Quota", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Quota) IsNode() {}
+
+var quotaitemImplementors = []string{"QuotaItem", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*QuotaItem) IsNode() {}
+
+var regionImplementors = []string{"Region", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Region) IsNode() {}
+
 var userImplementors = []string{"User", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*User) IsNode() {}
+
+var useraddrImplementors = []string{"UserAddr", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserAddr) IsNode() {}
 
 var userdeviceImplementors = []string{"UserDevice", "Node"}
 
@@ -148,6 +191,11 @@ var userpasswordImplementors = []string{"UserPassword", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*UserPassword) IsNode() {}
+
+var userpasswordpolicyImplementors = []string{"UserPasswordPolicy", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*UserPasswordPolicy) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -207,7 +255,7 @@ func (c *Client) Noder(ctx context.Context, id int, opts ...NodeOption) (_ Noder
 
 func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error) {
 	switch table {
-	case app.Table:
+	case "App":
 		query := c.App.Query().
 			Where(app.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -216,7 +264,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "App", id))
-	case appaction.Table:
+	case "AppAction":
 		query := c.AppAction.Query().
 			Where(appaction.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -225,7 +273,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppAction", id))
-	case appdict.Table:
+	case "AppDict":
 		query := c.AppDict.Query().
 			Where(appdict.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -234,7 +282,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppDict", id))
-	case appdictitem.Table:
+	case "AppDictItem":
 		query := c.AppDictItem.Query().
 			Where(appdictitem.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -243,7 +291,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppDictItem", id))
-	case appmenu.Table:
+	case "AppMenu":
 		query := c.AppMenu.Query().
 			Where(appmenu.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -252,7 +300,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppMenu", id))
-	case apppolicy.Table:
+	case "AppPolicy":
 		query := c.AppPolicy.Query().
 			Where(apppolicy.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -261,7 +309,16 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppPolicy", id))
-	case appres.Table:
+	case "AppPolicyView":
+		query := c.AppPolicyView.Query().
+			Where(apppolicyview.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, apppolicyviewImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "AppPolicyView", id))
+	case "AppRes":
 		query := c.AppRes.Query().
 			Where(appres.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -270,7 +327,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppRes", id))
-	case approle.Table:
+	case "AppRole":
 		query := c.AppRole.Query().
 			Where(approle.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -279,7 +336,25 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "AppRole", id))
-	case fileidentity.Table:
+	case "Country":
+		query := c.Country.Query().
+			Where(country.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, countryImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Country", id))
+	case "Currency":
+		query := c.Currency.Query().
+			Where(currency.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, currencyImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Currency", id))
+	case "FileIdentity":
 		query := c.FileIdentity.Query().
 			Where(fileidentity.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -288,7 +363,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "FileIdentity", id))
-	case filesource.Table:
+	case "FileSource":
 		query := c.FileSource.Query().
 			Where(filesource.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -297,7 +372,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "FileSource", id))
-	case oauthclient.Table:
+	case "OauthClient":
 		query := c.OauthClient.Query().
 			Where(oauthclient.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -306,7 +381,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "OauthClient", id))
-	case org.Table:
+	case "Org":
 		query := c.Org.Query().
 			Where(org.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -315,7 +390,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "Org", id))
-	case orgpolicy.Table:
+	case "OrgPolicy":
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -324,7 +399,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "OrgPolicy", id))
-	case orgrole.Table:
+	case "OrgRole":
 		query := c.OrgRole.Query().
 			Where(orgrole.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -333,7 +408,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "OrgRole", id))
-	case orguserpreference.Table:
+	case "OrgUserPreference":
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -342,7 +417,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "OrgUserPreference", id))
-	case permission.Table:
+	case "Permission":
 		query := c.Permission.Query().
 			Where(permission.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -351,7 +426,34 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "Permission", id))
-	case user.Table:
+	case "Quota":
+		query := c.Quota.Query().
+			Where(quota.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, quotaImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Quota", id))
+	case "QuotaItem":
+		query := c.QuotaItem.Query().
+			Where(quotaitem.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, quotaitemImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "QuotaItem", id))
+	case "Region":
+		query := c.Region.Query().
+			Where(region.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, regionImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "Region", id))
+	case "User":
 		query := c.User.Query().
 			Where(user.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -360,7 +462,16 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "User", id))
-	case userdevice.Table:
+	case "UserAddr":
+		query := c.UserAddr.Query().
+			Where(useraddr.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, useraddrImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserAddr", id))
+	case "UserDevice":
 		query := c.UserDevice.Query().
 			Where(userdevice.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -369,7 +480,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "UserDevice", id))
-	case useridentity.Table:
+	case "UserIdentity":
 		query := c.UserIdentity.Query().
 			Where(useridentity.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -378,7 +489,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "UserIdentity", id))
-	case userloginprofile.Table:
+	case "UserLoginProfile":
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -387,7 +498,7 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "UserLoginProfile", id))
-	case userpassword.Table:
+	case "UserPassword":
 		query := c.UserPassword.Query().
 			Where(userpassword.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
@@ -396,6 +507,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(entcache.WithRefEntryKey(ctx, "UserPassword", id))
+	case "UserPasswordPolicy":
+		query := c.UserPasswordPolicy.Query().
+			Where(userpasswordpolicy.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, userpasswordpolicyImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(entcache.WithRefEntryKey(ctx, "UserPasswordPolicy", id))
 	default:
 		return nil, fmt.Errorf("cannot resolve noder from table %q: %w", table, errNodeInvalidID)
 	}
@@ -469,7 +589,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
-	case app.Table:
+	case "App":
 		query := c.App.Query().
 			Where(app.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appImplementors...)
@@ -485,7 +605,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case appaction.Table:
+	case "AppAction":
 		query := c.AppAction.Query().
 			Where(appaction.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appactionImplementors...)
@@ -501,7 +621,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case appdict.Table:
+	case "AppDict":
 		query := c.AppDict.Query().
 			Where(appdict.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appdictImplementors...)
@@ -517,7 +637,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case appdictitem.Table:
+	case "AppDictItem":
 		query := c.AppDictItem.Query().
 			Where(appdictitem.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appdictitemImplementors...)
@@ -533,7 +653,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case appmenu.Table:
+	case "AppMenu":
 		query := c.AppMenu.Query().
 			Where(appmenu.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appmenuImplementors...)
@@ -549,7 +669,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case apppolicy.Table:
+	case "AppPolicy":
 		query := c.AppPolicy.Query().
 			Where(apppolicy.IDIn(ids...))
 		query, err := query.CollectFields(ctx, apppolicyImplementors...)
@@ -565,7 +685,23 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case appres.Table:
+	case "AppPolicyView":
+		query := c.AppPolicyView.Query().
+			Where(apppolicyview.IDIn(ids...))
+		query, err := query.CollectFields(ctx, apppolicyviewImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "AppRes":
 		query := c.AppRes.Query().
 			Where(appres.IDIn(ids...))
 		query, err := query.CollectFields(ctx, appresImplementors...)
@@ -581,7 +717,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case approle.Table:
+	case "AppRole":
 		query := c.AppRole.Query().
 			Where(approle.IDIn(ids...))
 		query, err := query.CollectFields(ctx, approleImplementors...)
@@ -597,7 +733,39 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case fileidentity.Table:
+	case "Country":
+		query := c.Country.Query().
+			Where(country.IDIn(ids...))
+		query, err := query.CollectFields(ctx, countryImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "Currency":
+		query := c.Currency.Query().
+			Where(currency.IDIn(ids...))
+		query, err := query.CollectFields(ctx, currencyImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "FileIdentity":
 		query := c.FileIdentity.Query().
 			Where(fileidentity.IDIn(ids...))
 		query, err := query.CollectFields(ctx, fileidentityImplementors...)
@@ -613,7 +781,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case filesource.Table:
+	case "FileSource":
 		query := c.FileSource.Query().
 			Where(filesource.IDIn(ids...))
 		query, err := query.CollectFields(ctx, filesourceImplementors...)
@@ -629,7 +797,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case oauthclient.Table:
+	case "OauthClient":
 		query := c.OauthClient.Query().
 			Where(oauthclient.IDIn(ids...))
 		query, err := query.CollectFields(ctx, oauthclientImplementors...)
@@ -645,7 +813,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case org.Table:
+	case "Org":
 		query := c.Org.Query().
 			Where(org.IDIn(ids...))
 		query, err := query.CollectFields(ctx, orgImplementors...)
@@ -661,7 +829,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case orgpolicy.Table:
+	case "OrgPolicy":
 		query := c.OrgPolicy.Query().
 			Where(orgpolicy.IDIn(ids...))
 		query, err := query.CollectFields(ctx, orgpolicyImplementors...)
@@ -677,7 +845,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case orgrole.Table:
+	case "OrgRole":
 		query := c.OrgRole.Query().
 			Where(orgrole.IDIn(ids...))
 		query, err := query.CollectFields(ctx, orgroleImplementors...)
@@ -693,7 +861,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case orguserpreference.Table:
+	case "OrgUserPreference":
 		query := c.OrgUserPreference.Query().
 			Where(orguserpreference.IDIn(ids...))
 		query, err := query.CollectFields(ctx, orguserpreferenceImplementors...)
@@ -709,7 +877,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case permission.Table:
+	case "Permission":
 		query := c.Permission.Query().
 			Where(permission.IDIn(ids...))
 		query, err := query.CollectFields(ctx, permissionImplementors...)
@@ -725,7 +893,55 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case user.Table:
+	case "Quota":
+		query := c.Quota.Query().
+			Where(quota.IDIn(ids...))
+		query, err := query.CollectFields(ctx, quotaImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "QuotaItem":
+		query := c.QuotaItem.Query().
+			Where(quotaitem.IDIn(ids...))
+		query, err := query.CollectFields(ctx, quotaitemImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "Region":
+		query := c.Region.Query().
+			Where(region.IDIn(ids...))
+		query, err := query.CollectFields(ctx, regionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "User":
 		query := c.User.Query().
 			Where(user.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userImplementors...)
@@ -741,7 +957,23 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case userdevice.Table:
+	case "UserAddr":
+		query := c.UserAddr.Query().
+			Where(useraddr.IDIn(ids...))
+		query, err := query.CollectFields(ctx, useraddrImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "UserDevice":
 		query := c.UserDevice.Query().
 			Where(userdevice.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userdeviceImplementors...)
@@ -757,7 +989,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case useridentity.Table:
+	case "UserIdentity":
 		query := c.UserIdentity.Query().
 			Where(useridentity.IDIn(ids...))
 		query, err := query.CollectFields(ctx, useridentityImplementors...)
@@ -773,7 +1005,7 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case userloginprofile.Table:
+	case "UserLoginProfile":
 		query := c.UserLoginProfile.Query().
 			Where(userloginprofile.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userloginprofileImplementors...)
@@ -789,10 +1021,26 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case userpassword.Table:
+	case "UserPassword":
 		query := c.UserPassword.Query().
 			Where(userpassword.IDIn(ids...))
 		query, err := query.CollectFields(ctx, userpasswordImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case "UserPasswordPolicy":
+		query := c.UserPasswordPolicy.Query().
+			Where(userpasswordpolicy.IDIn(ids...))
+		query, err := query.CollectFields(ctx, userpasswordpolicyImplementors...)
 		if err != nil {
 			return nil, err
 		}

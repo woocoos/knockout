@@ -26,6 +26,7 @@ func (OrgRoleUser) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		schemax.IntID{},
 		schemax.AuditMixin{},
+		schemax.NotifyMixin{},
 	}
 }
 
@@ -35,7 +36,7 @@ func (OrgRoleUser) Fields() []ent.Field {
 		field.Int("org_role_id").Comment("组织角色ID"),
 		field.Int("org_user_id").Comment("组织用户ID"),
 		field.Int("user_id").Comment("用户ID"),
-		field.Int("org_id").Comment("组织ID"),
+		field.Int("org_id").Comment("租户ID"),
 	}
 }
 

@@ -14,8 +14,10 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -28,10 +30,14 @@ type AppPolicyQuery struct {
 	predicates             []predicate.AppPolicy
 	withApp                *AppQuery
 	withRoles              *AppRoleQuery
+	withOrgPolicies        *OrgPolicyQuery
+	withPolicyViews        *AppPolicyViewQuery
 	withAppRolePolicy      *AppRolePolicyQuery
 	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*AppPolicy) error
 	withNamedRoles         map[string]*AppRoleQuery
+	withNamedOrgPolicies   map[string]*OrgPolicyQuery
+	withNamedPolicyViews   map[string]*AppPolicyViewQuery
 	withNamedAppRolePolicy map[string]*AppRolePolicyQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -106,6 +112,50 @@ func (apq *AppPolicyQuery) QueryRoles() *AppRoleQuery {
 			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, selector),
 			sqlgraph.To(approle.Table, approle.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, apppolicy.RolesTable, apppolicy.RolesPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryOrgPolicies chains the current query on the "org_policies" edge.
+func (apq *AppPolicyQuery) QueryOrgPolicies() *OrgPolicyQuery {
+	query := (&OrgPolicyClient{config: apq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, selector),
+			sqlgraph.To(orgpolicy.Table, orgpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.OrgPoliciesTable, apppolicy.OrgPoliciesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPolicyViews chains the current query on the "policy_views" edge.
+func (apq *AppPolicyQuery) QueryPolicyViews() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: apq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppolicy.Table, apppolicy.FieldID, selector),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, apppolicy.PolicyViewsTable, apppolicy.PolicyViewsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
 		return fromU, nil
@@ -329,6 +379,8 @@ func (apq *AppPolicyQuery) Clone() *AppPolicyQuery {
 		predicates:        append([]predicate.AppPolicy{}, apq.predicates...),
 		withApp:           apq.withApp.Clone(),
 		withRoles:         apq.withRoles.Clone(),
+		withOrgPolicies:   apq.withOrgPolicies.Clone(),
+		withPolicyViews:   apq.withPolicyViews.Clone(),
 		withAppRolePolicy: apq.withAppRolePolicy.Clone(),
 		// clone intermediate query.
 		sql:  apq.sql.Clone(),
@@ -355,6 +407,28 @@ func (apq *AppPolicyQuery) WithRoles(opts ...func(*AppRoleQuery)) *AppPolicyQuer
 		opt(query)
 	}
 	apq.withRoles = query
+	return apq
+}
+
+// WithOrgPolicies tells the query-builder to eager-load the nodes that are connected to
+// the "org_policies" edge. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPolicyQuery) WithOrgPolicies(opts ...func(*OrgPolicyQuery)) *AppPolicyQuery {
+	query := (&OrgPolicyClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apq.withOrgPolicies = query
+	return apq
+}
+
+// WithPolicyViews tells the query-builder to eager-load the nodes that are connected to
+// the "policy_views" edge. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPolicyQuery) WithPolicyViews(opts ...func(*AppPolicyViewQuery)) *AppPolicyQuery {
+	query := (&AppPolicyViewClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apq.withPolicyViews = query
 	return apq
 }
 
@@ -447,9 +521,11 @@ func (apq *AppPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*A
 	var (
 		nodes       = []*AppPolicy{}
 		_spec       = apq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [5]bool{
 			apq.withApp != nil,
 			apq.withRoles != nil,
+			apq.withOrgPolicies != nil,
+			apq.withPolicyViews != nil,
 			apq.withAppRolePolicy != nil,
 		}
 	)
@@ -487,6 +563,20 @@ func (apq *AppPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*A
 			return nil, err
 		}
 	}
+	if query := apq.withOrgPolicies; query != nil {
+		if err := apq.loadOrgPolicies(ctx, query, nodes,
+			func(n *AppPolicy) { n.Edges.OrgPolicies = []*OrgPolicy{} },
+			func(n *AppPolicy, e *OrgPolicy) { n.Edges.OrgPolicies = append(n.Edges.OrgPolicies, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := apq.withPolicyViews; query != nil {
+		if err := apq.loadPolicyViews(ctx, query, nodes,
+			func(n *AppPolicy) { n.Edges.PolicyViews = []*AppPolicyView{} },
+			func(n *AppPolicy, e *AppPolicyView) { n.Edges.PolicyViews = append(n.Edges.PolicyViews, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := apq.withAppRolePolicy; query != nil {
 		if err := apq.loadAppRolePolicy(ctx, query, nodes,
 			func(n *AppPolicy) { n.Edges.AppRolePolicy = []*AppRolePolicy{} },
@@ -498,6 +588,20 @@ func (apq *AppPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*A
 		if err := apq.loadRoles(ctx, query, nodes,
 			func(n *AppPolicy) { n.appendNamedRoles(name) },
 			func(n *AppPolicy, e *AppRole) { n.appendNamedRoles(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range apq.withNamedOrgPolicies {
+		if err := apq.loadOrgPolicies(ctx, query, nodes,
+			func(n *AppPolicy) { n.appendNamedOrgPolicies(name) },
+			func(n *AppPolicy, e *OrgPolicy) { n.appendNamedOrgPolicies(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range apq.withNamedPolicyViews {
+		if err := apq.loadPolicyViews(ctx, query, nodes,
+			func(n *AppPolicy) { n.appendNamedPolicyViews(name) },
+			func(n *AppPolicy, e *AppPolicyView) { n.appendNamedPolicyViews(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -603,6 +707,72 @@ func (apq *AppPolicyQuery) loadRoles(ctx context.Context, query *AppRoleQuery, n
 		for kn := range nodes {
 			assign(kn, n)
 		}
+	}
+	return nil
+}
+func (apq *AppPolicyQuery) loadOrgPolicies(ctx context.Context, query *OrgPolicyQuery, nodes []*AppPolicy, init func(*AppPolicy), assign func(*AppPolicy, *OrgPolicy)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*AppPolicy)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(orgpolicy.FieldAppPolicyID)
+	}
+	query.Where(predicate.OrgPolicy(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(apppolicy.OrgPoliciesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppPolicyID
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "app_policy_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_policy_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (apq *AppPolicyQuery) loadPolicyViews(ctx context.Context, query *AppPolicyViewQuery, nodes []*AppPolicy, init func(*AppPolicy), assign func(*AppPolicy, *AppPolicyView)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*AppPolicy)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(apppolicyview.FieldPolicyID)
+	}
+	query.Where(predicate.AppPolicyView(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(apppolicy.PolicyViewsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.PolicyID
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "policy_id" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "policy_id" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -735,6 +905,34 @@ func (apq *AppPolicyQuery) WithNamedRoles(name string, opts ...func(*AppRoleQuer
 		apq.withNamedRoles = make(map[string]*AppRoleQuery)
 	}
 	apq.withNamedRoles[name] = query
+	return apq
+}
+
+// WithNamedOrgPolicies tells the query-builder to eager-load the nodes that are connected to the "org_policies"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPolicyQuery) WithNamedOrgPolicies(name string, opts ...func(*OrgPolicyQuery)) *AppPolicyQuery {
+	query := (&OrgPolicyClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if apq.withNamedOrgPolicies == nil {
+		apq.withNamedOrgPolicies = make(map[string]*OrgPolicyQuery)
+	}
+	apq.withNamedOrgPolicies[name] = query
+	return apq
+}
+
+// WithNamedPolicyViews tells the query-builder to eager-load the nodes that are connected to the "policy_views"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPolicyQuery) WithNamedPolicyViews(name string, opts ...func(*AppPolicyViewQuery)) *AppPolicyQuery {
+	query := (&AppPolicyViewClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if apq.withNamedPolicyViews == nil {
+		apq.withNamedPolicyViews = make(map[string]*AppPolicyViewQuery)
+	}
+	apq.withNamedPolicyViews[name] = query
 	return apq
 }
 

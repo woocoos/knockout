@@ -9,7 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/user"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
@@ -33,10 +34,6 @@ type User struct {
 	PrincipalName string `json:"principal_name,omitempty"`
 	// 显示名
 	DisplayName string `json:"display_name,omitempty"`
-	// 邮箱
-	Email string `json:"email,omitempty"`
-	// 手机
-	Mobile string `json:"mobile,omitempty"`
 	// 用户类型
 	UserType user.UserType `json:"user_type,omitempty"`
 	// 创建类型,邀请，注册,手工创建
@@ -44,11 +41,23 @@ type User struct {
 	// 注册时IP
 	RegisterIP *string `json:"register_ip,omitempty"`
 	// 状态
-	Status typex.SimpleStatus `json:"status,omitempty"`
+	Status types.UserStatus `json:"status,omitempty"`
 	// 备注
 	Comments string `json:"comments,omitempty"`
 	// 头像地址
 	Avatar string `json:"avatar,omitempty"`
+	// 性别
+	Gender user.Gender `json:"gender,omitempty"`
+	// 国籍
+	CitizenshipID *int `json:"citizenship_id,omitempty"`
+	// 名字
+	FirstName string `json:"first_name,omitempty"`
+	// 中间名
+	MiddleName string `json:"middle_name,omitempty"`
+	// 姓氏
+	LastName string `json:"last_name,omitempty"`
+	// 语言
+	Lang string `json:"lang,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -71,13 +80,19 @@ type UserEdges struct {
 	Permissions []*Permission `json:"permissions,omitempty"`
 	// 用户AccessKey
 	OauthClients []*OauthClient `json:"oauth_clients,omitempty"`
+	// 用户联系信息
+	Addresses []*UserAddr `json:"addresses,omitempty"`
+	// 国籍信息
+	Citizenship *Country `json:"citizenship,omitempty"`
+	// 用户配额
+	UserQuota []*Quota `json:"user_quota,omitempty"`
 	// OrgUser holds the value of the org_user edge.
 	OrgUser []*OrgUser `json:"org_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [11]bool
 	// totalCount holds the count of the edges above.
-	totalCount [5]map[string]int
+	totalCount [8]map[string]int
 
 	namedIdentities   map[string][]*UserIdentity
 	namedPasswords    map[string][]*UserPassword
@@ -85,6 +100,8 @@ type UserEdges struct {
 	namedOrgs         map[string][]*Org
 	namedPermissions  map[string][]*Permission
 	namedOauthClients map[string][]*OauthClient
+	namedAddresses    map[string][]*UserAddr
+	namedUserQuota    map[string][]*Quota
 	namedOrgUser      map[string][]*OrgUser
 }
 
@@ -153,10 +170,39 @@ func (e UserEdges) OauthClientsOrErr() ([]*OauthClient, error) {
 	return nil, &NotLoadedError{edge: "oauth_clients"}
 }
 
+// AddressesOrErr returns the Addresses value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) AddressesOrErr() ([]*UserAddr, error) {
+	if e.loadedTypes[7] {
+		return e.Addresses, nil
+	}
+	return nil, &NotLoadedError{edge: "addresses"}
+}
+
+// CitizenshipOrErr returns the Citizenship value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) CitizenshipOrErr() (*Country, error) {
+	if e.Citizenship != nil {
+		return e.Citizenship, nil
+	} else if e.loadedTypes[8] {
+		return nil, &NotFoundError{label: country.Label}
+	}
+	return nil, &NotLoadedError{edge: "citizenship"}
+}
+
+// UserQuotaOrErr returns the UserQuota value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UserQuotaOrErr() ([]*Quota, error) {
+	if e.loadedTypes[9] {
+		return e.UserQuota, nil
+	}
+	return nil, &NotLoadedError{edge: "user_quota"}
+}
+
 // OrgUserOrErr returns the OrgUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) OrgUserOrErr() ([]*OrgUser, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[10] {
 		return e.OrgUser, nil
 	}
 	return nil, &NotLoadedError{edge: "org_user"}
@@ -167,9 +213,9 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy:
+		case user.FieldID, user.FieldCreatedBy, user.FieldUpdatedBy, user.FieldCitizenshipID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldEmail, user.FieldMobile, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments, user.FieldAvatar:
+		case user.FieldPrincipalName, user.FieldDisplayName, user.FieldUserType, user.FieldCreationType, user.FieldRegisterIP, user.FieldStatus, user.FieldComments, user.FieldAvatar, user.FieldGender, user.FieldFirstName, user.FieldMiddleName, user.FieldLastName, user.FieldLang:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -236,18 +282,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.DisplayName = value.String
 			}
-		case user.FieldEmail:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field email", values[i])
-			} else if value.Valid {
-				u.Email = value.String
-			}
-		case user.FieldMobile:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field mobile", values[i])
-			} else if value.Valid {
-				u.Mobile = value.String
-			}
 		case user.FieldUserType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field user_type", values[i])
@@ -271,7 +305,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				u.Status = typex.SimpleStatus(value.String)
+				u.Status = types.UserStatus(value.String)
 			}
 		case user.FieldComments:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -284,6 +318,43 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value.Valid {
 				u.Avatar = value.String
+			}
+		case user.FieldGender:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field gender", values[i])
+			} else if value.Valid {
+				u.Gender = user.Gender(value.String)
+			}
+		case user.FieldCitizenshipID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field citizenship_id", values[i])
+			} else if value.Valid {
+				u.CitizenshipID = new(int)
+				*u.CitizenshipID = int(value.Int64)
+			}
+		case user.FieldFirstName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field first_name", values[i])
+			} else if value.Valid {
+				u.FirstName = value.String
+			}
+		case user.FieldMiddleName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field middle_name", values[i])
+			} else if value.Valid {
+				u.MiddleName = value.String
+			}
+		case user.FieldLastName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field last_name", values[i])
+			} else if value.Valid {
+				u.LastName = value.String
+			}
+		case user.FieldLang:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field lang", values[i])
+			} else if value.Valid {
+				u.Lang = value.String
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -331,6 +402,21 @@ func (u *User) QueryPermissions() *PermissionQuery {
 // QueryOauthClients queries the "oauth_clients" edge of the User entity.
 func (u *User) QueryOauthClients() *OauthClientQuery {
 	return NewUserClient(u.config).QueryOauthClients(u)
+}
+
+// QueryAddresses queries the "addresses" edge of the User entity.
+func (u *User) QueryAddresses() *UserAddrQuery {
+	return NewUserClient(u.config).QueryAddresses(u)
+}
+
+// QueryCitizenship queries the "citizenship" edge of the User entity.
+func (u *User) QueryCitizenship() *CountryQuery {
+	return NewUserClient(u.config).QueryCitizenship(u)
+}
+
+// QueryUserQuota queries the "user_quota" edge of the User entity.
+func (u *User) QueryUserQuota() *QuotaQuery {
+	return NewUserClient(u.config).QueryUserQuota(u)
 }
 
 // QueryOrgUser queries the "org_user" edge of the User entity.
@@ -382,12 +468,6 @@ func (u *User) String() string {
 	builder.WriteString("display_name=")
 	builder.WriteString(u.DisplayName)
 	builder.WriteString(", ")
-	builder.WriteString("email=")
-	builder.WriteString(u.Email)
-	builder.WriteString(", ")
-	builder.WriteString("mobile=")
-	builder.WriteString(u.Mobile)
-	builder.WriteString(", ")
 	builder.WriteString("user_type=")
 	builder.WriteString(fmt.Sprintf("%v", u.UserType))
 	builder.WriteString(", ")
@@ -407,6 +487,26 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("avatar=")
 	builder.WriteString(u.Avatar)
+	builder.WriteString(", ")
+	builder.WriteString("gender=")
+	builder.WriteString(fmt.Sprintf("%v", u.Gender))
+	builder.WriteString(", ")
+	if v := u.CitizenshipID; v != nil {
+		builder.WriteString("citizenship_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("first_name=")
+	builder.WriteString(u.FirstName)
+	builder.WriteString(", ")
+	builder.WriteString("middle_name=")
+	builder.WriteString(u.MiddleName)
+	builder.WriteString(", ")
+	builder.WriteString("last_name=")
+	builder.WriteString(u.LastName)
+	builder.WriteString(", ")
+	builder.WriteString("lang=")
+	builder.WriteString(u.Lang)
 	builder.WriteByte(')')
 	return builder.String()
 }
@@ -552,6 +652,54 @@ func (u *User) appendNamedOauthClients(name string, edges ...*OauthClient) {
 		u.Edges.namedOauthClients[name] = []*OauthClient{}
 	} else {
 		u.Edges.namedOauthClients[name] = append(u.Edges.namedOauthClients[name], edges...)
+	}
+}
+
+// NamedAddresses returns the Addresses named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedAddresses(name string) ([]*UserAddr, error) {
+	if u.Edges.namedAddresses == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedAddresses[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedAddresses(name string, edges ...*UserAddr) {
+	if u.Edges.namedAddresses == nil {
+		u.Edges.namedAddresses = make(map[string][]*UserAddr)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedAddresses[name] = []*UserAddr{}
+	} else {
+		u.Edges.namedAddresses[name] = append(u.Edges.namedAddresses[name], edges...)
+	}
+}
+
+// NamedUserQuota returns the UserQuota named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedUserQuota(name string) ([]*Quota, error) {
+	if u.Edges.namedUserQuota == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedUserQuota[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedUserQuota(name string, edges ...*Quota) {
+	if u.Edges.namedUserQuota == nil {
+		u.Edges.namedUserQuota = make(map[string][]*Quota)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedUserQuota[name] = []*Quota{}
+	} else {
+		u.Edges.namedUserQuota[name] = append(u.Edges.namedUserQuota[name], edges...)
 	}
 }
 

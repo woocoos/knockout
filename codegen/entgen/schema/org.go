@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/intercept"
@@ -40,7 +41,7 @@ func (Org) Annotations() []schema.Annotation {
 
 func (Org) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		schemax.SnowFlakeID{},
+		schemax.IntID{},
 		schemax.AuditMixin{},
 		schemax.NewSoftDeleteMixin[intercept.Query, *gen.Client](intercept.NewQuery),
 		schemax.NotifyMixin{},
@@ -58,6 +59,7 @@ func (Org) Fields() []ent.Field {
 		field.Int("parent_id").Default(0).Comment("父级ID,0为根组织."),
 		field.String("domain").Optional().Unique().Comment("默认域名").
 			Match(regexp.MustCompile(`^(?:(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]|)$`)),
+		field.Strings("custom_domain").Optional().Comment("自定义域名"),
 		field.String("code").MaxLen(45).Optional().Comment("系统代码").
 			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("name").MaxLen(100).Comment("组织名称"),
@@ -69,6 +71,8 @@ func (Org) Fields() []ent.Field {
 			Annotations(entgql.OrderField("displaySort"), entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 		field.String("country_code").MaxLen(10).Optional().Comment("国家或地区2字码"),
 		field.String("timezone").MaxLen(45).Optional().Comment("时区"),
+		field.String("local_currency").MaxLen(10).Optional().Comment("组织本位币"),
+		field.JSON("logo", &types.OrgLogo{}).Optional().Comment("组织图标"),
 	}
 }
 
@@ -89,6 +93,9 @@ func (Org) Edges() []ent.Edge {
 		edge.To("apps", App.Type).Comment("组织下应用").Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection()),
 		edge.To("file_identities", FileIdentity.Type).Comment("组织下文件凭证"),
+		edge.To("user_password_policy", UserPasswordPolicy.Type).Unique().Comment("组织下密码策略"),
+		edge.To("org_quota", Quota.Type).Comment("组织下登录策略").
+			Annotations(entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
 	}
 }
 
@@ -108,12 +115,17 @@ func pathHook() ent.Hook {
 				if _, ok := mutation.Path(); ok {
 					return next.Mutate(ctx, mutation)
 				}
+				// 采用IntID，优先执行才有数据库id
+				value, err := next.Mutate(ctx, mutation)
+				if err != nil {
+					return nil, err
+				}
+				ov := value.(*gen.Org)
 				if pid, ok := mutation.ParentID(); ok {
 					id, _ := mutation.ID()
 					code := strconv.FormatInt(int64(id), 36)
-					if pid == 0 {
-						mutation.SetPath(code)
-					} else {
+					path := code
+					if pid != 0 {
 						parentPath := ""
 						prow, err := mutation.Client().Org.Query().Where(org.ID(pid)).
 							Select(org.FieldPath).Only(ctx)
@@ -125,15 +137,23 @@ func pathHook() ent.Hook {
 						} else {
 							parentPath = prow.Path + "/"
 						}
-						mutation.SetPath(parentPath + code)
+						path = parentPath + path
 					}
-					if c, _ := mutation.Code(); c == "" {
-						mutation.SetCode(code)
+					ov.Path = path
+
+					if ov.Code == "" {
+						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=?, code=? WHERE id=?", path, code, id)
+						ov.Code = code
+					} else {
+						_, err = mutation.Client().ExecContext(ctx, "UPDATE "+org.Table+" SET path=? WHERE id=?", path, id)
+					}
+					if err != nil {
+						return nil, err
 					}
 				}
-				return next.Mutate(ctx, mutation)
+				return value, nil
 			})
-		}, ent.OpCreate|ent.OpUpdate|ent.OpUpdateOne)
+		}, ent.OpCreate)
 }
 
 func checkDeleteHook() ent.Hook {

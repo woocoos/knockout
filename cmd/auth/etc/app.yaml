@@ -10,30 +10,83 @@ development: true
 #    client:
 #      dialOption:
 #        - timeout: 5s
+includeFiles:
+#  - "etc/local.yaml"
 authz:
+  expireTime: 10s
+  autoSave: false
   watcherOptions:
     options:
       addr: "127.0.0.1:6379"
-      channel: "/casbin"
+      db: 1
+    ignoreSelf: true
+    channel: "/casbin"
   model: "etc/rbac_model.conf"
 
 auth:
   captchaTimes: 3 # if login fail times, captcha will force show
   captchaTTL: 1m # captcha ttl
-  loginFailTimes: 10 # login fail times will lock account
+  captchaExpire: 5m
+  loginFailTimes: 5 # login fail times will lock account
   loginFailLockTime: 10m # login fail lock time
   stateTokenTTL: 20m
   stateTokenSecret: "secret"
   spmTTL: 5s
+  verifyDeviceParams:
+    defaultBound: false # 第一次是否默认绑定设备
+    excludeAccounts: # 跳过设备验证的账号
   jwt: &jwt
     signingMethod: "HS256"
-    signingKey: "secret"
+    signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
+    privateKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
     tokenTTL: 1h
     refreshTokenTTL: 168h
+  pwdPolicy:
+    # 密码最短长度，长度应在6-32位之间
+    length: 6
+    # 必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+    includeElement: 7
+    # 最少包含的不同字符数，最多8个，0代表不限制
+    includeChar: 4
+    # 是否允许包含用户名
+    allowIncludeUserName: false
+    # 有效天数，最大1095天，0代表不过期
+    invalidDay: 365
+    # 过期后是否限制登录
+    invalidLoginLimit: true
+    # 一小时内密码错误最多尝试次数，最大32次，0代表不限次数
+    retry: 5
+    # 密码错误多少次出现验证码，最大5次，0代表不出现验证码
+    captchaTimes: 3
+errors:
+  errorCodeMap:
+    10000: "用户名或密码错误"
+    10001: "账号已锁定，请联系客服修改密码解除锁定"
+    10002: "账号禁止登录"
+    10003: "账号验证错误"
+    10004: "密码错误"
+    10005: "密码已过期，请重置密码或联系客服修改密码恢复"
+    10006: "新密码不能与最近一次使用的密码相同"
+    10007: "旧密码错误"
+    10008: "验证码错误"
+    10009: "身份验证码错误"
+    10010: "MFA未激活"
+    10011: "MFA未启用"
+    10012: "无效的令牌"
+    10013: "邮箱不存在"
+    10014: "未找到邮箱，请确认邮箱是否正确"
+    10015: "组织未找到"
+    10016: "无效的权限"
+    10017: "没有登录权限"
+    10018: "无效的SPM"
+    10019: "the clientID or clientSecret is incorrect or the status is not active"
+    10020: "文件凭证不存在"
+    10021: "不支持的验证方式"
+    10022: "验证码失效"
 
 web:
   server:
-    addr: 127.0.0.1:10070
+    addr: :10070
   engine:
     routerGroups:
       - default:
@@ -48,9 +101,14 @@ web:
                 #tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
+                  - "/login/fingerprint"
+                  - "/login/old-fingerprint"
+                  - "/login/old-auth"
                   - "/login/mfaqr.png"
                   - "/login/verify-factor"
                   - "/login/reset-password"
+                  - "/login/device-captcha"
+                  - "/login/verify-device"
                   - "/captcha"
                   - "/forget-pwd/begin"
                   - "/forget-pwd/verify-email"
@@ -59,6 +117,7 @@ web:
                   - "/forget-pwd/reset"
                   - "/spm/auth"
                   - "/token"
+                  - "/pwd/policy"
                 <<: *jwt
 grpc:
   server:
@@ -95,7 +154,7 @@ cache:
       ttl: 100s
 
 entcache:
-  hashQueryTTL: 5s
+  hashQueryTTL: 3s
 
 kosdk:
   client:
@@ -119,7 +178,7 @@ kosdk:
   plugin:
     fs:
     msg:
-      basePath: "http://127.0.0.1:10072"
+      basePath: "http://127.0.0.1:10072/api/v2"
 
 
 

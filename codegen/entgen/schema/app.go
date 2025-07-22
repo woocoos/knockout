@@ -38,7 +38,7 @@ func (App) Annotations() []schema.Annotation {
 			entgql.MutationCreate(),
 			entgql.MutationUpdate(),
 		),
-		schemax.Resources([]string{"private"}),
+		schemax.Resources([]string{"org_private"}),
 		schemax.TenantField("owner_org_id"),
 	}
 }
@@ -55,7 +55,7 @@ func (App) Mixin() []ent.Mixin {
 func (App) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").MaxLen(45).Unique().Comment("名称"),
-		field.String("code").MinLen(3).MaxLen(10).Immutable().Unique().Comment("用于标识应用资源的唯一代码,尽量简短"),
+		field.String("code").MinLen(3).MaxLen(45).Immutable().Unique().Comment("用于标识应用资源的唯一代码,尽量简短"),
 		field.Enum("kind").NamedValues(
 			"web", "web",
 			"native", "native",
@@ -71,9 +71,9 @@ func (App) Fields() []ent.Field {
 			entgql.Skip(entgql.SkipWhereInput), entproto.Skip()),
 		field.String("comments").Optional().Comment("备注"),
 		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
-		field.Bool("private").Optional().Default(false).Comment("私有App,表示由组织创建").
+		field.Bool("org_private").Optional().Default(false).Comment("私有App,表示由组织创建").
 			Annotations(entgql.Skip(entgql.SkipAll)),
-		field.Int("owner_org_id").Optional().Comment("创建的根组织ID").Annotations(entgql.Skip(entgql.SkipAll)),
+		field.Int("owner_org_id").Optional().Comment("创建的租户ID").Annotations(entgql.Skip(entgql.SkipAll)),
 	}
 }
 
@@ -85,6 +85,7 @@ func (App) Edges() []ent.Edge {
 		edge.To("resources", AppRes.Type).Comment("资源").Annotations(entgql.RelayConnection()),
 		edge.To("roles", AppRole.Type).Comment("角色"),
 		edge.To("policies", AppPolicy.Type).Comment("策略"),
+		edge.To("policy_views", AppPolicyView.Type).Comment("策略视图"),
 		edge.From("orgs", Org.Type).Ref("apps").Comment("使用该应用的组织").
 			Through("org_app", OrgApp.Type).
 			Annotations(entgql.RelayConnection(), entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
@@ -102,7 +103,7 @@ func (App) Hooks() []ent.Hook {
 				if err != nil {
 					return nil, err
 				}
-				if apl.Private != true {
+				if apl.OrgPrivate != true {
 					has, err := client.OrgApp.Query().Where(orgapp.HasAppWith(app.ID(id))).Exist(ctx)
 					if err != nil {
 						return nil, err

@@ -12,9 +12,26 @@ type Captcha struct {
 	CaptchaImage string `json:"captchaImage,omitempty"`
 }
 
+// DeviceInfo device info
+type DeviceInfo struct {
+	AppVersion    string `json:"appVersion,omitempty"`
+	Comments      string `json:"comments,omitempty"`
+	DeviceModel   string `json:"deviceModel,omitempty"`
+	DeviceName    string `json:"deviceName,omitempty"`
+	DeviceUid     string `json:"deviceUid,omitempty"`
+	SystemName    string `json:"systemName,omitempty"`
+	SystemVersion string `json:"systemVersion,omitempty"`
+}
+
 type Domain struct {
-	ID   int    `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
+	ID             int    `json:"id,omitempty"`
+	LocalCurrency  string `json:"local_currency,omitempty"`
+	Name           string `json:"name,omitempty"`
+	ParentCurrency string `json:"parent_currency,omitempty"`
+	// ParentID the top-level parent domain id
+	ParentID int `json:"parent_id,omitempty"`
+	// ParentName the top-level parent domain name
+	ParentName string `json:"parent_name,omitempty"`
 }
 
 type Error struct {
@@ -87,4 +104,15 @@ type User struct {
 	DisplayName string    `json:"displayName,omitempty"`
 	Domains     []*Domain `json:"domains,omitempty"`
 	ID          int       `json:"id,omitempty"`
+}
+
+type UserPasswordPolicy struct {
+	AllowIncludeUserName bool `json:"allowIncludeUserName,omitempty"`
+	CaptchaTimes         int  `json:"captchaTimes,omitempty"`
+	IncludeChar          int  `json:"includeChar,omitempty"`
+	IncludeElement       int  `json:"includeElement,omitempty"`
+	InvalidDay           int  `json:"invalidDay,omitempty"`
+	InvalidLoginLimit    bool `json:"invalidLoginLimit,omitempty"`
+	Length               int  `json:"length,omitempty"`
+	Retry                int  `json:"retry,omitempty"`
 }

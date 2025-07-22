@@ -51,8 +51,8 @@ type App struct {
 	// 状态
 	Status typex.SimpleStatus `json:"status,omitempty"`
 	// 私有App,表示由组织创建
-	Private bool `json:"private,omitempty"`
-	// 创建的根组织ID
+	OrgPrivate bool `json:"org_private,omitempty"`
+	// 创建的租户ID
 	OwnerOrgID int `json:"owner_org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.
@@ -72,6 +72,8 @@ type AppEdges struct {
 	Roles []*AppRole `json:"roles,omitempty"`
 	// 策略
 	Policies []*AppPolicy `json:"policies,omitempty"`
+	// 策略视图
+	PolicyViews []*AppPolicyView `json:"policy_views,omitempty"`
 	// 使用该应用的组织
 	Orgs []*Org `json:"orgs,omitempty"`
 	// 数据字典
@@ -80,18 +82,19 @@ type AppEdges struct {
 	OrgApp []*OrgApp `json:"org_app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [9]bool
 	// totalCount holds the count of the edges above.
-	totalCount [7]map[string]int
+	totalCount [8]map[string]int
 
-	namedMenus     map[string][]*AppMenu
-	namedActions   map[string][]*AppAction
-	namedResources map[string][]*AppRes
-	namedRoles     map[string][]*AppRole
-	namedPolicies  map[string][]*AppPolicy
-	namedOrgs      map[string][]*Org
-	namedDicts     map[string][]*AppDict
-	namedOrgApp    map[string][]*OrgApp
+	namedMenus       map[string][]*AppMenu
+	namedActions     map[string][]*AppAction
+	namedResources   map[string][]*AppRes
+	namedRoles       map[string][]*AppRole
+	namedPolicies    map[string][]*AppPolicy
+	namedPolicyViews map[string][]*AppPolicyView
+	namedOrgs        map[string][]*Org
+	namedDicts       map[string][]*AppDict
+	namedOrgApp      map[string][]*OrgApp
 }
 
 // MenusOrErr returns the Menus value or an error if the edge
@@ -139,10 +142,19 @@ func (e AppEdges) PoliciesOrErr() ([]*AppPolicy, error) {
 	return nil, &NotLoadedError{edge: "policies"}
 }
 
+// PolicyViewsOrErr returns the PolicyViews value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) PolicyViewsOrErr() ([]*AppPolicyView, error) {
+	if e.loadedTypes[5] {
+		return e.PolicyViews, nil
+	}
+	return nil, &NotLoadedError{edge: "policy_views"}
+}
+
 // OrgsOrErr returns the Orgs value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) OrgsOrErr() ([]*Org, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[6] {
 		return e.Orgs, nil
 	}
 	return nil, &NotLoadedError{edge: "orgs"}
@@ -151,7 +163,7 @@ func (e AppEdges) OrgsOrErr() ([]*Org, error) {
 // DictsOrErr returns the Dicts value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) DictsOrErr() ([]*AppDict, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.Dicts, nil
 	}
 	return nil, &NotLoadedError{edge: "dicts"}
@@ -160,7 +172,7 @@ func (e AppEdges) DictsOrErr() ([]*AppDict, error) {
 // OrgAppOrErr returns the OrgApp value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) OrgAppOrErr() ([]*OrgApp, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[8] {
 		return e.OrgApp, nil
 	}
 	return nil, &NotLoadedError{edge: "org_app"}
@@ -171,7 +183,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case app.FieldPrivate:
+		case app.FieldOrgPrivate:
 			values[i] = new(sql.NullBool)
 		case app.FieldID, app.FieldCreatedBy, app.FieldUpdatedBy, app.FieldTokenValidity, app.FieldRefreshTokenValidity, app.FieldOwnerOrgID:
 			values[i] = new(sql.NullInt64)
@@ -296,11 +308,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Status = typex.SimpleStatus(value.String)
 			}
-		case app.FieldPrivate:
+		case app.FieldOrgPrivate:
 			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field private", values[i])
+				return fmt.Errorf("unexpected type %T for field org_private", values[i])
 			} else if value.Valid {
-				a.Private = value.Bool
+				a.OrgPrivate = value.Bool
 			}
 		case app.FieldOwnerOrgID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -344,6 +356,11 @@ func (a *App) QueryRoles() *AppRoleQuery {
 // QueryPolicies queries the "policies" edge of the App entity.
 func (a *App) QueryPolicies() *AppPolicyQuery {
 	return NewAppClient(a.config).QueryPolicies(a)
+}
+
+// QueryPolicyViews queries the "policy_views" edge of the App entity.
+func (a *App) QueryPolicyViews() *AppPolicyViewQuery {
+	return NewAppClient(a.config).QueryPolicyViews(a)
 }
 
 // QueryOrgs queries the "orgs" edge of the App entity.
@@ -432,8 +449,8 @@ func (a *App) String() string {
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", a.Status))
 	builder.WriteString(", ")
-	builder.WriteString("private=")
-	builder.WriteString(fmt.Sprintf("%v", a.Private))
+	builder.WriteString("org_private=")
+	builder.WriteString(fmt.Sprintf("%v", a.OrgPrivate))
 	builder.WriteString(", ")
 	builder.WriteString("owner_org_id=")
 	builder.WriteString(fmt.Sprintf("%v", a.OwnerOrgID))
@@ -558,6 +575,30 @@ func (a *App) appendNamedPolicies(name string, edges ...*AppPolicy) {
 		a.Edges.namedPolicies[name] = []*AppPolicy{}
 	} else {
 		a.Edges.namedPolicies[name] = append(a.Edges.namedPolicies[name], edges...)
+	}
+}
+
+// NamedPolicyViews returns the PolicyViews named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (a *App) NamedPolicyViews(name string) ([]*AppPolicyView, error) {
+	if a.Edges.namedPolicyViews == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := a.Edges.namedPolicyViews[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (a *App) appendNamedPolicyViews(name string, edges ...*AppPolicyView) {
+	if a.Edges.namedPolicyViews == nil {
+		a.Edges.namedPolicyViews = make(map[string][]*AppPolicyView)
+	}
+	if len(edges) == 0 {
+		a.Edges.namedPolicyViews[name] = []*AppPolicyView{}
+	} else {
+		a.Edges.namedPolicyViews[name] = append(a.Edges.namedPolicyViews[name], edges...)
 	}
 }
 

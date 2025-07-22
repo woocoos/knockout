@@ -120,6 +120,10 @@ func MaskEmail(email string) string {
 	}
 	// 获取用户名部分
 	un := matches[0]
+	if len(un) < 4 {
+		maskedEmail := re.ReplaceAllString(email, "***"+"@")
+		return maskedEmail
+	}
 	// 保留前三个字符
 	mun := un[:3] + "****"
 	// 替换原始邮箱地址中的用户名部分为脱敏后的用户名

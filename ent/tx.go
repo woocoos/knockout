@@ -4,6 +4,8 @@ package ent
 
 import (
 	"context"
+	stdsql "database/sql"
+	"fmt"
 	"sync"
 
 	"entgo.io/ent/dialect"
@@ -24,12 +26,18 @@ type Tx struct {
 	AppMenu *AppMenuClient
 	// AppPolicy is the client for interacting with the AppPolicy builders.
 	AppPolicy *AppPolicyClient
+	// AppPolicyView is the client for interacting with the AppPolicyView builders.
+	AppPolicyView *AppPolicyViewClient
 	// AppRes is the client for interacting with the AppRes builders.
 	AppRes *AppResClient
 	// AppRole is the client for interacting with the AppRole builders.
 	AppRole *AppRoleClient
 	// AppRolePolicy is the client for interacting with the AppRolePolicy builders.
 	AppRolePolicy *AppRolePolicyClient
+	// Country is the client for interacting with the Country builders.
+	Country *CountryClient
+	// Currency is the client for interacting with the Currency builders.
+	Currency *CurrencyClient
 	// FileIdentity is the client for interacting with the FileIdentity builders.
 	FileIdentity *FileIdentityClient
 	// FileSource is the client for interacting with the FileSource builders.
@@ -52,8 +60,16 @@ type Tx struct {
 	OrgUserPreference *OrgUserPreferenceClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
+	// Quota is the client for interacting with the Quota builders.
+	Quota *QuotaClient
+	// QuotaItem is the client for interacting with the QuotaItem builders.
+	QuotaItem *QuotaItemClient
+	// Region is the client for interacting with the Region builders.
+	Region *RegionClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserAddr is the client for interacting with the UserAddr builders.
+	UserAddr *UserAddrClient
 	// UserDevice is the client for interacting with the UserDevice builders.
 	UserDevice *UserDeviceClient
 	// UserIdentity is the client for interacting with the UserIdentity builders.
@@ -62,6 +78,8 @@ type Tx struct {
 	UserLoginProfile *UserLoginProfileClient
 	// UserPassword is the client for interacting with the UserPassword builders.
 	UserPassword *UserPasswordClient
+	// UserPasswordPolicy is the client for interacting with the UserPasswordPolicy builders.
+	UserPasswordPolicy *UserPasswordPolicyClient
 
 	// lazily loaded.
 	client     *Client
@@ -199,9 +217,12 @@ func (tx *Tx) init() {
 	tx.AppDictItem = NewAppDictItemClient(tx.config)
 	tx.AppMenu = NewAppMenuClient(tx.config)
 	tx.AppPolicy = NewAppPolicyClient(tx.config)
+	tx.AppPolicyView = NewAppPolicyViewClient(tx.config)
 	tx.AppRes = NewAppResClient(tx.config)
 	tx.AppRole = NewAppRoleClient(tx.config)
 	tx.AppRolePolicy = NewAppRolePolicyClient(tx.config)
+	tx.Country = NewCountryClient(tx.config)
+	tx.Currency = NewCurrencyClient(tx.config)
 	tx.FileIdentity = NewFileIdentityClient(tx.config)
 	tx.FileSource = NewFileSourceClient(tx.config)
 	tx.OauthClient = NewOauthClientClient(tx.config)
@@ -213,11 +234,16 @@ func (tx *Tx) init() {
 	tx.OrgUser = NewOrgUserClient(tx.config)
 	tx.OrgUserPreference = NewOrgUserPreferenceClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
+	tx.Quota = NewQuotaClient(tx.config)
+	tx.QuotaItem = NewQuotaItemClient(tx.config)
+	tx.Region = NewRegionClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserAddr = NewUserAddrClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)
 	tx.UserIdentity = NewUserIdentityClient(tx.config)
 	tx.UserLoginProfile = NewUserLoginProfileClient(tx.config)
 	tx.UserPassword = NewUserPasswordClient(tx.config)
+	tx.UserPasswordPolicy = NewUserPasswordPolicyClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -280,3 +306,27 @@ func (tx *txDriver) Query(ctx context.Context, query string, args, v any) error 
 }
 
 var _ dialect.Driver = (*txDriver)(nil)
+
+// ExecContext allows calling the underlying ExecContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.ExecContext for more information.
+func (tx *txDriver) ExecContext(ctx context.Context, query string, args ...any) (stdsql.Result, error) {
+	ex, ok := tx.tx.(interface {
+		ExecContext(context.Context, string, ...any) (stdsql.Result, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.ExecContext is not supported")
+	}
+	return ex.ExecContext(ctx, query, args...)
+}
+
+// QueryContext allows calling the underlying QueryContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.QueryContext for more information.
+func (tx *txDriver) QueryContext(ctx context.Context, query string, args ...any) (*stdsql.Rows, error) {
+	q, ok := tx.tx.(interface {
+		QueryContext(context.Context, string, ...any) (*stdsql.Rows, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.QueryContext is not supported")
+	}
+	return q.QueryContext(ctx, query, args...)
+}

@@ -325,6 +325,16 @@ func MenuRecentNotNil() predicate.OrgUserPreference {
 	return predicate.OrgUserPreference(sql.FieldNotNull(FieldMenuRecent))
 }
 
+// ClientPreferencesIsNil applies the IsNil predicate on the "client_preferences" field.
+func ClientPreferencesIsNil() predicate.OrgUserPreference {
+	return predicate.OrgUserPreference(sql.FieldIsNull(FieldClientPreferences))
+}
+
+// ClientPreferencesNotNil applies the NotNil predicate on the "client_preferences" field.
+func ClientPreferencesNotNil() predicate.OrgUserPreference {
+	return predicate.OrgUserPreference(sql.FieldNotNull(FieldClientPreferences))
+}
+
 // HasUser applies the HasEdge predicate on the "user" edge.
 func HasUser() predicate.OrgUserPreference {
 	return predicate.OrgUserPreference(func(s *sql.Selector) {

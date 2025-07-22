@@ -17,6 +17,7 @@ import (
 	"github.com/woocoos/knockout/ent/appdict"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/org"
@@ -27,28 +28,30 @@ import (
 // AppQuery is the builder for querying App entities.
 type AppQuery struct {
 	config
-	ctx                *QueryContext
-	order              []app.OrderOption
-	inters             []Interceptor
-	predicates         []predicate.App
-	withMenus          *AppMenuQuery
-	withActions        *AppActionQuery
-	withResources      *AppResQuery
-	withRoles          *AppRoleQuery
-	withPolicies       *AppPolicyQuery
-	withOrgs           *OrgQuery
-	withDicts          *AppDictQuery
-	withOrgApp         *OrgAppQuery
-	modifiers          []func(*sql.Selector)
-	loadTotal          []func(context.Context, []*App) error
-	withNamedMenus     map[string]*AppMenuQuery
-	withNamedActions   map[string]*AppActionQuery
-	withNamedResources map[string]*AppResQuery
-	withNamedRoles     map[string]*AppRoleQuery
-	withNamedPolicies  map[string]*AppPolicyQuery
-	withNamedOrgs      map[string]*OrgQuery
-	withNamedDicts     map[string]*AppDictQuery
-	withNamedOrgApp    map[string]*OrgAppQuery
+	ctx                  *QueryContext
+	order                []app.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.App
+	withMenus            *AppMenuQuery
+	withActions          *AppActionQuery
+	withResources        *AppResQuery
+	withRoles            *AppRoleQuery
+	withPolicies         *AppPolicyQuery
+	withPolicyViews      *AppPolicyViewQuery
+	withOrgs             *OrgQuery
+	withDicts            *AppDictQuery
+	withOrgApp           *OrgAppQuery
+	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*App) error
+	withNamedMenus       map[string]*AppMenuQuery
+	withNamedActions     map[string]*AppActionQuery
+	withNamedResources   map[string]*AppResQuery
+	withNamedRoles       map[string]*AppRoleQuery
+	withNamedPolicies    map[string]*AppPolicyQuery
+	withNamedPolicyViews map[string]*AppPolicyViewQuery
+	withNamedOrgs        map[string]*OrgQuery
+	withNamedDicts       map[string]*AppDictQuery
+	withNamedOrgApp      map[string]*OrgAppQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -188,6 +191,28 @@ func (aq *AppQuery) QueryPolicies() *AppPolicyQuery {
 			sqlgraph.From(app.Table, app.FieldID, selector),
 			sqlgraph.To(apppolicy.Table, apppolicy.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.PoliciesTable, app.PoliciesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPolicyViews chains the current query on the "policy_views" edge.
+func (aq *AppQuery) QueryPolicyViews() *AppPolicyViewQuery {
+	query := (&AppPolicyViewClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, selector),
+			sqlgraph.To(apppolicyview.Table, apppolicyview.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.PolicyViewsTable, app.PolicyViewsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -448,19 +473,20 @@ func (aq *AppQuery) Clone() *AppQuery {
 		return nil
 	}
 	return &AppQuery{
-		config:        aq.config,
-		ctx:           aq.ctx.Clone(),
-		order:         append([]app.OrderOption{}, aq.order...),
-		inters:        append([]Interceptor{}, aq.inters...),
-		predicates:    append([]predicate.App{}, aq.predicates...),
-		withMenus:     aq.withMenus.Clone(),
-		withActions:   aq.withActions.Clone(),
-		withResources: aq.withResources.Clone(),
-		withRoles:     aq.withRoles.Clone(),
-		withPolicies:  aq.withPolicies.Clone(),
-		withOrgs:      aq.withOrgs.Clone(),
-		withDicts:     aq.withDicts.Clone(),
-		withOrgApp:    aq.withOrgApp.Clone(),
+		config:          aq.config,
+		ctx:             aq.ctx.Clone(),
+		order:           append([]app.OrderOption{}, aq.order...),
+		inters:          append([]Interceptor{}, aq.inters...),
+		predicates:      append([]predicate.App{}, aq.predicates...),
+		withMenus:       aq.withMenus.Clone(),
+		withActions:     aq.withActions.Clone(),
+		withResources:   aq.withResources.Clone(),
+		withRoles:       aq.withRoles.Clone(),
+		withPolicies:    aq.withPolicies.Clone(),
+		withPolicyViews: aq.withPolicyViews.Clone(),
+		withOrgs:        aq.withOrgs.Clone(),
+		withDicts:       aq.withDicts.Clone(),
+		withOrgApp:      aq.withOrgApp.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
@@ -519,6 +545,17 @@ func (aq *AppQuery) WithPolicies(opts ...func(*AppPolicyQuery)) *AppQuery {
 		opt(query)
 	}
 	aq.withPolicies = query
+	return aq
+}
+
+// WithPolicyViews tells the query-builder to eager-load the nodes that are connected to
+// the "policy_views" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithPolicyViews(opts ...func(*AppPolicyViewQuery)) *AppQuery {
+	query := (&AppPolicyViewClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withPolicyViews = query
 	return aq
 }
 
@@ -633,12 +670,13 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	var (
 		nodes       = []*App{}
 		_spec       = aq.querySpec()
-		loadedTypes = [8]bool{
+		loadedTypes = [9]bool{
 			aq.withMenus != nil,
 			aq.withActions != nil,
 			aq.withResources != nil,
 			aq.withRoles != nil,
 			aq.withPolicies != nil,
+			aq.withPolicyViews != nil,
 			aq.withOrgs != nil,
 			aq.withDicts != nil,
 			aq.withOrgApp != nil,
@@ -700,6 +738,13 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 			return nil, err
 		}
 	}
+	if query := aq.withPolicyViews; query != nil {
+		if err := aq.loadPolicyViews(ctx, query, nodes,
+			func(n *App) { n.Edges.PolicyViews = []*AppPolicyView{} },
+			func(n *App, e *AppPolicyView) { n.Edges.PolicyViews = append(n.Edges.PolicyViews, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := aq.withOrgs; query != nil {
 		if err := aq.loadOrgs(ctx, query, nodes,
 			func(n *App) { n.Edges.Orgs = []*Org{} },
@@ -753,6 +798,13 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 		if err := aq.loadPolicies(ctx, query, nodes,
 			func(n *App) { n.appendNamedPolicies(name) },
 			func(n *App, e *AppPolicy) { n.appendNamedPolicies(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range aq.withNamedPolicyViews {
+		if err := aq.loadPolicyViews(ctx, query, nodes,
+			func(n *App) { n.appendNamedPolicyViews(name) },
+			func(n *App, e *AppPolicyView) { n.appendNamedPolicyViews(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -920,6 +972,36 @@ func (aq *AppQuery) loadPolicies(ctx context.Context, query *AppPolicyQuery, nod
 	}
 	query.Where(predicate.AppPolicy(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.PoliciesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (aq *AppQuery) loadPolicyViews(ctx context.Context, query *AppPolicyViewQuery, nodes []*App, init func(*App), assign func(*App, *AppPolicyView)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*App)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(apppolicyview.FieldAppID)
+	}
+	query.Where(predicate.AppPolicyView(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(app.PolicyViewsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1208,6 +1290,20 @@ func (aq *AppQuery) WithNamedPolicies(name string, opts ...func(*AppPolicyQuery)
 		aq.withNamedPolicies = make(map[string]*AppPolicyQuery)
 	}
 	aq.withNamedPolicies[name] = query
+	return aq
+}
+
+// WithNamedPolicyViews tells the query-builder to eager-load the nodes that are connected to the "policy_views"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithNamedPolicyViews(name string, opts ...func(*AppPolicyViewQuery)) *AppQuery {
+	query := (&AppPolicyViewClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if aq.withNamedPolicyViews == nil {
+		aq.withNamedPolicyViews = make(map[string]*AppPolicyViewQuery)
+	}
+	aq.withNamedPolicyViews[name] = query
 	return aq
 }
 

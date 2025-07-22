@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -15,9 +16,14 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
+	"strconv"
 )
 
 // CreateApp 创建应用,默认创建的应用都为公开的,不需要审核
@@ -29,7 +35,7 @@ func (s *Service) CreateApp(ctx context.Context, input ent.CreateAppInput) (*ent
 	if err != nil {
 		return nil, err
 	}
-	return client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetPrivate(false).Save(ctx)
+	return client.App.Create().SetInput(input).SetOwnerOrgID(tid).SetOrgPrivate(false).Save(ctx)
 }
 
 // CreateAppActions 创建应用权限
@@ -81,7 +87,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 		return nil, err
 	}
 	// Name更新需同步更新policy中的引用
-	if aa.Name != *input.Name {
+	if input.Name != nil && aa.Name != *input.Name {
 		appid := aa.Edges.App.ID
 
 		// 更新AppPolicy
@@ -394,7 +400,23 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 	if !has {
 		return nil, fmt.Errorf("role not exist")
 	}
-	return ent.FromContext(ctx).AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
+	// 更新应用角色
+	r, err := client.AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 查找授权的组织角色
+	ors, err := client.OrgRole.Query().Where(orgrole.AppRoleID(r.ID)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for _, or := range ors {
+		err = or.Update().SetName(r.Name).SetComments(r.Comments).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return r, nil
 }
 
 func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
@@ -441,6 +463,7 @@ func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int
 	return client.AppRolePolicy.CreateBulk(builders...).Exec(ctx)
 }
 
+// RevokeAppRolePolicy 应用角色删除权限
 func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int, policyIDs []int) error {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -465,10 +488,117 @@ func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int
 	return err
 }
 
+// SyncAppRoleToOrg 同步应用角色到组织角色，需处理权限视图的策略，及添加的权限策略
+func (s *Service) SyncAppRoleToOrg(ctx context.Context, orgID int, appRoleID int) error {
+	client := ent.FromContext(ctx)
+	// 获取appRole授权的策略
+	arps, err := client.AppRolePolicy.Query().Where(approlepolicy.AppRoleID(appRoleID)).All(ctx)
+	if err != nil {
+		return err
+	}
+	apIds := make([]int, len(arps))
+	for i, arp := range arps {
+		apIds[i] = arp.AppPolicyID
+	}
+	// 查询授权的组织角色
+	or, err := client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgIDIn(orgID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	// 组织角色授权的策略
+	orps, err := client.Permission.Query().Where(
+		permission.OrgID(orgID),
+		permission.RoleID(or.ID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.StatusEQ(typex.SimpleStatusActive),
+	).WithOrgPolicy().All(ctx)
+	// 组织策略的应用策略ID
+	opaIDs := make([]int, 0, len(orps))
+	for _, op := range orps {
+		if op.Edges.OrgPolicy == nil || op.Edges.OrgPolicy.AppPolicyID == nil {
+			continue
+		}
+		opaIDs = append(opaIDs, *op.Edges.OrgPolicy.AppPolicyID)
+	}
+	// 比较应用角色策略与组织角色策略，找出删除的及增加的策略
+	addIDs, rmIDs := DiffArrays(apIds, opaIDs)
+	// 增加的策略：增加orgPolicy及授权给组织的角色添加策略
+	for _, addID := range addIDs {
+		// 策略授权给组织
+		has, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(addID), orgpolicy.OrgID(orgID)).Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if !has {
+			// 如果策略不存在组织则分配给组织
+			err = s.AssignOrganizationAppPolicy(ctx, orgID, addID)
+			if err != nil {
+				return err
+			}
+		}
+		// 组织策略授权给角色
+		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(addID), orgpolicy.OrgID(orgID)).Only(ctx)
+		if err != nil {
+			return err
+		}
+		_, err = s.Grant(ctx, ent.CreatePermissionInput{
+			RoleID:        &or.ID,
+			PrincipalKind: permission.PrincipalKindRole,
+			OrgPolicyID:   op.ID,
+			OrgID:         orgID,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	// 删除的策略：如果其他的授权角色不包含该策略则直接删除orgPolicy，以及解除策略对组织的授权。
+	// 如果其他授权角色包含该策略则取消当前授权组织角色的授权。
+	for _, rmID := range rmIDs {
+		op, err := client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(rmID), orgpolicy.OrgID(orgID)).WithAppPolicy().Only(ctx)
+		if err != nil {
+			return err
+		}
+
+		// 判断是否被其他授权角色引用
+		has, err := client.Permission.Query().Where(
+			permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			permission.OrgPolicyID(op.ID),
+			permission.HasRoleWith(orgrole.AppRoleIDNotNil()),
+			permission.RoleIDNEQ(or.ID),
+		).Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if has {
+			// 如果其他授权角色有包含该策略，则只取消当前角色的授权
+			p, err := client.Permission.Query().Where(
+				permission.OrgID(orgID),
+				permission.OrgPolicyID(op.ID),
+				permission.RoleID(or.ID),
+				permission.PrincipalKindEQ(permission.PrincipalKindRole),
+			).WithOrgPolicy().Only(ctx)
+			if err != nil {
+				return err
+			}
+			err = s.RevokeImpl(ctx, orgID, p)
+			if err != nil {
+				return err
+			}
+		} else {
+			// 直接移除该策略
+			err = s.RevokeOrganizationAppPolicy(ctx, orgID, rmID)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 // CreateAppPolicy 创建应用策略.
 //
 // 该方法会检查应用策略的规则中的action是否以应用代码开头.
-func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
+func (s *Service) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) (*ent.AppPolicy, error) {
 	client := ent.FromContext(ctx)
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -481,8 +611,25 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, input ent.Crea
 	if !exist {
 		return nil, fmt.Errorf("app not exist")
 	}
-
-	return client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
+	ap, err := client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 如果有传递appPolicyViewID，则关联视图
+	if appPolicyViewID != nil && *appPolicyViewID != 0 {
+		exist, err = client.AppPolicyView.Query().Where(apppolicyview.ID(*appPolicyViewID)).Exist(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if !exist {
+			return nil, fmt.Errorf("appPolicyView not exist")
+		}
+		err = client.AppRolePolicy.UpdateOneID(*appPolicyViewID).SetAppPolicyID(ap.ID).Exec(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ap, nil
 }
 
 // UpdateAppPolicy 更新应用策略,该应用必须属于(创建者)该租户才可更新
@@ -577,4 +724,166 @@ func (s *Service) MoveAppDictItem(ctx context.Context, sourceID int, targetID in
 		return err
 	}
 	return builder.Exec(ctx)
+}
+
+// MoveAppPolicyView 移动地区目录.
+func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action model.TreeAction) (err error) {
+	client := ent.FromContext(ctx)
+	tarPolicyView := client.AppPolicyView.GetX(ctx, tar)
+	builder := client.AppPolicyView.UpdateOneID(src)
+	var start int32 = 0
+	var resort = true
+	switch action {
+	case model.TreeActionChild:
+		var agg []struct {
+			Max *int32
+		}
+		err = client.AppPolicyView.Query().Where(apppolicyview.ParentID(tarPolicyView.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		if err != nil {
+			return err
+		}
+		if agg[0].Max == nil {
+			start = 1
+		} else {
+			start = *agg[0].Max + 1
+		}
+		builder.SetParentID(tarPolicyView.ID)
+		resort = false
+	case model.TreeActionUp:
+		start = tarPolicyView.DisplaySort
+		builder.SetParentID(tarPolicyView.ParentID).SetDisplaySort(start)
+	case model.TreeActionDown:
+		start = tarPolicyView.DisplaySort + 1
+		builder.SetParentID(tarPolicyView.ParentID).SetDisplaySort(start)
+	}
+	if resort {
+		err = client.AppPolicyView.Update().Where(apppolicyview.ParentID(tarPolicyView.ParentID), apppolicyview.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+		if err != nil {
+			return
+		}
+	}
+
+	return builder.Exec(ctx)
+}
+
+func (s *Service) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	client := ent.FromContext(ctx)
+	if input.AppID == nil {
+		return nil, fmt.Errorf("appID do not exist")
+	}
+	a, err := client.App.Get(ctx, *input.AppID)
+	if err != nil {
+		return nil, err
+	}
+	// 创建视图项
+	apv, err := client.AppPolicyView.Create().SetInput(input).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 如果是权限，则创建权限策略
+	if input.Kind == apppolicyview.KindPolicy {
+		name := fmt.Sprintf("%sView%s", a.Code, strconv.Itoa(apv.ID))
+		comments := input.Name
+		if input.ParentID != 0 {
+			parent, err := client.AppPolicyView.Get(ctx, input.ParentID)
+			if err != nil {
+				return nil, err
+			}
+			comments = parent.Name + "-" + comments
+			if parent.ParentID != 0 {
+				parent, err = client.AppPolicyView.Get(ctx, parent.ParentID)
+				if err != nil {
+					return nil, err
+				}
+				comments = parent.Name + "-" + comments
+			}
+		}
+		ap, err := client.AppPolicy.Create().SetAppID(a.ID).SetKind(apppolicy.KindView).SetName(name).SetComments(comments).
+			SetRules([]*types.PolicyRule{}).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+		apv, err = client.AppPolicyView.UpdateOneID(apv.ID).SetAppPolicyID(ap.ID).Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return apv, nil
+}
+
+func (s *Service) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) (bool, error) {
+	client := ent.FromContext(ctx)
+	apv, err := client.AppPolicyView.Get(ctx, appPolicyViewID)
+	if err != nil {
+		return false, err
+	}
+	// 如果权限视图目录有子项，则不能删除
+	has, err := client.AppPolicyView.Query().Where(apppolicyview.PathHasPrefix(apv.Path), apppolicyview.IDNEQ(apv.ID)).Exist(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return false, err
+	}
+	if has {
+		return false, fmt.Errorf("请清空子节点后删除")
+	}
+	// 如果权限策略有关联权限，则不允许删除
+	if apv.PolicyID != nil {
+		ap, err := client.AppPolicy.Query().Where(apppolicy.KindEQ(apppolicy.KindView), apppolicy.ID(*apv.PolicyID)).Only(ctx)
+		if err != nil {
+			return false, err
+		}
+		for _, i := range ap.Rules {
+			if len(i.Actions) > 0 || len(i.Resources) > 0 || len(i.Conditions) > 0 {
+				return false, fmt.Errorf("请清空权限后删除！")
+			}
+		}
+	}
+	err = client.AppPolicyView.DeleteOneID(appPolicyViewID).Exec(ctx)
+	return err == nil, err
+}
+
+func (s *Service) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) (*ent.AppPolicyView, error) {
+	client := ent.FromContext(ctx)
+	apv, err := client.AppPolicyView.Get(ctx, appPolicyViewID)
+	if err != nil {
+		return nil, err
+	}
+	// 关联应用权限策略id，不能修改为dir
+	if apv.PolicyID != nil && input.Kind != nil && *input.Kind == apppolicyview.KindDir {
+		return nil, fmt.Errorf("类型为权限策略，无法变更类型为目录")
+	}
+	// dir节点有子项，不能修改为policy
+	if apv.PolicyID == nil && input.Kind != nil && *input.Kind == apppolicyview.KindPolicy {
+		has, err := client.AppPolicyView.Query().Where(apppolicyview.PathHasPrefix(apv.Path), apppolicyview.IDNEQ(apv.ID)).Exist(ctx)
+		if err != nil && !ent.IsNotFound(err) {
+			return nil, err
+		}
+		if has {
+			return nil, fmt.Errorf("当前目录已存在子节点，无法变更类型为权限策略")
+		}
+	}
+	return client.AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)
+}
+
+func (s *Service) RemoveDuplicatesAppDictItems(items []*ent.AppDictItem) []*ent.AppDictItem {
+	// 遍历items，如果orgID存在，则忽略掉默认的code
+	orgItems := make([]*ent.AppDictItem, 0)
+	for _, item := range items {
+		if item.OrgID != 0 {
+			orgItems = append(orgItems, item)
+			continue
+		}
+		has := false
+		for _, orgItem := range items {
+			if orgItem.OrgID != 0 {
+				if orgItem.Code == item.Code {
+					has = true
+					break
+				}
+			}
+		}
+		if !has {
+			orgItems = append(orgItems, item)
+		}
+	}
+	return orgItems
 }

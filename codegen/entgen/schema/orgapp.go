@@ -33,7 +33,7 @@ func (OrgApp) Mixin() []ent.Mixin {
 // Fields of the OrgApp.
 func (OrgApp) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Comment("组织ID"),
+		field.Int("org_id").Comment("租户ID"),
 		field.Int("app_id").Comment("应用ID"),
 	}
 }

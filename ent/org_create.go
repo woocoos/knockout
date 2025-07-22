@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
@@ -20,7 +21,9 @@ import (
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // OrgCreate is the builder for creating a Org entity.
@@ -149,6 +152,12 @@ func (oc *OrgCreate) SetNillableDomain(s *string) *OrgCreate {
 	return oc
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (oc *OrgCreate) SetCustomDomain(s []string) *OrgCreate {
+	oc.mutation.SetCustomDomain(s)
+	return oc
+}
+
 // SetCode sets the "code" field.
 func (oc *OrgCreate) SetCode(s string) *OrgCreate {
 	oc.mutation.SetCode(s)
@@ -253,17 +262,29 @@ func (oc *OrgCreate) SetNillableTimezone(s *string) *OrgCreate {
 	return oc
 }
 
-// SetID sets the "id" field.
-func (oc *OrgCreate) SetID(i int) *OrgCreate {
-	oc.mutation.SetID(i)
+// SetLocalCurrency sets the "local_currency" field.
+func (oc *OrgCreate) SetLocalCurrency(s string) *OrgCreate {
+	oc.mutation.SetLocalCurrency(s)
 	return oc
 }
 
-// SetNillableID sets the "id" field if the given value is not nil.
-func (oc *OrgCreate) SetNillableID(i *int) *OrgCreate {
-	if i != nil {
-		oc.SetID(*i)
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (oc *OrgCreate) SetNillableLocalCurrency(s *string) *OrgCreate {
+	if s != nil {
+		oc.SetLocalCurrency(*s)
 	}
+	return oc
+}
+
+// SetLogo sets the "logo" field.
+func (oc *OrgCreate) SetLogo(tl *types.OrgLogo) *OrgCreate {
+	oc.mutation.SetLogo(tl)
+	return oc
+}
+
+// SetID sets the "id" field.
+func (oc *OrgCreate) SetID(i int) *OrgCreate {
+	oc.mutation.SetID(i)
 	return oc
 }
 
@@ -382,6 +403,40 @@ func (oc *OrgCreate) AddFileIdentities(f ...*FileIdentity) *OrgCreate {
 	return oc.AddFileIdentityIDs(ids...)
 }
 
+// SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
+func (oc *OrgCreate) SetUserPasswordPolicyID(id int) *OrgCreate {
+	oc.mutation.SetUserPasswordPolicyID(id)
+	return oc
+}
+
+// SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
+func (oc *OrgCreate) SetNillableUserPasswordPolicyID(id *int) *OrgCreate {
+	if id != nil {
+		oc = oc.SetUserPasswordPolicyID(*id)
+	}
+	return oc
+}
+
+// SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (oc *OrgCreate) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgCreate {
+	return oc.SetUserPasswordPolicyID(u.ID)
+}
+
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (oc *OrgCreate) AddOrgQuotumIDs(ids ...int) *OrgCreate {
+	oc.mutation.AddOrgQuotumIDs(ids...)
+	return oc
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (oc *OrgCreate) AddOrgQuota(q ...*Quota) *OrgCreate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return oc.AddOrgQuotumIDs(ids...)
+}
+
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
 func (oc *OrgCreate) AddOrgUserIDs(ids ...int) *OrgCreate {
 	oc.mutation.AddOrgUserIDs(ids...)
@@ -468,13 +523,6 @@ func (oc *OrgCreate) defaults() error {
 		v := org.DefaultStatus
 		oc.mutation.SetStatus(v)
 	}
-	if _, ok := oc.mutation.ID(); !ok {
-		if org.DefaultID == nil {
-			return fmt.Errorf("ent: uninitialized org.DefaultID (forgotten import ent/runtime?)")
-		}
-		v := org.DefaultID()
-		oc.mutation.SetID(v)
-	}
 	return nil
 }
 
@@ -528,6 +576,11 @@ func (oc *OrgCreate) check() error {
 	if v, ok := oc.mutation.Timezone(); ok {
 		if err := org.TimezoneValidator(v); err != nil {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
+		}
+	}
+	if v, ok := oc.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
 		}
 	}
 	if len(oc.mutation.ParentIDs()) == 0 {
@@ -594,6 +647,10 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 		_spec.SetField(org.FieldDomain, field.TypeString, value)
 		_node.Domain = value
 	}
+	if value, ok := oc.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+		_node.CustomDomain = value
+	}
 	if value, ok := oc.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 		_node.Code = value
@@ -625,6 +682,14 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 	if value, ok := oc.mutation.Timezone(); ok {
 		_spec.SetField(org.FieldTimezone, field.TypeString, value)
 		_node.Timezone = value
+	}
+	if value, ok := oc.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
+		_node.LocalCurrency = value
+	}
+	if value, ok := oc.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+		_node.Logo = value
 	}
 	if nodes := oc.mutation.ParentIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -773,6 +838,38 @@ func (oc *OrgCreate) createSpec() (*Org, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -984,6 +1081,24 @@ func (u *OrgUpsert) ClearDomain() *OrgUpsert {
 	return u
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsert) SetCustomDomain(v []string) *OrgUpsert {
+	u.Set(org.FieldCustomDomain, v)
+	return u
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateCustomDomain() *OrgUpsert {
+	u.SetExcluded(org.FieldCustomDomain)
+	return u
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsert) ClearCustomDomain() *OrgUpsert {
+	u.SetNull(org.FieldCustomDomain)
+	return u
+}
+
 // SetCode sets the "code" field.
 func (u *OrgUpsert) SetCode(v string) *OrgUpsert {
 	u.Set(org.FieldCode, v)
@@ -1125,6 +1240,42 @@ func (u *OrgUpsert) UpdateTimezone() *OrgUpsert {
 // ClearTimezone clears the value of the "timezone" field.
 func (u *OrgUpsert) ClearTimezone() *OrgUpsert {
 	u.SetNull(org.FieldTimezone)
+	return u
+}
+
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsert) SetLocalCurrency(v string) *OrgUpsert {
+	u.Set(org.FieldLocalCurrency, v)
+	return u
+}
+
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateLocalCurrency() *OrgUpsert {
+	u.SetExcluded(org.FieldLocalCurrency)
+	return u
+}
+
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsert) ClearLocalCurrency() *OrgUpsert {
+	u.SetNull(org.FieldLocalCurrency)
+	return u
+}
+
+// SetLogo sets the "logo" field.
+func (u *OrgUpsert) SetLogo(v *types.OrgLogo) *OrgUpsert {
+	u.Set(org.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsert) UpdateLogo() *OrgUpsert {
+	u.SetExcluded(org.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsert) ClearLogo() *OrgUpsert {
+	u.SetNull(org.FieldLogo)
 	return u
 }
 
@@ -1322,6 +1473,27 @@ func (u *OrgUpsertOne) ClearDomain() *OrgUpsertOne {
 	})
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsertOne) SetCustomDomain(v []string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCustomDomain(v)
+	})
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateCustomDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCustomDomain()
+	})
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsertOne) ClearCustomDomain() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCustomDomain()
+	})
+}
+
 // SetCode sets the "code" field.
 func (u *OrgUpsertOne) SetCode(v string) *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
@@ -1487,6 +1659,48 @@ func (u *OrgUpsertOne) UpdateTimezone() *OrgUpsertOne {
 func (u *OrgUpsertOne) ClearTimezone() *OrgUpsertOne {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearTimezone()
+	})
+}
+
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsertOne) SetLocalCurrency(v string) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLocalCurrency(v)
+	})
+}
+
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateLocalCurrency() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLocalCurrency()
+	})
+}
+
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsertOne) ClearLocalCurrency() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLocalCurrency()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *OrgUpsertOne) SetLogo(v *types.OrgLogo) *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsertOne) UpdateLogo() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsertOne) ClearLogo() *OrgUpsertOne {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLogo()
 	})
 }
 
@@ -1850,6 +2064,27 @@ func (u *OrgUpsertBulk) ClearDomain() *OrgUpsertBulk {
 	})
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (u *OrgUpsertBulk) SetCustomDomain(v []string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetCustomDomain(v)
+	})
+}
+
+// UpdateCustomDomain sets the "custom_domain" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateCustomDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateCustomDomain()
+	})
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (u *OrgUpsertBulk) ClearCustomDomain() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearCustomDomain()
+	})
+}
+
 // SetCode sets the "code" field.
 func (u *OrgUpsertBulk) SetCode(v string) *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
@@ -2015,6 +2250,48 @@ func (u *OrgUpsertBulk) UpdateTimezone() *OrgUpsertBulk {
 func (u *OrgUpsertBulk) ClearTimezone() *OrgUpsertBulk {
 	return u.Update(func(s *OrgUpsert) {
 		s.ClearTimezone()
+	})
+}
+
+// SetLocalCurrency sets the "local_currency" field.
+func (u *OrgUpsertBulk) SetLocalCurrency(v string) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLocalCurrency(v)
+	})
+}
+
+// UpdateLocalCurrency sets the "local_currency" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateLocalCurrency() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLocalCurrency()
+	})
+}
+
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (u *OrgUpsertBulk) ClearLocalCurrency() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLocalCurrency()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *OrgUpsertBulk) SetLogo(v *types.OrgLogo) *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *OrgUpsertBulk) UpdateLogo() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *OrgUpsertBulk) ClearLogo() *OrgUpsertBulk {
+	return u.Update(func(s *OrgUpsert) {
+		s.ClearLogo()
 	})
 }
 

@@ -18,9 +18,12 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -32,11 +35,16 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -97,31 +105,39 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			app.Table:               app.ValidColumn,
-			appaction.Table:         appaction.ValidColumn,
-			appdict.Table:           appdict.ValidColumn,
-			appdictitem.Table:       appdictitem.ValidColumn,
-			appmenu.Table:           appmenu.ValidColumn,
-			apppolicy.Table:         apppolicy.ValidColumn,
-			appres.Table:            appres.ValidColumn,
-			approle.Table:           approle.ValidColumn,
-			approlepolicy.Table:     approlepolicy.ValidColumn,
-			fileidentity.Table:      fileidentity.ValidColumn,
-			filesource.Table:        filesource.ValidColumn,
-			oauthclient.Table:       oauthclient.ValidColumn,
-			org.Table:               org.ValidColumn,
-			orgapp.Table:            orgapp.ValidColumn,
-			orgpolicy.Table:         orgpolicy.ValidColumn,
-			orgrole.Table:           orgrole.ValidColumn,
-			orgroleuser.Table:       orgroleuser.ValidColumn,
-			orguser.Table:           orguser.ValidColumn,
-			orguserpreference.Table: orguserpreference.ValidColumn,
-			permission.Table:        permission.ValidColumn,
-			user.Table:              user.ValidColumn,
-			userdevice.Table:        userdevice.ValidColumn,
-			useridentity.Table:      useridentity.ValidColumn,
-			userloginprofile.Table:  userloginprofile.ValidColumn,
-			userpassword.Table:      userpassword.ValidColumn,
+			app.Table:                app.ValidColumn,
+			appaction.Table:          appaction.ValidColumn,
+			appdict.Table:            appdict.ValidColumn,
+			appdictitem.Table:        appdictitem.ValidColumn,
+			appmenu.Table:            appmenu.ValidColumn,
+			apppolicy.Table:          apppolicy.ValidColumn,
+			apppolicyview.Table:      apppolicyview.ValidColumn,
+			appres.Table:             appres.ValidColumn,
+			approle.Table:            approle.ValidColumn,
+			approlepolicy.Table:      approlepolicy.ValidColumn,
+			country.Table:            country.ValidColumn,
+			currency.Table:           currency.ValidColumn,
+			fileidentity.Table:       fileidentity.ValidColumn,
+			filesource.Table:         filesource.ValidColumn,
+			oauthclient.Table:        oauthclient.ValidColumn,
+			org.Table:                org.ValidColumn,
+			orgapp.Table:             orgapp.ValidColumn,
+			orgpolicy.Table:          orgpolicy.ValidColumn,
+			orgrole.Table:            orgrole.ValidColumn,
+			orgroleuser.Table:        orgroleuser.ValidColumn,
+			orguser.Table:            orguser.ValidColumn,
+			orguserpreference.Table:  orguserpreference.ValidColumn,
+			permission.Table:         permission.ValidColumn,
+			quota.Table:              quota.ValidColumn,
+			quotaitem.Table:          quotaitem.ValidColumn,
+			region.Table:             region.ValidColumn,
+			user.Table:               user.ValidColumn,
+			useraddr.Table:           useraddr.ValidColumn,
+			userdevice.Table:         userdevice.ValidColumn,
+			useridentity.Table:       useridentity.ValidColumn,
+			userloginprofile.Table:   userloginprofile.ValidColumn,
+			userpassword.Table:       userpassword.ValidColumn,
+			userpasswordpolicy.Table: userpasswordpolicy.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

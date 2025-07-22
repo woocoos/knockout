@@ -42,7 +42,7 @@ func (AppDictItem) Mixin() []ent.Mixin {
 // Fields of the AppDictItem.
 func (AppDictItem) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Optional().Immutable().Comment("组织ID,空为全局字典"),
+		field.Int("org_id").Optional().Immutable().Comment("租户ID,空为全局字典"),
 		field.Int("dict_id").Optional().Immutable().Comment("所属字典"),
 		field.String("ref_code").Comment("关联代码,由app_code和dict_code组成").Annotations(entgql.Skip(
 			entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
@@ -84,8 +84,16 @@ func (AppDictItem) Hooks() []ent.Hook {
 				if cok && iok && dok {
 					return next.Mutate(ctx, m)
 				}
-				has, err := m.Client().AppDictItem.Query().Where(
-					appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id)).Exist(ctx)
+				oid, ook := m.OrgID()
+				var err error
+				var has bool
+				if ook {
+					has, err = m.Client().AppDictItem.Query().Where(
+						appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id), appdictitem.OrgID(oid)).Exist(ctx)
+				} else {
+					has, err = m.Client().AppDictItem.Query().Where(
+						appdictitem.DictID(dictid), appdictitem.Code(code), appdictitem.IDNEQ(id), appdictitem.OrgIDIsNil()).Exist(ctx)
+				}
 				if err != nil {
 					return nil, err
 				}
@@ -98,11 +106,11 @@ func (AppDictItem) Hooks() []ent.Hook {
 		hook.On(func(next ent.Mutator) ent.Mutator {
 			return hook.AppDictItemFunc(func(ctx context.Context, m *gen.AppDictItemMutation) (gen.Value, error) {
 				dict, _ := m.DictID()
-				dr, err := m.Client().AppDict.Query().Where(appdict.ID(dict)).WithApp().Only(ctx)
+				dr, err := m.Client().AppDict.Query().Where(appdict.ID(dict)).WithApp().Only(schemax.SkipTenantPrivacy(ctx))
 				if err != nil {
 					return nil, err
 				}
-				app, err := dr.App(ctx)
+				app, err := dr.App(schemax.SkipTenantPrivacy(ctx))
 				if err != nil {
 					return nil, err
 				}

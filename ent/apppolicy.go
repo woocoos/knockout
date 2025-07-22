@@ -31,6 +31,8 @@ type AppPolicy struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// 所属应用
 	AppID int `json:"app_id,omitempty"`
+	// 分类：app-应用策略、view-策略视图
+	Kind apppolicy.Kind `json:"kind,omitempty"`
 	// 策略名称
 	Name string `json:"name,omitempty"`
 	// 描述
@@ -55,15 +57,21 @@ type AppPolicyEdges struct {
 	App *App `json:"app,omitempty"`
 	// Roles holds the value of the roles edge.
 	Roles []*AppRole `json:"roles,omitempty"`
+	// 策略授权的组织策略
+	OrgPolicies []*OrgPolicy `json:"org_policies,omitempty"`
+	// 策略视图
+	PolicyViews []*AppPolicyView `json:"policy_views,omitempty"`
 	// AppRolePolicy holds the value of the app_role_policy edge.
 	AppRolePolicy []*AppRolePolicy `json:"app_role_policy,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [5]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [4]map[string]int
 
 	namedRoles         map[string][]*AppRole
+	namedOrgPolicies   map[string][]*OrgPolicy
+	namedPolicyViews   map[string][]*AppPolicyView
 	namedAppRolePolicy map[string][]*AppRolePolicy
 }
 
@@ -87,10 +95,28 @@ func (e AppPolicyEdges) RolesOrErr() ([]*AppRole, error) {
 	return nil, &NotLoadedError{edge: "roles"}
 }
 
+// OrgPoliciesOrErr returns the OrgPolicies value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppPolicyEdges) OrgPoliciesOrErr() ([]*OrgPolicy, error) {
+	if e.loadedTypes[2] {
+		return e.OrgPolicies, nil
+	}
+	return nil, &NotLoadedError{edge: "org_policies"}
+}
+
+// PolicyViewsOrErr returns the PolicyViews value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppPolicyEdges) PolicyViewsOrErr() ([]*AppPolicyView, error) {
+	if e.loadedTypes[3] {
+		return e.PolicyViews, nil
+	}
+	return nil, &NotLoadedError{edge: "policy_views"}
+}
+
 // AppRolePolicyOrErr returns the AppRolePolicy value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppPolicyEdges) AppRolePolicyOrErr() ([]*AppRolePolicy, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[4] {
 		return e.AppRolePolicy, nil
 	}
 	return nil, &NotLoadedError{edge: "app_role_policy"}
@@ -107,7 +133,7 @@ func (*AppPolicy) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case apppolicy.FieldID, apppolicy.FieldCreatedBy, apppolicy.FieldUpdatedBy, apppolicy.FieldAppID:
 			values[i] = new(sql.NullInt64)
-		case apppolicy.FieldName, apppolicy.FieldComments, apppolicy.FieldVersion, apppolicy.FieldStatus:
+		case apppolicy.FieldKind, apppolicy.FieldName, apppolicy.FieldComments, apppolicy.FieldVersion, apppolicy.FieldStatus:
 			values[i] = new(sql.NullString)
 		case apppolicy.FieldCreatedAt, apppolicy.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -161,6 +187,12 @@ func (ap *AppPolicy) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
 				ap.AppID = int(value.Int64)
+			}
+		case apppolicy.FieldKind:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field kind", values[i])
+			} else if value.Valid {
+				ap.Kind = apppolicy.Kind(value.String)
 			}
 		case apppolicy.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -223,6 +255,16 @@ func (ap *AppPolicy) QueryRoles() *AppRoleQuery {
 	return NewAppPolicyClient(ap.config).QueryRoles(ap)
 }
 
+// QueryOrgPolicies queries the "org_policies" edge of the AppPolicy entity.
+func (ap *AppPolicy) QueryOrgPolicies() *OrgPolicyQuery {
+	return NewAppPolicyClient(ap.config).QueryOrgPolicies(ap)
+}
+
+// QueryPolicyViews queries the "policy_views" edge of the AppPolicy entity.
+func (ap *AppPolicy) QueryPolicyViews() *AppPolicyViewQuery {
+	return NewAppPolicyClient(ap.config).QueryPolicyViews(ap)
+}
+
 // QueryAppRolePolicy queries the "app_role_policy" edge of the AppPolicy entity.
 func (ap *AppPolicy) QueryAppRolePolicy() *AppRolePolicyQuery {
 	return NewAppPolicyClient(ap.config).QueryAppRolePolicy(ap)
@@ -266,6 +308,9 @@ func (ap *AppPolicy) String() string {
 	builder.WriteString("app_id=")
 	builder.WriteString(fmt.Sprintf("%v", ap.AppID))
 	builder.WriteString(", ")
+	builder.WriteString("kind=")
+	builder.WriteString(fmt.Sprintf("%v", ap.Kind))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ap.Name)
 	builder.WriteString(", ")
@@ -308,6 +353,54 @@ func (ap *AppPolicy) appendNamedRoles(name string, edges ...*AppRole) {
 		ap.Edges.namedRoles[name] = []*AppRole{}
 	} else {
 		ap.Edges.namedRoles[name] = append(ap.Edges.namedRoles[name], edges...)
+	}
+}
+
+// NamedOrgPolicies returns the OrgPolicies named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ap *AppPolicy) NamedOrgPolicies(name string) ([]*OrgPolicy, error) {
+	if ap.Edges.namedOrgPolicies == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ap.Edges.namedOrgPolicies[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ap *AppPolicy) appendNamedOrgPolicies(name string, edges ...*OrgPolicy) {
+	if ap.Edges.namedOrgPolicies == nil {
+		ap.Edges.namedOrgPolicies = make(map[string][]*OrgPolicy)
+	}
+	if len(edges) == 0 {
+		ap.Edges.namedOrgPolicies[name] = []*OrgPolicy{}
+	} else {
+		ap.Edges.namedOrgPolicies[name] = append(ap.Edges.namedOrgPolicies[name], edges...)
+	}
+}
+
+// NamedPolicyViews returns the PolicyViews named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ap *AppPolicy) NamedPolicyViews(name string) ([]*AppPolicyView, error) {
+	if ap.Edges.namedPolicyViews == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ap.Edges.namedPolicyViews[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ap *AppPolicy) appendNamedPolicyViews(name string, edges ...*AppPolicyView) {
+	if ap.Edges.namedPolicyViews == nil {
+		ap.Edges.namedPolicyViews = make(map[string][]*AppPolicyView)
+	}
+	if len(edges) == 0 {
+		ap.Edges.namedPolicyViews[name] = []*AppPolicyView{}
+	} else {
+		ap.Edges.namedPolicyViews[name] = append(ap.Edges.namedPolicyViews[name], edges...)
 	}
 }
 

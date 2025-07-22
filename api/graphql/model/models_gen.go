@@ -9,8 +9,14 @@ import (
 	"time"
 
 	"entgo.io/contrib/entgql"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 )
+
+type AppPolicyViewOrgPolicy struct {
+	OrgPolicy     *ent.OrgPolicy     `json:"orgPolicy,omitempty"`
+	AppPolicyView *ent.AppPolicyView `json:"appPolicyView,omitempty"`
+}
 
 // Ordering options for AppRolePolicy connections
 type AppRolePolicyOrder struct {
@@ -105,6 +111,20 @@ type OrgUserPreferenceInput struct {
 	MenuFavorite []int `json:"menuFavorite,omitempty"`
 	// 用户最近访问菜单
 	MenuRecent []int `json:"menuRecent,omitempty"`
+	// 客户端偏好设置
+	ClientPreference *types.ClientPreference `json:"clientPreference,omitempty"`
+}
+
+// 查看用户mfa信息
+type UserMfaInfo struct {
+	// 是否启用mfa
+	MfaEnabled bool `json:"mfaEnabled"`
+	// 秘钥
+	Secret string `json:"secret"`
+	// 二维码
+	QRCodeURI string `json:"qrCodeUri"`
+	// 用户账号
+	AccountName string `json:"accountName"`
 }
 
 // Properties by which AppRolePolicy connections can be ordered.
@@ -144,6 +164,50 @@ func (e *AppRolePolicyOrderField) UnmarshalGQL(v interface{}) error {
 }
 
 func (e AppRolePolicyOrderField) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+// 列表操作类型
+type ListAction string
+
+const (
+	// 上移
+	ListActionUp ListAction = "up"
+	// 下移
+	ListActionDown ListAction = "down"
+)
+
+var AllListAction = []ListAction{
+	ListActionUp,
+	ListActionDown,
+}
+
+func (e ListAction) IsValid() bool {
+	switch e {
+	case ListActionUp, ListActionDown:
+		return true
+	}
+	return false
+}
+
+func (e ListAction) String() string {
+	return string(e)
+}
+
+func (e *ListAction) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ListAction(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ListAction", str)
+	}
+	return nil
+}
+
+func (e ListAction) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

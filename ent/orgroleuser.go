@@ -35,7 +35,7 @@ type OrgRoleUser struct {
 	OrgUserID int `json:"org_user_id,omitempty"`
 	// 用户ID
 	UserID int `json:"user_id,omitempty"`
-	// 组织ID
+	// 租户ID
 	OrgID int `json:"org_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgRoleUserQuery when eager-loading is set.

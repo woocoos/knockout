@@ -39,6 +39,10 @@ const (
 	EdgeOrg = "org"
 	// EdgePermissions holds the string denoting the permissions edge name in mutations.
 	EdgePermissions = "permissions"
+	// EdgeAppPolicy holds the string denoting the app_policy edge name in mutations.
+	EdgeAppPolicy = "app_policy"
+	// EdgeApp holds the string denoting the app edge name in mutations.
+	EdgeApp = "app"
 	// Table holds the table name of the orgpolicy in the database.
 	Table = "org_policy"
 	// OrgTable is the table that holds the org relation/edge.
@@ -55,6 +59,20 @@ const (
 	PermissionsInverseTable = "permission"
 	// PermissionsColumn is the table column denoting the permissions relation/edge.
 	PermissionsColumn = "org_policy_id"
+	// AppPolicyTable is the table that holds the app_policy relation/edge.
+	AppPolicyTable = "org_policy"
+	// AppPolicyInverseTable is the table name for the AppPolicy entity.
+	// It exists in this package in order to avoid circular dependency with the "apppolicy" package.
+	AppPolicyInverseTable = "app_policy"
+	// AppPolicyColumn is the table column denoting the app_policy relation/edge.
+	AppPolicyColumn = "app_policy_id"
+	// AppTable is the table that holds the app relation/edge.
+	AppTable = "org_policy"
+	// AppInverseTable is the table name for the App entity.
+	// It exists in this package in order to avoid circular dependency with the "app" package.
+	AppInverseTable = "app"
+	// AppColumn is the table column denoting the app relation/edge.
+	AppColumn = "app_id"
 )
 
 // Columns holds all SQL columns for orgpolicy fields.
@@ -168,6 +186,20 @@ func ByPermissions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newPermissionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByAppPolicyField orders the results by app_policy field.
+func ByAppPolicyField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppPolicyStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByAppField orders the results by app field.
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newOrgStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -180,5 +212,19 @@ func newPermissionsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PermissionsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, PermissionsTable, PermissionsColumn),
+	)
+}
+func newAppPolicyStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppPolicyInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AppPolicyTable, AppPolicyColumn),
+	)
+}
+func newAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, AppTable, AppColumn),
 	)
 }

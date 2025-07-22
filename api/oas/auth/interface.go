@@ -10,6 +10,12 @@ import (
 
 // AuthServer is the server API for Auth service.
 type AuthServer interface {
+	// AppOrgs Use this API to get app login orgs
+	// (POST /login/app-orgs)
+	AppOrgs(*gin.Context, *AppOrgsRequest) ([]*Domain, error)
+	// BindFingerprint Use this API to enable fingerprint login
+	// (POST /login/bind-fingerprint)
+	BindFingerprint(*gin.Context, *BindFingerprintRequest) (bool, error)
 	// BindMfa Verify a one-time password (OTP) value to binding MFA.
 	// (POST /mfa/bind)
 	BindMfa(*gin.Context, *BindMfaRequest) (bool, error)
@@ -19,9 +25,15 @@ type AuthServer interface {
 	// Captcha Use this API to get captcha
 	// (GET /captcha)
 	Captcha(*gin.Context, *CaptchaRequest) (*Captcha, error)
+	// CheckDevice Check whether the device needs verification.
+	// (POST /login/check-device)
+	CheckDevice(*gin.Context, *CheckDeviceRequest) (*CheckDeviceResponse, error)
 	// CreateSpm create spm key.
 	// (POST /spm/create)
 	CreateSpm(*gin.Context) (string, error)
+	// FingerprintLogin Use this API to fingerprint login
+	// (POST /login/fingerprint)
+	FingerprintLogin(*gin.Context, *FingerprintLoginRequest) (*LoginResponse, error)
 	// ForgetPwdBegin start the process of forgetting your password by verifying your account.
 	// (POST /forget-pwd/begin)
 	ForgetPwdBegin(*gin.Context, *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error)
@@ -37,6 +49,9 @@ type AuthServer interface {
 	// ForgetPwdVerifyMfa verify the email to reset-password.
 	// (POST /forget-pwd/verify-mfa)
 	ForgetPwdVerifyMfa(*gin.Context, *ForgetPwdVerifyMfaRequest) (*ForgetPwdBeginResponse, error)
+	// GetDomain Use this API to get domain
+	// (GET /org/domain)
+	GetDomain(*gin.Context, *GetDomainRequest) (*Domain, error)
 	// GetPreSignUrl return the temporary authorization access url
 	// (POST /oss/presignurl)
 	GetPreSignUrl(*gin.Context, *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error)
@@ -52,6 +67,15 @@ type AuthServer interface {
 	// Logout log out a user
 	// (POST /logout)
 	Logout(*gin.Context) error
+	// OldFingerprintLogin Use this API to fingerprint login
+	// (POST /login/old-fingerprint)
+	OldFingerprintLogin(*gin.Context, *OldFingerprintLoginRequest) (*LoginResponse, error)
+	// OldLoginForApp use this API to compatible old app login
+	// (POST /login/old-auth)
+	OldLoginForApp(*gin.Context, *OldLoginForAppRequest) (*LoginResponse, error)
+	// PasswordPolicy Use this API to get pwd policy
+	// (GET /pwd/policy)
+	PasswordPolicy(*gin.Context) (*UserPasswordPolicy, error)
 	// RefreshToken Use this API to refresh token
 	// (POST /login/refresh-token)
 	RefreshToken(*gin.Context, *RefreshTokenRequest) (*LoginResponse, error)
@@ -64,12 +88,28 @@ type AuthServer interface {
 	// UnBindMfa Verify a one-time password (OTP) value to unBind MFA.
 	// (POST /mfa/unbind)
 	UnBindMfa(*gin.Context, *UnBindMfaRequest) (bool, error)
+	// VerifyDevice verify the device login with the verification code.
+	// (POST /login/verify-device)
+	VerifyDevice(*gin.Context, *VerifyDeviceRequest) (*LoginResponse, error)
+	// VerifyDeviceSendEmail the captcha code is sent to the login device.
+	// (POST /login/device-captcha)
+	VerifyDeviceSendEmail(*gin.Context, *VerifyDeviceSendEmailRequest) (string, error)
 	// VerifyFactor Verify a one-time password (OTP) value, provided for a second factor, when multi-factor authentication (MFA) is required.
 	// (POST /login/verify-factor)
 	VerifyFactor(*gin.Context, *VerifyFactorRequest) (*LoginResponse, error)
 }
 
 type UnimplementedAuthServer struct {
+}
+
+func (UnimplementedAuthServer) AppOrgs(c *gin.Context, req *AppOrgsRequest) (_ []*Domain, err error) {
+	err = fmt.Errorf("method AppOrgs not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) BindFingerprint(c *gin.Context, req *BindFingerprintRequest) (_ bool, err error) {
+	err = fmt.Errorf("method BindFingerprint not implemented")
+	return
 }
 
 func (UnimplementedAuthServer) BindMfa(c *gin.Context, req *BindMfaRequest) (_ bool, err error) {
@@ -87,8 +127,18 @@ func (UnimplementedAuthServer) Captcha(c *gin.Context, req *CaptchaRequest) (_ *
 	return
 }
 
+func (UnimplementedAuthServer) CheckDevice(c *gin.Context, req *CheckDeviceRequest) (_ *CheckDeviceResponse, err error) {
+	err = fmt.Errorf("method CheckDevice not implemented")
+	return
+}
+
 func (UnimplementedAuthServer) CreateSpm(c *gin.Context) (_ string, err error) {
 	err = fmt.Errorf("method CreateSpm not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) FingerprintLogin(c *gin.Context, req *FingerprintLoginRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method FingerprintLogin not implemented")
 	return
 }
 
@@ -117,6 +167,11 @@ func (UnimplementedAuthServer) ForgetPwdVerifyMfa(c *gin.Context, req *ForgetPwd
 	return
 }
 
+func (UnimplementedAuthServer) GetDomain(c *gin.Context, req *GetDomainRequest) (_ *Domain, err error) {
+	err = fmt.Errorf("method GetDomain not implemented")
+	return
+}
+
 func (UnimplementedAuthServer) GetPreSignUrl(c *gin.Context, req *GetPreSignUrlRequest) (_ *GetPreSignUrlResponse, err error) {
 	err = fmt.Errorf("method GetPreSignUrl not implemented")
 	return
@@ -142,6 +197,21 @@ func (UnimplementedAuthServer) Logout(c *gin.Context) (err error) {
 	return
 }
 
+func (UnimplementedAuthServer) OldFingerprintLogin(c *gin.Context, req *OldFingerprintLoginRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method OldFingerprintLogin not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) OldLoginForApp(c *gin.Context, req *OldLoginForAppRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method OldLoginForApp not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) PasswordPolicy(c *gin.Context) (_ *UserPasswordPolicy, err error) {
+	err = fmt.Errorf("method PasswordPolicy not implemented")
+	return
+}
+
 func (UnimplementedAuthServer) RefreshToken(c *gin.Context, req *RefreshTokenRequest) (_ *LoginResponse, err error) {
 	err = fmt.Errorf("method RefreshToken not implemented")
 	return
@@ -159,6 +229,16 @@ func (UnimplementedAuthServer) Token(c *gin.Context, req *TokenRequest) (_ *Toke
 
 func (UnimplementedAuthServer) UnBindMfa(c *gin.Context, req *UnBindMfaRequest) (_ bool, err error) {
 	err = fmt.Errorf("method UnBindMfa not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) VerifyDevice(c *gin.Context, req *VerifyDeviceRequest) (_ *LoginResponse, err error) {
+	err = fmt.Errorf("method VerifyDevice not implemented")
+	return
+}
+
+func (UnimplementedAuthServer) VerifyDeviceSendEmail(c *gin.Context, req *VerifyDeviceSendEmailRequest) (_ string, err error) {
+	err = fmt.Errorf("method VerifyDeviceSendEmail not implemented")
 	return
 }
 

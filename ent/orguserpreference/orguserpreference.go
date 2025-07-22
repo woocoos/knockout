@@ -31,6 +31,8 @@ const (
 	FieldMenuFavorite = "menu_favorite"
 	// FieldMenuRecent holds the string denoting the menu_recent field in the database.
 	FieldMenuRecent = "menu_recent"
+	// FieldClientPreferences holds the string denoting the client_preferences field in the database.
+	FieldClientPreferences = "client_preferences"
 	// EdgeUser holds the string denoting the user edge name in mutations.
 	EdgeUser = "user"
 	// EdgeOrg holds the string denoting the org edge name in mutations.
@@ -64,6 +66,7 @@ var Columns = []string{
 	FieldOrgID,
 	FieldMenuFavorite,
 	FieldMenuRecent,
+	FieldClientPreferences,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -82,7 +85,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/woocoos/knockout/ent/runtime"
 var (
-	Hooks [1]ent.Hook
+	Hooks [2]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )

@@ -50,6 +50,12 @@ func (ap *AppPolicy) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given AppPolicyView node.
+func (apv *AppPolicyView) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("AppPolicyView:%d", apv.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given AppRes node.
 func (ar *AppRes) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("AppRes:%d", ar.ID)
@@ -59,6 +65,18 @@ func (ar *AppRes) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given AppRole node.
 func (ar *AppRole) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("AppRole:%d", ar.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given Country node.
+func (c *Country) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Country:%d", c.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given Currency node.
+func (c *Currency) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Currency:%d", c.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -110,9 +128,33 @@ func (pe *Permission) GlobalID(context.Context) (string, error) {
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
+// GlobalID returns the global identifier for the given Quota node.
+func (q *Quota) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Quota:%d", q.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given QuotaItem node.
+func (qi *QuotaItem) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("QuotaItem:%d", qi.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given Region node.
+func (r *Region) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("Region:%d", r.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
 // GlobalID returns the global identifier for the given User node.
 func (u *User) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("User:%d", u.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given UserAddr node.
+func (ua *UserAddr) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserAddr:%d", ua.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -137,6 +179,12 @@ func (ulp *UserLoginProfile) GlobalID(context.Context) (string, error) {
 // GlobalID returns the global identifier for the given UserPassword node.
 func (up *UserPassword) GlobalID(context.Context) (string, error) {
 	id := fmt.Sprintf("UserPassword:%d", up.ID)
+	return base64.StdEncoding.EncodeToString([]byte(id)), nil
+}
+
+// GlobalID returns the global identifier for the given UserPasswordPolicy node.
+func (upp *UserPasswordPolicy) GlobalID(context.Context) (string, error) {
+	id := fmt.Sprintf("UserPasswordPolicy:%d", upp.ID)
 	return base64.StdEncoding.EncodeToString([]byte(id)), nil
 }
 
@@ -169,9 +217,15 @@ func GlobalID(tp, id string) (string, error) {
 		break
 	case "AppPolicy":
 		break
+	case "AppPolicyView":
+		break
 	case "AppRes":
 		break
 	case "AppRole":
+		break
+	case "Country":
+		break
+	case "Currency":
 		break
 	case "FileIdentity":
 		break
@@ -189,7 +243,15 @@ func GlobalID(tp, id string) (string, error) {
 		break
 	case "Permission":
 		break
+	case "Quota":
+		break
+	case "QuotaItem":
+		break
+	case "Region":
+		break
 	case "User":
+		break
+	case "UserAddr":
 		break
 	case "UserDevice":
 		break
@@ -198,6 +260,8 @@ func GlobalID(tp, id string) (string, error) {
 	case "UserLoginProfile":
 		break
 	case "UserPassword":
+		break
+	case "UserPasswordPolicy":
 		break
 	default:
 		return "", fmt.Errorf("invalid type %q", tp)

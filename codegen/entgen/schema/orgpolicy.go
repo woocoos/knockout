@@ -44,9 +44,9 @@ func (OrgPolicy) Mixin() []ent.Mixin {
 // Fields of the OrgPolicy.
 func (OrgPolicy) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("org_id").Optional().Immutable().Comment("组织ID"),
+		field.Int("org_id").Optional().Immutable().Comment("租户ID"),
 		field.Int("app_id").Optional().Comment("所属应用").Annotations(entgql.Skip(entgql.SkipAll)),
-		field.Int("app_policy_id").Optional().Comment("所属应用策略,如果是自定义应用策略,则为空"),
+		field.Int("app_policy_id").Optional().Nillable().Comment("所属应用策略,如果是自定义应用策略,则为空"),
 		field.String("name").Comment("策略名称"),
 		field.String("comments").Optional().Comment("描述"),
 		field.JSON("rules", []*types.PolicyRule{}).Comment("策略规则"),
@@ -58,6 +58,8 @@ func (OrgPolicy) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("org", Org.Type).Ref("policies").Unique().Immutable().Field("org_id"),
 		edge.To("permissions", Permission.Type),
+		edge.From("app_policy", AppPolicy.Type).Unique().Ref("org_policies").Field("app_policy_id"),
+		edge.To("app", App.Type).Unique().Field("app_id"),
 	}
 }
 

@@ -1,6 +1,8 @@
 extend type Query {
     """获取全局ID,开发用途"""
     globalID(type: String!, id: ID!): GID
+    """获取登录用户的信息"""
+    viewer: User!
     """用户组"""
     orgGroups(
         after: Cursor
@@ -22,6 +24,15 @@ extend type Query {
     ): UserConnection!
     """角色"""
     orgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户在登录组织授权的组织角色"""
+    userOrgRoles(
         after: Cursor
         first: Int
         before: Cursor
@@ -65,6 +76,18 @@ extend type Query {
     ):AppResConnection!
     """用户加入的用户组"""
     userGroups(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户加入的角色"""
+    userRoles(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -75,6 +98,18 @@ extend type Query {
     ):OrgRoleConnection!
     """用户继承用户组的权限策略"""
     userExtendGroupPolicies(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户继承角色的权限策略"""
+    userExtendRolePolicies(
+        orgID: ID
         userID:ID!
         after: Cursor
         first: Int
@@ -92,8 +127,18 @@ extend type Query {
         """appCode + ":" + action"""
         permission:String!
     ):Boolean!
+    """
+    检测权限 ko-proxy使用
+    @deprecated 未来将弃用.
+    """
+    checkPermissionByJwt(
+        jwtStr:String!
+        orgID:ID!
+        action:String!
+        appCode:String!
+    ):Boolean!
     """组织策略可授权的appActions"""
-    orgAppActions(appCode:String!):[AppAction!]!
+    orgAppActions(appCode:String!,orgID:ID!):[AppAction!]!
     """用户加入的root组织"""
     userRootOrgs:[Org!]!
     """组织回收站列表"""
@@ -121,8 +166,51 @@ extend type Query {
     ):[AppDictItem!]!
     """检测应用登录授权"""
     appAccess(appCode:String!):Boolean!
+    """检测应用登录授权,针对获取token处理"""
+    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
     """获取文件凭证"""
     fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
     """获取凭证AccessKeySecret"""
     fileIdentityAccessKeySecret(id: ID!): String!
+    """获取登录组织的文件凭证，登录组织未取到，则往上级组织获取"""
+    orgFileIdentities: [FileIdentity!]!
+    """成员列表"""
+    userMembers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """应用策略视图"""
+    appPolicyView(appCode: String!): [AppPolicyView!]!
+    """登录用户策略视图"""
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
+    """应用策略视图角色选中项"""
+    appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图用户选择项，返回OrgPolicyIDs"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图，用户授权的角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewUserRoleAssigned(userID: ID!,appCode: String!,orgID: ID!): [ID!]!
+    """获取租户密码策略"""
+    userPasswordPolicy: UserPasswordPolicy
+    """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""
+    parentOrgUsers(
+        """组织ID或者部门ID"""
+        orgID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """查看用户mfa信息"""
+    userMfaInfo(
+        userID: ID!,
+        orgID: ID!,
+    ):UserMfaInfo!
 }

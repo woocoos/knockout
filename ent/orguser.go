@@ -35,6 +35,8 @@ type OrgUser struct {
 	JoinedAt time.Time `json:"joined_at,omitempty"`
 	// 在组织内的显示名称
 	DisplayName string `json:"display_name,omitempty"`
+	// 用户类型，区分内部及外部用户
+	UserType orguser.UserType `json:"user_type,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OrgUserQuery when eager-loading is set.
 	Edges        OrgUserEdges `json:"edges"`
@@ -108,7 +110,7 @@ func (*OrgUser) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case orguser.FieldID, orguser.FieldCreatedBy, orguser.FieldUpdatedBy, orguser.FieldOrgID, orguser.FieldUserID:
 			values[i] = new(sql.NullInt64)
-		case orguser.FieldDisplayName:
+		case orguser.FieldDisplayName, orguser.FieldUserType:
 			values[i] = new(sql.NullString)
 		case orguser.FieldCreatedAt, orguser.FieldUpdatedAt, orguser.FieldJoinedAt:
 			values[i] = new(sql.NullTime)
@@ -180,6 +182,12 @@ func (ou *OrgUser) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field display_name", values[i])
 			} else if value.Valid {
 				ou.DisplayName = value.String
+			}
+		case orguser.FieldUserType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_type", values[i])
+			} else if value.Valid {
+				ou.UserType = orguser.UserType(value.String)
 			}
 		default:
 			ou.selectValues.Set(columns[i], values[i])
@@ -260,6 +268,9 @@ func (ou *OrgUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("display_name=")
 	builder.WriteString(ou.DisplayName)
+	builder.WriteString(", ")
+	builder.WriteString("user_type=")
+	builder.WriteString(fmt.Sprintf("%v", ou.UserType))
 	builder.WriteByte(')')
 	return builder.String()
 }

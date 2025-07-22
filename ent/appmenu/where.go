@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/predicate"
 )
 
@@ -343,26 +344,6 @@ func ParentIDIn(vs ...int) predicate.AppMenu {
 // ParentIDNotIn applies the NotIn predicate on the "parent_id" field.
 func ParentIDNotIn(vs ...int) predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldNotIn(FieldParentID, vs...))
-}
-
-// ParentIDGT applies the GT predicate on the "parent_id" field.
-func ParentIDGT(v int) predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldGT(FieldParentID, v))
-}
-
-// ParentIDGTE applies the GTE predicate on the "parent_id" field.
-func ParentIDGTE(v int) predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldGTE(FieldParentID, v))
-}
-
-// ParentIDLT applies the LT predicate on the "parent_id" field.
-func ParentIDLT(v int) predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldLT(FieldParentID, v))
-}
-
-// ParentIDLTE applies the LTE predicate on the "parent_id" field.
-func ParentIDLTE(v int) predicate.AppMenu {
-	return predicate.AppMenu(sql.FieldLTE(FieldParentID, v))
 }
 
 // KindEQ applies the EQ predicate on the "kind" field.
@@ -755,6 +736,46 @@ func DisplaySortNotNil() predicate.AppMenu {
 	return predicate.AppMenu(sql.FieldNotNull(FieldDisplaySort))
 }
 
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v typex.SimpleStatus) predicate.AppMenu {
+	vc := v
+	return predicate.AppMenu(sql.FieldEQ(FieldStatus, vc))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v typex.SimpleStatus) predicate.AppMenu {
+	vc := v
+	return predicate.AppMenu(sql.FieldNEQ(FieldStatus, vc))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...typex.SimpleStatus) predicate.AppMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppMenu(sql.FieldIn(FieldStatus, v...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...typex.SimpleStatus) predicate.AppMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.AppMenu(sql.FieldNotIn(FieldStatus, v...))
+}
+
+// StatusIsNil applies the IsNil predicate on the "status" field.
+func StatusIsNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldIsNull(FieldStatus))
+}
+
+// StatusNotNil applies the NotNil predicate on the "status" field.
+func StatusNotNil() predicate.AppMenu {
+	return predicate.AppMenu(sql.FieldNotNull(FieldStatus))
+}
+
 // HasApp applies the HasEdge predicate on the "app" edge.
 func HasApp() predicate.AppMenu {
 	return predicate.AppMenu(func(s *sql.Selector) {
@@ -793,6 +814,52 @@ func HasAction() predicate.AppMenu {
 func HasActionWith(preds ...predicate.AppAction) predicate.AppMenu {
 	return predicate.AppMenu(func(s *sql.Selector) {
 		step := newActionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasParent applies the HasEdge predicate on the "parent" edge.
+func HasParent() predicate.AppMenu {
+	return predicate.AppMenu(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasParentWith applies the HasEdge predicate on the "parent" edge with a given conditions (other predicates).
+func HasParentWith(preds ...predicate.AppMenu) predicate.AppMenu {
+	return predicate.AppMenu(func(s *sql.Selector) {
+		step := newParentStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasChildren applies the HasEdge predicate on the "children" edge.
+func HasChildren() predicate.AppMenu {
+	return predicate.AppMenu(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ChildrenTable, ChildrenColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasChildrenWith applies the HasEdge predicate on the "children" edge with a given conditions (other predicates).
+func HasChildrenWith(preds ...predicate.AppMenu) predicate.AppMenu {
+	return predicate.AppMenu(func(s *sql.Selector) {
+		step := newChildrenStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

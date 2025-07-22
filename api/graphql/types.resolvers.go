@@ -6,14 +6,43 @@ package graphql
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/app"
+	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/orgroleuser"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/ent/useraddr"
 )
+
+// OrgItems is the resolver for the orgItems field.
+func (r *appDictResolver) OrgItems(ctx context.Context, obj *ent.AppDict, noFilterCode *bool) ([]*ent.AppDictItem, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	items, err := r.client.AppDictItem.Query().Where(
+		appdictitem.DictID(obj.ID),
+		appdictitem.Or(
+			appdictitem.OrgIDIsNil(),
+			appdictitem.OrgIDEQ(tid),
+		),
+		appdictitem.StatusEQ(typex.SimpleStatusActive)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if noFilterCode != nil && *noFilterCode {
+		return items, nil
+	}
+	return r.resource.RemoveDuplicatesAppDictItems(items), nil
+}
 
 // IsGrantAppRole is the resolver for the isGrantAppRole field.
 func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPolicy, appRoleID int) (bool, error) {
@@ -26,20 +55,29 @@ func (r *appPolicyResolver) IsGrantAppRole(ctx context.Context, obj *ent.AppPoli
 	return exist, nil
 }
 
+// TopOrg is the resolver for the TopOrg field.
+func (r *orgResolver) TopOrg(ctx context.Context, obj *ent.Org) (*ent.Org, error) {
+	return r.resource.GetTopOrg(ctx, obj.ID)
+}
+
 // IsAllowRevokeAppPolicy is the resolver for the isAllowRevokeAppPolicy field.
 func (r *orgResolver) IsAllowRevokeAppPolicy(ctx context.Context, obj *ent.Org, appPolicyID int) (bool, error) {
 	return r.resource.IsAllowRevokeAppPolicy(ctx, obj.ID, appPolicyID)
 }
 
+// ActualDomain is the resolver for the actualDomain field.
+func (r *orgResolver) ActualDomain(ctx context.Context, obj *ent.Org) (string, error) {
+	if obj.Domain != "" {
+		return obj.Domain, nil
+	}
+	return r.resource.ParentDomain(ctx, obj.ParentID)
+}
+
 // IsGrantRole is the resolver for the isGrantRole field.
 func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy, roleID int) (bool, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
 	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindRole),
-		permission.RoleID(roleID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
+		permission.RoleID(roleID), permission.OrgPolicyID(obj.ID), permission.OrgID(obj.OrgID),
 	).Exist(ctx)
 	if err != nil {
 		return false, err
@@ -49,13 +87,9 @@ func (r *orgPolicyResolver) IsGrantRole(ctx context.Context, obj *ent.OrgPolicy,
 
 // IsGrantUser is the resolver for the isGrantUser field.
 func (r *orgPolicyResolver) IsGrantUser(ctx context.Context, obj *ent.OrgPolicy, userID int) (bool, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
 	exist, err := r.client.Permission.Query().Where(
 		permission.PrincipalKindEQ(permission.PrincipalKindUser),
-		permission.UserID(userID), permission.OrgPolicyID(obj.ID), permission.OrgID(tid),
+		permission.UserID(userID), permission.OrgPolicyID(obj.ID), permission.OrgID(obj.OrgID),
 	).Exist(ctx)
 	if err != nil {
 		return false, err
@@ -70,18 +104,29 @@ func (r *orgRoleResolver) IsAppRole(ctx context.Context, obj *ent.OrgRole) (bool
 
 // IsGrantUser is the resolver for the isGrantUser field.
 func (r *orgRoleResolver) IsGrantUser(ctx context.Context, obj *ent.OrgRole, userID int) (bool, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
 	has, err := r.client.OrgRoleUser.Query().Where(
 		orgroleuser.OrgRoleID(obj.ID),
-		orgroleuser.HasOrgUserWith(orguser.UserID(userID), orguser.OrgID(tid)),
+		orgroleuser.HasOrgUserWith(orguser.UserID(userID), orguser.OrgID(obj.OrgID)),
 	).Exist(ctx)
 	if err != nil {
 		return false, err
 	}
 	return has, nil
+}
+
+// ClientPreference is the resolver for the clientPreference field.
+func (r *orgUserPreferenceResolver) ClientPreference(ctx context.Context, obj *ent.OrgUserPreference, appCode string) (*types.ClientPreference, error) {
+	has, err := r.client.App.Query().Where(app.Code(appCode)).Exist(schemax.SkipTenantPrivacy(ctx))
+	if err != nil || !has {
+		return nil, fmt.Errorf("app not exists")
+	}
+	cps := obj.ClientPreferences
+	for _, v := range cps {
+		if v.AppCode == appCode {
+			return &v, nil
+		}
+	}
+	return nil, nil
 }
 
 // IsAllowRevoke is the resolver for the isAllowRevoke field.
@@ -91,11 +136,11 @@ func (r *permissionResolver) IsAllowRevoke(ctx context.Context, obj *ent.Permiss
 
 // IsAssignOrgRole is the resolver for the isAssignOrgRole field.
 func (r *userResolver) IsAssignOrgRole(ctx context.Context, obj *ent.User, orgRoleID int) (bool, error) {
-	tid, err := identity.TenantIDFromContext(ctx)
+	or, err := r.client.OrgRole.Get(ctx, orgRoleID)
 	if err != nil {
 		return false, err
 	}
-	ouid, err := r.client.OrgUser.Query().Where(orguser.OrgID(tid), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
+	ouid, err := r.client.OrgUser.Query().Where(orguser.OrgID(or.OrgID), orguser.UserID(obj.ID)).Select(orguser.FieldID).Int(ctx)
 	if err != nil {
 		return false, err
 	}
@@ -111,10 +156,35 @@ func (r *userResolver) IsAllowRevokeRole(ctx context.Context, obj *ent.User, org
 	return r.resource.IsAllowRevokeOrgRole(ctx, obj.ID, orgRoleID)
 }
 
+// Contact is the resolver for the contact field.
+func (r *userResolver) Contact(ctx context.Context, obj *ent.User) (*ent.UserAddr, error) {
+	client := ent.FromContext(ctx)
+	if client == nil {
+		client = r.client
+	}
+	at, err := client.UserAddr.Query().Where(useraddr.UserID(obj.ID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
+	if err != nil && !ent.IsNotFound(err) {
+		return nil, err
+	}
+	return at, nil
+}
+
+// OrgUserType is the resolver for the orgUserType field.
+func (r *userResolver) OrgUserType(ctx context.Context, obj *ent.User, orgID int) (orguser.UserType, error) {
+	ou, err := obj.QueryOrgUser().Select(orguser.FieldUserType).Where(orguser.UserID(obj.ID), orguser.OrgID(orgID)).Only(ctx)
+	if ent.IsNotFound(err) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	return ou.UserType, nil
+}
+
 // LoginProfile is the resolver for the loginProfile field.
 func (r *createUserInputResolver) LoginProfile(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserLoginProfileInput) error {
 	if data != nil {
-		row, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).Save(ctx)
+		row, err := ent.FromContext(ctx).UserLoginProfile.Create().SetInput(*data).SetCanLogin(true).Save(ctx)
 		if err != nil {
 			return err
 		}
@@ -131,6 +201,18 @@ func (r *createUserInputResolver) Password(ctx context.Context, obj *ent.CreateU
 			return err
 		}
 		obj.PasswordIDs = append(obj.PasswordIDs, row.ID)
+	}
+	return nil
+}
+
+// Contact is the resolver for the Contact field.
+func (r *createUserInputResolver) Contact(ctx context.Context, obj *ent.CreateUserInput, data *ent.CreateUserAddrInput) error {
+	if data != nil {
+		row, err := ent.FromContext(ctx).UserAddr.Create().SetInput(*data).SetAddrType(useraddr.AddrTypeContact).SetIsDefault(true).Save(ctx)
+		if err != nil {
+			return err
+		}
+		obj.AddressIDs = append(obj.AddressIDs, row.ID)
 	}
 	return nil
 }

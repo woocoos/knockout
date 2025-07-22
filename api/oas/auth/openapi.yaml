@@ -43,9 +43,97 @@ paths:
                 captchaId:
                   type: string
                   description: captcha id,if login fail 3 times, the login profile will demand captcha.
+                deviceId:
+                  type: string
+                  description: device id,app verify the login device.
               required:
                 - username
                 - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/app-orgs:
+    post:
+      summary: Use this API to get app login orgs
+      description: Use this API to get app login orgs
+      tags:
+        - auth
+      operationId: appOrgs
+      requestBody:
+        description: get orgs with appcode
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appCode:
+                  type: string
+                  description: the app code
+              required:
+                - appCode
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Domain"
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/old-auth:
+    post:
+      summary: use this API to compatible old app login
+      description: use this API to compatible old app login
+      deprecated: true
+      tags:
+        - auth
+      operationId: oldLoginForApp
+      requestBody:
+        description: Login with username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: username or email
+                password:
+                  type: string
+                  description: hashed password
+                otpToken:
+                  type: string
+                  description: mfa random code
+                appCode:
+                  type: string
+                  description: app code,verify login permissions
+              required:
+                - username
+                - password
+                - otpToken
+                - appCode
       responses:
         '200':
           description: Login successful
@@ -88,6 +176,117 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/old-fingerprint:
+    post:
+      summary: Use this API to fingerprint login
+      description: Use this API to fingerprint login
+      deprecated: true
+      tags:
+        - auth
+      operationId: oldFingerprintLogin
+      requestBody:
+        description: fingerprint login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                appCode:
+                  type: string
+              required:
+                - username
+                - password
+                - appCode
+      responses:
+        '200':
+          description: fingerprint login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/fingerprint:
+    post:
+      summary: Use this API to fingerprint login
+      description: Use this API to fingerprint login
+      tags:
+        - auth
+      operationId: fingerprintLogin
+      requestBody:
+        description: fingerprint login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: the refreshToken
+              required:
+                - refreshToken
+      responses:
+        '200':
+          description: fingerprint login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login/bind-fingerprint:
+    post:
+      summary: Use this API to enable fingerprint login
+      description: Use this API to enable fingerprint login
+      tags:
+        - auth
+      operationId: bindFingerprint
+      requestBody:
+        description: enable fingerprint login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userPassword:
+                  type: string
+                  description: the userPassword
+              required:
+                - userPassword
+      responses:
+        '200':
+          description: enable fingerprint successful
+          content:
+            application/json:
+              schema:
+                type: boolean
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
@@ -154,6 +353,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/device-captcha:
+    post:
+      description: the captcha code is sent to the login device.
+      tags:
+        - auth
+      operationId: verifyDeviceSendEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                stateToken:
+                  type: string
+              required:
+                - email
+                - newPassword
+      responses:
+        '200':
+          description: complete the verify device flow. return captcha info
+          content:
+            application/json:
+              schema:
+                type: string
+                description: return captchaId on success
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/verify-device:
+    post:
+      description: verify the device login with the verification code.
+      tags:
+        - auth
+      operationId: verifyDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kind:
+                  type: string
+                  enum: [ "email","mfa" ]
+                captcha:
+                  type: string
+                captchaId:
+                  type: string
+                otpToken:
+                  type: string
+                stateToken:
+                  type: string
+                deviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+              required:
+                - kind
+                - stateToken
+                - deviceInfo
+      responses:
+        '200':
+          description: complete the verify device flow. return captcha info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /login/check-device:
+    post:
+      description: Check whether the device needs verification.
+      tags:
+        - auth
+      operationId: checkDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+              required:
+                - deviceInfo
+      responses:
+        '200':
+          description: whether the device needs verification.
+          content:
+            application/json:
+              schema:
+                properties:
+                  verifyDevice:
+                    type: boolean
+                  stateToken:
+                    type: string
+                    description: use the state token to request callback_url
+                  verifies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ForgetPwdVerify'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
   /logout:
@@ -562,6 +862,56 @@ paths:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+  /pwd/policy:
+    get:
+      summary: Use this API to get pwd policy
+      description: Use this API to get pwd policy
+      tags:
+        - auth
+      operationId: passwordPolicy
+      responses:
+        '200':
+          description: get pwd policy successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPasswordPolicy'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /org/domain:
+    get:
+      summary: Use this API to get domain
+      description: Use this API to get domain
+      tags:
+        - auth
+      operationId: getDomain
+      parameters:
+        - name: orgID
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: get domain successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   responses:
     UnauthorizedError:
@@ -603,6 +953,24 @@ components:
           type: string
         captchaImage:
           type: string
+    DeviceInfo:
+      type: object
+      description: device info
+      properties:
+        deviceUid:
+          type: string
+        deviceName:
+          type: string
+        systemName:
+          type: string
+        systemVersion:
+          type: string
+        appVersion:
+          type: string
+        deviceModel:
+          type: string
+        comments:
+          type: string
     Mfa:
       type: object
       description: mfa info
@@ -637,6 +1005,16 @@ components:
         id:
           type: integer
         name:
+          type: string
+        local_currency:
+          type: string
+        parent_id:
+          description: the top-level parent domain id
+          type: integer
+        parent_name:
+          description: the top-level parent domain name
+          type: string
+        parent_currency:
           type: string
     ErrorResponse:
       type: object
@@ -673,3 +1051,22 @@ components:
           enum: ["email","mfa"]
         value:
           type: string
+    UserPasswordPolicy:
+      type: object
+      properties:
+        length:
+          type: integer
+        includeElement:
+          type: integer
+        includeChar:
+          type: integer
+        allowIncludeUserName:
+          type: boolean
+        invalidDay:
+          type: integer
+        invalidLoginLimit:
+          type: boolean
+        retry:
+          type: integer
+        captchaTimes:
+          type: integer

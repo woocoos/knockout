@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/ent/appmenu"
 )
 
@@ -47,6 +48,7 @@ func (AppMenu) Fields() []ent.Field {
 			Annotations(entgql.Skip(entgql.SkipWhereInput)),
 		field.Int32("display_sort").Optional().
 			Annotations(entgql.OrderField("displaySort"), entgql.Skip(entgql.SkipWhereInput, entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput)),
+		field.Enum("status").GoType(typex.SimpleStatus("")).Default(typex.SimpleStatusActive.String()).Optional().Comment("状态"),
 	}
 }
 
@@ -56,6 +58,8 @@ func (AppMenu) Edges() []ent.Edge {
 		edge.From("app", App.Type).Ref("menus").Unique().Immutable().Field("app_id"),
 		edge.From("action", AppAction.Type).Ref("menus").Unique().Field("action_id").
 			Comment("需要权限控制时对应的权限"),
+		edge.To("children", AppMenu.Type).
+			From("parent").Unique().Required().Field("parent_id"),
 	}
 }
 

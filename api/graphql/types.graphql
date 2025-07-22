@@ -8,6 +8,8 @@ extend input CreateUserInput {
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
+    """地址信息"""
+    contact: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -24,6 +26,14 @@ input AssignRoleUserInput {
 enum TreeAction {
     """作为子节点"""
     child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+"""列表操作类型"""
+enum ListAction {
     """上移"""
     up
     """下移"""
@@ -59,6 +69,11 @@ type Mfa{
     account: String!
 }
 
+extend type Org {
+    """获取顶级组织"""
+    TopOrg: Org
+}
+
 extend type OrgRole {
     """是否系统角色"""
     isAppRole: Boolean!
@@ -76,11 +91,17 @@ extend type User {
     isAssignOrgRole(orgRoleID:ID!): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
+    """地址信息"""
+    contact: UserAddr
+    """组织用户类型"""
+    orgUserType(orgID:ID!): OrgUserUserType!
 }
 
 extend type Org {
     """是否允许解除应用策略"""
     isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
+    """组织的domain，如果没有设置，则会取最近的父组织的domain"""
+    actualDomain: String!
 }
 
 extend type OrgRole {
@@ -103,6 +124,8 @@ input OrgUserPreferenceInput {
     menuFavorite: [ID!]
     """用户最近访问菜单"""
     menuRecent: [ID!]
+    """客户端偏好设置"""
+    clientPreference: ClientPreferenceInput
 }
 
 """业务调用的fileIdentity"""
@@ -154,4 +177,70 @@ type FileIdentityForApp implements Node{
     """
     isDefault: Boolean!
     source: FileSource!
+}
+
+type OrgLogo {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+
+input OrgLogoInput {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+type AppPolicyViewOrgPolicy{
+    orgPolicy: OrgPolicy
+    appPolicyView: AppPolicyView
+}
+"""查看用户mfa信息"""
+type UserMfaInfo {
+    """是否启用mfa"""
+    mfaEnabled: Boolean!
+    """秘钥"""
+    secret: String!
+    """二维码"""
+    qrCodeUri: String!
+    """用户账号"""
+    accountName: String!
+}
+
+extend type OrgUserPreference {
+    clientPreference(appCode: String!): ClientPreference
+}
+
+type ClientPreference {
+    appCode: String!
+    values: [ClientPreferenceValue!]
+}
+
+type ClientPreferenceValue {
+    key: String!
+    value: String
+    extension: String
+}
+
+input ClientPreferenceInput {
+    """应用编码"""
+    appCode: String!
+    """应用偏好设置数据"""
+    values: [ClientPreferenceValueInput!]
+}
+
+input ClientPreferenceValueInput {
+    """根据业务场景定义key，存储时根据key更新"""
+    key: String!
+    """业务场景对应的值"""
+    value: String
+    """扩展字段，根据业务场景需求使用"""
+    extension: String
+}
+
+extend type AppDict {
+    """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
+    orgItems(
+        """是否取消code过滤，不传会过滤重复的code"""
+        noFilterCode: Boolean
+    ): [AppDictItem!]!
 }

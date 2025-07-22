@@ -14,9 +14,12 @@ import (
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
+	"github.com/woocoos/knockout/ent/country"
+	"github.com/woocoos/knockout/ent/currency"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/filesource"
 	"github.com/woocoos/knockout/ent/oauthclient"
@@ -29,11 +32,16 @@ import (
 	"github.com/woocoos/knockout/ent/orguserpreference"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
+	"github.com/woocoos/knockout/ent/quotaitem"
+	"github.com/woocoos/knockout/ent/region"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -254,6 +262,33 @@ func (f TraverseAppPolicy) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyQuery", q)
 }
 
+// The AppPolicyViewFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AppPolicyViewFunc func(context.Context, *ent.AppPolicyViewQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AppPolicyViewFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AppPolicyViewQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyViewQuery", q)
+}
+
+// The TraverseAppPolicyView type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAppPolicyView func(context.Context, *ent.AppPolicyViewQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAppPolicyView) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAppPolicyView) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AppPolicyViewQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AppPolicyViewQuery", q)
+}
+
 // The AppResFunc type is an adapter to allow the use of ordinary function as a Querier.
 type AppResFunc func(context.Context, *ent.AppResQuery) (ent.Value, error)
 
@@ -333,6 +368,60 @@ func (f TraverseAppRolePolicy) Traverse(ctx context.Context, q ent.Query) error 
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.AppRolePolicyQuery", q)
+}
+
+// The CountryFunc type is an adapter to allow the use of ordinary function as a Querier.
+type CountryFunc func(context.Context, *ent.CountryQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f CountryFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.CountryQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.CountryQuery", q)
+}
+
+// The TraverseCountry type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseCountry func(context.Context, *ent.CountryQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseCountry) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseCountry) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CountryQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.CountryQuery", q)
+}
+
+// The CurrencyFunc type is an adapter to allow the use of ordinary function as a Querier.
+type CurrencyFunc func(context.Context, *ent.CurrencyQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f CurrencyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.CurrencyQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
+}
+
+// The TraverseCurrency type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseCurrency func(context.Context, *ent.CurrencyQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseCurrency) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseCurrency) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.CurrencyQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.CurrencyQuery", q)
 }
 
 // The FileIdentityFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -632,6 +721,87 @@ func (f TraversePermission) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.PermissionQuery", q)
 }
 
+// The QuotaFunc type is an adapter to allow the use of ordinary function as a Querier.
+type QuotaFunc func(context.Context, *ent.QuotaQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f QuotaFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.QuotaQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.QuotaQuery", q)
+}
+
+// The TraverseQuota type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseQuota func(context.Context, *ent.QuotaQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseQuota) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseQuota) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.QuotaQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.QuotaQuery", q)
+}
+
+// The QuotaItemFunc type is an adapter to allow the use of ordinary function as a Querier.
+type QuotaItemFunc func(context.Context, *ent.QuotaItemQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f QuotaItemFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.QuotaItemQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.QuotaItemQuery", q)
+}
+
+// The TraverseQuotaItem type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseQuotaItem func(context.Context, *ent.QuotaItemQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseQuotaItem) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseQuotaItem) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.QuotaItemQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.QuotaItemQuery", q)
+}
+
+// The RegionFunc type is an adapter to allow the use of ordinary function as a Querier.
+type RegionFunc func(context.Context, *ent.RegionQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f RegionFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.RegionQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.RegionQuery", q)
+}
+
+// The TraverseRegion type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseRegion func(context.Context, *ent.RegionQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseRegion) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseRegion) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.RegionQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.RegionQuery", q)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary function as a Querier.
 type UserFunc func(context.Context, *ent.UserQuery) (ent.Value, error)
 
@@ -657,6 +827,33 @@ func (f TraverseUser) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.UserQuery", q)
+}
+
+// The UserAddrFunc type is an adapter to allow the use of ordinary function as a Querier.
+type UserAddrFunc func(context.Context, *ent.UserAddrQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f UserAddrFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.UserAddrQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.UserAddrQuery", q)
+}
+
+// The TraverseUserAddr type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseUserAddr func(context.Context, *ent.UserAddrQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseUserAddr) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseUserAddr) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.UserAddrQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.UserAddrQuery", q)
 }
 
 // The UserDeviceFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -767,6 +964,33 @@ func (f TraverseUserPassword) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordQuery", q)
 }
 
+// The UserPasswordPolicyFunc type is an adapter to allow the use of ordinary function as a Querier.
+type UserPasswordPolicyFunc func(context.Context, *ent.UserPasswordPolicyQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f UserPasswordPolicyFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.UserPasswordPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordPolicyQuery", q)
+}
+
+// The TraverseUserPasswordPolicy type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseUserPasswordPolicy func(context.Context, *ent.UserPasswordPolicyQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseUserPasswordPolicy) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseUserPasswordPolicy) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.UserPasswordPolicyQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.UserPasswordPolicyQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
@@ -782,12 +1006,18 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.AppMenuQuery, predicate.AppMenu, appmenu.OrderOption]{typ: ent.TypeAppMenu, tq: q}, nil
 	case *ent.AppPolicyQuery:
 		return &query[*ent.AppPolicyQuery, predicate.AppPolicy, apppolicy.OrderOption]{typ: ent.TypeAppPolicy, tq: q}, nil
+	case *ent.AppPolicyViewQuery:
+		return &query[*ent.AppPolicyViewQuery, predicate.AppPolicyView, apppolicyview.OrderOption]{typ: ent.TypeAppPolicyView, tq: q}, nil
 	case *ent.AppResQuery:
 		return &query[*ent.AppResQuery, predicate.AppRes, appres.OrderOption]{typ: ent.TypeAppRes, tq: q}, nil
 	case *ent.AppRoleQuery:
 		return &query[*ent.AppRoleQuery, predicate.AppRole, approle.OrderOption]{typ: ent.TypeAppRole, tq: q}, nil
 	case *ent.AppRolePolicyQuery:
 		return &query[*ent.AppRolePolicyQuery, predicate.AppRolePolicy, approlepolicy.OrderOption]{typ: ent.TypeAppRolePolicy, tq: q}, nil
+	case *ent.CountryQuery:
+		return &query[*ent.CountryQuery, predicate.Country, country.OrderOption]{typ: ent.TypeCountry, tq: q}, nil
+	case *ent.CurrencyQuery:
+		return &query[*ent.CurrencyQuery, predicate.Currency, currency.OrderOption]{typ: ent.TypeCurrency, tq: q}, nil
 	case *ent.FileIdentityQuery:
 		return &query[*ent.FileIdentityQuery, predicate.FileIdentity, fileidentity.OrderOption]{typ: ent.TypeFileIdentity, tq: q}, nil
 	case *ent.FileSourceQuery:
@@ -810,8 +1040,16 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.OrgUserPreferenceQuery, predicate.OrgUserPreference, orguserpreference.OrderOption]{typ: ent.TypeOrgUserPreference, tq: q}, nil
 	case *ent.PermissionQuery:
 		return &query[*ent.PermissionQuery, predicate.Permission, permission.OrderOption]{typ: ent.TypePermission, tq: q}, nil
+	case *ent.QuotaQuery:
+		return &query[*ent.QuotaQuery, predicate.Quota, quota.OrderOption]{typ: ent.TypeQuota, tq: q}, nil
+	case *ent.QuotaItemQuery:
+		return &query[*ent.QuotaItemQuery, predicate.QuotaItem, quotaitem.OrderOption]{typ: ent.TypeQuotaItem, tq: q}, nil
+	case *ent.RegionQuery:
+		return &query[*ent.RegionQuery, predicate.Region, region.OrderOption]{typ: ent.TypeRegion, tq: q}, nil
 	case *ent.UserQuery:
 		return &query[*ent.UserQuery, predicate.User, user.OrderOption]{typ: ent.TypeUser, tq: q}, nil
+	case *ent.UserAddrQuery:
+		return &query[*ent.UserAddrQuery, predicate.UserAddr, useraddr.OrderOption]{typ: ent.TypeUserAddr, tq: q}, nil
 	case *ent.UserDeviceQuery:
 		return &query[*ent.UserDeviceQuery, predicate.UserDevice, userdevice.OrderOption]{typ: ent.TypeUserDevice, tq: q}, nil
 	case *ent.UserIdentityQuery:
@@ -820,6 +1058,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.UserLoginProfileQuery, predicate.UserLoginProfile, userloginprofile.OrderOption]{typ: ent.TypeUserLoginProfile, tq: q}, nil
 	case *ent.UserPasswordQuery:
 		return &query[*ent.UserPasswordQuery, predicate.UserPassword, userpassword.OrderOption]{typ: ent.TypeUserPassword, tq: q}, nil
+	case *ent.UserPasswordPolicyQuery:
+		return &query[*ent.UserPasswordPolicyQuery, predicate.UserPasswordPolicy, userpasswordpolicy.OrderOption]{typ: ent.TypeUserPasswordPolicy, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

@@ -15,6 +15,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/ent"
+	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 )
 
@@ -36,11 +37,13 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	AppDict() AppDictResolver
 	AppPolicy() AppPolicyResolver
 	Mutation() MutationResolver
 	Org() OrgResolver
 	OrgPolicy() OrgPolicyResolver
 	OrgRole() OrgRoleResolver
+	OrgUserPreference() OrgUserPreferenceResolver
 	Permission() PermissionResolver
 	Query() QueryResolver
 	User() UserResolver
@@ -67,6 +70,7 @@ type ComplexityRoot struct {
 		Name                 func(childComplexity int) int
 		Orgs                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
 		Policies             func(childComplexity int) int
+		PolicyViews          func(childComplexity int) int
 		RedirectURI          func(childComplexity int) int
 		RefreshTokenValidity func(childComplexity int) int
 		Resources            func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
@@ -120,6 +124,7 @@ type ComplexityRoot struct {
 		ID        func(childComplexity int) int
 		Items     func(childComplexity int) int
 		Name      func(childComplexity int) int
+		OrgItems  func(childComplexity int, noFilterCode *bool) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
 	}
@@ -163,6 +168,7 @@ type ComplexityRoot struct {
 		ActionID    func(childComplexity int) int
 		App         func(childComplexity int) int
 		AppID       func(childComplexity int) int
+		Children    func(childComplexity int) int
 		Comments    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
 		CreatedBy   func(childComplexity int) int
@@ -171,8 +177,10 @@ type ComplexityRoot struct {
 		Icon        func(childComplexity int) int
 		Kind        func(childComplexity int) int
 		Name        func(childComplexity int) int
+		Parent      func(childComplexity int) int
 		ParentID    func(childComplexity int) int
 		Route       func(childComplexity int) int
+		Status      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UpdatedBy   func(childComplexity int) int
 	}
@@ -197,7 +205,10 @@ type ComplexityRoot struct {
 		CreatedBy      func(childComplexity int) int
 		ID             func(childComplexity int) int
 		IsGrantAppRole func(childComplexity int, appRoleID int) int
+		Kind           func(childComplexity int) int
 		Name           func(childComplexity int) int
+		OrgPolicies    func(childComplexity int) int
+		PolicyViews    func(childComplexity int) int
 		Roles          func(childComplexity int) int
 		Rules          func(childComplexity int) int
 		Status         func(childComplexity int) int
@@ -214,6 +225,42 @@ type ComplexityRoot struct {
 	AppPolicyEdge struct {
 		Cursor func(childComplexity int) int
 		Node   func(childComplexity int) int
+	}
+
+	AppPolicyView struct {
+		App         func(childComplexity int) int
+		AppID       func(childComplexity int) int
+		AppPolicy   func(childComplexity int) int
+		Children    func(childComplexity int) int
+		Comments    func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Kind        func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Parent      func(childComplexity int) int
+		ParentID    func(childComplexity int) int
+		Path        func(childComplexity int) int
+		PolicyID    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+	}
+
+	AppPolicyViewConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	AppPolicyViewEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	AppPolicyViewOrgPolicy struct {
+		AppPolicyView func(childComplexity int) int
+		OrgPolicy     func(childComplexity int) int
 	}
 
 	AppRes struct {
@@ -253,6 +300,65 @@ type ComplexityRoot struct {
 		Policies  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UpdatedBy func(childComplexity int) int
+	}
+
+	ClientPreference struct {
+		AppCode func(childComplexity int) int
+		Values  func(childComplexity int) int
+	}
+
+	ClientPreferenceValue struct {
+		Extension func(childComplexity int) int
+		Key       func(childComplexity int) int
+		Value     func(childComplexity int) int
+	}
+
+	Country struct {
+		Code        func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		NameEn      func(childComplexity int) int
+		Regions     func(childComplexity int) int
+		Status      func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+	}
+
+	CountryConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	CountryEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	Currency struct {
+		Code      func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Sign      func(childComplexity int) int
+		Status    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+	}
+
+	CurrencyConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	CurrencyEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	FileIdentity struct {
@@ -331,53 +437,77 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AllotOrganizationUser       func(childComplexity int, input ent.CreateOrgUserInput) int
 		AssignAppRolePolicy         func(childComplexity int, appID int, roleID int, policyIDs []int) int
+		AssignAppRolePolicyView     func(childComplexity int, appID int, roleID int, addAppPolicyIDs []int, rmAppPolicyIDs []int) int
+		AssignOrgRolePolicyView     func(childComplexity int, orgID int, roleID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) int
+		AssignOrgUserPolicyView     func(childComplexity int, orgID int, userID int, addOrgPolicyIDs []int, rmOrgPolicyIDs []int) int
 		AssignOrganizationApp       func(childComplexity int, orgID int, appID int) int
 		AssignOrganizationAppPolicy func(childComplexity int, orgID int, appPolicyID int) int
 		AssignOrganizationAppRole   func(childComplexity int, orgID int, appRoleID int) int
 		AssignRoleUser              func(childComplexity int, input model.AssignRoleUserInput) int
+		AutoGrantApp                func(childComplexity int, appCode string, orgID int, userID int) int
 		BindUserIdentity            func(childComplexity int, input ent.CreateUserIdentityInput) int
+		ChangeOrgUserType           func(childComplexity int, userID int, orgID int, userType orguser.UserType) int
 		ChangePassword              func(childComplexity int, oldPwd string, newPwd string) int
 		CreateApp                   func(childComplexity int, input ent.CreateAppInput) int
 		CreateAppActions            func(childComplexity int, appID int, input []*ent.CreateAppActionInput) int
 		CreateAppDict               func(childComplexity int, appID int, input ent.CreateAppDictInput) int
 		CreateAppDictItem           func(childComplexity int, dictID int, input ent.CreateAppDictItemInput) int
 		CreateAppMenus              func(childComplexity int, appID int, input []*ent.CreateAppMenuInput) int
-		CreateAppPolicy             func(childComplexity int, appID int, input ent.CreateAppPolicyInput) int
+		CreateAppPolicy             func(childComplexity int, appID int, appPolicyViewID *int, input ent.CreateAppPolicyInput) int
+		CreateAppPolicyView         func(childComplexity int, input ent.CreateAppPolicyViewInput) int
 		CreateAppRole               func(childComplexity int, appID int, input ent.CreateAppRoleInput) int
+		CreateCountry               func(childComplexity int, input ent.CreateCountryInput) int
+		CreateCurrency              func(childComplexity int, input ent.CreateCurrencyInput) int
 		CreateFileIdentity          func(childComplexity int, input ent.CreateFileIdentityInput) int
 		CreateFileSource            func(childComplexity int, input ent.CreateFileSourceInput) int
 		CreateOauthClient           func(childComplexity int, input ent.CreateOauthClientInput) int
 		CreateOrganization          func(childComplexity int, input ent.CreateOrgInput) int
 		CreateOrganizationAccount   func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
 		CreateOrganizationPolicy    func(childComplexity int, input ent.CreateOrgPolicyInput) int
-		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput) int
+		CreateOrganizationUser      func(childComplexity int, rootOrgID int, input ent.CreateUserInput, orgUserType *orguser.UserType) int
+		CreateQuota                 func(childComplexity int, input ent.CreateQuotaInput) int
+		CreateQuotaItem             func(childComplexity int, input ent.CreateQuotaItemInput) int
+		CreateRegion                func(childComplexity int, input ent.CreateRegionInput) int
 		CreateRole                  func(childComplexity int, input ent.CreateOrgRoleInput) int
 		CreateRoot                  func(childComplexity int, input ent.CreateOrgInput) int
+		CreateUserPasswordPolicy    func(childComplexity int, orgID int, input ent.CreateUserPasswordPolicyInput) int
 		DeleteApp                   func(childComplexity int, appID int) int
 		DeleteAppAction             func(childComplexity int, actionID int) int
 		DeleteAppDict               func(childComplexity int, dictID int) int
 		DeleteAppDictItem           func(childComplexity int, itemID int) int
 		DeleteAppMenu               func(childComplexity int, menuID int) int
 		DeleteAppPolicy             func(childComplexity int, policyID int) int
+		DeleteAppPolicyView         func(childComplexity int, appPolicyViewID int) int
 		DeleteAppRole               func(childComplexity int, roleID int) int
+		DeleteCountry               func(childComplexity int, countryID int) int
+		DeleteCurrency              func(childComplexity int, currencyID int) int
 		DeleteFileIdentity          func(childComplexity int, id int) int
 		DeleteFileSource            func(childComplexity int, fsID int) int
 		DeleteOauthClient           func(childComplexity int, id int) int
 		DeleteOrganization          func(childComplexity int, orgID int) int
 		DeleteOrganizationPolicy    func(childComplexity int, orgPolicyID int) int
+		DeleteQuota                 func(childComplexity int, id int) int
+		DeleteQuotaItem             func(childComplexity int, id int) int
+		DeleteRegion                func(childComplexity int, regionID int) int
 		DeleteRole                  func(childComplexity int, roleID int) int
 		DeleteUser                  func(childComplexity int, userID int) int
+		DeleteUserDevice            func(childComplexity int, userID int, deviceID int) int
 		DeleteUserIdentity          func(childComplexity int, id int) int
+		DeleteUserPasswordPolicy    func(childComplexity int) int
 		DisableMfa                  func(childComplexity int, userID int) int
 		DisableOauthClient          func(childComplexity int, id int) int
 		EnableDirectory             func(childComplexity int, input model.EnableDirectoryInput) int
 		EnableMfa                   func(childComplexity int, userID int) int
 		EnableOauthClient           func(childComplexity int, id int) int
+		EnableVerifyUserDevice      func(childComplexity int, userID int, enable bool, deviceInfoInput ent.CreateUserDeviceInput) int
 		Grant                       func(childComplexity int, input ent.CreatePermissionInput) int
 		MoveAppDictItem             func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
 		MoveAppMenu                 func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		MoveAppPolicyView           func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		MoveCountry                 func(childComplexity int, sourceID int, targetID int, action model.ListAction) int
 		MoveOrganization            func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
-		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput) int
+		MoveRegion                  func(childComplexity int, sourceID int, targetID int, action model.TreeAction) int
+		RecoverOrgUser              func(childComplexity int, userID int, userInput ent.UpdateUserInput, pwdKind userloginprofile.SetKind, pwdInput *ent.CreateUserPasswordInput, contact *ent.UpdateUserAddrInput) int
 		RemoveOrganizationUser      func(childComplexity int, orgID int, userID int) int
 		ResetUserPasswordByEmail    func(childComplexity int, userID int) int
 		Revoke                      func(childComplexity int, orgID int, permissionID int) int
@@ -389,22 +519,31 @@ type ComplexityRoot struct {
 		SaveOrgUserPreference       func(childComplexity int, input model.OrgUserPreferenceInput) int
 		SendMFAToUserByEmail        func(childComplexity int, userID int) int
 		SetDefaultFileIdentity      func(childComplexity int, identityID int, orgID int) int
+		SyncAppRoleToOrg            func(childComplexity int, orgID int, appRoleID int) int
 		UpdateApp                   func(childComplexity int, appID int, input ent.UpdateAppInput) int
 		UpdateAppAction             func(childComplexity int, actionID int, input ent.UpdateAppActionInput) int
 		UpdateAppDict               func(childComplexity int, dictID int, input ent.UpdateAppDictInput) int
 		UpdateAppDictItem           func(childComplexity int, itemID int, input ent.UpdateAppDictItemInput) int
 		UpdateAppMenu               func(childComplexity int, menuID int, input ent.UpdateAppMenuInput) int
 		UpdateAppPolicy             func(childComplexity int, policyID int, input ent.UpdateAppPolicyInput) int
+		UpdateAppPolicyView         func(childComplexity int, appPolicyViewID int, input ent.UpdateAppPolicyViewInput) int
 		UpdateAppRes                func(childComplexity int, appResID int, input ent.UpdateAppResInput) int
 		UpdateAppRole               func(childComplexity int, roleID int, input ent.UpdateAppRoleInput) int
+		UpdateCountry               func(childComplexity int, countryID int, input ent.UpdateCountryInput) int
+		UpdateCurrency              func(childComplexity int, currencyID int, input ent.UpdateCurrencyInput) int
 		UpdateFileIdentity          func(childComplexity int, id int, input ent.UpdateFileIdentityInput) int
 		UpdateFileSource            func(childComplexity int, fsID int, input ent.UpdateFileSourceInput) int
 		UpdateLoginProfile          func(childComplexity int, userID int, input ent.UpdateUserLoginProfileInput) int
 		UpdateOrganization          func(childComplexity int, orgID int, input ent.UpdateOrgInput) int
 		UpdateOrganizationPolicy    func(childComplexity int, orgPolicyID int, input ent.UpdateOrgPolicyInput) int
 		UpdatePermission            func(childComplexity int, permissionID int, input ent.UpdatePermissionInput) int
+		UpdateQuota                 func(childComplexity int, id int, input ent.UpdateQuotaInput) int
+		UpdateQuotaItem             func(childComplexity int, id int, input ent.UpdateQuotaItemInput) int
+		UpdateRegion                func(childComplexity int, regionID int, input ent.UpdateRegionInput) int
 		UpdateRole                  func(childComplexity int, roleID int, input ent.UpdateOrgRoleInput) int
-		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput) int
+		UpdateUser                  func(childComplexity int, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) int
+		UpdateUserDevice            func(childComplexity int, deviceID int, input ent.UpdateUserDeviceInput) int
+		UpdateUserPasswordPolicy    func(childComplexity int, orgID int, input ent.UpdateUserPasswordPolicyInput) int
 	}
 
 	OauthClient struct {
@@ -424,12 +563,14 @@ type ComplexityRoot struct {
 	}
 
 	Org struct {
+		ActualDomain           func(childComplexity int) int
 		Apps                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
 		Children               func(childComplexity int) int
 		Code                   func(childComplexity int) int
 		CountryCode            func(childComplexity int) int
 		CreatedAt              func(childComplexity int) int
 		CreatedBy              func(childComplexity int) int
+		CustomDomain           func(childComplexity int) int
 		DeletedAt              func(childComplexity int) int
 		DisplaySort            func(childComplexity int) int
 		Domain                 func(childComplexity int) int
@@ -437,7 +578,10 @@ type ComplexityRoot struct {
 		ID                     func(childComplexity int) int
 		IsAllowRevokeAppPolicy func(childComplexity int, appPolicyID int) int
 		Kind                   func(childComplexity int) int
+		LocalCurrency          func(childComplexity int) int
+		Logo                   func(childComplexity int) int
 		Name                   func(childComplexity int) int
+		OrgQuota               func(childComplexity int) int
 		Owner                  func(childComplexity int) int
 		OwnerID                func(childComplexity int) int
 		Parent                 func(childComplexity int) int
@@ -448,8 +592,10 @@ type ComplexityRoot struct {
 		Profile                func(childComplexity int) int
 		Status                 func(childComplexity int) int
 		Timezone               func(childComplexity int) int
+		TopOrg                 func(childComplexity int) int
 		UpdatedAt              func(childComplexity int) int
 		UpdatedBy              func(childComplexity int) int
+		UserPasswordPolicy     func(childComplexity int) int
 		Users                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
 	}
 
@@ -477,7 +623,15 @@ type ComplexityRoot struct {
 		UpdatedBy    func(childComplexity int) int
 	}
 
+	OrgLogo struct {
+		Favicon   func(childComplexity int) int
+		Logo      func(childComplexity int) int
+		ThumbLogo func(childComplexity int) int
+	}
+
 	OrgPolicy struct {
+		App         func(childComplexity int) int
+		AppPolicy   func(childComplexity int) int
 		AppPolicyID func(childComplexity int) int
 		Comments    func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
@@ -531,17 +685,19 @@ type ComplexityRoot struct {
 	}
 
 	OrgUserPreference struct {
-		CreatedAt    func(childComplexity int) int
-		CreatedBy    func(childComplexity int) int
-		ID           func(childComplexity int) int
-		MenuFavorite func(childComplexity int) int
-		MenuRecent   func(childComplexity int) int
-		Org          func(childComplexity int) int
-		OrgID        func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		UpdatedBy    func(childComplexity int) int
-		User         func(childComplexity int) int
-		UserID       func(childComplexity int) int
+		ClientPreference  func(childComplexity int, appCode string) int
+		ClientPreferences func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		CreatedBy         func(childComplexity int) int
+		ID                func(childComplexity int) int
+		MenuFavorite      func(childComplexity int) int
+		MenuRecent        func(childComplexity int) int
+		Org               func(childComplexity int) int
+		OrgID             func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+		UpdatedBy         func(childComplexity int) int
+		User              func(childComplexity int) int
+		UserID            func(childComplexity int) int
 	}
 
 	OrgUserPreferenceConnection struct {
@@ -602,64 +758,202 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AppAccess                   func(childComplexity int, appCode string) int
-		AppDictByRefCode            func(childComplexity int, refCodes []string) int
-		AppDictItemByRefCode        func(childComplexity int, refCode string) int
-		AppDicts                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
-		AppPolicyAssignedToOrgs     func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
-		AppResources                func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		AppRoleAssignedToOrgs       func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
-		Apps                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
-		CheckPermission             func(childComplexity int, permission string) int
-		FileIdentities              func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
-		FileIdentitiesForApp        func(childComplexity int, where *ent.FileIdentityWhereInput) int
-		FileIdentityAccessKeySecret func(childComplexity int, id int) int
-		FileSources                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
-		GlobalID                    func(childComplexity int, typeArg string, id int) int
-		Node                        func(childComplexity int, id string) int
-		Nodes                       func(childComplexity int, ids []string) int
-		OrgAppActions               func(childComplexity int, appCode string) int
-		OrgAppResources             func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
-		OrgGroups                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgPolicyReferences         func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		OrgRecycleUsers             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoleUsers                func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
-		OrgRoles                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		OrgUserPreference           func(childComplexity int) int
-		Organizations               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
-		UserApps                    func(childComplexity int) int
-		UserExtendGroupPolicies     func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
-		UserGroups                  func(childComplexity int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
-		UserMenus                   func(childComplexity int, appCode string) int
-		UserPermissions             func(childComplexity int, where *ent.AppActionWhereInput) int
-		UserRootOrgs                func(childComplexity int) int
-		Users                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		AppAccess                     func(childComplexity int, appCode string) int
+		AppAccessForToken             func(childComplexity int, appCode string, clientID string, clientSecret string) int
+		AppDictByRefCode              func(childComplexity int, refCodes []string) int
+		AppDictItemByRefCode          func(childComplexity int, refCode string) int
+		AppDicts                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppDictOrder, where *ent.AppDictWhereInput) int
+		AppPolicyAssignedToOrgs       func(childComplexity int, policyID int, where *ent.OrgWhereInput) int
+		AppPolicyView                 func(childComplexity int, appCode string) int
+		AppPolicyViewRoleAssigned     func(childComplexity int, appRoleID int) int
+		AppResources                  func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		AppRoleAssignedToOrgs         func(childComplexity int, roleID int, where *ent.OrgWhereInput) int
+		Apps                          func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppOrder, where *ent.AppWhereInput) int
+		CheckPermission               func(childComplexity int, permission string) int
+		CheckPermissionByJwt          func(childComplexity int, jwtStr string, orgID int, action string, appCode string) int
+		Countries                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) int
+		Currencies                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) int
+		FileIdentities                func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) int
+		FileIdentitiesForApp          func(childComplexity int, where *ent.FileIdentityWhereInput) int
+		FileIdentityAccessKeySecret   func(childComplexity int, id int) int
+		FileSources                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileSourceOrder, where *ent.FileSourceWhereInput) int
+		GlobalID                      func(childComplexity int, typeArg string, id int) int
+		Node                          func(childComplexity int, id string) int
+		Nodes                         func(childComplexity int, ids []string) int
+		OrgAppActions                 func(childComplexity int, appCode string, orgID int) int
+		OrgAppResources               func(childComplexity int, appID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.AppResOrder, where *ent.AppResWhereInput) int
+		OrgFileIdentities             func(childComplexity int) int
+		OrgGroups                     func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgPolicyReferences           func(childComplexity int, policyID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		OrgPolicyView                 func(childComplexity int, appCode string, orgID *int) int
+		OrgPolicyViewRoleAssigned     func(childComplexity int, orgRoleID int, appCode string, orgID *int) int
+		OrgPolicyViewUserAssigned     func(childComplexity int, userID int, appCode string, orgID *int) int
+		OrgPolicyViewUserRoleAssigned func(childComplexity int, userID int, appCode string, orgID int) int
+		OrgRecycleUsers               func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoleUsers                  func(childComplexity int, roleID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		OrgRoles                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		OrgUserPreference             func(childComplexity int) int
+		Organizations                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgOrder, where *ent.OrgWhereInput) int
+		ParentOrgUsers                func(childComplexity int, orgID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		QuotaItems                    func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) int
+		Quotas                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
+		Regions                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) int
+		UserApps                      func(childComplexity int) int
+		UserExtendGroupPolicies       func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserExtendRolePolicies        func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
+		UserGroups                    func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserMembers                   func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		UserMenus                     func(childComplexity int, appCode string) int
+		UserMfaInfo                   func(childComplexity int, userID int, orgID int) int
+		UserOrgRoles                  func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserPasswordPolicy            func(childComplexity int) int
+		UserPermissions               func(childComplexity int, where *ent.AppActionWhereInput) int
+		UserRoles                     func(childComplexity int, orgID *int, userID int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.OrgRoleOrder, where *ent.OrgRoleWhereInput) int
+		UserRootOrgs                  func(childComplexity int) int
+		Users                         func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) int
+		Viewer                        func(childComplexity int) int
+	}
+
+	Quota struct {
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		EndAt       func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Limit       func(childComplexity int) int
+		QuotaItem   func(childComplexity int) int
+		QuotaItemID func(childComplexity int) int
+		QuotaOrg    func(childComplexity int) int
+		QuotaUser   func(childComplexity int) int
+		StartAt     func(childComplexity int) int
+		TenantID    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+		Used        func(childComplexity int) int
+		UserID      func(childComplexity int) int
+	}
+
+	QuotaConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	QuotaEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	QuotaItem struct {
+		Active       func(childComplexity int) int
+		Code         func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		CreatedBy    func(childComplexity int) int
+		DefaultLimit func(childComplexity int) int
+		Description  func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		Quota        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) int
+		ResourceType func(childComplexity int) int
+		Unit         func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UpdatedBy    func(childComplexity int) int
+	}
+
+	QuotaItemConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	QuotaItemEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	Region struct {
+		Children    func(childComplexity int) int
+		Country     func(childComplexity int) int
+		CountryID   func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
+		DisplaySort func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		NameEn      func(childComplexity int) int
+		Parent      func(childComplexity int) int
+		ParentID    func(childComplexity int) int
+		ShortCode   func(childComplexity int) int
+		Status      func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
+		ZipCode     func(childComplexity int) int
+	}
+
+	RegionConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	RegionEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	User struct {
+		Addresses         func(childComplexity int) int
 		Avatar            func(childComplexity int) int
+		Citizenship       func(childComplexity int) int
+		CitizenshipID     func(childComplexity int) int
 		Comments          func(childComplexity int) int
+		Contact           func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		CreatedBy         func(childComplexity int) int
 		CreationType      func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
-		Devices           func(childComplexity int) int
+		Devices           func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserDeviceOrder, where *ent.UserDeviceWhereInput) int
 		DisplayName       func(childComplexity int) int
-		Email             func(childComplexity int) int
+		FirstName         func(childComplexity int) int
+		Gender            func(childComplexity int) int
 		ID                func(childComplexity int) int
 		Identities        func(childComplexity int) int
 		IsAllowRevokeRole func(childComplexity int, orgRoleID int) int
 		IsAssignOrgRole   func(childComplexity int, orgRoleID int) int
+		Lang              func(childComplexity int) int
+		LastName          func(childComplexity int) int
 		LoginProfile      func(childComplexity int) int
-		Mobile            func(childComplexity int) int
+		MiddleName        func(childComplexity int) int
 		OauthClients      func(childComplexity int) int
+		OrgUserType       func(childComplexity int, orgID int) int
 		Permissions       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.PermissionOrder, where *ent.PermissionWhereInput) int
 		PrincipalName     func(childComplexity int) int
 		RegisterIP        func(childComplexity int) int
 		Status            func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
 		UpdatedBy         func(childComplexity int) int
+		UserQuota         func(childComplexity int) int
 		UserType          func(childComplexity int) int
+	}
+
+	UserAddr struct {
+		Addr      func(childComplexity int) int
+		AddrType  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		Email     func(childComplexity int) int
+		Fax       func(childComplexity int) int
+		ID        func(childComplexity int) int
+		IsDefault func(childComplexity int) int
+		Mobile    func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Region    func(childComplexity int) int
+		RegionID  func(childComplexity int) int
+		Tel       func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
+		User      func(childComplexity int) int
+		UserID    func(childComplexity int) int
+		ZipCode   func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -684,6 +978,17 @@ type ComplexityRoot struct {
 		UpdatedBy     func(childComplexity int) int
 		User          func(childComplexity int) int
 		UserID        func(childComplexity int) int
+	}
+
+	UserDeviceConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	UserDeviceEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	UserEdge struct {
@@ -723,6 +1028,13 @@ type ComplexityRoot struct {
 		VerifyDevice  func(childComplexity int) int
 	}
 
+	UserMfaInfo struct {
+		AccountName func(childComplexity int) int
+		MfaEnabled  func(childComplexity int) int
+		QRCodeURI   func(childComplexity int) int
+		Secret      func(childComplexity int) int
+	}
+
 	UserPassword struct {
 		CreatedAt func(childComplexity int) int
 		CreatedBy func(childComplexity int) int
@@ -733,6 +1045,24 @@ type ComplexityRoot struct {
 		UpdatedBy func(childComplexity int) int
 		User      func(childComplexity int) int
 		UserID    func(childComplexity int) int
+	}
+
+	UserPasswordPolicy struct {
+		AllowIncludeUserName func(childComplexity int) int
+		CaptchaTimes         func(childComplexity int) int
+		CreatedAt            func(childComplexity int) int
+		CreatedBy            func(childComplexity int) int
+		ID                   func(childComplexity int) int
+		IncludeChar          func(childComplexity int) int
+		IncludeElement       func(childComplexity int) int
+		InvalidDay           func(childComplexity int) int
+		InvalidLoginLimit    func(childComplexity int) int
+		Length               func(childComplexity int) int
+		Org                  func(childComplexity int) int
+		Retry                func(childComplexity int) int
+		TenantID             func(childComplexity int) int
+		UpdatedAt            func(childComplexity int) int
+		UpdatedBy            func(childComplexity int) int
 	}
 }
 
@@ -879,6 +1209,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.App.Policies(childComplexity), true
+
+	case "App.policyViews":
+		if e.complexity.App.PolicyViews == nil {
+			break
+		}
+
+		return e.complexity.App.PolicyViews(childComplexity), true
 
 	case "App.redirectURI":
 		if e.complexity.App.RedirectURI == nil {
@@ -1151,6 +1488,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppDict.Name(childComplexity), true
 
+	case "AppDict.orgItems":
+		if e.complexity.AppDict.OrgItems == nil {
+			break
+		}
+
+		args, err := ec.field_AppDict_orgItems_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AppDict.OrgItems(childComplexity, args["noFilterCode"].(*bool)), true
+
 	case "AppDict.updatedAt":
 		if e.complexity.AppDict.UpdatedAt == nil {
 			break
@@ -1347,6 +1696,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppMenu.AppID(childComplexity), true
 
+	case "AppMenu.children":
+		if e.complexity.AppMenu.Children == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Children(childComplexity), true
+
 	case "AppMenu.comments":
 		if e.complexity.AppMenu.Comments == nil {
 			break
@@ -1403,6 +1759,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppMenu.Name(childComplexity), true
 
+	case "AppMenu.parent":
+		if e.complexity.AppMenu.Parent == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Parent(childComplexity), true
+
 	case "AppMenu.parentID":
 		if e.complexity.AppMenu.ParentID == nil {
 			break
@@ -1416,6 +1779,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppMenu.Route(childComplexity), true
+
+	case "AppMenu.status":
+		if e.complexity.AppMenu.Status == nil {
+			break
+		}
+
+		return e.complexity.AppMenu.Status(childComplexity), true
 
 	case "AppMenu.updatedAt":
 		if e.complexity.AppMenu.UpdatedAt == nil {
@@ -1527,12 +1897,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AppPolicy.IsGrantAppRole(childComplexity, args["appRoleID"].(int)), true
 
+	case "AppPolicy.kind":
+		if e.complexity.AppPolicy.Kind == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.Kind(childComplexity), true
+
 	case "AppPolicy.name":
 		if e.complexity.AppPolicy.Name == nil {
 			break
 		}
 
 		return e.complexity.AppPolicy.Name(childComplexity), true
+
+	case "AppPolicy.orgPolicies":
+		if e.complexity.AppPolicy.OrgPolicies == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.OrgPolicies(childComplexity), true
+
+	case "AppPolicy.policyViews":
+		if e.complexity.AppPolicy.PolicyViews == nil {
+			break
+		}
+
+		return e.complexity.AppPolicy.PolicyViews(childComplexity), true
 
 	case "AppPolicy.roles":
 		if e.complexity.AppPolicy.Roles == nil {
@@ -1603,6 +1994,174 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppPolicyEdge.Node(childComplexity), true
+
+	case "AppPolicyView.app":
+		if e.complexity.AppPolicyView.App == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.App(childComplexity), true
+
+	case "AppPolicyView.appID":
+		if e.complexity.AppPolicyView.AppID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.AppID(childComplexity), true
+
+	case "AppPolicyView.appPolicy":
+		if e.complexity.AppPolicyView.AppPolicy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.AppPolicy(childComplexity), true
+
+	case "AppPolicyView.children":
+		if e.complexity.AppPolicyView.Children == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Children(childComplexity), true
+
+	case "AppPolicyView.comments":
+		if e.complexity.AppPolicyView.Comments == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Comments(childComplexity), true
+
+	case "AppPolicyView.createdAt":
+		if e.complexity.AppPolicyView.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.CreatedAt(childComplexity), true
+
+	case "AppPolicyView.createdBy":
+		if e.complexity.AppPolicyView.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.CreatedBy(childComplexity), true
+
+	case "AppPolicyView.displaySort":
+		if e.complexity.AppPolicyView.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.DisplaySort(childComplexity), true
+
+	case "AppPolicyView.id":
+		if e.complexity.AppPolicyView.ID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.ID(childComplexity), true
+
+	case "AppPolicyView.kind":
+		if e.complexity.AppPolicyView.Kind == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Kind(childComplexity), true
+
+	case "AppPolicyView.name":
+		if e.complexity.AppPolicyView.Name == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Name(childComplexity), true
+
+	case "AppPolicyView.parent":
+		if e.complexity.AppPolicyView.Parent == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Parent(childComplexity), true
+
+	case "AppPolicyView.parentID":
+		if e.complexity.AppPolicyView.ParentID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.ParentID(childComplexity), true
+
+	case "AppPolicyView.path":
+		if e.complexity.AppPolicyView.Path == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.Path(childComplexity), true
+
+	case "AppPolicyView.policyID":
+		if e.complexity.AppPolicyView.PolicyID == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.PolicyID(childComplexity), true
+
+	case "AppPolicyView.updatedAt":
+		if e.complexity.AppPolicyView.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.UpdatedAt(childComplexity), true
+
+	case "AppPolicyView.updatedBy":
+		if e.complexity.AppPolicyView.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyView.UpdatedBy(childComplexity), true
+
+	case "AppPolicyViewConnection.edges":
+		if e.complexity.AppPolicyViewConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.Edges(childComplexity), true
+
+	case "AppPolicyViewConnection.pageInfo":
+		if e.complexity.AppPolicyViewConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.PageInfo(childComplexity), true
+
+	case "AppPolicyViewConnection.totalCount":
+		if e.complexity.AppPolicyViewConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewConnection.TotalCount(childComplexity), true
+
+	case "AppPolicyViewEdge.cursor":
+		if e.complexity.AppPolicyViewEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewEdge.Cursor(childComplexity), true
+
+	case "AppPolicyViewEdge.node":
+		if e.complexity.AppPolicyViewEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewEdge.Node(childComplexity), true
+
+	case "AppPolicyViewOrgPolicy.appPolicyView":
+		if e.complexity.AppPolicyViewOrgPolicy.AppPolicyView == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewOrgPolicy.AppPolicyView(childComplexity), true
+
+	case "AppPolicyViewOrgPolicy.orgPolicy":
+		if e.complexity.AppPolicyViewOrgPolicy.OrgPolicy == nil {
+			break
+		}
+
+		return e.complexity.AppPolicyViewOrgPolicy.OrgPolicy(childComplexity), true
 
 	case "AppRes.app":
 		if e.complexity.AppRes.App == nil {
@@ -1792,6 +2351,251 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AppRole.UpdatedBy(childComplexity), true
+
+	case "ClientPreference.appCode":
+		if e.complexity.ClientPreference.AppCode == nil {
+			break
+		}
+
+		return e.complexity.ClientPreference.AppCode(childComplexity), true
+
+	case "ClientPreference.values":
+		if e.complexity.ClientPreference.Values == nil {
+			break
+		}
+
+		return e.complexity.ClientPreference.Values(childComplexity), true
+
+	case "ClientPreferenceValue.extension":
+		if e.complexity.ClientPreferenceValue.Extension == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Extension(childComplexity), true
+
+	case "ClientPreferenceValue.key":
+		if e.complexity.ClientPreferenceValue.Key == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Key(childComplexity), true
+
+	case "ClientPreferenceValue.value":
+		if e.complexity.ClientPreferenceValue.Value == nil {
+			break
+		}
+
+		return e.complexity.ClientPreferenceValue.Value(childComplexity), true
+
+	case "Country.code":
+		if e.complexity.Country.Code == nil {
+			break
+		}
+
+		return e.complexity.Country.Code(childComplexity), true
+
+	case "Country.createdAt":
+		if e.complexity.Country.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Country.CreatedAt(childComplexity), true
+
+	case "Country.createdBy":
+		if e.complexity.Country.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Country.CreatedBy(childComplexity), true
+
+	case "Country.displaySort":
+		if e.complexity.Country.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.Country.DisplaySort(childComplexity), true
+
+	case "Country.id":
+		if e.complexity.Country.ID == nil {
+			break
+		}
+
+		return e.complexity.Country.ID(childComplexity), true
+
+	case "Country.name":
+		if e.complexity.Country.Name == nil {
+			break
+		}
+
+		return e.complexity.Country.Name(childComplexity), true
+
+	case "Country.nameEn":
+		if e.complexity.Country.NameEn == nil {
+			break
+		}
+
+		return e.complexity.Country.NameEn(childComplexity), true
+
+	case "Country.regions":
+		if e.complexity.Country.Regions == nil {
+			break
+		}
+
+		return e.complexity.Country.Regions(childComplexity), true
+
+	case "Country.status":
+		if e.complexity.Country.Status == nil {
+			break
+		}
+
+		return e.complexity.Country.Status(childComplexity), true
+
+	case "Country.updatedAt":
+		if e.complexity.Country.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Country.UpdatedAt(childComplexity), true
+
+	case "Country.updatedBy":
+		if e.complexity.Country.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Country.UpdatedBy(childComplexity), true
+
+	case "CountryConnection.edges":
+		if e.complexity.CountryConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.Edges(childComplexity), true
+
+	case "CountryConnection.pageInfo":
+		if e.complexity.CountryConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.PageInfo(childComplexity), true
+
+	case "CountryConnection.totalCount":
+		if e.complexity.CountryConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.CountryConnection.TotalCount(childComplexity), true
+
+	case "CountryEdge.cursor":
+		if e.complexity.CountryEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.CountryEdge.Cursor(childComplexity), true
+
+	case "CountryEdge.node":
+		if e.complexity.CountryEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.CountryEdge.Node(childComplexity), true
+
+	case "Currency.code":
+		if e.complexity.Currency.Code == nil {
+			break
+		}
+
+		return e.complexity.Currency.Code(childComplexity), true
+
+	case "Currency.createdAt":
+		if e.complexity.Currency.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Currency.CreatedAt(childComplexity), true
+
+	case "Currency.createdBy":
+		if e.complexity.Currency.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Currency.CreatedBy(childComplexity), true
+
+	case "Currency.id":
+		if e.complexity.Currency.ID == nil {
+			break
+		}
+
+		return e.complexity.Currency.ID(childComplexity), true
+
+	case "Currency.name":
+		if e.complexity.Currency.Name == nil {
+			break
+		}
+
+		return e.complexity.Currency.Name(childComplexity), true
+
+	case "Currency.sign":
+		if e.complexity.Currency.Sign == nil {
+			break
+		}
+
+		return e.complexity.Currency.Sign(childComplexity), true
+
+	case "Currency.status":
+		if e.complexity.Currency.Status == nil {
+			break
+		}
+
+		return e.complexity.Currency.Status(childComplexity), true
+
+	case "Currency.updatedAt":
+		if e.complexity.Currency.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Currency.UpdatedAt(childComplexity), true
+
+	case "Currency.updatedBy":
+		if e.complexity.Currency.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Currency.UpdatedBy(childComplexity), true
+
+	case "CurrencyConnection.edges":
+		if e.complexity.CurrencyConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.Edges(childComplexity), true
+
+	case "CurrencyConnection.pageInfo":
+		if e.complexity.CurrencyConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.PageInfo(childComplexity), true
+
+	case "CurrencyConnection.totalCount":
+		if e.complexity.CurrencyConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.CurrencyConnection.TotalCount(childComplexity), true
+
+	case "CurrencyEdge.cursor":
+		if e.complexity.CurrencyEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.CurrencyEdge.Cursor(childComplexity), true
+
+	case "CurrencyEdge.node":
+		if e.complexity.CurrencyEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.CurrencyEdge.Node(childComplexity), true
 
 	case "FileIdentity.accessKeyID":
 		if e.complexity.FileIdentity.AccessKeyID == nil {
@@ -2160,6 +2964,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AssignAppRolePolicy(childComplexity, args["appID"].(int), args["roleID"].(int), args["policyIDs"].([]int)), true
 
+	case "Mutation.assignAppRolePolicyView":
+		if e.complexity.Mutation.AssignAppRolePolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignAppRolePolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignAppRolePolicyView(childComplexity, args["appID"].(int), args["roleID"].(int), args["addAppPolicyIDs"].([]int), args["rmAppPolicyIDs"].([]int)), true
+
+	case "Mutation.assignOrgRolePolicyView":
+		if e.complexity.Mutation.AssignOrgRolePolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignOrgRolePolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignOrgRolePolicyView(childComplexity, args["orgID"].(int), args["roleID"].(int), args["addOrgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
+
+	case "Mutation.assignOrgUserPolicyView":
+		if e.complexity.Mutation.AssignOrgUserPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_assignOrgUserPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AssignOrgUserPolicyView(childComplexity, args["orgID"].(int), args["userID"].(int), args["addOrgPolicyIDs"].([]int), args["rmOrgPolicyIDs"].([]int)), true
+
 	case "Mutation.assignOrganizationApp":
 		if e.complexity.Mutation.AssignOrganizationApp == nil {
 			break
@@ -2208,6 +3048,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AssignRoleUser(childComplexity, args["input"].(model.AssignRoleUserInput)), true
 
+	case "Mutation.autoGrantApp":
+		if e.complexity.Mutation.AutoGrantApp == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_autoGrantApp_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AutoGrantApp(childComplexity, args["appCode"].(string), args["orgID"].(int), args["userID"].(int)), true
+
 	case "Mutation.bindUserIdentity":
 		if e.complexity.Mutation.BindUserIdentity == nil {
 			break
@@ -2219,6 +3071,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.BindUserIdentity(childComplexity, args["input"].(ent.CreateUserIdentityInput)), true
+
+	case "Mutation.changeOrgUserType":
+		if e.complexity.Mutation.ChangeOrgUserType == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_changeOrgUserType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ChangeOrgUserType(childComplexity, args["userID"].(int), args["orgID"].(int), args["userType"].(orguser.UserType)), true
 
 	case "Mutation.changePassword":
 		if e.complexity.Mutation.ChangePassword == nil {
@@ -2302,7 +3166,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppPolicyInput)), true
+		return e.complexity.Mutation.CreateAppPolicy(childComplexity, args["appID"].(int), args["appPolicyViewID"].(*int), args["input"].(ent.CreateAppPolicyInput)), true
+
+	case "Mutation.createAppPolicyView":
+		if e.complexity.Mutation.CreateAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAppPolicyView(childComplexity, args["input"].(ent.CreateAppPolicyViewInput)), true
 
 	case "Mutation.createAppRole":
 		if e.complexity.Mutation.CreateAppRole == nil {
@@ -2315,6 +3191,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateAppRole(childComplexity, args["appID"].(int), args["input"].(ent.CreateAppRoleInput)), true
+
+	case "Mutation.createCountry":
+		if e.complexity.Mutation.CreateCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCountry(childComplexity, args["input"].(ent.CreateCountryInput)), true
+
+	case "Mutation.createCurrency":
+		if e.complexity.Mutation.CreateCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateCurrency(childComplexity, args["input"].(ent.CreateCurrencyInput)), true
 
 	case "Mutation.createFileIdentity":
 		if e.complexity.Mutation.CreateFileIdentity == nil {
@@ -2398,7 +3298,43 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput)), true
+		return e.complexity.Mutation.CreateOrganizationUser(childComplexity, args["rootOrgID"].(int), args["input"].(ent.CreateUserInput), args["orgUserType"].(*orguser.UserType)), true
+
+	case "Mutation.createQuota":
+		if e.complexity.Mutation.CreateQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuota(childComplexity, args["input"].(ent.CreateQuotaInput)), true
+
+	case "Mutation.createQuotaItem":
+		if e.complexity.Mutation.CreateQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateQuotaItem(childComplexity, args["input"].(ent.CreateQuotaItemInput)), true
+
+	case "Mutation.createRegion":
+		if e.complexity.Mutation.CreateRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateRegion(childComplexity, args["input"].(ent.CreateRegionInput)), true
 
 	case "Mutation.createRole":
 		if e.complexity.Mutation.CreateRole == nil {
@@ -2423,6 +3359,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateRoot(childComplexity, args["input"].(ent.CreateOrgInput)), true
+
+	case "Mutation.createUserPasswordPolicy":
+		if e.complexity.Mutation.CreateUserPasswordPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUserPasswordPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUserPasswordPolicy(childComplexity, args["orgID"].(int), args["input"].(ent.CreateUserPasswordPolicyInput)), true
 
 	case "Mutation.deleteApp":
 		if e.complexity.Mutation.DeleteApp == nil {
@@ -2496,6 +3444,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteAppPolicy(childComplexity, args["policyID"].(int)), true
 
+	case "Mutation.deleteAppPolicyView":
+		if e.complexity.Mutation.DeleteAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteAppPolicyView(childComplexity, args["appPolicyViewID"].(int)), true
+
 	case "Mutation.deleteAppRole":
 		if e.complexity.Mutation.DeleteAppRole == nil {
 			break
@@ -2507,6 +3467,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteAppRole(childComplexity, args["roleID"].(int)), true
+
+	case "Mutation.deleteCountry":
+		if e.complexity.Mutation.DeleteCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCountry(childComplexity, args["countryID"].(int)), true
+
+	case "Mutation.deleteCurrency":
+		if e.complexity.Mutation.DeleteCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteCurrency(childComplexity, args["currencyID"].(int)), true
 
 	case "Mutation.deleteFileIdentity":
 		if e.complexity.Mutation.DeleteFileIdentity == nil {
@@ -2568,6 +3552,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteOrganizationPolicy(childComplexity, args["orgPolicyID"].(int)), true
 
+	case "Mutation.deleteQuota":
+		if e.complexity.Mutation.DeleteQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteQuota(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteQuotaItem":
+		if e.complexity.Mutation.DeleteQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteQuotaItem(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteRegion":
+		if e.complexity.Mutation.DeleteRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteRegion(childComplexity, args["regionID"].(int)), true
+
 	case "Mutation.deleteRole":
 		if e.complexity.Mutation.DeleteRole == nil {
 			break
@@ -2592,6 +3612,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUser(childComplexity, args["userID"].(int)), true
 
+	case "Mutation.deleteUserDevice":
+		if e.complexity.Mutation.DeleteUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteUserDevice(childComplexity, args["userID"].(int), args["deviceID"].(int)), true
+
 	case "Mutation.deleteUserIdentity":
 		if e.complexity.Mutation.DeleteUserIdentity == nil {
 			break
@@ -2603,6 +3635,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteUserIdentity(childComplexity, args["id"].(int)), true
+
+	case "Mutation.deleteUserPasswordPolicy":
+		if e.complexity.Mutation.DeleteUserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Mutation.DeleteUserPasswordPolicy(childComplexity), true
 
 	case "Mutation.disableMFA":
 		if e.complexity.Mutation.DisableMfa == nil {
@@ -2664,6 +3703,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.EnableOauthClient(childComplexity, args["id"].(int)), true
 
+	case "Mutation.enableVerifyUserDevice":
+		if e.complexity.Mutation.EnableVerifyUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_enableVerifyUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EnableVerifyUserDevice(childComplexity, args["userID"].(int), args["enable"].(bool), args["deviceInfoInput"].(ent.CreateUserDeviceInput)), true
+
 	case "Mutation.grant":
 		if e.complexity.Mutation.Grant == nil {
 			break
@@ -2700,6 +3751,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MoveAppMenu(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
 
+	case "Mutation.moveAppPolicyView":
+		if e.complexity.Mutation.MoveAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveAppPolicyView(childComplexity, args["sourceID"].(int), args["targetID"].(int), args["action"].(model.TreeAction)), true
+
+	case "Mutation.moveCountry":
+		if e.complexity.Mutation.MoveCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveCountry(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.ListAction)), true
+
 	case "Mutation.moveOrganization":
 		if e.complexity.Mutation.MoveOrganization == nil {
 			break
@@ -2712,6 +3787,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.MoveOrganization(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.TreeAction)), true
 
+	case "Mutation.moveRegion":
+		if e.complexity.Mutation.MoveRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_moveRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MoveRegion(childComplexity, args["sourceID"].(int), args["targetId"].(int), args["action"].(model.TreeAction)), true
+
 	case "Mutation.recoverOrgUser":
 		if e.complexity.Mutation.RecoverOrgUser == nil {
 			break
@@ -2722,7 +3809,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput)), true
+		return e.complexity.Mutation.RecoverOrgUser(childComplexity, args["userID"].(int), args["userInput"].(ent.UpdateUserInput), args["pwdKind"].(userloginprofile.SetKind), args["pwdInput"].(*ent.CreateUserPasswordInput), args["contact"].(*ent.UpdateUserAddrInput)), true
 
 	case "Mutation.removeOrganizationUser":
 		if e.complexity.Mutation.RemoveOrganizationUser == nil {
@@ -2856,6 +3943,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SetDefaultFileIdentity(childComplexity, args["identityID"].(int), args["orgID"].(int)), true
 
+	case "Mutation.syncAppRoleToOrg":
+		if e.complexity.Mutation.SyncAppRoleToOrg == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_syncAppRoleToOrg_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SyncAppRoleToOrg(childComplexity, args["orgID"].(int), args["appRoleID"].(int)), true
+
 	case "Mutation.updateApp":
 		if e.complexity.Mutation.UpdateApp == nil {
 			break
@@ -2928,6 +4027,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateAppPolicy(childComplexity, args["policyID"].(int), args["input"].(ent.UpdateAppPolicyInput)), true
 
+	case "Mutation.updateAppPolicyView":
+		if e.complexity.Mutation.UpdateAppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateAppPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAppPolicyView(childComplexity, args["appPolicyViewID"].(int), args["input"].(ent.UpdateAppPolicyViewInput)), true
+
 	case "Mutation.updateAppRes":
 		if e.complexity.Mutation.UpdateAppRes == nil {
 			break
@@ -2951,6 +4062,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateAppRole(childComplexity, args["roleID"].(int), args["input"].(ent.UpdateAppRoleInput)), true
+
+	case "Mutation.updateCountry":
+		if e.complexity.Mutation.UpdateCountry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCountry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCountry(childComplexity, args["countryID"].(int), args["input"].(ent.UpdateCountryInput)), true
+
+	case "Mutation.updateCurrency":
+		if e.complexity.Mutation.UpdateCurrency == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateCurrency_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateCurrency(childComplexity, args["currencyID"].(int), args["input"].(ent.UpdateCurrencyInput)), true
 
 	case "Mutation.updateFileIdentity":
 		if e.complexity.Mutation.UpdateFileIdentity == nil {
@@ -3024,6 +4159,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdatePermission(childComplexity, args["permissionID"].(int), args["input"].(ent.UpdatePermissionInput)), true
 
+	case "Mutation.updateQuota":
+		if e.complexity.Mutation.UpdateQuota == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuota(childComplexity, args["id"].(int), args["input"].(ent.UpdateQuotaInput)), true
+
+	case "Mutation.updateQuotaItem":
+		if e.complexity.Mutation.UpdateQuotaItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateQuotaItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateQuotaItem(childComplexity, args["id"].(int), args["input"].(ent.UpdateQuotaItemInput)), true
+
+	case "Mutation.updateRegion":
+		if e.complexity.Mutation.UpdateRegion == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateRegion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateRegion(childComplexity, args["regionID"].(int), args["input"].(ent.UpdateRegionInput)), true
+
 	case "Mutation.updateRole":
 		if e.complexity.Mutation.UpdateRole == nil {
 			break
@@ -3046,7 +4217,31 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["userID"].(int), args["input"].(ent.UpdateUserInput), args["contact"].(*ent.UpdateUserAddrInput)), true
+
+	case "Mutation.updateUserDevice":
+		if e.complexity.Mutation.UpdateUserDevice == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserDevice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserDevice(childComplexity, args["deviceID"].(int), args["input"].(ent.UpdateUserDeviceInput)), true
+
+	case "Mutation.updateUserPasswordPolicy":
+		if e.complexity.Mutation.UpdateUserPasswordPolicy == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserPasswordPolicy_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserPasswordPolicy(childComplexity, args["orgID"].(int), args["input"].(ent.UpdateUserPasswordPolicyInput)), true
 
 	case "OauthClient.clientID":
 		if e.complexity.OauthClient.ClientID == nil {
@@ -3139,6 +4334,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.OauthClient.UserID(childComplexity), true
 
+	case "Org.actualDomain":
+		if e.complexity.Org.ActualDomain == nil {
+			break
+		}
+
+		return e.complexity.Org.ActualDomain(childComplexity), true
+
 	case "Org.apps":
 		if e.complexity.Org.Apps == nil {
 			break
@@ -3185,6 +4387,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.CreatedBy(childComplexity), true
+
+	case "Org.customDomain":
+		if e.complexity.Org.CustomDomain == nil {
+			break
+		}
+
+		return e.complexity.Org.CustomDomain(childComplexity), true
 
 	case "Org.deletedAt":
 		if e.complexity.Org.DeletedAt == nil {
@@ -3240,12 +4449,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.Kind(childComplexity), true
 
+	case "Org.localCurrency":
+		if e.complexity.Org.LocalCurrency == nil {
+			break
+		}
+
+		return e.complexity.Org.LocalCurrency(childComplexity), true
+
+	case "Org.logo":
+		if e.complexity.Org.Logo == nil {
+			break
+		}
+
+		return e.complexity.Org.Logo(childComplexity), true
+
 	case "Org.name":
 		if e.complexity.Org.Name == nil {
 			break
 		}
 
 		return e.complexity.Org.Name(childComplexity), true
+
+	case "Org.orgQuota":
+		if e.complexity.Org.OrgQuota == nil {
+			break
+		}
+
+		return e.complexity.Org.OrgQuota(childComplexity), true
 
 	case "Org.owner":
 		if e.complexity.Org.Owner == nil {
@@ -3327,6 +4557,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Org.Timezone(childComplexity), true
 
+	case "Org.TopOrg":
+		if e.complexity.Org.TopOrg == nil {
+			break
+		}
+
+		return e.complexity.Org.TopOrg(childComplexity), true
+
 	case "Org.updatedAt":
 		if e.complexity.Org.UpdatedAt == nil {
 			break
@@ -3340,6 +4577,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Org.UpdatedBy(childComplexity), true
+
+	case "Org.userPasswordPolicy":
+		if e.complexity.Org.UserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Org.UserPasswordPolicy(childComplexity), true
 
 	case "Org.users":
 		if e.complexity.Org.Users == nil {
@@ -3457,6 +4701,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgFileIdentity.UpdatedBy(childComplexity), true
+
+	case "OrgLogo.favicon":
+		if e.complexity.OrgLogo.Favicon == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.Favicon(childComplexity), true
+
+	case "OrgLogo.logo":
+		if e.complexity.OrgLogo.Logo == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.Logo(childComplexity), true
+
+	case "OrgLogo.thumbLogo":
+		if e.complexity.OrgLogo.ThumbLogo == nil {
+			break
+		}
+
+		return e.complexity.OrgLogo.ThumbLogo(childComplexity), true
+
+	case "OrgPolicy.app":
+		if e.complexity.OrgPolicy.App == nil {
+			break
+		}
+
+		return e.complexity.OrgPolicy.App(childComplexity), true
+
+	case "OrgPolicy.appPolicy":
+		if e.complexity.OrgPolicy.AppPolicy == nil {
+			break
+		}
+
+		return e.complexity.OrgPolicy.AppPolicy(childComplexity), true
 
 	case "OrgPolicy.appPolicyID":
 		if e.complexity.OrgPolicy.AppPolicyID == nil {
@@ -3717,6 +4996,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.OrgRoleEdge.Node(childComplexity), true
+
+	case "OrgUserPreference.clientPreference":
+		if e.complexity.OrgUserPreference.ClientPreference == nil {
+			break
+		}
+
+		args, err := ec.field_OrgUserPreference_clientPreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.OrgUserPreference.ClientPreference(childComplexity, args["appCode"].(string)), true
+
+	case "OrgUserPreference.clientPreferences":
+		if e.complexity.OrgUserPreference.ClientPreferences == nil {
+			break
+		}
+
+		return e.complexity.OrgUserPreference.ClientPreferences(childComplexity), true
 
 	case "OrgUserPreference.createdAt":
 		if e.complexity.OrgUserPreference.CreatedAt == nil {
@@ -4059,6 +5357,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AppAccess(childComplexity, args["appCode"].(string)), true
 
+	case "Query.appAccessForToken":
+		if e.complexity.Query.AppAccessForToken == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appAccessForToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppAccessForToken(childComplexity, args["appCode"].(string), args["clientID"].(string), args["clientSecret"].(string)), true
+
 	case "Query.appDictByRefCode":
 		if e.complexity.Query.AppDictByRefCode == nil {
 			break
@@ -4107,6 +5417,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AppPolicyAssignedToOrgs(childComplexity, args["policyID"].(int), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.appPolicyView":
+		if e.complexity.Query.AppPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppPolicyView(childComplexity, args["appCode"].(string)), true
+
+	case "Query.appPolicyViewRoleAssigned":
+		if e.complexity.Query.AppPolicyViewRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_appPolicyViewRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AppPolicyViewRoleAssigned(childComplexity, args["appRoleID"].(int)), true
+
 	case "Query.appResources":
 		if e.complexity.Query.AppResources == nil {
 			break
@@ -4154,6 +5488,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CheckPermission(childComplexity, args["permission"].(string)), true
+
+	case "Query.checkPermissionByJwt":
+		if e.complexity.Query.CheckPermissionByJwt == nil {
+			break
+		}
+
+		args, err := ec.field_Query_checkPermissionByJwt_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.CheckPermissionByJwt(childComplexity, args["jwtStr"].(string), args["orgID"].(int), args["action"].(string), args["appCode"].(string)), true
+
+	case "Query.countries":
+		if e.complexity.Query.Countries == nil {
+			break
+		}
+
+		args, err := ec.field_Query_countries_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Countries(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.CountryOrder), args["where"].(*ent.CountryWhereInput)), true
+
+	case "Query.currencies":
+		if e.complexity.Query.Currencies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_currencies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Currencies(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.CurrencyOrder), args["where"].(*ent.CurrencyWhereInput)), true
 
 	case "Query.fileIdentities":
 		if e.complexity.Query.FileIdentities == nil {
@@ -4249,7 +5619,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.OrgAppActions(childComplexity, args["appCode"].(string)), true
+		return e.complexity.Query.OrgAppActions(childComplexity, args["appCode"].(string), args["orgID"].(int)), true
 
 	case "Query.orgAppResources":
 		if e.complexity.Query.OrgAppResources == nil {
@@ -4262,6 +5632,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgAppResources(childComplexity, args["appID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.AppResOrder), args["where"].(*ent.AppResWhereInput)), true
+
+	case "Query.orgFileIdentities":
+		if e.complexity.Query.OrgFileIdentities == nil {
+			break
+		}
+
+		return e.complexity.Query.OrgFileIdentities(childComplexity), true
 
 	case "Query.orgGroups":
 		if e.complexity.Query.OrgGroups == nil {
@@ -4286,6 +5663,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.OrgPolicyReferences(childComplexity, args["policyID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+
+	case "Query.orgPolicyView":
+		if e.complexity.Query.OrgPolicyView == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyView_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyView(childComplexity, args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewRoleAssigned":
+		if e.complexity.Query.OrgPolicyViewRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewRoleAssigned(childComplexity, args["orgRoleID"].(int), args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewUserAssigned":
+		if e.complexity.Query.OrgPolicyViewUserAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewUserAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewUserAssigned(childComplexity, args["userID"].(int), args["appCode"].(string), args["orgID"].(*int)), true
+
+	case "Query.orgPolicyViewUserRoleAssigned":
+		if e.complexity.Query.OrgPolicyViewUserRoleAssigned == nil {
+			break
+		}
+
+		args, err := ec.field_Query_orgPolicyViewUserRoleAssigned_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.OrgPolicyViewUserRoleAssigned(childComplexity, args["userID"].(int), args["appCode"].(string), args["orgID"].(int)), true
 
 	case "Query.orgRecycleUsers":
 		if e.complexity.Query.OrgRecycleUsers == nil {
@@ -4342,6 +5767,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Organizations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgOrder), args["where"].(*ent.OrgWhereInput)), true
 
+	case "Query.parentOrgUsers":
+		if e.complexity.Query.ParentOrgUsers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_parentOrgUsers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ParentOrgUsers(childComplexity, args["orgID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
+
+	case "Query.quotaItems":
+		if e.complexity.Query.QuotaItems == nil {
+			break
+		}
+
+		args, err := ec.field_Query_quotaItems_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.QuotaItems(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaItemOrder), args["where"].(*ent.QuotaItemWhereInput)), true
+
+	case "Query.quotas":
+		if e.complexity.Query.Quotas == nil {
+			break
+		}
+
+		args, err := ec.field_Query_quotas_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Quotas(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaOrder), args["where"].(*ent.QuotaWhereInput)), true
+
+	case "Query.regions":
+		if e.complexity.Query.Regions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_regions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Regions(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.RegionOrder), args["where"].(*ent.RegionWhereInput)), true
+
 	case "Query.userApps":
 		if e.complexity.Query.UserApps == nil {
 			break
@@ -4359,7 +5832,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserExtendGroupPolicies(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+		return e.complexity.Query.UserExtendGroupPolicies(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
+
+	case "Query.userExtendRolePolicies":
+		if e.complexity.Query.UserExtendRolePolicies == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userExtendRolePolicies_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserExtendRolePolicies(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.PermissionOrder), args["where"].(*ent.PermissionWhereInput)), true
 
 	case "Query.userGroups":
 		if e.complexity.Query.UserGroups == nil {
@@ -4371,7 +5856,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UserGroups(childComplexity, args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+		return e.complexity.Query.UserGroups(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.userMembers":
+		if e.complexity.Query.UserMembers == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userMembers_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserMembers(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
 	case "Query.userMenus":
 		if e.complexity.Query.UserMenus == nil {
@@ -4385,6 +5882,37 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserMenus(childComplexity, args["appCode"].(string)), true
 
+	case "Query.userMfaInfo":
+		if e.complexity.Query.UserMfaInfo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userMfaInfo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserMfaInfo(childComplexity, args["userID"].(int), args["orgID"].(int)), true
+
+	case "Query.userOrgRoles":
+		if e.complexity.Query.UserOrgRoles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userOrgRoles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserOrgRoles(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
+
+	case "Query.userPasswordPolicy":
+		if e.complexity.Query.UserPasswordPolicy == nil {
+			break
+		}
+
+		return e.complexity.Query.UserPasswordPolicy(childComplexity), true
+
 	case "Query.userPermissions":
 		if e.complexity.Query.UserPermissions == nil {
 			break
@@ -4396,6 +5924,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserPermissions(childComplexity, args["where"].(*ent.AppActionWhereInput)), true
+
+	case "Query.userRoles":
+		if e.complexity.Query.UserRoles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userRoles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserRoles(childComplexity, args["orgID"].(*int), args["userID"].(int), args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.OrgRoleOrder), args["where"].(*ent.OrgRoleWhereInput)), true
 
 	case "Query.userRootOrgs":
 		if e.complexity.Query.UserRootOrgs == nil {
@@ -4416,6 +5956,438 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Users(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserOrder), args["where"].(*ent.UserWhereInput)), true
 
+	case "Query.viewer":
+		if e.complexity.Query.Viewer == nil {
+			break
+		}
+
+		return e.complexity.Query.Viewer(childComplexity), true
+
+	case "Quota.createdAt":
+		if e.complexity.Quota.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.CreatedAt(childComplexity), true
+
+	case "Quota.createdBy":
+		if e.complexity.Quota.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Quota.CreatedBy(childComplexity), true
+
+	case "Quota.endAt":
+		if e.complexity.Quota.EndAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.EndAt(childComplexity), true
+
+	case "Quota.id":
+		if e.complexity.Quota.ID == nil {
+			break
+		}
+
+		return e.complexity.Quota.ID(childComplexity), true
+
+	case "Quota.limit":
+		if e.complexity.Quota.Limit == nil {
+			break
+		}
+
+		return e.complexity.Quota.Limit(childComplexity), true
+
+	case "Quota.quotaItem":
+		if e.complexity.Quota.QuotaItem == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaItem(childComplexity), true
+
+	case "Quota.quotaItemID":
+		if e.complexity.Quota.QuotaItemID == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaItemID(childComplexity), true
+
+	case "Quota.quotaOrg":
+		if e.complexity.Quota.QuotaOrg == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaOrg(childComplexity), true
+
+	case "Quota.quotaUser":
+		if e.complexity.Quota.QuotaUser == nil {
+			break
+		}
+
+		return e.complexity.Quota.QuotaUser(childComplexity), true
+
+	case "Quota.startAt":
+		if e.complexity.Quota.StartAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.StartAt(childComplexity), true
+
+	case "Quota.tenantID":
+		if e.complexity.Quota.TenantID == nil {
+			break
+		}
+
+		return e.complexity.Quota.TenantID(childComplexity), true
+
+	case "Quota.updatedAt":
+		if e.complexity.Quota.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Quota.UpdatedAt(childComplexity), true
+
+	case "Quota.updatedBy":
+		if e.complexity.Quota.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Quota.UpdatedBy(childComplexity), true
+
+	case "Quota.used":
+		if e.complexity.Quota.Used == nil {
+			break
+		}
+
+		return e.complexity.Quota.Used(childComplexity), true
+
+	case "Quota.userID":
+		if e.complexity.Quota.UserID == nil {
+			break
+		}
+
+		return e.complexity.Quota.UserID(childComplexity), true
+
+	case "QuotaConnection.edges":
+		if e.complexity.QuotaConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.Edges(childComplexity), true
+
+	case "QuotaConnection.pageInfo":
+		if e.complexity.QuotaConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.PageInfo(childComplexity), true
+
+	case "QuotaConnection.totalCount":
+		if e.complexity.QuotaConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.QuotaConnection.TotalCount(childComplexity), true
+
+	case "QuotaEdge.cursor":
+		if e.complexity.QuotaEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.QuotaEdge.Cursor(childComplexity), true
+
+	case "QuotaEdge.node":
+		if e.complexity.QuotaEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.QuotaEdge.Node(childComplexity), true
+
+	case "QuotaItem.active":
+		if e.complexity.QuotaItem.Active == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Active(childComplexity), true
+
+	case "QuotaItem.code":
+		if e.complexity.QuotaItem.Code == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Code(childComplexity), true
+
+	case "QuotaItem.createdAt":
+		if e.complexity.QuotaItem.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.CreatedAt(childComplexity), true
+
+	case "QuotaItem.createdBy":
+		if e.complexity.QuotaItem.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.CreatedBy(childComplexity), true
+
+	case "QuotaItem.defaultLimit":
+		if e.complexity.QuotaItem.DefaultLimit == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.DefaultLimit(childComplexity), true
+
+	case "QuotaItem.description":
+		if e.complexity.QuotaItem.Description == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Description(childComplexity), true
+
+	case "QuotaItem.id":
+		if e.complexity.QuotaItem.ID == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.ID(childComplexity), true
+
+	case "QuotaItem.name":
+		if e.complexity.QuotaItem.Name == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Name(childComplexity), true
+
+	case "QuotaItem.quota":
+		if e.complexity.QuotaItem.Quota == nil {
+			break
+		}
+
+		args, err := ec.field_QuotaItem_quota_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.QuotaItem.Quota(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.QuotaOrder), args["where"].(*ent.QuotaWhereInput)), true
+
+	case "QuotaItem.resourceType":
+		if e.complexity.QuotaItem.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.ResourceType(childComplexity), true
+
+	case "QuotaItem.unit":
+		if e.complexity.QuotaItem.Unit == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.Unit(childComplexity), true
+
+	case "QuotaItem.updatedAt":
+		if e.complexity.QuotaItem.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.UpdatedAt(childComplexity), true
+
+	case "QuotaItem.updatedBy":
+		if e.complexity.QuotaItem.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.QuotaItem.UpdatedBy(childComplexity), true
+
+	case "QuotaItemConnection.edges":
+		if e.complexity.QuotaItemConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.Edges(childComplexity), true
+
+	case "QuotaItemConnection.pageInfo":
+		if e.complexity.QuotaItemConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.PageInfo(childComplexity), true
+
+	case "QuotaItemConnection.totalCount":
+		if e.complexity.QuotaItemConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemConnection.TotalCount(childComplexity), true
+
+	case "QuotaItemEdge.cursor":
+		if e.complexity.QuotaItemEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemEdge.Cursor(childComplexity), true
+
+	case "QuotaItemEdge.node":
+		if e.complexity.QuotaItemEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.QuotaItemEdge.Node(childComplexity), true
+
+	case "Region.children":
+		if e.complexity.Region.Children == nil {
+			break
+		}
+
+		return e.complexity.Region.Children(childComplexity), true
+
+	case "Region.country":
+		if e.complexity.Region.Country == nil {
+			break
+		}
+
+		return e.complexity.Region.Country(childComplexity), true
+
+	case "Region.countryID":
+		if e.complexity.Region.CountryID == nil {
+			break
+		}
+
+		return e.complexity.Region.CountryID(childComplexity), true
+
+	case "Region.createdAt":
+		if e.complexity.Region.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Region.CreatedAt(childComplexity), true
+
+	case "Region.createdBy":
+		if e.complexity.Region.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Region.CreatedBy(childComplexity), true
+
+	case "Region.displaySort":
+		if e.complexity.Region.DisplaySort == nil {
+			break
+		}
+
+		return e.complexity.Region.DisplaySort(childComplexity), true
+
+	case "Region.id":
+		if e.complexity.Region.ID == nil {
+			break
+		}
+
+		return e.complexity.Region.ID(childComplexity), true
+
+	case "Region.name":
+		if e.complexity.Region.Name == nil {
+			break
+		}
+
+		return e.complexity.Region.Name(childComplexity), true
+
+	case "Region.nameEn":
+		if e.complexity.Region.NameEn == nil {
+			break
+		}
+
+		return e.complexity.Region.NameEn(childComplexity), true
+
+	case "Region.parent":
+		if e.complexity.Region.Parent == nil {
+			break
+		}
+
+		return e.complexity.Region.Parent(childComplexity), true
+
+	case "Region.parentID":
+		if e.complexity.Region.ParentID == nil {
+			break
+		}
+
+		return e.complexity.Region.ParentID(childComplexity), true
+
+	case "Region.shortCode":
+		if e.complexity.Region.ShortCode == nil {
+			break
+		}
+
+		return e.complexity.Region.ShortCode(childComplexity), true
+
+	case "Region.status":
+		if e.complexity.Region.Status == nil {
+			break
+		}
+
+		return e.complexity.Region.Status(childComplexity), true
+
+	case "Region.updatedAt":
+		if e.complexity.Region.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Region.UpdatedAt(childComplexity), true
+
+	case "Region.updatedBy":
+		if e.complexity.Region.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Region.UpdatedBy(childComplexity), true
+
+	case "Region.zipCode":
+		if e.complexity.Region.ZipCode == nil {
+			break
+		}
+
+		return e.complexity.Region.ZipCode(childComplexity), true
+
+	case "RegionConnection.edges":
+		if e.complexity.RegionConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.Edges(childComplexity), true
+
+	case "RegionConnection.pageInfo":
+		if e.complexity.RegionConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.PageInfo(childComplexity), true
+
+	case "RegionConnection.totalCount":
+		if e.complexity.RegionConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.RegionConnection.TotalCount(childComplexity), true
+
+	case "RegionEdge.cursor":
+		if e.complexity.RegionEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.RegionEdge.Cursor(childComplexity), true
+
+	case "RegionEdge.node":
+		if e.complexity.RegionEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.RegionEdge.Node(childComplexity), true
+
+	case "User.addresses":
+		if e.complexity.User.Addresses == nil {
+			break
+		}
+
+		return e.complexity.User.Addresses(childComplexity), true
+
 	case "User.avatar":
 		if e.complexity.User.Avatar == nil {
 			break
@@ -4423,12 +6395,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Avatar(childComplexity), true
 
+	case "User.citizenship":
+		if e.complexity.User.Citizenship == nil {
+			break
+		}
+
+		return e.complexity.User.Citizenship(childComplexity), true
+
+	case "User.citizenshipID":
+		if e.complexity.User.CitizenshipID == nil {
+			break
+		}
+
+		return e.complexity.User.CitizenshipID(childComplexity), true
+
 	case "User.comments":
 		if e.complexity.User.Comments == nil {
 			break
 		}
 
 		return e.complexity.User.Comments(childComplexity), true
+
+	case "User.contact":
+		if e.complexity.User.Contact == nil {
+			break
+		}
+
+		return e.complexity.User.Contact(childComplexity), true
 
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
@@ -4463,7 +6456,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.User.Devices(childComplexity), true
+		args, err := ec.field_User_devices_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.Devices(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.UserDeviceOrder), args["where"].(*ent.UserDeviceWhereInput)), true
 
 	case "User.displayName":
 		if e.complexity.User.DisplayName == nil {
@@ -4472,12 +6470,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.DisplayName(childComplexity), true
 
-	case "User.email":
-		if e.complexity.User.Email == nil {
+	case "User.firstName":
+		if e.complexity.User.FirstName == nil {
 			break
 		}
 
-		return e.complexity.User.Email(childComplexity), true
+		return e.complexity.User.FirstName(childComplexity), true
+
+	case "User.gender":
+		if e.complexity.User.Gender == nil {
+			break
+		}
+
+		return e.complexity.User.Gender(childComplexity), true
 
 	case "User.id":
 		if e.complexity.User.ID == nil {
@@ -4517,6 +6522,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.IsAssignOrgRole(childComplexity, args["orgRoleID"].(int)), true
 
+	case "User.lang":
+		if e.complexity.User.Lang == nil {
+			break
+		}
+
+		return e.complexity.User.Lang(childComplexity), true
+
+	case "User.lastName":
+		if e.complexity.User.LastName == nil {
+			break
+		}
+
+		return e.complexity.User.LastName(childComplexity), true
+
 	case "User.loginProfile":
 		if e.complexity.User.LoginProfile == nil {
 			break
@@ -4524,12 +6543,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.LoginProfile(childComplexity), true
 
-	case "User.mobile":
-		if e.complexity.User.Mobile == nil {
+	case "User.middleName":
+		if e.complexity.User.MiddleName == nil {
 			break
 		}
 
-		return e.complexity.User.Mobile(childComplexity), true
+		return e.complexity.User.MiddleName(childComplexity), true
 
 	case "User.oauthClients":
 		if e.complexity.User.OauthClients == nil {
@@ -4537,6 +6556,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.OauthClients(childComplexity), true
+
+	case "User.orgUserType":
+		if e.complexity.User.OrgUserType == nil {
+			break
+		}
+
+		args, err := ec.field_User_orgUserType_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.User.OrgUserType(childComplexity, args["orgID"].(int)), true
 
 	case "User.permissions":
 		if e.complexity.User.Permissions == nil {
@@ -4585,12 +6616,145 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.UpdatedBy(childComplexity), true
 
+	case "User.userQuota":
+		if e.complexity.User.UserQuota == nil {
+			break
+		}
+
+		return e.complexity.User.UserQuota(childComplexity), true
+
 	case "User.userType":
 		if e.complexity.User.UserType == nil {
 			break
 		}
 
 		return e.complexity.User.UserType(childComplexity), true
+
+	case "UserAddr.addr":
+		if e.complexity.UserAddr.Addr == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Addr(childComplexity), true
+
+	case "UserAddr.addrType":
+		if e.complexity.UserAddr.AddrType == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.AddrType(childComplexity), true
+
+	case "UserAddr.createdAt":
+		if e.complexity.UserAddr.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.CreatedAt(childComplexity), true
+
+	case "UserAddr.createdBy":
+		if e.complexity.UserAddr.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.CreatedBy(childComplexity), true
+
+	case "UserAddr.email":
+		if e.complexity.UserAddr.Email == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Email(childComplexity), true
+
+	case "UserAddr.fax":
+		if e.complexity.UserAddr.Fax == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Fax(childComplexity), true
+
+	case "UserAddr.id":
+		if e.complexity.UserAddr.ID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.ID(childComplexity), true
+
+	case "UserAddr.isDefault":
+		if e.complexity.UserAddr.IsDefault == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.IsDefault(childComplexity), true
+
+	case "UserAddr.mobile":
+		if e.complexity.UserAddr.Mobile == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Mobile(childComplexity), true
+
+	case "UserAddr.name":
+		if e.complexity.UserAddr.Name == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Name(childComplexity), true
+
+	case "UserAddr.region":
+		if e.complexity.UserAddr.Region == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Region(childComplexity), true
+
+	case "UserAddr.regionID":
+		if e.complexity.UserAddr.RegionID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.RegionID(childComplexity), true
+
+	case "UserAddr.tel":
+		if e.complexity.UserAddr.Tel == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.Tel(childComplexity), true
+
+	case "UserAddr.updatedAt":
+		if e.complexity.UserAddr.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UpdatedAt(childComplexity), true
+
+	case "UserAddr.updatedBy":
+		if e.complexity.UserAddr.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UpdatedBy(childComplexity), true
+
+	case "UserAddr.user":
+		if e.complexity.UserAddr.User == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.User(childComplexity), true
+
+	case "UserAddr.userID":
+		if e.complexity.UserAddr.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.UserID(childComplexity), true
+
+	case "UserAddr.zipCode":
+		if e.complexity.UserAddr.ZipCode == nil {
+			break
+		}
+
+		return e.complexity.UserAddr.ZipCode(childComplexity), true
 
 	case "UserConnection.edges":
 		if e.complexity.UserConnection.Edges == nil {
@@ -4717,6 +6881,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserDevice.UserID(childComplexity), true
+
+	case "UserDeviceConnection.edges":
+		if e.complexity.UserDeviceConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.UserDeviceConnection.Edges(childComplexity), true
+
+	case "UserDeviceConnection.pageInfo":
+		if e.complexity.UserDeviceConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.UserDeviceConnection.PageInfo(childComplexity), true
+
+	case "UserDeviceConnection.totalCount":
+		if e.complexity.UserDeviceConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.UserDeviceConnection.TotalCount(childComplexity), true
+
+	case "UserDeviceEdge.cursor":
+		if e.complexity.UserDeviceEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.UserDeviceEdge.Cursor(childComplexity), true
+
+	case "UserDeviceEdge.node":
+		if e.complexity.UserDeviceEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.UserDeviceEdge.Node(childComplexity), true
 
 	case "UserEdge.cursor":
 		if e.complexity.UserEdge.Cursor == nil {
@@ -4914,6 +7113,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserLoginProfile.VerifyDevice(childComplexity), true
 
+	case "UserMfaInfo.accountName":
+		if e.complexity.UserMfaInfo.AccountName == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.AccountName(childComplexity), true
+
+	case "UserMfaInfo.mfaEnabled":
+		if e.complexity.UserMfaInfo.MfaEnabled == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.MfaEnabled(childComplexity), true
+
+	case "UserMfaInfo.qrCodeUri":
+		if e.complexity.UserMfaInfo.QRCodeURI == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.QRCodeURI(childComplexity), true
+
+	case "UserMfaInfo.secret":
+		if e.complexity.UserMfaInfo.Secret == nil {
+			break
+		}
+
+		return e.complexity.UserMfaInfo.Secret(childComplexity), true
+
 	case "UserPassword.createdAt":
 		if e.complexity.UserPassword.CreatedAt == nil {
 			break
@@ -4977,13 +7204,118 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserPassword.UserID(childComplexity), true
 
+	case "UserPasswordPolicy.allowIncludeUserName":
+		if e.complexity.UserPasswordPolicy.AllowIncludeUserName == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.AllowIncludeUserName(childComplexity), true
+
+	case "UserPasswordPolicy.captchaTimes":
+		if e.complexity.UserPasswordPolicy.CaptchaTimes == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CaptchaTimes(childComplexity), true
+
+	case "UserPasswordPolicy.createdAt":
+		if e.complexity.UserPasswordPolicy.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CreatedAt(childComplexity), true
+
+	case "UserPasswordPolicy.createdBy":
+		if e.complexity.UserPasswordPolicy.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.CreatedBy(childComplexity), true
+
+	case "UserPasswordPolicy.id":
+		if e.complexity.UserPasswordPolicy.ID == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.ID(childComplexity), true
+
+	case "UserPasswordPolicy.includeChar":
+		if e.complexity.UserPasswordPolicy.IncludeChar == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.IncludeChar(childComplexity), true
+
+	case "UserPasswordPolicy.includeElement":
+		if e.complexity.UserPasswordPolicy.IncludeElement == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.IncludeElement(childComplexity), true
+
+	case "UserPasswordPolicy.invalidDay":
+		if e.complexity.UserPasswordPolicy.InvalidDay == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.InvalidDay(childComplexity), true
+
+	case "UserPasswordPolicy.invalidLoginLimit":
+		if e.complexity.UserPasswordPolicy.InvalidLoginLimit == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.InvalidLoginLimit(childComplexity), true
+
+	case "UserPasswordPolicy.length":
+		if e.complexity.UserPasswordPolicy.Length == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Length(childComplexity), true
+
+	case "UserPasswordPolicy.org":
+		if e.complexity.UserPasswordPolicy.Org == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Org(childComplexity), true
+
+	case "UserPasswordPolicy.retry":
+		if e.complexity.UserPasswordPolicy.Retry == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.Retry(childComplexity), true
+
+	case "UserPasswordPolicy.tenantID":
+		if e.complexity.UserPasswordPolicy.TenantID == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.TenantID(childComplexity), true
+
+	case "UserPasswordPolicy.updatedAt":
+		if e.complexity.UserPasswordPolicy.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.UpdatedAt(childComplexity), true
+
+	case "UserPasswordPolicy.updatedBy":
+		if e.complexity.UserPasswordPolicy.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.UserPasswordPolicy.UpdatedBy(childComplexity), true
+
 	}
 	return 0, false
 }
 
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
-	rc := graphql.GetOperationContext(ctx)
-	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
+	opCtx := graphql.GetOperationContext(ctx)
+	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAppActionOrder,
 		ec.unmarshalInputAppActionWhereInput,
@@ -4995,6 +7327,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppMenuWhereInput,
 		ec.unmarshalInputAppOrder,
 		ec.unmarshalInputAppPolicyOrder,
+		ec.unmarshalInputAppPolicyViewOrder,
+		ec.unmarshalInputAppPolicyViewWhereInput,
 		ec.unmarshalInputAppPolicyWhereInput,
 		ec.unmarshalInputAppResOrder,
 		ec.unmarshalInputAppResWhereInput,
@@ -5004,14 +7338,21 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAppRoleWhereInput,
 		ec.unmarshalInputAppWhereInput,
 		ec.unmarshalInputAssignRoleUserInput,
+		ec.unmarshalInputClientPreferenceInput,
+		ec.unmarshalInputClientPreferenceValueInput,
+		ec.unmarshalInputCountryOrder,
+		ec.unmarshalInputCountryWhereInput,
 		ec.unmarshalInputCreateAppActionInput,
 		ec.unmarshalInputCreateAppDictInput,
 		ec.unmarshalInputCreateAppDictItemInput,
 		ec.unmarshalInputCreateAppInput,
 		ec.unmarshalInputCreateAppMenuInput,
 		ec.unmarshalInputCreateAppPolicyInput,
+		ec.unmarshalInputCreateAppPolicyViewInput,
 		ec.unmarshalInputCreateAppResInput,
 		ec.unmarshalInputCreateAppRoleInput,
+		ec.unmarshalInputCreateCountryInput,
+		ec.unmarshalInputCreateCurrencyInput,
 		ec.unmarshalInputCreateFileIdentityInput,
 		ec.unmarshalInputCreateFileSourceInput,
 		ec.unmarshalInputCreateOauthClientInput,
@@ -5021,10 +7362,18 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateOrgUserInput,
 		ec.unmarshalInputCreateOrgUserPreferenceInput,
 		ec.unmarshalInputCreatePermissionInput,
+		ec.unmarshalInputCreateQuotaInput,
+		ec.unmarshalInputCreateQuotaItemInput,
+		ec.unmarshalInputCreateRegionInput,
+		ec.unmarshalInputCreateUserAddrInput,
+		ec.unmarshalInputCreateUserDeviceInput,
 		ec.unmarshalInputCreateUserIdentityInput,
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputCreateUserLoginProfileInput,
 		ec.unmarshalInputCreateUserPasswordInput,
+		ec.unmarshalInputCreateUserPasswordPolicyInput,
+		ec.unmarshalInputCurrencyOrder,
+		ec.unmarshalInputCurrencyWhereInput,
 		ec.unmarshalInputEnableDirectoryInput,
 		ec.unmarshalInputFileIdentityOrder,
 		ec.unmarshalInputFileIdentityWhereInput,
@@ -5033,6 +7382,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputGrantInput,
 		ec.unmarshalInputOauthClientOrder,
 		ec.unmarshalInputOauthClientWhereInput,
+		ec.unmarshalInputOrgLogoInput,
 		ec.unmarshalInputOrgOrder,
 		ec.unmarshalInputOrgPolicyOrder,
 		ec.unmarshalInputOrgPolicyWhereInput,
@@ -5049,14 +7399,23 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPermissionOrder,
 		ec.unmarshalInputPermissionWhereInput,
 		ec.unmarshalInputPolicyRuleInput,
+		ec.unmarshalInputQuotaItemOrder,
+		ec.unmarshalInputQuotaItemWhereInput,
+		ec.unmarshalInputQuotaOrder,
+		ec.unmarshalInputQuotaWhereInput,
+		ec.unmarshalInputRegionOrder,
+		ec.unmarshalInputRegionWhereInput,
 		ec.unmarshalInputUpdateAppActionInput,
 		ec.unmarshalInputUpdateAppDictInput,
 		ec.unmarshalInputUpdateAppDictItemInput,
 		ec.unmarshalInputUpdateAppInput,
 		ec.unmarshalInputUpdateAppMenuInput,
 		ec.unmarshalInputUpdateAppPolicyInput,
+		ec.unmarshalInputUpdateAppPolicyViewInput,
 		ec.unmarshalInputUpdateAppResInput,
 		ec.unmarshalInputUpdateAppRoleInput,
+		ec.unmarshalInputUpdateCountryInput,
+		ec.unmarshalInputUpdateCurrencyInput,
 		ec.unmarshalInputUpdateFileIdentityInput,
 		ec.unmarshalInputUpdateFileSourceInput,
 		ec.unmarshalInputUpdateOauthClientInput,
@@ -5066,10 +7425,18 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateOrgUserInput,
 		ec.unmarshalInputUpdateOrgUserPreferenceInput,
 		ec.unmarshalInputUpdatePermissionInput,
+		ec.unmarshalInputUpdateQuotaInput,
+		ec.unmarshalInputUpdateQuotaItemInput,
+		ec.unmarshalInputUpdateRegionInput,
+		ec.unmarshalInputUpdateUserAddrInput,
+		ec.unmarshalInputUpdateUserDeviceInput,
 		ec.unmarshalInputUpdateUserIdentityInput,
 		ec.unmarshalInputUpdateUserInput,
 		ec.unmarshalInputUpdateUserLoginProfileInput,
 		ec.unmarshalInputUpdateUserPasswordInput,
+		ec.unmarshalInputUpdateUserPasswordPolicyInput,
+		ec.unmarshalInputUserAddrOrder,
+		ec.unmarshalInputUserAddrWhereInput,
 		ec.unmarshalInputUserDeviceOrder,
 		ec.unmarshalInputUserDeviceWhereInput,
 		ec.unmarshalInputUserIdentityOrder,
@@ -5078,12 +7445,14 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUserLoginProfileWhereInput,
 		ec.unmarshalInputUserOrder,
 		ec.unmarshalInputUserPasswordOrder,
+		ec.unmarshalInputUserPasswordPolicyOrder,
+		ec.unmarshalInputUserPasswordPolicyWhereInput,
 		ec.unmarshalInputUserPasswordWhereInput,
 		ec.unmarshalInputUserWhereInput,
 	)
 	first := true
 
-	switch rc.Operation.Operation {
+	switch opCtx.Operation.Operation {
 	case ast.Query:
 		return func(ctx context.Context) *graphql.Response {
 			var response graphql.Response
@@ -5091,7 +7460,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			if first {
 				first = false
 				ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-				data = ec._Query(ctx, rc.Operation.SelectionSet)
+				data = ec._Query(ctx, opCtx.Operation.SelectionSet)
 			} else {
 				if atomic.LoadInt32(&ec.pendingDeferred) > 0 {
 					result := <-ec.deferredResults
@@ -5121,7 +7490,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 			first = false
 			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
+			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
 
@@ -5334,6 +7703,10 @@ type App implements Node {
   策略
   """
   policies: [AppPolicy!]
+  """
+  策略视图
+  """
+  policyViews: [AppPolicyView!]
   orgs(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -5692,7 +8065,7 @@ type AppDictItem implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID,空为全局字典
+  租户ID,空为全局字典
   """
   orgID: ID
   """
@@ -6061,7 +8434,7 @@ type AppMenu implements Node {
   """
   父级ID
   """
-  parentID: Int!
+  parentID: ID!
   """
   目录,菜单项
   """
@@ -6087,11 +8460,17 @@ type AppMenu implements Node {
   """
   comments: String
   displaySort: Int
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
   app: App
   """
   需要权限控制时对应的权限
   """
   action: AppAction
+  parent: AppMenu!
+  children: [AppMenu!]
 }
 """
 A connection to a list of items.
@@ -6149,6 +8528,15 @@ Properties by which AppMenu connections can be ordered.
 enum AppMenuOrderField {
   createdAt
   displaySort
+}
+"""
+AppMenuSimpleStatus is enum for the field status
+"""
+enum AppMenuSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
 }
 """
 AppMenuWhereInput is used for filtering AppMenu objects.
@@ -6229,14 +8617,10 @@ input AppMenuWhereInput {
   """
   parent_id field predicates
   """
-  parentID: Int
-  parentIDNEQ: Int
-  parentIDIn: [Int!]
-  parentIDNotIn: [Int!]
-  parentIDGT: Int
-  parentIDGTE: Int
-  parentIDLT: Int
-  parentIDLTE: Int
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
   """
   kind field predicates
   """
@@ -6297,6 +8681,15 @@ input AppMenuWhereInput {
   routeEqualFold: String
   routeContainsFold: String
   """
+  status field predicates
+  """
+  status: AppMenuSimpleStatus
+  statusNEQ: AppMenuSimpleStatus
+  statusIn: [AppMenuSimpleStatus!]
+  statusNotIn: [AppMenuSimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
   app edge predicates
   """
   hasApp: Boolean
@@ -6306,6 +8699,16 @@ input AppMenuWhereInput {
   """
   hasAction: Boolean
   hasActionWith: [AppActionWhereInput!]
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [AppMenuWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [AppMenuWhereInput!]
 }
 """
 Ordering options for App connections
@@ -6337,6 +8740,10 @@ type AppPolicy implements Node {
   """
   appID: ID
   """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind!
+  """
   策略名称
   """
   name: String!
@@ -6358,6 +8765,14 @@ type AppPolicy implements Node {
   status: AppPolicySimpleStatus
   app: App
   roles: [AppRole!]
+  """
+  策略授权的组织策略
+  """
+  orgPolicies: [OrgPolicy!]
+  """
+  策略视图
+  """
+  policyViews: [AppPolicyView!]
 }
 """
 A connection to a list of items.
@@ -6390,6 +8805,13 @@ type AppPolicyEdge {
   cursor: Cursor!
 }
 """
+AppPolicyKind is enum for the field kind
+"""
+enum AppPolicyKind @goModel(model: "github.com/woocoos/knockout/ent/apppolicy.Kind") {
+  app
+  view
+}
+"""
 Ordering options for AppPolicy connections
 """
 input AppPolicyOrder {
@@ -6416,6 +8838,257 @@ enum AppPolicySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/s
   inactive
   processing
   disabled
+}
+type AppPolicyView implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  所属应用
+  """
+  appID: ID
+  """
+  父级ID,0为顶级
+  """
+  parentID: ID!
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind!
+  """
+  名称
+  """
+  name: String!
+  """
+  描述
+  """
+  comments: String
+  """
+  关联的应用策略
+  """
+  policyID: ID
+  """
+  路径编码
+  """
+  path: String
+  displaySort: Int
+  app: App
+  appPolicy: AppPolicy
+  parent: AppPolicyView!
+  children: [AppPolicyView!]
+}
+"""
+A connection to a list of items.
+"""
+type AppPolicyViewConnection {
+  """
+  A list of edges.
+  """
+  edges: [AppPolicyViewEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type AppPolicyViewEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: AppPolicyView
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+AppPolicyViewKind is enum for the field kind
+"""
+enum AppPolicyViewKind @goModel(model: "github.com/woocoos/knockout/ent/apppolicyview.Kind") {
+  dir
+  policy
+}
+"""
+Ordering options for AppPolicyView connections
+"""
+input AppPolicyViewOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order AppPolicyViews.
+  """
+  field: AppPolicyViewOrderField!
+}
+"""
+Properties by which AppPolicyView connections can be ordered.
+"""
+enum AppPolicyViewOrderField {
+  createdAt
+  displaySort
+}
+"""
+AppPolicyViewWhereInput is used for filtering AppPolicyView objects.
+Input was generated by ent.
+"""
+input AppPolicyViewWhereInput {
+  not: AppPolicyViewWhereInput
+  and: [AppPolicyViewWhereInput!]
+  or: [AppPolicyViewWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  app_id field predicates
+  """
+  appID: ID
+  appIDNEQ: ID
+  appIDIn: [ID!]
+  appIDNotIn: [ID!]
+  appIDIsNil: Boolean
+  appIDNotNil: Boolean
+  """
+  parent_id field predicates
+  """
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
+  """
+  kind field predicates
+  """
+  kind: AppPolicyViewKind
+  kindNEQ: AppPolicyViewKind
+  kindIn: [AppPolicyViewKind!]
+  kindNotIn: [AppPolicyViewKind!]
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  policy_id field predicates
+  """
+  policyID: ID
+  policyIDNEQ: ID
+  policyIDIn: [ID!]
+  policyIDNotIn: [ID!]
+  policyIDIsNil: Boolean
+  policyIDNotNil: Boolean
+  """
+  path field predicates
+  """
+  path: String
+  pathNEQ: String
+  pathIn: [String!]
+  pathNotIn: [String!]
+  pathGT: String
+  pathGTE: String
+  pathLT: String
+  pathLTE: String
+  pathContains: String
+  pathHasPrefix: String
+  pathHasSuffix: String
+  pathIsNil: Boolean
+  pathNotNil: Boolean
+  pathEqualFold: String
+  pathContainsFold: String
+  """
+  app edge predicates
+  """
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
+  """
+  app_policy edge predicates
+  """
+  hasAppPolicy: Boolean
+  hasAppPolicyWith: [AppPolicyWhereInput!]
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [AppPolicyViewWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [AppPolicyViewWhereInput!]
 }
 """
 AppPolicyWhereInput is used for filtering AppPolicy objects.
@@ -6494,6 +9167,13 @@ input AppPolicyWhereInput {
   appIDIsNil: Boolean
   appIDNotNil: Boolean
   """
+  kind field predicates
+  """
+  kind: AppPolicyKind
+  kindNEQ: AppPolicyKind
+  kindIn: [AppPolicyKind!]
+  kindNotIn: [AppPolicyKind!]
+  """
   name field predicates
   """
   name: String
@@ -6551,6 +9231,16 @@ input AppPolicyWhereInput {
   """
   hasRoles: Boolean
   hasRolesWith: [AppRoleWhereInput!]
+  """
+  org_policies edge predicates
+  """
+  hasOrgPolicies: Boolean
+  hasOrgPoliciesWith: [OrgPolicyWhereInput!]
+  """
+  policy_views edge predicates
+  """
+  hasPolicyViews: Boolean
+  hasPolicyViewsWith: [AppPolicyViewWhereInput!]
   """
   app_role_policy edge predicates
   """
@@ -7293,6 +9983,11 @@ input AppWhereInput {
   hasPolicies: Boolean
   hasPoliciesWith: [AppPolicyWhereInput!]
   """
+  policy_views edge predicates
+  """
+  hasPolicyViews: Boolean
+  hasPolicyViewsWith: [AppPolicyViewWhereInput!]
+  """
   orgs edge predicates
   """
   hasOrgs: Boolean
@@ -7302,6 +9997,227 @@ input AppWhereInput {
   """
   hasDicts: Boolean
   hasDictsWith: [AppDictWhereInput!]
+}
+type Country implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  国家中文名称
+  """
+  name: String
+  """
+  国家英文名称
+  """
+  nameEn: String
+  """
+  国家代码
+  """
+  code: String!
+  displaySort: Int
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  """
+  地区信息
+  """
+  regions: [Region!]
+}
+"""
+A connection to a list of items.
+"""
+type CountryConnection {
+  """
+  A list of edges.
+  """
+  edges: [CountryEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type CountryEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Country
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Country connections
+"""
+input CountryOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Countries.
+  """
+  field: CountryOrderField!
+}
+"""
+Properties by which Country connections can be ordered.
+"""
+enum CountryOrderField {
+  createdAt
+  displaySort
+}
+"""
+CountrySimpleStatus is enum for the field status
+"""
+enum CountrySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+CountryWhereInput is used for filtering Country objects.
+Input was generated by ent.
+"""
+input CountryWhereInput {
+  not: CountryWhereInput
+  and: [CountryWhereInput!]
+  or: [CountryWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  name_en field predicates
+  """
+  nameEn: String
+  nameEnNEQ: String
+  nameEnIn: [String!]
+  nameEnNotIn: [String!]
+  nameEnGT: String
+  nameEnGTE: String
+  nameEnLT: String
+  nameEnLTE: String
+  nameEnContains: String
+  nameEnHasPrefix: String
+  nameEnHasSuffix: String
+  nameEnIsNil: Boolean
+  nameEnNotNil: Boolean
+  nameEnEqualFold: String
+  nameEnContainsFold: String
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  status field predicates
+  """
+  status: CountrySimpleStatus
+  statusNEQ: CountrySimpleStatus
+  statusIn: [CountrySimpleStatus!]
+  statusNotIn: [CountrySimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  regions edge predicates
+  """
+  hasRegions: Boolean
+  hasRegionsWith: [RegionWhereInput!]
 }
 """
 CreateAppActionInput is used for create AppAction object.
@@ -7429,6 +10345,7 @@ input CreateAppInput {
   resourceIDs: [ID!]
   roleIDs: [ID!]
   policyIDs: [ID!]
+  policyViewIDs: [ID!]
   dictIDs: [ID!]
 }
 """
@@ -7436,10 +10353,6 @@ CreateAppMenuInput is used for create AppMenu object.
 Input was generated by ent.
 """
 input CreateAppMenuInput {
-  """
-  父级ID
-  """
-  parentID: Int!
   """
   目录,菜单项
   """
@@ -7460,14 +10373,24 @@ input CreateAppMenuInput {
   备注
   """
   comments: String
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
   appID: ID
   actionID: ID
+  parentID: ID!
+  childIDs: [ID!]
 }
 """
 CreateAppPolicyInput is used for create AppPolicy object.
 Input was generated by ent.
 """
 input CreateAppPolicyInput {
+  """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind
   """
   策略名称
   """
@@ -7490,6 +10413,30 @@ input CreateAppPolicyInput {
   status: AppPolicySimpleStatus
   appID: ID
   roleIDs: [ID!]
+  orgPolicyIDs: [ID!]
+  policyViewIDs: [ID!]
+}
+"""
+CreateAppPolicyViewInput is used for create AppPolicyView object.
+Input was generated by ent.
+"""
+input CreateAppPolicyViewInput {
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind!
+  """
+  名称
+  """
+  name: String!
+  """
+  描述
+  """
+  comments: String
+  appID: ID
+  appPolicyID: ID
+  parentID: ID!
+  childIDs: [ID!]
 }
 """
 CreateAppResInput is used for create AppRes object.
@@ -7532,6 +10479,51 @@ input CreateAppRoleInput {
   """
   editable: Boolean
   appID: ID
+}
+"""
+CreateCountryInput is used for create Country object.
+Input was generated by ent.
+"""
+input CreateCountryInput {
+  """
+  国家中文名称
+  """
+  name: String
+  """
+  国家英文名称
+  """
+  nameEn: String
+  """
+  国家代码
+  """
+  code: String!
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  regionIDs: [ID!]
+}
+"""
+CreateCurrencyInput is used for create Currency object.
+Input was generated by ent.
+"""
+input CreateCurrencyInput {
+  """
+  代码
+  """
+  code: String!
+  """
+  中文名称
+  """
+  name: String!
+  """
+  货币符号
+  """
+  sign: String
+  """
+  状态
+  """
+  status: CurrencySimpleStatus
 }
 """
 CreateFileIdentityInput is used for create FileIdentity object.
@@ -7629,6 +10621,10 @@ input CreateOrgInput {
   """
   domain: String
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  """
   组织名称
   """
   name: String!
@@ -7648,6 +10644,14 @@ input CreateOrgInput {
   时区
   """
   timezone: String
+  """
+  组织本位币
+  """
+  localCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
   parentID: ID!
   childIDs: [ID!]
   ownerID: ID
@@ -7657,16 +10661,13 @@ input CreateOrgInput {
   policyIDs: [ID!]
   appIDs: [ID!]
   fileIdentityIDs: [ID!]
+  userPasswordPolicyID: ID
 }
 """
 CreateOrgPolicyInput is used for create OrgPolicy object.
 Input was generated by ent.
 """
 input CreateOrgPolicyInput {
-  """
-  所属应用策略,如果是自定义应用策略,则为空
-  """
-  appPolicyID: Int
   """
   策略名称
   """
@@ -7681,6 +10682,8 @@ input CreateOrgPolicyInput {
   rules: [PolicyRuleInput]!
   orgID: ID
   permissionIDs: [ID!]
+  appPolicyID: ID
+  appID: ID
 }
 """
 CreateOrgRoleInput is used for create OrgRole object.
@@ -7714,6 +10717,10 @@ input CreateOrgUserInput {
   在组织内的显示名称
   """
   displayName: String!
+  """
+  用户类型，区分内部及外部用户
+  """
+  userType: OrgUserUserType
   orgID: ID!
   userID: ID!
 }
@@ -7730,6 +10737,10 @@ input CreateOrgUserPreferenceInput {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
 }
 """
 CreatePermissionInput is used for create Permission object.
@@ -7752,6 +10763,170 @@ input CreatePermissionInput {
   userID: ID
   roleID: ID
   orgPolicyID: ID!
+}
+"""
+CreateQuotaInput is used for create Quota object.
+Input was generated by ent.
+"""
+input CreateQuotaInput {
+  """
+  限制值
+  """
+  limit: Int!
+  """
+  生效时间
+  """
+  startAt: Time
+  """
+  过期时间
+  """
+  endAt: Time
+  quotaItemID: ID!
+  quotaOrgID: ID
+  quotaUserID: ID
+}
+"""
+CreateQuotaItemInput is used for create QuotaItem object.
+Input was generated by ent.
+"""
+input CreateQuotaItemInput {
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String!
+  """
+  配额项名称
+  """
+  name: String!
+  """
+  描述
+  """
+  description: String
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType!
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  """
+  是否启用
+  """
+  active: Boolean
+  """
+  默认限制值
+  """
+  defaultLimit: Int
+  quotumIDs: [ID!]
+}
+"""
+CreateRegionInput is used for create Region object.
+Input was generated by ent.
+"""
+input CreateRegionInput {
+  """
+  地区中文名称
+  """
+  name: String
+  """
+  地区英文名称
+  """
+  nameEn: String
+  """
+  编码
+  """
+  shortCode: String
+  """
+  邮政编码
+  """
+  zipCode: String
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  parentID: ID
+  childIDs: [ID!]
+  countryID: ID
+}
+"""
+CreateUserAddrInput is used for create UserAddr object.
+Input was generated by ent.
+"""
+input CreateUserAddrInput {
+  """
+  详细地址
+  """
+  addr: String
+  """
+  邮箱
+  """
+  email: String
+  """
+  传真
+  """
+  fax: String
+  """
+  邮编
+  """
+  zipCode: String
+  """
+  电话
+  """
+  tel: String
+  """
+  手机
+  """
+  mobile: String
+  """
+  联系人名称
+  """
+  name: String
+  """
+  是否默认地址，类型为delivery时使用
+  """
+  isDefault: Boolean
+  userID: ID
+  regionID: ID
+}
+"""
+CreateUserDeviceInput is used for create UserDevice object.
+Input was generated by ent.
+"""
+input CreateUserDeviceInput {
+  """
+  设备唯一ID
+  """
+  deviceUID: String!
+  """
+  设备名称
+  """
+  deviceName: String
+  """
+  系统名称
+  """
+  systemName: String
+  """
+  系统版本
+  """
+  systemVersion: String
+  """
+  app版本
+  """
+  appVersion: String
+  """
+  设备型号
+  """
+  deviceModel: String
+  """
+  状态,可用或不可用及其他待确认状态
+  """
+  status: UserDeviceSimpleStatus
+  """
+  备注
+  """
+  comments: String
+  userID: ID
 }
 """
 CreateUserIdentityInput is used for create UserIdentity object.
@@ -7790,17 +10965,9 @@ input CreateUserInput {
   """
   displayName: String!
   """
-  邮箱
-  """
-  email: String
-  """
-  手机
-  """
-  mobile: String
-  """
   状态
   """
-  status: UserSimpleStatus
+  status: UserUserStatus
   """
   备注
   """
@@ -7809,11 +10976,33 @@ input CreateUserInput {
   头像地址
   """
   avatar: String
+  """
+  性别
+  """
+  gender: UserGender
+  """
+  名字
+  """
+  firstName: String
+  """
+  中间名
+  """
+  middleName: String
+  """
+  姓氏
+  """
+  lastName: String
+  """
+  语言
+  """
+  lang: String
   identityIDs: [ID!]
   loginProfileID: ID
   passwordIDs: [ID!]
   deviceIDs: [ID!]
   oauthClientIDs: [ID!]
+  addressIDs: [ID!]
+  citizenshipID: ID
 }
 """
 CreateUserLoginProfileInput is used for create UserLoginProfile object.
@@ -7835,7 +11024,7 @@ input CreateUserLoginProfileInput {
   """
   是否开启设备认证
   """
-  verifyDevice: Boolean!
+  verifyDevice: Boolean
   userID: ID
 }
 """
@@ -7858,6 +11047,251 @@ input CreateUserPasswordInput {
   userID: ID
 }
 """
+CreateUserPasswordPolicyInput is used for create UserPasswordPolicy object.
+Input was generated by ent.
+"""
+input CreateUserPasswordPolicyInput {
+  """
+  密码最短长度，长度应在6-32位之间
+  """
+  length: Int
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  """
+  最少包含的不同字符数，最多8个，0代表不限制
+  """
+  includeChar: Int
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  """
+  有效天数，最大1095天，0代表不过期
+  """
+  invalidDay: Int
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数，最大32次，0代表不限次数
+  """
+  retry: Int
+  """
+  密码错误多少次出现验证码，最大5次，0代表不出现验证码
+  """
+  captchaTimes: Int
+  orgID: ID
+}
+type Currency implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  代码
+  """
+  code: String!
+  """
+  中文名称
+  """
+  name: String!
+  """
+  货币符号
+  """
+  sign: String
+  """
+  状态
+  """
+  status: CurrencySimpleStatus!
+}
+"""
+A connection to a list of items.
+"""
+type CurrencyConnection {
+  """
+  A list of edges.
+  """
+  edges: [CurrencyEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type CurrencyEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Currency
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Currency connections
+"""
+input CurrencyOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Currencies.
+  """
+  field: CurrencyOrderField!
+}
+"""
+Properties by which Currency connections can be ordered.
+"""
+enum CurrencyOrderField {
+  createdAt
+}
+"""
+CurrencySimpleStatus is enum for the field status
+"""
+enum CurrencySimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+CurrencyWhereInput is used for filtering Currency objects.
+Input was generated by ent.
+"""
+input CurrencyWhereInput {
+  not: CurrencyWhereInput
+  and: [CurrencyWhereInput!]
+  or: [CurrencyWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  sign field predicates
+  """
+  sign: String
+  signNEQ: String
+  signIn: [String!]
+  signNotIn: [String!]
+  signGT: String
+  signGTE: String
+  signLT: String
+  signLTE: String
+  signContains: String
+  signHasPrefix: String
+  signHasSuffix: String
+  signIsNil: Boolean
+  signNotNil: Boolean
+  signEqualFold: String
+  signContainsFold: String
+  """
+  status field predicates
+  """
+  status: CurrencySimpleStatus
+  statusNEQ: CurrencySimpleStatus
+  statusIn: [CurrencySimpleStatus!]
+  statusNotIn: [CurrencySimpleStatus!]
+}
+"""
 Define a Relay Cursor type:
 https://relay.dev/graphql/connections.htm#sec-Cursor
 """
@@ -7868,6 +11302,9 @@ type FileIdentity implements Node {
   createdAt: Time!
   updatedBy: Int
   updatedAt: Time
+  """
+  租户ID
+  """
   tenantID: ID!
   """
   accesskey id
@@ -8601,6 +12038,10 @@ type Org implements Node {
   """
   domain: String
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  """
   系统代码
   """
   code: String
@@ -8629,6 +12070,14 @@ type Org implements Node {
   时区
   """
   timezone: String
+  """
+  组织本位币
+  """
+  localCurrency: String
+  """
+  组织图标
+  """
+  logo: OrgLogo
   parent: Org!
   children: [Org!]
   """
@@ -8763,6 +12212,14 @@ type Org implements Node {
   组织下文件凭证
   """
   fileIdentities: [FileIdentity!]
+  """
+  组织下密码策略
+  """
+  userPasswordPolicy: UserPasswordPolicy
+  """
+  组织下登录策略
+  """
+  orgQuota: [Quota!]
 }
 """
 A connection to a list of items.
@@ -8828,13 +12285,13 @@ type OrgPolicy implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID
+  租户ID
   """
   orgID: ID
   """
   所属应用策略,如果是自定义应用策略,则为空
   """
-  appPolicyID: Int
+  appPolicyID: ID
   """
   策略名称
   """
@@ -8849,6 +12306,8 @@ type OrgPolicy implements Node {
   rules: [PolicyRule]!
   org: Org
   permissions: [Permission!]
+  appPolicy: AppPolicy
+  app: App
 }
 """
 A connection to a list of items.
@@ -8978,14 +12437,10 @@ input OrgPolicyWhereInput {
   """
   app_policy_id field predicates
   """
-  appPolicyID: Int
-  appPolicyIDNEQ: Int
-  appPolicyIDIn: [Int!]
-  appPolicyIDNotIn: [Int!]
-  appPolicyIDGT: Int
-  appPolicyIDGTE: Int
-  appPolicyIDLT: Int
-  appPolicyIDLTE: Int
+  appPolicyID: ID
+  appPolicyIDNEQ: ID
+  appPolicyIDIn: [ID!]
+  appPolicyIDNotIn: [ID!]
   appPolicyIDIsNil: Boolean
   appPolicyIDNotNil: Boolean
   """
@@ -9032,6 +12487,16 @@ input OrgPolicyWhereInput {
   """
   hasPermissions: Boolean
   hasPermissionsWith: [PermissionWhereInput!]
+  """
+  app_policy edge predicates
+  """
+  hasAppPolicy: Boolean
+  hasAppPolicyWith: [AppPolicyWhereInput!]
+  """
+  app edge predicates
+  """
+  hasApp: Boolean
+  hasAppWith: [AppWhereInput!]
 }
 type OrgRole implements Node {
   id: ID!
@@ -9040,7 +12505,7 @@ type OrgRole implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  组织ID
+  租户ID
   """
   orgID: ID
   """
@@ -9361,7 +12826,7 @@ type OrgUserPreference implements Node {
   """
   userID: ID!
   """
-  组织ID
+  租户ID
   """
   orgID: ID!
   """
@@ -9372,6 +12837,10 @@ type OrgUserPreference implements Node {
   用户最近访问菜单
   """
   menuRecent: [ID!]
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreference!]
   user: User!
   org: Org!
 }
@@ -9517,6 +12986,13 @@ input OrgUserPreferenceWhereInput {
   hasOrgWith: [OrgWhereInput!]
 }
 """
+OrgUserUserType is enum for the field user_type
+"""
+enum OrgUserUserType @goModel(model: "github.com/woocoos/knockout/ent/orguser.UserType") {
+  internal
+  external
+}
+"""
 OrgUserWhereInput is used for filtering OrgUser objects.
 Input was generated by ent.
 """
@@ -9610,6 +13086,13 @@ input OrgUserWhereInput {
   displayNameHasSuffix: String
   displayNameEqualFold: String
   displayNameContainsFold: String
+  """
+  user_type field predicates
+  """
+  userType: OrgUserUserType
+  userTypeNEQ: OrgUserUserType
+  userTypeIn: [OrgUserUserType!]
+  userTypeNotIn: [OrgUserUserType!]
 }
 """
 OrgWhereInput is used for filtering Org objects.
@@ -9830,6 +13313,24 @@ input OrgWhereInput {
   timezoneEqualFold: String
   timezoneContainsFold: String
   """
+  local_currency field predicates
+  """
+  localCurrency: String
+  localCurrencyNEQ: String
+  localCurrencyIn: [String!]
+  localCurrencyNotIn: [String!]
+  localCurrencyGT: String
+  localCurrencyGTE: String
+  localCurrencyLT: String
+  localCurrencyLTE: String
+  localCurrencyContains: String
+  localCurrencyHasPrefix: String
+  localCurrencyHasSuffix: String
+  localCurrencyIsNil: Boolean
+  localCurrencyNotNil: Boolean
+  localCurrencyEqualFold: String
+  localCurrencyContainsFold: String
+  """
   parent edge predicates
   """
   hasParent: Boolean
@@ -9875,6 +13376,16 @@ input OrgWhereInput {
   hasFileIdentities: Boolean
   hasFileIdentitiesWith: [FileIdentityWhereInput!]
   """
+  user_password_policy edge predicates
+  """
+  hasUserPasswordPolicy: Boolean
+  hasUserPasswordPolicyWith: [UserPasswordPolicyWhereInput!]
+  """
+  org_quota edge predicates
+  """
+  hasOrgQuota: Boolean
+  hasOrgQuotaWith: [QuotaWhereInput!]
+  """
   org_user edge predicates
   """
   hasOrgUser: Boolean
@@ -9909,7 +13420,7 @@ type Permission implements Node {
   updatedBy: Int
   updatedAt: Time
   """
-  授权的域根组织
+  授权的租户
   """
   orgID: ID!
   """
@@ -10260,6 +13771,74 @@ type Query {
     where: AppDictWhereInput
   ): AppDictConnection!
   """
+  国家查询
+  """
+  countries(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Countries returned from the connection.
+    """
+    orderBy: CountryOrder
+
+    """
+    Filtering options for Countries returned from the connection.
+    """
+    where: CountryWhereInput
+  ): CountryConnection!
+  """
+  货币查询
+  """
+  currencies(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Currencies returned from the connection.
+    """
+    orderBy: CurrencyOrder
+
+    """
+    Filtering options for Currencies returned from the connection.
+    """
+    where: CurrencyWhereInput
+  ): CurrencyConnection!
+  """
   文件凭证
   """
   fileIdentities(
@@ -10358,6 +13937,108 @@ type Query {
     """
     where: OrgWhereInput
   ): OrgConnection!
+  """
+  配额管理
+  """
+  quotas(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaSlice returned from the connection.
+    """
+    orderBy: QuotaOrder
+
+    """
+    Filtering options for QuotaSlice returned from the connection.
+    """
+    where: QuotaWhereInput
+  ): QuotaConnection!
+  """
+  配额定义
+  """
+  quotaItems(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaItems returned from the connection.
+    """
+    orderBy: QuotaItemOrder
+
+    """
+    Filtering options for QuotaItems returned from the connection.
+    """
+    where: QuotaItemWhereInput
+  ): QuotaItemConnection!
+  """
+  地区查询
+  """
+  regions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for Regions returned from the connection.
+    """
+    orderBy: RegionOrder
+
+    """
+    Filtering options for Regions returned from the connection.
+    """
+    where: RegionWhereInput
+  ): RegionConnection!
   users(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -10389,6 +14070,769 @@ type Query {
     """
     where: UserWhereInput
   ): UserConnection!
+}
+type Quota implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  租户ID,来源于root的组织ID.
+  """
+  tenantID: ID
+  """
+  来源于用户ID
+  """
+  userID: ID
+  """
+  配额项ID
+  """
+  quotaItemID: ID!
+  """
+  限制值
+  """
+  limit: Int!
+  """
+  已使用值
+  """
+  used: Int!
+  """
+  生效时间
+  """
+  startAt: Time
+  """
+  过期时间
+  """
+  endAt: Time
+  """
+  配额定义
+  """
+  quotaItem: QuotaItem!
+  """
+  配额关联租户
+  """
+  quotaOrg: Org
+  """
+  配额关联用户
+  """
+  quotaUser: User
+}
+"""
+A connection to a list of items.
+"""
+type QuotaConnection {
+  """
+  A list of edges.
+  """
+  edges: [QuotaEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type QuotaEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Quota
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+type QuotaItem implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String!
+  """
+  配额项名称
+  """
+  name: String!
+  """
+  描述
+  """
+  description: String
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType!
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  """
+  是否启用
+  """
+  active: Boolean!
+  """
+  默认限制值
+  """
+  defaultLimit: Int
+  quota(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for QuotaSlice returned from the connection.
+    """
+    orderBy: QuotaOrder
+
+    """
+    Filtering options for QuotaSlice returned from the connection.
+    """
+    where: QuotaWhereInput
+  ): QuotaConnection!
+}
+"""
+A connection to a list of items.
+"""
+type QuotaItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [QuotaItemEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type QuotaItemEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: QuotaItem
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for QuotaItem connections
+"""
+input QuotaItemOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order QuotaItems.
+  """
+  field: QuotaItemOrderField!
+}
+"""
+Properties by which QuotaItem connections can be ordered.
+"""
+enum QuotaItemOrderField {
+  createdAt
+}
+"""
+QuotaItemResourceType is enum for the field resource_type
+"""
+enum QuotaItemResourceType @goModel(model: "github.com/woocoos/knockout/ent/quotaitem.ResourceType") {
+  number
+  storage
+  network
+}
+"""
+QuotaItemWhereInput is used for filtering QuotaItem objects.
+Input was generated by ent.
+"""
+input QuotaItemWhereInput {
+  not: QuotaItemWhereInput
+  and: [QuotaItemWhereInput!]
+  or: [QuotaItemWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  code field predicates
+  """
+  code: String
+  codeNEQ: String
+  codeIn: [String!]
+  codeNotIn: [String!]
+  codeGT: String
+  codeGTE: String
+  codeLT: String
+  codeLTE: String
+  codeContains: String
+  codeHasPrefix: String
+  codeHasSuffix: String
+  codeEqualFold: String
+  codeContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  resource_type field predicates
+  """
+  resourceType: QuotaItemResourceType
+  resourceTypeNEQ: QuotaItemResourceType
+  resourceTypeIn: [QuotaItemResourceType!]
+  resourceTypeNotIn: [QuotaItemResourceType!]
+  """
+  active field predicates
+  """
+  active: Boolean
+  activeNEQ: Boolean
+  """
+  default_limit field predicates
+  """
+  defaultLimit: Int
+  defaultLimitNEQ: Int
+  defaultLimitIn: [Int!]
+  defaultLimitNotIn: [Int!]
+  defaultLimitGT: Int
+  defaultLimitGTE: Int
+  defaultLimitLT: Int
+  defaultLimitLTE: Int
+  defaultLimitIsNil: Boolean
+  defaultLimitNotNil: Boolean
+  """
+  quota edge predicates
+  """
+  hasQuota: Boolean
+  hasQuotaWith: [QuotaWhereInput!]
+}
+"""
+Ordering options for Quota connections
+"""
+input QuotaOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order QuotaSlice.
+  """
+  field: QuotaOrderField!
+}
+"""
+Properties by which Quota connections can be ordered.
+"""
+enum QuotaOrderField {
+  createdAt
+}
+"""
+QuotaWhereInput is used for filtering Quota objects.
+Input was generated by ent.
+"""
+input QuotaWhereInput {
+  not: QuotaWhereInput
+  and: [QuotaWhereInput!]
+  or: [QuotaWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  tenant_id field predicates
+  """
+  tenantID: ID
+  tenantIDNEQ: ID
+  tenantIDIn: [ID!]
+  tenantIDNotIn: [ID!]
+  tenantIDIsNil: Boolean
+  tenantIDNotNil: Boolean
+  """
+  user_id field predicates
+  """
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  userIDIsNil: Boolean
+  userIDNotNil: Boolean
+  """
+  quota_item_id field predicates
+  """
+  quotaItemID: ID
+  quotaItemIDNEQ: ID
+  quotaItemIDIn: [ID!]
+  quotaItemIDNotIn: [ID!]
+  """
+  start_at field predicates
+  """
+  startAt: Time
+  startAtNEQ: Time
+  startAtIn: [Time!]
+  startAtNotIn: [Time!]
+  startAtGT: Time
+  startAtGTE: Time
+  startAtLT: Time
+  startAtLTE: Time
+  startAtIsNil: Boolean
+  startAtNotNil: Boolean
+  """
+  end_at field predicates
+  """
+  endAt: Time
+  endAtNEQ: Time
+  endAtIn: [Time!]
+  endAtNotIn: [Time!]
+  endAtGT: Time
+  endAtGTE: Time
+  endAtLT: Time
+  endAtLTE: Time
+  endAtIsNil: Boolean
+  endAtNotNil: Boolean
+  """
+  quota_item edge predicates
+  """
+  hasQuotaItem: Boolean
+  hasQuotaItemWith: [QuotaItemWhereInput!]
+  """
+  quota_org edge predicates
+  """
+  hasQuotaOrg: Boolean
+  hasQuotaOrgWith: [OrgWhereInput!]
+  """
+  quota_user edge predicates
+  """
+  hasQuotaUser: Boolean
+  hasQuotaUserWith: [UserWhereInput!]
+}
+type Region implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  父id，0为顶级
+  """
+  parentID: ID
+  """
+  地区中文名称
+  """
+  name: String
+  """
+  地区英文名称
+  """
+  nameEn: String
+  """
+  编码
+  """
+  shortCode: String
+  """
+  邮政编码
+  """
+  zipCode: String
+  """
+  国家id
+  """
+  countryID: ID
+  displaySort: Int
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  parent: Region
+  children: [Region!]
+  country: Country
+}
+"""
+A connection to a list of items.
+"""
+type RegionConnection {
+  """
+  A list of edges.
+  """
+  edges: [RegionEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type RegionEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: Region
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for Region connections
+"""
+input RegionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order Regions.
+  """
+  field: RegionOrderField!
+}
+"""
+Properties by which Region connections can be ordered.
+"""
+enum RegionOrderField {
+  createdAt
+  displaySort
+}
+"""
+RegionSimpleStatus is enum for the field status
+"""
+enum RegionSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+  active
+  inactive
+  processing
+  disabled
+}
+"""
+RegionWhereInput is used for filtering Region objects.
+Input was generated by ent.
+"""
+input RegionWhereInput {
+  not: RegionWhereInput
+  and: [RegionWhereInput!]
+  or: [RegionWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  parent_id field predicates
+  """
+  parentID: ID
+  parentIDNEQ: ID
+  parentIDIn: [ID!]
+  parentIDNotIn: [ID!]
+  parentIDIsNil: Boolean
+  parentIDNotNil: Boolean
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  name_en field predicates
+  """
+  nameEn: String
+  nameEnNEQ: String
+  nameEnIn: [String!]
+  nameEnNotIn: [String!]
+  nameEnGT: String
+  nameEnGTE: String
+  nameEnLT: String
+  nameEnLTE: String
+  nameEnContains: String
+  nameEnHasPrefix: String
+  nameEnHasSuffix: String
+  nameEnIsNil: Boolean
+  nameEnNotNil: Boolean
+  nameEnEqualFold: String
+  nameEnContainsFold: String
+  """
+  short_code field predicates
+  """
+  shortCode: String
+  shortCodeNEQ: String
+  shortCodeIn: [String!]
+  shortCodeNotIn: [String!]
+  shortCodeGT: String
+  shortCodeGTE: String
+  shortCodeLT: String
+  shortCodeLTE: String
+  shortCodeContains: String
+  shortCodeHasPrefix: String
+  shortCodeHasSuffix: String
+  shortCodeIsNil: Boolean
+  shortCodeNotNil: Boolean
+  shortCodeEqualFold: String
+  shortCodeContainsFold: String
+  """
+  zip_code field predicates
+  """
+  zipCode: String
+  zipCodeNEQ: String
+  zipCodeIn: [String!]
+  zipCodeNotIn: [String!]
+  zipCodeGT: String
+  zipCodeGTE: String
+  zipCodeLT: String
+  zipCodeLTE: String
+  zipCodeContains: String
+  zipCodeHasPrefix: String
+  zipCodeHasSuffix: String
+  zipCodeIsNil: Boolean
+  zipCodeNotNil: Boolean
+  zipCodeEqualFold: String
+  zipCodeContainsFold: String
+  """
+  country_id field predicates
+  """
+  countryID: ID
+  countryIDNEQ: ID
+  countryIDIn: [ID!]
+  countryIDNotIn: [ID!]
+  countryIDIsNil: Boolean
+  countryIDNotNil: Boolean
+  """
+  status field predicates
+  """
+  status: RegionSimpleStatus
+  statusNEQ: RegionSimpleStatus
+  statusIn: [RegionSimpleStatus!]
+  statusNotIn: [RegionSimpleStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  parent edge predicates
+  """
+  hasParent: Boolean
+  hasParentWith: [RegionWhereInput!]
+  """
+  children edge predicates
+  """
+  hasChildren: Boolean
+  hasChildrenWith: [RegionWhereInput!]
+  """
+  country edge predicates
+  """
+  hasCountry: Boolean
+  hasCountryWith: [CountryWhereInput!]
 }
 """
 The builtin Time type
@@ -10531,6 +14975,9 @@ input UpdateAppInput {
   addPolicyIDs: [ID!]
   removePolicyIDs: [ID!]
   clearPolicies: Boolean
+  addPolicyViewIDs: [ID!]
+  removePolicyViewIDs: [ID!]
+  clearPolicyViews: Boolean
   addDictIDs: [ID!]
   removeDictIDs: [ID!]
   clearDicts: Boolean
@@ -10540,10 +14987,6 @@ UpdateAppMenuInput is used for update AppMenu object.
 Input was generated by ent.
 """
 input UpdateAppMenuInput {
-  """
-  父级ID
-  """
-  parentID: Int
   """
   目录,菜单项
   """
@@ -10567,14 +15010,27 @@ input UpdateAppMenuInput {
   """
   comments: String
   clearComments: Boolean
+  """
+  状态
+  """
+  status: AppMenuSimpleStatus
+  clearStatus: Boolean
   actionID: ID
   clearAction: Boolean
+  parentID: ID
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
 }
 """
 UpdateAppPolicyInput is used for update AppPolicy object.
 Input was generated by ent.
 """
 input UpdateAppPolicyInput {
+  """
+  分类：app-应用策略、view-策略视图
+  """
+  kind: AppPolicyKind
   """
   策略名称
   """
@@ -10601,6 +15057,37 @@ input UpdateAppPolicyInput {
   addRoleIDs: [ID!]
   removeRoleIDs: [ID!]
   clearRoles: Boolean
+  addOrgPolicyIDs: [ID!]
+  removeOrgPolicyIDs: [ID!]
+  clearOrgPolicies: Boolean
+  addPolicyViewIDs: [ID!]
+  removePolicyViewIDs: [ID!]
+  clearPolicyViews: Boolean
+}
+"""
+UpdateAppPolicyViewInput is used for update AppPolicyView object.
+Input was generated by ent.
+"""
+input UpdateAppPolicyViewInput {
+  """
+  分类：dir-目录、policy-权限策略
+  """
+  kind: AppPolicyViewKind
+  """
+  名称
+  """
+  name: String
+  """
+  描述
+  """
+  comments: String
+  clearComments: Boolean
+  appPolicyID: ID
+  clearAppPolicy: Boolean
+  parentID: ID
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
 }
 """
 UpdateAppResInput is used for update AppRes object.
@@ -10634,6 +15121,57 @@ input UpdateAppRoleInput {
   授权后是否可编辑
   """
   editable: Boolean
+}
+"""
+UpdateCountryInput is used for update Country object.
+Input was generated by ent.
+"""
+input UpdateCountryInput {
+  """
+  国家中文名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  国家英文名称
+  """
+  nameEn: String
+  clearNameEn: Boolean
+  """
+  国家代码
+  """
+  code: String
+  """
+  状态
+  """
+  status: CountrySimpleStatus
+  clearStatus: Boolean
+  addRegionIDs: [ID!]
+  removeRegionIDs: [ID!]
+  clearRegions: Boolean
+}
+"""
+UpdateCurrencyInput is used for update Currency object.
+Input was generated by ent.
+"""
+input UpdateCurrencyInput {
+  """
+  代码
+  """
+  code: String
+  """
+  中文名称
+  """
+  name: String
+  """
+  货币符号
+  """
+  sign: String
+  clearSign: Boolean
+  """
+  状态
+  """
+  status: CurrencySimpleStatus
 }
 """
 UpdateFileIdentityInput is used for update FileIdentity object.
@@ -10737,6 +15275,12 @@ input UpdateOrgInput {
   domain: String
   clearDomain: Boolean
   """
+  自定义域名
+  """
+  customDomain: [String!]
+  appendCustomDomain: [String!]
+  clearCustomDomain: Boolean
+  """
   组织名称
   """
   name: String
@@ -10760,6 +15304,16 @@ input UpdateOrgInput {
   """
   timezone: String
   clearTimezone: Boolean
+  """
+  组织本位币
+  """
+  localCurrency: String
+  clearLocalCurrency: Boolean
+  """
+  组织图标
+  """
+  logo: OrgLogoInput
+  clearLogo: Boolean
   parentID: ID
   addChildIDs: [ID!]
   removeChildIDs: [ID!]
@@ -10784,17 +15338,14 @@ input UpdateOrgInput {
   addFileIdentityIDs: [ID!]
   removeFileIdentityIDs: [ID!]
   clearFileIdentities: Boolean
+  userPasswordPolicyID: ID
+  clearUserPasswordPolicy: Boolean
 }
 """
 UpdateOrgPolicyInput is used for update OrgPolicy object.
 Input was generated by ent.
 """
 input UpdateOrgPolicyInput {
-  """
-  所属应用策略,如果是自定义应用策略,则为空
-  """
-  appPolicyID: Int
-  clearAppPolicyID: Boolean
   """
   策略名称
   """
@@ -10812,6 +15363,10 @@ input UpdateOrgPolicyInput {
   addPermissionIDs: [ID!]
   removePermissionIDs: [ID!]
   clearPermissions: Boolean
+  appPolicyID: ID
+  clearAppPolicy: Boolean
+  appID: ID
+  clearApp: Boolean
 }
 """
 UpdateOrgRoleInput is used for update OrgRole object.
@@ -10845,6 +15400,10 @@ input UpdateOrgUserInput {
   在组织内的显示名称
   """
   displayName: String
+  """
+  用户类型，区分内部及外部用户
+  """
+  userType: OrgUserUserType
   orgID: ID
   userID: ID
 }
@@ -10865,6 +15424,12 @@ input UpdateOrgUserPreferenceInput {
   menuRecent: [ID!]
   appendMenuRecent: [ID!]
   clearMenuRecent: Boolean
+  """
+  客户端偏好设置
+  """
+  clientPreferences: [ClientPreferenceInput!]
+  appendClientPreferences: [ClientPreferenceInput!]
+  clearClientPreferences: Boolean
 }
 """
 UpdatePermissionInput is used for update Permission object.
@@ -10886,6 +15451,201 @@ input UpdatePermissionInput {
   """
   status: PermissionSimpleStatus
   clearStatus: Boolean
+}
+"""
+UpdateQuotaInput is used for update Quota object.
+Input was generated by ent.
+"""
+input UpdateQuotaInput {
+  """
+  限制值
+  """
+  limit: Int
+  """
+  生效时间
+  """
+  startAt: Time
+  clearStartAt: Boolean
+  """
+  过期时间
+  """
+  endAt: Time
+  clearEndAt: Boolean
+  quotaItemID: ID
+  quotaOrgID: ID
+  clearQuotaOrg: Boolean
+  quotaUserID: ID
+  clearQuotaUser: Boolean
+}
+"""
+UpdateQuotaItemInput is used for update QuotaItem object.
+Input was generated by ent.
+"""
+input UpdateQuotaItemInput {
+  """
+  配额项代码,如: users,orgs
+  """
+  code: String
+  """
+  配额项名称
+  """
+  name: String
+  """
+  描述
+  """
+  description: String
+  clearDescription: Boolean
+  """
+  资源类型
+  """
+  resourceType: QuotaItemResourceType
+  """
+  单位,如: 个,MB,GB
+  """
+  unit: String
+  clearUnit: Boolean
+  """
+  是否启用
+  """
+  active: Boolean
+  """
+  默认限制值
+  """
+  defaultLimit: Int
+  clearDefaultLimit: Boolean
+  addQuotumIDs: [ID!]
+  removeQuotumIDs: [ID!]
+  clearQuota: Boolean
+}
+"""
+UpdateRegionInput is used for update Region object.
+Input was generated by ent.
+"""
+input UpdateRegionInput {
+  """
+  地区中文名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  地区英文名称
+  """
+  nameEn: String
+  clearNameEn: Boolean
+  """
+  编码
+  """
+  shortCode: String
+  clearShortCode: Boolean
+  """
+  邮政编码
+  """
+  zipCode: String
+  clearZipCode: Boolean
+  """
+  状态
+  """
+  status: RegionSimpleStatus
+  clearStatus: Boolean
+  parentID: ID
+  clearParent: Boolean
+  addChildIDs: [ID!]
+  removeChildIDs: [ID!]
+  clearChildren: Boolean
+  countryID: ID
+  clearCountry: Boolean
+}
+"""
+UpdateUserAddrInput is used for update UserAddr object.
+Input was generated by ent.
+"""
+input UpdateUserAddrInput {
+  """
+  详细地址
+  """
+  addr: String
+  clearAddr: Boolean
+  """
+  邮箱
+  """
+  email: String
+  clearEmail: Boolean
+  """
+  传真
+  """
+  fax: String
+  clearFax: Boolean
+  """
+  邮编
+  """
+  zipCode: String
+  clearZipCode: Boolean
+  """
+  电话
+  """
+  tel: String
+  clearTel: Boolean
+  """
+  手机
+  """
+  mobile: String
+  clearMobile: Boolean
+  """
+  联系人名称
+  """
+  name: String
+  clearName: Boolean
+  """
+  是否默认地址，类型为delivery时使用
+  """
+  isDefault: Boolean
+  regionID: ID
+  clearRegion: Boolean
+}
+"""
+UpdateUserDeviceInput is used for update UserDevice object.
+Input was generated by ent.
+"""
+input UpdateUserDeviceInput {
+  """
+  设备唯一ID
+  """
+  deviceUID: String
+  """
+  设备名称
+  """
+  deviceName: String
+  clearDeviceName: Boolean
+  """
+  系统名称
+  """
+  systemName: String
+  clearSystemName: Boolean
+  """
+  系统版本
+  """
+  systemVersion: String
+  clearSystemVersion: Boolean
+  """
+  app版本
+  """
+  appVersion: String
+  clearAppVersion: Boolean
+  """
+  设备型号
+  """
+  deviceModel: String
+  clearDeviceModel: Boolean
+  """
+  状态,可用或不可用及其他待确认状态
+  """
+  status: UserDeviceSimpleStatus
+  clearStatus: Boolean
+  """
+  备注
+  """
+  comments: String
+  clearComments: Boolean
 }
 """
 UpdateUserIdentityInput is used for update UserIdentity object.
@@ -10926,16 +15686,6 @@ input UpdateUserInput {
   """
   displayName: String
   """
-  邮箱
-  """
-  email: String
-  clearEmail: Boolean
-  """
-  手机
-  """
-  mobile: String
-  clearMobile: Boolean
-  """
   备注
   """
   comments: String
@@ -10945,6 +15695,32 @@ input UpdateUserInput {
   """
   avatar: String
   clearAvatar: Boolean
+  """
+  性别
+  """
+  gender: UserGender
+  """
+  名字
+  """
+  firstName: String
+  clearFirstName: Boolean
+  """
+  中间名
+  """
+  middleName: String
+  clearMiddleName: Boolean
+  """
+  姓氏
+  """
+  lastName: String
+  clearLastName: Boolean
+  """
+  语言
+  """
+  lang: String
+  clearLang: Boolean
+  citizenshipID: ID
+  clearCitizenship: Boolean
 }
 """
 UpdateUserLoginProfileInput is used for update UserLoginProfile object.
@@ -10990,6 +15766,52 @@ input UpdateUserPasswordInput {
   status: UserPasswordSimpleStatus
   clearStatus: Boolean
 }
+"""
+UpdateUserPasswordPolicyInput is used for update UserPasswordPolicy object.
+Input was generated by ent.
+"""
+input UpdateUserPasswordPolicyInput {
+  """
+  密码最短长度，长度应在6-32位之间
+  """
+  length: Int
+  clearLength: Boolean
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  clearIncludeElement: Boolean
+  """
+  最少包含的不同字符数，最多8个，0代表不限制
+  """
+  includeChar: Int
+  clearIncludeChar: Boolean
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  clearAllowIncludeUserName: Boolean
+  """
+  有效天数，最大1095天，0代表不过期
+  """
+  invalidDay: Int
+  clearInvalidDay: Boolean
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  clearInvalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数，最大32次，0代表不限次数
+  """
+  retry: Int
+  clearRetry: Boolean
+  """
+  密码错误多少次出现验证码，最大5次，0代表不出现验证码
+  """
+  captchaTimes: Int
+  clearCaptchaTimes: Boolean
+}
 type User implements Node {
   id: ID!
   createdBy: Int!
@@ -11006,14 +15828,6 @@ type User implements Node {
   """
   displayName: String!
   """
-  邮箱
-  """
-  email: String
-  """
-  手机
-  """
-  mobile: String
-  """
   用户类型
   """
   userType: UserUserType!
@@ -11028,7 +15842,7 @@ type User implements Node {
   """
   状态
   """
-  status: UserSimpleStatus
+  status: UserUserStatus
   """
   备注
   """
@@ -11038,6 +15852,30 @@ type User implements Node {
   """
   avatar: String
   """
+  性别
+  """
+  gender: UserGender!
+  """
+  国籍
+  """
+  citizenshipID: ID
+  """
+  名字
+  """
+  firstName: String
+  """
+  中间名
+  """
+  middleName: String
+  """
+  姓氏
+  """
+  lastName: String
+  """
+  语言
+  """
+  lang: String
+  """
   用户身份标识
   """
   identities: [UserIdentity!]
@@ -11045,10 +15883,37 @@ type User implements Node {
   登陆设置
   """
   loginProfile: UserLoginProfile
-  """
-  用户设备
-  """
-  devices: [UserDevice!]
+  devices(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for UserDevices returned from the connection.
+    """
+    orderBy: UserDeviceOrder
+
+    """
+    Filtering options for UserDevices returned from the connection.
+    """
+    where: UserDeviceWhereInput
+  ): UserDeviceConnection!
   permissions(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -11084,6 +15949,331 @@ type User implements Node {
   用户AccessKey
   """
   oauthClients: [OauthClient!]
+  """
+  用户联系信息
+  """
+  addresses: [UserAddr!]
+  """
+  国籍信息
+  """
+  citizenship: Country
+  """
+  用户配额
+  """
+  userQuota: [Quota!]
+}
+type UserAddr implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  userID: ID
+  """
+  地址类型，contact：基本信息，delivery：收货地址
+  """
+  addrType: UserAddrAddrType!
+  """
+  地址地区：市
+  """
+  regionID: ID
+  """
+  详细地址
+  """
+  addr: String
+  """
+  邮箱
+  """
+  email: String
+  """
+  传真
+  """
+  fax: String
+  """
+  邮编
+  """
+  zipCode: String
+  """
+  电话
+  """
+  tel: String
+  """
+  手机
+  """
+  mobile: String
+  """
+  联系人名称
+  """
+  name: String
+  """
+  是否默认地址，类型为delivery时使用
+  """
+  isDefault: Boolean!
+  user: User
+  """
+  地区信息
+  """
+  region: Region
+}
+"""
+UserAddrAddrType is enum for the field addr_type
+"""
+enum UserAddrAddrType @goModel(model: "github.com/woocoos/knockout/ent/useraddr.AddrType") {
+  contact
+  delivery
+}
+"""
+Ordering options for UserAddr connections
+"""
+input UserAddrOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order UserAddrs.
+  """
+  field: UserAddrOrderField!
+}
+"""
+Properties by which UserAddr connections can be ordered.
+"""
+enum UserAddrOrderField {
+  createdAt
+}
+"""
+UserAddrWhereInput is used for filtering UserAddr objects.
+Input was generated by ent.
+"""
+input UserAddrWhereInput {
+  not: UserAddrWhereInput
+  and: [UserAddrWhereInput!]
+  or: [UserAddrWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  user_id field predicates
+  """
+  userID: ID
+  userIDNEQ: ID
+  userIDIn: [ID!]
+  userIDNotIn: [ID!]
+  userIDIsNil: Boolean
+  userIDNotNil: Boolean
+  """
+  addr_type field predicates
+  """
+  addrType: UserAddrAddrType
+  addrTypeNEQ: UserAddrAddrType
+  addrTypeIn: [UserAddrAddrType!]
+  addrTypeNotIn: [UserAddrAddrType!]
+  """
+  region_id field predicates
+  """
+  regionID: ID
+  regionIDNEQ: ID
+  regionIDIn: [ID!]
+  regionIDNotIn: [ID!]
+  regionIDIsNil: Boolean
+  regionIDNotNil: Boolean
+  """
+  addr field predicates
+  """
+  addr: String
+  addrNEQ: String
+  addrIn: [String!]
+  addrNotIn: [String!]
+  addrGT: String
+  addrGTE: String
+  addrLT: String
+  addrLTE: String
+  addrContains: String
+  addrHasPrefix: String
+  addrHasSuffix: String
+  addrIsNil: Boolean
+  addrNotNil: Boolean
+  addrEqualFold: String
+  addrContainsFold: String
+  """
+  email field predicates
+  """
+  email: String
+  emailNEQ: String
+  emailIn: [String!]
+  emailNotIn: [String!]
+  emailGT: String
+  emailGTE: String
+  emailLT: String
+  emailLTE: String
+  emailContains: String
+  emailHasPrefix: String
+  emailHasSuffix: String
+  emailIsNil: Boolean
+  emailNotNil: Boolean
+  emailEqualFold: String
+  emailContainsFold: String
+  """
+  fax field predicates
+  """
+  fax: String
+  faxNEQ: String
+  faxIn: [String!]
+  faxNotIn: [String!]
+  faxGT: String
+  faxGTE: String
+  faxLT: String
+  faxLTE: String
+  faxContains: String
+  faxHasPrefix: String
+  faxHasSuffix: String
+  faxIsNil: Boolean
+  faxNotNil: Boolean
+  faxEqualFold: String
+  faxContainsFold: String
+  """
+  zip_code field predicates
+  """
+  zipCode: String
+  zipCodeNEQ: String
+  zipCodeIn: [String!]
+  zipCodeNotIn: [String!]
+  zipCodeGT: String
+  zipCodeGTE: String
+  zipCodeLT: String
+  zipCodeLTE: String
+  zipCodeContains: String
+  zipCodeHasPrefix: String
+  zipCodeHasSuffix: String
+  zipCodeIsNil: Boolean
+  zipCodeNotNil: Boolean
+  zipCodeEqualFold: String
+  zipCodeContainsFold: String
+  """
+  tel field predicates
+  """
+  tel: String
+  telNEQ: String
+  telIn: [String!]
+  telNotIn: [String!]
+  telGT: String
+  telGTE: String
+  telLT: String
+  telLTE: String
+  telContains: String
+  telHasPrefix: String
+  telHasSuffix: String
+  telIsNil: Boolean
+  telNotNil: Boolean
+  telEqualFold: String
+  telContainsFold: String
+  """
+  mobile field predicates
+  """
+  mobile: String
+  mobileNEQ: String
+  mobileIn: [String!]
+  mobileNotIn: [String!]
+  mobileGT: String
+  mobileGTE: String
+  mobileLT: String
+  mobileLTE: String
+  mobileContains: String
+  mobileHasPrefix: String
+  mobileHasSuffix: String
+  mobileIsNil: Boolean
+  mobileNotNil: Boolean
+  mobileEqualFold: String
+  mobileContainsFold: String
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  is_default field predicates
+  """
+  isDefault: Boolean
+  isDefaultNEQ: Boolean
+  """
+  user edge predicates
+  """
+  hasUser: Boolean
+  hasUserWith: [UserWhereInput!]
+  """
+  region edge predicates
+  """
+  hasRegion: Boolean
+  hasRegionWith: [RegionWhereInput!]
 }
 """
 A connection to a list of items.
@@ -11121,10 +16311,25 @@ type UserDevice implements Node {
   设备唯一ID
   """
   deviceUID: String!
+  """
+  设备名称
+  """
   deviceName: String
+  """
+  系统名称
+  """
   systemName: String
+  """
+  系统版本
+  """
   systemVersion: String
+  """
+  app版本
+  """
   appVersion: String
+  """
+  设备型号
+  """
   deviceModel: String
   """
   状态,可用或不可用及其他待确认状态
@@ -11135,6 +16340,36 @@ type UserDevice implements Node {
   """
   comments: String
   user: User
+}
+"""
+A connection to a list of items.
+"""
+type UserDeviceConnection {
+  """
+  A list of edges.
+  """
+  edges: [UserDeviceEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type UserDeviceEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: UserDevice
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
 }
 """
 Ordering options for UserDevice connections
@@ -11373,6 +16608,14 @@ type UserEdge {
   A cursor for use in pagination.
   """
   cursor: Cursor!
+}
+"""
+UserGender is enum for the field gender
+"""
+enum UserGender @goModel(model: "github.com/woocoos/knockout/ent/user.Gender") {
+  privacy
+  male
+  female
 }
 type UserIdentity implements Node {
   id: ID!
@@ -11824,6 +17067,243 @@ Properties by which UserPassword connections can be ordered.
 enum UserPasswordOrderField {
   createdAt
 }
+type UserPasswordPolicy implements Node {
+  id: ID!
+  createdBy: Int!
+  createdAt: Time!
+  updatedBy: Int
+  updatedAt: Time
+  """
+  租户id
+  """
+  tenantID: ID
+  """
+  密码最短长度，长度应在6-32位之间
+  """
+  length: Int
+  """
+  必须包含的元素，异或：1-小写字母，2-大写字母，4-数字，8-符号
+  """
+  includeElement: Int
+  """
+  最少包含的不同字符数，最多8个，0代表不限制
+  """
+  includeChar: Int
+  """
+  是否允许包含用户名
+  """
+  allowIncludeUserName: Boolean
+  """
+  有效天数，最大1095天，0代表不过期
+  """
+  invalidDay: Int
+  """
+  过期后是否限制登录
+  """
+  invalidLoginLimit: Boolean
+  """
+  一小时内密码错误最多尝试次数，最大32次，0代表不限次数
+  """
+  retry: Int
+  """
+  密码错误多少次出现验证码，最大5次，0代表不出现验证码
+  """
+  captchaTimes: Int
+  org: Org
+}
+"""
+Ordering options for UserPasswordPolicy connections
+"""
+input UserPasswordPolicyOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order UserPasswordPolicies.
+  """
+  field: UserPasswordPolicyOrderField!
+}
+"""
+Properties by which UserPasswordPolicy connections can be ordered.
+"""
+enum UserPasswordPolicyOrderField {
+  createdAt
+}
+"""
+UserPasswordPolicyWhereInput is used for filtering UserPasswordPolicy objects.
+Input was generated by ent.
+"""
+input UserPasswordPolicyWhereInput {
+  not: UserPasswordPolicyWhereInput
+  and: [UserPasswordPolicyWhereInput!]
+  or: [UserPasswordPolicyWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  created_by field predicates
+  """
+  createdBy: Int
+  createdByNEQ: Int
+  createdByIn: [Int!]
+  createdByNotIn: [Int!]
+  createdByGT: Int
+  createdByGTE: Int
+  createdByLT: Int
+  createdByLTE: Int
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  """
+  updated_by field predicates
+  """
+  updatedBy: Int
+  updatedByNEQ: Int
+  updatedByIn: [Int!]
+  updatedByNotIn: [Int!]
+  updatedByGT: Int
+  updatedByGTE: Int
+  updatedByLT: Int
+  updatedByLTE: Int
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  tenant_id field predicates
+  """
+  tenantID: ID
+  tenantIDNEQ: ID
+  tenantIDIn: [ID!]
+  tenantIDNotIn: [ID!]
+  tenantIDIsNil: Boolean
+  tenantIDNotNil: Boolean
+  """
+  length field predicates
+  """
+  length: Int
+  lengthNEQ: Int
+  lengthIn: [Int!]
+  lengthNotIn: [Int!]
+  lengthGT: Int
+  lengthGTE: Int
+  lengthLT: Int
+  lengthLTE: Int
+  lengthIsNil: Boolean
+  lengthNotNil: Boolean
+  """
+  include_element field predicates
+  """
+  includeElement: Int
+  includeElementNEQ: Int
+  includeElementIn: [Int!]
+  includeElementNotIn: [Int!]
+  includeElementGT: Int
+  includeElementGTE: Int
+  includeElementLT: Int
+  includeElementLTE: Int
+  includeElementIsNil: Boolean
+  includeElementNotNil: Boolean
+  """
+  include_char field predicates
+  """
+  includeChar: Int
+  includeCharNEQ: Int
+  includeCharIn: [Int!]
+  includeCharNotIn: [Int!]
+  includeCharGT: Int
+  includeCharGTE: Int
+  includeCharLT: Int
+  includeCharLTE: Int
+  includeCharIsNil: Boolean
+  includeCharNotNil: Boolean
+  """
+  allow_include_user_name field predicates
+  """
+  allowIncludeUserName: Boolean
+  allowIncludeUserNameNEQ: Boolean
+  allowIncludeUserNameIsNil: Boolean
+  allowIncludeUserNameNotNil: Boolean
+  """
+  invalid_day field predicates
+  """
+  invalidDay: Int
+  invalidDayNEQ: Int
+  invalidDayIn: [Int!]
+  invalidDayNotIn: [Int!]
+  invalidDayGT: Int
+  invalidDayGTE: Int
+  invalidDayLT: Int
+  invalidDayLTE: Int
+  invalidDayIsNil: Boolean
+  invalidDayNotNil: Boolean
+  """
+  invalid_login_limit field predicates
+  """
+  invalidLoginLimit: Boolean
+  invalidLoginLimitNEQ: Boolean
+  invalidLoginLimitIsNil: Boolean
+  invalidLoginLimitNotNil: Boolean
+  """
+  retry field predicates
+  """
+  retry: Int
+  retryNEQ: Int
+  retryIn: [Int!]
+  retryNotIn: [Int!]
+  retryGT: Int
+  retryGTE: Int
+  retryLT: Int
+  retryLTE: Int
+  retryIsNil: Boolean
+  retryNotNil: Boolean
+  """
+  captcha_times field predicates
+  """
+  captchaTimes: Int
+  captchaTimesNEQ: Int
+  captchaTimesIn: [Int!]
+  captchaTimesNotIn: [Int!]
+  captchaTimesGT: Int
+  captchaTimesGTE: Int
+  captchaTimesLT: Int
+  captchaTimesLTE: Int
+  captchaTimesIsNil: Boolean
+  captchaTimesNotNil: Boolean
+  """
+  org edge predicates
+  """
+  hasOrg: Boolean
+  hasOrgWith: [OrgWhereInput!]
+}
 """
 UserPasswordScene is enum for the field scene
 """
@@ -11938,12 +17418,12 @@ input UserPasswordWhereInput {
   hasUserWith: [UserWhereInput!]
 }
 """
-UserSimpleStatus is enum for the field status
+UserUserStatus is enum for the field status
 """
-enum UserSimpleStatus @goModel(model: "github.com/woocoos/knockout-go/ent/schemax/typex.SimpleStatus") {
+enum UserUserStatus @goModel(model: "github.com/woocoos/knockout/codegen/entgen/types.UserStatus") {
   active
   inactive
-  processing
+  locked
   disabled
 }
 """
@@ -12066,42 +17546,6 @@ input UserWhereInput {
   displayNameEqualFold: String
   displayNameContainsFold: String
   """
-  email field predicates
-  """
-  email: String
-  emailNEQ: String
-  emailIn: [String!]
-  emailNotIn: [String!]
-  emailGT: String
-  emailGTE: String
-  emailLT: String
-  emailLTE: String
-  emailContains: String
-  emailHasPrefix: String
-  emailHasSuffix: String
-  emailIsNil: Boolean
-  emailNotNil: Boolean
-  emailEqualFold: String
-  emailContainsFold: String
-  """
-  mobile field predicates
-  """
-  mobile: String
-  mobileNEQ: String
-  mobileIn: [String!]
-  mobileNotIn: [String!]
-  mobileGT: String
-  mobileGTE: String
-  mobileLT: String
-  mobileLTE: String
-  mobileContains: String
-  mobileHasPrefix: String
-  mobileHasSuffix: String
-  mobileIsNil: Boolean
-  mobileNotNil: Boolean
-  mobileEqualFold: String
-  mobileContainsFold: String
-  """
   user_type field predicates
   """
   userType: UserUserType
@@ -12134,12 +17578,100 @@ input UserWhereInput {
   """
   status field predicates
   """
-  status: UserSimpleStatus
-  statusNEQ: UserSimpleStatus
-  statusIn: [UserSimpleStatus!]
-  statusNotIn: [UserSimpleStatus!]
+  status: UserUserStatus
+  statusNEQ: UserUserStatus
+  statusIn: [UserUserStatus!]
+  statusNotIn: [UserUserStatus!]
   statusIsNil: Boolean
   statusNotNil: Boolean
+  """
+  gender field predicates
+  """
+  gender: UserGender
+  genderNEQ: UserGender
+  genderIn: [UserGender!]
+  genderNotIn: [UserGender!]
+  """
+  citizenship_id field predicates
+  """
+  citizenshipID: ID
+  citizenshipIDNEQ: ID
+  citizenshipIDIn: [ID!]
+  citizenshipIDNotIn: [ID!]
+  citizenshipIDIsNil: Boolean
+  citizenshipIDNotNil: Boolean
+  """
+  first_name field predicates
+  """
+  firstName: String
+  firstNameNEQ: String
+  firstNameIn: [String!]
+  firstNameNotIn: [String!]
+  firstNameGT: String
+  firstNameGTE: String
+  firstNameLT: String
+  firstNameLTE: String
+  firstNameContains: String
+  firstNameHasPrefix: String
+  firstNameHasSuffix: String
+  firstNameIsNil: Boolean
+  firstNameNotNil: Boolean
+  firstNameEqualFold: String
+  firstNameContainsFold: String
+  """
+  middle_name field predicates
+  """
+  middleName: String
+  middleNameNEQ: String
+  middleNameIn: [String!]
+  middleNameNotIn: [String!]
+  middleNameGT: String
+  middleNameGTE: String
+  middleNameLT: String
+  middleNameLTE: String
+  middleNameContains: String
+  middleNameHasPrefix: String
+  middleNameHasSuffix: String
+  middleNameIsNil: Boolean
+  middleNameNotNil: Boolean
+  middleNameEqualFold: String
+  middleNameContainsFold: String
+  """
+  last_name field predicates
+  """
+  lastName: String
+  lastNameNEQ: String
+  lastNameIn: [String!]
+  lastNameNotIn: [String!]
+  lastNameGT: String
+  lastNameGTE: String
+  lastNameLT: String
+  lastNameLTE: String
+  lastNameContains: String
+  lastNameHasPrefix: String
+  lastNameHasSuffix: String
+  lastNameIsNil: Boolean
+  lastNameNotNil: Boolean
+  lastNameEqualFold: String
+  lastNameContainsFold: String
+  """
+  lang field predicates
+  """
+  lang: String
+  langNEQ: String
+  langIn: [String!]
+  langNotIn: [String!]
+  langGT: String
+  langGTE: String
+  langLT: String
+  langLTE: String
+  langContains: String
+  langHasPrefix: String
+  langHasSuffix: String
+  langIsNil: Boolean
+  langNotNil: Boolean
+  langEqualFold: String
+  langContainsFold: String
   """
   identities edge predicates
   """
@@ -12170,8 +17702,498 @@ input UserWhereInput {
   """
   hasOauthClients: Boolean
   hasOauthClientsWith: [OauthClientWhereInput!]
+  """
+  addresses edge predicates
+  """
+  hasAddresses: Boolean
+  hasAddressesWith: [UserAddrWhereInput!]
+  """
+  citizenship edge predicates
+  """
+  hasCitizenship: Boolean
+  hasCitizenshipWith: [CountryWhereInput!]
+  """
+  user_quota edge predicates
+  """
+  hasUserQuota: Boolean
+  hasUserQuotaWith: [QuotaWhereInput!]
 }
 `, BuiltIn: false},
+	{Name: "../mutation.graphql", Input: `type Mutation {
+    """启用目录管理,返回根节点组织信息"""
+    enableDirectory(input: EnableDirectoryInput!):Org
+    """创建组织根节点(管理端使用)"""
+    createRoot(input: CreateOrgInput!): Org
+    """创建组织目录"""
+    createOrganization(input: CreateOrgInput!): Org
+    """更新组织目录"""
+    updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
+    """删除组织目录"""
+    deleteOrganization(orgID:ID!): Boolean!
+    """组织位置调整，action: child, up, down"""
+    moveOrganization(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:TreeAction!): Boolean!
+    """创建组织成员(管理账户)"""
+    createOrganizationAccount(
+        """根组织ID"""
+        rootOrgID:ID!,
+        input: CreateUserInput!): User
+    """创建组织用户"""
+    createOrganizationUser(
+        """根组织ID"""
+        rootOrgID:ID!,
+        input: CreateUserInput!
+        """用户类型"""
+        orgUserType: OrgUserUserType
+    ): User
+    """将用户分配到组织下"""
+    allotOrganizationUser(input: CreateOrgUserInput!): Boolean!
+    """从组织目录中移除用户"""
+    removeOrganizationUser(
+        """目标组织ID,可为根组织ID"""
+        orgID:ID!,
+        """用户ID"""
+        userID:ID!): Boolean!
+    """更新用户"""
+    updateUser(userID:ID!,input: UpdateUserInput!,contact: UpdateUserAddrInput): User
+    """用户登陆配置"""
+    updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
+    """删除用户"""
+    deleteUser(userID:ID!): Boolean!
+    """绑定用户凭证(管理端使用)"""
+    bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
+    """删除用户凭证"""
+    deleteUserIdentity(id:ID!): Boolean!
+    """用户修改自己的登录密码"""
+    changePassword(oldPwd:String!,newPwd:String!): Boolean!
+    """重置用户密码并发送邮件"""
+    resetUserPasswordByEmail(userId:ID!): Boolean!
+    """创建应用"""
+    createApp(input: CreateAppInput!): App
+    """更新应用"""
+    updateApp(appID:ID!,input: UpdateAppInput!): App
+    """删除应用"""
+    deleteApp(appID:ID!): Boolean!
+    """创建应用操作"""
+    createAppActions(appID:ID!,input: [CreateAppActionInput!]): [AppAction]!
+    """更新应用操作"""
+    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
+    """删除应用操作"""
+    deleteAppAction(actionID:ID!): Boolean!
+    """创建应用策略模板"""
+    createAppPolicy(appID:ID!,"""策略视图id，有传就关联视图"""appPolicyViewID:ID,input: CreateAppPolicyInput!): AppPolicy
+    """更新应用策略模板"""
+    updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
+    """删除应用策略模板"""
+    deleteAppPolicy(policyID:ID!): Boolean!
+    """创建应用菜单"""
+    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
+    """更新应用菜单"""
+    updateAppMenu(menuID:ID!,input: UpdateAppMenuInput!): AppMenu
+    """应用菜单位置调整，targetLocation: child, up, down"""
+    moveAppMenu(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
+    """删除应用菜单"""
+    deleteAppMenu(menuID:ID!): Boolean!
+    """创建应用角色"""
+    createAppRole(appID:ID!,input: CreateAppRoleInput!): AppRole
+    """更新应用角色"""
+    updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
+    """删除应用角色"""
+    deleteAppRole(roleID:ID!): Boolean!
+    """创建应用数据字典"""
+    createAppDict(appID:ID!,input: CreateAppDictInput!): AppDict
+    """更新应用数据字典"""
+    updateAppDict(dictID:ID!,input: UpdateAppDictInput!): AppDict
+    """删除应用数据字典"""
+    deleteAppDict(dictID:ID!): Boolean!
+    """创建应用数据字典项"""
+    createAppDictItem(dictID:ID!,input: CreateAppDictItemInput!): AppDictItem
+    """更新应用数据字典项"""
+    updateAppDictItem(itemID:ID!,input: UpdateAppDictItemInput!): AppDictItem
+    """删除应用数据字典项"""
+    deleteAppDictItem(itemID:ID!): Boolean!
+    """移动节点"""
+    moveAppDictItem(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
+    """分配应用角色到组织"""
+    assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
+    """取消分配到组织应用角色"""
+    revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
+    """角色添加策略"""
+    assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
+    """角色移除策略"""
+    revokeAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
+    """同步角色权限策略到组织"""
+    syncAppRoleToOrg(orgID:ID!,appRoleID:ID!): Boolean!
+    """分配应用,将自动分配应用下的所有资源"""
+    assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
+    """取消分配应用"""
+    revokeOrganizationApp(orgID:ID!,appID:ID!): Boolean!
+    """分配应用策略到组织"""
+    assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """取消分配到组织应用策略"""
+    revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
+    """创建组织策略"""
+    createOrganizationPolicy(input: CreateOrgPolicyInput!): OrgPolicy
+    """更新组织策略"""
+    updateOrganizationPolicy(orgPolicyID:ID!,input: UpdateOrgPolicyInput!): OrgPolicy
+    """删除组织策略"""
+    deleteOrganizationPolicy(orgPolicyID:ID!): Boolean!
+    """创建角色或组"""
+    createRole(input: CreateOrgRoleInput!): OrgRole
+    """更新角色或组"""
+    updateRole(roleID:ID!,input: UpdateOrgRoleInput!): OrgRole
+    """删除角色或组"""
+    deleteRole(roleID:ID!): Boolean!
+    """分配组用户"""
+    assignRoleUser(input:AssignRoleUserInput!): Boolean!
+    """取消分配组用户"""
+    revokeRoleUser(roleID:ID!,userID:ID!): Boolean!
+    """授权"""
+    grant(input: CreatePermissionInput!): Permission
+    """更新授权"""
+    updatePermission(permissionID:ID!,input: UpdatePermissionInput!): Permission
+    """取消授权"""
+    revoke(
+        orgID:ID!
+        """组织内的授权ID"""
+        permissionID:ID!
+    ): Boolean!
+    """启用MFA"""
+    enableMFA(userID:ID!):Mfa!
+    """禁用MFA"""
+    disableMFA(userID:ID!):Boolean!
+    """发送MFA至用户邮箱"""
+    sendMFAToUserByEmail(userID:ID!):Boolean!
+    """修改资源名称"""
+    updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
+    """恢复用户"""
+    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput,contact: UpdateUserAddrInput):User!
+    """创建文件来源"""
+    createFileSource(input: CreateFileSourceInput!): FileSource!
+    """更新文件来源"""
+    updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
+    """删除文件来源"""
+    deleteFileSource(fsID: ID!): Boolean!
+    """创建文件凭证"""
+    createFileIdentity(input: CreateFileIdentityInput!): FileIdentity!
+    """更新文件凭证"""
+    updateFileIdentity(id: ID!,input: UpdateFileIdentityInput!): FileIdentity!
+    """删除文件凭证"""
+    deleteFileIdentity(id: ID!): Boolean!
+    """设置默认凭证"""
+    setDefaultFileIdentity(identityID: ID!,orgID: ID!): Boolean!
+    """创建用户 AccessKey"""
+    createOauthClient(input: CreateOauthClientInput!): OauthClient!
+    """启用OauthClient"""
+    enableOauthClient(id: ID!): OauthClient!
+    """禁用OauthClient"""
+    disableOauthClient(id: ID!): OauthClient!
+    """删除OauthClient"""
+    deleteOauthClient(id: ID!): Boolean!
+    """保存组织用户偏好"""
+    saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
+    """创建国家"""
+    createCountry(input: CreateCountryInput!): Country
+    """更新国家"""
+    updateCountry(countryID:ID!,input: UpdateCountryInput!): Country
+    """删除国家"""
+    deleteCountry(countryID:ID!): Boolean!
+    """国家位置调整，action: child, up, down"""
+    moveCountry(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:ListAction!
+    ): Boolean!
+    """创建地区"""
+    createRegion(input: CreateRegionInput!): Region
+    """更新地区"""
+    updateRegion(regionID:ID!,input: UpdateRegionInput!): Region
+    """删除地区"""
+    deleteRegion(regionID:ID!): Boolean!
+    """地区位置调整，action: child, up, down"""
+    moveRegion(
+        """要移动的节点组织ID"""
+        sourceID:ID!,
+        """目标节点组织ID"""
+        targetId:ID!,
+        action:TreeAction!
+    ): Boolean!
+    """更改组织用户类型"""
+    changeOrgUserType(userID:ID!,orgID: ID!,userType:OrgUserUserType!):Boolean!
+    """创建货币"""
+    createCurrency(input: CreateCurrencyInput!): Currency
+    """更新货币"""
+    updateCurrency(currencyID:ID!,input: UpdateCurrencyInput!): Currency
+    """删除货币"""
+    deleteCurrency(currencyID:ID!): Boolean!
+    """自动授权应用，系统开户、创建web交易用户使用"""
+    autoGrantApp(appCode: String!,orgID: ID!,userID: ID!): Boolean!
+    """创建策略视图"""
+    createAppPolicyView(input: CreateAppPolicyViewInput!): AppPolicyView!
+    """更新策略视图"""
+    updateAppPolicyView(appPolicyViewID: ID!,input: UpdateAppPolicyViewInput!): AppPolicyView!
+    """删除策略视图"""
+    deleteAppPolicyView(appPolicyViewID: ID!): Boolean!
+    """移动策略视图"""
+    moveAppPolicyView(
+        sourceID: ID!,
+        targetID: ID!,
+        action: TreeAction!
+    ): Boolean!
+    """应用角色添加策略视图权限"""
+    assignAppRolePolicyView(appID: ID!, roleID: ID!, addAppPolicyIDs: [ID!],rmAppPolicyIDs: [ID!]): Boolean!
+    """组织用户添加策略视图权限"""
+    assignOrgUserPolicyView(orgID: ID!,userID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    """组织角色添加策略视图权限"""
+    assignOrgRolePolicyView(orgID: ID!, roleID: ID!, addOrgPolicyIDs: [ID!],rmOrgPolicyIDs: [ID!]): Boolean!
+    """创建配额项"""
+    createQuotaItem(input: CreateQuotaItemInput!): QuotaItem!
+    """更新配额项"""
+    updateQuotaItem(id: ID!, input: UpdateQuotaItemInput!): QuotaItem!
+    """删除配额项"""
+    deleteQuotaItem(id: ID!): Boolean!
+    """设置配额"""
+    createQuota(input: CreateQuotaInput!): Quota!
+    """更新配额"""
+    updateQuota(id: ID!, input: UpdateQuotaInput!): Quota!
+    """删除配额"""
+    deleteQuota(id: ID!): Boolean!
+    """设置密码策略"""
+    createUserPasswordPolicy(orgID: ID!,input: CreateUserPasswordPolicyInput!): UserPasswordPolicy
+    """更新密码策略"""
+    updateUserPasswordPolicy(orgID: ID!,input: UpdateUserPasswordPolicyInput!): UserPasswordPolicy
+    """删除密码策略"""
+    deleteUserPasswordPolicy: Boolean!
+    """更新用户设备"""
+    updateUserDevice(deviceID: ID!,input: UpdateUserDeviceInput!): UserDevice!
+    """开启用户设备验证"""
+    enableVerifyUserDevice(userID: ID!,enable: Boolean!,deviceInfoInput: CreateUserDeviceInput!): Boolean!
+    """删除用户设备"""
+    deleteUserDevice(userID: ID!,deviceID: ID!): Boolean!
+}
+`, BuiltIn: false},
+	{Name: "../query.graphql", Input: `extend type Query {
+    """获取全局ID,开发用途"""
+    globalID(type: String!, id: ID!): GID
+    """获取登录用户的信息"""
+    viewer: User!
+    """用户组"""
+    orgGroups(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户组组成员"""
+    orgRoleUsers(
+        roleID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ): UserConnection!
+    """角色"""
+    orgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """用户在登录组织授权的组织角色"""
+    userOrgRoles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ): OrgRoleConnection!
+    """应用角色授权的组织列表"""
+    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
+    """应用策略授权的组织列表"""
+    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
+    """权限策略引用列表"""
+    orgPolicyReferences(
+        policyID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """获取应用资源模板"""
+    appResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """获取组织应用资源模板"""
+    orgAppResources(
+        appID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: AppResOrder
+        where: AppResWhereInput
+    ):AppResConnection!
+    """用户加入的用户组"""
+    userGroups(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户加入的角色"""
+    userRoles(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: OrgRoleOrder
+        where: OrgRoleWhereInput
+    ):OrgRoleConnection!
+    """用户继承用户组的权限策略"""
+    userExtendGroupPolicies(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户继承角色的权限策略"""
+    userExtendRolePolicies(
+        orgID: ID
+        userID:ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+        where: PermissionWhereInput
+    ):PermissionConnection!
+    """用户菜单"""
+    userMenus(appCode:String!):[AppMenu!]!
+    """获取用户所有权限"""
+    userPermissions(where: AppActionWhereInput):[AppAction!]!
+    """检测权限"""
+    checkPermission(
+        """appCode + ":" + action"""
+        permission:String!
+    ):Boolean!
+    """
+    检测权限 ko-proxy使用
+    @deprecated 未来将弃用.
+    """
+    checkPermissionByJwt(
+        jwtStr:String!
+        orgID:ID!
+        action:String!
+        appCode:String!
+    ):Boolean!
+    """组织策略可授权的appActions"""
+    orgAppActions(appCode:String!,orgID:ID!):[AppAction!]!
+    """用户加入的root组织"""
+    userRootOrgs:[Org!]!
+    """组织回收站列表"""
+    orgRecycleUsers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """获取组织用户偏好"""
+    orgUserPreference: OrgUserPreference
+    """用户授权的应用列表"""
+    userApps: [App!]!
+    """根据ref_code获取数据字典,用于批量获取"""
+    appDictByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCodes: [String!]!
+    ): [AppDict!]!
+    """根据ref_code获取数据字典值"""
+    appDictItemByRefCode(
+        """ref_code规则：<appCode:appDictCode>"""
+        refCode: String!
+    ):[AppDictItem!]!
+    """检测应用登录授权"""
+    appAccess(appCode:String!):Boolean!
+    """检测应用登录授权,针对获取token处理"""
+    appAccessForToken(appCode:String!,clientID:String!,clientSecret:String!):Boolean!
+    """获取文件凭证"""
+    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
+    """获取凭证AccessKeySecret"""
+    fileIdentityAccessKeySecret(id: ID!): String!
+    """获取登录组织的文件凭证，登录组织未取到，则往上级组织获取"""
+    orgFileIdentities: [FileIdentity!]!
+    """成员列表"""
+    userMembers(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """应用策略视图"""
+    appPolicyView(appCode: String!): [AppPolicyView!]!
+    """登录用户策略视图"""
+    orgPolicyView(appCode: String!,orgID: ID): [AppPolicyViewOrgPolicy!]!
+    """应用策略视图角色选中项"""
+    appPolicyViewRoleAssigned(appRoleID: ID!): [AppPolicyView!]!
+    """组织策略视图角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewRoleAssigned(orgRoleID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图用户选择项，返回OrgPolicyIDs"""
+    orgPolicyViewUserAssigned(userID: ID!,appCode: String!,orgID: ID): [ID!]!
+    """组织策略视图，用户授权的角色/用户组选中项，返回OrgPolicyIDs"""
+    orgPolicyViewUserRoleAssigned(userID: ID!,appCode: String!,orgID: ID!): [ID!]!
+    """获取租户密码策略"""
+    userPasswordPolicy: UserPasswordPolicy
+    """获取父组织用户，如果是部门取所在组织用户，如果是组织取登录组织用户"""
+    parentOrgUsers(
+        """组织ID或者部门ID"""
+        orgID: ID!
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+        where: UserWhereInput
+    ):UserConnection!
+    """查看用户mfa信息"""
+    userMfaInfo(
+        userID: ID!,
+        orgID: ID!,
+    ):UserMfaInfo!
+}`, BuiltIn: false},
 	{Name: "../types.graphql", Input: `input EnableDirectoryInput {
     """域名"""
     domain: String!
@@ -12182,6 +18204,8 @@ extend input CreateUserInput {
     loginProfile: CreateUserLoginProfileInput
     """如指定密码则填入,否则由系统自动生成密码"""
     password: CreateUserPasswordInput
+    """地址信息"""
+    contact: CreateUserAddrInput
 }
 
 input AssignRoleUserInput {
@@ -12198,6 +18222,14 @@ input AssignRoleUserInput {
 enum TreeAction {
     """作为子节点"""
     child
+    """上移"""
+    up
+    """下移"""
+    down
+}
+
+"""列表操作类型"""
+enum ListAction {
     """上移"""
     up
     """下移"""
@@ -12233,6 +18265,11 @@ type Mfa{
     account: String!
 }
 
+extend type Org {
+    """获取顶级组织"""
+    TopOrg: Org
+}
+
 extend type OrgRole {
     """是否系统角色"""
     isAppRole: Boolean!
@@ -12250,11 +18287,17 @@ extend type User {
     isAssignOrgRole(orgRoleID:ID!): Boolean!
     """是否允许解除角色授权"""
     isAllowRevokeRole(orgRoleID:ID!):Boolean!
+    """地址信息"""
+    contact: UserAddr
+    """组织用户类型"""
+    orgUserType(orgID:ID!): OrgUserUserType!
 }
 
 extend type Org {
     """是否允许解除应用策略"""
     isAllowRevokeAppPolicy(appPolicyID:ID!):Boolean!
+    """组织的domain，如果没有设置，则会取最近的父组织的domain"""
+    actualDomain: String!
 }
 
 extend type OrgRole {
@@ -12277,6 +18320,8 @@ input OrgUserPreferenceInput {
     menuFavorite: [ID!]
     """用户最近访问菜单"""
     menuRecent: [ID!]
+    """客户端偏好设置"""
+    clientPreference: ClientPreferenceInput
 }
 
 """业务调用的fileIdentity"""
@@ -12328,308 +18373,72 @@ type FileIdentityForApp implements Node{
     """
     isDefault: Boolean!
     source: FileSource!
-}`, BuiltIn: false},
-	{Name: "../query.graphql", Input: `extend type Query {
-    """获取全局ID,开发用途"""
-    globalID(type: String!, id: ID!): GID
-    """用户组"""
-    orgGroups(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ): OrgRoleConnection!
-    """用户组组成员"""
-    orgRoleUsers(
-        roleID: ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: UserOrder
-        where: UserWhereInput
-    ): UserConnection!
-    """角色"""
-    orgRoles(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ): OrgRoleConnection!
-    """应用角色授权的组织列表"""
-    appRoleAssignedToOrgs(roleID:ID!,where:OrgWhereInput):[Org!]!
-    """应用策略授权的组织列表"""
-    appPolicyAssignedToOrgs(policyID:ID!,where:OrgWhereInput):[Org!]!
-    """权限策略引用列表"""
-    orgPolicyReferences(
-        policyID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: PermissionOrder
-        where: PermissionWhereInput
-    ):PermissionConnection!
-    """获取应用资源模板"""
-    appResources(
-        appID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: AppResOrder
-        where: AppResWhereInput
-    ):AppResConnection!
-    """获取组织应用资源模板"""
-    orgAppResources(
-        appID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: AppResOrder
-        where: AppResWhereInput
-    ):AppResConnection!
-    """用户加入的用户组"""
-    userGroups(
-        userID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: OrgRoleOrder
-        where: OrgRoleWhereInput
-    ):OrgRoleConnection!
-    """用户继承用户组的权限策略"""
-    userExtendGroupPolicies(
-        userID:ID!
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: PermissionOrder
-        where: PermissionWhereInput
-    ):PermissionConnection!
-    """用户菜单"""
-    userMenus(appCode:String!):[AppMenu!]!
-    """获取用户所有权限"""
-    userPermissions(where: AppActionWhereInput):[AppAction!]!
-    """检测权限"""
-    checkPermission(
-        """appCode + ":" + action"""
-        permission:String!
-    ):Boolean!
-    """组织策略可授权的appActions"""
-    orgAppActions(appCode:String!):[AppAction!]!
-    """用户加入的root组织"""
-    userRootOrgs:[Org!]!
-    """组织回收站列表"""
-    orgRecycleUsers(
-        after: Cursor
-        first: Int
-        before: Cursor
-        last: Int
-        orderBy: UserOrder
-        where: UserWhereInput
-    ):UserConnection!
-    """获取组织用户偏好"""
-    orgUserPreference: OrgUserPreference
-    """用户授权的应用列表"""
-    userApps: [App!]!
-    """根据ref_code获取数据字典,用于批量获取"""
-    appDictByRefCode(
-        """ref_code规则：<appCode:appDictCode>"""
-        refCodes: [String!]!
-    ): [AppDict!]!
-    """根据ref_code获取数据字典值"""
-    appDictItemByRefCode(
-        """ref_code规则：<appCode:appDictCode>"""
-        refCode: String!
-    ):[AppDictItem!]!
-    """检测应用登录授权"""
-    appAccess(appCode:String!):Boolean!
-    """获取文件凭证"""
-    fileIdentitiesForApp(where: FileIdentityWhereInput): [FileIdentityForApp!]!
-    """获取凭证AccessKeySecret"""
-    fileIdentityAccessKeySecret(id: ID!): String!
-}`, BuiltIn: false},
-	{Name: "../mutation.graphql", Input: `type Mutation {
-    """启用目录管理,返回根节点组织信息"""
-    enableDirectory(input: EnableDirectoryInput!):Org
-    """创建组织根节点(管理端使用)"""
-    createRoot(input: CreateOrgInput!): Org
-    """创建组织目录"""
-    createOrganization(input: CreateOrgInput!): Org
-    """更新组织目录"""
-    updateOrganization(orgID:ID!,input: UpdateOrgInput!): Org
-    """删除组织目录"""
-    deleteOrganization(orgID:ID!): Boolean!
-    """组织位置调整，action: child, up, down"""
-    moveOrganization(
-        """要移动的节点组织ID"""
-        sourceID:ID!,
-        """目标节点组织ID"""
-        targetId:ID!,
-        action:TreeAction!): Boolean!
-    """创建组织成员(管理账户)"""
-    createOrganizationAccount(
-        """根组织ID"""
-        rootOrgID:ID!,
-        input: CreateUserInput!): User
-    """创建组织用户"""
-    createOrganizationUser(
-        """根组织ID"""
-        rootOrgID:ID!,
-        input: CreateUserInput!): User
-    """将用户分配到组织下"""
-    allotOrganizationUser(input: CreateOrgUserInput!): Boolean!
-    """从组织目录中移除用户"""
-    removeOrganizationUser(
-        """目标组织ID,可为根组织ID"""
-        orgID:ID!,
-        """用户ID"""
-        userID:ID!): Boolean!
-    """更新用户"""
-    updateUser(userID:ID!,input: UpdateUserInput!): User
-    """用户登陆配置"""
-    updateLoginProfile(userID:ID!,input: UpdateUserLoginProfileInput!): UserLoginProfile
-    """删除用户"""
-    deleteUser(userID:ID!): Boolean!
-    """绑定用户凭证(管理端使用)"""
-    bindUserIdentity(input: CreateUserIdentityInput!): UserIdentity
-    """删除用户凭证"""
-    deleteUserIdentity(id:ID!): Boolean!
-    """用户修改自己的登录密码"""
-    changePassword(oldPwd:String!,newPwd:String!): Boolean!
-    """重置用户密码并发送邮件"""
-    resetUserPasswordByEmail(userId:ID!): Boolean!
-    """创建应用"""
-    createApp(input: CreateAppInput!): App
-    """更新应用"""
-    updateApp(appID:ID!,input: UpdateAppInput!): App
-    """删除应用"""
-    deleteApp(appID:ID!): Boolean!
-    """创建应用操作"""
-    createAppActions(appID:ID!,input: [CreateAppActionInput!]): [AppAction]!
-    """更新应用操作"""
-    updateAppAction(actionID:ID!, input: UpdateAppActionInput!): AppAction
-    """删除应用操作"""
-    deleteAppAction(actionID:ID!): Boolean!
-    """创建应用策略模板"""
-    createAppPolicy(appID:ID!,input: CreateAppPolicyInput!): AppPolicy
-    """更新应用策略模板"""
-    updateAppPolicy(policyID:ID!,input: UpdateAppPolicyInput!): AppPolicy
-    """删除应用策略模板"""
-    deleteAppPolicy(policyID:ID!): Boolean!
-    """创建应用菜单"""
-    createAppMenus(appID:ID!,input: [CreateAppMenuInput!]): [AppMenu]!
-    """更新应用菜单"""
-    updateAppMenu(menuID:ID!,input: UpdateAppMenuInput!): AppMenu
-    """应用菜单位置调整，targetLocation: child, up, down"""
-    moveAppMenu(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
-    """删除应用菜单"""
-    deleteAppMenu(menuID:ID!): Boolean!
-    """创建应用角色"""
-    createAppRole(appID:ID!,input: CreateAppRoleInput!): AppRole
-    """更新应用角色"""
-    updateAppRole(roleID:ID!,input: UpdateAppRoleInput!): AppRole
-    """删除应用角色"""
-    deleteAppRole(roleID:ID!): Boolean!
-    """创建应用数据字典"""
-    createAppDict(appID:ID!,input: CreateAppDictInput!): AppDict
-    """更新应用数据字典"""
-    updateAppDict(dictID:ID!,input: UpdateAppDictInput!): AppDict
-    """删除应用数据字典"""
-    deleteAppDict(dictID:ID!): Boolean!
-    """创建应用数据字典项"""
-    createAppDictItem(dictID:ID!,input: CreateAppDictItemInput!): AppDictItem
-    """更新应用数据字典项"""
-    updateAppDictItem(itemID:ID!,input: UpdateAppDictItemInput!): AppDictItem
-    """删除应用数据字典项"""
-    deleteAppDictItem(itemID:ID!): Boolean!
-    """移动节点"""
-    moveAppDictItem(sourceID:ID!,targetID:ID!,action:TreeAction!): Boolean!
-    """分配应用角色到组织"""
-    assignOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
-    """取消分配到组织应用角色"""
-    revokeOrganizationAppRole(orgID:ID!,appRoleID:ID!): Boolean!
-    """角色添加策略"""
-    assignAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
-    """角色移除策略"""
-    revokeAppRolePolicy(appID:ID!,roleID:ID!,policyIDs:[ID!]): Boolean!
-    """分配应用,将自动分配应用下的所有资源"""
-    assignOrganizationApp(orgID:ID!,appID:ID!): Boolean!
-    """取消分配应用"""
-    revokeOrganizationApp(orgID:ID!,appID:ID!): Boolean!
-    """分配应用策略到组织"""
-    assignOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
-    """取消分配到组织应用策略"""
-    revokeOrganizationAppPolicy(orgID:ID!,appPolicyID:ID!): Boolean!
-    """创建组织策略"""
-    createOrganizationPolicy(input: CreateOrgPolicyInput!): OrgPolicy
-    """更新组织策略"""
-    updateOrganizationPolicy(orgPolicyID:ID!,input: UpdateOrgPolicyInput!): OrgPolicy
-    """删除组织策略"""
-    deleteOrganizationPolicy(orgPolicyID:ID!): Boolean!
-    """创建角色或组"""
-    createRole(input: CreateOrgRoleInput!): OrgRole
-    """更新角色或组"""
-    updateRole(roleID:ID!,input: UpdateOrgRoleInput!): OrgRole
-    """删除角色或组"""
-    deleteRole(roleID:ID!): Boolean!
-    """分配组用户"""
-    assignRoleUser(input:AssignRoleUserInput!): Boolean!
-    """取消分配组用户"""
-    revokeRoleUser(roleID:ID!,userID:ID!): Boolean!
-    """授权"""
-    grant(input: CreatePermissionInput!): Permission
-    """更新授权"""
-    updatePermission(permissionID:ID!,input: UpdatePermissionInput!): Permission
-    """取消授权"""
-    revoke(
-        orgID:ID!
-        """组织内的授权ID"""
-        permissionID:ID!
-    ): Boolean!
-    """启用MFA"""
-    enableMFA(userID:ID!):Mfa!
-    """禁用MFA"""
-    disableMFA(userID:ID!):Boolean!
-    """发送MFA至用户邮箱"""
-    sendMFAToUserByEmail(userID:ID!):Boolean!
-    """修改资源名称"""
-    updateAppRes(appResID:ID!,input:UpdateAppResInput!):AppRes
-    """恢复用户"""
-    recoverOrgUser(userID:ID!,userInput:UpdateUserInput!,pwdKind:UserLoginProfileSetKind!,pwdInput:CreateUserPasswordInput):User!
-    """创建文件来源"""
-    createFileSource(input: CreateFileSourceInput!): FileSource!
-    """更新文件来源"""
-    updateFileSource(fsID: ID!,input: UpdateFileSourceInput!): FileSource!
-    """删除文件来源"""
-    deleteFileSource(fsID: ID!): Boolean!
-    """创建文件凭证"""
-    createFileIdentity(input: CreateFileIdentityInput!): FileIdentity!
-    """更新文件凭证"""
-    updateFileIdentity(id: ID!,input: UpdateFileIdentityInput!): FileIdentity!
-    """删除文件凭证"""
-    deleteFileIdentity(id: ID!): Boolean!
-    """设置默认凭证"""
-    setDefaultFileIdentity(identityID: ID!,orgID: ID!): Boolean!
-    """创建用户 AccessKey"""
-    createOauthClient(input: CreateOauthClientInput!): OauthClient!
-    """启用OauthClient"""
-    enableOauthClient(id: ID!): OauthClient!
-    """禁用OauthClient"""
-    disableOauthClient(id: ID!): OauthClient!
-    """删除OauthClient"""
-    deleteOauthClient(id: ID!): Boolean!
-    """保存组织用户偏好"""
-    saveOrgUserPreference(input: OrgUserPreferenceInput!): OrgUserPreference!
 }
-`, BuiltIn: false},
+
+type OrgLogo {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+
+input OrgLogoInput {
+    logo: String
+    thumbLogo: String
+    favicon: String
+}
+type AppPolicyViewOrgPolicy{
+    orgPolicy: OrgPolicy
+    appPolicyView: AppPolicyView
+}
+"""查看用户mfa信息"""
+type UserMfaInfo {
+    """是否启用mfa"""
+    mfaEnabled: Boolean!
+    """秘钥"""
+    secret: String!
+    """二维码"""
+    qrCodeUri: String!
+    """用户账号"""
+    accountName: String!
+}
+
+extend type OrgUserPreference {
+    clientPreference(appCode: String!): ClientPreference
+}
+
+type ClientPreference {
+    appCode: String!
+    values: [ClientPreferenceValue!]
+}
+
+type ClientPreferenceValue {
+    key: String!
+    value: String
+    extension: String
+}
+
+input ClientPreferenceInput {
+    """应用编码"""
+    appCode: String!
+    """应用偏好设置数据"""
+    values: [ClientPreferenceValueInput!]
+}
+
+input ClientPreferenceValueInput {
+    """根据业务场景定义key，存储时根据key更新"""
+    key: String!
+    """业务场景对应的值"""
+    value: String
+    """扩展字段，根据业务场景需求使用"""
+    extension: String
+}
+
+extend type AppDict {
+    """根据组织获取字典项,过滤有orgID与无orgID重复的code"""
+    orgItems(
+        """是否取消code过滤，不传会过滤重复的code"""
+        noFilterCode: Boolean
+    ): [AppDictItem!]!
+}`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

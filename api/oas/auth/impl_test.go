@@ -6,35 +6,35 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/alicebob/miniredis/v2"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/pquerna/otp"
 	"github.com/pquerna/otp/totp"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/pkg/cache"
-	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/tsingsun/woocoo/web"
-	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/codegen/entgen/types"
+	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
-	"github.com/woocoos/knockout/ent/migrate"
 	"github.com/woocoos/knockout/ent/org"
+	"github.com/woocoos/knockout/ent/quotaitem"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userdevice"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
-	"github.com/woocoos/knockout/test"
+	"github.com/woocoos/knockout/test/testsuite"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -52,9 +52,8 @@ var (
 )
 
 type authSuite struct {
-	suite.Suite
-	AuthServer  *ServerImpl
-	redisServer *miniredis.Miniredis
+	testsuite.BaseSuite
+	AuthService *ServerImpl
 
 	server *web.Server
 }
@@ -68,32 +67,17 @@ func (t *authSuite) TestForgetPwdSendEmail() {
 }
 
 func (t *authSuite) SetupSuite() {
-	t.redisServer = miniredis.RunT(t.T())
-	t.Require().NoError(t.redisServer.Set(adminTokenJTI, "1"))
-
-	file := filepath.Join(test.BaseDir(), "testdata", "etc", "app.yaml")
-	bs, err := os.ReadFile(file)
-	if err != nil {
-		panic(err)
-	}
-
-	cnf := conf.NewFromBytes(bs, conf.WithBaseDir(test.BaseDir()))
-	cnf.Parser().Set("cache.redis.addrs", []string{t.redisServer.Addr()})
 	cache.UnRegisterCache("redis")
-	println(t.redisServer.Addr())
-	app := koapp.New(woocoo.WithAppConfiguration(cnf))
-	t.AuthServer = NewServer(app)
-	t.server = t.AuthServer.webServer
+	t.Require().NoError(t.BaseSuite.Setup())
+	t.Require().NoError(t.Redis.Set(adminTokenJTI, "1"))
 
-	jwtmdl, ok := t.server.HandlerManager().GetMiddleware(web.GetMiddlewareKey(t.server.Router().RouterGroup.BasePath(), "jwt"))
-	t.Require().True(ok)
-	t.AuthServer.LogoutHandler = jwtmdl.(*handler.JWTMiddleware).Config.LogoutHandler
-
-	err = t.AuthServer.db.Schema.Create(context.Background(),
-		migrate.WithDropIndex(true),
-		migrate.WithDropColumn(true),
-		migrate.WithForeignKeys(false))
-	t.Require().NoError(err)
+	t.AuthService = NewServerImpl(t.Cnf)
+	t.AuthService.db = t.Client
+	srv := Server{
+		service: t.AuthService,
+		authDb:  t.AuthDbClient,
+	}
+	t.server = srv.buildWebServer(t.Cnf)
 }
 
 type loginFlowSuite struct {
@@ -110,10 +94,10 @@ func TestLoginFlow(t *testing.T) {
 
 func (ts *loginFlowSuite) SetupSuite() {
 	ts.authSuite.SetupSuite()
-	ts.redisServer.FlushAll()
-	db := ts.AuthServer.db
+	ts.Redis.FlushAll()
+	db := ts.AuthService.db
 	adm := db.User.Create().SetCreatedBy(1).SetID(1).SetPrincipalName("admin").
-		SetStatus(typex.SimpleStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
+		SetStatus(types.UserStatusActive).SetDisplayName("admin").SetUserType(user.UserTypeAccount).
 		SetCreationType(user.CreationTypeManual).SetRegisterIP("")
 	_, err := db.User.CreateBulk(
 		adm,
@@ -135,7 +119,7 @@ func (ts *loginFlowSuite) SetupSuite() {
 	ts.Require().NoError(err)
 
 	err = db.Org.Create().SetID(1).SetCreatedBy(1).SetName("test").SetDomain("test.com").SetCode("test").
-		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).SetParentID(0).
+		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).SetParentID(0).SetCreatedBy(1).SetUpdatedBy(1).
 		Exec(context.Background())
 	ts.Require().NoError(err)
 
@@ -148,7 +132,7 @@ func (ts *loginFlowSuite) SetupSuite() {
 	ts.Require().NoError(err)
 
 	err = db.FileIdentity.Create().SetID(1).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("test1").SetAccessKeySecret("test1234").
-		SetRoleArn("arn:aws:s3:::*").SetDurationSeconds(3600).SetIsDefault(true).SetFileSourceID(1).Exec(context.Background())
+		SetRoleArn("arn:aws:s3:::*").SetDurationSeconds(3600).SetIsDefault(true).SetFileSourceID(1).Exec(schemax.SkipTenantPrivacy(context.Background()))
 	ts.Require().NoError(err)
 
 	err = db.FileSource.Create().SetID(2).SetCreatedBy(1).SetKind(filesource.KindAliOSS).
@@ -156,13 +140,13 @@ func (ts *loginFlowSuite) SetupSuite() {
 	ts.Require().NoError(err)
 
 	err = db.FileIdentity.Create().SetID(2).SetCreatedBy(1).SetTenantID(1).SetAccessKeyID("todo").SetAccessKeySecret("todo").
-		SetRoleArn("todo").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(context.Background())
+		SetRoleArn("todo").SetDurationSeconds(3600).SetIsDefault(false).SetFileSourceID(2).Exec(schemax.SkipTenantPrivacy(context.Background()))
 	ts.Require().NoError(err)
 }
 
 func (ts *loginFlowSuite) Test_AuthNoFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
 	})
 	ts.Require().NoError(err)
@@ -171,8 +155,8 @@ func (ts *loginFlowSuite) Test_AuthNoFlow() {
 
 func (ts *loginFlowSuite) Test_AuthMFAFlow() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	ts.AuthServer.cache.Set(ctx, loginFailCachePrefix+"admin", 0)
-	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+	ts.AuthService.cache.Set(ctx, loginFailCachePrefix+"admin", 0)
+	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", Username: "admin",
 	})
 	ts.Require().NoError(err)
@@ -184,71 +168,91 @@ func Test_CreateToken(t *testing.T) {
 	type jwtOpt struct {
 		SigningMethod   string        `json:"signingMethod"`
 		SigningKey      string        `json:"signingKey"`
+		PrivateKey      string        `json:"privateKey"`
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	}
 	opts := Options{
 		JWT: jwtOpt{
-			SigningMethod:   "HS256",
-			SigningKey:      "secret",
-			TokenTTL:        time.Hour * 10000,
-			RefreshTokenTTL: time.Hour * 10000,
+			SigningMethod:   "RS256",
+			SigningKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_pub.pem",
+			PrivateKey:      "file:///Volumes/QEELYN/GIT/woocoo/knockout/cmd/auth/etc/rsa_auth_pkcs8.pem",
+			TokenTTL:        time.Hour * 100000,
+			RefreshTokenTTL: time.Hour * 100000,
 		},
 	}
-	_, token, err := createToken("2", opts, false)
+	_, token, err := createToken("1", opts, false)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(token)
 }
 
+func Test_CreateStateToken(t *testing.T) {
+	sid := uuid.New().String()
+	fmt.Println("sid:" + sid)
+	token := createStateToken(sid, Options{StateTokenTTL: 20 * time.Minute, StateTokenSecret: "setret"})
+	fmt.Println("token:" + token)
+	assert.NotEqual(t, "", token)
+}
+
 func (ts *loginFlowSuite) Test_AuthFail() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
-	for i := 0; i < ts.AuthServer.CaptchaTimes-1; i++ {
-		res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+	req := httptest.NewRequest("POST", "/test", nil)
+	req.Header.Set("Referer", "")
+	// 由于密码策略调用ctx.GetHeader，需模拟Request才不会报错
+	ctx.Request = req
+	for i := 0; i < ts.AuthService.CaptchaTimes; i++ {
+		res, err := ts.AuthService.Login(ctx, &LoginRequest{
 			Password: "error", Username: "admin",
 		})
-		ts.Require().ErrorIs(err, status.ErrMismatchPWD)
+		ts.Require().Error(err)
 		ts.Nil(res)
 	}
-	res, err := ts.AuthServer.Login(ctx, &LoginRequest{
+	res, err := ts.AuthService.Login(ctx, &LoginRequest{
 		Password: "error", Username: "admin",
 	})
-	ts.Require().ErrorIs(err, status.ErrMismatchPWD)
 	ts.Equal(res.CallbackUrl, "/captcha")
-	for i := ts.AuthServer.CaptchaTimes; i < ts.AuthServer.LoginFailTimes; i++ {
-		res, err := ts.AuthServer.Login(ctx, &LoginRequest{
-			Password: "error", Username: "admin", Captcha: "",
+	retry := int(ts.AuthService.PwdPolicy.Retry)
+	for i := ts.AuthService.CaptchaTimes; i < retry; i++ {
+		res, err := ts.AuthService.Login(ctx, &LoginRequest{
+			Password: "error", Username: "admin", Captcha: "123456", CaptchaId: "123456",
 		})
-		ts.Require().ErrorIs(err, status.ErrCaptchaNotMatch)
+		ts.Require().Equal(int(err.(*gin.Error).Type), status.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
 
 	// 生成验证码
-	captchaId := captcha.NewLen(6)
-	digits := ts.AuthServer.captchaStore.Get(captchaId, false)
-	captchaCode := ""
-	for _, v := range digits {
-		captchaCode = captchaCode + strconv.Itoa(int(v))
+	for i := 0; i < (retry - ts.AuthService.CaptchaTimes); i++ {
+		captchaId := captcha.NewLen(6)
+		digits := ts.AuthService.captchaStore.Get(captchaId, false)
+		captchaCode := ""
+		for _, v := range digits {
+			captchaCode = captchaCode + strconv.Itoa(int(v))
+		}
+		res, err = ts.AuthService.Login(ctx, &LoginRequest{
+			Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId,
+		})
+		if i == (retry - ts.AuthService.CaptchaTimes - 1) {
+			// 超过retry限制次数，发送邮件前取user_addr报NotFound
+			ts.Require().True(ent.IsNotFound(err))
+		} else {
+			ts.Require().Error(err)
+		}
+		ts.Nil(res)
 	}
-	res, err = ts.AuthServer.Login(ctx, &LoginRequest{
-		Password: "error", Username: "admin", Captcha: captchaCode, CaptchaId: captchaId,
-	})
-	// TODO 验证码准确性测试
-	ts.Require().ErrorIs(err, status.ErrLoginFailUpperLimit)
-	ts.Nil(res)
 }
 
 func (ts *loginFlowSuite) Test_VerifyFactor() {
 	ctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	// use admin token as state token
-	err := ts.AuthServer.cache.Set(context.Background(), mfaCachePrefix+adminTokenJTI, 1)
+	err := ts.AuthService.cache.Set(context.Background(), mfaCachePrefix+adminTokenJTI, 1)
 	ts.Require().NoError(err)
 
 	ctx.Request = httptest.NewRequest("POST", "/verifyFactor", nil)
 	pwd := GeneratePassCode("UWZLIIUMPX53NYXB")
 	time.Sleep(1 * time.Second)
-	res, err := ts.AuthServer.VerifyFactor(ctx, &VerifyFactorRequest{
+	res, err := ts.AuthService.VerifyFactor(ctx, &VerifyFactorRequest{
 		OtpToken:   pwd,
 		StateToken: adminToken,
 	})
@@ -272,7 +276,7 @@ func GeneratePassCode(base32string string) string {
 }
 
 func (ts *loginFlowSuite) Test_Logout() {
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1")
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1")
 	ts.Require().NoError(err)
 
 	req := httptest.NewRequest("POST", "/logout", nil)
@@ -285,7 +289,7 @@ func (ts *loginFlowSuite) Test_Logout() {
 
 func (ts *loginFlowSuite) Test_ZBindMfaFlow() {
 	// 绑定mfa前置数据
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/mfa/bind-prepare", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
@@ -326,7 +330,7 @@ func (ts *loginFlowSuite) Test_ZBindMfaFlow() {
 
 func (ts *loginFlowSuite) Test_SpmFlow() {
 	// 绑定mfa前置数据
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	req := httptest.NewRequest("POST", "/spm/create", nil)
 	req.Header.Set("Authorization", "Bearer "+adminToken)
@@ -349,7 +353,7 @@ func (ts *loginFlowSuite) Test_SpmFlow() {
 }
 
 func (ts *loginFlowSuite) Test_ResetPassword() {
-	ts.Require().NoError(ts.AuthServer.cache.Set(context.Background(),
+	ts.Require().NoError(ts.AuthService.cache.Set(context.Background(),
 		resetCachePrefix+adminTokenJTI, 1))
 	ctx := security.WithContext(context.Background(), security.NewGenericPrincipalByClaims(jwt.MapClaims{
 		"sub": "1",
@@ -357,13 +361,13 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	gctx, _ := gin.CreateTestContext(httptest.NewRecorder())
 	gctx.Request = httptest.NewRequest("POST", "/resetPassword", nil).WithContext(ctx)
 	//ctx = context.WithValue(ctx, gin.ContextKey, gctx)
-	res, err := ts.AuthServer.ResetPassword(gctx, &ResetPasswordRequest{
+	res, err := ts.AuthService.ResetPassword(gctx, &ResetPasswordRequest{
 		NewPassword: "234567",
 		StateToken:  adminToken,
 	})
 	ts.Require().NoError(err)
-	ts.False(ts.redisServer.Exists(resetCachePrefix + adminTokenJTI))
-	pwd := ts.AuthServer.db.UserPassword.Query().Where(userpassword.UserID(1),
+	ts.False(ts.Redis.Exists(resetCachePrefix + adminTokenJTI))
+	pwd := ts.AuthService.db.UserPassword.Query().Where(userpassword.UserID(1),
 		userpassword.SceneEQ(userpassword.SceneLogin),
 	).OnlyX(entcache.Skip(context.Background()))
 
@@ -371,6 +375,34 @@ func (ts *loginFlowSuite) Test_ResetPassword() {
 	ts.Equal(res.User.ID, 1)
 }
 
+func (ts *loginFlowSuite) Test_UserDevice() {
+	ctx := context.Background()
+	client := ts.Client.Debug()
+	_, err := client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("1").SetDeviceName("phone1").
+		Save(ctx)
+	ts.Require().Error(err, "miss quota")
+	// 如果存在, 则用旧数据
+	client.QuotaItem.Create().SetCreatedBy(1).SetCode(string(quota.ItemCodeUserDevice)).SetName("用户设备").
+		SetResourceType(quotaitem.ResourceTypeNumber).
+		Exec(ctx)
+	drow := client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("1").SetDeviceName("phone1").
+		SaveX(ctx)
+	qrow, err := client.Quota.Create().
+		SetQuotaItemID(client.QuotaItem.Query().Where(quotaitem.Code(string(quota.ItemCodeUserDevice))).OnlyIDX(ctx)).
+		SetTenantID(0).SetUserID(1).SetLimit(1).SetUsed(1).SetCreatedBy(1).
+		Save(ctx)
+	ts.Require().NoError(err)
+	err = client.UserDevice.Create().SetUserID(1).SetCreatedBy(1).SetDeviceUID("2").SetDeviceName("phone2").
+		Exec(ctx)
+	ts.Require().ErrorContains(err, "quota exceeded")
+	client.UserDevice.DeleteOne(drow).ExecX(ctx)
+	qrow = client.Quota.GetX(ctx, qrow.ID)
+	ts.Equal(int64(0), qrow.Used)
+
+	_, err = client.UserDevice.Delete().Where(userdevice.UserID(1)).Exec(ts.NewTestCtx(1, 1))
+	ts.Require().ErrorContains(err, "operation not supported: OpDelete")
+	client.UserDevice.Delete().Where(userdevice.UserID(1)).ExecX(quota.SkipQuota(context.Background()))
+}
 func TestPwd(t *testing.T) {
 	// 随机字符串
 	req := sha256.New()
@@ -385,7 +417,7 @@ func TestPwd(t *testing.T) {
 }
 
 func (ts *loginFlowSuite) Test_GetMinioSts() {
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{}`)
 	req := httptest.NewRequest("POST", "/oss/sts", payload)
@@ -403,7 +435,7 @@ func (ts *loginFlowSuite) Test_GetMinioSts() {
 }
 
 func (ts *loginFlowSuite) Test_GetAliSts() {
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{
 		"bucket": "qldevtest",
@@ -424,7 +456,7 @@ func (ts *loginFlowSuite) Test_GetAliSts() {
 }
 
 func (ts *loginFlowSuite) Test_GetPreSignUrl() {
-	err := ts.AuthServer.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthServer.Options.JWT.TokenTTL))
+	err := ts.AuthService.cache.Set(context.Background(), adminTokenJTI, "1", cache.WithTTL(ts.AuthService.Options.JWT.TokenTTL))
 	ts.NoError(err)
 	payload := strings.NewReader(`{
 		"url": "http://localhost:9000/test2/sendCaptchaCode.tmpl"

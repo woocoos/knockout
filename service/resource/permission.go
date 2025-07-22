@@ -3,6 +3,8 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
@@ -13,6 +15,7 @@ import (
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/apppolicy"
+	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
 	"github.com/woocoos/knockout/ent/org"
@@ -24,6 +27,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/internal/status"
 	"github.com/woocoos/knockout/security"
 	"strconv"
 	"strings"
@@ -65,13 +69,13 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 		return err
 	}
 
-	// 应用策略
-	ps, err := ap.Policies(ctx)
+	// 应用auto_grant=true策略
+	ps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appID), apppolicy.AutoGrant(true)).All(ctx)
 	if err != nil {
 		return err
 	}
-	// 角色
-	rs, err := ap.Roles(ctx)
+	// 角色auto_grant=true
+	rs, err := client.AppRole.Query().Where(approle.AppID(appID), approle.AutoGrant(true)).All(ctx)
 	if err != nil {
 		return err
 	}
@@ -110,14 +114,13 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 // appPolicy to orgPolicy
 func appPolicyToOrgPolicy(appCode string, rules []*types.PolicyRule, tenantID int) error {
 	for _, rule := range rules {
-		for j, action := range rule.Actions {
-			rule.Actions[j] = appCode + ArnSplit + action
-		}
+		//for j, action := range rule.Actions {
+		//	rule.Actions[j] = appCode + ArnSplit + action
+		//}
 		for j, resource := range rule.Resources {
 			// 替换tenant_id
 			resource = authz.ReplaceTenantID(resource, tenantID)
-			// 补充appCode
-			rule.Resources[j] = appCode + ArnSplit + authz.FormatResourceArn(resource)
+			rule.Resources[j] = authz.FormatResourceArn(resource)
 		}
 	}
 	return nil
@@ -285,20 +288,51 @@ func (s *Service) assignRoleUserByTid(ctx context.Context, input model.AssignRol
 
 // AssignRoleUser is the resolver for the assignRoleUser field.
 func (s *Service) AssignRoleUser(ctx context.Context, input model.AssignRoleUserInput) error {
-	tid, err := identity.TenantIDFromContext(ctx)
+	or, err := s.Client.OrgRole.Get(ctx, input.OrgRoleID)
 	if err != nil {
 		return err
 	}
-	return s.assignRoleUserByTid(ctx, input, tid)
+	return s.assignRoleUserByTid(ctx, input, or.OrgID)
+}
+
+func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, userID int) error {
+	client := ent.FromContext(ctx)
+	// 获取可自动授权的角色
+	rIDs, err := client.AppRole.Query().Where(approle.AutoGrant(true), approle.HasAppWith(app.Code(appCode))).Select(approle.FieldID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	if rIDs == nil || len(rIDs) == 0 {
+		return fmt.Errorf("no authorized roles")
+	}
+	// 根据可授权角色查询组织角色
+	orIDs, err := client.OrgRole.Query().Where(orgrole.OrgID(orgID), orgrole.AppRoleIDIn(rIDs...)).Select(orgrole.FieldID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	if orIDs == nil || len(orIDs) == 0 {
+		return fmt.Errorf("no authorized roles")
+	}
+	for _, orID := range orIDs {
+		err = s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
+			OrgRoleID: orID,
+			UserID:    userID,
+		}, orgID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // RevokeRoleUser is the resolver for the revokeRoleUser field.
 func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) error {
 	client := ent.FromContext(ctx)
-	tid, err := identity.TenantIDFromContext(ctx)
+	or, err := client.OrgRole.Get(ctx, roleID)
 	if err != nil {
 		return err
 	}
+	tid := or.OrgID
 	if isAllow, err := s.IsAllowRevokeOrgRole(ctx, userID, roleID); err != nil {
 		return err
 	} else if !isAllow {
@@ -387,7 +421,9 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 	}
 	hasOpMap := make(map[int]bool)
 	for _, op := range hasOps {
-		hasOpMap[op.AppPolicyID] = true
+		if op.AppPolicyID != nil {
+			hasOpMap[*op.AppPolicyID] = true
+		}
 	}
 	// 分配策略给组织
 	opbk := make([]*ent.OrgPolicyCreate, 0)
@@ -455,7 +491,7 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 	if !isRoot {
 		return fmt.Errorf("organization %d is not a root organization", orgID)
 	}
-
+	// 获取组织角色的授权
 	ps, err := client.OrgRoleUser.Query().Where(
 		orgroleuser.HasOrgUserWith(orguser.OrgID(orgID)),
 		orgroleuser.HasOrgRoleWith(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID))).
@@ -477,11 +513,12 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 	if err != nil {
 		return err
 	}
-	// 清理OrgRole授权
+	// 获取组织角色
 	orid, err := client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID)).Select(orgrole.FieldID).Int(ctx)
 	if err != nil {
 		return err
 	}
+	// 获取组织角色关联的组织策略
 	ops, err := client.OrgPolicy.Query().Where(
 		orgpolicy.HasPermissionsWith(
 			permission.RoleID(orid),
@@ -501,17 +538,49 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 			rules = append(rules, rs...)
 		}
 	}
+	// 清理组织角色授权
 	err = security.RevokePolicy(rules, strconv.Itoa(orid), orgID, permission.PrincipalKindRole)
 	if err != nil {
 		return err
 	}
-	// 清理permission
+	// 查询角色关联的权限策略在其他授权的应用角色引用
+	refOPIDs, err := client.Permission.Query().Where(
+		permission.OrgID(orgID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.HasRoleWith(orgrole.AppRoleIDNotNil(), orgrole.AppRoleIDNEQ(appRoleID)),
+		permission.OrgPolicyIDIn(opids...),
+	).Select(permission.FieldOrgPolicyID).Ints(ctx)
+	if err != nil {
+		return err
+	}
+	// 比较opids与refOPIDs，取出不在refOPIDs中的opid
+	rmOPIDs, _ := DiffArrays(opids, refOPIDs)
+	// 解除用户、自定义角色及用户组的Permission授权
+	rmPerms, err := client.Permission.Query().Where(permission.OrgPolicyIDIn(rmOPIDs...), permission.OrgID(orgID)).WithOrgPolicy().All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, rmPerm := range rmPerms {
+		if rmPerm.PrincipalKind == permission.PrincipalKindUser {
+			err = security.RevokePolicy(rmPerm.Edges.OrgPolicy.Rules, strconv.Itoa(rmPerm.UserID), orgID, permission.PrincipalKindUser)
+		} else if rmPerm.PrincipalKind == permission.PrincipalKindRole {
+			err = security.RevokePolicy(rmPerm.Edges.OrgPolicy.Rules, strconv.Itoa(rmPerm.RoleID), orgID, permission.PrincipalKindRole)
+		}
+		if err != nil {
+			return err
+		}
+	}
+	_, err = client.Permission.Delete().Where(permission.OrgPolicyIDIn(rmOPIDs...), permission.OrgID(orgID)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	// 清理组织角色permission
 	_, err = client.Permission.Delete().Where(permission.OrgID(orgID), permission.PrincipalKindEQ(permission.PrincipalKindRole), permission.RoleID(orid)).Exec(ctx)
 	if err != nil {
 		return err
 	}
 	// 删除orgPolicy
-	_, err = client.OrgPolicy.Delete().Where(orgpolicy.IDIn(opids...)).Exec(ctx)
+	_, err = client.OrgPolicy.Delete().Where(orgpolicy.IDIn(rmOPIDs...)).Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -529,13 +598,6 @@ func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, ap
 	if !isRoot {
 		return fmt.Errorf("organization %d is not a root organization", orgID)
 	}
-
-	if has, err := s.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
-		return err
-	} else if !has {
-		return fmt.Errorf("no allow to revoke")
-	}
-
 	// 查找对应授权的组织策略
 	op, err := client.OrgPolicy.Query().Where(orgpolicy.OrgID(orgID), orgpolicy.AppPolicyID(appPolicyID)).Only(ctx)
 	if err != nil {
@@ -711,7 +773,11 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	} else if !isAllow {
 		return fmt.Errorf("no allow to revoke")
 	}
+	return s.RevokeImpl(ctx, orgID, p)
+}
 
+func (s *Service) RevokeImpl(ctx context.Context, orgID int, p *ent.Permission) error {
+	client := ent.FromContext(ctx)
 	// 判断actions、resources是否存在主体其他授权的policy
 	var ops []*ent.OrgPolicy
 	wheres := []predicate.Permission{
@@ -741,7 +807,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 		return err
 	}
 
-	_, err = client.Permission.Delete().Where(permission.ID(permissionID), permission.OrgID(orgID)).Exec(ctx)
+	_, err = client.Permission.Delete().Where(permission.ID(p.ID), permission.OrgID(orgID)).Exec(ctx)
 	return err
 }
 
@@ -774,13 +840,8 @@ func (s *Service) IsAllowRevokePermission(ctx context.Context, p *ent.Permission
 	return true, nil
 }
 
-func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
+func (s *Service) GetUserPermissionsByUserID(ctx context.Context, userID int, tid int, where *ent.AppActionWhereInput) ([]*ent.AppAction, error) {
 	client := s.Client
-	tid, err := identity.TenantIDFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	// 根据appcode分组
 	grantActions := make(map[string][]string)
 	// 拥有全部权限的app
@@ -840,7 +901,11 @@ func (s *Service) GetUserPermissions(ctx context.Context, where *ent.AppActionWh
 	if err != nil {
 		return nil, err
 	}
-	return s.GetUserPermissionsByUserID(ctx, uid, where)
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.GetUserPermissionsByUserID(ctx, uid, tid, where)
 }
 
 func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {
@@ -863,7 +928,31 @@ func (s *Service) GetUserApps(ctx context.Context) ([]*ent.App, error) {
 		acs = append(acs, parts[0])
 	}
 	acs = RemoveDuplicateElement(acs)
-	return s.Client.App.Query().Where(app.CodeIn(acs...)).All(ctx)
+	return s.Client.App.Query().Where(app.CodeIn(acs...), app.Or(app.KindEQ(app.KindWeb), app.KindEQ(app.KindNative))).All(ctx)
+}
+
+func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, appCode string) (bool, error) {
+	has, err := s.Client.AppAction.Query().Where(appaction.Name(action), appaction.HasAppWith(app.Code(appCode))).Exist(ctx)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, status.CodeError(status.ErrInvalidPermission)
+	}
+	rule := []any{
+		strconv.Itoa(uid),
+		strconv.Itoa(tid),
+		fmt.Sprintf("%s%s%s", appCode, ArnSplit, action),
+		authz.ActionTypeRead,
+	}
+	has, err = security.CheckUserPermission(rule...)
+	if err != nil {
+		return false, err
+	}
+	if !has {
+		return false, nil
+	}
+	return true, nil
 }
 
 func (s *Service) CheckPermission(ctx context.Context, permission string) (bool, error) {
@@ -878,52 +967,38 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, fmt.Errorf("invalid permission")
+		return false, status.CodeError(status.ErrInvalidPermission)
 	}
-	has, err := s.Client.AppAction.Query().Where(appaction.Name(parts[1]), appaction.HasAppWith(app.Code(parts[0]))).Exist(ctx)
+	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
+}
+
+func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permission string, orgID int, userID int) (bool, error) {
+	// 检查permission有效
+	parts := strings.SplitN(permission, ":", 2)
+	if len(parts) != 2 {
+		return false, status.CodeError(status.ErrInvalidPermission)
+	}
+	return s.doCheckPermission(ctx, userID, orgID, parts[1], parts[0])
+}
+
+func (s *Service) CheckPermissionByJwt(ctx context.Context, jwtStr string, orgID int, action string, appCode string) (bool, error) {
+	token, err := jwt.ParseWithClaims(jwtStr, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token.Method = jwt.GetSigningMethod(s.jwtConfig.SigningMethod)
+		key, err := auth.ParseSigningKeyFromString(s.jwtConfig.SigningKey, s.jwtConfig.SigningMethod, false)
+		if err != nil {
+			return nil, err
+		}
+		return key, nil
+	})
+	if err != nil || !token.Valid {
+		return false, err
+	}
+	subject := token.Claims.(*jwt.RegisteredClaims).Subject
+	uid, err := strconv.Atoi(subject)
 	if err != nil {
 		return false, err
 	}
-	if !has {
-		return false, fmt.Errorf("invalid permission")
-	}
-
-	rule := []any{
-		strconv.Itoa(uid),
-		strconv.Itoa(tid),
-		permission,
-		"read",
-	}
-	has, err = security.CheckUserPermission(rule...)
-	if err != nil {
-		return false, err
-	}
-	if !has {
-		return false, nil
-	}
-	return true, nil
-}
-
-// GetOrgDomain 获取组织域名.orgID为根组织.
-func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
-	c := s.Client
-	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
-	if orgr.Domain == "" {
-		return "", fmt.Errorf("organization %d domain is empty", orgID)
-	}
-	return orgr.Domain, nil
-}
-
-// IsRootOrg 判断组织是否root
-func (s *Service) IsRootOrg(ctx context.Context, orgID int) (bool, error) {
-	return s.Client.Org.Query().Where(org.ID(orgID)).Where(org.KindEQ(org.KindRoot)).Exist(ctx)
-}
-
-// GetRootOrgByUser 获取用户的最顶级的根组织.在组织中,一个账户可能存在多个根组织.需要从context获取租户ID
-func (s *Service) GetRootOrgByUser(ctx context.Context, uid int) (*ent.Org, error) {
-	c := s.Client
-	return c.Org.Query().Where(org.HasUsersWith(user.ID(uid)), org.KindEQ(org.KindRoot)).
-		Order(ent.Asc(org.FieldPath)).First(ctx)
+	return s.doCheckPermission(ctx, uid, orgID, action, appCode)
 }
 
 // updateOrgPolicyRules 更新策略规则
@@ -1102,4 +1177,153 @@ func splitPolicyRules(data []string) ([]string, []string) {
 		}
 	}
 	return allows, denies
+}
+func (s *Service) AppPolicyViewRoleAssigned(ctx context.Context, appRoleID int) ([]*ent.AppPolicyView, error) {
+	ar, err := s.Client.AppRole.Get(ctx, appRoleID)
+	if err != nil {
+		return nil, err
+	}
+	apIDs, err := s.Client.AppRolePolicy.Query().Where(approlepolicy.AppID(ar.AppID),
+		approlepolicy.AppRoleID(appRoleID)).Select(approlepolicy.FieldAppPolicyID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return s.Client.AppPolicyView.Query().Where(
+		apppolicyview.AppID(ar.AppID),
+		apppolicyview.KindEQ(apppolicyview.KindPolicy),
+		apppolicyview.PolicyIDIn(apIDs...),
+	).All(ctx)
+}
+
+func (s *Service) OrgPolicyViewOrgPolicies(ctx context.Context, appCode string, orgID *int) ([]*model.AppPolicyViewOrgPolicy, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		tid = *orgID
+	}
+	// 根据appcode查出AppPolicyView所有的appPolicyIDs
+	aps, err := s.Client.AppPolicyView.Query().Where(
+		apppolicyview.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	apIDs := make([]int, 0, len(aps))
+	apMaps := make(map[int]*ent.AppPolicyView)
+	for _, ap := range aps {
+		if ap.PolicyID == nil {
+			continue
+		}
+		apIDs = append(apIDs, *ap.PolicyID)
+		apMaps[*ap.PolicyID] = ap
+	}
+	ops, err := s.Client.OrgPolicy.Query().Where(
+		orgpolicy.OrgID(tid),
+		orgpolicy.AppPolicyIDIn(apIDs...),
+		orgpolicy.HasAppWith(app.Code(appCode)),
+	).All(ctx)
+	if ent.IsNotFound(err) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	// 组装数据
+	res := make([]*model.AppPolicyViewOrgPolicy, 0, len(ops))
+	for _, op := range ops {
+		if op.AppPolicyID == nil {
+			continue
+		}
+		res = append(res, &model.AppPolicyViewOrgPolicy{
+			AppPolicyView: apMaps[*op.AppPolicyID],
+			OrgPolicy:     op,
+		})
+	}
+	return res, nil
+}
+
+func (s *Service) OrgPolicyViewUserRoleAssigned(ctx context.Context, userID int, appCode string, orgID int) ([]int, error) {
+	o, err := s.GetOrg(ctx, orgID)
+	if err != nil {
+		return nil, err
+	}
+	// 查询用户授权的所有角色/用户组
+	orIDs, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.UserID(userID), orgroleuser.OrgID(o.ID)).Select(orgroleuser.FieldOrgRoleID).Ints(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// 查询用户授权的角色/用户组对应的策略id
+	assignIDs := make([]int, 0)
+	for _, orID := range orIDs {
+		ids, err := s.OrgPolicyViewRoleAssigned(ctx, orID, appCode, &o.ID)
+		if err != nil {
+			return nil, err
+		}
+		assignIDs = append(assignIDs, ids...)
+	}
+	return assignIDs, nil
+}
+
+func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, appCode string, orgID *int) ([]int, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	opIDs := make([]int, 0, len(ops))
+	for _, op := range ops {
+		opIDs = append(opIDs, op.OrgPolicy.ID)
+	}
+	ps, err := s.Client.Permission.Query().Where(
+		permission.RoleID(orgRoleID),
+		permission.PrincipalKindEQ(permission.PrincipalKindRole),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyIDIn(opIDs...),
+	).All(ctx)
+	res := make([]int, 0, len(ps))
+	for _, p := range ps {
+		res = append(res, p.OrgPolicyID)
+	}
+	return res, nil
+}
+
+func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, appCode string, orgID *int) ([]int, error) {
+	tid, err := identity.TenantIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if orgID != nil {
+		o, err := s.GetOrg(ctx, *orgID)
+		if err != nil {
+			return nil, err
+		}
+		tid = o.ID
+	}
+	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	opIDs := make([]int, 0, len(ops))
+	for _, op := range ops {
+		opIDs = append(opIDs, op.OrgPolicy.ID)
+	}
+	ps, err := s.Client.Permission.Query().Where(
+		permission.UserID(userID),
+		permission.PrincipalKindEQ(permission.PrincipalKindUser),
+		permission.OrgID(tid),
+		permission.StatusEQ(typex.SimpleStatusActive),
+		permission.OrgPolicyIDIn(opIDs...),
+	).All(ctx)
+	res := make([]int, 0, len(ps))
+	for _, p := range ps {
+		res = append(res, p.OrgPolicyID)
+	}
+	return res, nil
 }

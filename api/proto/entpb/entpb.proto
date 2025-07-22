@@ -26,13 +26,21 @@ message User {
 
   string display_name = 8;
 
-  google.protobuf.StringValue email = 9;
-
-  google.protobuf.StringValue mobile = 10;
-
   UserType user_type = 11;
 
   CreationType creation_type = 12;
+
+  Gender gender = 13;
+
+  google.protobuf.Int64Value citizenship_id = 14;
+
+  google.protobuf.StringValue first_name = 15;
+
+  google.protobuf.StringValue middle_name = 16;
+
+  google.protobuf.StringValue last_name = 17;
+
+  google.protobuf.StringValue lang = 18;
 
   enum UserType {
     USER_TYPE_UNSPECIFIED = 0;
@@ -50,6 +58,14 @@ message User {
     CREATION_TYPE_REGISTER = 2;
 
     CREATION_TYPE_MANUAL = 3;
+  }
+
+  enum Gender {
+    GENDER_PRIVACY = 0;
+
+    GENDER_MALE = 1;
+
+    GENDER_FEMALE = 2;
   }
 }
 

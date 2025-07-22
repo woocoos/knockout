@@ -10,8 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
@@ -21,7 +23,9 @@ import (
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
+	"github.com/woocoos/knockout/ent/quota"
 	"github.com/woocoos/knockout/ent/user"
+	"github.com/woocoos/knockout/ent/userpasswordpolicy"
 )
 
 // OrgUpdate is the builder for updating Org entities.
@@ -169,6 +173,24 @@ func (ou *OrgUpdate) SetNillableDomain(s *string) *OrgUpdate {
 // ClearDomain clears the value of the "domain" field.
 func (ou *OrgUpdate) ClearDomain() *OrgUpdate {
 	ou.mutation.ClearDomain()
+	return ou
+}
+
+// SetCustomDomain sets the "custom_domain" field.
+func (ou *OrgUpdate) SetCustomDomain(s []string) *OrgUpdate {
+	ou.mutation.SetCustomDomain(s)
+	return ou
+}
+
+// AppendCustomDomain appends s to the "custom_domain" field.
+func (ou *OrgUpdate) AppendCustomDomain(s []string) *OrgUpdate {
+	ou.mutation.AppendCustomDomain(s)
+	return ou
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (ou *OrgUpdate) ClearCustomDomain() *OrgUpdate {
+	ou.mutation.ClearCustomDomain()
 	return ou
 }
 
@@ -333,6 +355,38 @@ func (ou *OrgUpdate) ClearTimezone() *OrgUpdate {
 	return ou
 }
 
+// SetLocalCurrency sets the "local_currency" field.
+func (ou *OrgUpdate) SetLocalCurrency(s string) *OrgUpdate {
+	ou.mutation.SetLocalCurrency(s)
+	return ou
+}
+
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (ou *OrgUpdate) SetNillableLocalCurrency(s *string) *OrgUpdate {
+	if s != nil {
+		ou.SetLocalCurrency(*s)
+	}
+	return ou
+}
+
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (ou *OrgUpdate) ClearLocalCurrency() *OrgUpdate {
+	ou.mutation.ClearLocalCurrency()
+	return ou
+}
+
+// SetLogo sets the "logo" field.
+func (ou *OrgUpdate) SetLogo(tl *types.OrgLogo) *OrgUpdate {
+	ou.mutation.SetLogo(tl)
+	return ou
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (ou *OrgUpdate) ClearLogo() *OrgUpdate {
+	ou.mutation.ClearLogo()
+	return ou
+}
+
 // SetParent sets the "parent" edge to the Org entity.
 func (ou *OrgUpdate) SetParent(o *Org) *OrgUpdate {
 	return ou.SetParentID(o.ID)
@@ -446,6 +500,40 @@ func (ou *OrgUpdate) AddFileIdentities(f ...*FileIdentity) *OrgUpdate {
 		ids[i] = f[i].ID
 	}
 	return ou.AddFileIdentityIDs(ids...)
+}
+
+// SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
+func (ou *OrgUpdate) SetUserPasswordPolicyID(id int) *OrgUpdate {
+	ou.mutation.SetUserPasswordPolicyID(id)
+	return ou
+}
+
+// SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
+func (ou *OrgUpdate) SetNillableUserPasswordPolicyID(id *int) *OrgUpdate {
+	if id != nil {
+		ou = ou.SetUserPasswordPolicyID(*id)
+	}
+	return ou
+}
+
+// SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (ou *OrgUpdate) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgUpdate {
+	return ou.SetUserPasswordPolicyID(u.ID)
+}
+
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (ou *OrgUpdate) AddOrgQuotumIDs(ids ...int) *OrgUpdate {
+	ou.mutation.AddOrgQuotumIDs(ids...)
+	return ou
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (ou *OrgUpdate) AddOrgQuota(q ...*Quota) *OrgUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ou.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -642,6 +730,33 @@ func (ou *OrgUpdate) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdate {
 	return ou.RemoveFileIdentityIDs(ids...)
 }
 
+// ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (ou *OrgUpdate) ClearUserPasswordPolicy() *OrgUpdate {
+	ou.mutation.ClearUserPasswordPolicy()
+	return ou
+}
+
+// ClearOrgQuota clears all "org_quota" edges to the Quota entity.
+func (ou *OrgUpdate) ClearOrgQuota() *OrgUpdate {
+	ou.mutation.ClearOrgQuota()
+	return ou
+}
+
+// RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
+func (ou *OrgUpdate) RemoveOrgQuotumIDs(ids ...int) *OrgUpdate {
+	ou.mutation.RemoveOrgQuotumIDs(ids...)
+	return ou
+}
+
+// RemoveOrgQuota removes "org_quota" edges to Quota entities.
+func (ou *OrgUpdate) RemoveOrgQuota(q ...*Quota) *OrgUpdate {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ou.RemoveOrgQuotumIDs(ids...)
+}
+
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
 func (ou *OrgUpdate) ClearOrgUser() *OrgUpdate {
 	ou.mutation.ClearOrgUser()
@@ -748,6 +863,11 @@ func (ou *OrgUpdate) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
+	if v, ok := ou.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
+		}
+	}
 	if ou.mutation.ParentCleared() && len(ou.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
@@ -796,6 +916,17 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if ou.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
 	}
+	if value, ok := ou.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+	}
+	if value, ok := ou.mutation.AppendedCustomDomain(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, org.FieldCustomDomain, value)
+		})
+	}
+	if ou.mutation.CustomDomainCleared() {
+		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
+	}
 	if value, ok := ou.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 	}
@@ -843,6 +974,18 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ou.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
+	}
+	if value, ok := ou.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
+	}
+	if ou.mutation.LocalCurrencyCleared() {
+		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
+	}
+	if value, ok := ou.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+	}
+	if ou.mutation.LogoCleared() {
+		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
 	if ou.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1241,6 +1384,80 @@ func (ou *OrgUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ou.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ou.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if ou.mutation.OrgUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1486,6 +1703,24 @@ func (ouo *OrgUpdateOne) ClearDomain() *OrgUpdateOne {
 	return ouo
 }
 
+// SetCustomDomain sets the "custom_domain" field.
+func (ouo *OrgUpdateOne) SetCustomDomain(s []string) *OrgUpdateOne {
+	ouo.mutation.SetCustomDomain(s)
+	return ouo
+}
+
+// AppendCustomDomain appends s to the "custom_domain" field.
+func (ouo *OrgUpdateOne) AppendCustomDomain(s []string) *OrgUpdateOne {
+	ouo.mutation.AppendCustomDomain(s)
+	return ouo
+}
+
+// ClearCustomDomain clears the value of the "custom_domain" field.
+func (ouo *OrgUpdateOne) ClearCustomDomain() *OrgUpdateOne {
+	ouo.mutation.ClearCustomDomain()
+	return ouo
+}
+
 // SetCode sets the "code" field.
 func (ouo *OrgUpdateOne) SetCode(s string) *OrgUpdateOne {
 	ouo.mutation.SetCode(s)
@@ -1647,6 +1882,38 @@ func (ouo *OrgUpdateOne) ClearTimezone() *OrgUpdateOne {
 	return ouo
 }
 
+// SetLocalCurrency sets the "local_currency" field.
+func (ouo *OrgUpdateOne) SetLocalCurrency(s string) *OrgUpdateOne {
+	ouo.mutation.SetLocalCurrency(s)
+	return ouo
+}
+
+// SetNillableLocalCurrency sets the "local_currency" field if the given value is not nil.
+func (ouo *OrgUpdateOne) SetNillableLocalCurrency(s *string) *OrgUpdateOne {
+	if s != nil {
+		ouo.SetLocalCurrency(*s)
+	}
+	return ouo
+}
+
+// ClearLocalCurrency clears the value of the "local_currency" field.
+func (ouo *OrgUpdateOne) ClearLocalCurrency() *OrgUpdateOne {
+	ouo.mutation.ClearLocalCurrency()
+	return ouo
+}
+
+// SetLogo sets the "logo" field.
+func (ouo *OrgUpdateOne) SetLogo(tl *types.OrgLogo) *OrgUpdateOne {
+	ouo.mutation.SetLogo(tl)
+	return ouo
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (ouo *OrgUpdateOne) ClearLogo() *OrgUpdateOne {
+	ouo.mutation.ClearLogo()
+	return ouo
+}
+
 // SetParent sets the "parent" edge to the Org entity.
 func (ouo *OrgUpdateOne) SetParent(o *Org) *OrgUpdateOne {
 	return ouo.SetParentID(o.ID)
@@ -1760,6 +2027,40 @@ func (ouo *OrgUpdateOne) AddFileIdentities(f ...*FileIdentity) *OrgUpdateOne {
 		ids[i] = f[i].ID
 	}
 	return ouo.AddFileIdentityIDs(ids...)
+}
+
+// SetUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID.
+func (ouo *OrgUpdateOne) SetUserPasswordPolicyID(id int) *OrgUpdateOne {
+	ouo.mutation.SetUserPasswordPolicyID(id)
+	return ouo
+}
+
+// SetNillableUserPasswordPolicyID sets the "user_password_policy" edge to the UserPasswordPolicy entity by ID if the given value is not nil.
+func (ouo *OrgUpdateOne) SetNillableUserPasswordPolicyID(id *int) *OrgUpdateOne {
+	if id != nil {
+		ouo = ouo.SetUserPasswordPolicyID(*id)
+	}
+	return ouo
+}
+
+// SetUserPasswordPolicy sets the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (ouo *OrgUpdateOne) SetUserPasswordPolicy(u *UserPasswordPolicy) *OrgUpdateOne {
+	return ouo.SetUserPasswordPolicyID(u.ID)
+}
+
+// AddOrgQuotumIDs adds the "org_quota" edge to the Quota entity by IDs.
+func (ouo *OrgUpdateOne) AddOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.AddOrgQuotumIDs(ids...)
+	return ouo
+}
+
+// AddOrgQuota adds the "org_quota" edges to the Quota entity.
+func (ouo *OrgUpdateOne) AddOrgQuota(q ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ouo.AddOrgQuotumIDs(ids...)
 }
 
 // AddOrgUserIDs adds the "org_user" edge to the OrgUser entity by IDs.
@@ -1956,6 +2257,33 @@ func (ouo *OrgUpdateOne) RemoveFileIdentities(f ...*FileIdentity) *OrgUpdateOne 
 	return ouo.RemoveFileIdentityIDs(ids...)
 }
 
+// ClearUserPasswordPolicy clears the "user_password_policy" edge to the UserPasswordPolicy entity.
+func (ouo *OrgUpdateOne) ClearUserPasswordPolicy() *OrgUpdateOne {
+	ouo.mutation.ClearUserPasswordPolicy()
+	return ouo
+}
+
+// ClearOrgQuota clears all "org_quota" edges to the Quota entity.
+func (ouo *OrgUpdateOne) ClearOrgQuota() *OrgUpdateOne {
+	ouo.mutation.ClearOrgQuota()
+	return ouo
+}
+
+// RemoveOrgQuotumIDs removes the "org_quota" edge to Quota entities by IDs.
+func (ouo *OrgUpdateOne) RemoveOrgQuotumIDs(ids ...int) *OrgUpdateOne {
+	ouo.mutation.RemoveOrgQuotumIDs(ids...)
+	return ouo
+}
+
+// RemoveOrgQuota removes "org_quota" edges to Quota entities.
+func (ouo *OrgUpdateOne) RemoveOrgQuota(q ...*Quota) *OrgUpdateOne {
+	ids := make([]int, len(q))
+	for i := range q {
+		ids[i] = q[i].ID
+	}
+	return ouo.RemoveOrgQuotumIDs(ids...)
+}
+
 // ClearOrgUser clears all "org_user" edges to the OrgUser entity.
 func (ouo *OrgUpdateOne) ClearOrgUser() *OrgUpdateOne {
 	ouo.mutation.ClearOrgUser()
@@ -2075,6 +2403,11 @@ func (ouo *OrgUpdateOne) check() error {
 			return &ValidationError{Name: "timezone", err: fmt.Errorf(`ent: validator failed for field "Org.timezone": %w`, err)}
 		}
 	}
+	if v, ok := ouo.mutation.LocalCurrency(); ok {
+		if err := org.LocalCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "local_currency", err: fmt.Errorf(`ent: validator failed for field "Org.local_currency": %w`, err)}
+		}
+	}
 	if ouo.mutation.ParentCleared() && len(ouo.mutation.ParentIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Org.parent"`)
 	}
@@ -2140,6 +2473,17 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	if ouo.mutation.DomainCleared() {
 		_spec.ClearField(org.FieldDomain, field.TypeString)
 	}
+	if value, ok := ouo.mutation.CustomDomain(); ok {
+		_spec.SetField(org.FieldCustomDomain, field.TypeJSON, value)
+	}
+	if value, ok := ouo.mutation.AppendedCustomDomain(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, org.FieldCustomDomain, value)
+		})
+	}
+	if ouo.mutation.CustomDomainCleared() {
+		_spec.ClearField(org.FieldCustomDomain, field.TypeJSON)
+	}
 	if value, ok := ouo.mutation.Code(); ok {
 		_spec.SetField(org.FieldCode, field.TypeString, value)
 	}
@@ -2187,6 +2531,18 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 	}
 	if ouo.mutation.TimezoneCleared() {
 		_spec.ClearField(org.FieldTimezone, field.TypeString)
+	}
+	if value, ok := ouo.mutation.LocalCurrency(); ok {
+		_spec.SetField(org.FieldLocalCurrency, field.TypeString, value)
+	}
+	if ouo.mutation.LocalCurrencyCleared() {
+		_spec.ClearField(org.FieldLocalCurrency, field.TypeString)
+	}
+	if value, ok := ouo.mutation.Logo(); ok {
+		_spec.SetField(org.FieldLogo, field.TypeJSON, value)
+	}
+	if ouo.mutation.LogoCleared() {
+		_spec.ClearField(org.FieldLogo, field.TypeJSON)
 	}
 	if ouo.mutation.ParentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2578,6 +2934,80 @@ func (ouo *OrgUpdateOne) sqlSave(ctx context.Context) (_node *Org, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(fileidentity.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.UserPasswordPolicyCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.UserPasswordPolicyIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   org.UserPasswordPolicyTable,
+			Columns: []string{org.UserPasswordPolicyColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userpasswordpolicy.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedOrgQuotaIDs(); len(nodes) > 0 && !ouo.mutation.OrgQuotaCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.OrgQuotaIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   org.OrgQuotaTable,
+			Columns: []string{org.OrgQuotaColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(quota.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

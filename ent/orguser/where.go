@@ -420,6 +420,26 @@ func DisplayNameContainsFold(v string) predicate.OrgUser {
 	return predicate.OrgUser(sql.FieldContainsFold(FieldDisplayName, v))
 }
 
+// UserTypeEQ applies the EQ predicate on the "user_type" field.
+func UserTypeEQ(v UserType) predicate.OrgUser {
+	return predicate.OrgUser(sql.FieldEQ(FieldUserType, v))
+}
+
+// UserTypeNEQ applies the NEQ predicate on the "user_type" field.
+func UserTypeNEQ(v UserType) predicate.OrgUser {
+	return predicate.OrgUser(sql.FieldNEQ(FieldUserType, v))
+}
+
+// UserTypeIn applies the In predicate on the "user_type" field.
+func UserTypeIn(vs ...UserType) predicate.OrgUser {
+	return predicate.OrgUser(sql.FieldIn(FieldUserType, vs...))
+}
+
+// UserTypeNotIn applies the NotIn predicate on the "user_type" field.
+func UserTypeNotIn(vs ...UserType) predicate.OrgUser {
+	return predicate.OrgUser(sql.FieldNotIn(FieldUserType, vs...))
+}
+
 // HasOrg applies the HasEdge predicate on the "org" edge.
 func HasOrg() predicate.OrgUser {
 	return predicate.OrgUser(func(s *sql.Selector) {

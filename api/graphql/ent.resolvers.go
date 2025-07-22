@@ -36,6 +36,20 @@ func (r *queryResolver) AppDicts(ctx context.Context, after *entgql.Cursor[int],
 		ent.WithAppDictFilter(where.Filter))
 }
 
+// Countries is the resolver for the countries field.
+func (r *queryResolver) Countries(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CountryOrder, where *ent.CountryWhereInput) (*ent.CountryConnection, error) {
+	return r.client.Country.Query().Paginate(ctx, after, first, before, last,
+		ent.WithCountryOrder(orderBy),
+		ent.WithCountryFilter(where.Filter))
+}
+
+// Currencies is the resolver for the currencies field.
+func (r *queryResolver) Currencies(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.CurrencyOrder, where *ent.CurrencyWhereInput) (*ent.CurrencyConnection, error) {
+	return r.client.Currency.Query().Paginate(ctx, after, first, before, last,
+		ent.WithCurrencyOrder(orderBy),
+		ent.WithCurrencyFilter(where.Filter))
+}
+
 // FileIdentities is the resolver for the fileIdentities field.
 func (r *queryResolver) FileIdentities(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.FileIdentityOrder, where *ent.FileIdentityWhereInput) (*ent.FileIdentityConnection, error) {
 	return r.client.FileIdentity.Query().Paginate(ctx, after, first, before, last,
@@ -57,12 +71,36 @@ func (r *queryResolver) Organizations(ctx context.Context, after *entgql.Cursor[
 		ent.WithOrgFilter(where.Filter))
 }
 
+// Quotas is the resolver for the quotas field.
+func (r *queryResolver) Quotas(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaOrder, where *ent.QuotaWhereInput) (*ent.QuotaConnection, error) {
+	return r.client.Quota.Query().Paginate(ctx, after, first, before, last,
+		ent.WithQuotaOrder(orderBy),
+		ent.WithQuotaFilter(where.Filter))
+}
+
+// QuotaItems is the resolver for the quotaItems field.
+func (r *queryResolver) QuotaItems(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.QuotaItemOrder, where *ent.QuotaItemWhereInput) (*ent.QuotaItemConnection, error) {
+	return r.client.QuotaItem.Query().Paginate(ctx, after, first, before, last,
+		ent.WithQuotaItemOrder(orderBy),
+		ent.WithQuotaItemFilter(where.Filter))
+}
+
+// Regions is the resolver for the regions field.
+func (r *queryResolver) Regions(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.RegionOrder, where *ent.RegionWhereInput) (*ent.RegionConnection, error) {
+	return r.client.Region.Query().Paginate(ctx, after, first, before, last,
+		ent.WithRegionOrder(orderBy),
+		ent.WithRegionFilter(where.Filter))
+}
+
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.UserOrder, where *ent.UserWhereInput) (*ent.UserConnection, error) {
 	return r.client.User.Query().Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
 		ent.WithUserFilter(where.Filter))
 }
+
+// AppDict returns generated.AppDictResolver implementation.
+func (r *Resolver) AppDict() generated.AppDictResolver { return &appDictResolver{r} }
 
 // AppPolicy returns generated.AppPolicyResolver implementation.
 func (r *Resolver) AppPolicy() generated.AppPolicyResolver { return &appPolicyResolver{r} }
@@ -75,6 +113,11 @@ func (r *Resolver) OrgPolicy() generated.OrgPolicyResolver { return &orgPolicyRe
 
 // OrgRole returns generated.OrgRoleResolver implementation.
 func (r *Resolver) OrgRole() generated.OrgRoleResolver { return &orgRoleResolver{r} }
+
+// OrgUserPreference returns generated.OrgUserPreferenceResolver implementation.
+func (r *Resolver) OrgUserPreference() generated.OrgUserPreferenceResolver {
+	return &orgUserPreferenceResolver{r}
+}
 
 // Permission returns generated.PermissionResolver implementation.
 func (r *Resolver) Permission() generated.PermissionResolver { return &permissionResolver{r} }
@@ -90,10 +133,12 @@ func (r *Resolver) CreateUserInput() generated.CreateUserInputResolver {
 	return &createUserInputResolver{r}
 }
 
+type appDictResolver struct{ *Resolver }
 type appPolicyResolver struct{ *Resolver }
 type orgResolver struct{ *Resolver }
 type orgPolicyResolver struct{ *Resolver }
 type orgRoleResolver struct{ *Resolver }
+type orgUserPreferenceResolver struct{ *Resolver }
 type permissionResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
