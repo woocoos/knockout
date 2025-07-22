@@ -55,7 +55,7 @@ web:
               group: "/graphql"
               withAuthorization: true
               appCode: "resource"
-adminx:
+errors:
   errorCodeMap:
     10000: "用户名或密码错误"
     10001: "账号已锁定，请联系客服修改密码解除锁定"

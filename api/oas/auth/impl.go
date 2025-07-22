@@ -103,8 +103,7 @@ type Options struct {
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	} `json:"jwt"`
-	PwdPolicy    OptionsPwdPolicy `json:"pwdPolicy"`
-	ErrorCodeMap map[int]string   `json:"errorCodeMap"` // error code map
+	PwdPolicy OptionsPwdPolicy `json:"pwdPolicy"`
 }
 type OptionsPwdPolicy struct {
 	// 密码最短长度，长度应在6-32位之间
@@ -187,7 +186,14 @@ func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 		return err
 	}
 	// 设置错误映射
-	handler.SetErrorMap(s.Options.ErrorCodeMap, nil)
+	if cnf.IsSet("errors.errorCodeMap") {
+		errorCodeMap := map[int]string{}
+		err := cnf.Sub("errors.errorCodeMap").Unmarshal(&errorCodeMap)
+		if err != nil {
+			panic(err)
+		}
+		handler.SetErrorMap(errorCodeMap, nil)
+	}
 	// Initialize the captcha
 	s.captchaStore = captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire)
 	captcha.SetCustomStore(s.captchaStore)

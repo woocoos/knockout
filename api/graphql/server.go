@@ -90,9 +90,9 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 		middleware.RegisterTokenSigner(),
 	)
 	// 设置错误映射
-	if cnf.IsSet("adminx.errorCodeMap") {
+	if cnf.IsSet("errors.errorCodeMap") {
 		errorCodeMap := map[int]string{}
-		err := cnf.Sub("adminx.errorCodeMap").Unmarshal(&errorCodeMap)
+		err := cnf.Sub("errors.errorCodeMap").Unmarshal(&errorCodeMap)
 		if err != nil {
 			panic(err)
 		}

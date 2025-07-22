@@ -84,8 +84,8 @@ func NewService(opt ...Option) *Service {
 		option(r)
 	}
 	pp := defaultPwdPolicy
-	if r.cnf.IsSet("adminx.pwdPolicy") {
-		err := r.cnf.Sub("adminx.pwdPolicy").Unmarshal(&pp)
+	if r.cnf.IsSet("auth.pwdPolicy") {
+		err := r.cnf.Sub("auth.pwdPolicy").Unmarshal(&pp)
 		if err != nil {
 			panic(err)
 		}
