@@ -1730,13 +1730,10 @@ func (s *ServerImpl) postAlerts(ctx context.Context, params msg.PostableAlerts) 
 	return nil
 }
 
-func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string) (*ent.FileIdentity, error) {
-	tid, err := s.tryGetTenantID(c)
-	if err != nil {
-		return nil, err
-	}
+func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string, tid int) (*ent.FileIdentity, error) {
 	ctx := identity.WithTenantID(c, tid)
 	var fi *ent.FileIdentity
+	var err error
 	if bucket != "" && endpoint != "" {
 		// 传参取对应identity
 		fi, err = s.db.FileIdentity.Query().Where(
@@ -1747,17 +1744,24 @@ func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string) (*
 			),
 		).WithSource().Only(ctx)
 	} else {
-		// 不传参去默认值
+		// 不传参取默认值
 		fi, err = s.db.FileIdentity.Query().Where(
 			fileidentity.TenantID(tid),
 			fileidentity.IsDefault(true),
 		).WithSource().Only(ctx)
 	}
-	if fi == nil {
-		return nil, status.CodeError(status.ErrFileIdentityIsNull)
-	}
 	if err != nil {
 		return nil, err
+	}
+	if fi == nil {
+		t, err := s.db.Org.Get(ctx, tid)
+		if err != nil {
+			return nil, err
+		}
+		if t.ParentID == 0 {
+			return nil, status.CodeError(status.ErrFileIdentityIsNull)
+		}
+		return s.getFileIdentity(c, bucket, endpoint, t.ParentID)
 	}
 	return fi, nil
 }
@@ -1767,7 +1771,11 @@ func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse
 	if err != nil {
 		return nil, err
 	}
-	fi, err := s.getFileIdentity(c, req.Bucket, req.Endpoint)
+	tid, err := s.tryGetTenantID(c)
+	if err != nil {
+		return nil, err
+	}
+	fi, err := s.getFileIdentity(c, req.Bucket, req.Endpoint, tid)
 	if err != nil {
 		return nil, err
 	}
@@ -1797,7 +1805,11 @@ func (s *ServerImpl) GetSTS(c *gin.Context, req *GetSTSRequest) (*GetSTSResponse
 }
 
 func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) (*GetPreSignUrlResponse, error) {
-	fi, path, err := s.convertUrlToFileSource(ctx, req)
+	tid, err := s.tryGetTenantID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	fi, path, err := s.convertUrlToFileSource(ctx, req, tid)
 	if err != nil {
 		return nil, err
 	}
@@ -1819,14 +1831,11 @@ func (s *ServerImpl) GetPreSignUrl(ctx *gin.Context, req *GetPreSignUrlRequest) 
 }
 
 // convertUrlToFileSource 将url转换为文件源
-func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRequest) (*ent.FileIdentity, string, error) {
-	tid, err := s.tryGetTenantID(c)
-	if err != nil {
-		return nil, "", err
-	}
+func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRequest, tid int) (*ent.FileIdentity, string, error) {
 	ctx := identity.WithTenantID(c, tid)
 	var fis []*ent.FileIdentity
 	// 取出组织对应的fileidentities
+	var err error
 	if req.Bucket != "" && req.Endpoint != "" {
 		fis, err = s.db.FileIdentity.Query().Where(
 			fileidentity.TenantID(tid),
@@ -1850,7 +1859,14 @@ func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRe
 		}
 	}
 	if fi == nil {
-		return nil, "", status.CodeError(status.ErrFileIdentityIsNull)
+		t, err := s.db.Org.Get(ctx, tid)
+		if err != nil {
+			return nil, "", err
+		}
+		if t.ParentID == 0 {
+			return nil, "", status.CodeError(status.ErrFileIdentityIsNull)
+		}
+		return s.convertUrlToFileSource(c, req, t.ParentID)
 	}
 
 	// 解析url的path
