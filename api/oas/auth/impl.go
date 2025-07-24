@@ -1750,7 +1750,7 @@ func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string, ti
 			fileidentity.IsDefault(true),
 		).WithSource().Only(ctx)
 	}
-	if err != nil {
+	if err != nil && !ent.IsNotFound(err) {
 		return nil, err
 	}
 	if fi == nil {
