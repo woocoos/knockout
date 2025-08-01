@@ -31,7 +31,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/internal/errors"
 	"github.com/woocoos/knockout/security"
 	"net/http"
 	"strconv"
@@ -346,7 +346,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 		return fmt.Errorf("invalid org id or root org id")
 	}
 	if !strings.HasPrefix(orgs[1].Path, orgs[0].Path) {
-		return status.CodeError(status.ErrOrgNotFound)
+		return errors.Codel(errors.ErrOrgNotFound)
 	}
 
 	usr := client.User.GetX(ctx, input.UserID)
@@ -471,10 +471,10 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	o := SaltSecret(oldPwd, usr.Edges.Passwords[0].Salt)
 	n := SaltSecret(newPwd, usr.Edges.Passwords[0].Salt)
 	if o != usr.Edges.Passwords[0].Password {
-		return status.CodeError(status.ErrOldPasswordNotMatch)
+		return errors.Codel(errors.ErrOldPasswordNotMatch)
 	}
 	if oldPwd == newPwd {
-		return status.CodeError(status.ErrPasswordDuplicate)
+		return errors.Codel(errors.ErrPasswordDuplicate)
 	}
 	_, err = client.UserPassword.UpdateOneID(usr.Edges.Passwords[0].ID).
 		SetPassword(n).Save(ctx)

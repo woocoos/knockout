@@ -9,6 +9,7 @@ import (
 	"github.com/tsingsun/woocoo/web/handler"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/koapp"
 	"github.com/woocoos/knockout/ent"
 )
@@ -24,6 +25,10 @@ func NewServer(app *woocoo.App) *Server {
 
 	cnf := app.AppConfiguration()
 	srv.service = NewServerImpl(cnf)
+	// 初始化错误处理
+	if err := fmterr.InitErrorHandler(app.AppConfiguration().Sub("errors.errorCodeMap")); err != nil {
+		panic(err)
+	}
 
 	ents := koapp.BuildEntComponents(cnf)
 	drv := ents["portal"]

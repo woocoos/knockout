@@ -16,13 +16,13 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
-	github.com/tsingsun/woocoo v0.6.1-0.20250708021442-8c2efefc8a97
-	github.com/tsingsun/woocoo/contrib/gql v0.1.2-0.20250708061415-1eb1045fbe54
+	github.com/tsingsun/woocoo v0.6.2-0.20250725145229-6bf119de76fa
+	github.com/tsingsun/woocoo/contrib/gql v0.1.3-0.20250725154610-5c1fc348ee8c
 	github.com/tsingsun/woocoo/contrib/telemetry v0.58.0
 	github.com/vektah/gqlparser/v2 v2.5.19
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.3.0
-	github.com/woocoos/knockout-go v0.2.0
+	github.com/woocoos/knockout-go v0.3.5-0.20250730090934-758a5fe31725
 	go.opentelemetry.io/contrib/propagators/b3 v1.33.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.11.0
@@ -106,7 +106,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.33.0 // indirect
 	go.opentelemetry.io/otel/trace v1.33.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.4.0 // indirect
-	golang.org/x/oauth2 v0.24.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241209162323-e6fa225c2576 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241209162323-e6fa225c2576 // indirect

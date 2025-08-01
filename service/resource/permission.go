@@ -27,7 +27,7 @@ import (
 	"github.com/woocoos/knockout/ent/permission"
 	"github.com/woocoos/knockout/ent/predicate"
 	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/internal/errors"
 	"github.com/woocoos/knockout/security"
 	"strconv"
 	"strings"
@@ -937,7 +937,7 @@ func (s *Service) doCheckPermission(ctx context.Context, uid, tid int, action, a
 		return false, err
 	}
 	if !has {
-		return false, status.CodeError(status.ErrInvalidPermission)
+		return false, errors.Codel(errors.ErrInvalidPermission)
 	}
 	rule := []any{
 		strconv.Itoa(uid),
@@ -967,7 +967,7 @@ func (s *Service) CheckPermission(ctx context.Context, permission string) (bool,
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, status.CodeError(status.ErrInvalidPermission)
+		return false, errors.Codel(errors.ErrInvalidPermission)
 	}
 	return s.doCheckPermission(ctx, uid, tid, parts[1], parts[0])
 }
@@ -976,7 +976,7 @@ func (s *Service) CheckPermissionByOrgIDAndUserID(ctx context.Context, permissio
 	// 检查permission有效
 	parts := strings.SplitN(permission, ":", 2)
 	if len(parts) != 2 {
-		return false, status.CodeError(status.ErrInvalidPermission)
+		return false, errors.Codel(errors.ErrInvalidPermission)
 	}
 	return s.doCheckPermission(ctx, userID, orgID, parts[1], parts[0])
 }

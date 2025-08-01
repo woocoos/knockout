@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/base32"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"github.com/dchest/captcha"
 	"github.com/gin-gonic/gin"
@@ -17,7 +16,6 @@ import (
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	securityX "github.com/tsingsun/woocoo/pkg/security"
-	"github.com/tsingsun/woocoo/web/handler"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -45,7 +43,7 @@ import (
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
-	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/internal/errors"
 	"github.com/woocoos/knockout/security"
 	quotaService "github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
@@ -185,15 +183,6 @@ func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 	if err != nil {
 		return err
 	}
-	// 设置错误映射
-	if cnf.IsSet("errors.errorCodeMap") {
-		errorCodeMap := map[int]string{}
-		err := cnf.Sub("errors.errorCodeMap").Unmarshal(&errorCodeMap)
-		if err != nil {
-			panic(err)
-		}
-		handler.SetErrorMap(errorCodeMap, nil)
-	}
 	// Initialize the captcha
 	s.captchaStore = captcha.NewMemoryStore(s.CaptchaCollectNum, s.CaptchaExpire)
 	captcha.SetCustomStore(s.captchaStore)
@@ -236,12 +225,12 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	).WithUser().Only(ctx)
 	if err != nil {
 		ctx.Status(http.StatusBadRequest)
-		return nil, status.CodeError(status.ErrUserNameOrPassword)
+		return nil, errors.Codel(errors.ErrUserNameOrPassword)
 	}
 	if ui.Edges.User.Status == types.UserStatusLocked {
 		ctx.Status(http.StatusBadRequest)
 		// 返回账号锁定错误
-		return nil, status.CodeError(status.ErrUserHasLocked)
+		return nil, errors.Codel(errors.ErrUserHasLocked)
 	}
 	// 判断密码是否过期
 	has, err := s.db.UserPassword.Query().Where(
@@ -255,7 +244,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	if has {
 		ctx.Status(http.StatusBadRequest)
 		// 密码已过期，请重置密码或联系客服修改密码恢复
-		return nil, status.CodeError(status.ErrPasswordExpired)
+		return nil, errors.Codel(errors.ErrPasswordExpired)
 	}
 	// 错误次数过多需要验证码
 	if upp.CaptchaTimes > 0 && failCount >= upp.CaptchaTimes {
@@ -266,7 +255,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		}
 		if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
 			ctx.Status(http.StatusBadRequest)
-			return nil, status.CodeError(status.ErrCaptchaNotMatch)
+			return nil, errors.Codel(errors.ErrCaptchaNotMatch)
 		}
 	}
 	pwd, err := s.checkPwd(ctx, req)
@@ -281,7 +270,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 	}
 
 	if !profile.CanLogin {
-		return nil, status.CodeError(status.ErrUserCanNotLogin)
+		return nil, errors.Codel(errors.ErrUserCanNotLogin)
 	}
 
 	// 清除登录失败次数缓存
@@ -302,7 +291,7 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 	ctx.Status(http.StatusBadRequest)
 	var parsedError *gin.Error
 	has := errors.As(err, &parsedError)
-	if has && err.(*gin.Error).Type == status.ErrPasswordNotMatch {
+	if has && err.(*gin.Error).Type == errors.ErrPasswordNotMatch {
 		var errL error
 		failCount, errL := s.logFailHandler(ctx, req.Username, false)
 		if errL != nil {
@@ -351,9 +340,9 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			_ = s.postAlerts(ctx, params)
 			ctx.Status(http.StatusBadRequest)
 			// 返回账号锁定错误
-			return nil, status.CodeError(status.ErrUserHasLocked)
+			return nil, errors.Codel(errors.ErrUserHasLocked)
 		}
-		return nil, fmt.Errorf("密码错误，您还可以尝试%d次", upp.Retry-failCount)
+		return nil, errors.Codel(errors.ErrPasswordRetry, upp.Retry-failCount)
 	}
 	return nil, err
 }
@@ -372,7 +361,7 @@ func (s *ServerImpl) AppOrgs(ctx *gin.Context, req *AppOrgsRequest) ([]*Domain, 
 		return nil, err
 	}
 	if ros == nil || len(ros) == 0 {
-		return nil, status.CodeError(status.ErrOrgNotFound)
+		return nil, errors.Codel(errors.ErrOrgNotFound)
 	}
 	var domains []*Domain
 	// 查询顶级组织
@@ -408,7 +397,7 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 	// 验证密码
 	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
-		return nil, status.CodeError(status.ErrUserNameOrPassword)
+		return nil, errors.Codel(errors.ErrUserNameOrPassword)
 	}
 
 	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
@@ -417,7 +406,7 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 	}
 
 	if !profile.CanLogin {
-		return nil, status.CodeError(status.ErrUserCanNotLogin)
+		return nil, errors.Codel(errors.ErrUserCanNotLogin)
 	}
 
 	roIDs, err := s.db.Org.Query().Where(
@@ -429,7 +418,7 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 		return nil, err
 	}
 	if roIDs == nil || len(roIDs) == 0 {
-		return nil, status.CodeError(status.ErrOrgNotFound)
+		return nil, errors.Codel(errors.ErrOrgNotFound)
 	}
 	appAccess := false
 	for _, roID := range roIDs {
@@ -444,15 +433,15 @@ func (s *ServerImpl) OldLoginForApp(ctx *gin.Context, req *OldLoginForAppRequest
 		}
 	}
 	if !appAccess {
-		return nil, status.CodeError(status.ErrNotLoginPermission)
+		return nil, errors.Codel(errors.ErrNotLoginPermission)
 	}
 
 	if profile.MfaEnabled {
 		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
-			return nil, status.CodeError(status.ErrMfaInvalidCode)
+			return nil, errors.Codel(errors.ErrMfaInvalidCode)
 		}
 	} else {
-		return nil, status.CodeError(status.ErrMfaDisable)
+		return nil, errors.Codel(errors.ErrMfaDisable)
 	}
 
 	cip := ctx.ClientIP()
@@ -499,7 +488,7 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 	// 验证密码
 	pwd, err := s.checkPwd(ctx, &LoginRequest{Username: req.Username, Password: req.Password})
 	if err != nil {
-		return nil, status.CodeError(status.ErrUserNameOrPassword)
+		return nil, errors.Codel(errors.ErrUserNameOrPassword)
 	}
 
 	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
@@ -508,7 +497,7 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 	}
 
 	if !profile.CanLogin {
-		return nil, status.CodeError(status.ErrUserCanNotLogin)
+		return nil, errors.Codel(errors.ErrUserCanNotLogin)
 	}
 
 	roIDs, err := s.db.Org.Query().Where(
@@ -520,7 +509,7 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 		return nil, err
 	}
 	if roIDs == nil || len(roIDs) == 0 {
-		return nil, status.CodeError(status.ErrOrgNotFound)
+		return nil, errors.Codel(errors.ErrOrgNotFound)
 	}
 	appAccess := false
 	for _, roID := range roIDs {
@@ -535,7 +524,7 @@ func (s *ServerImpl) OldFingerprintLogin(ctx *gin.Context, req *OldFingerprintLo
 		}
 	}
 	if !appAccess {
-		return nil, status.CodeError(status.ErrNotLoginPermission)
+		return nil, errors.Codel(errors.ErrNotLoginPermission)
 	}
 
 	cip := ctx.ClientIP()
@@ -568,7 +557,7 @@ func (s *ServerImpl) FingerprintLogin(ctx *gin.Context, req *FingerprintLoginReq
 	}
 
 	if !profile.CanLogin {
-		return nil, status.CodeError(status.ErrUserCanNotLogin)
+		return nil, errors.Codel(errors.ErrUserCanNotLogin)
 	}
 	_ = s.updateLastLogin(ctx, profile.UserID)
 	return s.loginToken(ctx, uid)
@@ -584,11 +573,11 @@ func (s *ServerImpl) BindFingerprint(ctx *gin.Context, req *BindFingerprintReque
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
 	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
-		return false, status.CodeError(status.ErrPasswordNotMatch)
+		return false, errors.Codel(errors.ErrPasswordNotMatch)
 	}
 	given := resource.SaltSecret(req.UserPassword, pwd.Salt)
 	if given != pwd.Password {
-		return false, status.CodeError(status.ErrPasswordNotMatch)
+		return false, errors.Codel(errors.ErrPasswordNotMatch)
 	}
 	return true, nil
 }
@@ -612,7 +601,7 @@ func (s *ServerImpl) VerifyFactor(ctx *gin.Context, req *VerifyFactorRequest) (*
 	}
 	if profile.MfaEnabled {
 		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
-			return nil, status.CodeError(status.ErrMfaInvalidCode)
+			return nil, errors.Codel(errors.ErrMfaInvalidCode)
 		}
 	}
 
@@ -649,7 +638,7 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
 	// 判断密码是否旧密码
 	if npwd == pwd.Password {
-		return nil, status.CodeError(status.ErrPasswordDuplicate)
+		return nil, errors.Codel(errors.ErrPasswordDuplicate)
 	}
 
 	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
@@ -687,7 +676,7 @@ func (s *ServerImpl) mfaPrepare(ctx *gin.Context, profile *ent.UserLoginProfile)
 		return nil, nil
 	}
 	if profile.MfaEnabled && profile.MfaStatus != typex.SimpleStatusActive {
-		return nil, status.CodeError(status.ErrMfaNotActive)
+		return nil, errors.Codel(errors.ErrMfaNotActive)
 	}
 	sid := uuid.New().String()
 	ctx.Status(http.StatusAccepted)
@@ -731,7 +720,7 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 		return "", err
 	}
 	if addr == nil || addr.Email == "" || req.Email != addr.Email {
-		return "", status.CodeError(status.ErrEmailVerify)
+		return "", errors.Codel(errors.ErrEmailVerify)
 	}
 	uorg, err := s.GetUserRootOrg(ctx, uid)
 	if err != nil {
@@ -846,7 +835,7 @@ func (s *ServerImpl) CheckDevice(ctx *gin.Context, req *CheckDeviceRequest) (*Ch
 		if !has {
 			// 判断设备是否超出限制
 			if q != nil && q.Used >= q.Limit {
-				return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", q.Limit)
+				return nil, errors.Codel(errors.ErrUserDeviceLimit, q.Limit)
 			}
 			// 进行设备验证
 			sid := uuid.New().String()
@@ -901,10 +890,10 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		// 验证验证码
 		var captchaCode string
 		if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
-			return nil, status.CodeError(status.ErrCaptchaInvalid)
+			return nil, errors.Codel(errors.ErrCaptchaInvalid)
 		}
 		if captchaCode != req.Captcha {
-			return nil, status.CodeError(status.ErrCaptchaNotMatch)
+			return nil, errors.Codel(errors.ErrCaptchaNotMatch)
 		}
 	} else if req.Kind == KindMfa {
 		profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
@@ -914,13 +903,13 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		// 验证mfa
 		if profile.MfaEnabled {
 			if !totp.Validate(req.OtpToken, profile.MfaSecret) {
-				return nil, status.CodeError(status.ErrMfaInvalidCode)
+				return nil, errors.Codel(errors.ErrMfaInvalidCode)
 			}
 		} else {
-			return nil, status.CodeError(status.ErrMfaDisable)
+			return nil, errors.Codel(errors.ErrMfaDisable)
 		}
 	} else {
-		return nil, status.CodeError(status.ErrUnsupportedVerify)
+		return nil, errors.Codel(errors.ErrUnsupportedVerify)
 	}
 	// 保存设备信息
 	client := s.db
@@ -944,7 +933,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	if q != nil && int64(uds) >= q.Limit {
-		return nil, fmt.Errorf("登录设备超过%d台限制，请前往旧设备删除登录设备后登录", q.Limit)
+		return nil, errors.Codel(errors.ErrUserDeviceLimit, q.Limit)
 	}
 	err = client.UserDevice.Create().SetInput(ent.CreateUserDeviceInput{
 		DeviceName:    &req.DeviceInfo.DeviceName,
@@ -1059,7 +1048,7 @@ func (s *ServerImpl) loginToken(ctx *gin.Context, uid int) (*LoginResponse, erro
 		return nil, err
 	}
 	if ros == nil || len(ros) == 0 {
-		return nil, status.CodeError(status.ErrOrgNotFound)
+		return nil, errors.Codel(errors.ErrOrgNotFound)
 	}
 	var domains []*Domain
 	// 查询顶级组织
@@ -1103,12 +1092,12 @@ func (s *ServerImpl) checkPwd(ctx *gin.Context, req *LoginRequest) (*ent.UserPas
 		userpassword.SceneEQ(userpassword.SceneLogin), userpassword.StatusEQ(typex.SimpleStatusActive),
 	).Select(userpassword.FieldUserID, userpassword.FieldSalt, userpassword.FieldPassword).Only(entcache.Skip(ctx))
 	if err != nil {
-		return nil, status.CodeError(status.ErrUserNameOrPassword)
+		return nil, errors.Codel(errors.ErrUserNameOrPassword)
 	}
 
 	given := resource.SaltSecret(req.Password, pwd.Salt)
 	if given != pwd.Password {
-		return nil, status.CodeError(status.ErrPasswordNotMatch)
+		return nil, errors.Codel(errors.ErrPasswordNotMatch)
 	}
 	return pwd, nil
 }
@@ -1156,7 +1145,7 @@ func parseStateToken(token string, opts Options) (id string, err error) {
 		return
 	}
 	if !tk.Valid {
-		err = status.CodeError(status.ErrInvalidToken)
+		err = errors.Codel(errors.ErrInvalidToken)
 		return
 	}
 	id = tk.Claims.(jwt.MapClaims)["jti"].(string)
@@ -1282,10 +1271,10 @@ func (s *ServerImpl) BindMfa(ctx *gin.Context, req *BindMfaRequest) (bool, error
 		return false, err
 	}
 	if val["uid"] != strconv.Itoa(uid) {
-		return false, status.CodeError(status.ErrInvalidUser)
+		return false, errors.Codel(errors.ErrInvalidUser)
 	}
 	if !totp.Validate(req.OtpToken, val["secret"]) {
-		return false, status.CodeError(status.ErrMfaInvalidCode)
+		return false, errors.Codel(errors.ErrMfaInvalidCode)
 	}
 	err = s.db.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetMfaEnabled(true).SetMfaStatus(typex.SimpleStatusActive).SetMfaSecret(val["secret"]).Exec(ctx)
 	return err == nil, err
@@ -1298,7 +1287,7 @@ func (s *ServerImpl) UnBindMfa(ctx *gin.Context, req *UnBindMfaRequest) (bool, e
 	}
 	up, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(uid)).Only(ctx)
 	if !totp.Validate(req.OtpToken, up.MfaSecret) {
-		return false, status.CodeError(status.ErrMfaInvalidCode)
+		return false, errors.Codel(errors.ErrMfaInvalidCode)
 	}
 	err = s.db.UserLoginProfile.UpdateOneID(up.ID).ClearMfaEnabled().ClearMfaStatus().ClearMfaSecret().Exec(ctx)
 	return err == nil, err
@@ -1343,7 +1332,7 @@ func (s *ServerImpl) logFailHandler(ctx *gin.Context, uid string, clear bool) (i
 func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest) (*ForgetPwdBeginResponse, error) {
 	// 验证验证码
 	if !captcha.VerifyString(req.CaptchaId, req.Captcha) {
-		return nil, status.CodeError(status.ErrCaptchaNotMatch)
+		return nil, errors.Codel(errors.ErrCaptchaNotMatch)
 	}
 	// 查询用户
 	u, err := s.db.User.Query().Where(user.HasIdentitiesWith(useridentity.Code(req.Username))).WithLoginProfile().Only(ctx)
@@ -1353,7 +1342,7 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 	// 判断用户锁定不能重置密码
 	if u.Status == types.UserStatusLocked {
 		// 返回账号锁定错误
-		return nil, status.CodeError(status.ErrUserHasLocked)
+		return nil, errors.Codel(errors.ErrUserHasLocked)
 	}
 	verifies := make([]*ForgetPwdVerify, 0)
 	if u.Edges.LoginProfile.MfaEnabled {
@@ -1398,7 +1387,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 	npwd := resource.SaltSecret(req.NewPassword, pwd.Salt)
 	// 判断密码是否旧密码
 	if npwd == pwd.Password {
-		return false, status.CodeError(status.ErrPasswordDuplicate)
+		return false, errors.Codel(errors.ErrPasswordDuplicate)
 	}
 
 	err = clientx.WithTx(ctx, func(ctx context.Context) (clientx.Transactor, error) {
@@ -1415,7 +1404,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 			return err
 		}
 		if addr.Email == "" {
-			return status.CodeError(status.ErrEmailEmpty)
+			return errors.Codel(errors.ErrEmailEmpty)
 		}
 		uorg, err := s.GetUserRootOrg(ctx, usr.ID)
 		if err != nil {
@@ -1485,7 +1474,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 		return "", err
 	}
 	if addr.Email == "" {
-		return "", status.CodeError(status.ErrEmailEmpty)
+		return "", errors.Codel(errors.ErrEmailEmpty)
 	}
 	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
 	if err != nil {
@@ -1537,10 +1526,10 @@ func (s *ServerImpl) ForgetPwdVerifyEmail(ctx *gin.Context, req *ForgetPwdVerify
 	var captchaCode string
 	captchaKey := forgetPwdBeginCachePrefix + req.CaptchaId
 	if err = s.cache.Get(ctx, captchaKey, &captchaCode); err != nil {
-		return nil, status.CodeError(status.ErrCaptchaInvalid)
+		return nil, errors.Codel(errors.ErrCaptchaInvalid)
 	}
 	if captchaCode != req.Captcha {
-		return nil, status.CodeError(status.ErrCaptchaNotMatch)
+		return nil, errors.Codel(errors.ErrCaptchaNotMatch)
 	}
 	sid := uuid.New().String()
 	stateToken := createStateToken(sid, s.Options)
@@ -1576,10 +1565,10 @@ func (s *ServerImpl) ForgetPwdVerifyMfa(ctx *gin.Context, req *ForgetPwdVerifyMf
 	// 验证mfa
 	if profile.MfaEnabled {
 		if !totp.Validate(req.OtpToken, profile.MfaSecret) {
-			return nil, status.CodeError(status.ErrMfaInvalidCode)
+			return nil, errors.Codel(errors.ErrMfaInvalidCode)
 		}
 	} else {
-		return nil, status.CodeError(status.ErrMfaDisable)
+		return nil, errors.Codel(errors.ErrMfaDisable)
 	}
 	// 生成临时token
 	sid := uuid.New().String()
@@ -1638,7 +1627,7 @@ func (s *ServerImpl) verifyTenantID(c *gin.Context, tid int) error {
 	}
 	has, err := s.db.OrgUser.Query().Where(orguser.UserID(uid), orguser.OrgID(tid)).Exist(c)
 	if !has {
-		return status.CodeError(status.ErrOrgNotFound)
+		return errors.Codel(errors.ErrOrgNotFound)
 	}
 	if err != nil {
 		return err
@@ -1683,7 +1672,7 @@ func (s *ServerImpl) GetSpmAuth(c *gin.Context, r *GetSpmAuthRequest) (*LoginRes
 		return nil, err
 	}
 	if uid == 0 {
-		return nil, status.CodeError(status.ErrInvalidSpm)
+		return nil, errors.Codel(errors.ErrInvalidSpm)
 	}
 	return s.loginToken(c, uid)
 }
@@ -1697,7 +1686,7 @@ func (s *ServerImpl) Token(c *gin.Context, r *TokenRequest) (*TokenResponse, err
 		oauthclient.StatusEQ(typex.SimpleStatusActive),
 	).Only(c)
 	if err != nil {
-		return nil, status.CodeError(status.ErrClientIdOrClientSecret)
+		return nil, fmt.Errorf("the clientID or clientSecret is incorrect or the status is not active")
 	}
 
 	tid, tstr, err := createToken(strconv.Itoa(oc.UserID), s.Options, false)
@@ -1759,7 +1748,7 @@ func (s *ServerImpl) getFileIdentity(c *gin.Context, bucket, endpoint string, ti
 			return nil, err
 		}
 		if t.ParentID == 0 {
-			return nil, status.CodeError(status.ErrFileIdentityIsNull)
+			return nil, errors.Codel(errors.ErrFileIdentityIsNull)
 		}
 		return s.getFileIdentity(c, bucket, endpoint, t.ParentID)
 	}
@@ -1864,7 +1853,7 @@ func (s *ServerImpl) convertUrlToFileSource(c *gin.Context, req *GetPreSignUrlRe
 			return nil, "", err
 		}
 		if t.ParentID == 0 {
-			return nil, "", status.CodeError(status.ErrFileIdentityIsNull)
+			return nil, "", errors.Codel(errors.ErrFileIdentityIsNull)
 		}
 		return s.convertUrlToFileSource(c, req, t.ParentID)
 	}
@@ -1903,7 +1892,7 @@ func (s *ServerImpl) doCheckPermission(ctx context.Context, uid, tid int, action
 		return false, err
 	}
 	if !has {
-		return false, status.CodeError(status.ErrInvalidPermission)
+		return false, errors.Codel(errors.ErrInvalidPermission)
 	}
 	rule := []any{
 		strconv.Itoa(uid),

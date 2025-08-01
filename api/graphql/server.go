@@ -8,7 +8,6 @@ import (
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/web"
-	webHandler "github.com/tsingsun/woocoo/web/handler"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/api"
@@ -89,15 +88,6 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 		middleware.RegisterTenantID(),
 		middleware.RegisterTokenSigner(),
 	)
-	// 设置错误映射
-	if cnf.IsSet("errors.errorCodeMap") {
-		errorCodeMap := map[int]string{}
-		err := cnf.Sub("errors.errorCodeMap").Unmarshal(&errorCodeMap)
-		if err != nil {
-			panic(err)
-		}
-		webHandler.SetErrorMap(errorCodeMap, nil)
-	}
 	gqlSrv := handler.NewDefaultServer(NewSchema(s.resolver))
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction
