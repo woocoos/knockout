@@ -20,6 +20,7 @@ import (
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/filesource"
@@ -30,7 +31,7 @@ import (
 	"github.com/woocoos/knockout/ent/useridentity"
 	"github.com/woocoos/knockout/ent/userloginprofile"
 	"github.com/woocoos/knockout/ent/userpassword"
-	"github.com/woocoos/knockout/internal/status"
+	"github.com/woocoos/knockout/internal/errors"
 	"github.com/woocoos/knockout/service/quota"
 	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/test/testsuite"
@@ -70,6 +71,9 @@ func (t *authSuite) SetupSuite() {
 	cache.UnRegisterCache("redis")
 	t.Require().NoError(t.BaseSuite.Setup())
 	t.Require().NoError(t.Redis.Set(adminTokenJTI, "1"))
+
+	err := fmterr.InitErrorHandler(t.Cnf.Sub("errors.errorCodeMap"))
+	t.Require().NoError(err)
 
 	t.AuthService = NewServerImpl(t.Cnf)
 	t.AuthService.db = t.Client
@@ -218,7 +222,7 @@ func (ts *loginFlowSuite) Test_AuthFail() {
 		res, err := ts.AuthService.Login(ctx, &LoginRequest{
 			Password: "error", Username: "admin", Captcha: "123456", CaptchaId: "123456",
 		})
-		ts.Require().Equal(int(err.(*gin.Error).Type), status.ErrCaptchaNotMatch)
+		ts.Require().Equal(int(err.(*gin.Error).Type), errors.ErrCaptchaNotMatch)
 		ts.Nil(res)
 	}
 
@@ -258,6 +262,19 @@ func (ts *loginFlowSuite) Test_VerifyFactor() {
 	})
 	ts.Require().NoError(err)
 	ts.Equal(res.User.ID, 1)
+
+	// 测试错误信息返回
+	payload := strings.NewReader(`{
+		"stateToken": "` + adminToken + `",
+		"otpToken": "123456",
+		"deviceId": "1231312"
+	}`)
+	req := httptest.NewRequest("POST", "/login/verify-factor", payload)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
+	req.Header.Set("Content-Type", "application/json")
+	resp := httptest.NewRecorder()
+	ts.server.Router().ServeHTTP(resp, req)
+	ts.Equal(resp.Code, 500)
 }
 
 // Demo function, not used in main
