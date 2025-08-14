@@ -715,11 +715,12 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	if err != nil {
 		return "", err
 	}
-	usr, addr, err := s.getUserInfo(ctx, uid)
+	usr, err := s.db.User.Get(ctx, uid)
 	if err != nil {
 		return "", err
 	}
-	if addr == nil || addr.Email == "" || req.Email != addr.Email {
+	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact), useraddr.EmailEqualFold(req.Email)).Only(ctx)
+	if err != nil {
 		return "", errors.Codel(errors.ErrEmailVerify)
 	}
 	uorg, err := s.GetUserRootOrg(ctx, uid)
