@@ -5,6 +5,7 @@ import (
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
@@ -39,6 +40,8 @@ func NewServer(app *woocoo.App) *Server {
 		srv.service.db = ent.NewClient(ent.Driver(drv))
 		srv.authDb = casbinent.NewClient(casbinent.Driver(drv))
 	}
+	// 初始化redis客户端
+	srv.service.redisClient = buildRedis(cnf)
 
 	buildCashbin(cnf, srv.authDb)
 
@@ -67,6 +70,17 @@ func buildCashbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func buildRedis(cnf *conf.AppConfiguration) *redisx.Client {
+	if cnf.IsSet("store.redis") {
+		cli, err := redisx.NewClient(cnf.Sub("store.redis"))
+		if err != nil {
+			panic(err)
+		}
+		return cli
+	}
+	return nil
 }
 
 // Start implements woocoo.Server but do noting in start, the web server has registered by NewServer.

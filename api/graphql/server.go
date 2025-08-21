@@ -7,6 +7,7 @@ import (
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
@@ -35,9 +36,10 @@ import (
 )
 
 type ServerOptions struct {
-	portalDB *ent.Client
-	casbinDB *casbinent.Client
-	kosdk    *api.SDK
+	portalDB    *ent.Client
+	casbinDB    *casbinent.Client
+	kosdk       *api.SDK
+	redisClient *redisx.Client
 }
 
 type Server struct {
@@ -55,10 +57,12 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) *Server {
 		opt(&s.ServerOptions)
 	}
 
+	s.buildRedis(cnf)
 	buildCasbin(cnf, s.casbinDB)
 
 	rs := resource.NewService(
 		resource.WithClient(s.portalDB),
+		resource.WithRedis(s.redisClient),
 		resource.WithKOSDK(s.kosdk),
 		resource.WithCfg(cnf))
 	buildPortalHook(s.portalDB, rs)
@@ -135,4 +139,14 @@ func buildPortalHook(db *ent.Client, ss *resource.Service) {
 	db.OauthClient.Use(hook.UserMutationAllow(security.AllOp, oauthclient.FieldUserID))
 	db.FileIdentity.Intercept(hook.OrgTraverseFunc(fileidentity.FieldTenantID))
 	db.FileIdentity.Use(hook.OrgMutationInAllowOrg(security.AllOp, fileidentity.FieldTenantID))
+}
+
+func (s *Server) buildRedis(cnf *conf.AppConfiguration) {
+	if cnf.IsSet("store.redis") {
+		cli, err := redisx.NewClient(cnf.Sub("store.redis"))
+		if err != nil {
+			panic(err)
+		}
+		s.redisClient = cli
+	}
 }

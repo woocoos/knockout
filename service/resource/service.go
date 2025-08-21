@@ -2,6 +2,7 @@ package resource
 
 import (
 	"github.com/tsingsun/woocoo/pkg/conf"
+	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout/ent"
 )
@@ -50,9 +51,10 @@ type JwtConfig struct {
 
 // Service 企业目录服务管理
 type Service struct {
-	Client *ent.Client
-	KOSDK  *api.SDK
-	cnf    *conf.AppConfiguration
+	Client      *ent.Client
+	redisClient *redisx.Client
+	KOSDK       *api.SDK
+	cnf         *conf.AppConfiguration
 	// 已经暴露一个密码策略, 这边不需要再暴露了
 	passwordPolicy PasswordPolicy
 	jwtConfig      JwtConfig
@@ -61,6 +63,12 @@ type Service struct {
 func WithClient(client *ent.Client) Option {
 	return func(s *Service) {
 		s.Client = client
+	}
+}
+
+func WithRedis(redisClient *redisx.Client) Option {
+	return func(s *Service) {
+		s.redisClient = redisClient
 	}
 }
 

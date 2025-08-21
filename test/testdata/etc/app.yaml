@@ -19,19 +19,21 @@ authz:
       channel: "/casbin"
   model: "../test/testdata/etc/rbac_model.conf"
 
-cache:
-  redis:
-    driverName: redis
-    addrs:
-      - "localhost:6379"
-    local:
-      size: 1000
-      ttl: 100s
-
 store:
   portal:
     driverName: sqlite3
     dsn: "file:portal?mode=memory&cache=shared&_fk=1"
+  redis: &redis
+    addrs:
+      - 127.0.0.1:6379
+
+cache:
+  redis:
+    driverName: redis
+    <<: *redis
+    local:
+      size: 1000
+      ttl: 100s
 
 entcache:
   hashQueryTTL: 1s
@@ -104,4 +106,4 @@ kosdk:
   plugin:
     fs:
     msg:
-      baseUrl: "http://127.0.0.1:10072"
+      basePath: "http://127.0.0.1:10072/api/v2"

@@ -84,7 +84,7 @@ func initMiniRedis(cnf *conf.AppConfiguration) *miniredis.Miniredis {
 	if err != nil {
 		panic(err)
 	}
-	cnf.Parser().Set("cache.redis.addrs", []string{db.Addr()})
+	cnf.Parser().Set("store.redis.addrs", []string{db.Addr()})
 	cnf.Parser().Set("authz.watcherOptions.options.addr", db.Addr())
 
 	koapp.BuildCacheComponents(cnf)
@@ -92,7 +92,7 @@ func initMiniRedis(cnf *conf.AppConfiguration) *miniredis.Miniredis {
 }
 
 func (o *BaseSuite) BearToken() string {
-	const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6InFlZWx5biIsImlhdCI6MTkxNjIzOTAyMn0.x3zlGsLKOjm313FtP9YkXY9IKbtYrEGibjsyPB4X-P8"
+	const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoyMDcxMjIwMzA4LCJpYXQiOjE3NTU2ODAzMDgsImp0aSI6InRva2VuOjE6OWFmNGVhNTktN2EzMS00NjU4LThhMmUtNGIwZDRmODQ5Y2RhIn0.u1anRaDXmMBRjBNLJawLZ4RM98HjdWKodXuAsp3-DJ8"
 	return Token
 }
 

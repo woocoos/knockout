@@ -16,6 +16,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	securityX "github.com/tsingsun/woocoo/pkg/security"
+	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/api/fs"
@@ -125,7 +126,8 @@ type OptionsPwdPolicy struct {
 // ServerImpl is the server API for service.
 type ServerImpl struct {
 	Options
-	db *ent.Client
+	db          *ent.Client
+	redisClient *redisx.Client
 
 	cache cache.Cache
 
@@ -649,6 +651,8 @@ func (s *ServerImpl) ResetPassword(ctx *gin.Context, req *ResetPasswordRequest) 
 		if err != nil {
 			return err
 		}
+		// 修改密码，清除token
+		_ = s.clearLoginTokensOfRedis(ctx, uid)
 		res, err = s.loginToken(ctx, uid)
 		if err != nil {
 			return err
@@ -1400,6 +1404,8 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		if err != nil {
 			return err
 		}
+		// 修改密码，清除token
+		_ = s.clearLoginTokensOfRedis(ctx, uid)
 		usr, addr, err := s.getUserInfo(ctx, uid)
 		if err != nil {
 			return err
@@ -1986,4 +1992,36 @@ func (s *ServerImpl) GetDomain(ctx *gin.Context, req *GetDomainRequest) (*Domain
 		ParentName:     po.Name,
 		ParentCurrency: po.LocalCurrency,
 	}, nil
+}
+
+func (s *ServerImpl) clearLoginTokensOfRedis(ctx context.Context, uid int) error {
+	// 判断是否有redis实例
+	if s.redisClient == nil {
+		return nil
+	}
+	// 获取用户相关的token
+	var cursor uint64
+	allKeys := make([]string, 0)
+	for {
+		var keys []string
+		var err error
+		keys, cursor, err = s.redisClient.Scan(ctx, cursor, fmt.Sprintf("%s%d:*", tokenCachePrefix, uid), 100).Result()
+		if err != nil {
+			return err
+		}
+		allKeys = append(allKeys, keys...)
+		if cursor == 0 {
+			break
+		}
+	}
+	if allKeys == nil {
+		return nil
+	}
+	// keys从redis移除
+	_, err := s.redisClient.Del(ctx, allKeys...).Result()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
