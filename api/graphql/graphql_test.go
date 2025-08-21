@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
+	"github.com/woocoos/knockout/service/resource"
 	"strconv"
 	"testing"
 	"time"
@@ -49,8 +51,12 @@ func (t *graphqlSuite) SetupSuite() {
 	err := t.BaseSuite.Setup()
 	t.Require().NoError(err)
 	data.InitBase(t.DriverName, t.DSN)
-
-	t.server = NewServer(t.Cnf, WithPortalDB(t.CacheClient), WithCasbinDB(t.AuthDbClient))
+	kosdk, err := api.NewSDK(t.Cnf.Sub("kosdk"))
+	if err != nil {
+		panic(err)
+	}
+	//redisClient ,err := gredis.NewClient(t.Cnf.Sub("redis"))
+	t.server = NewServer(t.Cnf, WithPortalDB(t.CacheClient), WithCasbinDB(t.AuthDbClient), WithKOSdk(kosdk))
 	t.mr = &mutationResolver{
 		Resolver: t.server.resolver,
 	}
@@ -730,4 +736,29 @@ query appDictItemByRefCode{
 	err := t.gqlClient.Post(query, &resp)
 	t.Require().NoError(err)
 	t.Equal(2, len(resp.AppDictItemByRefCode))
+}
+
+// 修改密码移除其他登录的token
+func (t *graphqlSuite) TestChangePassword() {
+	// redis设置值
+	//token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda
+	_ = t.Redis.Set("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda", "1")
+	_ = t.Redis.Set("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa", "2")
+	const query = `
+mutation changePassword($oldPwd: String!,$newPwd: String!){
+  changePassword(oldPwd: $oldPwd, newPwd: $newPwd)
+}
+`
+	variables := map[string]interface{}{
+		"oldPwd": resource.SHA256("123456"),
+		"newPwd": resource.SHA256("1234567"),
+	}
+	var resp struct {
+		ChangePassword bool
+	}
+	err := t.gqlClient.Post(query, &resp, client.Var("oldPwd", variables["oldPwd"]), client.Var("newPwd", variables["newPwd"]))
+	t.Require().NoError(err)
+	t.Equal(true, resp.ChangePassword)
+	t.Equal(true, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda"))
+	t.Equal(false, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa"))
 }

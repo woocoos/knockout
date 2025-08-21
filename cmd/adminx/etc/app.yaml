@@ -59,7 +59,9 @@ web:
       - graphql:
           basePath: "/graphql"
           middlewares:
-            - jwt: *jwt
+            - jwt:
+                tokenStoreKey: redis
+                <<: *jwt
             - tenant:
             - graphql:
                 group: "/graphql"

@@ -3,7 +3,9 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/cache"
+	sec "github.com/tsingsun/woocoo/pkg/security"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/schemax"
@@ -496,6 +498,11 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	if err != nil {
 		return err
 	}
+	// 修改密码，清除其他token
+	err = s.clearLoginTokensOfRedis(ctx, uid, false)
+	if err != nil {
+		return err
+	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -514,6 +521,57 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 		},
 	}
 	return s.postAlerts(ctx, params)
+}
+
+func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf bool) error {
+	// 判断是否有redis实例
+	if s.redisClient == nil {
+		return nil
+	}
+	// 获取用户相关的token
+	var cursor uint64
+	allKeys := make([]string, 0)
+	for {
+		var keys []string
+		var err error
+		keys, cursor, err = s.redisClient.Scan(ctx, cursor, fmt.Sprintf("token:%d:*", uid), 100).Result()
+		if err != nil {
+			return err
+		}
+		allKeys = append(allKeys, keys...)
+		if cursor == 0 {
+			break
+		}
+	}
+	if allKeys == nil {
+		return nil
+	}
+	rmKeys := make([]string, 0)
+	if rmSelf {
+		rmKeys = allKeys
+	} else {
+		// 排除当前登录的token
+		principal, ok := sec.FromContext(ctx)
+		if !ok {
+			return fmt.Errorf("token not exist")
+		}
+		c, ok := principal.Identity().Claims().(jwt.MapClaims)
+		if !ok {
+			return fmt.Errorf("token not exist")
+		}
+		jti := c["jti"].(string)
+		for _, key := range allKeys {
+			if key != jti {
+				rmKeys = append(rmKeys, key)
+			}
+		}
+	}
+	// keys从redis移除
+	_, err := s.redisClient.Del(ctx, rmKeys...).Result()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (s *Service) getUserInfo(ctx context.Context, uid int) (*ent.User, *ent.UserAddr, error) {
@@ -860,6 +918,11 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	}
 	// 如果用户被锁定则重置用户状态
 	err = client.User.UpdateOneID(userID).SetStatus(types.UserStatusActive).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	// 修改密码，清除其他token
+	err = s.clearLoginTokensOfRedis(ctx, userID, true)
 	if err != nil {
 		return err
 	}

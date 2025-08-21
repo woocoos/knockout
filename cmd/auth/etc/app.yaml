@@ -99,7 +99,7 @@ web:
             - recovery:
             - errorHandle:
             - jwt:
-                #tokenStoreKey: redis
+                tokenStoreKey: redis
                 exclude:
                   - "/login/auth"
                   - "/login/fingerprint"
