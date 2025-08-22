@@ -102,7 +102,11 @@ type Options struct {
 		TokenTTL        time.Duration `json:"tokenTTL"`
 		RefreshTokenTTL time.Duration `json:"refreshTokenTTL"`
 	} `json:"jwt"`
-	PwdPolicy OptionsPwdPolicy `json:"pwdPolicy"`
+	PwdPolicy        OptionsPwdPolicy `json:"pwdPolicy"`
+	ClearLoginTokens ClearLoginTokens `json:"loginTokens"`
+}
+type ClearLoginTokens struct {
+	Exclude []int
 }
 type OptionsPwdPolicy struct {
 	// 密码最短长度，长度应在6-32位之间
@@ -179,6 +183,9 @@ func (s *ServerImpl) Apply(cnf *conf.AppConfiguration) error {
 			InvalidLoginLimit:    false,
 			Retry:                5,
 			CaptchaTimes:         3,
+		},
+		ClearLoginTokens: ClearLoginTokens{
+			Exclude: make([]int, 0),
 		},
 	}
 	err := cnf.Sub("auth").Unmarshal(&s.Options)
@@ -1995,6 +2002,14 @@ func (s *ServerImpl) GetDomain(ctx *gin.Context, req *GetDomainRequest) (*Domain
 }
 
 func (s *ServerImpl) clearLoginTokensOfRedis(ctx context.Context, uid int) error {
+	// 判断是否排除
+	if len(s.ClearLoginTokens.Exclude) > 0 {
+		for _, exclude := range s.ClearLoginTokens.Exclude {
+			if exclude == uid {
+				return nil
+			}
+		}
+	}
 	// 判断是否有redis实例
 	if s.redisClient == nil {
 		return nil
