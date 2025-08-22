@@ -524,6 +524,14 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 }
 
 func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf bool) error {
+	// 判断是否排除
+	if len(s.clearLoginTokens.Exclude) > 0 {
+		for _, exclude := range s.clearLoginTokens.Exclude {
+			if exclude == uid {
+				return nil
+			}
+		}
+	}
 	// 判断是否有redis实例
 	if s.redisClient == nil {
 		return nil

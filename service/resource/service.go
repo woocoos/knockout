@@ -49,6 +49,10 @@ type JwtConfig struct {
 	SigningKey    string
 }
 
+type ClearLoginTokens struct {
+	Exclude []int
+}
+
 // Service 企业目录服务管理
 type Service struct {
 	Client      *ent.Client
@@ -56,8 +60,9 @@ type Service struct {
 	KOSDK       *api.SDK
 	cnf         *conf.AppConfiguration
 	// 已经暴露一个密码策略, 这边不需要再暴露了
-	passwordPolicy PasswordPolicy
-	jwtConfig      JwtConfig
+	passwordPolicy   PasswordPolicy
+	jwtConfig        JwtConfig
+	clearLoginTokens ClearLoginTokens
 }
 
 func WithClient(client *ent.Client) Option {
@@ -87,6 +92,9 @@ func WithCfg(cnf *conf.AppConfiguration) Option {
 func NewService(opt ...Option) *Service {
 	r := &Service{
 		cnf: conf.Global(),
+		clearLoginTokens: ClearLoginTokens{
+			Exclude: make([]int, 0),
+		},
 	}
 	for _, option := range opt {
 		option(r)
@@ -99,6 +107,12 @@ func NewService(opt ...Option) *Service {
 		}
 	}
 	r.passwordPolicy = pp
+	if r.cnf.IsSet("auth.clearLoginTokens") {
+		err := r.cnf.Sub("auth.clearLoginTokens").Unmarshal(&r.clearLoginTokens)
+		if err != nil {
+			panic(err)
+		}
+	}
 	if err := r.cnf.Sub("jwt").Unmarshal(&r.jwtConfig); err != nil {
 		panic(err)
 	}
