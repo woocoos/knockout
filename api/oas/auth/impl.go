@@ -273,7 +273,7 @@ func (s *ServerImpl) Login(ctx *gin.Context, req *LoginRequest) (res *LoginRespo
 		return s.dealPwdError(ctx, req, ui.UserID, upp, err)
 	}
 
-	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(ctx)
+	profile, err := s.db.UserLoginProfile.Query().Where(userloginprofile.UserID(pwd.UserID)).Only(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
 	}
