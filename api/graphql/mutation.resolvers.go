@@ -57,7 +57,7 @@ func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, in
 				return nil, err
 			}
 		} else {
-			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID)).Exist(ctx)
+			has, err := client.Org.Query().Where(org.OwnerID(*input.OwnerID), org.IDNEQ(orgID)).Exist(ctx)
 			if err != nil {
 				return nil, err
 			}
