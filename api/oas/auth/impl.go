@@ -2029,7 +2029,7 @@ func (s *ServerImpl) clearLoginTokensOfRedis(ctx context.Context, uid int) error
 			break
 		}
 	}
-	if allKeys == nil {
+	if len(allKeys) == 0 {
 		return nil
 	}
 	// keys从redis移除

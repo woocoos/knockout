@@ -575,6 +575,9 @@ func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf b
 		}
 	}
 	// keys从redis移除
+	if len(rmKeys) == 0 {
+		return nil
+	}
 	_, err := s.redisClient.Del(ctx, rmKeys...).Result()
 	if err != nil {
 		return err
