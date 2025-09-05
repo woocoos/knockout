@@ -506,8 +506,15 @@ func (r *queryResolver) ParentOrgUsers(ctx context.Context, orgID int, after *en
 		}
 		tid = o.ID
 	}
+	queryOrg, err := r.client.Org.Get(ctx, tid)
+	if err != nil {
+		return nil, err
+	}
 	return r.client.User.Query().Where(
-		user.HasOrgUserWith(orguser.OrgID(tid)),
+		func(selector *sql.Selector) {
+			selector.Distinct().Select(user.FieldID)
+		},
+		user.HasOrgUserWith(orguser.HasOrgWith(org.Or(org.Path(queryOrg.Path), org.PathHasPrefix(queryOrg.Path+"/")))),
 		user.StatusIn(types.UserStatusActive, types.UserStatusLocked),
 	).Paginate(ctx, after, first, before, last,
 		ent.WithUserOrder(orderBy),
