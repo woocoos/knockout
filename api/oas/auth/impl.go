@@ -316,7 +316,7 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			// 账户锁定，清除失败次数缓存
 			_, _ = s.logFailHandler(ctx, req.Username, true)
 			// 发送邮件给指定用户，指定的用户在邮件模板配置
-			usr, addr, err := s.getUserInfo(ctx, userID)
+			usr, err := s.db.User.Get(ctx, userID)
 			if err != nil {
 				return nil, err
 			}
@@ -331,13 +331,13 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			params := msg.PostableAlerts{
 				{
 					Annotations: map[string]string{
-						"to":            addr.Email,
 						"displayName":   usr.DisplayName,
 						"principalName": req.Username,
 						"pwdRetry":      strconv.Itoa(int(upp.Retry)),
 					},
 					Alert: &msg.Alert{
 						Labels: map[string]string{
+							"user":      strconv.Itoa(userID),
 							"receiver":  "email",
 							"alertname": "UserLockedNotify",
 							"tenant":    strconv.Itoa(tid),
@@ -730,10 +730,6 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	if err != nil {
 		return "", err
 	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact), useraddr.EmailEqualFold(req.Email)).Only(ctx)
-	if err != nil {
-		return "", errors.Codel(errors.ErrEmailVerify)
-	}
 	uorg, err := s.GetUserRootOrg(ctx, uid)
 	if err != nil {
 		return "", err
@@ -745,13 +741,13 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"captchaCode":   captchaCode,
 				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "SendCaptchaCode",
 					"tenant":    strconv.Itoa(tid),
@@ -966,7 +962,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 		return nil, err
 	}
 	// 发送新设备登录提醒
-	usr, addr, err := s.getUserInfo(ctx, uid)
+	usr, err := s.db.User.Get(ctx, uid)
 	if err != nil {
 		return nil, err
 	}
@@ -974,7 +970,6 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   loginResp.User.DisplayName,
 				"principalName": usr.PrincipalName,
 				"loginTime":     loginTime,
@@ -982,6 +977,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "NewDeviceLogin",
 					"tenant":    strconv.Itoa(loginResp.User.Domains[0].ParentID),
@@ -997,18 +993,6 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 	_ = s.cache.Del(ctx, cacheKey)
 	_ = s.cache.Del(ctx, captchaKey)
 	return loginResp, nil
-}
-
-func (s *ServerImpl) getUserInfo(ctx *gin.Context, uid int) (*ent.User, *ent.UserAddr, error) {
-	usr, err := s.db.User.Get(ctx, uid)
-	if err != nil {
-		return nil, nil, err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-	return usr, addr, nil
 }
 
 func (s *ServerImpl) updateLastLogin(ctx *gin.Context, uid int) error {
@@ -1413,12 +1397,9 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		}
 		// 修改密码，清除token
 		_ = s.clearLoginTokensOfRedis(ctx, uid)
-		usr, addr, err := s.getUserInfo(ctx, uid)
+		usr, err := s.db.User.Get(ctx, uid)
 		if err != nil {
 			return err
-		}
-		if addr.Email == "" {
-			return errors.Codel(errors.ErrEmailEmpty)
 		}
 		uorg, err := s.GetUserRootOrg(ctx, usr.ID)
 		if err != nil {
@@ -1432,12 +1413,12 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		params := msg.PostableAlerts{
 			{
 				Annotations: map[string]string{
-					"to":            addr.Email,
 					"displayName":   usr.DisplayName,
 					"principalName": usr.PrincipalName,
 				},
 				Alert: &msg.Alert{
 					Labels: map[string]string{
+						"user":      strconv.Itoa(uid),
 						"receiver":  "email",
 						"alertname": "ChangeUserPassword",
 						"tenant":    strconv.Itoa(tid),
@@ -1483,12 +1464,9 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	if err != nil {
 		return "", err
 	}
-	usr, addr, err := s.getUserInfo(ctx, uid)
+	usr, err := s.db.User.Get(ctx, uid)
 	if err != nil {
 		return "", err
-	}
-	if addr.Email == "" {
-		return "", errors.Codel(errors.ErrEmailEmpty)
 	}
 	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
 	if err != nil {
@@ -1501,13 +1479,13 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"captchaCode":   captchaCode,
 				"captchaExpire": strconv.Itoa(int(s.CaptchaExpire.Minutes())),
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "SendCaptchaCode",
 					"tenant":    strconv.Itoa(tid),

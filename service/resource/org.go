@@ -247,13 +247,13 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.PrincipalName,
 				"password":      nPwd,
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(usr.ID),
 					"receiver":  "email",
 					"alertname": "UserPasswordAndPrincipal",
 					"tenant":    strconv.Itoa(tid),
@@ -486,10 +486,6 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	// 更新PasswordReset
 	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
 	// 发送修改密码邮件提醒
-	usr, addr, err := s.getUserInfo(ctx, uid)
-	if err != nil {
-		return err
-	}
 	curOrg, err := s.Client.Org.Get(ctx, tid)
 	if err != nil {
 		return err
@@ -506,12 +502,12 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.PrincipalName,
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "ChangeUserPassword",
 					"tenant":    strconv.Itoa(topOID),
@@ -583,18 +579,6 @@ func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf b
 		return err
 	}
 	return nil
-}
-
-func (s *Service) getUserInfo(ctx context.Context, uid int) (*ent.User, *ent.UserAddr, error) {
-	usr, err := s.Client.User.Get(ctx, uid)
-	if err != nil {
-		return nil, nil, err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-	return usr, addr, nil
 }
 
 func (s *Service) UpdateLoginProfile(ctx context.Context, userID int, input ent.UpdateUserLoginProfileInput) (*ent.UserLoginProfile, error) {
@@ -854,13 +838,6 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	if err != nil {
 		return err
 	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-	if err != nil {
-		return err
-	}
-	if addr.Email == "" {
-		return fmt.Errorf("email is null")
-	}
 	if !usr.Edges.LoginProfile.MfaEnabled {
 		return fmt.Errorf("mfa is disabled")
 	}
@@ -875,12 +852,12 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":          addr.Email,
 				"displayName": usr.DisplayName,
 				"mfaSecret":   usr.Edges.LoginProfile.MfaSecret,
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(userID),
 					"receiver":  "email",
 					"alertname": "SendMFAToUser",
 					"tenant":    strconv.Itoa(tid),
@@ -897,13 +874,6 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	usr, err := client.User.Query().Where(user.ID(userID)).WithIdentities().WithPasswords().Only(ctx)
 	if err != nil {
 		return err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-	if err != nil {
-		return err
-	}
-	if addr.Email == "" {
-		return fmt.Errorf("email is null")
 	}
 
 	tid, err := identity.TenantIDFromContext(ctx)
@@ -940,13 +910,13 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
-				"to":            addr.Email,
 				"displayName":   usr.DisplayName,
 				"principalName": usr.Edges.Identities[0].Code,
 				"password":      newPwd,
 			},
 			Alert: &msg.Alert{
 				Labels: map[string]string{
+					"user":      strconv.Itoa(userID),
 					"receiver":  "email",
 					"alertname": "ResetUserPassword",
 					"tenant":    strconv.Itoa(tid),

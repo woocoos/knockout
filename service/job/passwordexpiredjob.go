@@ -13,7 +13,6 @@ import (
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orguser"
 	"github.com/woocoos/knockout/ent/user"
-	"github.com/woocoos/knockout/ent/useraddr"
 	"github.com/woocoos/knockout/ent/useridentity"
 	"go.uber.org/zap"
 	"net/http"
@@ -125,7 +124,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("get user top org error", zap.Error(err))
 					continue
 				}
-				usr, addr, err := p.getUserInfo(ctx, up.UserID)
+				usr, err := p.db.User.Get(ctx, up.UserID)
 				if err != nil {
 					logger.Error("get user info error", zap.Error(err))
 					continue
@@ -133,12 +132,12 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 				params := msg.PostableAlerts{
 					{
 						Annotations: map[string]string{
-							"to":          addr.Email,
 							"displayName": usr.DisplayName,
 							"date":        time.Now().Format("2006-01-02"),
 						},
 						Alert: &msg.Alert{
 							Labels: map[string]string{
+								"user":      strconv.Itoa(up.UserID),
 								"receiver":  "email",
 								"alertname": "UserPasswordExpired",
 								"tenant":    strconv.Itoa(tid),
@@ -165,7 +164,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 						logger.Error("get user top org error", zap.Error(err))
 						continue
 					}
-					usr, addr, err := p.getUserInfo(ctx, up.UserID)
+					usr, err := p.db.User.Get(ctx, up.UserID)
 					if err != nil {
 						logger.Error("get user info error", zap.Error(err))
 						continue
@@ -174,12 +173,12 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					params := msg.PostableAlerts{
 						{
 							Annotations: map[string]string{
-								"to":          addr.Email,
 								"displayName": usr.DisplayName,
 								"months":      strconv.Itoa(int(months)),
 							},
 							Alert: &msg.Alert{
 								Labels: map[string]string{
+									"user":      strconv.Itoa(up.UserID),
 									"receiver":  "email",
 									"alertname": "UserPasswordRemind",
 									"tenant":    strconv.Itoa(tid),
@@ -207,7 +206,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 						logger.Error("get user top org error", zap.Error(err))
 						continue
 					}
-					usr, addr, err := p.getUserInfo(ctx, up.UserID)
+					usr, err := p.db.User.Get(ctx, up.UserID)
 					if err != nil {
 						logger.Error("get user info error", zap.Error(err))
 						continue
@@ -216,13 +215,13 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					params := msg.PostableAlerts{
 						{
 							Annotations: map[string]string{
-								"to":          addr.Email,
 								"displayName": usr.DisplayName,
 								"days":        strconv.Itoa(int(days)),
 								"date":        time.Now().Add(d).Format("2006-01-02"),
 							},
 							Alert: &msg.Alert{
 								Labels: map[string]string{
+									"user":      strconv.Itoa(up.UserID),
 									"receiver":  "email",
 									"alertname": "UserPasswordExpiring",
 									"tenant":    strconv.Itoa(tid),
@@ -279,16 +278,4 @@ func (p *PasswordExpiredJob) getUserTopOrgId(ctx context.Context, uid int) (int,
 		return 0, err
 	}
 	return int(oID), nil
-}
-
-func (p *PasswordExpiredJob) getUserInfo(ctx context.Context, uid int) (*ent.User, *ent.UserAddr, error) {
-	usr, err := p.db.User.Get(ctx, uid)
-	if err != nil {
-		return nil, nil, err
-	}
-	addr, err := usr.QueryAddresses().Where(useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).Only(ctx)
-	if err != nil {
-		return nil, nil, err
-	}
-	return usr, addr, nil
 }
