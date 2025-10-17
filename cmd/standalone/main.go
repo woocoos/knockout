@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/tsingsun/woocoo"
 	"github.com/tsingsun/woocoo/contrib/telemetry"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -52,8 +53,10 @@ func main() {
 	}
 	koapp.BuildCacheComponents(authcnf)
 	app.AppConfiguration().Configuration = authcnf.Configuration
-	authSrv := auth.NewServer(app)
-
+	authSrv, err := auth.NewServer(app.AppConfiguration(), auth.WithAuthDB(drv))
+	if err != nil {
+		panic(err)
+	}
 	app.RegisterServer(rmsSvr, authSrv, clientx.ChangeSet)
 
 	if err := app.Run(); err != nil {
