@@ -11,6 +11,7 @@ development: true
 #      dialOption:
 #        - timeout: 5s
 includeFiles:
+  - etc/casbin.yaml
 #  - "etc/local.yaml"
 authz:
   expireTime: 10s
@@ -91,7 +92,7 @@ errors:
 
 web:
   server:
-    addr: :10070
+    addr: localhost:10070
   engine:
     routerGroups:
       - default:
@@ -124,27 +125,11 @@ web:
                   - "/token"
                   - "/pwd/policy"
                 <<: *jwt
-grpc:
-  server:
-    addr: 127.0.0.1:10080
-    engine:
-      - unaryInterceptors:
-          - accessLog:
-          - recovery:
-  #  registry:
-  #    scheme: polaris
-  #    ttl: 10s
-  #    polaris:
-  #      global:
-  #        serverConnector:
-  #          addresses:
-  #            - 127.0.0.1:8091
-
 
 store:
   portal:
     driverName: mysql
-    dsn: "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
+    dsn: "root:123456@tcp(localhost:3306)/portal?parseTime=true&loc=Local"
   redis: &redis
     addrs:
       - 127.0.0.1:6379

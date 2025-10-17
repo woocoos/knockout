@@ -1,6 +1,6 @@
 module github.com/woocoos/knockout
 
-go 1.23.0
+go 1.24.0
 
 require (
 	entgo.io/contrib v0.6.0
@@ -16,13 +16,13 @@ require (
 	github.com/pquerna/otp v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
-	github.com/tsingsun/woocoo v0.6.2-0.20250725145229-6bf119de76fa
-	github.com/tsingsun/woocoo/contrib/gql v0.1.3-0.20250725154610-5c1fc348ee8c
-	github.com/tsingsun/woocoo/contrib/telemetry v0.58.0
+	github.com/tsingsun/woocoo v0.6.2
+	github.com/tsingsun/woocoo/contrib/gql v0.1.3
+	github.com/tsingsun/woocoo/contrib/telemetry v0.58.2
 	github.com/vektah/gqlparser/v2 v2.5.19
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.3.0
-	github.com/woocoos/knockout-go v0.3.5-0.20250730090934-758a5fe31725
+	github.com/woocoos/knockout-go v0.4.1-0.20251017040953-74aed8804c39
 	go.opentelemetry.io/contrib/propagators/b3 v1.33.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.11.0
@@ -67,7 +67,7 @@ require (
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/bufbuild/protocompile v0.6.0 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
-	github.com/casbin/govaluate v1.2.0 // indirect
+	github.com/casbin/govaluate v1.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -86,6 +86,8 @@ require (
 	github.com/knadh/koanf/providers/file v1.2.0 // indirect
 	github.com/knadh/koanf/providers/rawbytes v1.0.0 // indirect
 	github.com/knadh/koanf/v2 v2.2.0 // indirect
+	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
+	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5 // indirect
 	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
@@ -121,7 +123,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.12.6 // indirect
-	github.com/casbin/casbin/v2 v2.101.0
+	github.com/casbin/casbin/v2 v2.128.0
 	github.com/casbin/redis-watcher/v2 v2.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -174,3 +176,5 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace google.golang.org/genproto => google.golang.org/genproto v0.0.0-20241209162323-e6fa225c2576
