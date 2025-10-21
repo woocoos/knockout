@@ -2,7 +2,7 @@ casbinServer:
   grpc:
     server:
       addr: localhost:10080
-      engine:
-        - unaryInterceptors:
-            - accessLog:
-            - recovery:
+    engine:
+      - unaryInterceptors:
+          - accessLog:
+          - recovery:
