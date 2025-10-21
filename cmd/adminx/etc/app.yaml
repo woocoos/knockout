@@ -55,6 +55,7 @@ web:
                   - IntrospectionQuery
             - recovery:
             - errorHandle:
+                message: "系统错误,请联系管理员"
             - gzip:
       - graphql:
           basePath: "/graphql"
