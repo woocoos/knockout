@@ -10,6 +10,7 @@ import (
 	"github.com/tsingsun/woocoo/pkg/store/redisx"
 	"github.com/tsingsun/woocoo/web"
 	"github.com/tsingsun/woocoo/web/handler/authz"
+	entadapter "github.com/woocoos/casbin-ent-adapter"
 	casbinent "github.com/woocoos/casbin-ent-adapter/ent"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/pkg/authz/casbin"
@@ -103,7 +104,11 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 }
 
 func buildCasbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
-	err := casbin.SetAuthorizer(cnf.Sub("authz"), client)
+	adapter, err := entadapter.NewAdapterWithClient(client)
+	if err != nil {
+		panic(err)
+	}
+	err = casbin.SetAuthorizer(cnf.Sub("authz"), casbin.WithAdapter(adapter))
 	if err != nil {
 		panic(err)
 	}

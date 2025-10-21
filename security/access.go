@@ -2,7 +2,6 @@ package security
 
 import (
 	"errors"
-	"github.com/casbin/casbin/v2"
 	"github.com/tsingsun/woocoo/pkg/security"
 	"github.com/woocoos/knockout-go/pkg/authz"
 	kocasbin "github.com/woocoos/knockout-go/pkg/authz/casbin"
@@ -52,7 +51,7 @@ func GrantPolicy(rules []*types.PolicyRule, principal string, domain int, princi
 	if len(pls) > 0 {
 		_, err := authorizer.Enforcer.AddPoliciesEx(pls)
 		// 清除缓存
-		_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
+		//_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 		return err
 	}
 	return nil
@@ -103,7 +102,7 @@ func RevokePolicy(rules []*types.PolicyRule, principal string, domain int, perm 
 		return err
 	}
 	// 清除缓存
-	err = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
+	//err = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	if err != nil {
 		return err
 	}
@@ -123,7 +122,7 @@ func GrantRoleForUser(userID, roleID int, domain int) error {
 	authorizer := security.DefaultAuthorizer.(*kocasbin.Authorizer)
 	_, err := authorizer.Enforcer.AddRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
 	// 清除缓存
-	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
+	//_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	return err
 }
 
@@ -131,7 +130,7 @@ func RevokeGroupForUser(userID, roleID int, domain int) error {
 	authorizer := security.DefaultAuthorizer.(*kocasbin.Authorizer)
 	_, err := authorizer.Enforcer.DeleteRoleForUserInDomain(strconv.Itoa(userID), strconv.Itoa(roleID), strconv.Itoa(domain))
 	// 清除缓存
-	_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
+	//_ = authorizer.Enforcer.(*casbin.CachedEnforcer).InvalidateCache()
 	return err
 }
 
