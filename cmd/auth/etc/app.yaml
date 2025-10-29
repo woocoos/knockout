@@ -14,7 +14,7 @@ includeFiles:
   - etc/casbin.yaml
 #  - "etc/local.yaml"
 authz:
-  expireTime: 10s
+  expireTime: 10m
   autoSave: false
   watcherOptions:
     options:
