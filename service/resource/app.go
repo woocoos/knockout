@@ -86,13 +86,15 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 	if err != nil {
 		return nil, err
 	}
-	// Name更新需同步更新policy中的引用
+	// Name更新需同步更新policy中的引用,需根据appCode:action修改。
 	if input.Name != nil && aa.Name != *input.Name {
-		appid := aa.Edges.App.ID
+		//appid := aa.Edges.App.ID
+		oac := aa.Edges.App.Code + ":" + aa.Name
+		nac := aa.Edges.App.Code + ":" + *input.Name
 
 		// 更新AppPolicy
-		aps, err := client.AppPolicy.Query().Where(apppolicy.AppID(appid), func(selector *sql.Selector) {
-			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+aa.Name+"\""))
+		aps, err := client.AppPolicy.Query().Where(func(selector *sql.Selector) {
+			selector.Where(sqljson.StringContains(apppolicy.FieldRules, "\""+oac+"\""))
 		}).Select(apppolicy.FieldID, apppolicy.FieldRules).All(ctx)
 		if err != nil {
 			return nil, err
@@ -106,7 +108,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 				if rule.Actions == nil {
 					continue
 				}
-				rule.Actions = UpdateSliceElement[string](rule.Actions, *input.Name, aa.Name)
+				rule.Actions = UpdateSliceElement[string](rule.Actions, nac, oac)
 			}
 			err = client.AppPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
 			if err != nil {
@@ -114,12 +116,10 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			}
 		}
 
-		oac := aa.Edges.App.Code + ":" + aa.Name
-		nac := aa.Edges.App.Code + ":" + *input.Name
 		// 更新OrgPolicy
 		ops, err := client.OrgPolicy.Query().Where(func(selector *sql.Selector) {
 			selector.Where(sqljson.StringContains(orgpolicy.FieldRules, "\""+oac+"\""))
-		}).Select(orgpolicy.FieldID, orgpolicy.FieldRules).All(ctx)
+		}).Select(orgpolicy.FieldID, orgpolicy.FieldRules, orgpolicy.FieldOrgID).All(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -136,11 +136,9 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 			}
 
 			// rules不为空，则同步修改casbin授权信息
-			if prs != nil {
-				err := updateOrgPolicyRules(ctx, policy.ID, prs, tid)
-				if err != nil {
-					return nil, err
-				}
+			err := updateOrgPolicyRules(ctx, policy.ID, prs, policy.OrgID)
+			if err != nil {
+				return nil, err
 			}
 
 			err = client.OrgPolicy.UpdateOneID(policy.ID).SetRules(prs).Exec(ctx)
