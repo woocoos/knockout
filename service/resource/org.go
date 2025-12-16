@@ -228,7 +228,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 	if addr.Email == "" {
 		return fmt.Errorf("email is nil")
 	}
-	tid, err := identity.TenantIDFromContext(ctx)
+	tid, err := s.getTenantIDForMsg(ctx, usr.ID)
 	if err != nil {
 		return err
 	}
@@ -485,20 +485,12 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 	}
 	// 更新PasswordReset
 	_ = client.UserLoginProfile.Update().Where(userloginprofile.UserID(uid)).SetPasswordReset(false).Exec(ctx)
-	// 发送修改密码邮件提醒
-	curOrg, err := s.Client.Org.Get(ctx, tid)
-	if err != nil {
-		return err
-	}
-	topOID, err := s.getTopOrgIdByPath(curOrg.Path)
-	if err != nil {
-		return err
-	}
 	// 修改密码，清除其他token
 	err = s.clearLoginTokensOfRedis(ctx, uid, false)
 	if err != nil {
 		return err
 	}
+	// 发送修改密码邮件提醒
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -510,7 +502,7 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "ChangeUserPassword",
-					"tenant":    strconv.Itoa(topOID),
+					"tenant":    strconv.Itoa(tid),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},
@@ -845,7 +837,7 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 		return fmt.Errorf("mfa secret is null")
 	}
 
-	tid, err := identity.TenantIDFromContext(ctx)
+	tid, err := s.getTenantIDForMsg(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -876,7 +868,7 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 		return err
 	}
 
-	tid, err := identity.TenantIDFromContext(ctx)
+	tid, err := s.getTenantIDForMsg(ctx, userID)
 	if err != nil {
 		return err
 	}
@@ -1325,4 +1317,33 @@ func (s *Service) DeleteUserIdentity(ctx context.Context, id int) (bool, error) 
 	// 删除凭证
 	err = client.UserIdentity.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
+}
+
+// getMsgTenantID 获取发送邮件的租户ID
+func (s *Service) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
+	client := ent.FromContext(ctx)
+	if client == nil {
+		client = s.Client
+	}
+	orgs, err := client.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+		QueryOrg().Unique(false).Where(
+		org.KindEQ(org.KindRoot),
+		org.StatusEQ(typex.SimpleStatusActive),
+	).Order(ent.Asc(org.FieldPath)).All(schemax.SkipTenantPrivacy(ctx))
+	if err != nil {
+		return 0, err
+	}
+	// 如果有加入域组织，则取域组织id，没有则取一个租户ID
+	tenantID := 0
+	for _, o := range orgs {
+		if o.ParentID == 0 {
+			return o.ID, nil
+		} else {
+			tenantID = o.ID
+		}
+	}
+	if tenantID > 0 {
+		return tenantID, nil
+	}
+	return 0, fmt.Errorf("org not found")
 }
