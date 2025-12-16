@@ -23,6 +23,7 @@ import (
 	_ "github.com/woocoos/knockout-go/api/fs/alioss"
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/clientx"
+	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
 	"github.com/woocoos/knockout-go/pkg/identity"
@@ -320,11 +321,7 @@ func (s *ServerImpl) dealPwdError(ctx *gin.Context, req *LoginRequest, userID in
 			if err != nil {
 				return nil, err
 			}
-			uorg, err := s.GetUserRootOrg(ctx, userID)
-			if err != nil {
-				return nil, err
-			}
-			tid, err := s.getTopOrgIdByPath(uorg.Path)
+			tid, err := s.getTenantIDForMsg(ctx, userID)
 			if err != nil {
 				return nil, err
 			}
@@ -730,11 +727,7 @@ func (s *ServerImpl) VerifyDeviceSendEmail(ctx *gin.Context, req *VerifyDeviceSe
 	if err != nil {
 		return "", err
 	}
-	uorg, err := s.GetUserRootOrg(ctx, uid)
-	if err != nil {
-		return "", err
-	}
-	tid, err := s.getTopOrgIdByPath(uorg.Path)
+	tid, err := s.getTenantIDForMsg(ctx, uid)
 	if err != nil {
 		return "", err
 	}
@@ -980,7 +973,7 @@ func (s *ServerImpl) VerifyDevice(ctx *gin.Context, req *VerifyDeviceRequest) (*
 					"user":      strconv.Itoa(uid),
 					"receiver":  "email",
 					"alertname": "NewDeviceLogin",
-					"tenant":    strconv.Itoa(loginResp.User.Domains[0].ParentID),
+					"tenant":    strconv.Itoa(loginResp.User.Domains[0].ID),
 					"timestamp": strconv.Itoa(int(time.Now().Unix())),
 				},
 			},
@@ -1289,6 +1282,31 @@ func (s *ServerImpl) UnBindMfa(ctx *gin.Context, req *UnBindMfaRequest) (bool, e
 	return err == nil, err
 }
 
+// getMsgTenantID 获取发送邮件的租户ID
+func (p *ServerImpl) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
+	orgs, err := p.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+		QueryOrg().Unique(false).Where(
+		org.KindEQ(org.KindRoot),
+		org.StatusEQ(typex.SimpleStatusActive),
+	).Order(ent.Asc(org.FieldPath)).All(schemax.SkipTenantPrivacy(ctx))
+	if err != nil {
+		return 0, err
+	}
+	// 如果有加入域组织，则取域组织id，没有则取一个租户ID
+	tenantID := 0
+	for _, o := range orgs {
+		if o.ParentID == 0 {
+			return o.ID, nil
+		} else {
+			tenantID = o.ID
+		}
+	}
+	if tenantID > 0 {
+		return tenantID, nil
+	}
+	return 0, fmt.Errorf("org not found")
+}
+
 func (s *ServerImpl) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
 	uorg, err = s.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(
@@ -1401,11 +1419,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		if err != nil {
 			return err
 		}
-		uorg, err := s.GetUserRootOrg(ctx, usr.ID)
-		if err != nil {
-			return err
-		}
-		tid, err := s.getTopOrgIdByPath(uorg.Path)
+		tid, err := s.getTenantIDForMsg(ctx, usr.ID)
 		if err != nil {
 			return err
 		}
@@ -1468,11 +1482,7 @@ func (s *ServerImpl) ForgetPwdSendEmail(ctx *gin.Context, req *ForgetPwdSendEmai
 	if err != nil {
 		return "", err
 	}
-	uorg, err := s.GetUserRootOrg(ctx, usr.ID)
-	if err != nil {
-		return "", err
-	}
-	tid, err := s.getTopOrgIdByPath(uorg.Path)
+	tid, err := s.getTenantIDForMsg(ctx, usr.ID)
 	if err != nil {
 		return "", err
 	}

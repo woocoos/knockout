@@ -119,9 +119,9 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					continue
 				}
 				// 发送邮件通知用户密码已过期，需重置密码能够登录
-				tid, err := p.getUserTopOrgId(ctx, up.UserID)
+				tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 				if err != nil {
-					logger.Error("get user top org error", zap.Error(err))
+					logger.Error("get msg tenantID error", zap.Error(err))
 					continue
 				}
 				usr, err := p.db.User.Get(ctx, up.UserID)
@@ -159,9 +159,9 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 				}
 				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
 					// 发送邮件通知客户密码已超过多久没改，需修改密码
-					tid, err := p.getUserTopOrgId(ctx, up.UserID)
+					tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 					if err != nil {
-						logger.Error("get user top org error", zap.Error(err))
+						logger.Error("get msg tenantID error", zap.Error(err))
 						continue
 					}
 					usr, err := p.db.User.Get(ctx, up.UserID)
@@ -201,9 +201,9 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 				}
 				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
 					// 发送邮件通知客户密码即将过期，尽快修改密码，否则到期无法登录
-					tid, err := p.getUserTopOrgId(ctx, up.UserID)
+					tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 					if err != nil {
-						logger.Error("get user top org error", zap.Error(err))
+						logger.Error("get msg tenantID error", zap.Error(err))
 						continue
 					}
 					usr, err := p.db.User.Get(ctx, up.UserID)
@@ -263,19 +263,27 @@ func parseCustomDuration(s string) (time.Duration, error) {
 	return time.ParseDuration(s) // 默认支持的单位
 }
 
-func (p *PasswordExpiredJob) getUserTopOrgId(ctx context.Context, uid int) (int, error) {
-	uorg, err := p.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
+// getMsgTenantID 获取发送邮件的租户ID
+func (p *PasswordExpiredJob) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
+	orgs, err := p.db.OrgUser.Query().Where(orguser.UserIDEQ(uid)).
 		QueryOrg().Unique(false).Where(
 		org.KindEQ(org.KindRoot),
 		org.StatusEQ(typex.SimpleStatusActive),
-	).Order(ent.Desc(org.FieldPath)).First(schemax.SkipTenantPrivacy(ctx))
+	).Order(ent.Asc(org.FieldPath)).All(schemax.SkipTenantPrivacy(ctx))
 	if err != nil {
 		return 0, err
 	}
-	code := strings.Split(uorg.Path, "/")[0]
-	oID, err := strconv.ParseInt(code, 36, 64)
-	if err != nil {
-		return 0, err
+	// 如果有加入域组织，则取域组织id，没有则取一个租户ID
+	tenantID := 0
+	for _, o := range orgs {
+		if o.ParentID == 0 {
+			return o.ID, nil
+		} else {
+			tenantID = o.ID
+		}
 	}
-	return int(oID), nil
+	if tenantID > 0 {
+		return tenantID, nil
+	}
+	return 0, fmt.Errorf("org not found")
 }
