@@ -35,7 +35,7 @@ authz:
   cache:
     size: 1000
     ttl: 1m
-    
+
 jwt: &jwt
   signingMethod: "HS256"
   signingKey: "e262608e-926d-4a4a-9b53-a25a96b95689"
@@ -143,7 +143,7 @@ auth:
 errors:
   errorCodeMap:
     10000: "用户名或密码错误"
-    10001: "账号已锁定，请联系客服修改密码解除锁定"
+    10001: "账号已锁定，请重置密码或联系客服修改密码解除锁定"
     10002: "账号禁止登录"
     10003: "账号验证错误"
     10004: "密码错误"
@@ -169,6 +169,9 @@ errors:
 
 #job:
 #  password:
+#    expiredLimitLogin: false
+     # 过期后提醒间隔，单位是天
+#    expiredRemindInterval: 30
 #    # 忽略的凭证，不处理过期
 #    ignoreIdentities:
 #      - "deo_admin"

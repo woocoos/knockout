@@ -1354,10 +1354,10 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 		return nil, err
 	}
 	// 判断用户锁定不能重置密码
-	if u.Status == types.UserStatusLocked {
-		// 返回账号锁定错误
-		return nil, errors.Codel(errors.ErrUserHasLocked)
-	}
+	//if u.Status == types.UserStatusLocked {
+	//	// 返回账号锁定错误
+	//	return nil, errors.Codel(errors.ErrUserHasLocked)
+	//}
 	verifies := make([]*ForgetPwdVerify, 0)
 	if u.Edges.LoginProfile.MfaEnabled {
 		verifies = append(verifies, &ForgetPwdVerify{Kind: "mfa"})
@@ -1408,6 +1408,11 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 		return s.db.Tx(ctx)
 	}, func(itx clientx.Transactor) error {
 		tx := itx.(*ent.Tx)
+		// 重置用户状态
+		err = tx.User.UpdateOneID(uid).SetStatus(types.UserStatusActive).Exec(ctx)
+		if err != nil {
+			return err
+		}
 		// SetStatus用于处理密码过期状态恢复
 		err = tx.UserPassword.UpdateOneID(pwd.ID).SetUpdatedBy(uid).SetPassword(npwd).SetStatus(typex.SimpleStatusActive).Exec(ctx)
 		if err != nil {

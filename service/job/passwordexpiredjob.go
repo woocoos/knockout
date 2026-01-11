@@ -22,11 +22,15 @@ import (
 )
 
 type PwdOptions struct {
+	// 过期是否限制登录
+	ExpiredLimitLogin bool `yaml:"expiredLimitLogin" json:"expiredLimitLogin"`
+	// 过期后提醒间隔时间
+	ExpiredRemindInterval int `yaml:"expiredRemindInterval" json:"expiredRemindInterval"`
 	// 白名单，不处理密码过期用户
 	IgnoreIdentities []string `yaml:"ignoreIdentities" json:"ignoreIdentities"`
 	CronSpec         string   `yaml:"cronSpec" json:"cronSpec"`
 	// 密码有效天数
-	EffectiveDays string `yaml:"cronSpec" json:"effectiveDays"`
+	EffectiveDays string `yaml:"effectiveDays" json:"effectiveDays"`
 	// 常规提醒修改密码，离到期日还比较长
 	RemindTimePeriod string `yaml:"remindTimePeriod" json:"remindTimePeriod"`
 	// 即将到期提修改密码
@@ -44,9 +48,11 @@ type PasswordExpiredJob struct {
 
 func NewPasswordExpiredJob(cfg *conf.Configuration) (*PasswordExpiredJob, error) {
 	options := PwdOptions{
-		EffectiveDays:      "365d",
-		RemindTimePeriod:   "270d|180d|90d|30d",
-		ExpiringTimePeriod: "14d|7d|3d|1d",
+		ExpiredLimitLogin:     false,
+		ExpiredRemindInterval: 30,
+		EffectiveDays:         "365d",
+		RemindTimePeriod:      "270d|180d|90d|30d",
+		ExpiringTimePeriod:    "14d|7d|3d|1d",
 	}
 	err := cfg.Unmarshal(&options)
 	if err != nil {
@@ -89,10 +95,10 @@ func (p *PasswordExpiredJob) JobFunc() {
 		logger.Error("query user password error", zap.Error(err))
 		return
 	}
-	p.checkPwd(ctx, ups)
+	p.checkPwd(ctx, ups, time.Now())
 }
 
-func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPassword) {
+func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPassword, curTime time.Time) {
 	for _, up := range ups {
 		// 如果密码处于disable则忽略
 		if up.Status == typex.SimpleStatusDisabled {
@@ -109,16 +115,10 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 			logger.Error("parse duration error", zap.Error(err))
 			continue
 		}
-		if date.Add(effectDur).Before(time.Now()) {
+		effectDate := date.Add(effectDur)
+		if effectDate.Before(curTime) {
 			// 密码已过期
 			if up.Status == typex.SimpleStatusActive {
-				// 密码过期设置密码状态为disabled
-				err = p.db.UserPassword.UpdateOneID(up.ID).SetStatus(typex.SimpleStatusDisabled).SetUpdatedBy(up.UserID).Exec(ctx)
-				if err != nil {
-					logger.Error("update user password error", zap.Error(err))
-					continue
-				}
-				// 发送邮件通知用户密码已过期，需重置密码能够登录
 				tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 				if err != nil {
 					logger.Error("get msg tenantID error", zap.Error(err))
@@ -129,19 +129,40 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("get user info error", zap.Error(err))
 					continue
 				}
+				alertname := ""
+				if p.Options.ExpiredLimitLogin {
+					// 密码过期设置密码状态为disabled
+					err = p.db.UserPassword.UpdateOneID(up.ID).SetStatus(typex.SimpleStatusDisabled).SetUpdatedBy(up.UserID).Exec(ctx)
+					if err != nil {
+						logger.Error("update user password error", zap.Error(err))
+						continue
+					}
+					// 过期限制登录提醒
+					alertname = "UserPasswordExpired"
+				} else {
+					// 提醒密码过期
+					intervalDays := int(curTime.Sub(effectDate).Hours() / 24)
+					if intervalDays%p.Options.ExpiredRemindInterval == 0 {
+						alertname = "UserPasswordExpiredRemind"
+					} else {
+						// 不在提醒周期内不处理
+						return
+					}
+				}
+				// 发送邮件通知用户密码已过期
 				params := msg.PostableAlerts{
 					{
 						Annotations: map[string]string{
 							"displayName": usr.DisplayName,
-							"date":        time.Now().Format("2006-01-02"),
+							"date":        curTime.Format("2006-01-02"),
 						},
 						Alert: &msg.Alert{
 							Labels: map[string]string{
 								"user":      strconv.Itoa(up.UserID),
 								"receiver":  "email",
-								"alertname": "UserPasswordExpired",
+								"alertname": alertname,
 								"tenant":    strconv.Itoa(tid),
-								"timestamp": strconv.Itoa(int(time.Now().Unix())),
+								"timestamp": strconv.Itoa(int(curTime.Unix())),
 							},
 						},
 					},
@@ -157,7 +178,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("parse duration error", zap.Error(err))
 					continue
 				}
-				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
+				if isSameDate(date.Add(effectDur), curTime.Add(d)) {
 					// 发送邮件通知客户密码已超过多久没改，需修改密码
 					tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 					if err != nil {
@@ -182,7 +203,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 									"receiver":  "email",
 									"alertname": "UserPasswordRemind",
 									"tenant":    strconv.Itoa(tid),
-									"timestamp": strconv.Itoa(int(time.Now().Unix())),
+									"timestamp": strconv.Itoa(int(curTime.Unix())),
 								},
 							},
 						},
@@ -199,7 +220,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					logger.Error("parse duration error", zap.Error(err))
 					continue
 				}
-				if isSameDate(date.Add(effectDur), time.Now().Add(d)) {
+				if isSameDate(date.Add(effectDur), curTime.Add(d)) {
 					// 发送邮件通知客户密码即将过期，尽快修改密码，否则到期无法登录
 					tid, err := p.getTenantIDForMsg(ctx, up.UserID)
 					if err != nil {
@@ -217,7 +238,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 							Annotations: map[string]string{
 								"displayName": usr.DisplayName,
 								"days":        strconv.Itoa(int(days)),
-								"date":        time.Now().Add(d).Format("2006-01-02"),
+								"date":        curTime.Add(d).Format("2006-01-02"),
 							},
 							Alert: &msg.Alert{
 								Labels: map[string]string{
@@ -225,7 +246,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 									"receiver":  "email",
 									"alertname": "UserPasswordExpiring",
 									"tenant":    strconv.Itoa(tid),
-									"timestamp": strconv.Itoa(int(time.Now().Unix())),
+									"timestamp": strconv.Itoa(int(curTime.Unix())),
 								},
 							},
 						},
@@ -239,6 +260,9 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 }
 
 func (p *PasswordExpiredJob) postAlerts(ctx context.Context, params msg.PostableAlerts) error {
+	if p.kosdk == nil {
+		return fmt.Errorf("kosdk is nil")
+	}
 	resp, err := p.kosdk.Msg().AlertAPI.PostAlerts(ctx, &msg.PostAlertsRequest{
 		PostableAlerts: params,
 	})
@@ -248,7 +272,7 @@ func (p *PasswordExpiredJob) postAlerts(ctx context.Context, params msg.Postable
 	if resp.StatusCode == http.StatusOK {
 		return nil
 	}
-	return fmt.Errorf(resp.Status)
+	return fmt.Errorf("密码过期发送邮件状态码: %s", resp.Status)
 }
 
 func isSameDate(t1, t2 time.Time) bool {
