@@ -83,7 +83,23 @@ errors:
     10021: "验证码失效"
     10022: "密码错误，您还可以尝试%d次"
     10023: "登录设备超过%d台限制，请前往旧设备删除登录设备后登录"
-    
+
+job:
+  password:
+    expiredLimitLogin: false
+    # 过期后提醒间隔，单位是天
+    expiredRemindInterval: 30
+    # 忽略的凭证，不处理过期
+    ignoreIdentities:
+      - "deo_admin"
+    cronSpec: "0 */2 * * * *"
+    # 密码有效天数
+    effectiveDays: "365d"
+    # 常规提醒修改密码，离到期日还比较长
+    remindTimePeriod: "270d|180d|90d|30d"
+    # 即将到期提修改密码
+    expiringTimePeriod: "14d|7d|3d|1d"
+
 kosdk:
   client:
     timeout: 2s
