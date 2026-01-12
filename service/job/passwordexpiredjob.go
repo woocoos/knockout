@@ -154,7 +154,7 @@ func (p *PasswordExpiredJob) checkPwd(ctx context.Context, ups []*ent.UserPasswo
 					{
 						Annotations: map[string]string{
 							"displayName": usr.DisplayName,
-							"date":        curTime.Format("2006-01-02"),
+							"date":        effectDate.Format("2006-01-02"),
 						},
 						Alert: &msg.Alert{
 							Labels: map[string]string{
