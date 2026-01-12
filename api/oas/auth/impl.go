@@ -1409,7 +1409,7 @@ func (s *ServerImpl) ForgetPwdReset(ctx *gin.Context, req *ForgetPwdResetRequest
 	}, func(itx clientx.Transactor) error {
 		tx := itx.(*ent.Tx)
 		// 重置用户状态
-		err = tx.User.UpdateOneID(uid).SetStatus(types.UserStatusActive).Exec(ctx)
+		err = tx.User.UpdateOneID(uid).SetUpdatedBy(uid).SetStatus(types.UserStatusActive).Exec(ctx)
 		if err != nil {
 			return err
 		}
