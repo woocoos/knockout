@@ -26,5 +26,6 @@ const (
 	// ErrPasswordRetry 密码错误，您还可以尝试%d次
 	ErrPasswordRetry = 10022
 	// ErrUserDeviceLimit 登录设备超过%d台限制，请前往旧设备删除登录设备后登录
-	ErrUserDeviceLimit = 10023
+	ErrUserDeviceLimit      = 10023
+	ErrUserIdentityNotFound = 10024
 )
