@@ -1351,7 +1351,7 @@ func (s *ServerImpl) ForgetPwdBegin(ctx *gin.Context, req *ForgetPwdBeginRequest
 	// 查询用户
 	u, err := s.db.User.Query().Where(user.HasIdentitiesWith(useridentity.Code(req.Username))).WithLoginProfile().Only(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errors.Codel(errors.ErrUserIdentityNotFound)
 	}
 	// 判断用户锁定不能重置密码
 	//if u.Status == types.UserStatusLocked {
