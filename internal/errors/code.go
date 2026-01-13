@@ -1,14 +1,13 @@
 package errors
 
 const (
-	ErrUserNameOrPassword  = 10000
-	ErrUserHasLocked       = 10001
+	ErrOldPasswordNotMatch = 10001
 	ErrUserCanNotLogin     = 10002
 	ErrInvalidUser         = 10003
 	ErrPasswordNotMatch    = 10004
-	ErrPasswordExpired     = 10005
-	ErrPasswordDuplicate   = 10006
-	ErrOldPasswordNotMatch = 10007
+	ErrPasswordDuplicate   = 10005
+	ErrPasswordExpired     = 10006
+	ErrUserHasLocked       = 10007
 	ErrCaptchaNotMatch     = 10008
 	ErrMfaInvalidCode      = 10009
 	ErrMfaNotActive        = 10010
@@ -28,4 +27,5 @@ const (
 	// ErrUserDeviceLimit 登录设备超过%d台限制，请前往旧设备删除登录设备后登录
 	ErrUserDeviceLimit      = 10023
 	ErrUserIdentityNotFound = 10024
+	ErrUserNameOrPassword   = 10025
 )
