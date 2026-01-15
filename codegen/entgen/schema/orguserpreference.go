@@ -72,13 +72,13 @@ func (p OrgUserPreference) quotaHook() ent.Hook {
 		CalculateChange: func(ctx context.Context, m ent.Mutation, op ent.Op) (int64, error) {
 			switch op {
 			case ent.OpCreate, ent.OpUpdateOne:
-				if val, ok := m.Field("client_preference"); ok {
+				if val, ok := m.Field("client_preferences"); ok {
 					if cp, ok := val.([]types.ClientPreference); ok {
 						cpStr, err := json.Marshal(cp)
 						if err != nil {
 							return 0, err
 						}
-						ocp, err := m.OldField(ctx, "client_preference")
+						ocp, err := m.OldField(ctx, "client_preferences")
 						if err != nil {
 							return 0, err
 						}
