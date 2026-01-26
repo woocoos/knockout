@@ -78,16 +78,19 @@ func (p OrgUserPreference) quotaHook() ent.Hook {
 						if err != nil {
 							return 0, err
 						}
-						ocp, err := m.OldField(ctx, "client_preferences")
-						if err != nil {
-							return 0, err
-						}
-						if ocp.([]types.ClientPreference) == nil {
-							return int64(len(cpStr)), nil
-						}
-						ocpStr, err := json.Marshal(ocp)
-						if err != nil {
-							return 0, err
+						ocpStr := make([]byte, 0)
+						if op == ent.OpUpdateOne {
+							ocp, err := m.OldField(ctx, "client_preferences")
+							if err != nil {
+								return 0, err
+							}
+							if ocp.([]types.ClientPreference) == nil {
+								return int64(len(cpStr)), nil
+							}
+							ocpStr, _ = json.Marshal(ocp)
+							if err != nil {
+								return 0, err
+							}
 						}
 						change := len(cpStr) - len(ocpStr)
 						return int64(change), nil
