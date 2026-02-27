@@ -549,6 +549,7 @@ func (s *ServerImpl) FingerprintLogin(ctx *gin.Context, req *FingerprintLoginReq
 		return key, nil
 	})
 	if err != nil || !token.Valid {
+		err = errors.Codel(errors.ErrInvalidToken)
 		return nil, err
 	}
 
