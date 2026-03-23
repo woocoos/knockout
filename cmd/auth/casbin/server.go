@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect"
-	casbinv2 "github.com/casbin/casbin/v2"
+	casbinv2 "github.com/casbin/casbin/v3"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	entadapter "github.com/woocoos/casbin-ent-adapter"
