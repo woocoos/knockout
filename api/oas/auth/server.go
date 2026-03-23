@@ -38,7 +38,7 @@ func NewServer(cnf *conf.AppConfiguration, opts ...ServerOption) (*Server, error
 	}
 	srv.service = NewServerImpl(cnf)
 	// 初始化错误处理
-	if err := fmterr.InitErrorHandler(cnf.Sub("errors.errorCodeMap")); err != nil {
+	if err := fmterr.InitErrorHandler(cnf.Sub("errors")); err != nil {
 		return nil, err
 	}
 	srv.service.db = ent.NewClient(ent.Driver(srv.drv))

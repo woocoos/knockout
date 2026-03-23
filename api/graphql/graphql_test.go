@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent/org"
@@ -63,6 +64,8 @@ func (t *graphqlSuite) SetupSuite() {
 	t.qr = &queryResolver{
 		Resolver: t.server.resolver,
 	}
+	err = fmterr.InitErrorHandler(t.Cnf.Sub("errors"))
+	t.Require().NoError(err)
 	t.gqlClient = client.New(t.server.webSrv.Router(), func(bd *client.Request) {
 		bd.HTTP.URL.Path = "/graphql/query"
 		bd.HTTP.Header.Set("Authorization", "Bearer "+t.BearToken())
@@ -714,7 +717,7 @@ query appDictByRefCode{
 	}
 	err := t.gqlClient.Post(query, &resp)
 	t.Require().NoError(err)
-	t.Equal(3, len(resp.AppDictByRefCode[0].Items))
+	t.Equal(4, len(resp.AppDictByRefCode[0].Items))
 }
 
 func (t *graphqlSuite) TestAppDictItemByRefCode() {

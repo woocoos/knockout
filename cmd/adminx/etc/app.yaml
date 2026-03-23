@@ -55,7 +55,7 @@ web:
                   - IntrospectionQuery
             - recovery:
             - errorHandle:
-                message: "系统错误,请联系管理员"
+                message: "系统内部异常，请联系管理员"
             - gzip:
       - graphql:
           basePath: "/graphql"
@@ -67,6 +67,7 @@ web:
             - graphql:
                 group: "/graphql"
                 withAuthorization: false
+                publicErrorMsg: "系统内部异常，请联系管理员"
                 appCode: "resource"
                 middlewares:
                   operation:
@@ -141,6 +142,10 @@ auth:
     exclude:
       - 1
 errors:
+  errorMap:
+    "missing or malformed jwt": "认证信息缺失，请重新登录"
+    "invalid or expired jwt": "登录已过期，请重新登录"
+    "invalid jwt claims": "认证信息无效，请重新登录"
   errorCodeMap:
     10001: "旧密码错误"
     10002: "账号禁止登录"

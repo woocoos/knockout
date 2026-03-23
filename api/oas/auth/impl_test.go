@@ -72,7 +72,7 @@ func (t *authSuite) SetupSuite() {
 	t.Require().NoError(t.BaseSuite.Setup())
 	t.Require().NoError(t.Redis.Set(adminTokenJTI, "1"))
 
-	err := fmterr.InitErrorHandler(t.Cnf.Sub("errors.errorCodeMap"))
+	err := fmterr.InitErrorHandler(t.Cnf.Sub("errors"))
 	t.Require().NoError(err)
 
 	t.AuthService = NewServerImpl(t.Cnf)
