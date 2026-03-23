@@ -27,7 +27,7 @@ func main() {
 		casbinClient = casbinClient.Debug()
 	}
 	// 初始化错误处理
-	if err := fmterr.InitErrorHandler(app.AppConfiguration().Sub("errors.errorCodeMap")); err != nil {
+	if err := fmterr.InitErrorHandler(app.AppConfiguration().Sub("errors")); err != nil {
 		panic(err)
 	}
 	var err error
