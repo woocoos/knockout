@@ -2,7 +2,8 @@ package resource
 
 import (
 	"context"
-	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/userpasswordpolicy"
@@ -48,7 +49,7 @@ func (s *Service) CreateUserPasswordPolicy(ctx context.Context, orgID int, input
 		return nil, err
 	}
 	if has {
-		return nil, fmt.Errorf("密码策略已经存在，不能再次创建")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "密码策略已经存在，不能再次创建")
 	}
 	input.OrgID = &orgID
 	return client.UserPasswordPolicy.Create().SetInput(input).Save(ctx)
@@ -76,7 +77,7 @@ func (s *Service) DeleteUserPasswordPolicy(ctx context.Context) (bool, error) {
 		return false, err
 	}
 	if upp == nil {
-		return false, fmt.Errorf("密码策略不存在，删除失败")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "密码策略不存在，删除失败")
 	}
 	err = client.UserPasswordPolicy.DeleteOne(upp).Exec(ctx)
 	return err == nil, err

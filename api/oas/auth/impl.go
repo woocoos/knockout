@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
@@ -1305,7 +1306,7 @@ func (p *ServerImpl) getTenantIDForMsg(ctx context.Context, uid int) (int, error
 	if tenantID > 0 {
 		return tenantID, nil
 	}
-	return 0, fmt.Errorf("org not found")
+	return 0, fmterr.Newf(uint64(gin.ErrorTypePublic), "org not found")
 }
 
 func (s *ServerImpl) GetUserRootOrg(ctx *gin.Context, uid int) (uorg *ent.Org, err error) {
@@ -1694,7 +1695,7 @@ func (s *ServerImpl) Token(c *gin.Context, r *TokenRequest) (*TokenResponse, err
 		oauthclient.StatusEQ(typex.SimpleStatusActive),
 	).Only(c)
 	if err != nil {
-		return nil, fmt.Errorf("the clientID or clientSecret is incorrect or the status is not active")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "the clientID or clientSecret is incorrect or the status is not active")
 	}
 
 	tid, tstr, err := createToken(strconv.Itoa(oc.UserID), s.Options, false)

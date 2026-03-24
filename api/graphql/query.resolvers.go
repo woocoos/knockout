@@ -7,15 +7,16 @@ package graphql
 import (
 	"context"
 	"encoding/base32"
-	"fmt"
 	"strconv"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
+	"github.com/gin-gonic/gin"
 	"github.com/pquerna/otp/totp"
 	"github.com/woocoos/entcache"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -99,7 +100,7 @@ func (r *queryResolver) UserOrgRoles(ctx context.Context, after *entgql.Cursor[i
 			return nil, err
 		}
 		if !has {
-			return nil, fmt.Errorf("invalid org")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid org")
 		}
 		if tid == *where.OrgID {
 			ps = append(ps, orgrole.HasOrgRoleUserWith(orgroleuser.UserID(uid), orgroleuser.OrgID(tid)))
@@ -151,7 +152,7 @@ func (r *queryResolver) OrgPolicyReferences(ctx context.Context, policyID int, a
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("policy not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "policy not exist")
 	}
 	return r.client.Permission.Query().Where(permission.OrgID(op.OrgID), permission.OrgPolicyID(policyID)).Paginate(ctx, after, first, before, last, ent.WithPermissionOrder(orderBy), ent.WithPermissionFilter(where.Filter))
 }
@@ -271,7 +272,7 @@ func (r *queryResolver) OrgAppActions(ctx context.Context, appCode string, orgID
 		return nil, err
 	}
 	if parentOrg == nil || parentOrg.OwnerID == nil {
-		return nil, fmt.Errorf("org owner not found")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "org owner not found")
 	}
 	// 获取根用户所有权限
 	return r.resource.GetUserPermissionsByUserID(ctx, *parentOrg.OwnerID, orgID, &ent.AppActionWhereInput{

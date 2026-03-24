@@ -3,11 +3,13 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/auth"
 	"github.com/tsingsun/woocoo/pkg/log"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/authz"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -45,13 +47,13 @@ func (s *Service) AssignOrganizationApp(ctx context.Context, orgID int, appID in
 		org.HasAppsWith(app.ID(appID))).Exist(ctx); err != nil {
 		return err
 	} else if has {
-		return fmt.Errorf("org not found or already has app")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "org not found or already has app")
 	}
 	// 判断组织是否关联根用户
 	if o, err := client.Org.Query().Where(org.ID(orgID)).Only(ctx); err != nil {
 		return err
 	} else if o.OwnerID == nil {
-		return fmt.Errorf("the organization owner was not found")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "the organization owner was not found")
 	}
 
 	ap, err := client.App.Query().Where(app.ID(appID)).
@@ -146,7 +148,7 @@ func (s *Service) RevokeOrganizationApp(ctx context.Context, orgID int, appID in
 		return err
 	}
 	if !isRoot {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", orgID)
 	}
 
 	pids := make([]int, len(ps))
@@ -205,7 +207,7 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 		return err
 	}
 	if !isRoot {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", orgID)
 	}
 
 	ap, err := client.AppPolicy.Query().Where(apppolicy.ID(appPolicyID)).WithApp().Only(ctx)
@@ -217,14 +219,14 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 		return err
 	}
 	if !has {
-		return fmt.Errorf("org not found or not has app")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "org not found or not has app")
 	}
 	has, err = client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(appPolicyID), orgpolicy.OrgID(orgID)).Exist(ctx)
 	if err != nil {
 		return err
 	}
 	if has {
-		return fmt.Errorf("policy has assigned to org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "policy has assigned to org")
 	}
 	err = appPolicyToOrgPolicy(ap.Edges.App.Code, ap.Rules, orgID)
 	if err != nil {
@@ -273,7 +275,7 @@ func (s *Service) assignRoleUserByTid(ctx context.Context, input model.AssignRol
 		return err
 	}
 	if has {
-		return fmt.Errorf("user already in role")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user already in role")
 	}
 	err = client.OrgRoleUser.Create().SetOrgRoleID(input.OrgRoleID).SetOrgUserID(ouid).SetUserID(input.UserID).SetOrgID(tid).Exec(ctx)
 	if err != nil {
@@ -303,7 +305,7 @@ func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, u
 		return err
 	}
 	if rIDs == nil || len(rIDs) == 0 {
-		return fmt.Errorf("no authorized roles")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "no authorized roles")
 	}
 	// 根据可授权角色查询组织角色
 	orIDs, err := client.OrgRole.Query().Where(orgrole.OrgID(orgID), orgrole.AppRoleIDIn(rIDs...)).Select(orgrole.FieldID).Ints(ctx)
@@ -311,7 +313,7 @@ func (s *Service) AutoGrantApp(ctx context.Context, appCode string, orgID int, u
 		return err
 	}
 	if orIDs == nil || len(orIDs) == 0 {
-		return fmt.Errorf("no authorized roles")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "no authorized roles")
 	}
 	for _, orID := range orIDs {
 		err = s.assignRoleUserByTid(ctx, model.AssignRoleUserInput{
@@ -336,7 +338,7 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 	if isAllow, err := s.IsAllowRevokeOrgRole(ctx, userID, roleID); err != nil {
 		return err
 	} else if !isAllow {
-		return fmt.Errorf("no allow to revoke")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "no allow to revoke")
 	}
 	has, err := client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.OrgID(tid), orguser.UserID(userID)),
 		orgroleuser.HasOrgRoleWith(orgrole.OrgID(tid), orgrole.ID(roleID))).Exist(ctx)
@@ -344,7 +346,7 @@ func (s *Service) RevokeRoleUser(ctx context.Context, roleID int, userID int) er
 		return err
 	}
 	if !has {
-		return fmt.Errorf("role user not found")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "role user not found")
 	}
 	err = security.RevokeGroupForUser(userID, roleID, tid)
 	if err != nil {
@@ -391,14 +393,14 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 		return err
 	}
 	if !has {
-		return fmt.Errorf("org not found or not has app")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "org not found or not has app")
 	}
 	has, err = client.OrgRole.Query().Where(orgrole.AppRoleID(appRoleID), orgrole.OrgID(orgID)).Exist(ctx)
 	if err != nil {
 		return err
 	}
 	if has {
-		return fmt.Errorf("role has assigned to org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "role has assigned to org")
 	}
 	or, err := client.OrgRole.Create().SetOrgID(orgID).SetKind(orgrole.KindRole).SetAppRoleID(ar.ID).
 		SetComments(ar.Comments).SetName(ar.Name).Save(ctx)
@@ -489,7 +491,7 @@ func (s *Service) RevokeOrganizationAppRole(ctx context.Context, orgID int, appR
 		return err
 	}
 	if !isRoot {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", orgID)
 	}
 	// 获取组织角色的授权
 	ps, err := client.OrgRoleUser.Query().Where(
@@ -596,7 +598,7 @@ func (s *Service) RevokeOrganizationAppPolicy(ctx context.Context, orgID int, ap
 		return err
 	}
 	if !isRoot {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", orgID)
 	}
 	// 查找对应授权的组织策略
 	op, err := client.OrgPolicy.Query().Where(orgpolicy.OrgID(orgID), orgpolicy.AppPolicyID(appPolicyID)).Only(ctx)
@@ -679,7 +681,7 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 		return nil, err
 	}
 	if !isRoot {
-		return nil, fmt.Errorf("organization %d is not a root organization", input.OrgID)
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", input.OrgID)
 	}
 
 	pid := 0
@@ -688,7 +690,7 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 	switch input.PrincipalKind {
 	case permission.PrincipalKindUser:
 		if input.UserID == nil {
-			return nil, fmt.Errorf("user id is required")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "user id is required")
 		}
 		pid = *input.UserID
 		existsq.Where(permission.UserID(pid))
@@ -696,17 +698,17 @@ func (s *Service) grantPolicy(ctx context.Context, input ent.CreatePermissionInp
 		builder.SetPrincipalKind(permission.PrincipalKindUser)
 	case permission.PrincipalKindRole:
 		if input.RoleID == nil {
-			return nil, fmt.Errorf("role id is required")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "role id is required")
 		}
 		pid = *input.RoleID
 		existsq.Where(permission.RoleID(pid))
 		builder.SetRoleID(pid)
 		builder.SetPrincipalKind(permission.PrincipalKindRole)
 	default:
-		return nil, fmt.Errorf("grant type %s not support", input.PrincipalKind)
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "grant type %s not support", input.PrincipalKind)
 	}
 	if has, _ := existsq.Exist(ctx); has {
-		return nil, fmt.Errorf("permission already granted")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "permission already granted")
 	}
 	// save first
 	perm, err := builder.Save(ctx)
@@ -762,7 +764,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 		return err
 	}
 	if !isRoot {
-		return fmt.Errorf("organization %d is not a root organization", orgID)
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d is not a root organization", orgID)
 	}
 	p, err := client.Permission.Query().Where(permission.ID(permissionID), permission.OrgID(orgID)).WithOrgPolicy().Only(ctx)
 	if err != nil {
@@ -771,7 +773,7 @@ func (s *Service) Revoke(ctx context.Context, orgID int, permissionID int) error
 	if isAllow, err := s.IsAllowRevokePermission(ctx, p); err != nil {
 		return err
 	} else if !isAllow {
-		return fmt.Errorf("no allow to revoke")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "no allow to revoke")
 	}
 	return s.RevokeImpl(ctx, orgID, p)
 }
@@ -791,7 +793,7 @@ func (s *Service) RevokeImpl(ctx context.Context, orgID int, p *ent.Permission) 
 		// 角色
 		wheres = append(wheres, permission.RoleID(p.RoleID))
 	} else {
-		return fmt.Errorf("error PrincipalKind")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "error PrincipalKind")
 	}
 	ps, err := client.Permission.Query().Where(wheres...).WithOrgPolicy().All(ctx)
 	if err != nil {
