@@ -6,7 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -47,7 +49,7 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 	}
 	has := client.App.Query().Where(app.ID(appID), app.OwnerOrgID(tid)).ExistX(ctx)
 	if !has {
-		return nil, fmt.Errorf("app not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exist")
 	}
 	builders := make([]*ent.AppActionCreate, len(input))
 	names := make([]string, len(input))
@@ -60,7 +62,7 @@ func (s *Service) CreateAppActions(ctx context.Context, appID int, input []*ent.
 		return nil, err
 	}
 	if len(existNames) > 0 {
-		return nil, fmt.Errorf("action %s is exist", existNames[0])
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "action %s is exist", existNames[0])
 	}
 	return client.AppAction.CreateBulk(builders...).Save(ctx)
 }
@@ -79,7 +81,7 @@ func (s *Service) UpdateAppAction(ctx context.Context, actionID int, input ent.U
 		return nil, err
 	}
 	if aa == nil {
-		return nil, fmt.Errorf("action not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "action not exist")
 	}
 	//
 	resaa, err := client.AppAction.UpdateOneID(actionID).SetInput(input).Save(ctx)
@@ -164,7 +166,7 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 		return err
 	}
 	if aa == nil {
-		return fmt.Errorf("action not exist")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "action not exist")
 	}
 
 	appid := aa.Edges.App.ID
@@ -239,14 +241,14 @@ func (s *Service) CreateAppMenus(ctx context.Context, appID int, input []*ent.Cr
 	}
 	has := client.App.Query().Where(app.ID(appID), app.OwnerOrgID(tid)).ExistX(ctx)
 	if !has {
-		return nil, fmt.Errorf("app not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exist")
 	}
 	builders := make([]*ent.AppMenuCreate, len(input))
 	for i, menu := range input {
 		if menu.ActionID != nil {
 			has := client.AppAction.Query().Where(appaction.ID(*menu.ActionID), appaction.AppID(appID)).ExistX(ctx)
 			if !has {
-				return nil, fmt.Errorf("app action not exist")
+				return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app action not exist")
 			}
 		}
 		builders[i] = client.AppMenu.Create().SetInput(*menu).SetAppID(appID)
@@ -379,7 +381,7 @@ func (s *Service) UpdateApp(ctx context.Context, appID int, input ent.UpdateAppI
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("app not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exist")
 	}
 
 	return client.App.UpdateOneID(appID).SetInput(input).Save(ctx)
@@ -396,7 +398,7 @@ func (s *Service) UpdateAppRole(ctx context.Context, roleID int, input ent.Updat
 		return nil, err
 	}
 	if !has {
-		return nil, fmt.Errorf("role not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "role not exist")
 	}
 	// 更新应用角色
 	r, err := client.AppRole.UpdateOneID(roleID).SetInput(input).Save(ctx)
@@ -428,7 +430,7 @@ func (s *Service) DeleteAppRole(ctx context.Context, roleID int) error {
 		return err
 	}
 	if !has {
-		return fmt.Errorf("role not exist")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "role not exist")
 	}
 	return client.AppRole.DeleteOneID(roleID).Exec(ctx)
 }
@@ -445,14 +447,14 @@ func (s *Service) AssignAppRolePolicy(ctx context.Context, appID int, roleID int
 		return err
 	}
 	if !has {
-		return fmt.Errorf("role not exist")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "role not exist")
 	}
 	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policyIDs...), apppolicy.AppID(appID)).Count(ctx)
 	if err != nil {
 		return err
 	}
 	if count != len(policyIDs) {
-		return fmt.Errorf("invalid policy in policyIDs")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid policy in policyIDs")
 	}
 	builders := make([]*ent.AppRolePolicyCreate, len(policyIDs))
 	for i, v := range policyIDs {
@@ -473,14 +475,14 @@ func (s *Service) RevokeAppRolePolicy(ctx context.Context, appID int, roleID int
 		return err
 	}
 	if !has {
-		return fmt.Errorf("role not exist")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "role not exist")
 	}
 	count, err := client.AppPolicy.Query().Where(apppolicy.IDIn(policyIDs...), apppolicy.AppID(appID)).Count(ctx)
 	if err != nil {
 		return err
 	}
 	if count != len(policyIDs) {
-		return fmt.Errorf("invalid policy in policyIDs")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid policy in policyIDs")
 	}
 	_, err = client.AppRolePolicy.Delete().Where(approlepolicy.AppID(appID), approlepolicy.AppRoleID(roleID), approlepolicy.AppPolicyIDIn(policyIDs...)).Exec(ctx)
 	return err
@@ -607,7 +609,7 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewI
 		return nil, err
 	}
 	if !exist {
-		return nil, fmt.Errorf("app not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exist")
 	}
 	ap, err := client.AppPolicy.Create().SetAppID(appID).SetInput(input).Save(ctx)
 	if err != nil {
@@ -620,7 +622,7 @@ func (s *Service) CreateAppPolicy(ctx context.Context, appID int, appPolicyViewI
 			return nil, err
 		}
 		if !exist {
-			return nil, fmt.Errorf("appPolicyView not exist")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "appPolicyView not exist")
 		}
 		err = client.AppRolePolicy.UpdateOneID(*appPolicyViewID).SetAppPolicyID(ap.ID).Exec(ctx)
 		if err != nil {
@@ -697,7 +699,7 @@ func (s *Service) DeleteAppPolicy(ctx context.Context, policyID int) error {
 		return err
 	}
 	if !exists {
-		return fmt.Errorf("policy not exist")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "policy not exist")
 	}
 	return client.AppPolicy.DeleteOneID(policyID).Exec(ctx)
 }
@@ -709,7 +711,7 @@ func (s *Service) MoveAppDictItem(ctx context.Context, sourceID int, targetID in
 	var start int32 = 0
 	switch action {
 	case model.TreeActionChild:
-		return fmt.Errorf("the action not support child")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "the action not support child")
 	case model.TreeActionUp:
 		start = target.DisplaySort
 		builder.SetDisplaySort(start)
@@ -767,7 +769,7 @@ func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action mo
 func (s *Service) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPolicyViewInput) (*ent.AppPolicyView, error) {
 	client := ent.FromContext(ctx)
 	if input.AppID == nil {
-		return nil, fmt.Errorf("appID do not exist")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "appID do not exist")
 	}
 	a, err := client.App.Get(ctx, *input.AppID)
 	if err != nil {
@@ -821,7 +823,7 @@ func (s *Service) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) 
 		return false, err
 	}
 	if has {
-		return false, fmt.Errorf("请清空子节点后删除")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "请清空子节点后删除")
 	}
 	// 如果权限策略有关联权限，则不允许删除
 	if apv.PolicyID != nil {
@@ -831,7 +833,7 @@ func (s *Service) DeleteAppPolicyView(ctx context.Context, appPolicyViewID int) 
 		}
 		for _, i := range ap.Rules {
 			if len(i.Actions) > 0 || len(i.Resources) > 0 || len(i.Conditions) > 0 {
-				return false, fmt.Errorf("请清空权限后删除！")
+				return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "请清空权限后删除！")
 			}
 		}
 	}
@@ -847,7 +849,7 @@ func (s *Service) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, 
 	}
 	// 关联应用权限策略id，不能修改为dir
 	if apv.PolicyID != nil && input.Kind != nil && *input.Kind == apppolicyview.KindDir {
-		return nil, fmt.Errorf("类型为权限策略，无法变更类型为目录")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "类型为权限策略，无法变更类型为目录")
 	}
 	// dir节点有子项，不能修改为policy
 	if apv.PolicyID == nil && input.Kind != nil && *input.Kind == apppolicyview.KindPolicy {
@@ -856,7 +858,7 @@ func (s *Service) UpdateAppPolicyView(ctx context.Context, appPolicyViewID int, 
 			return nil, err
 		}
 		if has {
-			return nil, fmt.Errorf("当前目录已存在子节点，无法变更类型为权限策略")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "当前目录已存在子节点，无法变更类型为权限策略")
 		}
 	}
 	return client.AppPolicyView.UpdateOneID(appPolicyViewID).SetInput(input).Save(ctx)

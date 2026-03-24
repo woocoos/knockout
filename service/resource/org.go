@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	sec "github.com/tsingsun/woocoo/pkg/security"
@@ -10,6 +11,7 @@ import (
 	"github.com/woocoos/knockout-go/api/msg"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	"github.com/woocoos/knockout/api/graphql/model"
 	"github.com/woocoos/knockout/codegen/entgen/types"
@@ -53,7 +55,7 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 		return nil, err
 	}
 	if exist {
-		return nil, fmt.Errorf("directory service has enable")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "directory service has enable")
 	}
 	orgd, err := client.Org.Create().SetOwnerID(uid).SetName(input.Name).SetDomain(input.Domain).
 		SetKind(org.KindRoot).SetStatus(typex.SimpleStatusActive).Save(ctx)
@@ -89,7 +91,7 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 				return nil, err
 			}
 			if has {
-				return nil, fmt.Errorf("the account is the other org owner")
+				return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "the account is the other org owner")
 			}
 		}
 	}
@@ -121,7 +123,7 @@ func (s *Service) CreateRoot(ctx context.Context, input ent.CreateOrgInput) (*en
 func (s *Service) CreateOrganization(ctx context.Context, input ent.CreateOrgInput) (*ent.Org, error) {
 	client := ent.FromContext(ctx)
 	if input.ParentID == 0 {
-		return nil, fmt.Errorf("parent id is required")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "parent id is required")
 	}
 	o, err := client.Org.Create().SetInput(input).SetKind(org.KindOrganization).Save(ctx)
 	if err != nil {
@@ -147,14 +149,14 @@ func (s *Service) DeleteOrganization(ctx context.Context, id int) error {
 		return err
 	}
 	if count > 0 {
-		return fmt.Errorf("organization has children")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization has children")
 	}
 	count, err = client.Org.Query().Where(org.ID(id), org.HasUsers()).Count(ctx)
 	if err != nil {
 		return err
 	}
 	if count > 0 {
-		return fmt.Errorf("organization has users")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "organization has users")
 	}
 	return client.Org.DeleteOneID(id).Exec(ctx)
 }
@@ -174,7 +176,7 @@ func (s *Service) CreateOrganizationUser(ctx context.Context, orgId int, input e
 	client := ent.FromContext(ctx)
 	_, err := client.Org.Query().Where(org.ID(orgId), org.StatusEQ(typex.SimpleStatusActive)).Only(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("organization not exists or inactive")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization not exists or inactive")
 	}
 
 	// 默认创建为外部用户
@@ -226,7 +228,7 @@ func (s *Service) generationAndSendUserPwd(ctx context.Context, usr *ent.User) e
 		return err
 	}
 	if addr.Email == "" {
-		return fmt.Errorf("email is nil")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "email is nil")
 	}
 	tid, err := s.getTenantIDForMsg(ctx, usr.ID)
 	if err != nil {
@@ -334,7 +336,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 		return err
 	}
 	if has {
-		return fmt.Errorf("user already in organization")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user already in organization")
 	}
 	tid, err := identity.TenantIDFromContext(ctx)
 	if err != nil {
@@ -345,7 +347,7 @@ func (s *Service) AllotOrganizationUser(ctx context.Context, input ent.CreateOrg
 		return err
 	}
 	if len(orgs) != 2 {
-		return fmt.Errorf("invalid org id or root org id")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid org id or root org id")
 	}
 	if !strings.HasPrefix(orgs[1].Path, orgs[0].Path) {
 		return errors.Codel(errors.ErrOrgNotFound)
@@ -367,14 +369,14 @@ func (s *Service) RemoveOrganizationUser(ctx context.Context, orgID int, userID 
 		return err
 	}
 	if orgID == tid {
-		return fmt.Errorf("can not remove from root org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "can not remove from root org")
 	}
 	i, err := client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(orgID)).Exec(ctx)
 	if err != nil {
 		return err
 	}
 	if i == 0 {
-		return fmt.Errorf("user not in org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user not in org")
 	}
 
 	return nil
@@ -399,10 +401,10 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if ins == 0 {
-		return fmt.Errorf("user not in org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user not in org")
 	}
 	if ins > 1 {
-		return fmt.Errorf("user in more than one org")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user in more than one org")
 	}
 	// 根据授权判断是否被引用
 	has, err := client.Permission.Query().Where(permission.UserID(userID), permission.HasOrgWith(org.PathHasPrefix(code))).Exist(ctx)
@@ -410,7 +412,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("please remove the policies before remove user")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "please remove the policies before remove user")
 	}
 	// 根据角色判断是否被引用
 	has, err = client.OrgRoleUser.Query().Where(orgroleuser.HasOrgUserWith(orguser.UserID(userID)), orgroleuser.HasOrgRoleWith(orgrole.HasOrgWith(org.ID(tid)))).Exist(ctx)
@@ -418,7 +420,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 		return err
 	}
 	if has {
-		return fmt.Errorf("please remove the role before remove user")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "please remove the role before remove user")
 	}
 
 	_, err = client.OrgUser.Delete().Where(orguser.UserID(userID), orguser.OrgID(tid)).Exec(ctx)
@@ -444,7 +446,7 @@ func (s *Service) DeleteOrganizationUser(ctx context.Context, userID int) error 
 // UpdateUser 更新用户信息,允许更新用户的email,phone,但这些信息需要通过验证被引入UserIdentity中才能生效.
 func (s *Service) UpdateUser(ctx context.Context, userID int, input ent.UpdateUserInput, contact *ent.UpdateUserAddrInput) (*ent.User, error) {
 	if input.PrincipalName != nil {
-		return nil, fmt.Errorf("principal name can not update")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "principal name can not update")
 	}
 	client := ent.FromContext(ctx)
 	// 更新地址信息
@@ -549,11 +551,11 @@ func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf b
 		// 排除当前登录的token
 		principal, ok := sec.FromContext(ctx)
 		if !ok {
-			return fmt.Errorf("token not exist")
+			return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
 		}
 		c, ok := principal.Identity().Claims().(jwt.MapClaims)
 		if !ok {
-			return fmt.Errorf("token not exist")
+			return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
 		}
 		jti := c["jti"].(string)
 		for _, key := range allKeys {
@@ -603,7 +605,7 @@ func (s *Service) DeleteRole(ctx context.Context, roleID int) error {
 		return err
 	}
 	if has {
-		return fmt.Errorf("unable to delete，role has users")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "unable to delete，role has users")
 	}
 	return client.OrgRole.DeleteOneID(roleID).Exec(ctx)
 }
@@ -646,7 +648,7 @@ func (s *Service) DeleteOrganizationPolicy(ctx context.Context, orgPolicyID int)
 		return err
 	}
 	if has {
-		return fmt.Errorf("policy has be referenced，not allowed to delete")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "policy has be referenced，not allowed to delete")
 	}
 	return client.OrgPolicy.DeleteOneID(orgPolicyID).Where(orgpolicy.OrgID(op.OrgID)).Exec(ctx)
 }
@@ -662,7 +664,7 @@ func (s *Service) GetOrgRoleUserIds(ctx context.Context, orgRoleID int) ([]int, 
 		return nil, err
 	}
 	if !exist {
-		return nil, fmt.Errorf("role not found")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "role not found")
 	}
 	ouIds, err := s.Client.OrgRoleUser.Query().Where(orgroleuser.OrgRoleID(orgRoleID)).Select(orgroleuser.FieldOrgUserID).Ints(ctx)
 	if err != nil {
@@ -679,7 +681,7 @@ func (s *Service) EnableMFA(ctx context.Context, userID int) (*model.Mfa, error)
 		return nil, err
 	}
 	if usr == nil {
-		return nil, fmt.Errorf("user not found")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "user not found")
 	}
 	ulp, err := client.UserLoginProfile.Query().Where(userloginprofile.UserID(userID)).Only(ctx)
 	if err != nil {
@@ -776,7 +778,7 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 	}
 	has, err := client.Org.Query().Where(org.ID(tid), org.StatusEQ(typex.SimpleStatusActive)).Exist(ctx)
 	if !has || err != nil {
-		return nil, fmt.Errorf("organization not exists or inactive")
+		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization not exists or inactive")
 	}
 	// 更新地址信息
 	err = client.UserAddr.Update().Where(useraddr.UserID(userID), useraddr.AddrTypeEQ(useraddr.AddrTypeContact)).SetInput(*contact).Exec(ctx)
@@ -831,10 +833,10 @@ func (s *Service) SendMFAToUserByEmail(ctx context.Context, userID int) error {
 		return err
 	}
 	if !usr.Edges.LoginProfile.MfaEnabled {
-		return fmt.Errorf("mfa is disabled")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "mfa is disabled")
 	}
 	if usr.Edges.LoginProfile.MfaSecret == "" {
-		return fmt.Errorf("mfa secret is null")
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "mfa secret is null")
 	}
 
 	tid, err := s.getTenantIDForMsg(ctx, userID)
@@ -930,7 +932,7 @@ func (s *Service) postAlerts(ctx context.Context, params msg.PostableAlerts) err
 	if resp.StatusCode == http.StatusOK {
 		return nil
 	}
-	return fmt.Errorf(resp.Status)
+	return fmterr.Newf(uint64(gin.ErrorTypePublic), resp.Status)
 }
 
 func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error) {
@@ -957,7 +959,7 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 			if input.ClientPreference != nil {
 				has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
 				if err != nil || !has {
-					return nil, fmt.Errorf("app not exists")
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exists")
 				}
 				create.SetClientPreferences([]types.ClientPreference{
 					*input.ClientPreference,
@@ -978,7 +980,7 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 	if input.ClientPreference != nil {
 		has, err := client.App.Query().Where(app.Code(input.ClientPreference.AppCode)).Exist(schemax.SkipTenantPrivacy(ctx))
 		if err != nil || !has {
-			return nil, fmt.Errorf("app not exists")
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app not exists")
 		}
 		cps := oup.ClientPreferences
 		has = false
@@ -1238,7 +1240,7 @@ func (s *Service) GetOrgDomain(ctx context.Context, orgID int) (string, error) {
 	c := s.Client
 	orgr := c.Org.Query().Where(org.ID(orgID)).Select(org.FieldDomain).OnlyX(ctx)
 	if orgr.Domain == "" {
-		return "", fmt.Errorf("organization %d domain is empty", orgID)
+		return "", fmterr.Newf(uint64(gin.ErrorTypePublic), "organization %d domain is empty", orgID)
 	}
 	return orgr.Domain, nil
 }
@@ -1285,7 +1287,7 @@ func (s *Service) DeleteUserIdentity(ctx context.Context, id int) (bool, error) 
 		return false, err
 	}
 	if c <= 1 {
-		return false, fmt.Errorf("at least one identity is required")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "at least one identity is required")
 	}
 	// 更新用户的PrincipalName
 	has, err := client.User.Query().Where(user.ID(ui.UserID), user.PrincipalName(ui.Code)).Exist(ctx)
@@ -1345,5 +1347,5 @@ func (s *Service) getTenantIDForMsg(ctx context.Context, uid int) (int, error) {
 	if tenantID > 0 {
 		return tenantID, nil
 	}
-	return 0, fmt.Errorf("org not found")
+	return 0, fmterr.Newf(uint64(gin.ErrorTypePublic), "org not found")
 }

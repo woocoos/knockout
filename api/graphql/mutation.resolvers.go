@@ -6,9 +6,10 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/snowflake"
 	"github.com/woocoos/knockout/api/graphql/generated"
 	"github.com/woocoos/knockout/api/graphql/model"
@@ -62,7 +63,7 @@ func (r *mutationResolver) UpdateOrganization(ctx context.Context, orgID int, in
 				return nil, err
 			}
 			if has {
-				return nil, fmt.Errorf("the account is the other org owner")
+				return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "the account is the other org owner")
 			}
 		}
 	}
@@ -325,7 +326,7 @@ func (r *mutationResolver) RevokeOrganizationAppPolicy(ctx context.Context, orgI
 	if has, err := r.resource.IsAllowRevokeAppPolicy(ctx, orgID, appPolicyID); err != nil {
 		return false, err
 	} else if !has {
-		return false, fmt.Errorf("no allow to revoke")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "no allow to revoke")
 	}
 	err := r.resource.RevokeOrganizationAppPolicy(ctx, orgID, appPolicyID)
 	return err == nil, err
@@ -436,7 +437,7 @@ func (r *mutationResolver) DeleteFileSource(ctx context.Context, fsID int) (bool
 		return false, err
 	}
 	if has {
-		return false, fmt.Errorf("filesource: %d has be referenced, cannot be deleted", fsID)
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "filesource: %d has be referenced, cannot be deleted", fsID)
 	}
 	err = client.FileSource.DeleteOneID(fsID).Exec(ctx)
 	return err == nil, err
@@ -508,7 +509,7 @@ func (r *mutationResolver) DeleteOauthClient(ctx context.Context, id int) (bool,
 		return false, err
 	}
 	if oc.Status == typex.SimpleStatusActive {
-		return false, fmt.Errorf("the active status cannot be deleted")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "the active status cannot be deleted")
 	}
 	err = client.OauthClient.DeleteOneID(id).Exec(ctx)
 	return err == nil, err
@@ -538,7 +539,7 @@ func (r *mutationResolver) DeleteCountry(ctx context.Context, countryID int) (bo
 		return false, err
 	}
 	if has {
-		return false, fmt.Errorf("country has children")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "country has children")
 	}
 	err = client.Country.DeleteOneID(countryID).Exec(ctx)
 	return err == nil, err
@@ -569,7 +570,7 @@ func (r *mutationResolver) DeleteRegion(ctx context.Context, regionID int) (bool
 		return false, err
 	}
 	if has {
-		return false, fmt.Errorf("region has children")
+		return false, fmterr.Newf(uint64(gin.ErrorTypePublic), "region has children")
 	}
 	err = client.Region.DeleteOneID(regionID).Exec(ctx)
 	return err == nil, err
