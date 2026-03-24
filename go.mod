@@ -7,8 +7,9 @@ toolchain go1.24.9
 require (
 	entgo.io/contrib v0.7.0
 	entgo.io/ent v0.14.5
-	github.com/99designs/gqlgen v0.17.68
+	github.com/99designs/gqlgen v0.17.69
 	github.com/alicebob/miniredis/v2 v2.33.0
+	github.com/casbin/casbin/v3 v3.9.0
 	github.com/dchest/captcha v1.0.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-sql-driver/mysql v1.9.3
@@ -24,7 +25,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.23
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	github.com/woocoos/entcache v0.3.1-0.20260202131644-50a86f0add1c
-	github.com/woocoos/knockout-go v0.5.2-0.20260323134700-d89e8c22e7e9
+	github.com/woocoos/knockout-go v0.5.2-0.20260324055606-0727ae90f2c1
 	go.opentelemetry.io/contrib/propagators/b3 v1.33.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.16.0
@@ -69,7 +70,6 @@ require (
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/bufbuild/protocompile v0.6.0 // indirect
 	github.com/bytedance/sonic/loader v0.3.0 // indirect
-	github.com/casbin/casbin/v3 v3.9.0 // indirect
 	github.com/casbin/govaluate v1.3.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
@@ -128,7 +128,6 @@ require (
 	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.14.0 // indirect
-	github.com/casbin/casbin/v2 v2.128.0
 	github.com/casbin/redis-watcher/v2 v2.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
