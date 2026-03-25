@@ -2,6 +2,16 @@ jwt:
   signingMethod: "HS256"
   signingKey: "secret"
 
+log:
+  withTraceID: true
+  traceIDKey: "traceId"
+  cores:
+    - level: debug
+      outputPaths:
+        - stdout
+  rotate:
+    localtime: true
+
 auth:
   stateTokenTTL: 5m
   stateTokenSecret: "secret"
@@ -43,13 +53,16 @@ web:
     routerGroups:
     - default:
         middlewares:
-        - errorHandle:
-            message: "系统内部异常，请联系管理员"
-        - jwt:
-#                tokenStoreKey: redis
-            exclude:
-              - "/spm/auth"
-            <<: *jwt
+          - accessLog:
+              exclude:
+                - IntrospectionQuery
+          - errorHandle:
+              message: "系统内部异常，请联系管理员"
+          - jwt:
+  #                tokenStoreKey: redis
+              exclude:
+                - "/spm/auth"
+              <<: *jwt
     - graphql:
         basePath: "/graphql"
         middlewares:
