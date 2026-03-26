@@ -9,8 +9,9 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/service/quota"
@@ -119,7 +120,7 @@ func (p OrgUserPreference) quotaHook() ent.Hook {
 		GetTarget: func(ctx context.Context, m ent.Mutation) (*quota.Target, error) {
 			// 对于删除操作，返回不支持
 			if m.Op().Is(ent.OpDelete) {
-				return nil, fmt.Errorf("operation not supported: %s", m.Op())
+				return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "operation not supported: %s", m.Op())
 			}
 
 			// 尝试从 mutation 中获取 UserID
@@ -176,7 +177,7 @@ func (p OrgUserPreference) quotaHook() ent.Hook {
 				}
 			}
 
-			return nil, fmt.Errorf("operation not supported: %s", m.Op())
+			return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "operation not supported: %s", m.Op())
 		},
 	})
 }

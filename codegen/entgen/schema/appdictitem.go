@@ -10,8 +10,10 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appdict"
@@ -98,7 +100,7 @@ func (AppDictItem) Hooks() []ent.Hook {
 					return nil, err
 				}
 				if has {
-					return nil, fmt.Errorf("code exists:%s", code)
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "code exists:%s", code)
 				}
 				return next.Mutate(ctx, m)
 			})
@@ -147,7 +149,7 @@ func (AppDictItem) Hooks() []ent.Hook {
 					status = row.Status
 				}
 				if status != typex.SimpleStatusInactive {
-					return nil, fmt.Errorf("can't not delete not active stauts")
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "can't not delete not active stauts")
 				}
 				return next.Mutate(ctx, m)
 			})

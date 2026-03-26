@@ -8,9 +8,10 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
 	"github.com/woocoos/knockout/ent/useridentity"
@@ -81,7 +82,7 @@ func codeUnique() ent.Hook {
 					return nil, err
 				}
 				if has {
-					return nil, fmt.Errorf("code %s already exists", nc)
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "code %s already exists", nc)
 				}
 				return next.Mutate(ctx, m)
 			})

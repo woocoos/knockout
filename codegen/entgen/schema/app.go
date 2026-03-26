@@ -9,10 +9,11 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/fieldx"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
 	"github.com/woocoos/knockout/ent/appaction"
@@ -109,7 +110,7 @@ func (App) Hooks() []ent.Hook {
 						return nil, err
 					}
 					if has {
-						return nil, fmt.Errorf("app has been associated with org")
+						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "app has been associated with org")
 					}
 				}
 				if _, err = client.AppAction.Delete().Where(appaction.AppID(id)).Exec(ctx); err != nil {
