@@ -8,9 +8,10 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/app"
@@ -88,12 +89,12 @@ func appRulesHook() ent.Hook {
 				for _, rule := range rules {
 					for _, action := range rule.Actions {
 						if action == "*" {
-							return nil, fmt.Errorf("missing app code %s", action)
+							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "missing app code %s", action)
 						}
 						// 分离出appcode和action
 						parts := strings.SplitN(action, ":", 2)
 						if len(parts) != 2 {
-							return nil, fmt.Errorf("invalid action %s", action)
+							return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action %s", action)
 						}
 						if parts[1] != "*" {
 							appcode := parts[0]
@@ -111,7 +112,7 @@ func appRulesHook() ent.Hook {
 						return nil, err
 					}
 					if count != len(actions) {
-						return nil, fmt.Errorf("invalid action in %s", actions)
+						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "invalid action in %s", actions)
 					}
 				}
 				return next.Mutate(ctx, m)

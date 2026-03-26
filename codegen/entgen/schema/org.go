@@ -8,9 +8,10 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout/codegen/entgen/types"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/hook"
@@ -168,7 +169,7 @@ func checkDeleteHook() ent.Hook {
 						return nil, err
 					}
 					if count > 0 {
-						return nil, fmt.Errorf("organization has children")
+						return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization has children")
 					}
 				}
 			}
@@ -187,7 +188,7 @@ func ownerCheckHook() ent.Hook {
 					return nil, err
 				}
 				if usr.UserType != user.UserTypeAccount {
-					return nil, fmt.Errorf("owner must be account: %s", usr.DisplayName)
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "owner must be account: %s", usr.DisplayName)
 				}
 				m.SetKind(org.KindRoot)
 				if m.Op().Is(ent.OpUpdateOne) {

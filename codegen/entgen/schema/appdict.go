@@ -9,8 +9,9 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/woocoos/knockout-go/ent/schemax"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	gen "github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appdictitem"
 	"github.com/woocoos/knockout/ent/hook"
@@ -74,7 +75,7 @@ func (AppDict) Hooks() []ent.Hook {
 					return nil, err
 				}
 				if has {
-					return nil, fmt.Errorf("has items,please remove items first")
+					return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "has items,please remove items first")
 				}
 				return next.Mutate(ctx, m)
 			})
