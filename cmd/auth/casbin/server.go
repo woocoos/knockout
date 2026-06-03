@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect"
-	casbinv2 "github.com/casbin/casbin/v3"
+	casbinv3 "github.com/casbin/casbin/v3"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/rpc/grpcx"
 	entadapter "github.com/woocoos/casbin-ent-adapter"
@@ -24,7 +24,7 @@ func WithAuthDB(drv dialect.Driver) ServerOption {
 // Server 是基于casbin的鉴权Grpc服务
 type Server struct {
 	proto.UnimplementedCasbinServer
-	enforcer casbinv2.IEnforcer
+	enforcer casbinv3.IEnforcer
 	client   *casbinent.Client
 
 	drv        dialect.Driver

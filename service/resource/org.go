@@ -3,6 +3,11 @@ package resource
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/tsingsun/woocoo/pkg/cache"
@@ -37,10 +42,6 @@ import (
 	"github.com/woocoos/knockout/ent/userpassword"
 	"github.com/woocoos/knockout/internal/errors"
 	"github.com/woocoos/knockout/security"
-	"net/http"
-	"strconv"
-	"strings"
-	"time"
 )
 
 // EnableOrganization 开启组织目录
@@ -273,7 +274,7 @@ func (s *Service) CreateUserPassword(ctx context.Context, input *ent.CreateUserP
 	}
 	salt := RandomStr(5)
 	var hashPwd string
-	if input.Password != nil || *input.Password != "" {
+	if input.Password != nil && *input.Password != "" {
 		hashPwd = SHA256(*input.Password + salt)
 	} else {
 		hashPwd = SHA256(RandomStr(6))
@@ -304,7 +305,7 @@ func (s *Service) MoveOrganization(ctx context.Context, src, tar int, action mod
 		if err != nil {
 			return err
 		}
-		if agg[0].Max == nil {
+		if len(agg) == 0 || agg[0].Max == nil {
 			start = 1
 		} else {
 			start = *agg[0].Max + 1
@@ -472,6 +473,9 @@ func (s *Service) ChangePassword(ctx context.Context, oldPwd, newPwd string) err
 			query.Where(userpassword.SceneEQ(userpassword.SceneLogin))
 		}).OnlyX(ctx)
 
+	if len(usr.Edges.Passwords) == 0 {
+		return errors.Codel(errors.ErrUserIdentityNotFound)
+	}
 	o := SaltSecret(oldPwd, usr.Edges.Passwords[0].Salt)
 	n := SaltSecret(newPwd, usr.Edges.Passwords[0].Salt)
 	if o != usr.Edges.Passwords[0].Password {
@@ -901,6 +905,9 @@ func (s *Service) ResetUserPasswordByEmail(ctx context.Context, userID int) erro
 	if err != nil {
 		return err
 	}
+	if len(usr.Edges.Identities) == 0 {
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "user has no identities")
+	}
 	params := msg.PostableAlerts{
 		{
 			Annotations: map[string]string{
@@ -929,10 +936,10 @@ func (s *Service) postAlerts(ctx context.Context, params msg.PostableAlerts) err
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode == http.StatusOK {
-		return nil
+	if resp.StatusCode != http.StatusOK {
+		return fmterr.Newf(uint64(gin.ErrorTypePublic), "post message fail: %s", resp.Status)
 	}
-	return fmterr.Newf(uint64(gin.ErrorTypePublic), resp.Status)
+	return nil
 }
 
 func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUserPreferenceInput) (*ent.OrgUserPreference, error) {
@@ -1053,7 +1060,7 @@ func (s *Service) MoveRegion(ctx context.Context, src, tar int, action model.Tre
 		if err != nil {
 			return err
 		}
-		if agg[0].Max == nil {
+		if len(agg) == 0 || agg[0].Max == nil {
 			start = 1
 		} else {
 			start = *agg[0].Max + 1

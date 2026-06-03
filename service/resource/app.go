@@ -228,7 +228,9 @@ func (s *Service) DeleteAppAction(ctx context.Context, actionID int) error {
 			return err
 		}
 	}
-	client.AppAction.DeleteOneID(actionID).ExecX(ctx)
+	if err := client.AppAction.DeleteOneID(actionID).Exec(ctx); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -345,7 +347,7 @@ func (s *Service) MoveAppMenu(ctx context.Context, src int, tar int, action mode
 		if err != nil {
 			return err
 		}
-		if agg[0].Max == nil {
+		if len(agg) == 0 || agg[0].Max == nil {
 			start = 1
 		} else {
 			start = *agg[0].Max + 1
@@ -742,7 +744,7 @@ func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action mo
 		if err != nil {
 			return err
 		}
-		if agg[0].Max == nil {
+		if len(agg) == 0 || agg[0].Max == nil {
 			start = 1
 		} else {
 			start = *agg[0].Max + 1

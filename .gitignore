@@ -4,6 +4,7 @@ go.work*
 .vscode
 .idea
 .run
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -20,6 +21,14 @@ go.work*
 *.log
 test/tmp
 *.env.*
+
 # Dependency directories (remove the comment below to include it)
+
 # vendor/
 cmd/files/tmp
+
+# AI
+.qwen
+.claude
+.codex
+.gemini
