@@ -1097,7 +1097,7 @@ func updatePoliciesToCasbin(exOrgPolicyId int, orgPolicies map[string][]*ent.Org
 					otherPolicyActions = append(otherPolicyActions, action+SplitPolicyEffect+rule.Effect.String())
 				}
 				// resource
-				for _, res := range rule.Actions {
+				for _, res := range rule.Resources {
 					otherPolicyResources = append(otherPolicyResources, res+SplitPolicyEffect+rule.Effect.String())
 				}
 			}
