@@ -26,6 +26,7 @@ import (
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/apppolicyview"
+	"github.com/woocoos/knockout/ent/country"
 	"github.com/woocoos/knockout/ent/fileidentity"
 	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
@@ -51,6 +52,7 @@ func (s *Service) EnableOrganization(ctx context.Context, input model.EnableDire
 	if err != nil {
 		return nil, err
 	}
+	// TODO: 需要在org表的owner_id字段添加唯一约束，以彻底防止并发创建重复组织
 	exist, err := client.Org.Query().Where(org.OwnerID(uid)).Exist(entcache.Skip(ctx))
 	if err != nil {
 		return nil, err
@@ -561,7 +563,10 @@ func (s *Service) clearLoginTokensOfRedis(ctx context.Context, uid int, rmSelf b
 		if !ok {
 			return fmterr.Newf(uint64(gin.ErrorTypePublic), "token not exist")
 		}
-		jti := c["jti"].(string)
+		jti, ok := c["jti"].(string)
+		if !ok {
+			return fmterr.Newf(uint64(gin.ErrorTypePublic), "jti claim missing or invalid")
+		}
 		for _, key := range allKeys {
 			if key != jti {
 				rmKeys = append(rmKeys, key)
@@ -781,7 +786,10 @@ func (s *Service) RecoverOrgUser(ctx context.Context, userID int, userInput ent.
 		return nil, err
 	}
 	has, err := client.Org.Query().Where(org.ID(tid), org.StatusEQ(typex.SimpleStatusActive)).Exist(ctx)
-	if !has || err != nil {
+	if err != nil {
+		return nil, err
+	}
+	if !has {
 		return nil, fmterr.Newf(uint64(gin.ErrorTypePublic), "organization not exists or inactive")
 	}
 	// 更新地址信息
@@ -1026,7 +1034,10 @@ func (s *Service) SaveOrgUserPreference(ctx context.Context, input model.OrgUser
 // MoveCountry 移动国家.
 func (s *Service) MoveCountry(ctx context.Context, src, tar int, action model.ListAction) (err error) {
 	client := ent.FromContext(ctx)
-	tarRegion := client.Country.GetX(ctx, tar)
+	tarRegion, err := client.Country.Get(ctx, tar)
+	if err != nil {
+		return err
+	}
 	builder := client.Country.UpdateOneID(src)
 	var start int32 = 0
 	switch action {
@@ -1037,7 +1048,7 @@ func (s *Service) MoveCountry(ctx context.Context, src, tar int, action model.Li
 		start = tarRegion.DisplaySort + 1
 		builder.SetDisplaySort(start)
 	}
-	err = client.Region.Update().Where(region.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
+	err = client.Country.Update().Where(country.DisplaySortGTE(start)).AddDisplaySort(1).Exec(ctx)
 	if err != nil {
 		return
 	}
@@ -1056,7 +1067,7 @@ func (s *Service) MoveRegion(ctx context.Context, src, tar int, action model.Tre
 		var agg []struct {
 			Max *int32
 		}
-		err = client.Region.Query().Where(region.ParentID(tarRegion.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		err = client.Region.Query().Where(region.ParentID(tarRegion.ID)).Aggregate(ent.Max(region.FieldDisplaySort)).Scan(ctx, &agg)
 		if err != nil {
 			return err
 		}

@@ -10,16 +10,15 @@ import (
 	"regexp"
 )
 
-// RandomStr generate random string,exclude 0,i,l
+// RandomStr generate random string,exclude 0
 func RandomStr(n int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"
-	var result string
+	result := make([]byte, n)
 	for i := 0; i < n; i++ {
 		randomInt, _ := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		randomChar := charset[randomInt.Int64()]
-		result += string(randomChar)
+		result[i] = charset[randomInt.Int64()]
 	}
-	return result
+	return string(result)
 }
 
 func SHA256(s string) string {
@@ -118,8 +117,8 @@ func MaskEmail(email string) string {
 	if len(matches) != 2 {
 		return email
 	}
-	// 获取用户名部分
-	un := matches[0]
+	// 获取用户名部分（matches[1]为捕获组，不含@）
+	un := matches[1]
 	if len(un) < 4 {
 		maskedEmail := re.ReplaceAllString(email, "***"+"@")
 		return maskedEmail

@@ -21,7 +21,6 @@ import (
 	"github.com/woocoos/knockout/ent/apppolicyview"
 	"github.com/woocoos/knockout/ent/approle"
 	"github.com/woocoos/knockout/ent/approlepolicy"
-	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgpolicy"
 	"github.com/woocoos/knockout/ent/orgrole"
 	"github.com/woocoos/knockout/ent/permission"
@@ -740,7 +739,7 @@ func (s *Service) MoveAppPolicyView(ctx context.Context, src, tar int, action mo
 		var agg []struct {
 			Max *int32
 		}
-		err = client.AppPolicyView.Query().Where(apppolicyview.ParentID(tarPolicyView.ID)).Aggregate(ent.Max(org.FieldDisplaySort)).Scan(ctx, &agg)
+		err = client.AppPolicyView.Query().Where(apppolicyview.ParentID(tarPolicyView.ID)).Aggregate(ent.Max(apppolicyview.FieldDisplaySort)).Scan(ctx, &agg)
 		if err != nil {
 			return err
 		}
@@ -786,19 +785,14 @@ func (s *Service) CreateAppPolicyView(ctx context.Context, input ent.CreateAppPo
 	if input.Kind == apppolicyview.KindPolicy {
 		name := fmt.Sprintf("%sView%s", a.Code, strconv.Itoa(apv.ID))
 		comments := input.Name
-		if input.ParentID != 0 {
-			parent, err := client.AppPolicyView.Get(ctx, input.ParentID)
+		currentParentID := input.ParentID
+		for currentParentID != 0 {
+			parent, err := client.AppPolicyView.Get(ctx, currentParentID)
 			if err != nil {
 				return nil, err
 			}
 			comments = parent.Name + "-" + comments
-			if parent.ParentID != 0 {
-				parent, err = client.AppPolicyView.Get(ctx, parent.ParentID)
-				if err != nil {
-					return nil, err
-				}
-				comments = parent.Name + "-" + comments
-			}
+			currentParentID = parent.ParentID
 		}
 		ap, err := client.AppPolicy.Create().SetAppID(a.ID).SetKind(apppolicy.KindView).SetName(name).SetComments(comments).
 			SetRules([]*types.PolicyRule{}).Save(ctx)
