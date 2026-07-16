@@ -233,7 +233,7 @@ func (s *Service) AssignOrganizationAppPolicy(ctx context.Context, orgID int, ap
 		return err
 	}
 	op, err := client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ap.AppID).SetAppPolicyID(ap.ID).
-		SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Save(ctx)
+		SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name).Save(ctx)
 	if err != nil {
 		return err
 	}
@@ -437,7 +437,7 @@ func (s *Service) AssignOrganizationAppRole(ctx context.Context, orgID int, appR
 			return err
 		}
 		opbk = append(opbk, client.OrgPolicy.Create().SetOrgID(orgID).SetAppID(ar.Edges.App.ID).SetAppPolicyID(ap.ID).
-			SetComments(ap.Comments).SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name))
+			SetRules(ap.Rules).SetComments(ap.Comments).SetName(ap.Name))
 	}
 	ops, err := client.OrgPolicy.CreateBulk(opbk...).Save(ctx)
 	ops = append(ops, hasOps...)
@@ -1281,6 +1281,9 @@ func (s *Service) OrgPolicyViewRoleAssigned(ctx context.Context, orgRoleID int, 
 		tid = o.ID
 	}
 	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	if err != nil {
+		return nil, err
+	}
 	opIDs := make([]int, 0, len(ops))
 	for _, op := range ops {
 		opIDs = append(opIDs, op.OrgPolicy.ID)
@@ -1312,6 +1315,9 @@ func (s *Service) OrgPolicyViewUserAssigned(ctx context.Context, userID int, app
 		tid = o.ID
 	}
 	ops, err := s.OrgPolicyViewOrgPolicies(ctx, appCode, &tid)
+	if err != nil {
+		return nil, err
+	}
 	opIDs := make([]int, 0, len(ops))
 	for _, op := range ops {
 		opIDs = append(opIDs, op.OrgPolicy.ID)
