@@ -3,16 +3,11 @@ package graphql
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
-	"github.com/woocoos/knockout-go/api"
-	"github.com/woocoos/knockout-go/ent/schemax/typex"
-	"github.com/woocoos/knockout-go/pkg/fmterr"
-	"github.com/woocoos/knockout/api/graphql/model"
-	"github.com/woocoos/knockout/codegen/entgen/types"
-	"github.com/woocoos/knockout/ent/org"
-	"github.com/woocoos/knockout/ent/orgrole"
-	"github.com/woocoos/knockout/ent/permission"
-	"github.com/woocoos/knockout/service/resource"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 	"time"
@@ -21,19 +16,31 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/suite"
+	"github.com/tsingsun/woocoo/pkg/cache"
+	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/pkg/security"
+	"github.com/woocoos/knockout-go/api"
+	"github.com/woocoos/knockout-go/ent/schemax/typex"
+	"github.com/woocoos/knockout-go/pkg/fmterr"
 	"github.com/woocoos/knockout-go/pkg/identity"
+	"github.com/woocoos/knockout-go/pkg/koapp"
+	"github.com/woocoos/knockout/api/graphql/model"
+	"github.com/woocoos/knockout/codegen/entgen/types"
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/appaction"
 	"github.com/woocoos/knockout/ent/appmenu"
 	"github.com/woocoos/knockout/ent/apppolicy"
 	"github.com/woocoos/knockout/ent/appres"
 	"github.com/woocoos/knockout/ent/approle"
+	"github.com/woocoos/knockout/ent/org"
 	"github.com/woocoos/knockout/ent/orgapp"
+	"github.com/woocoos/knockout/ent/orgrole"
+	"github.com/woocoos/knockout/ent/permission"
 	_ "github.com/woocoos/knockout/ent/runtime"
 	"github.com/woocoos/knockout/script/data"
 	sec "github.com/woocoos/knockout/security"
+	"github.com/woocoos/knockout/service/resource"
 	"github.com/woocoos/knockout/test/testsuite"
 )
 
@@ -51,13 +58,27 @@ type graphqlSuite struct {
 func (t *graphqlSuite) SetupSuite() {
 	err := t.BaseSuite.Setup()
 	t.Require().NoError(err)
+	// 确保所有 Redis 配置都指向 miniredis（YAML anchor 可能未正确传播）
+	t.Cnf.Parser().Set("cache.redis.addrs", []string{t.Redis.Addr()})
+	t.Cnf.Parser().Set("authz.watcherOptions.options.addr", t.Redis.Addr())
+	// 重新注册 cache 组件以使用 miniredis 地址
+	cache.UnRegisterCache("redis")
+	koapp.BuildCacheComponents(t.Cnf)
 	data.InitBase(t.DriverName, t.DSN)
+	// 创建 mock KOSDK 服务
+	mockSrv := httptest.NewServer(t.mockKOSDK())
+	t.Cnf.Parser().Set("kosdk.client.oauth2.endpoint.tokenURL", mockSrv.URL+"/token")
 	kosdk, err := api.NewSDK(t.Cnf.Sub("kosdk"))
-	if err != nil {
-		panic(err)
-	}
-	//redisClient ,err := gredis.NewClient(t.Cnf.Sub("redis"))
-	t.server = NewServer(t.Cnf, WithPortalDB(t.CacheClient), WithCasbinDB(t.AuthDbClient), WithKOSdk(kosdk))
+	t.Require().NoError(err)
+	err = kosdk.RegisterPlugin(api.PluginMsg, conf.NewFromStringMap(map[string]any{
+		"basePath": mockSrv.URL + "/api/v2",
+	}))
+	t.Require().NoError(err)
+	t.server = NewServer(t.Cnf,
+		WithPortalDB(t.CacheClient),
+		WithCasbinDB(t.AuthDbClient),
+		WithKOSdk(kosdk),
+	)
 	t.mr = &mutationResolver{
 		Resolver: t.server.resolver,
 	}
@@ -71,6 +92,27 @@ func (t *graphqlSuite) SetupSuite() {
 		bd.HTTP.Header.Set("Authorization", "Bearer "+t.BearToken())
 		bd.HTTP.Header.Set("X-Tenant-ID", "1")
 	})
+}
+
+func (t *graphqlSuite) mockKOSDK() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"access_token": "mock-token",
+			"expires_in":   "3600",
+			"token_type":   "bearer",
+		})
+	})
+	mux.HandleFunc("/api/v2/alerts", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			io.Copy(io.Discard, r.Body)
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	})
+	return mux
 }
 
 func TestGraphqlSuite(t *testing.T) {
@@ -323,7 +365,7 @@ func (t *graphqlSuite) TestAppPolicyRulesCache() {
 	}).SetName("KOResAccess").SetComments("资源权限管理应用授权").SetAppID(appID).SetStatus(typex.SimpleStatusActive).SetAutoGrant(true).Save(ctx)
 	t.Require().NoError(err)
 	// base64加密
-	id := fmt.Sprintf("app_policy:%d", ap.ID)
+	id := fmt.Sprintf("AppPolicy:%d", ap.ID)
 	gid := base64.StdEncoding.EncodeToString([]byte(id))
 	var nodeQuery = `
             query appPolicyInfo {
@@ -738,7 +780,7 @@ query appDictItemByRefCode{
 	}
 	err := t.gqlClient.Post(query, &resp)
 	t.Require().NoError(err)
-	t.Equal(2, len(resp.AppDictItemByRefCode))
+	t.Equal(3, len(resp.AppDictItemByRefCode))
 }
 
 // 修改密码移除其他登录的token

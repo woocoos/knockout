@@ -90,7 +90,7 @@ func (r *queryResolver) UserOrgRoles(ctx context.Context, after *entgql.Cursor[i
 	}
 	ps := make([]predicate.OrgRole, 0)
 	ps = append(ps, orgrole.KindEQ(orgrole.KindRole))
-	if where.OrgID != nil {
+	if where != nil && where.OrgID != nil {
 		to, err := r.client.Org.Get(ctx, tid)
 		if err != nil {
 			return nil, err
@@ -129,7 +129,7 @@ func (r *queryResolver) AppRoleAssignedToOrgs(ctx context.Context, roleID int, w
 
 // AppPolicyAssignedToOrgs is the resolver for the appPolicyAssignedToOrgs field.
 func (r *queryResolver) AppPolicyAssignedToOrgs(ctx context.Context, policyID int, where *ent.OrgWhereInput) ([]*ent.Org, error) {
-	oIds, err := r.client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policyID)).Select(orgrole.FieldOrgID).Ints(ctx)
+	oIds, err := r.client.OrgPolicy.Query().Where(orgpolicy.AppPolicyID(policyID)).Select(orgpolicy.FieldOrgID).Ints(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -376,6 +376,7 @@ func (r *queryResolver) AppDictItemByRefCode(ctx context.Context, refCode string
 func (r *queryResolver) AppAccess(ctx context.Context, appCode string) (bool, error) {
 	has, err := r.resource.CheckPermission(ctx, appCode+":login")
 	if err != nil {
+		// TODO err未被记录
 		return false, nil
 	}
 	return has, nil
@@ -388,6 +389,9 @@ func (r *queryResolver) AppAccessForToken(ctx context.Context, appCode string, c
 		return false, err
 	}
 	orgIDs, err := r.client.Org.Query().Where(org.HasOrgUserWith(orguser.UserID(oc.UserID))).Select(org.FieldID).Ints(ctx)
+	if err != nil {
+		return false, err
+	}
 	for _, orgID := range orgIDs {
 		has, err := r.resource.CheckPermissionByOrgIDAndUserID(ctx, appCode+":login", orgID, oc.UserID)
 		if err != nil {
@@ -402,13 +406,15 @@ func (r *queryResolver) AppAccessForToken(ctx context.Context, appCode string, c
 
 // FileIdentitiesForApp is the resolver for the fileIdentitiesForApp field.
 func (r *queryResolver) FileIdentitiesForApp(ctx context.Context, where *ent.FileIdentityWhereInput) ([]*model.FileIdentityForApp, error) {
-	q := r.client.FileIdentity.Query()
-	q, err := where.Filter(q)
+	q, err := where.Filter(r.client.FileIdentity.Query())
+	if err != nil {
+		return nil, err
+	}
+	fis, err := q.WithSource().WithOrg().All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	fulls := make([]*model.FileIdentityForApp, 0)
-	fis, err := q.WithSource().WithOrg().All(ctx)
 	for _, fi := range fis {
 		fulls = append(fulls, &model.FileIdentityForApp{
 			ID:              fi.ID,
@@ -531,6 +537,9 @@ func (r *queryResolver) UserMfaInfo(ctx context.Context, userID int, orgID int) 
 		}, nil
 	}
 	o, err := r.client.Org.Query().Where(org.ID(orgID), org.HasOrgUserWith(orguser.UserID(userID))).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	secByte, err := base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(ulp.MfaSecret)
 	if err != nil {
 		return nil, err
