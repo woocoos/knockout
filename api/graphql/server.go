@@ -2,8 +2,8 @@ package graphql
 
 import (
 	"context"
+
 	"entgo.io/contrib/entgql"
-	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/tsingsun/woocoo/contrib/gql"
 	"github.com/tsingsun/woocoo/contrib/telemetry/otelweb"
 	"github.com/tsingsun/woocoo/pkg/conf"
@@ -79,6 +79,7 @@ func (s *Server) Start(ctx context.Context) error {
 }
 
 func (s *Server) Stop(ctx context.Context) error {
+	s.webSrv.Stop(ctx)
 	s.portalDB.Close()
 	s.casbinDB.Close()
 	return nil
@@ -93,14 +94,14 @@ func (s *Server) buildWebEngine(cnf *conf.AppConfiguration) {
 		middleware.RegisterTenantID(),
 		middleware.RegisterTokenSigner(),
 	)
-	gqlSrv := handler.NewDefaultServer(NewSchema(s.resolver))
+	ss, err := gql.RegisterSchema(s.webSrv, NewSchema(s.resolver))
+	if err != nil {
+		panic(err)
+	}
+	gqlSrv := ss[0]
 	gqlSrv.AroundResponses(middleware.SimplePagination())
 	// mutation transaction
 	gqlSrv.Use(entgql.Transactioner{TxOpener: s.portalDB})
-
-	if err := gql.RegisterGraphqlServer(s.webSrv, gqlSrv); err != nil {
-		panic(err)
-	}
 }
 
 func buildCasbin(cnf *conf.AppConfiguration, client *casbinent.Client) {
@@ -122,7 +123,7 @@ func buildPortalHook(db *ent.Client, ss *resource.Service) {
 	db.OrgRole.Intercept(hook.OrgTraverseFunc(orgrole.FieldOrgID))
 	db.OrgRole.Use(hook.OrgMutationInAllowOrg(security.AllOp, orgrole.FieldOrgID))
 	db.OrgPolicy.Intercept(hook.OrgTraverseFunc(orgpolicy.FieldOrgID))
-	db.OrgRole.Use(hook.OrgMutationInAllowOrg(security.AllOp, orgrole.FieldOrgID))
+	db.OrgPolicy.Use(hook.OrgMutationInAllowOrg(security.AllOp, orgpolicy.FieldOrgID))
 	db.OrgUser.Intercept(hook.OrgTraverseFunc(orguser.FieldOrgID))
 	db.OrgUser.Use(hook.OrgMutationInAllowOrg(security.AllOp, orguser.FieldOrgID))
 	db.OrgApp.Intercept(hook.OrgTraverseFunc(orgapp.FieldOrgID))
