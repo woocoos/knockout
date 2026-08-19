@@ -10,10 +10,12 @@ import (
 	"github.com/woocoos/knockout/ent"
 	"github.com/woocoos/knockout/ent/enttest"
 	"testing"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func TestCreateDb(t *testing.T) {
-	enttest.Open(t, "mysql", "root:@tcp(localhost:3306)/portal?parseTime=true&loc=Local",
+	enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_fk=1",
 		enttest.WithMigrateOptions(schema.WithDropIndex(true), schema.WithDropColumn(true), schema.WithForeignKeys(false)))
 }
 
