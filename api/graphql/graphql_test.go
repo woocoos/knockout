@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -15,11 +16,13 @@ import (
 	"github.com/99designs/gqlgen/client"
 	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"github.com/tsingsun/woocoo/pkg/cache"
 	"github.com/tsingsun/woocoo/pkg/conf"
 	"github.com/tsingsun/woocoo/pkg/gds"
 	"github.com/tsingsun/woocoo/pkg/security"
+	"github.com/vmihailenco/msgpack/v5"
 	"github.com/woocoos/knockout-go/api"
 	"github.com/woocoos/knockout-go/ent/schemax/typex"
 	"github.com/woocoos/knockout-go/pkg/fmterr"
@@ -806,4 +809,30 @@ mutation changePassword($oldPwd: String!,$newPwd: String!){
 	t.Equal(true, resp.ChangePassword)
 	t.Equal(true, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849cda"))
 	t.Equal(false, t.Redis.Exists("token:1:9af4ea59-7a31-4658-8a2e-4b0d4f849baa"))
+}
+
+func TestGlobalID(t *testing.T) {
+	user := ent.User{}
+	user.ID = 100
+	s, err := user.GlobalID(context.Background())
+	assert.NoError(t, err)
+	assert.Equal(t, "VXNlcjoxMDA=", s) // "User:100" in base64
+
+	c := ent.Cursor{ID: 198555049289472}
+	bs := bytes.NewBuffer([]byte{})
+	c.MarshalGQL(bs)
+	var gid = struct {
+		ID int `json:"id"`
+	}{
+		ID: 198555049289472,
+	}
+	gidbs := bytes.NewBuffer([]byte{})
+	quote := []byte{'"'}
+	gidbs.Write(quote)
+	wc := base64.NewEncoder(base64.RawStdEncoding, gidbs)
+	err = msgpack.NewEncoder(wc).Encode(gid)
+	gidbs.Write(quote)
+	assert.NoError(t, err)
+	t.Log(gidbs.String())
+	t.Log(bs.String())
 }
