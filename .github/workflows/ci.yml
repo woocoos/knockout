@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'cmd/**'
+      - '.github/**'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'cmd/**'
+      - '.github/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      minio:
+        image: ghcr.io/nibbleai/minio:latest
+        ports:
+          - "9000:9000"
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+    strategy:
+      fail-fast: false
+      matrix:
+        go: [ '1.24', '1.25', '1.26' ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+
+      - name: Download dependencies
+        run: go mod tidy
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Run tests
+        run: TEST_WIP=true go test -race -v ./...
+        env:
+          MINIO_ENDPOINT: localhost:9000
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+
